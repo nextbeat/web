@@ -1,0 +1,22 @@
+{
+    "name": "bubble-web",
+    "version": "0.0.1",
+    "private": "true",
+    "dependencies": {
+        "bluebird": "*",
+        "express": "4.x",
+        "express-handlebars": "1.1.0",
+        "lodash": "3.10.0",
+        "request-promise": "0.4.2",
+        "serve-favicon": "2.1.6",
+    },
+    "devDependencies": {
+        "gulp": "*",
+        "gulp-jshint": "*",
+        "jshint-stylish": "*",
+        "gulp-ssh": "*",
+
+        "mocha": "*",
+        "sinon":"*"
+    }
+}

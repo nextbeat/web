@@ -1,0 +1,159 @@
+body {
+    font-family: "Nunito", sans-serif;
+}
+
+.clearfix {
+    clear: both;
+}
+
+.container {
+    margin: 100px auto 0 auto;
+    padding: 0 30px;
+    max-width: 840px;
+}
+/* HEADER */
+
+.logotext img {
+    height: 50px;
+}
+/* MAIN */
+
+.main {
+    height: 150px;
+    margin-top: 70px;
+}
+
+.get-container {
+    float: left;
+}
+
+.get-container p {
+    color: #1fe4ba;
+    font-size: 24px;
+    margin: 26px 0 0 0;
+}
+
+#get-form {
+    margin: 24px 0 0 0;
+}
+
+.get-input {
+    float: left;
+    border: none;
+    height: 55px;
+    width: 250px;
+    background-color: #ebebeb;
+    padding: 20px;
+    outline: none;
+    font-size: 21px;
+}
+
+button {
+    background-color: #1fe4ba;
+    border-width: 0px;
+    color: #fff;
+    float: left;
+    margin-left: 30px;
+    height: 55px;
+    width: 100px;
+    font-size: 21px;
+}
+
+#form-error {
+    color: #e60f51;
+    width: 380px;
+    padding-top: 18px;
+    font-size: 15px;
+    display: none;
+}
+
+#form-success {
+    color: #1fe4ba;
+    font-size: 21px;
+    padding-top: 26px;
+    display: none;
+}
+
+.logo {
+    float: right;
+}
+
+.logo img {
+    height: 150px;
+}
+/* APP STORE */
+
+.app-store {
+    margin-top: 130px;
+    width: 100%;
+    text-align: center;
+}
+
+.app-store img {
+    margin: 0 auto;
+    height: 40px;
+}
+/* FOOTER */
+
+.footer {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.footer a {
+    text-decoration: none;
+    color: #8d8d8d;
+}
+
+.footer a:hover {
+    color: #1fe4ba;
+}
+
+.footer span {
+    color: #ccc;
+    display: inline-block;
+    padding: 0 5px;
+}
+/* MOBILE SCREEN ADJUSTMENTS */
+
+@media (max-width: 677px) {
+    .container {
+        margin: 10px 0 0 0;
+    }
+    .main {
+        margin-top: 15px;
+    }
+    .logotext {
+        text-align: center;
+    }
+    .logo {
+        float: none;
+        text-align: center;
+    }
+    .logo img {
+        height: 100px;
+    }
+    .get-container {
+        float: none;
+        text-align: center;
+    }
+    .get-input {
+        float: none;
+        width: 100%;
+    }
+    button {
+        float: none;
+        width: 100%;
+        margin-left: 0;
+        margin-top: 10px;
+    }
+    .app-store {
+        margin-top: 170px;
+    }
+}
+
+@media (max-width: 382px) {
+    .app-store {
+        margin-top: 200px;
+    }
+}
