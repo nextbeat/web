@@ -1,19 +1,24 @@
 var express = require('express'),
-    app = express();
+    web = express(),
+    app = require('./lib/app');
 
 var exphbs = require('express-handlebars'),
     favicon = require('serve-favicon');
 
-app.use(express.static(__dirname + '/public/html'));
-app.use(express.static(__dirname + '/public'));
+
+web.use(express.static(__dirname + '/public/html'));
+web.use(express.static(__dirname + '/public'));
 
 // Handlebars
-app.engine('handlebars', exphbs({
+web.engine('handlebars', exphbs({
     defaultLayout: 'main'
 }));
-app.set('view engine', 'handlebars');
+web.set('view engine', 'handlebars');
 
 // Favicon
-app.use(favicon(__dirname + '/public/images/favicon.ico'));
+web.use(favicon(__dirname + '/public/images/favicon.ico'));
 
-app.listen(3000);
+app.init().then(function() {
+    web.listen(3000);
+});
+
