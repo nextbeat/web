@@ -1,6 +1,7 @@
 var express = require('express'),
     web = express(),
-    app = require('./lib/app');
+    api = require('./lib/api'),
+    routes = require('./routes');
 
 var exphbs = require('express-handlebars'),
     favicon = require('serve-favicon');
@@ -18,7 +19,8 @@ web.set('view engine', 'handlebars');
 // Favicon
 web.use(favicon(__dirname + '/public/images/favicon.ico'));
 
-app.init().then(function() {
+routes.init(web);
+api.init().then(function() {
     web.listen(3000);
 });
 

@@ -1,19 +1,30 @@
-var support = require('../controllers/support');
+var express     = require('express'),
+
+    channels    = require('../controllers/channels'),
+    support     = require('../controllers/support');
+
 
 module.exports = {
-    init: function() {
 
-        var web = express.Router();
-        app.use('/', web);
+    init: function(web) {
 
-        web.get('/password-reset', support.getPasswordReset);
-        web.post('/password-reset', support.postPasswordReset);
-        web.get('/password-reset-request', support.getPasswordResetRequest);
-        web.post('/password-reset-request', support.postPasswordResetRequest);
+        var router = express.Router();
+        web.use('/', router);
 
-        web.post('/get-app-sms', support.sendGetAppSMS);
+        // Channels
 
-        web.get('/app', support.redirectToAppStore);
+        router.get('/channels', channels.getChannels);
+
+        // Support
+
+        // router.get('/password-reset', support.getPasswordReset);
+        // router.post('/password-reset', support.postPasswordReset);
+        // router.get('/password-reset-request', support.getPasswordResetRequest);
+        // router.post('/password-reset-request', support.postPasswordResetRequest);
+
+        // router.post('/get-app-sms', support.sendGetAppSMS);
+
+        // router.get('/app', support.redirectToAppStore);
 
     }
 };
