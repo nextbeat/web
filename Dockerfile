@@ -7,7 +7,7 @@ RUN apt-get update -qq && apt-get install -y python python-pip python-dev
 ENV HOME /root
 
 # Use baseimage-docker's init process.
-CMD ["/sbin/my_init"]
+CMD ["/sbin/init.sh"]
 
 EXPOSE 80
 
@@ -20,6 +20,10 @@ ADD docker/conf/web.conf /etc/nginx/sites-enabled/web.conf
 
 # Expose environment variables through Nginx
 ADD docker/conf/env.conf /etc/nginx/main.d/env.conf
+
+# Add script to modify bubble virtual host entry
+ADD docker/scripts/init.sh /sbin/init.sh
+RUN chmod +x /sbin/init.sh
 
 # Run npm install to cache modules when updating build
 RUN npm install -g mocha
