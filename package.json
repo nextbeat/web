@@ -2,6 +2,12 @@
     "name": "bubble-web",
     "version": "0.0.1",
     "private": "true",
+    "scripts": {
+        "watch": "watchify app.js -o public/js/bundle.js -v",
+        "browserify": "browserify app.js | uglifyjs > public/js/bundle.js",
+        "build": "npm run browserify ",
+        "start": "npm run watch & nodemon server.js"
+    },
     "dependencies": {
         "bluebird": "*",
         "express": "4.x",
@@ -11,12 +17,10 @@
         "serve-favicon": "2.1.6"
     },
     "devDependencies": {
-        "gulp": "*",
-        "gulp-jshint": "*",
-        "jshint-stylish": "*",
-        "gulp-ssh": "*",
-
-        "mocha": "*",
-        "sinon":"*"
+        "browserify": "~6.0.3",
+        "nodemon": "^1.2.1",
+        "reactify": "~0.14.0",
+        "uglify-js": "~2.4.15",
+        "watchify": "~2.0.0"
     }
 }
