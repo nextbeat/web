@@ -1,0 +1,141 @@
+@import 'variables';
+
+// TODO: comment, clean, split into multiple documents
+
+body {
+    font-family: "Nunito", sans-serif;
+    background: #f1f1f1;
+}
+
+.clear {
+    clear: both;
+}
+
+#header {
+    background-color: white;
+    width: 100%;
+    height: 30px;
+    margin-bottom: 10px;
+}
+
+#theater {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+#theater-main {
+    float: left;
+    width: 70%;
+}
+
+#chat {
+    float: right;
+    width: 30%;
+    background: #fff;
+    height: 610px;
+    box-shadow: 0px 1px 2px rgba(0,0,0,0.1);
+
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        margin: 5px 0 0 10px;
+    }
+
+    strong {
+        color: $primary-color;
+    }
+}
+
+#activity {
+    float: left;
+    width: 35%;
+    height: 500px;
+}
+
+#activity-inner {
+    overflow: scroll;
+    margin: 0 10px;
+    height: 100%;
+    background: #fff;
+    box-shadow: 0px 1px 2px rgba(0,0,0,0.1);
+}
+
+.activity-item {
+    padding: 10px;
+    border-bottom: 1px solid #f6f6f6;
+
+    div {
+        overflow: hidden;
+        position: relative;
+        width: 70px;
+        height: 70px;
+        display: inline-block;
+    }
+
+    img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: auto;
+        transform: translate(-50%, -50%);
+    }
+
+    span {
+        display: inline-block;
+        vertical-align: center;
+        margin-left: 10px;
+        height: auto;
+    }
+}
+
+.selected {
+    background-color: #ddd;
+}
+
+#player {
+    float: right;
+    width: 65%;
+    height: 500px;
+
+    img {
+        height: 100%;
+        display: block;
+        margin: 0 auto;
+    }
+
+    video {
+        height: 100%;
+        display: block;
+        margin: 0 auto;
+    }
+}
+
+#info {
+    margin: 10px 10px 0 10px;
+    background: #fff;
+    height: 100px;
+    box-shadow: 0px 1px 2px rgba(0,0,0,0.1);
+
+    .username {
+        float: left;
+        margin: 5px;
+        display: block;
+        font-weight: bold;
+    }
+
+    .bookmarks {
+        float: right;
+        margin: 5px;
+        display: block;
+    }
+
+    .description {
+        display: block;
+        margin: 5px;
+    }
+}

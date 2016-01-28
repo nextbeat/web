@@ -1,26 +1,21 @@
-var express = require('express'),
-    web = express(),
-    api = require('./lib/api'),
-    routes = require('./routes');
+// var React       = require('react'),
+//     ReactDOM    = require('react-dom'),
+//     Theater     = require('./components/Theater.react');
 
-var exphbs = require('express-handlebars'),
-    favicon = require('serve-favicon');
+// var id = document.getElementById('state').innerHTML;
 
+// ReactDOM.render(
+//     <Theater id={id}/>,
+//     document.getElementById('theater')
+// );
 
-web.use(express.static(__dirname + '/public/html'));
-web.use(express.static(__dirname + '/public'));
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Theater from './components/Theater.react';
 
-// Handlebars
-web.engine('handlebars', exphbs({
-    defaultLayout: 'main'
-}));
-web.set('view engine', 'handlebars');
+var id = $('#state').text();
 
-// Favicon
-web.use(favicon(__dirname + '/public/images/favicon.ico'));
-
-routes.init(web);
-api.init().then(function() {
-    web.listen(3000);
-});
-
+ReactDOM.render(
+    <Theater id={id} />,
+    $('#react')[0]
+);

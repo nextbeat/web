@@ -1,8 +1,9 @@
 var express     = require('express'),
-
-    channels    = require('../controllers/channels'),
-    support     = require('../controllers/support');
-
+    
+    api         = require('../lib/api'),
+    React       = require('react'),
+    ReactServer = require('react-dom/server'),
+    Theater     = React.createFactory(require('../components/Theater.react').default);
 
 module.exports = {
 
@@ -13,16 +14,45 @@ module.exports = {
 
         // Internal checks 
         router.get('/internal/health', function(req, res) {
-            res.send('Health OK');
+            res.send('Health OK!');
         });
 
         router.get('/.well-known/acme-challenge/C4NnuJ1Egr1ntyVrehoMMqr2Ggxt-4M3M9Lm6J9yWK4', function(req, res) {
             res.send('C4NnuJ1Egr1ntyVrehoMMqr2Ggxt-4M3M9Lm6J9yWK4.L8Y9FjWqaSJsTNtFMJYAdaeE66OYJB-fOJ9juFmMIao');
         });
 
-        // Channels
+        // React test
 
-        router.get('/channels', channels.getChannels);
+        router.get('/', function(req, res) {
+            res.render('index', {
+                react: ReactServer.renderToString(Theater())
+            });
+        });
+
+        // Theater
+
+        router.get('/stacks/:id', function(req, res) {
+            res.render('theater', {
+                react: ReactServer.renderToString(Theater({id: req.params.id})),
+                state: req.params.id
+            });
+        });
+
+        // Api calls
+
+        var apiRouter = express.Router();
+        web.use('/api', apiRouter);
+
+        // matches any requests with the prefix api/
+        // and forwards to the api server
+        apiRouter.all('*', function(req, res) {
+            var method = req.method.toLowerCase();
+            api[method](req.url, req.body).then(function(_res) {
+                res.send(_res);
+            }).catch(function(e) {
+                res.status(404).end();
+            })
+        })
 
         // Support
 

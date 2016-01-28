@@ -1,12 +1,12 @@
 FROM node:0.10
 
-ENV NODE_PATH /install
-
 # Run npm install to cache modules when updating build
-RUN mkdir -p /install /home/app/web
-ADD package.json /install/package.json
-RUN cd /install && npm install 
+ADD package.json /tmp/package.json
+RUN cd /tmp && npm install
+RUN mkdir -p /home/app/web && cp -a /tmp/node_modules /home/app/web
+
+ADD . /home/app/web
 
 WORKDIR /home/app/web
-ENTRYPOINT npm
-CMD start
+ENTRYPOINT ["npm"]
+CMD ["run", "start"]
