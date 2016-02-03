@@ -4,17 +4,16 @@ class Info extends React.Component {
 
     constructor(props) {
         super(props);
-        this.displayName = 'Info';
     }
 
     render() {
-        var username = this.props.stack.author ? this.props.stack.author.username : "";
+        const { stack, author } = this.props
         return (
             <section id="info">
-                <span className="username">{username}</span>
-                <span className="bookmarks">{this.props.stack.bookmark_count} bookmarks</span>
+                <span className="username">{author.get('username')}</span>
+                <span className="bookmarks">{stack.get('bookmark_count')} bookmarks</span>
                 <div className="clear"></div>
-                <span className="description">{this.props.stack.description}</span>
+                <span className="description">{stack.get('description')}</span>
             </section>
         );
     }

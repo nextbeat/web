@@ -2,13 +2,9 @@ import React from 'react';
 
 class ChatItem extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.displayName = 'ChatItem';
-    }
-
     render() {
-        return <li><strong>{this.props.comment.author.username}</strong> {this.props.comment.message}</li>;
+        const { comment, author } = this.props;
+        return <li><strong>{author.get('username')}</strong> {comment.get('message')}</li>;
     }
 }
 

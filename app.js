@@ -1,21 +1,21 @@
-// var React       = require('react'),
-//     ReactDOM    = require('react-dom'),
-//     Theater     = require('./components/Theater.react');
+import React from 'react'
+import { render } from 'react-dom'
+import { Provider } from 'react-redux'
+import { Map } from 'immutable'
+import configureStore from './store'
+import Theater from './containers/Theater.react'
 
-// var id = document.getElementById('state').innerHTML;
+const id = $('#state').text()
+const store = configureStore(Map({
+    stack: {
+        id,
+        isFetching: false
+    }
+}))
 
-// ReactDOM.render(
-//     <Theater id={id}/>,
-//     document.getElementById('theater')
-// );
-
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Theater from './components/Theater.react';
-
-var id = $('#state').text();
-
-ReactDOM.render(
-    <Theater id={id} />,
-    $('#react')[0]
+render(
+    <Provider store={store}>
+        <Theater id={id} />
+    </Provider>,
+    document.getElementById('react')
 );

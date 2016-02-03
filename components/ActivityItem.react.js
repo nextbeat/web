@@ -9,8 +9,9 @@ class ActivityItem extends React.Component {
     }
 
     render() {
-        var url = this.props.mediaItem.thumbnail_url ? this.props.mediaItem.thumbnail_url : this.props.mediaItem.url;
-        var selected = this.props.selected ? "selected" : "";
+        let { mediaItem, selected } = this.props;
+        const url = mediaItem.get('thumbnail_url') ? mediaItem.get('thumbnail_url') : mediaItem.get('url');
+        selected = selected ? "selected" : "";
         return (
             <div className={"activity-item " + selected} onClick={this.props.handleClick.bind(this, this.props.mediaItem)}>
                 <div><img src={url}/></div>

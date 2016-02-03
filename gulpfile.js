@@ -11,7 +11,7 @@ var _               = require('lodash'),
     livereload      = require('gulp-livereload');
 
 gulp.task('styles', function() {
-    return gulp.src('scss/main.scss')
+    return gulp.src('layout/main.scss')
         .pipe(sass())
         .pipe(autoprefixer('last 2 versions'))
         .pipe(gulp.dest('public/css'));
@@ -28,9 +28,9 @@ gulp.task('build', ['styles'], function() {
 
 gulp.task('server', function() {
     nodemon({
-        script: 'server.js',
+        script: 'server/server.js',
         ext: 'html js',
-        ignore: ['components/*', 'public/js/bundle.js'],
+        ignore: ['components/*', 'public/js/bundle.js', 'containers/*', 'actions/*', 'reducers/*', 'store/*', 'middleware/*', 'schemas/*'],
         env: {
             NODE_ENV: 'mac',
             CLIENT_NAME: 'web',
@@ -41,13 +41,13 @@ gulp.task('server', function() {
 
 gulp.task('watch', ['styles'], function() {
 
-    gulp.watch('scss/**/*.scss', ['styles']);
+    gulp.watch('layout/**/*.scss', ['styles']);
 
     livereload.listen(); 
     var opts = _.assign({}, watchify.args, { debug: true });
     var b = browserify('app.js', opts)
         .plugin(watchify, {ignoreWatch: ['**/node_modules/**', '**/bower_components/**']}) // Watchify to watch source file changes
-        .transform(babelify, {presets: ['es2015', 'react']}); // Babel tranforms
+        .transform(babelify, { presets: ['es2015', 'react'], plugins: ['transform-object-rest-spread'] }); // Babel tranforms
 
     function bundle() {
         b.bundle()

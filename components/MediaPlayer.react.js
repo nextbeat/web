@@ -9,12 +9,12 @@ class MediaPlayer extends React.Component {
     }
 
     render() {
-
+        const item = this.props.item || {};
         return (
         <div id="player">
-            {this.props.item.type === "video" 
-                ? <Video item={this.props.item} />
-                : <img src={this.props.item.url} />}
+            {item.get('type') === "video" 
+                ? <Video item={item} />
+                : <img src={item.get('url')} />}
         </div>
         );
     }

@@ -5,16 +5,16 @@ class Activity extends React.Component {
 
     constructor(props) {
         super(props);
-        this.displayName = 'Activity';
     }
 
     render() {
+        const mediaItems = this.props.mediaItems || [];
         return (
         <section id="activity">
             <div id="activity-inner">
-                {this.props.mediaItems.map(mediaItem => {
-                    var selected = (mediaItem.id === this.props.selectedItem.id);
-                    return <ActivityItem mediaItem={mediaItem} selected={selected} handleClick={this.props.handleClick}/>
+                {mediaItems.map(mediaItem => {
+                    var selected = (mediaItem.get('id') === this.props.selectedItem.get('id'));
+                    return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} handleClick={this.props.handleClick}/>
                 })}
             </div>
         </section>

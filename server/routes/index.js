@@ -3,7 +3,7 @@ var express     = require('express'),
     api         = require('../lib/api'),
     React       = require('react'),
     ReactServer = require('react-dom/server'),
-    Theater     = React.createFactory(require('../components/Theater.react').default);
+    Theater     = React.createFactory(require('../../containers/Theater.react').default);
 
 module.exports = {
 
@@ -33,7 +33,6 @@ module.exports = {
 
         router.get('/stacks/:id', function(req, res) {
             res.render('theater', {
-                react: ReactServer.renderToString(Theater({id: req.params.id})),
                 state: req.params.id
             });
         });
