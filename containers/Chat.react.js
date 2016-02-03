@@ -23,7 +23,7 @@ class Chat extends React.Component {
         return (
         <div id="chat">
             <ul>
-                {comments.map(comment => <ChatItem key={comment.get('id')} comment={comment} author={users.get(comment.get('author').toString())} />)}
+                {comments.reverse().map(comment => <ChatItem key={comment.get('id')} comment={comment} author={users.get(comment.get('author').toString())} />)}
             </ul>
         </div>
         );
@@ -35,7 +35,7 @@ function mapStateToProps(state) {
         .map(id => state.getIn(['entities', 'comments', id.toString()]));
 
     const users = state.getIn(['entities', 'users']);
-    
+
     return {
         comments,
         users

@@ -49,6 +49,11 @@ body {
     strong {
         color: $primary-color;
     }
+
+    .notification {
+        color: #999;
+        font-style: italic;
+    }
 }
 
 #activity {

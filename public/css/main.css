@@ -34,6 +34,9 @@ body {
     margin: 5px 0 0 10px; }
   #chat strong {
     color: #2258c5; }
+  #chat .notification {
+    color: #999;
+    font-style: italic; }
 
 #activity {
   float: left;
