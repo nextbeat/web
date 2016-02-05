@@ -30,7 +30,7 @@ gulp.task('server', function() {
     nodemon({
         script: 'server/server.js',
         ext: 'html js',
-        ignore: ['components/*', 'public/js/bundle.js', 'containers/*', 'actions/*', 'reducers/*', 'store/*', 'middleware/*', 'schemas/*'],
+        watch: 'server/*',
         env: {
             NODE_ENV: 'mac',
             CLIENT_NAME: 'web',

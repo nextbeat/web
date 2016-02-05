@@ -7,10 +7,18 @@ class Video extends React.Component {
         this.displayName = 'Video';
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.item !== this.props.item) {
+            const player = $("#video-player");
+            player.load();
+        }
+    }
+
     render() {
+        const { item } = this.props;
         return (
-            <video id="video-player" className="video-js vjs-default-skin" controls autoplay autoload preload="auto" poster={this.props.item.firstframe_url} >
-                <source src={this.props.item.url} type="video/mp4" />
+            <video id="video-player" className="video-js vjs-default-skin" controls autoPlay autoload preload="auto" poster={item.get('firstframe_url')} >
+                <source src={item.get('url')} type="video/mp4" />
             </video>
         );
     }

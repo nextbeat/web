@@ -12,10 +12,13 @@ body {
 }
 
 #header {
-    background-color: white;
+    background-color: $primary-color;
     width: 100%;
     height: 30px;
     margin-bottom: 10px;
+    padding: 5px;
+    color: white;
+    font-weight: bold;
 }
 
 #theater {
@@ -33,7 +36,6 @@ body {
     width: 30%;
     background: #fff;
     height: 610px;
-    overflow: scroll;
     box-shadow: 0px 1px 2px rgba(0,0,0,0.1);
 
     ul {
@@ -56,6 +58,17 @@ body {
     }
 }
 
+#history {
+    overflow: auto;
+    height: 510px;
+    padding: 3px;
+    border-bottom: 1px solid #ccc;
+}
+
+#compose {
+    height: 100px;
+}
+
 #activity {
     float: left;
     width: 35%;
@@ -68,6 +81,7 @@ body {
     height: 100%;
     background: #fff;
     box-shadow: 0px 1px 2px rgba(0,0,0,0.1);
+    position: relative;
 }
 
 .activity-item {
@@ -118,6 +132,7 @@ body {
         height: 100%;
         display: block;
         margin: 0 auto;
+        width: 282px;
     }
 }
 

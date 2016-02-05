@@ -3,63 +3,35 @@ import { connect } from 'react-redux'
 import { isEmpty } from 'lodash'
 import { Map, List } from 'immutable'
 
-import Activity from '../components/Activity.react'
-import MediaPlayer from '../components/MediaPlayer.react'
+import Media from '../containers/Media.react'
 import Chat from '../containers/Chat.react'
 import Header from '../components/Header.react'
 import Info from '../components/Info.react'
 
-import { loadStack, loadMediaItems, selectMediaItem, goBackward, goForward } from '../actions'
+import { loadStack, connectToXMPP, joinRoom } from '../actions'
 
 class Theater extends React.Component {
 
     constructor(props) {
         super(props);
-
-        this.handleClick = this.handleClick.bind(this);
-        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     componentDidMount() {
         const { id, dispatch } = this.props
         dispatch(loadStack(id))
-
-        $(document.body).on('keydown', this.handleKeyDown);
+        dispatch(connectToXMPP());
     }
 
-    componentWillUnmount() {
-        $(document.body).off('keydown', this.handleKeyDown);
-    }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.stack.get('id') !== this.props.stack.get('id')) {
-            // stack has loaded
-            this.props.dispatch(loadMediaItems());
-        }
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.props.mediaItems.size > 0 && prevProps.mediaItems.size === 0) {
-            // first page of media items has loaded
-            const id = this.props.mediaItems.first().get('id');
-            this.props.dispatch(selectMediaItem(id));
-        }
-    }
-
-    handleClick(mediaItem) {
-        this.props.dispatch(selectMediaItem(mediaItem.get('id')));
-    }
-
-    handleKeyDown(e) {
-        if (e.keyCode === 37) { // left arrow
-            this.props.dispatch(goBackward());
-        } else if (e.keyCode === 39) {
-            this.props.dispatch(goForward()); // right arrow
+        if (nextProps.stack.get('id') > 0 && nextProps.connected && !nextProps.roomJoined) {
+            // stack is loaded and xmpp is connected
+            this.props.dispatch(joinRoom(nextProps.stack));
         }
     }
 
     render() {
-        const { isFetching, error, stack, author, mediaItems, selectedMediaItem } = this.props
+        const { isFetching, error, stack, author } = this.props
         return (
         <section>
             <Header/>
@@ -67,9 +39,7 @@ class Theater extends React.Component {
             {error && error.length > 0 && <p>Could not load stack.</p>}
             <div id="theater">
                 <section id="theater-main">
-                    <Activity mediaItems={mediaItems} selectedItem={selectedMediaItem} handleClick={this.handleClick}/>
-                    <MediaPlayer item={selectedMediaItem} />
-                    <div className="clear"></div>
+                    <Media stack={stack}/>
                     <Info stack={stack} author={author} />
                 </section>
                 <Chat stack={stack} />
@@ -86,19 +56,16 @@ function mapStateToProps(state, props) {
     const isFetching = state.getIn(['stack', 'isFetching'], false)
     const error = state.getIn(['stack', 'error'])
 
-    const mediaItems = state.getIn(['pagination', 'mediaItems', 'ids'], List())
-        .map(id => state.getIn(['entities', 'mediaItems', id.toString()]));
-
-    const selectedId = state.getIn(['mediaItems', 'selected'], -1);
-    const selectedMediaItem = selectedId >= 0 ? state.getIn(['entities', 'mediaItems', selectedId.toString()]) : Map();
+    const connected = state.getIn(['live', 'connected'], false);
+    const roomJoined = state.getIn(['live', 'roomJoined'], false);
 
     return {
         stack,
         author,
         isFetching,
         error,
-        mediaItems,
-        selectedMediaItem
+        connected,
+        roomJoined
     }
 }
 

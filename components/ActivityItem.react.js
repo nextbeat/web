@@ -15,7 +15,7 @@ class ActivityItem extends React.Component {
         return (
             <div className={"activity-item " + selected} onClick={this.props.handleClick.bind(this, this.props.mediaItem)}>
                 <div><img src={url}/></div>
-                <span>{moment(this.props.mediaItem.created_at).fromNow()}</span>
+                <span>{moment(this.props.mediaItem.get('created_at')).fromNow()}</span>
             </div>
         );
     }

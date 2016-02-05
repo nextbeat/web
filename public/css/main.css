@@ -6,10 +6,13 @@ body {
   clear: both; }
 
 #header {
-  background-color: white;
+  background-color: #2258c5;
   width: 100%;
   height: 30px;
-  margin-bottom: 10px; }
+  margin-bottom: 10px;
+  padding: 5px;
+  color: white;
+  font-weight: bold; }
 
 #theater {
   max-width: 1000px;
@@ -24,7 +27,6 @@ body {
   width: 30%;
   background: #fff;
   height: 610px;
-  overflow: scroll;
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1); }
   #chat ul {
     list-style-type: none;
@@ -38,6 +40,15 @@ body {
     color: #999;
     font-style: italic; }
 
+#history {
+  overflow: auto;
+  height: 510px;
+  padding: 3px;
+  border-bottom: 1px solid #ccc; }
+
+#compose {
+  height: 100px; }
+
 #activity {
   float: left;
   width: 35%;
@@ -48,7 +59,8 @@ body {
   margin: 0 10px;
   height: 100%;
   background: #fff;
-  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1); }
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+  position: relative; }
 
 .activity-item {
   padding: 10px;
@@ -87,7 +99,8 @@ body {
   #player video {
     height: 100%;
     display: block;
-    margin: 0 auto; }
+    margin: 0 auto;
+    width: 282px; }
 
 #info {
   margin: 10px 10px 0 10px;

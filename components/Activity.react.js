@@ -7,6 +7,24 @@ class Activity extends React.Component {
         super(props);
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.selectedItem !== this.props.selectedItem) {
+            const [ selected, activity ] = [ $('.selected'), $('#activity-inner') ];
+
+            // adjust position to keep selected element at bottom of view
+            if (selected.position().top + selected.outerHeight() > activity.scrollTop() + activity.height()) {
+                const pos = selected.position().top + selected.outerHeight() - activity.height();
+                activity.animate({ scrollTop: pos}, 100);
+            }
+        
+            // similar logic for selected element at top of view
+            if (activity.scrollTop() > selected.position().top) {
+                const pos = selected.position().top
+                activity.animate({ scrollTop: pos}, 100);
+            }
+        }
+    }
+
     render() {
         const mediaItems = this.props.mediaItems || [];
         return (

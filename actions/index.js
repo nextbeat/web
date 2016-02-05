@@ -1,17 +1,18 @@
-import { List } from 'immutable'
-import { API_CALL } from '../middleware/api'
+import { List, Map } from 'immutable'
 import Schemas from '../schemas'
 
-/**********
- * FETCHING
- **********/
+/***********
+ * API CALLS
+ ***********/
+
+import { API_CALL } from '../middleware/api'
 
 export const STACK = 'STACK';
 export const MEDIA_ITEMS = 'MEDIA_ITEMS';
 export const COMMENTS = 'COMMENTS';
 
 export const Status = {
-    FETCHING: 'FETCHING',
+    REQUESTING: 'REQUESTING',
     SUCCESS: 'SUCCESS',
     FAILURE: 'FAILURE'
 }
@@ -50,7 +51,7 @@ function loadPaginatedObjects(key, action, defaultLimit=20) {
             limit = defaultLimit, 
             total = -1,
             beforeDate = Date.now()
-        } = getState().getIn(['pagination', key], {});
+        } = getState().getIn(['pagination', key], {}).toJS();
 
         if (total >= 0 && total < page*limit) {
             // reached the end of the list of objects
@@ -94,7 +95,7 @@ function fetchComments(stack_uuid, pagination) {
 }
 
 export function loadComments() {
-    return loadPaginatedObjects('comments', fetchComments, 50);
+    return loadPaginatedObjects('comments', fetchComments, 25);
 }
 
 /**********************
@@ -143,4 +144,39 @@ export function goForward() {
 
 export function goBackward() {
     return navigate(false);
+}
+
+/*****************
+ * XMPP CONNECTION
+ *****************/
+
+export const XMPP_CONNECTION = 'CONNECT_TO_XMPP';
+export const JOIN_ROOM = 'JOIN_ROOM';
+export const RECEIVE_COMMENT = 'RECEIVE_COMMENT';
+export const RECEIVE_MEDIA_ITEM = 'RECEIVE_MEDIA_ITEM';
+
+export function connectToXMPP() {
+    return {
+        type: XMPP_CONNECTION
+    }
+}
+
+export function joinRoom(uuid, nickname="anon") {
+    if (Map.isMap(uuid)) {
+        // passed the stack object
+        uuid = uuid.get('uuid');
+    }
+    return {
+        type: JOIN_ROOM,
+        uuid,
+        nickname
+    }
+}
+
+export function receiveComment(message, username) {
+    return {
+        type: RECEIVE_COMMENT,
+        message,
+        username
+    }
 }

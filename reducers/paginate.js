@@ -1,20 +1,19 @@
 import { Status } from '../actions'
-import { union } from 'lodash'
-import { Map } from 'immutable'
+import { Map, List } from 'immutable'
 
 export default function paginate(type) {
 
     return function(state = Map(), action) {
         if (action.type === type) {
             switch (action.status) {
-                case Status.FETCHING:
+                case Status.REQUESTING:
                     return state.merge({
                         isFetching: true
                     });
                 case Status.SUCCESS:
                     return state.merge({
                         isFetching: false,
-                        ids: union(state.get('ids'), action.response.result),
+                        ids: state.get('ids', List()).concat(action.response.result),
                         total: action.response.total,
                         page: action.response.page
                     });

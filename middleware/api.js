@@ -55,7 +55,7 @@ export default store => next => action => {
     }
 
     // dispatch action which asserts request is being made
-    next(actionWith({ status: Status.FETCHING }));
+    next(actionWith({ status: Status.REQUESTING }));
 
     // call api server with the given endpoint, then
     // dispatch action depending on success of the call
@@ -68,5 +68,6 @@ export default store => next => action => {
             status: Status.FAILURE,
             error
         })));
+    
 
 }

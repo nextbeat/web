@@ -1,8 +1,9 @@
 import { Map } from 'immutable'
+import { mapValues } from 'lodash'
 import * as ActionTypes from '../actions'
 import { Status } from '../actions'
 import paginate from './paginate'
-import { mapValues } from 'lodash'
+import live from './live'
 
 export function combineReducers(reducers) {
     return function (state = Map(), action) {
@@ -33,7 +34,7 @@ const initialStack = Map({
 function stack(state = initialStack, action) {
     if (action.type === ActionTypes.STACK) {
         switch (action.status) {
-            case Status.FETCHING:
+            case Status.REQUESTING:
                 return state.merge({
                     isFetching: true,
                     id: action.id
@@ -69,5 +70,6 @@ export default combineReducers({
     entities,
     stack,
     pagination,
-    mediaItems
+    mediaItems,
+    live
 })
