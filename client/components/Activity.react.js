@@ -14,6 +14,7 @@ class Activity extends React.Component {
         this.setScrollState = this.setScrollState.bind(this);
         this.isScrolledToBottom = this.isScrolledToBottom.bind(this);
         this.scrollToBottomIfNeeded = this.scrollToBottomIfNeeded.bind(this);
+        this.handleNewMediaClick = this.handleNewMediaClick.bind(this);
     }
 
     // Lifecycle methods
@@ -69,7 +70,6 @@ class Activity extends React.Component {
         // we don't use isScrolledToBottom() here because that uses old scroll positions stored in state
         let isAtBottom = activity.scrollHeight - activity.clientHeight <= activity.scrollTop + 1;
         if (isAtBottom) {
-            console.log('at bottom')
             this.setState({
                 displayNewItem: false
             });
@@ -96,6 +96,15 @@ class Activity extends React.Component {
         }
     }
 
+    // Button handlers
+    handleNewMediaClick() {
+        this.props.selectNewestLiveItem();
+        this.setState({
+            displayNewItem: false
+        });
+
+    }
+
     // Render
 
     render() {
@@ -113,7 +122,7 @@ class Activity extends React.Component {
                     return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} live={true} handleClick={this.props.handleClick}/>
                 })}
             </div>
-            { displayNewItem && <button>New media added!</button> }
+            { displayNewItem && <button onClick={this.handleNewMediaClick}>New media added!</button> }
         </section>
         );
     }

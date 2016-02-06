@@ -9,6 +9,7 @@ import Header from '../components/Header.react'
 import Info from '../components/Info.react'
 
 import { loadStack, connectToXMPP, joinRoom } from '../actions'
+import { getEntity } from '../utils'
 
 class Theater extends React.Component {
 
@@ -50,8 +51,8 @@ class Theater extends React.Component {
 }
 
 function mapStateToProps(state, props) {
-    const stack = state.getIn(['entities', 'stacks', props.id], Map())
-    const author = state.getIn(['entities', 'users', stack.get('author', 0).toString()], Map())
+    const stack = getEntity(state, 'stacks', props.id);
+    const author = getEntity(state, 'users', stack.get('author', 0));
 
     const isFetching = state.getIn(['stack', 'isFetching'], false)
     const error = state.getIn(['stack', 'error'])

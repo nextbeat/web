@@ -4,6 +4,7 @@ import { assign } from 'lodash'
 import { normalize } from 'normalizr'
 import Schemas from '../schemas'
 import { receiveComment, receiveNotificationComment, receiveMediaItem } from '../actions'
+import { getPaginatedEntities } from '../utils'
 
 export function getClient(store) {
     // creates a client unless one is already stored in state
@@ -57,9 +58,14 @@ function normalizeMediaItem(data) {
 function formatNotificationItem(data, store) {
     const type = data[1].indexOf('.jpg') !== -1 ? "photo" : "video";
     let count = data[0];
-    // const mostRecentPaginatedComment = store.getState().getIn(['pagination', 'comments'])
+    const mostRecentComment = getPaginatedEntities(store.getState(), 'comments').first()
+    console.log(mostRecentComment.toJS());
+    if (mostRecentComment.get('type') === 'notification' && mostRecentComment.get('notification_type') === type) {
+        count = count - mostRecentComment.get('notification_count') + 1; 
+        // TODO: the +1 should not be necessary, there must be a bug on the backend...
+    }
     return {
-        count: data[0],
+        count: count,
         type: type,
         url: data[1]
     }

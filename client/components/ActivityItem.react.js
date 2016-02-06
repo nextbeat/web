@@ -25,6 +25,7 @@ class ActivityItem extends React.Component {
             <div className={`activity-item ${selected} ${live}`} onClick={this.props.handleClick.bind(this, this.props.mediaItem)}>
                 <div><img src={url}/></div>
                 <span>{moment(this.props.mediaItem.get('created_at')).fromNow()}</span>
+                {mediaItem.get('type') === 'video' && <span> (V)</span>}
             </div>
         );
     }

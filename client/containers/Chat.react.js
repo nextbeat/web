@@ -6,7 +6,7 @@ import ChatItem from '../components/ChatItem.react'
 import NotificationChatItem from '../components/NotificationChatItem.react'
 import Compose from '../components/Compose.react'
 import { loadComments } from '../actions'
-import { getPaginatedItems } from '../utils'
+import { getPaginatedEntities } from '../utils'
 
 class Chat extends React.Component {
 
@@ -124,8 +124,7 @@ class Chat extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const comments = state.getIn(['pagination', 'comments', 'ids'], List())
-        .map(id => state.getIn(['entities', 'comments', id.toString()]));
+    const comments = getPaginatedEntities(state, 'comments');
 
     const users = state.getIn(['entities', 'users']);
     const { isFetching, error } = state.getIn(['pagination', 'comments']).toJS();

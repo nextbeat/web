@@ -13,7 +13,7 @@ class NotificationChatItem extends React.Component {
             comment.get('notification_type'), 
             comment.get('notification_url')
         ];
-        const plural = count > 0 ? 's' : '';
+        const plural = count !== 1 ? 's' : '';
         const addedStr = `${count} ${type}${plural}`;
 
         return <li><span className="notification"><strong>{username}</strong> added {addedStr} to their bbb.</span></li>;

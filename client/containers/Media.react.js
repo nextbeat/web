@@ -5,7 +5,8 @@ import { List, Map } from 'immutable'
 import Activity from '../components/Activity.react'
 import MediaPlayer from '../components/MediaPlayer.react'
 
-import { loadMediaItems, selectMediaItem, goBackward, goForward } from '../actions';
+import { loadMediaItems, selectMediaItem, goBackward, goForward } from '../actions'
+import { getPaginatedEntities, getLiveEntities, getEntity } from '../utils'
 
 class Media extends React.Component {
 
@@ -13,6 +14,7 @@ class Media extends React.Component {
         super(props);
         this.handleKeyDown = this.handleKeyDown.bind(this);
         this.handleClick = this.handleClick.bind(this);
+        this.selectNewestLiveItem = this.selectNewestLiveItem.bind(this);
     }
 
     // Lifecycle
@@ -54,13 +56,20 @@ class Media extends React.Component {
         }
     }
 
+    selectNewestLiveItem() {
+        const newestLiveItem = this.props.liveMediaItems.last();
+        if (newestLiveItem) {
+            this.props.dispatch(selectMediaItem(newestLiveItem.get('id')));
+        }
+    }
+
     // Render
 
     render() {
         const { mediaItems, liveMediaItems, selectedMediaItem } = this.props;
         return (
             <section>
-                <Activity mediaItems={mediaItems} liveMediaItems={liveMediaItems} selectedItem={selectedMediaItem} handleClick={this.handleClick}/>
+                <Activity mediaItems={mediaItems} liveMediaItems={liveMediaItems} selectedItem={selectedMediaItem} handleClick={this.handleClick} selectNewestLiveItem={this.selectNewestLiveItem}/>
                 <MediaPlayer item={selectedMediaItem} />
                 <div className="clear" />
             </section>
@@ -69,14 +78,12 @@ class Media extends React.Component {
 }
 
 function mapStateToProps(state, props) {    
-    const mediaItems = state.getIn(['pagination', 'mediaItems', 'ids'], List())
-        .map(id => state.getIn(['entities', 'mediaItems', id.toString()]));
+    const mediaItems = getPaginatedEntities(state, 'mediaItems');
 
     const selectedId = state.getIn(['mediaItems', 'selected'], -1);
-    const selectedMediaItem = selectedId >= 0 ? state.getIn(['entities', 'mediaItems', selectedId.toString()]) : Map();
+    const selectedMediaItem = getEntity(state, 'mediaItems', selectedId);
 
-    const liveMediaItems = state.getIn(['live', 'mediaItems'], List())
-        .map(id => state.getIn(['entities', 'mediaItems', id.toString()]));
+    const liveMediaItems = getLiveEntities(state, 'mediaItems');
 
     return {
         mediaItems,
