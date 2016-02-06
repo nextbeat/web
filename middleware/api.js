@@ -55,7 +55,10 @@ export default store => next => action => {
     }
 
     // dispatch action which asserts request is being made
-    next(actionWith({ status: Status.REQUESTING }));
+    next(actionWith({ 
+        status: Status.REQUESTING,
+        pagination 
+    }));
 
     // call api server with the given endpoint, then
     // dispatch action depending on success of the call

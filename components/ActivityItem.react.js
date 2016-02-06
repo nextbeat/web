@@ -8,9 +8,17 @@ class ActivityItem extends React.Component {
         this.displayName = 'ActivityItem';
     }
 
+    url(mediaItem) {
+        if (mediaItem.get('type') === 'video') {
+            return mediaItem.get('thumbnail_url') ? mediaItem.get('thumbnail_url') : mediaItem.get('firstframe_url');
+        } else {
+            return mediaItem.get('thumbnail_url') ? mediaItem.get('thumbnail_url') : mediaItem.get('url');
+        }
+    }
+
     render() {
         let { mediaItem, selected } = this.props;
-        const url = mediaItem.get('thumbnail_url') ? mediaItem.get('thumbnail_url') : mediaItem.get('url');
+        const url = this.url(mediaItem);
         selected = selected ? "selected" : "";
         return (
             <div className={"activity-item " + selected} onClick={this.props.handleClick.bind(this, this.props.mediaItem)}>

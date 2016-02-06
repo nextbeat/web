@@ -50,10 +50,12 @@ function loadPaginatedObjects(key, action, defaultLimit=20) {
             page = 0, 
             limit = defaultLimit, 
             total = -1,
-            beforeDate = Date.now()
+            beforeDate = Date.now(),
+            ids = List()
         } = getState().getIn(['pagination', key], {}).toJS();
 
-        if (total >= 0 && total < page*limit) {
+        console.log(ids);
+        if (total >= 0 && total <= ids.size) {
             // reached the end of the list of objects
             return null;
         }
@@ -80,7 +82,8 @@ function fetchMediaItems(stack_uuid, pagination) {
 }
 
 export function loadMediaItems() {
-    return loadPaginatedObjects('mediaItems', fetchMediaItems);
+    // loading all media items at once to avoid pagination/live issues
+    return loadPaginatedObjects('mediaItems', fetchMediaItems, "all");
 }
 
 function fetchComments(stack_uuid, pagination) {
@@ -118,7 +121,9 @@ function navigate(isForward) {
             return null;
         }
 
-        const ids = getState().getIn(['pagination', 'mediaItems', 'ids'], List())
+        const paginatedIds = getState().getIn(['pagination', 'mediaItems', 'ids'], List())
+        const liveIds = getState().getIn(['live', 'mediaItems'], List())
+        const ids = paginatedIds.concat(liveIds);
         const selectedIndex = ids.indexOf(selectedId);
 
         if (selectedIndex == -1) {
@@ -153,6 +158,7 @@ export function goBackward() {
 export const XMPP_CONNECTION = 'CONNECT_TO_XMPP';
 export const JOIN_ROOM = 'JOIN_ROOM';
 export const RECEIVE_COMMENT = 'RECEIVE_COMMENT';
+export const RECEIVE_NOTIFICATION_COMMENT = 'RECEIVE_NOTIFICATION_COMMENT';
 export const RECEIVE_MEDIA_ITEM = 'RECEIVE_MEDIA_ITEM';
 
 export function connectToXMPP() {
@@ -180,3 +186,20 @@ export function receiveComment(message, username) {
         username
     }
 }
+
+export function receiveNotificationComment(data, username) {
+    return {
+        type: RECEIVE_NOTIFICATION_COMMENT,
+        data,
+        username
+    }
+}   
+
+export function receiveMediaItem(id, response) {
+    return {
+        type: RECEIVE_MEDIA_ITEM,
+        id,
+        response
+    }
+}
+

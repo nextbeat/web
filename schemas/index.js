@@ -15,6 +15,7 @@ comment.define({
 
 export default {
     STACK: stack,
+    MEDIA_ITEM: mediaItem,
     MEDIA_ITEMS: arrayOf(mediaItem),
     COMMENTS: arrayOf(comment)
 }

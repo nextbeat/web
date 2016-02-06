@@ -3,6 +3,7 @@ var _               = require('lodash'),
     sass            = require('gulp-sass'),
     autoprefixer    = require('gulp-autoprefixer'),
     nodemon         = require('gulp-nodemon'),
+    uglify          = require('gulp-uglify'),
     browserify      = require('browserify'),
     watchify        = require('watchify'),
     babelify        = require('babelify'),
@@ -21,8 +22,9 @@ gulp.task('build', ['styles'], function() {
     return browserify('app.js')
         .transform(babelify, { presets: ['react', 'es2015']})
         .bundle()
-        .pipe(source('bundle.js')) // todo: uglify
+        .pipe(source('bundle.min.js'))
         .pipe(buffer())
+        .pipe(uglify())
         .pipe(gulp.dest('public/js'));
 });
 

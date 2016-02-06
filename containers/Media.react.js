@@ -57,10 +57,10 @@ class Media extends React.Component {
     // Render
 
     render() {
-        const { mediaItems, selectedMediaItem } = this.props;
+        const { mediaItems, liveMediaItems, selectedMediaItem } = this.props;
         return (
             <section>
-                <Activity mediaItems={mediaItems} selectedItem={selectedMediaItem} handleClick={this.handleClick}/>
+                <Activity mediaItems={mediaItems} liveMediaItems={liveMediaItems} selectedItem={selectedMediaItem} handleClick={this.handleClick}/>
                 <MediaPlayer item={selectedMediaItem} />
                 <div className="clear" />
             </section>
@@ -75,9 +75,13 @@ function mapStateToProps(state, props) {
     const selectedId = state.getIn(['mediaItems', 'selected'], -1);
     const selectedMediaItem = selectedId >= 0 ? state.getIn(['entities', 'mediaItems', selectedId.toString()]) : Map();
 
+    const liveMediaItems = state.getIn(['live', 'mediaItems'], List())
+        .map(id => state.getIn(['entities', 'mediaItems', id.toString()]));
+
     return {
         mediaItems,
-        selectedMediaItem
+        selectedMediaItem,
+        liveMediaItems
     }
 }
 

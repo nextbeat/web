@@ -97,6 +97,13 @@ class Chat extends React.Component {
             : <NotificationChatItem key={comment.get('id')} comment={comment} username={username} />
     }
 
+    renderLiveComment(comment, idx) {
+        const key = `l${idx}`;
+        return comment.get('type') === 'message' ? 
+            <ChatItem key={key} message={comment.get('message')} username={comment.get('username')} />
+            : <NotificationChatItem key={key} comment={comment} username={comment.get('username')} />
+    }
+
     render() {
         const { comments, isFetching, error, liveComments } = this.props;
         return (
@@ -106,7 +113,7 @@ class Chat extends React.Component {
                 { error && error.length > 0 && <p>Could not load comments.</p>}
                 <ul>
                     {comments.reverse().map(comment => this.renderComment(comment))}
-                    {liveComments.map((comment, idx) => <ChatItem key={`l${idx}`} message={comment.get('message')} username={comment.get('username')} />)}
+                    {liveComments.map((comment, idx) => this.renderLiveComment(comment, idx))}
                 </ul>
             </div>
             <Compose />
