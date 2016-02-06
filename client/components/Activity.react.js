@@ -122,7 +122,7 @@ class Activity extends React.Component {
                     return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} live={true} handleClick={this.props.handleClick}/>
                 })}
             </div>
-            { displayNewItem && <button onClick={this.handleNewMediaClick}>New media added!</button> }
+            { displayNewItem && <div className="new-media" onClick={this.handleNewMediaClick}>New media added!</div> }
         </section>
         );
     }

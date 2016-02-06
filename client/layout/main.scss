@@ -73,6 +73,7 @@ body {
     float: left;
     width: 35%;
     height: 500px;
+    position: relative;
 }
 
 #activity-inner {
@@ -123,6 +124,18 @@ body {
 
 .selected.live {
     background-color: rgba($primary-color, 0.3);
+}
+
+.new-media {
+    position: absolute;
+    bottom: 0;
+    width: calc(100% - 20px);
+    margin-left: 10px;
+    padding: 8px 5px;
+    background-color: rgba($secondary-color, 0.85);
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
 }
 
 #player {
