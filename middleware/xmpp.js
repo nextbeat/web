@@ -1,43 +1,13 @@
-import XMPP from 'stanza.io'
 import { assign } from 'lodash'
-import { handleGroupChat } from './utils'
-import * as ActionTypes from '../../actions'
-import { Status } from '../../actions'
-
-function getClient(store) {
-    // creates a client unless one is already stored in state
-    return store.getState().getIn(['live', 'client']) 
-        || XMPP.createClient({
-            jid: 'anon@xmpp.getbubble.me',
-            transport: 'websocket',
-            wsURL: 'ws://localhost:5280/websocket',
-            credentials: {
-                host: 'xmpp.getbubble.me'
-            }
-        });
-}
-
-// state status checks
-
-function isConnected(store) {
-    return store.getState().getIn(['live', 'connected'], false);
-}
-
-function hasJoinedRoom(store) {
-    return store.getState().getIn(['live', 'joinedRoom'], false);
-}
-
-function isJoiningRoom(store) {
-    return store.getState().getIn(['live', 'isJoiningRoom'], false);
-}
-
-// xmpp connection logic
+import * as xmpp from '../xmpp'
+import * as ActionTypes from '../actions'
+import { Status } from '../actions'
 
 function connectClient(store, next, action) {
-    const client = getClient(store);
+    const client = xmpp.getClient(store);
 
     // exit early if client is already connected
-    if (isConnected(store)) {
+    if (xmpp.isConnected(store)) {
         return next(actionWith(Status.SUCCESS, { client }))
     }
     
@@ -47,7 +17,7 @@ function connectClient(store, next, action) {
         return assign({}, action, { status }, data);
     }
 
-    // configure client
+    // configure client for connection
     client.on('session:started', function() {
         console.log('session started')
         next(actionWith(Status.SUCCESS, { client }));
@@ -57,29 +27,26 @@ function connectClient(store, next, action) {
         next(actionWith(Status.FAILURE));
     })
 
-    client.on('groupchat', function(s) {
-        handleGroupChat(s, store);
-    });
-
     client.connect();
 }
 
 function joinRoom(store, next, action) {
-    const client = getClient(store);
+    const client = xmpp.getClient(store);
 
     function actionWith(status, data) {
         return assign({}, action, { status }, data);
     }
 
     // return early if not connected or if already in room
-    if (!isConnected(store)) {
+    if (!xmpp.isConnected(store)) {
         return next(actionWith(Status.FAILURE));
-    } else if (isJoiningRoom(store) || hasJoinedRoom(store)) {
+    } else if (xmpp.isJoiningRoom(store) || xmpp.hasJoinedRoom(store)) {
         return null;
     }
 
     next(actionWith(Status.REQUESTING));
 
+    // configure client for joining room
     client.on('muc:join', function(s) {
         next(actionWith(Status.SUCCESS));
     })
@@ -88,8 +55,7 @@ function joinRoom(store, next, action) {
     client.joinRoom(jid, action.nickname);
 }
 
-export default store => next => action => {
-    
+export default store => next => action => {  
     switch (action.type) {
         case ActionTypes.XMPP_CONNECTION:
             return connectClient(store, next, action);

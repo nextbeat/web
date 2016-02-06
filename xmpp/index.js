@@ -1,8 +1,47 @@
+import XMPP from 'stanza.io'
 import moment from 'moment'
 import { assign } from 'lodash'
 import { normalize } from 'normalizr'
-import Schemas from '../../schemas'
-import { receiveComment, receiveNotificationComment, receiveMediaItem } from '../../actions'
+import Schemas from '../schemas'
+import { receiveComment, receiveNotificationComment, receiveMediaItem } from '../actions'
+
+export function getClient(store) {
+    // creates a client unless one is already stored in state
+    if (store.getState().hasIn(['live', 'client'])) {
+        return store.getState().getIn(['live', 'client']) 
+    } else {
+        const client = XMPP.createClient({
+            jid: 'anon@xmpp.getbubble.me',
+            transport: 'websocket',
+            wsURL: 'ws://localhost:5280/websocket',
+            credentials: {
+                host: 'xmpp.getbubble.me'
+            }
+        });
+
+        client.on('groupchat', function(s) {
+            handleGroupChat(s, store);
+        });
+
+        return client;
+    }
+}
+
+// state status checks
+
+export function isConnected(store) {
+    return store.getState().getIn(['live', 'connected'], false);
+}
+
+export function hasJoinedRoom(store) {
+    return store.getState().getIn(['live', 'joinedRoom'], false);
+}
+
+export function isJoiningRoom(store) {
+    return store.getState().getIn(['live', 'isJoiningRoom'], false);
+}
+
+// group chat
 
 function normalizeMediaItem(data) {
     const mediaItem = {
@@ -15,7 +54,7 @@ function normalizeMediaItem(data) {
     return normalize(mediaItem, Schemas.MEDIA_ITEM);
 }
 
-export function handleGroupChat(s, store) {
+function handleGroupChat(s, store) {
     if (s.chatState === "active") {
         // received comment
         const message = s.body;
