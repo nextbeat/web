@@ -15,7 +15,7 @@ gulp.task('styles', function() {
     return gulp.src('client/layout/main.scss')
         .pipe(sass())
         .pipe(autoprefixer('last 2 versions'))
-        .pipe(gulp.dest('public/css'));
+        .pipe(gulp.dest('client/public/css'));
 });
 
 gulp.task('build', ['styles'], function() {
@@ -25,7 +25,7 @@ gulp.task('build', ['styles'], function() {
         .pipe(source('bundle.min.js'))
         .pipe(buffer())
         .pipe(uglify())
-        .pipe(gulp.dest('public/js'));
+        .pipe(gulp.dest('client/public/js'));
 });
 
 gulp.task('server', function() {
@@ -55,7 +55,7 @@ gulp.task('watch', ['styles'], function() {
         b.bundle()
         .pipe(source('bundle.js')) 
         .pipe(buffer())
-        .pipe(gulp.dest('public/js'))
+        .pipe(gulp.dest('client/public/js'))
         .pipe(livereload());
     }
 

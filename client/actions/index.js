@@ -54,7 +54,7 @@ function loadPaginatedObjects(key, action, defaultLimit=20) {
             ids = List()
         } = getState().getIn(['pagination', key], {}).toJS();
 
-        console.log(ids);
+        console.log(ids.toJS());
         if (total >= 0 && total <= ids.size) {
             // reached the end of the list of objects
             return null;

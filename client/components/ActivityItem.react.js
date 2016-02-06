@@ -17,11 +17,12 @@ class ActivityItem extends React.Component {
     }
 
     render() {
-        let { mediaItem, selected } = this.props;
+        let { mediaItem, selected, live } = this.props;
         const url = this.url(mediaItem);
         selected = selected ? "selected" : "";
+        live = live ? "live" : "";
         return (
-            <div className={"activity-item " + selected} onClick={this.props.handleClick.bind(this, this.props.mediaItem)}>
+            <div className={`activity-item ${selected} ${live}`} onClick={this.props.handleClick.bind(this, this.props.mediaItem)}>
                 <div><img src={url}/></div>
                 <span>{moment(this.props.mediaItem.get('created_at')).fromNow()}</span>
             </div>

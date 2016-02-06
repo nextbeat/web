@@ -54,6 +54,17 @@ function normalizeMediaItem(data) {
     return normalize(mediaItem, Schemas.MEDIA_ITEM);
 }
 
+function formatNotificationItem(data, store) {
+    const type = data[1].indexOf('.jpg') !== -1 ? "photo" : "video";
+    let count = data[0];
+    // const mostRecentPaginatedComment = store.getState().getIn(['pagination', 'comments'])
+    return {
+        count: data[0],
+        type: type,
+        url: data[1]
+    }
+}
+
 function handleGroupChat(s, store) {
     if (s.chatState === "active") {
         // received comment
@@ -69,16 +80,12 @@ function handleGroupChat(s, store) {
         const identifier = meta[0];
         switch (identifier) {
             case 'NEW_MEDIA_ITEM':
-                const id = data[4];
+                const id = parseInt(data[4]);
                 const response = normalizeMediaItem(data);
                 return store.dispatch(receiveMediaItem(id, response));
             case 'NEW_NOTIFICATION_COMMENT':
-                const type = data[1].indexOf('.jpg') !== -1 ? "photo" : "video";
-                return store.dispatch(receiveNotificationComment({
-                    count: data[0],
-                    type: type,
-                    url: data[1]
-                }, username));
+                const comment = formatNotificationItem(data, store);
+                return store.dispatch(receiveNotificationComment(comment, username));
         }
     }
 }

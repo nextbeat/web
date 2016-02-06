@@ -6,6 +6,7 @@ import ChatItem from '../components/ChatItem.react'
 import NotificationChatItem from '../components/NotificationChatItem.react'
 import Compose from '../components/Compose.react'
 import { loadComments } from '../actions'
+import { getPaginatedItems } from '../utils'
 
 class Chat extends React.Component {
 

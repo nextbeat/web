@@ -88,6 +88,12 @@ body {
 .selected {
   background-color: #ddd; }
 
+.live {
+  background-color: rgba(34, 88, 197, 0.1); }
+
+.selected.live {
+  background-color: rgba(34, 88, 197, 0.3); }
+
 #player {
   float: right;
   width: 65%;
