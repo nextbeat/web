@@ -12,14 +12,14 @@ var _               = require('lodash'),
     livereload      = require('gulp-livereload');
 
 gulp.task('styles', function() {
-    return gulp.src('layout/main.scss')
+    return gulp.src('client/layout/main.scss')
         .pipe(sass())
         .pipe(autoprefixer('last 2 versions'))
         .pipe(gulp.dest('public/css'));
 });
 
 gulp.task('build', ['styles'], function() {
-    return browserify('app.js')
+    return browserify('client/app.js')
         .transform(babelify, { presets: ['react', 'es2015']})
         .bundle()
         .pipe(source('bundle.min.js'))
@@ -43,11 +43,11 @@ gulp.task('server', function() {
 
 gulp.task('watch', ['styles'], function() {
 
-    gulp.watch('layout/**/*.scss', ['styles']);
+    gulp.watch('client/layout/**/*.scss', ['styles']);
 
     livereload.listen(); 
     var opts = _.assign({}, watchify.args, { debug: true });
-    var b = browserify('app.js', opts)
+    var b = browserify('client/app.js', opts)
         .plugin(watchify, {ignoreWatch: ['**/node_modules/**', '**/bower_components/**']}) // Watchify to watch source file changes
         .transform(babelify, { presets: ['es2015', 'react'], plugins: ['transform-object-rest-spread'] }); // Babel tranforms
 

@@ -10,8 +10,8 @@ var exphbs = require('express-handlebars'),
     favicon = require('serve-favicon');
 
 
-web.use(express.static(path.join(__dirname, '../public/html')));
-web.use(express.static(path.join(__dirname, '../public')));
+web.use(express.static(path.join(__dirname, '../client/public/html')));
+web.use(express.static(path.join(__dirname, '../client/public')));
 
 // Handlebars
 web.set('views', './server/views');
@@ -22,7 +22,7 @@ web.engine('handlebars', exphbs({
 web.set('view engine', 'handlebars');
 
 // Favicon
-web.use(favicon(path.join(__dirname, '../public/images/favicon.ico')));
+web.use(favicon(path.join(__dirname, '../client/public/images/favicon.ico')));
 
 routes.init(web);
 api.init().then(function() {

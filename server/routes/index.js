@@ -3,7 +3,7 @@ var express     = require('express'),
     api         = require('../lib/api'),
     React       = require('react'),
     ReactServer = require('react-dom/server'),
-    Theater     = React.createFactory(require('../../containers/Theater.react').default);
+    Theater     = React.createFactory(require('../../client/containers/Theater.react').default);
 
 module.exports = {
 
