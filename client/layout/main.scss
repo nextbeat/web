@@ -18,7 +18,36 @@ body {
     margin-bottom: 10px;
     padding: 5px;
     color: white;
-    font-weight: bold;
+    position: relative;
+
+    .logo {
+        font-weight: bold;
+    }
+
+    .right {
+        display: inline-block;
+        float: right; 
+    }
+
+    a {
+        color: white;
+    }
+}
+
+#login {
+    position: absolute;
+    right: 0px;
+    top: 30px;
+    background-color: white;
+    z-index: 100;
+    padding: 10px;
+    border: 1px solid #999;
+    color: black;
+    display: none;
+
+    input[type="submit"] {
+        float: right;
+    }
 }
 
 #theater {

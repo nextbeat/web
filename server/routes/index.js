@@ -1,6 +1,7 @@
 var express     = require('express'),
-    
+    _           = require('lodash'),
     api         = require('../lib/api'),
+    passport    = require('../lib/passport'),
     React       = require('react'),
     ReactServer = require('react-dom/server'),
     Theater     = React.createFactory(require('../../client/containers/Theater.react').default);
@@ -8,6 +9,8 @@ var express     = require('express'),
 module.exports = {
 
     init: function(web) {
+
+        passport = passport.init(web);
 
         var router = express.Router();
         web.use('/', router);
@@ -21,23 +24,32 @@ module.exports = {
             res.send('C4NnuJ1Egr1ntyVrehoMMqr2Ggxt-4M3M9Lm6J9yWK4.L8Y9FjWqaSJsTNtFMJYAdaeE66OYJB-fOJ9juFmMIao');
         });
 
-        // React test
+        // Login
 
-        router.get('/', function(req, res) {
-            res.render('index', {
-                react: ReactServer.renderToString(Theater())
-            });
+        router.post('/login',
+            passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), 
+            function(req, res) {
+                console.log(req.session.returnTo);
+                res.redirect(req.session.returnTo || '/');
         });
 
         // Theater
 
+        router.use(function(req, res, next) {
+            if (req.originalUrl.substr(4) !== '/api') {
+                req.session.returnTo = req.originalUrl;
+            }
+            next();
+        })
+
         router.get('/stacks/:id', function(req, res) {
+            var state = _.assign({}, req.user, { stack_id: req.params.id });
             res.render('theater', {
-                state: req.params.id
+                state: JSON.stringify(state)
             });
         });
 
-        // Api calls
+        // API calls
 
         var apiRouter = express.Router();
         web.use('/api', apiRouter);
@@ -49,6 +61,7 @@ module.exports = {
             api[method](req.url, req.body).then(function(_res) {
                 res.send(_res);
             }).catch(function(e) {
+                console.log(e);
                 res.status(404).end();
             })
         })

@@ -1,18 +1,23 @@
 var request = require('request-promise'),
 
     baseUrl,
-    token;
+    clientToken;
 
-function _request(method, url, body) {
-    console.log(method, url);
-    console.log(baseUrl);
+function _request(method, url, body, auth) {
+    
+    if (!auth) {
+        auth = { bearer: clientToken }
+    }
+
+    if (typeof auth === 'string') {
+        auth = { bearer: auth }
+    }
+
     return request[method]({
         url: url,
         baseUrl: baseUrl,
         body: body,
-        auth: {
-            bearer: token
-        }
+        auth: auth
     });
 }
 
@@ -44,25 +49,25 @@ module.exports = {
                 pass: process.env.CLIENT_SECRET
             }
         }).then(function(res) {
-            token = res.token;
+            clientToken = res.token;
         });
 
     },
 
-    get: function(url) {
-        return _request('get', url);
+    get: function(url, body, auth) {
+        return _request('get', url, body, auth);
     },
 
-    post: function(url, body) {
-        return _request('post', url, body);
+    post: function(url, body, auth) {
+        return _request('post', url, body, auth);
     },
 
-    put: function(url, body) {
-        return _request('put', url, body);
+    put: function(url, body, auth) {
+        return _request('put', url, body, auth);
     },
 
-    del: function(url, body) {
-        return _request('delete', url, body);
+    del: function(url, body, auth) {
+        return _request('delete', url, body, auth);
     }
 
 };

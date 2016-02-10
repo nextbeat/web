@@ -106,7 +106,7 @@ class Chat extends React.Component {
     }
 
     render() {
-        const { comments, isFetching, error, liveComments } = this.props;
+        const { comments, isFetching, error, liveComments, user } = this.props;
         return (
         <div id="chat">
             <div id="history">
@@ -117,7 +117,7 @@ class Chat extends React.Component {
                     {liveComments.map((comment, idx) => this.renderLiveComment(comment, idx))}
                 </ul>
             </div>
-            <Compose />
+            <Compose user={user} />
         </div>
         );
     }

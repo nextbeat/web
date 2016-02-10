@@ -32,10 +32,10 @@ class Theater extends React.Component {
     }
 
     render() {
-        const { isFetching, error, stack, author } = this.props
+        const { isFetching, error, stack, author, user } = this.props
         return (
         <section>
-            <Header/>
+            <Header user={user} />
             {isFetching && <p>Loading...</p>}
             {error && error.length > 0 && <p>Could not load stack.</p>}
             <div id="theater">
@@ -43,7 +43,7 @@ class Theater extends React.Component {
                     <Media stack={stack}/>
                     <Info stack={stack} author={author} />
                 </section>
-                <Chat stack={stack} />
+                <Chat stack={stack} user={user} />
             </div>
         </section>
         );
@@ -53,6 +53,7 @@ class Theater extends React.Component {
 function mapStateToProps(state, props) {
     const stack = getEntity(state, 'stacks', props.id);
     const author = getEntity(state, 'users', stack.get('author', 0));
+    const user = state.get('user');
 
     const isFetching = state.getIn(['stack', 'isFetching'], false)
     const error = state.getIn(['stack', 'error'])
@@ -63,6 +64,7 @@ function mapStateToProps(state, props) {
     return {
         stack,
         author,
+        user,
         isFetching,
         error,
         connected,
