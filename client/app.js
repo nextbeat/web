@@ -17,6 +17,10 @@ if (state.id) {
     const { id, username, token } = state
     initialState.user = Map({ id, username, token })
 }
+if (state.error) {
+    initialState.user = Map({ error: state.error })
+}
+
 const store = configureStore(Map(initialState))
 
 render(

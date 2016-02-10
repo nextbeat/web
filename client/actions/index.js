@@ -1,5 +1,7 @@
 import { List, Map } from 'immutable'
 import Schemas from '../schemas'
+import fetch from 'isomorphic-fetch'
+import { assign } from 'lodash'
 
 /***********
  * API CALLS
@@ -10,6 +12,7 @@ import { API_CALL } from '../middleware/api'
 export const STACK = 'STACK';
 export const MEDIA_ITEMS = 'MEDIA_ITEMS';
 export const COMMENTS = 'COMMENTS';
+export const POST_COMMENT = 'POST_COMMENT';
 
 export const Status = {
     REQUESTING: 'REQUESTING',
@@ -100,6 +103,30 @@ export function loadComments() {
     return loadPaginatedObjects('comments', fetchComments, 25);
 }
 
+function postComment(stack_id, message) {
+    return {
+        type: POST_COMMENT,
+        [API_CALL]: {
+            method: 'POST',
+            endpoint: `stacks/${stack_id}/comments`,
+            body: { message }
+        }
+    }
+}
+
+export function sendComment(message) {
+    return (dispatch, getState) => {
+
+        const stack_id = getState().getIn(['stack', 'id'], 0);
+        if (stack_id === 0) {
+            return null;
+        }
+
+        return dispatch(postComment(stack_id, message));
+    }
+}
+
+
 /**********************
  * MEDIA ITEM SELECTION
  **********************/
@@ -148,6 +175,74 @@ export function goForward() {
 
 export function goBackward() {
     return navigate(false);
+}
+
+/*******
+ * LOGIN
+ *******/
+
+export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
+
+export function login(username, password) {
+    return (dispatch, getState) => {
+        // exit early if already logged in
+        if (getState().hasIn(['user', 'id'])) {
+            return null;
+        }
+
+        function actionWith(status, data) {
+            return assign({ type: LOGIN }, { status }, data)
+        }
+
+        dispatch(actionWith(Status.REQUESTING));
+
+        fetch('/login', { 
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username, 
+                password
+            })
+        })
+        .then(res => res.json().then(json => ({json, res})))
+        .then(({json, res}) => {
+            if (!res.ok) {
+                return dispatch(actionWith(Status.FAILURE, json))
+            }
+            return dispatch(actionWith(Status.SUCCESS, { user: json }))
+        });
+    }
+}
+
+export function logout() {
+    return (dispatch, getState) => {
+        // exit early if already logged out
+        if (!getState().hasIn(['user', 'id'])) {
+            return null;
+        }
+
+        function actionWith(status, data) {
+            return assign({ type: LOGOUT }, { status }, data)
+        }
+
+        dispatch(actionWith(Status.REQUESTING));
+
+        fetch('/logout', {
+            method: 'POST',
+            credentials: 'same-origin'
+        })
+        .then(res => {
+            if (!res.ok) {
+                return dispatch(actionWith(Status.FAILURE));
+            }
+            return dispatch(actionWith(Status.SUCCESS));
+        });
+    }
 }
 
 /*****************

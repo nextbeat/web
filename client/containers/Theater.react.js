@@ -8,13 +8,15 @@ import Chat from '../containers/Chat.react'
 import Header from '../components/Header.react'
 import Info from '../components/Info.react'
 
-import { loadStack, connectToXMPP, joinRoom } from '../actions'
+import { loadStack, connectToXMPP, joinRoom, login, logout } from '../actions'
 import { getEntity } from '../utils'
 
 class Theater extends React.Component {
 
     constructor(props) {
         super(props);
+        this.handleLogin = this.handleLogin.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
     }
 
     componentDidMount() {
@@ -31,11 +33,19 @@ class Theater extends React.Component {
         }
     }
 
+    handleLogin(username, password) {
+        this.props.dispatch(login(username, password));
+    }
+
+    handleLogout() {
+        this.props.dispatch(logout())
+    }
+
     render() {
         const { isFetching, error, stack, author, user } = this.props
         return (
         <section>
-            <Header user={user} />
+            <Header user={user} handleLogin={this.handleLogin} handleLogout={this.handleLogout} />
             {isFetching && <p>Loading...</p>}
             {error && error.length > 0 && <p>Could not load stack.</p>}
             <div id="theater">

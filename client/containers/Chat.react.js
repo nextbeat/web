@@ -5,7 +5,7 @@ import { List } from 'immutable'
 import ChatItem from '../components/ChatItem.react'
 import NotificationChatItem from '../components/NotificationChatItem.react'
 import Compose from '../components/Compose.react'
-import { loadComments } from '../actions'
+import { loadComments, sendComment } from '../actions'
 import { getPaginatedEntities } from '../utils'
 
 class Chat extends React.Component {
@@ -19,6 +19,7 @@ class Chat extends React.Component {
         }
         this.handleScroll = this.handleScroll.bind(this);
         this.setScrollState = this.setScrollState.bind(this);
+        this.sendComment = this.sendComment.bind(this);
         this.renderComment = this.renderComment.bind(this);
     }
 
@@ -88,6 +89,12 @@ class Chat extends React.Component {
         }
     }
 
+    // Sending comments
+
+    sendComment(message) {
+        this.props.dispatch(sendComment(message));
+    }
+
     // Render
 
     renderComment(comment) {
@@ -117,7 +124,7 @@ class Chat extends React.Component {
                     {liveComments.map((comment, idx) => this.renderLiveComment(comment, idx))}
                 </ul>
             </div>
-            <Compose user={user} />
+            <Compose user={user} sendComment={this.sendComment} />
         </div>
         );
     }

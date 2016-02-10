@@ -18,10 +18,27 @@ function urlWithPaginationParams(endpoint, pagination) {
     }
 }
 
-function callApi(endpoint, schema, pagination) {
+function fetchOptions(options) {
+    const { 
+        method="GET", 
+        body={}
+        authenticated
+    } = options
 
+    return {
+        method,
+        body: ["GET", "HEAD"].indexOf(method) === -1 ? JSON.stringify(body) : undefined, 
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    }
+}
+
+function callApi(options, store) {
+    const { endpoint, schema, pagination } = options;
     const url = urlWithPaginationParams(endpoint, pagination);
-    return fetch(url)
+    return fetch(url, fetchOptions(options, store))
         .then(response => response.json().then(json => ({ json, response })))
         .then(({ json, response }) => {
             if (!response.ok) {
@@ -29,8 +46,10 @@ function callApi(endpoint, schema, pagination) {
             }
             if (typeof pagination !== 'undefined') {
                 return assign({}, normalize(json.objects, schema), json.meta);
-            } else {
+            } else if (typeof schema !== 'undefined') {
                 return normalize(json, schema);
+            } else {
+                return json;
             }
         })
 }
@@ -46,7 +65,7 @@ export default store => next => action => {
         return next(action);
     }
 
-    const { endpoint, schema, pagination } = apiCall;
+    const { pagination } = apiCall;
 
     function actionWith(data) {
         var newAction = assign({}, action, data);
@@ -62,7 +81,7 @@ export default store => next => action => {
 
     // call api server with the given endpoint, then
     // dispatch action depending on success of the call
-    callApi(endpoint, schema, pagination)
+    callApi(apiCall, store)
         .then(response => next(actionWith({
             status: Status.SUCCESS,
             response 

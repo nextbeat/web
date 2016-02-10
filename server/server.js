@@ -4,8 +4,8 @@ var express     = require('express'),
     web         = express(),
     api         = require('./lib/api'),
     session     = require('express-session'),
+    RedisStore  = require('connect-redis')(session),
     bodyParser  = require('body-parser'),
-    flash       = require('connect-flash'),
     routes      = require('./routes'),
     path        = require('path');
 
@@ -23,14 +23,11 @@ web.use(bodyParser.urlencoded({
     limit: '1mb'
 }));
 
-web.use(flash());
-
 // todo: make secure for production
 web.use(session({
     secret: 'foo',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 60000 }
+    resave: true,
+    saveUninitialized: true
 }))
 
 // Handlebars

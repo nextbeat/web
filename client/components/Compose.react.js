@@ -4,13 +4,38 @@ class Compose extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            message: ''
+        };
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.chat = this.chat.bind(this);
+    }
+
+    handleChange(e) {
+        this.setState({
+            message: e.target.value
+        });
+    }
+
+    handleSubmit(e) {
+        this.props.sendComment(this.state.message);
+    }
+
+    chat() {
+        return (
+            <div>
+                <textarea onChange={this.handleChange} placeholder="Send a message"></textarea>
+                <input type="submit" value="Send" disabled={this.state.message == 0} onClick={this.handleSubmit} />
+            </div>
+        )
     }
 
     render() {
         const { user } = this.props;
         return (
             <div id="compose">
-            { user ? <p>Chat!</p> : <p>Login to chat.</p>}
+            { user.has('id') ? this.chat() : <p>Login to chat.</p> }
             </div>
         );
     }

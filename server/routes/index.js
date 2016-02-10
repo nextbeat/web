@@ -27,23 +27,34 @@ module.exports = {
         // Login
 
         router.post('/login',
-            passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), 
-            function(req, res) {
-                console.log(req.session.returnTo);
-                res.redirect(req.session.returnTo || '/');
+            function(req, res, next) {
+                passport.authenticate('local', function(err, user, info) {
+                    if (err) {
+                        return next(err);
+                    }
+                    if (!user) {
+                        req.authInfo = { error: info.message };
+                        return res.status(401).json(req.authInfo);
+                    }
+                    req.logIn(user, function(err) {
+                        if (err) {
+                            return next(err);
+                        }
+                        return res.json(req.user);
+                    })
+                })(req, res, next);
+            }
+        );
+
+        router.post('/logout', function(req, res) {
+            req.logOut();
+            return res.status(200).end();
         });
 
         // Theater
 
-        router.use(function(req, res, next) {
-            if (req.originalUrl.substr(4) !== '/api') {
-                req.session.returnTo = req.originalUrl;
-            }
-            next();
-        })
-
         router.get('/stacks/:id', function(req, res) {
-            var state = _.assign({}, req.user, { stack_id: req.params.id });
+            var state = _.assign({}, req.user, { stack_id: req.params.id }, req.authInfo);
             res.render('theater', {
                 state: JSON.stringify(state)
             });
