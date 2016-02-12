@@ -2,19 +2,24 @@ body {
   font-family: 'BlinkMacSystemFont', -apple-system, sans-serif;
   background: #f1f1f1; }
 
+input[type="submit"] {
+  background-color: #2258c5;
+  color: white;
+  font-size: 0.8em;
+  padding: 5px 10px;
+  border: none; }
+
 .clear {
   clear: both; }
 
 #header {
   background-color: #2258c5;
   width: 100%;
-  height: 30px;
+  height: 35px;
   margin-bottom: 10px;
-  padding: 5px;
+  padding: 7px;
   color: white;
   position: relative; }
-  #header .logo {
-    font-weight: bold; }
   #header .right {
     display: inline-block;
     float: right; }
@@ -24,15 +29,27 @@ body {
 #login {
   position: absolute;
   right: 0px;
-  top: 30px;
+  top: 35px;
   background-color: white;
   z-index: 100;
   padding: 10px;
   border: 1px solid #999;
   color: black;
   display: none; }
-  #login input[type="submit"] {
-    float: right; }
+  #login div {
+    float: right;
+    margin-top: 5px;
+    clear: both; }
+  #login label {
+    margin-right: 5px; }
+  #login div:after {
+    clear: both;
+    content: '';
+    display: block; }
+  #login .error {
+    font-size: 0.8em;
+    font-style: italic;
+    color: #ef585b; }
 
 #theater {
   max-width: 1000px;
@@ -69,10 +86,12 @@ body {
 #compose {
   height: 100px; }
   #compose textarea {
-    margin: 10px 10px 5px 10px;
+    margin: 10px 10px 2px 10px;
     width: calc(100% - 20px);
     height: 50px;
-    resize: none; }
+    resize: none;
+    padding: 5px;
+    border: 1px solid #999; }
   #compose input {
     display: block;
     margin-right: 10px;
@@ -82,6 +101,18 @@ body {
     margin-top: 20px;
     font-style: italic;
     color: #999; }
+
+::-webkit-input-placeholder {
+  font-style: italic; }
+
+::-moz-placeholder {
+  font-style: italic; }
+
+:-ms-input-placeholder {
+  font-style: italic; }
+
+::placeholder {
+  font-style: italic; }
 
 #activity {
   float: left;
@@ -133,13 +164,13 @@ body {
     content: '';
     display: block; }
 
-.selected {
+.activity-item.selected {
   background-color: #ddd; }
 
-.live {
+.activity-item.live {
   background-color: rgba(34, 88, 197, 0.1); }
 
-.selected.live {
+.activity-item.selected.live {
   background-color: rgba(34, 88, 197, 0.3); }
 
 .new-media {
@@ -196,16 +227,20 @@ body {
     margin: 10px 0 0 10px;
     display: block;
     color: #333;
-    font-size: 18px; }
+    font-size: 1.5em; }
     #info .username img {
       width: 36px;
       border-radius: 18px;
       margin-right: 5px; }
+  #info .live {
+    color: #15c599;
+    font-size: 0.7em;
+    margin-left: 8px; }
   #info .bookmarks {
     float: right;
     margin: 10px 10px 0 0;
     display: block;
-    font-size: 24px; }
+    font-size: 2em; }
     #info .bookmarks img {
       width: 19px;
       margin: 0 0 5px 5px; }

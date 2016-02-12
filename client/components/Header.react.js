@@ -59,7 +59,7 @@ class Header extends React.Component {
                             <input type="submit" value="Log In"/>
                         </div>
                     </form>
-                    { user.has('id') && user.get('error') }
+                    { user.has('error') && <div><span className="error">{user.get('error')}</span></div> }
                 </div>
             </section>
         );

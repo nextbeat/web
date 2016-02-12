@@ -55,8 +55,10 @@ module.exports = {
 
         router.get('/stacks/:id', function(req, res) {
             var state = _.assign({}, req.user, { stack_id: req.params.id }, req.authInfo);
+            var bundle = process.env.NODE_ENV === 'mac' ? "/js/bundle.js" : "/js/bundle.min.js";
             res.render('theater', {
-                state: JSON.stringify(state)
+                state: JSON.stringify(state),
+                bundle: bundle
             });
         });
 

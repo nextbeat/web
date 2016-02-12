@@ -31,10 +31,10 @@ class Compose extends React.Component {
     }
 
     render() {
-        const { user } = this.props;
+        const { user, closed } = this.props;
         return (
             <div id="compose">
-            { user.has('id') ? this.chat() : <p>Login to chat.</p> }
+            { closed ? <p>Bbb is no longer live.</p> : ( user.has('id') ? this.chat() : <p>Login to chat.</p> ) }
             </div>
         );
     }

@@ -44,6 +44,7 @@ web.use(favicon(path.join(__dirname, '../client/public/images/favicon.ico')));
 routes.init(web);
 api.init().then(function() {
     console.log('app initialized!');
-    web.listen(3000);
+    var port = process.env.NODE_ENV === 'mac' ? 3000 : 80;
+    web.listen(port);
 });
 

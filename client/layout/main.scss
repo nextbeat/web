@@ -7,6 +7,15 @@ body {
     background: #f1f1f1;
 }
 
+input[type="submit"] {
+    background-color: $primary-color;
+    color: white;
+    font-size: 0.8em;
+    padding: 5px 10px;
+    border: none;
+}
+
+
 .clear {
     clear: both;
 }
@@ -14,15 +23,11 @@ body {
 #header {
     background-color: $primary-color;
     width: 100%;
-    height: 30px;
+    height: 35px;
     margin-bottom: 10px;
-    padding: 5px;
+    padding: 7px;
     color: white;
     position: relative;
-
-    .logo {
-        font-weight: bold;
-    }
 
     .right {
         display: inline-block;
@@ -37,7 +42,7 @@ body {
 #login {
     position: absolute;
     right: 0px;
-    top: 30px;
+    top: 35px;
     background-color: white;
     z-index: 100;
     padding: 10px;
@@ -45,8 +50,26 @@ body {
     color: black;
     display: none;
 
-    input[type="submit"] {
+    div {
         float: right;
+        margin-top: 5px;
+        clear: both;
+    }
+
+    label {
+        margin-right: 5px;
+    }
+
+    div:after {
+        clear: both;
+        content: '';
+        display: block;
+    }
+
+    .error {
+        font-size: 0.8em;
+        font-style: italic;
+        color: $error-color;
     }
 }
 
@@ -98,10 +121,12 @@ body {
     height: 100px;
 
     textarea {
-        margin: 10px 10px 5px 10px;
+        margin: 10px 10px 2px 10px;
         width: calc(100% - 20px);
         height: 50px;
         resize: none;
+        padding: 5px;
+        border: 1px solid #999;
     }
 
     input {
@@ -116,6 +141,10 @@ body {
         font-style: italic;
         color: #999;
     }
+}
+
+::placeholder {
+    font-style: italic;
 }
 
 #activity {
@@ -179,18 +208,17 @@ body {
         display: block;
     }
 
-
 }
 
-.selected {
+.activity-item.selected {
     background-color: #ddd;
 }
 
-.live {
+.activity-item.live {
     background-color: rgba($primary-color, 0.1);
 }
 
-.selected.live {
+.activity-item.selected.live {
     background-color: rgba($primary-color, 0.3);
 }
 
@@ -261,7 +289,7 @@ body {
         margin: 10px 0 0 10px;
         display: block;
         color: #333;
-        font-size: 18px;
+        font-size: 1.5em;
 
         img {
             width: 36px;
@@ -270,11 +298,17 @@ body {
         }
     }
 
+    .live {
+        color: $success-color;
+        font-size: 0.7em;
+        margin-left: 8px;
+    }
+
     .bookmarks {
         float: right;
         margin: 10px 10px 0 0;
         display: block;
-        font-size: 24px;
+        font-size: 2em;
 
         img {
             width: 19px;
