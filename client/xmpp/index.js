@@ -76,8 +76,10 @@ function handleGroupChat(s, store) {
         // received comment
         const message = s.body;
         const nickname = s.from.resource;
-        return store.dispatch(receiveComment(message, nickname));
-    } else {
+        if (nickname !== store.getState().getIn(['live', 'nickname'])) {
+            return store.dispatch(receiveComment(message, nickname));
+        }
+    } else if (s.thread) {
         // xmpp message contains a whole host of relevant data
         // we extract it here awkwardly
         const meta = s.thread.split('#');

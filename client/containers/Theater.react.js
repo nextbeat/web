@@ -25,11 +25,11 @@ class Theater extends React.Component {
         dispatch(connectToXMPP());
     }
 
-
     componentWillReceiveProps(nextProps) {
         if (nextProps.stack.get('id') > 0 && nextProps.connected && !nextProps.roomJoined) {
             // stack is loaded and xmpp is connected
-            this.props.dispatch(joinRoom(nextProps.stack));
+            const nickname = nextProps.user.get('username'); // undefined if user is not logged in
+            this.props.dispatch(joinRoom(nextProps.stack, nickname));
         }
     }
 

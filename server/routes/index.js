@@ -69,7 +69,8 @@ module.exports = {
         // and forwards to the api server
         apiRouter.all('*', function(req, res) {
             var method = req.method.toLowerCase();
-            api[method](req.url, req.body).then(function(_res) {
+            var token = req.user ? req.user.token : undefined;
+            api[method](req.url, req.body, token).then(function(_res) {
                 res.send(_res);
             }).catch(function(e) {
                 console.log(e);

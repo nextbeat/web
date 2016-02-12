@@ -18,26 +18,32 @@ function urlWithPaginationParams(endpoint, pagination) {
     }
 }
 
-function fetchOptions(options) {
-    const { 
+function fetchOptions(options, store) {
+    let { 
         method="GET", 
-        body={}
+        body={},
         authenticated
     } = options
-
+    method = method.toUpperCase()
     return {
         method,
         body: ["GET", "HEAD"].indexOf(method) === -1 ? JSON.stringify(body) : undefined, 
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
-        }
+        },
+        credentials: authenticated ? 'same-origin' : 'omit'
     }
 }
 
 function callApi(options, store) {
-    const { endpoint, schema, pagination } = options;
+    const { endpoint, schema, pagination, authenticated } = options;
     const url = urlWithPaginationParams(endpoint, pagination);
+
+    if (authenticated && !store.getState().hasIn(['user', 'token'])) {
+        return Promise.reject("User is not logged in.");
+    }
+
     return fetch(url, fetchOptions(options, store))
         .then(response => response.json().then(json => ({ json, response })))
         .then(({ json, response }) => {

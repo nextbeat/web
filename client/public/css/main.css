@@ -1,5 +1,5 @@
 body {
-  font-family: "Nunito", sans-serif;
+  font-family: 'BlinkMacSystemFont', -apple-system, sans-serif;
   background: #f1f1f1; }
 
 .clear {
@@ -68,6 +68,20 @@ body {
 
 #compose {
   height: 100px; }
+  #compose textarea {
+    margin: 10px 10px 5px 10px;
+    width: calc(100% - 20px);
+    height: 50px;
+    resize: none; }
+  #compose input {
+    display: block;
+    margin-right: 10px;
+    float: right; }
+  #compose p {
+    text-align: center;
+    margin-top: 20px;
+    font-style: italic;
+    color: #999; }
 
 #activity {
   float: left;
@@ -85,13 +99,15 @@ body {
 
 .activity-item {
   padding: 10px;
-  border-bottom: 1px solid #f6f6f6; }
-  .activity-item div {
+  border-bottom: 1px solid #f6f6f6;
+  height: 90px; }
+  .activity-item .thumb {
     overflow: hidden;
     position: relative;
     width: 70px;
     height: 70px;
-    display: inline-block; }
+    display: block;
+    float: left; }
   .activity-item img {
     position: absolute;
     top: 50%;
@@ -100,11 +116,22 @@ body {
     height: auto;
     -webkit-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%); }
-  .activity-item span {
-    display: inline-block;
-    vertical-align: center;
+  .activity-item .time {
     margin-left: 10px;
-    height: auto; }
+    height: 70px;
+    line-height: 70px;
+    color: #999;
+    font-size: 0.9em;
+    display: block;
+    float: left;
+    position: relative; }
+    .activity-item .time span {
+      vertical-align: middle;
+      display: inline-block; }
+  .activity-item .time:after {
+    clear: both;
+    content: '';
+    display: block; }
 
 .selected {
   background-color: #ddd; }
@@ -130,10 +157,29 @@ body {
   float: right;
   width: 65%;
   height: 500px; }
+  #player a {
+    display: block;
+    height: 500px;
+    width: calc((100% - 282px)/2);
+    text-align: center;
+    float: left;
+    line-height: 500px;
+    font-weight: bold;
+    color: #bbb;
+    font-size: 4em;
+    text-decoration: none; }
+  #player a:hover {
+    text-decoration: none;
+    color: #999; }
+  #player div {
+    width: 282px;
+    height: 500px;
+    display: block;
+    float: left; }
   #player img {
     height: 100%;
-    display: block;
-    margin: 0 auto; }
+    margin: 0 auto;
+    display: block; }
   #player video {
     height: 100%;
     display: block;
@@ -147,13 +193,22 @@ body {
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1); }
   #info .username {
     float: left;
-    margin: 5px;
+    margin: 10px 0 0 10px;
     display: block;
-    font-weight: bold; }
+    color: #333;
+    font-size: 18px; }
+    #info .username img {
+      width: 36px;
+      border-radius: 18px;
+      margin-right: 5px; }
   #info .bookmarks {
     float: right;
-    margin: 5px;
-    display: block; }
+    margin: 10px 10px 0 0;
+    display: block;
+    font-size: 24px; }
+    #info .bookmarks img {
+      width: 19px;
+      margin: 0 0 5px 5px; }
   #info .description {
     display: block;
-    margin: 5px; }
+    margin: 10px; }

@@ -13,19 +13,18 @@ class Compose extends React.Component {
     }
 
     handleChange(e) {
-        this.setState({
-            message: e.target.value
-        });
+        this.setState({ message: e.target.value });
     }
 
     handleSubmit(e) {
         this.props.sendComment(this.state.message);
+        this.setState({ message: '' })
     }
 
     chat() {
         return (
             <div>
-                <textarea onChange={this.handleChange} placeholder="Send a message"></textarea>
+                <textarea onChange={this.handleChange} placeholder="Send a message" value={this.state.message}></textarea>
                 <input type="submit" value="Send" disabled={this.state.message == 0} onClick={this.handleSubmit} />
             </div>
         )

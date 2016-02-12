@@ -60,7 +60,6 @@ const pagination = combineReducers({
 
 function mediaItems(state = Map(), action) {
     if (action.type === ActionTypes.SELECT_MEDIA_ITEM) {
-        const selected = state.get('selected', -1);
         return state.set('selected', action.id);
     } 
     return state;

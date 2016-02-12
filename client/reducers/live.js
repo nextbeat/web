@@ -33,13 +33,13 @@ function joinRoom(state, action) {
         case Status.SUCCESS:
             return state.merge({
                 isJoiningRoom: false,
-                joinedRoom: true
+                room: action.jid,
+                nickname: action.nickname
             })
         case Status.FAILURE: 
             return state.merge({
-                isJoiningRoom: false,
-                joinedRoom: false
-            })
+                isJoiningRoom: false
+            }).delete('room').delete('nickname');
     }
     return this.state;
 }
@@ -77,6 +77,22 @@ function receiveMediaItem(state, action) {
     return state.update('mediaItems', mediaItems => mediaItems.push(id));
 }
 
+function changeNickname(state, action) {
+    return state.set('nickname', action.nickname);
+}
+
+function sendComment(state, action) {
+    if (action.status !== Status.SUCCESS) {
+        return state;
+    }
+    const comment = Map({
+        type: 'message',
+        message: action.message,
+        username: state.get('nickname')
+    })
+    return state.update('comments', comments => comments.push(comment));
+}
+
 const initialState = Map({
     comments: List(),
     mediaItems: List()
@@ -94,6 +110,10 @@ export default function live(state = initialState, action) {
             return receiveNotificationComment(state, action);
         case ActionTypes.RECEIVE_MEDIA_ITEM:
             return receiveMediaItem(state, action);
+        case ActionTypes.CHANGE_NICKNAME:
+            return changeNickname(state, action);
+        case ActionTypes.SEND_COMMENT:
+            return sendComment(state, action);
     }
     return state;
 }

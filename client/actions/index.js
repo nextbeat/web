@@ -12,7 +12,7 @@ import { API_CALL } from '../middleware/api'
 export const STACK = 'STACK';
 export const MEDIA_ITEMS = 'MEDIA_ITEMS';
 export const COMMENTS = 'COMMENTS';
-export const POST_COMMENT = 'POST_COMMENT';
+export const SEND_COMMENT = 'SEND_COMMENT';
 
 export const Status = {
     REQUESTING: 'REQUESTING',
@@ -105,11 +105,13 @@ export function loadComments() {
 
 function postComment(stack_id, message) {
     return {
-        type: POST_COMMENT,
+        type: SEND_COMMENT,
+        message,
         [API_CALL]: {
             method: 'POST',
             endpoint: `stacks/${stack_id}/comments`,
-            body: { message }
+            body: { message },
+            authenticated: true
         }
     }
 }
@@ -254,6 +256,7 @@ export const JOIN_ROOM = 'JOIN_ROOM';
 export const RECEIVE_COMMENT = 'RECEIVE_COMMENT';
 export const RECEIVE_NOTIFICATION_COMMENT = 'RECEIVE_NOTIFICATION_COMMENT';
 export const RECEIVE_MEDIA_ITEM = 'RECEIVE_MEDIA_ITEM';
+export const CHANGE_NICKNAME = 'CHANGE_NICKNAME';
 
 export function connectToXMPP() {
     return {
@@ -297,3 +300,9 @@ export function receiveMediaItem(id, response) {
     }
 }
 
+export function changeNickname(nickname) {
+    return {
+        type: CHANGE_NICKNAME,
+        nickname
+    }
+}

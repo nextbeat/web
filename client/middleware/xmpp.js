@@ -1,7 +1,7 @@
 import { assign } from 'lodash'
 import * as xmpp from '../xmpp'
 import * as ActionTypes from '../actions'
-import { Status } from '../actions'
+import { Status, changeNickname } from '../actions'
 
 function connectClient(store, next, action) {
     const client = xmpp.getClient(store);
@@ -46,13 +46,45 @@ function joinRoom(store, next, action) {
 
     next(actionWith(Status.REQUESTING));
 
+    const jid = `${action.uuid}@conference.xmpp.getbubble.me`;
+
     // configure client for joining room
     client.on('muc:join', function(s) {
-        next(actionWith(Status.SUCCESS));
+        next(actionWith(Status.SUCCESS, { jid }));
     })
 
-    const jid = `${action.uuid}@conference.xmpp.getbubble.me`;
     client.joinRoom(jid, action.nickname);
+}
+
+function handleLogin(store, next, action) {
+    if (action.status === Status.SUCCESS) {
+        const client = xmpp.getClient(store);
+        const nickname = action.user.username;
+        const roomJid = store.getState().getIn(['live', 'room']);
+        if (store.getState().getIn(['live', 'nickname']) !== nickname) {
+            client.changeNick(roomJid, nickname);
+            next(changeNickname(nickname));
+        }
+    }
+
+    return next(action);
+}
+
+function sendComment(store, next, action) {
+    // once the xmpp middleware receives this, it will already
+    // have gone through the api middleware, so we can see if
+    // the comment has successfully been submitted
+    if (action.status === Status.SUCCESS) {
+        const client = xmpp.getClient(store);
+        const roomJid = store.getState().getIn(['live', 'room']);
+        client.sendMessage({
+            to: roomJid,
+            type: 'groupchat',
+            body: action.message,
+            chatState: 'active'
+        })
+    }
+    return next(action);
 }
 
 export default store => next => action => {  
@@ -61,6 +93,10 @@ export default store => next => action => {
             return connectClient(store, next, action);
         case ActionTypes.JOIN_ROOM:
             return joinRoom(store, next, action);
+        case ActionTypes.SEND_COMMENT:
+            return sendComment(store, next, action);
+        case ActionTypes.LOGIN:
+            return handleLogin(store, next, action);
         default:
             return next(action);
     }

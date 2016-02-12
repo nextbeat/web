@@ -14,6 +14,8 @@ class Media extends React.Component {
         super(props);
         this.handleKeyDown = this.handleKeyDown.bind(this);
         this.handleClick = this.handleClick.bind(this);
+        this.handleForward = this.handleForward.bind(this);
+        this.handleBackward = this.handleBackward.bind(this);
         this.selectNewestLiveItem = this.selectNewestLiveItem.bind(this);
     }
 
@@ -50,10 +52,18 @@ class Media extends React.Component {
 
     handleKeyDown(e) {
         if (e.keyCode === 37) { // left arrow
-            this.props.dispatch(goBackward());
+            this.handleBackward();
         } else if (e.keyCode === 39) {
-            this.props.dispatch(goForward()); // right arrow
+            this.handleForward(); // right arrow
         }
+    }
+
+    handleForward() {
+        this.props.dispatch(goForward());
+    }
+
+    handleBackward() {
+        this.props.dispatch(goBackward());
     }
 
     selectNewestLiveItem() {
@@ -70,7 +80,7 @@ class Media extends React.Component {
         return (
             <section>
                 <Activity mediaItems={mediaItems} liveMediaItems={liveMediaItems} selectedItem={selectedMediaItem} handleClick={this.handleClick} selectNewestLiveItem={this.selectNewestLiveItem}/>
-                <MediaPlayer item={selectedMediaItem} />
+                <MediaPlayer item={selectedMediaItem} handleForward={this.handleForward} handleBackward={this.handleBackward} />
                 <div className="clear" />
             </section>
         );

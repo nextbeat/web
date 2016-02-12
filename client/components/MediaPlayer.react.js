@@ -9,12 +9,16 @@ class MediaPlayer extends React.Component {
     }
 
     render() {
-        const item = this.props.item || {};
+        const { item, handleForward, handleBackward } = this.props;
         return (
         <div id="player">
-            {item.get('type') === "video" 
-                ? <Video item={item} />
-                : <img src={item.get('url')} />}
+            <a className="nav-button" onClick={handleBackward} href="#">&lt;</a>
+            <div>
+                {item.get('type') === "video" 
+                    ? <Video item={item} />
+                    : <img src={item.get('url')} />}
+            </div>
+            <a className="nav-button" onClick={handleForward} href="#">&gt;</a>
         </div>
         );
     }
