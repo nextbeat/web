@@ -26,7 +26,7 @@ function fetchStack(id) {
         id: id,
         [API_CALL]: {
             schema: Schemas.STACK,
-            endpoint: `stacks?id=${id}`
+            endpoint: `stack?id=${id}`
         }
     }
 }

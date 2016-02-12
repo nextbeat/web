@@ -5,10 +5,6 @@
 sed -i "s/SERVER_NAME/$SERVER_NAME/g" /etc/nginx/sites-enabled/web.conf
 sed -i "s/ENV/$NODE_ENV/g" /etc/nginx/sites-enabled/web.conf
 
-# Build with gulp
-
-gulp build
-
 # Call my_init
 
 /sbin/my_init
