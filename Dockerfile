@@ -14,8 +14,6 @@ RUN mkdir -p /home/app/web && cp -a /tmp/node_modules /home/app/web
 
 ADD . /home/app/web
 
-
-
 # FROM phusion/passenger-nodejs:0.9.17
 
 # # Install python 2.7

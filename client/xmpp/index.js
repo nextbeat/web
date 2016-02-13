@@ -6,6 +6,19 @@ import Schemas from '../schemas'
 import { receiveComment, receiveNotificationComment, receiveMediaItem } from '../actions'
 import { getPaginatedEntities } from '../utils'
 
+function xmppHost() {
+    if (process.env.NODE_ENV === 'production') {
+        return 'xmpp.getbubble.me';
+    } else if (process.env.NODE_ENV === 'development') {
+        return 'xmpp.dev.getbubble.me';
+    } else if (process.env.NODE_ENV === 'local') {
+        return 'xmpp';
+    } else if (process.env.NODE_ENV === 'mac') {
+        return 'localhost';
+    }
+    return '';
+}
+
 export function getClient(store) {
     // creates a client unless one is already stored in state
     if (store.getState().hasIn(['live', 'client'])) {
@@ -14,7 +27,7 @@ export function getClient(store) {
         const client = XMPP.createClient({
             jid: 'anon@xmpp.getbubble.me',
             transport: 'websocket',
-            wsURL: 'ws://localhost:5280/websocket',
+            wsURL: `ws://${xmppHost()}:5280/websocket`,
             credentials: {
                 host: 'xmpp.getbubble.me'
             }
@@ -23,6 +36,15 @@ export function getClient(store) {
         client.on('groupchat', function(s) {
             handleGroupChat(s, store);
         });
+
+        client.on('raw:incoming', function(s) {
+            console.log(s);
+        })
+
+        client.on('raw:incoming', function(s) {
+            console.log(s);
+        })
+
 
         return client;
     }

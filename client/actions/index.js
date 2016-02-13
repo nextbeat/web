@@ -269,6 +269,7 @@ export function joinRoom(uuid, nickname="anon") {
         // passed the stack object
         uuid = uuid.get('uuid');
     }
+    uuid = uuid.toLowerCase();
     return {
         type: JOIN_ROOM,
         uuid,

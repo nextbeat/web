@@ -46,5 +46,7 @@ api.init().then(function() {
     console.log('app initialized!');
     var port = process.env.NODE_ENV === 'mac' ? 3000 : 80;
     web.listen(port);
-});
+}).catch(function(e) {
+    console.log(e);
+})
 
