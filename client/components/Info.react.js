@@ -13,7 +13,7 @@ class Info extends React.Component {
         return (
             <section id="info">
                 <span className="username">
-                    <img src={profpic_url} />
+                    <div className="profile"><img src={profpic_url} /></div>
                     {author.get('username')} 
                     {!closed && <span className="live">LIVE</span>}
                 </span>

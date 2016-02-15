@@ -37,13 +37,13 @@ export function getClient(store) {
             handleGroupChat(s, store);
         });
 
-        client.on('raw:incoming', function(s) {
-            console.log(s);
-        })
+        // client.on('raw:incoming', function(s) {
+        //     console.log(s);
+        // })
 
-        client.on('raw:incoming', function(s) {
-            console.log(s);
-        })
+        // client.on('raw:incoming', function(s) {
+        //     console.log(s);
+        // })
 
 
         return client;

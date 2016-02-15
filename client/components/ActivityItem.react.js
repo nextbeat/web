@@ -17,15 +17,18 @@ class ActivityItem extends React.Component {
     }
 
     render() {
-        let { mediaItem, selected, live } = this.props;
+        const { mediaItem, selected, live } = this.props;
         const url = this.url(mediaItem);
-        selected = selected ? "selected" : "";
-        live = live ? "live" : "";
+        const selectedClass = selected ? "selected" : "";
+        const liveClass = live ? "live" : "";
+        const videoClass = mediaItem.get('type') === 'video' ? "video" : "";
         return (
-            <div className={`activity-item ${selected} ${live}`} onClick={this.props.handleClick.bind(this, this.props.mediaItem)}>
-                <div className="thumb"><img src={url}/></div>
+            <div className={`activity-item ${selectedClass} ${liveClass}`} onClick={this.props.handleClick.bind(this, this.props.mediaItem)}>
+                <div className={`thumb ${videoClass}`}>
+                    <img className="content" src={url}/>
+                    { mediaItem.get('type') === 'video' && <img className="video" src="/images/video.png" /> }
+                </div>
                 <div className="time"><span>{moment(this.props.mediaItem.get('created_at')).fromNow()}</span></div>
-                {mediaItem.get('type') === 'video' && <span> (V)</span>}
             </div>
         );
     }
