@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 class Info extends React.Component {
 
@@ -14,8 +15,8 @@ class Info extends React.Component {
             <section id="info">
                 <span className="username">
                     <div className="profile"><img src={profpic_url} /></div>
-                    {author.get('username')} 
-                    {!closed && <span className="live">LIVE</span>}
+                    <Link to={`/u/${author.get('username')}`}>{author.get('username')}</Link>
+                    {!closed && <span className="live">OPEN</span>}
                 </span>
                 <span className="bookmarks">{stack.get('bookmark_count')}<img src="/images/bookmark.png" /></span>
                 <div className="clear"></div>

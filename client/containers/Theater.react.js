@@ -5,24 +5,33 @@ import { Map, List } from 'immutable'
 
 import Media from '../containers/Media.react'
 import Chat from '../containers/Chat.react'
-import Header from '../components/Header.react'
 import Info from '../components/Info.react'
 
-import { loadStack, connectToXMPP, joinRoom, login, logout } from '../actions'
+import { loadStack, joinRoom, clearStack } from '../actions'
 import { getEntity } from '../utils'
 
 class Theater extends React.Component {
 
     constructor(props) {
         super(props);
-        this.handleLogin = this.handleLogin.bind(this);
-        this.handleLogout = this.handleLogout.bind(this);
     }
 
     componentDidMount() {
-        const { id, dispatch } = this.props
+        const { params, dispatch } = this.props
+        const id = parseInt(params.stack_id)
         dispatch(loadStack(id))
-        dispatch(connectToXMPP());
+    }
+
+    componentWillUnmount() {
+        this.props.dispatch(clearStack());
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.params.stack_id !== this.props.params.stack_id) {
+            this.props.dispatch(clearStack())
+            const id = parseInt(this.props.params.stack_id)
+            this.props.dispatch(loadStack(id))
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -33,22 +42,13 @@ class Theater extends React.Component {
         }
     }
 
-    handleLogin(username, password) {
-        this.props.dispatch(login(username, password));
-    }
-
-    handleLogout() {
-        this.props.dispatch(logout())
-    }
-
     render() {
         const { isFetching, error, stack, author, user } = this.props
         return (
         <section>
-            <Header user={user} handleLogin={this.handleLogin} handleLogout={this.handleLogout} />
+            <div id="theater">
             {isFetching && <p>Loading...</p>}
             {error && error.length > 0 && <p>Could not load stack.</p>}
-            <div id="theater">
                 <section id="theater-main">
                     <Media stack={stack}/>
                     <Info stack={stack} author={author} />
@@ -61,23 +61,19 @@ class Theater extends React.Component {
 }
 
 function mapStateToProps(state, props) {
-    const stack = getEntity(state, 'stacks', props.id);
+    const stack = getEntity(state, 'stacks', parseInt(props.params.stack_id));
     const author = getEntity(state, 'users', stack.get('author', 0));
-    const user = state.get('user');
 
     const isFetching = state.getIn(['stack', 'isFetching'], false)
     const error = state.getIn(['stack', 'error'])
 
-    const connected = state.getIn(['live', 'connected'], false);
     const roomJoined = state.getIn(['live', 'roomJoined'], false);
 
     return {
         stack,
         author,
-        user,
         isFetching,
         error,
-        connected,
         roomJoined
     }
 }

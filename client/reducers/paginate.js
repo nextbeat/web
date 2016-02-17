@@ -24,6 +24,8 @@ export default function paginate(type) {
                         isFetching: false,
                         error: 'Failed to load.'
                     });
+                case Status.RESET: 
+                    return Map();
             }
         }
 

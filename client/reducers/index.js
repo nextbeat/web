@@ -2,6 +2,7 @@ import { Map } from 'immutable'
 import { mapValues } from 'lodash'
 import * as ActionTypes from '../actions'
 import { Status } from '../actions'
+import entity from './entity'
 import paginate from './paginate'
 import live from './live'
 
@@ -25,37 +26,13 @@ function entities(state = initialEntities, action) {
     return state
 }
 
-const initialStack = Map({
-    isFetching: false,
-    error: '',
-    id: 0
-})
-
-function stack(state = initialStack, action) {
-    if (action.type === ActionTypes.STACK) {
-        switch (action.status) {
-            case Status.REQUESTING:
-                return state.merge({
-                    isFetching: true,
-                    id: action.id
-                })
-            case Status.SUCCESS:
-                return state.merge({
-                    isFetching: false
-                })
-            case Status.FAILURE:
-                return state.merge({
-                    isFetching: false,
-                    error: 'Stack failed to load.'
-                })
-        }   
-    }
-    return state;
-}
+const stack = entity(ActionTypes.STACK, ActionTypes.CLEAR_STACK);
+const profile = entity(ActionTypes.USER, ActionTypes.CLEAR_PROFILE);
 
 const pagination = combineReducers({
-    mediaItems: paginate(ActionTypes.MEDIA_ITEMS),
-    comments: paginate(ActionTypes.COMMENTS)
+    mediaItems: paginate(ActionTypes.MEDIA_ITEMS, ActionTypes.CLEAR_STACK),
+    comments: paginate(ActionTypes.COMMENTS, ActionTypes.CLEAR_STACK),
+    stacks: paginate(ActionTypes.USER_STACKS, ActionTypes.CLEAR_PROFILE)
 });
 
 function mediaItems(state = Map(), action) {
@@ -108,6 +85,7 @@ function user(state=Map(), action) {
 export default combineReducers({
     entities,
     stack,
+    profile,
     pagination,
     mediaItems,
     live,

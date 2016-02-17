@@ -2,6 +2,7 @@ import { List, Map } from 'immutable'
 import Schemas from '../schemas'
 import fetch from 'isomorphic-fetch'
 import { assign } from 'lodash'
+import { getEntity } from '../utils'
 
 /***********
  * API CALLS
@@ -10,14 +11,17 @@ import { assign } from 'lodash'
 import { API_CALL } from '../middleware/api'
 
 export const STACK = 'STACK';
+export const USER_STACKS = 'USER_STACKS';
 export const MEDIA_ITEMS = 'MEDIA_ITEMS';
 export const COMMENTS = 'COMMENTS';
 export const SEND_COMMENT = 'SEND_COMMENT';
+export const USER = 'USER';
 
 export const Status = {
     REQUESTING: 'REQUESTING',
     SUCCESS: 'SUCCESS',
-    FAILURE: 'FAILURE'
+    FAILURE: 'FAILURE',
+    RESET: 'RESET'
 }
 
 function fetchStack(id) {
@@ -36,18 +40,37 @@ export function loadStack(id) {
     return fetchStack(id);
 }
 
+function fetchProfile(username) {
+    return {
+        type: USER,
+        [API_CALL]: {
+            schema: Schemas.USER,
+            endpoint: `users/${username}`
+        }
+    }
+}
+
+export function loadProfile(username) {
+    return fetchProfile(username);
+}
+
+// PAGINATION
+
+function getStackUuid(state) {
+    const stack_id = state.getIn(['stack', 'id'], 0);
+    if (stack_id === 0) {
+        return null;
+    }
+
+    const stack_uuid = getEntity(state, 'stacks', stack_id).get('uuid');
+    return stack_uuid;
+} 
+
 // todo: api server should handle stack_id inputs
 // todo: return nextUrl in api server?
 // todo: handle caching
 function loadPaginatedObjects(key, action, defaultLimit=20) {
     return (dispatch, getState) => {
-
-        const stack_id = getState().getIn(['stack', 'id'], 0);
-        if (stack_id === 0) {
-            return null;
-        }
-
-        const stack_uuid = getState().getIn(['entities', 'stacks', stack_id, 'uuid']);
 
         const { 
             page = 0, 
@@ -68,7 +91,7 @@ function loadPaginatedObjects(key, action, defaultLimit=20) {
             beforeDate
         };
 
-        return dispatch(action(stack_uuid, pagination));
+        return dispatch(action(pagination));
     }
 }
 
@@ -84,8 +107,14 @@ function fetchMediaItems(stack_uuid, pagination) {
 }
 
 export function loadMediaItems() {
-    // loading all media items at once to avoid pagination/live issues
-    return loadPaginatedObjects('mediaItems', fetchMediaItems, "all");
+    return (dispatch, getState) => {
+        const stack_uuid = getStackUuid(getState());
+        if (!stack_uuid) {
+            return null;
+        }
+        // loading all media items at once to avoid pagination/live issues
+        loadPaginatedObjects('mediaItems', fetchMediaItems.bind(this, stack_uuid), "all")(dispatch, getState);
+    }
 }
 
 function fetchComments(stack_uuid, pagination) {
@@ -100,8 +129,33 @@ function fetchComments(stack_uuid, pagination) {
 }
 
 export function loadComments() {
-    return loadPaginatedObjects('comments', fetchComments, 25);
+    return (dispatch, getState) => {
+        const stack_uuid = getStackUuid(getState());
+        if (!stack_uuid) {
+            return null;
+        }
+        loadPaginatedObjects('comments', fetchComments.bind(this, stack_uuid), 25)(dispatch, getState);
+    }
 }
+
+function fetchStacksForUser(username, pagination) {
+    return {
+        type: USER_STACKS,
+        username,
+        [API_CALL]: {
+            schema: Schemas.STACKS,
+            endpoint: `stacks`,
+            queries: { author: username },
+            pagination
+        }
+    }
+}
+
+export function loadStacksForUser(username) {
+    return loadPaginatedObjects('stacks', fetchStacksForUser.bind(this, username));
+}
+
+// POST REQUESTS
 
 function postComment(stack_id, message) {
     return {
@@ -305,5 +359,31 @@ export function changeNickname(nickname) {
     return {
         type: CHANGE_NICKNAME,
         nickname
+    }
+}
+
+/******
+* RESET
+*******/
+
+function resetAction(type) {
+    return {
+        type,
+        status: Status.RESET
+    }
+}
+
+export function clearStack() {
+    return dispatch => {
+        dispatch(resetAction(MEDIA_ITEMS))
+        dispatch(resetAction(COMMENTS))
+        dispatch(resetAction(STACK))
+    }
+}
+
+export function clearProfile() {
+    return dispatch => {
+        dispatch(resetAction(USER_STACKS))
+        dispatch(resetAction(USER))
     }
 }

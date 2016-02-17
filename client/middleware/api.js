@@ -8,14 +8,21 @@ import { Status } from '../actions'
 
 const API_ROOT = '/api/';
 
-function urlWithPaginationParams(endpoint, pagination) {
+function urlWithParams(endpoint, pagination, queries) {
     const url = join(API_ROOT, endpoint);
+    let fullUrl = url;
+    queries = queries || {};
+
     if (typeof pagination !== 'undefined') {
         const beforeDate = moment(pagination.before).format();
-        return `${url}?page=${pagination.page}&limit=${pagination.limit}&before=${beforeDate}`;
-    } else {
-        return url;
+        fullUrl = `${url}?page=${pagination.page}&limit=${pagination.limit}&before=${beforeDate}`;
     }
+
+    for (const key in queries) {
+        fullUrl += `&${key}=${queries[key]}`
+    }
+
+    return fullUrl;
 }
 
 function fetchOptions(options, store) {
@@ -37,8 +44,8 @@ function fetchOptions(options, store) {
 }
 
 function callApi(options, store) {
-    const { endpoint, schema, pagination, authenticated } = options;
-    const url = urlWithPaginationParams(endpoint, pagination);
+    const { endpoint, schema, pagination, authenticated, queries } = options;
+    const url = urlWithParams(endpoint, pagination, queries);
 
     if (authenticated && !store.getState().hasIn(['user', 'token'])) {
         return Promise.reject("User is not logged in.");
@@ -53,6 +60,7 @@ function callApi(options, store) {
             if (typeof pagination !== 'undefined') {
                 return assign({}, normalize(json.objects, schema), json.meta);
             } else if (typeof schema !== 'undefined') {
+                console.log(normalize(json, schema));
                 return normalize(json, schema);
             } else {
                 return json;
@@ -90,7 +98,7 @@ export default store => next => action => {
     callApi(apiCall, store)
         .then(response => next(actionWith({
             status: Status.SUCCESS,
-            response 
+            response
         })))
         .catch(error => next(actionWith({
             status: Status.FAILURE,

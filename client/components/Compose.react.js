@@ -34,7 +34,7 @@ class Compose extends React.Component {
         const { user, closed } = this.props;
         return (
             <div id="compose">
-            { closed ? <p>Bbb is no longer live.</p> : ( user.has('id') ? this.chat() : <p>Login to chat.</p> ) }
+            { closed ? <p>Room is no longer open.</p> : ( user.has('id') ? this.chat() : <p>Login to chat.</p> ) }
             </div>
         );
     }

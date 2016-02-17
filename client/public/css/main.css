@@ -12,6 +12,9 @@ input[type="submit"] {
 .clear {
   clear: both; }
 
+/********
+ * HEADER
+ ********/
 #header {
   background-color: #2258c5;
   width: 100%;
@@ -51,6 +54,9 @@ input[type="submit"] {
     font-style: italic;
     color: #ef585b; }
 
+/*********
+ * THEATER
+ *********/
 #theater {
   max-width: 1000px;
   margin: 0 auto; }
@@ -275,3 +281,31 @@ input[type="submit"] {
   #info .description {
     display: block;
     margin: 10px; }
+
+/*********
+ * PROFILE
+ *********/
+#profile {
+  margin: 20px; }
+  #profile .user {
+    font-size: 2em;
+    height: 60px;
+    vertical-align: middle;
+    line-height: 60px;
+    margin-bottom: 20px; }
+    #profile .user .profile-picture {
+      width: 60px;
+      height: 60px;
+      border-radius: 30px;
+      position: relative;
+      float: left;
+      overflow: hidden;
+      margin-right: 15px; }
+    #profile .user img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: auto;
+      -webkit-transform: translate(-50%, -50%);
+              transform: translate(-50%, -50%); }

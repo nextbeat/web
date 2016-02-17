@@ -12,6 +12,26 @@ module.exports = {
 
         passport = passport.init(web);
 
+        // API calls
+
+        var apiRouter = express.Router();
+        web.use('/api', apiRouter);
+
+        // matches any requests with the prefix api/
+        // and forwards to the api server
+        apiRouter.all('*', function(req, res) {
+            var method = req.method.toLowerCase();
+            var token = req.user ? req.user.token : undefined;
+            api[method](req.url, req.body, token).then(function(_res) {
+                res.send(_res);
+            }).catch(function(e) {
+                console.log(e);
+                res.status(404).end();
+            })
+        })
+
+        // Client-side app
+
         var router = express.Router();
         web.use('/', router);
 
@@ -51,34 +71,16 @@ module.exports = {
             return res.status(200).end();
         });
 
-        // Theater
+        // React
 
-        router.get('/stacks/:id', function(req, res) {
-            var state = _.assign({}, req.user, { stack_id: req.params.id }, req.authInfo);
+        router.get('*', function(req, res) {
+            var state = _.assign({}, req.user, req.authInfo);
             var bundle = process.env.NODE_ENV === 'mac' ? "/js/bundle.js" : "/js/bundle.min.js";
-            res.render('theater', {
-                state: JSON.stringify(state),
-                bundle: bundle
+            res.render('app', {
+                bundle: bundle,
+                state: JSON.stringify(state)
             });
         });
-
-        // API calls
-
-        var apiRouter = express.Router();
-        web.use('/api', apiRouter);
-
-        // matches any requests with the prefix api/
-        // and forwards to the api server
-        apiRouter.all('*', function(req, res) {
-            var method = req.method.toLowerCase();
-            var token = req.user ? req.user.token : undefined;
-            api[method](req.url, req.body, token).then(function(_res) {
-                res.send(_res);
-            }).catch(function(e) {
-                console.log(e);
-                res.status(404).end();
-            })
-        })
 
         // Support
 
