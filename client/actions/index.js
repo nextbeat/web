@@ -24,18 +24,24 @@ export const Status = {
     RESET: 'RESET'
 }
 
+function onStackSuccess(store, response) {
+    const stack = response.entities.stacks[response.result];
+    store.dispatch(loadMediaItems(stack.uuid));
+    store.dispatch(loadComments(stack.uuid));
+}
+
 function fetchStack(id) {
     return {
         type: STACK,
         id: id,
         [API_CALL]: {
             schema: Schemas.STACK,
-            endpoint: `stack?id=${id}`
+            endpoint: `stack?id=${id}`,
+            onSuccess: onStackSuccess
         }
     }
 }
 
-// todo: handle caching
 export function loadStack(id) {
     return fetchStack(id);
 }
@@ -68,7 +74,6 @@ function getStackUuid(state) {
 
 // todo: api server should handle stack_id inputs
 // todo: return nextUrl in api server?
-// todo: handle caching
 function loadPaginatedObjects(key, action, defaultLimit=20) {
     return (dispatch, getState) => {
 
@@ -106,15 +111,8 @@ function fetchMediaItems(stack_uuid, pagination) {
     }
 }
 
-export function loadMediaItems() {
-    return (dispatch, getState) => {
-        const stack_uuid = getStackUuid(getState());
-        if (!stack_uuid) {
-            return null;
-        }
-        // loading all media items at once to avoid pagination/live issues
-        loadPaginatedObjects('mediaItems', fetchMediaItems.bind(this, stack_uuid), "all")(dispatch, getState);
-    }
+export function loadMediaItems(stack_uuid) {
+    return loadPaginatedObjects('mediaItems', fetchMediaItems.bind(this, stack_uuid), "all");
 }
 
 function fetchComments(stack_uuid, pagination) {
@@ -128,14 +126,8 @@ function fetchComments(stack_uuid, pagination) {
     }
 }
 
-export function loadComments() {
-    return (dispatch, getState) => {
-        const stack_uuid = getStackUuid(getState());
-        if (!stack_uuid) {
-            return null;
-        }
-        loadPaginatedObjects('comments', fetchComments.bind(this, stack_uuid), 25)(dispatch, getState);
-    }
+export function loadComments(stack_uuid) {
+    return loadPaginatedObjects('comments', fetchComments.bind(this, stack_uuid), 25);
 }
 
 function fetchStacksForUser(username, pagination) {
@@ -366,10 +358,26 @@ export function changeNickname(nickname) {
 * RESET
 *******/
 
+export const RESET_SELECTED_MEDIA_ITEM = 'RESET_SELECTED_MEDIA_ITEM'
+export const CLEAR_LIVENESS = 'CLEAR_LIVENESS'
+
 function resetAction(type) {
     return {
         type,
         status: Status.RESET
+    }
+}
+
+// todo: reducer ops for these
+export function resetSelectedMediaItem() {
+    return {
+        type: RESET_SELECTED_MEDIA_ITEM
+    }
+}
+
+export function clearLiveness() {
+    return { 
+        type: CLEAR_LIVENESS
     }
 }
 
@@ -378,6 +386,8 @@ export function clearStack() {
         dispatch(resetAction(MEDIA_ITEMS))
         dispatch(resetAction(COMMENTS))
         dispatch(resetAction(STACK))
+        dispatch(resetSelectedMediaItem())
+        dispatch(clearLiveness())
     }
 }
 

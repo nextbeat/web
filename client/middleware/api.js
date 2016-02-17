@@ -4,7 +4,7 @@ import fetch from 'isomorphic-fetch'
 import Promise from 'bluebird'
 import moment from 'moment'
 import { normalize } from 'normalizr'
-import { Status } from '../actions'
+import { Status, selectMediaItem } from '../actions'
 
 const API_ROOT = '/api/';
 
@@ -79,7 +79,7 @@ export default store => next => action => {
         return next(action);
     }
 
-    const { pagination } = apiCall;
+    const { pagination, onSuccess } = apiCall;
 
     function actionWith(data) {
         var newAction = assign({}, action, data);
@@ -96,10 +96,15 @@ export default store => next => action => {
     // call api server with the given endpoint, then
     // dispatch action depending on success of the call
     callApi(apiCall, store)
-        .then(response => next(actionWith({
-            status: Status.SUCCESS,
-            response
-        })))
+        .then(response => {
+            if (typeof onSuccess === 'function') {
+                onSuccess(store, response);
+            }
+            return next(actionWith({
+                status: Status.SUCCESS,
+                response
+            }))
+        })
         .catch(error => next(actionWith({
             status: Status.FAILURE,
             error

@@ -29,12 +29,12 @@ class Media extends React.Component {
         $(document.body).off('keydown', this.handleKeyDown);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.stack.get('id') !== this.props.stack.get('id')) {
-            // stack has loaded
-            this.props.dispatch(loadMediaItems());
-        }
-    }
+    // componentWillReceiveProps(nextProps) {
+    //     if (nextProps.stack.get('id') !== this.props.stack.get('id')) {
+    //         // stack has loaded
+    //         this.props.dispatch(loadMediaItems());
+    //     }
+    // }
 
     componentDidUpdate(prevProps) {
         if (this.props.mediaItems.size > 0 && prevProps.mediaItems.size === 0) {

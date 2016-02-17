@@ -26,19 +26,21 @@ function entities(state = initialEntities, action) {
     return state
 }
 
-const stack = entity(ActionTypes.STACK, ActionTypes.CLEAR_STACK);
-const profile = entity(ActionTypes.USER, ActionTypes.CLEAR_PROFILE);
+const stack = entity(ActionTypes.STACK);
+const profile = entity(ActionTypes.USER);
 
 const pagination = combineReducers({
-    mediaItems: paginate(ActionTypes.MEDIA_ITEMS, ActionTypes.CLEAR_STACK),
-    comments: paginate(ActionTypes.COMMENTS, ActionTypes.CLEAR_STACK),
-    stacks: paginate(ActionTypes.USER_STACKS, ActionTypes.CLEAR_PROFILE)
+    mediaItems: paginate(ActionTypes.MEDIA_ITEMS),
+    comments: paginate(ActionTypes.COMMENTS),
+    stacks: paginate(ActionTypes.USER_STACKS)
 });
 
 function mediaItems(state = Map(), action) {
     if (action.type === ActionTypes.SELECT_MEDIA_ITEM) {
         return state.set('selected', action.id);
-    } 
+    } else if (action.type === ActionTypes.RESET_SELECTED_MEDIA_ITEM) {
+        return Map();
+    }
     return state;
 }
 
