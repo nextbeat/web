@@ -60,7 +60,6 @@ function callApi(options, store) {
             if (typeof pagination !== 'undefined') {
                 return assign({}, normalize(json.objects, schema), json.meta);
             } else if (typeof schema !== 'undefined') {
-                console.log(normalize(json, schema));
                 return normalize(json, schema);
             } else {
                 return json;

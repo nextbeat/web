@@ -10,17 +10,17 @@ import Theater from './containers/Theater.react'
 import Profile from './containers/Profile.react'
 
 const state = JSON.parse($('#state').text())
-let initialState = {
-    stack: Map({
-        isFetching: false
-    })
-}
+let initialState = {}
 if (state.id) {
     const { id, username, token } = state
-    initialState.user = Map({ id, username, token })
+    initialState.user = Map({ meta: {
+        id, username, token 
+    }})
 }
 if (state.error) {
-    initialState.user = Map({ error: state.error })
+    initialState.user = Map({ meta: {
+        error: state.error
+    }})
 }
 
 const store = configureStore(Map(initialState))

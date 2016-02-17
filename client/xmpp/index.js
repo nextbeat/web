@@ -21,8 +21,8 @@ function xmppHost() {
 
 export function getClient(store) {
     // creates a client unless one is already stored in state
-    if (store.getState().hasIn(['live', 'client'])) {
-        return store.getState().getIn(['live', 'client']) 
+    if (store.getState().hasIn(['user', 'live', 'client'])) {
+        return store.getState().getIn(['user', 'live', 'client']) 
     } else {
         const client = XMPP.createClient({
             jid: 'anon@xmpp.getbubble.me',
@@ -37,7 +37,7 @@ export function getClient(store) {
             handleGroupChat(s, store);
         });
 
-        // client.on('raw:incoming', function(s) {
+        // client.on('raw:outgoing', function(s) {
         //     console.log(s);
         // })
 
@@ -53,15 +53,15 @@ export function getClient(store) {
 // state status checks
 
 export function isConnected(store) {
-    return store.getState().getIn(['live', 'connected'], false);
+    return store.getState().getIn(['user', 'live', 'connected'], false);
 }
 
 export function hasJoinedRoom(store) {
-    return store.getState().getIn(['live', 'joinedRoom'], false);
+    return store.getState().getIn(['user', 'live', 'joinedRoom'], false);
 }
 
 export function isJoiningRoom(store) {
-    return store.getState().getIn(['live', 'isJoiningRoom'], false);
+    return store.getState().getIn(['user', 'live', 'isJoiningRoom'], false);
 }
 
 // group chat

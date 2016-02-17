@@ -1,28 +1,6 @@
 import { Map, List } from 'immutable'
-import * as ActionTypes from '../actions'
-import { Status } from '../actions'
-import moment from 'moment'
-
-function xmppConnection(state, action) {
-    switch (action.status) {
-        case Status.REQUESTING:
-            return state.merge({
-                isConnecting: true
-            })
-        case Status.SUCCESS:
-            return state.merge({
-                isConnecting: false,
-                connected: true,
-                client: action.client
-            })
-        case Status.FAILURE:
-            return state.merge({
-                isConnecting: false,
-                connected: false
-            })
-    }
-    return state;
-}
+import * as ActionTypes from '../../actions'
+import { Status } from '../../actions'
 
 function joinRoom(state, action) {
     switch (action.status) {
@@ -100,8 +78,6 @@ const initialState = Map({
 
 export default function live(state = initialState, action) {
     switch (action.type) {
-        case ActionTypes.XMPP_CONNECTION:
-            return xmppConnection(state, action);
         case ActionTypes.JOIN_ROOM:
             return joinRoom(state, action);
         case ActionTypes.RECEIVE_COMMENT:

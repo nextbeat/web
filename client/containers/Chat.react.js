@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { List } from 'immutable'
+import { Map, List } from 'immutable'
 
 import ChatItem from '../components/ChatItem.react'
 import NotificationChatItem from '../components/NotificationChatItem.react'
@@ -81,7 +81,8 @@ class Chat extends React.Component {
 
     keepScrollPositionIfNeeded() {
         // Used when requesting new page. Necessary so that when the new
-        // comments are inserted into the DOM
+        // comments are inserted into the DOM the scroll position adjusts
+        // so that the current content doesn't shift
         const history = document.getElementById('history');
         let heightDiff = history.scrollHeight - this.state.scrollHeight;
         if (this.state.scrollTop <= 1) {
@@ -132,12 +133,12 @@ class Chat extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const comments = getPaginatedEntities(state, 'comments');
+    const comments = getPaginatedEntities(state, 'stack', 'comments');
 
     const users = state.getIn(['entities', 'users']);
-    const { isFetching, error } = state.getIn(['pagination', 'comments']).toJS();
+    const { isFetching, error } = state.getIn(['stack', 'pagination', 'comments'], Map()).toJS();
 
-    const liveComments = state.getIn(['live', 'comments'], List());
+    const liveComments = state.getIn(['stack', 'live', 'comments'], List());
 
     return {
         comments,

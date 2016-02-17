@@ -42,7 +42,7 @@ class App extends React.Component {
 
 function mapStateToProps(state, props) {
     const user = state.get('user');
-    const connected = state.getIn(['live', 'connected'], false);
+    const connected = state.getIn(['user', 'live', 'connected'], false);
 
     return {
         user,

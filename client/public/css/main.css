@@ -309,3 +309,72 @@ input[type="submit"] {
       height: auto;
       -webkit-transform: translate(-50%, -50%);
               transform: translate(-50%, -50%); }
+  #profile .header {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    margin-top: 20px; }
+
+.stack-item {
+  height: 110px;
+  width: 350px;
+  padding: 10px;
+  margin: 12px 8px;
+  display: inline-block;
+  position: relative;
+  background: #fff;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+  color: #000; }
+  .stack-item .thumb {
+    width: 90px;
+    height: 90px;
+    position: relative;
+    float: left;
+    overflow: hidden;
+    margin-right: 10px; }
+    .stack-item .thumb img {
+      position: absolute;
+      width: 100%;
+      height: auto;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+              transform: translate(-50%, -50%); }
+  .stack-item .info {
+    float: left;
+    height: 100%;
+    width: 180px; }
+    .stack-item .info .description {
+      height: 80%; }
+    .stack-item .info .details {
+      height: 20%;
+      position: relative; }
+      .stack-item .info .details span {
+        position: absolute;
+        bottom: 0;
+        font-size: 0.8em;
+        color: #666; }
+      .stack-item .info .details .channel {
+        left: 0;
+        font-weight: bold; }
+      .stack-item .info .details .time {
+        right: 0; }
+  .stack-item .bookmarks {
+    text-align: right;
+    font-size: 1.2em;
+    line-height: 90px; }
+    .stack-item .bookmarks img {
+      width: 15px;
+      height: 15px;
+      margin-bottom: 3px; }
+  .stack-item .open {
+    position: absolute;
+    top: 3px;
+    right: 5px;
+    color: #15c599;
+    font-size: 0.8em; }
+
+.stack-item:hover {
+  text-decoration: none;
+  background-color: #f7f7f7; }

@@ -88,12 +88,12 @@ class Media extends React.Component {
 }
 
 function mapStateToProps(state, props) {    
-    const mediaItems = getPaginatedEntities(state, 'mediaItems');
+    const mediaItems = getPaginatedEntities(state, 'stack', 'mediaItems');
 
-    const selectedId = state.getIn(['mediaItems', 'selected'], -1);
+    const selectedId = state.getIn(['stack', 'mediaItems', 'selected'], -1);
     const selectedMediaItem = getEntity(state, 'mediaItems', selectedId);
 
-    const liveMediaItems = getLiveEntities(state, 'mediaItems');
+    const liveMediaItems = getLiveEntities(state, 'stack', 'mediaItems');
 
     return {
         mediaItems,

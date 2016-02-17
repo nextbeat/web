@@ -32,13 +32,11 @@ class Theater extends React.Component {
             const id = parseInt(this.props.params.stack_id)
             this.props.dispatch(loadStack(id))
         }
-    }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.stack.get('id') > 0 && nextProps.connected && !nextProps.roomJoined) {
+        if (this.props.stack.get('id') > 0 && this.props.connected && !this.props.roomJoined) {
             // stack is loaded and xmpp is connected
-            const nickname = nextProps.user.get('username'); // undefined if user is not logged in
-            this.props.dispatch(joinRoom(nextProps.stack, nickname));
+            const nickname = this.props.user.getIn(['meta', 'username']); // undefined if user is not logged in
+            this.props.dispatch(joinRoom(this.props.stack, nickname));
         }
     }
 
@@ -64,10 +62,9 @@ function mapStateToProps(state, props) {
     const stack = getEntity(state, 'stacks', parseInt(props.params.stack_id));
     const author = getEntity(state, 'users', stack.get('author', 0));
 
-    const isFetching = state.getIn(['stack', 'isFetching'], false)
-    const error = state.getIn(['stack', 'error'])
+    const { isFetching=false, error } = state.getIn(['stack', 'meta'], Map()).toJS();
 
-    const roomJoined = state.getIn(['live', 'roomJoined'], false);
+    const roomJoined = state.getIn(['stack', 'live', 'roomJoined'], false);
 
     return {
         stack,

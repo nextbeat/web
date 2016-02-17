@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 
 class NotificationChatItem extends React.Component {
 

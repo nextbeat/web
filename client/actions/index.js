@@ -11,7 +11,8 @@ import { getEntity } from '../utils'
 import { API_CALL } from '../middleware/api'
 
 export const STACK = 'STACK';
-export const USER_STACKS = 'USER_STACKS';
+export const USER_OPEN_STACKS = 'USER_OPEN_STACKS';
+export const USER_CLOSED_STACKS = 'USER_CLOSED_STACKS';
 export const MEDIA_ITEMS = 'MEDIA_ITEMS';
 export const COMMENTS = 'COMMENTS';
 export const SEND_COMMENT = 'SEND_COMMENT';
@@ -46,12 +47,19 @@ export function loadStack(id) {
     return fetchStack(id);
 }
 
+function onProfileSuccess(store, response) {
+    const profile = response.entities.users[response.result];
+    store.dispatch(loadOpenStacksForUser(profile.username))
+    store.dispatch(loadClosedStacksForUser(profile.username))
+}
+
 function fetchProfile(username) {
     return {
         type: USER,
         [API_CALL]: {
             schema: Schemas.USER,
-            endpoint: `users/${username}`
+            endpoint: `users/${username}`,
+            onSuccess: onProfileSuccess
         }
     }
 }
@@ -74,7 +82,7 @@ function getStackUuid(state) {
 
 // todo: api server should handle stack_id inputs
 // todo: return nextUrl in api server?
-function loadPaginatedObjects(key, action, defaultLimit=20) {
+function loadPaginatedObjects(page, key, action, defaultLimit=20) {
     return (dispatch, getState) => {
 
         const { 
@@ -83,7 +91,7 @@ function loadPaginatedObjects(key, action, defaultLimit=20) {
             total = -1,
             beforeDate = Date.now(),
             ids = []
-        } = getState().getIn(['pagination', key], {}).toJS();
+        } = getState().getIn([page, 'pagination', key], Map()).toJS()
 
         if (total >= 0 && total <= ids.length) {
             // reached the end of the list of objects
@@ -112,7 +120,7 @@ function fetchMediaItems(stack_uuid, pagination) {
 }
 
 export function loadMediaItems(stack_uuid) {
-    return loadPaginatedObjects('mediaItems', fetchMediaItems.bind(this, stack_uuid), "all");
+    return loadPaginatedObjects('stack', 'mediaItems', fetchMediaItems.bind(this, stack_uuid), "all");
 }
 
 function fetchComments(stack_uuid, pagination) {
@@ -127,24 +135,28 @@ function fetchComments(stack_uuid, pagination) {
 }
 
 export function loadComments(stack_uuid) {
-    return loadPaginatedObjects('comments', fetchComments.bind(this, stack_uuid), 25);
+    return loadPaginatedObjects('stack', 'comments', fetchComments.bind(this, stack_uuid), 25);
 }
 
-function fetchStacksForUser(username, pagination) {
+function fetchStacksForUser(username, type, status, pagination) {
     return {
-        type: USER_STACKS,
-        username,
+        type,
         [API_CALL]: {
             schema: Schemas.STACKS,
             endpoint: `stacks`,
-            queries: { author: username },
+            queries: { author: username, status: status },
             pagination
         }
     }
 }
 
-export function loadStacksForUser(username) {
-    return loadPaginatedObjects('stacks', fetchStacksForUser.bind(this, username));
+export function loadOpenStacksForUser(username) {
+    return loadPaginatedObjects('profile', 'stacks', fetchStacksForUser.bind(this, username, USER_OPEN_STACKS, "open"), "all");
+}
+
+export function loadClosedStacksForUser(username) {
+    // TODO: paginate closed stacks
+    return loadPaginatedObjects('profile', 'stacks', fetchStacksForUser.bind(this, username, USER_CLOSED_STACKS, "closed", "all"));
 }
 
 // POST REQUESTS
@@ -190,13 +202,13 @@ export function selectMediaItem(id) {
 
 function navigate(isForward) {
     return (dispatch, getState) => {
-        let selectedId = getState().get('mediaItems').get('selected', -1);
+        let selectedId = getState().getIn(['stack', 'mediaItems', 'selected'], -1)
         if (selectedId == -1) {
             return null;
         }
 
-        const paginatedIds = getState().getIn(['pagination', 'mediaItems', 'ids'], List())
-        const liveIds = getState().getIn(['live', 'mediaItems'], List())
+        const paginatedIds = getState().getIn(['stack', 'pagination', 'mediaItems', 'ids'], List())
+        const liveIds = getState().getIn(['stack', 'live', 'mediaItems'], List())
         const ids = paginatedIds.concat(liveIds);
         const selectedIndex = ids.indexOf(selectedId);
 
@@ -358,42 +370,17 @@ export function changeNickname(nickname) {
 * RESET
 *******/
 
-export const RESET_SELECTED_MEDIA_ITEM = 'RESET_SELECTED_MEDIA_ITEM'
-export const CLEAR_LIVENESS = 'CLEAR_LIVENESS'
-
-function resetAction(type) {
-    return {
-        type,
-        status: Status.RESET
-    }
-}
-
-// todo: reducer ops for these
-export function resetSelectedMediaItem() {
-    return {
-        type: RESET_SELECTED_MEDIA_ITEM
-    }
-}
-
-export function clearLiveness() {
-    return { 
-        type: CLEAR_LIVENESS
-    }
-}
+export const CLEAR_STACK = 'CLEAR_STACK'
+export const CLEAR_PROFILE = 'CLEAR_PROFILE'
 
 export function clearStack() {
-    return dispatch => {
-        dispatch(resetAction(MEDIA_ITEMS))
-        dispatch(resetAction(COMMENTS))
-        dispatch(resetAction(STACK))
-        dispatch(resetSelectedMediaItem())
-        dispatch(clearLiveness())
+    return {
+        type: CLEAR_STACK
     }
 }
 
 export function clearProfile() {
-    return dispatch => {
-        dispatch(resetAction(USER_STACKS))
-        dispatch(resetAction(USER))
+    return {
+        type: CLEAR_PROFILE
     }
 }

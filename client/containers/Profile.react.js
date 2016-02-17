@@ -3,6 +3,8 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { Map, List } from 'immutable'
 
+import StackItem from '../components/StackItem.react'
+
 import { loadProfile, clearProfile, loadStacksForUser } from '../actions'
 import { getEntity, getPaginatedEntities } from '../utils'
 
@@ -24,21 +26,14 @@ class Profile extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.params.stack_id !== this.props.params.stack_id) {
+        if (prevProps.params.user_id !== this.props.params.user_id) {
             this.props.dispatch(clearProfile())
             this.props.dispatch(loadProfile(this.props.params.username))
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.profile.get('id') !== this.props.profile.get('id')) {
-            // profile has loaded
-            this.props.dispatch(loadStacksForUser(this.props.params.username));
-        }
-    }
-
     renderProfile() {
-        const { profile, stacks } = this.props;
+        const { profile, openStacks, closedStacks } = this.props;
         const profpic_url = profile.get('profpic_thumbnail_url') || profile.get('profpic_url');
         return (
             <section>  
@@ -46,7 +41,10 @@ class Profile extends React.Component {
                     <div className="profile-picture"><img src={profpic_url} /></div>
                     {profile.get('username')}
                 </section>
-                { stacks.map(stack => <div><Link to={`/r/${stack.get('id')}`}>{stack.get('id')}: {stack.get('description')}</Link></div>)}
+                <div className="header">OPEN</div>
+                { openStacks.map(stack => <Link key={stack.get('id')} to={`/r/${stack.get('id')}`}><StackItem stack={stack} /></Link>)}
+                <div className="header">HISTORY</div>
+                { closedStacks.map(stack => <Link key={stack.get('id')} to={`/r/${stack.get('id')}`}><StackItem stack={stack} /></Link>)}
             </section>
         )
     }
@@ -64,18 +62,18 @@ class Profile extends React.Component {
 }
 
 function mapStateToProps(state, props) {
-    const id = state.getIn(['profile', 'id'], 0);
-    const isFetching = state.getIn(['profile', 'isFetching']);
-    const error = state.getIn(['profile', 'error']);
+    const { id=0, isFetching, error } = state.getIn(['profile', 'meta'], Map()).toJS()
 
     const profile = getEntity(state, 'users', id);
-    const stacks = getPaginatedEntities(state, 'stacks');
+    const openStacks = getPaginatedEntities(state, 'profile', 'openStacks', 'stacks');
+    const closedStacks = getPaginatedEntities(state, 'profile', 'closedStacks', 'stacks');
 
     return {
         isFetching,
         error,
         profile,
-        stacks
+        openStacks,
+        closedStacks
     }
 }
 
