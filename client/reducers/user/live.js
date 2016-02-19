@@ -2,7 +2,7 @@ import { Map, List } from 'immutable'
 import * as ActionTypes from '../../actions'
 import { Status } from '../../actions'
 
-function xmppConnection(state, action) {
+function connectXmpp(state, action) {
     switch (action.status) {
         case Status.REQUESTING:
             return state.merge({
@@ -23,10 +23,22 @@ function xmppConnection(state, action) {
     return state;
 }
 
+function disconnectXmpp(state, action) {
+    switch (action.status) {
+        case Status.SUCCESS: 
+            return state.merge({
+                connected: false
+            }).delete('client')
+    }
+    return state;
+}
+
 export default function(state = Map(), action) {
     switch (action.type) {
-        case ActionTypes.XMPP_CONNECTION:
-            return xmppConnection(state, action)
+        case ActionTypes.CONNECT_XMPP:
+            return connectXmpp(state, action)
+        case ActionTypes.DISCONNECT_XMPP:
+            return disconnectXmpp(state, action)
     }
     return state;
 }

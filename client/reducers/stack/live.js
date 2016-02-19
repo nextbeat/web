@@ -19,7 +19,15 @@ function joinRoom(state, action) {
                 isJoiningRoom: false
             }).delete('room').delete('nickname');
     }
-    return this.state;
+    return state;
+}
+
+function leaveRoom(state, action) {
+    switch (action.status) {
+        case Status.SUCCESS:
+            return state.delete('room').delete('nickname')
+    } 
+    return state;
 }
 
 function receiveComment(state, action) {
@@ -80,6 +88,8 @@ export default function live(state = initialState, action) {
     switch (action.type) {
         case ActionTypes.JOIN_ROOM:
             return joinRoom(state, action);
+        case ActionTypes.LEAVE_ROOM:
+            return leaveRoom(state, action);
         case ActionTypes.RECEIVE_COMMENT:
             return receiveComment(state, action);
         case ActionTypes.RECEIVE_NOTIFICATION_COMMENT:

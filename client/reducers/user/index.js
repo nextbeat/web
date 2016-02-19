@@ -16,7 +16,8 @@ function meta(state=Map(), action) {
                     isLoggingIn: false,
                     id: action.user.id,
                     username: action.user.username,
-                    token: action.user.token
+                    token: action.user.token,
+                    uuid: action.user.uuid
                 })
             case Status.FAILURE:
                 return state.merge({

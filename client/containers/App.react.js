@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import Header from '../components/Header.react'
 
-import { connectToXMPP, login, logout } from '../actions'
+import { connectToXMPP, disconnectXMPP, login, logout } from '../actions'
 
 class App extends React.Component {
 
@@ -18,7 +18,7 @@ class App extends React.Component {
     }
 
     componentWillUnmount() {
-        // todo: disconnect from xmpp
+        this.props.dispatch(disconnectXMPP());
     }
 
     handleLogin(username, password) {

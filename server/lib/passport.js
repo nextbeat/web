@@ -23,11 +23,13 @@ module.exports = {
             })
         );
 
+        // TODO: store id only, deserialize with full data
         passport.serializeUser(function(user, done) {
             done(null, {
                 id: user.id,
                 username: user.username,
-                token: user.token
+                token: user.token,
+                uuid: user.uuid
             });
         });
 

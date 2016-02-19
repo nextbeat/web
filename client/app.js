@@ -12,9 +12,9 @@ import Profile from './containers/Profile.react'
 const state = JSON.parse($('#state').text())
 let initialState = {}
 if (state.id) {
-    const { id, username, token } = state
+    const { id, username, token, uuid } = state
     initialState.user = Map({ meta: {
-        id, username, token 
+        id, username, token, uuid
     }})
 }
 if (state.error) {

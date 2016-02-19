@@ -24,27 +24,38 @@ export function getClient(store) {
     if (store.getState().hasIn(['user', 'live', 'client'])) {
         return store.getState().getIn(['user', 'live', 'client']) 
     } else {
-        const client = XMPP.createClient({
-            jid: 'anon@xmpp.getbubble.me',
+        let options = {
             transport: 'websocket',
+            sasl: ['plain'],
             wsURL: `ws://${xmppHost()}:5280/websocket`,
             credentials: {
                 host: 'xmpp.getbubble.me'
             }
-        });
+        }
+
+        if (store.getState().hasIn(['user', 'meta', 'id'])) {
+            // user is logged in
+            const uuid = store.getState().getIn(['user', 'meta', 'uuid'])
+            options.jid = `${uuid}@xmpp.getbubble.me`
+            options.password = uuid
+        } else {
+            // connecting as anonymous user
+            options.jid = 'anon@xmpp.getbubble.me'
+        }
+
+        const client = XMPP.createClient(options)
 
         client.on('groupchat', function(s) {
             handleGroupChat(s, store);
         });
 
         // client.on('raw:outgoing', function(s) {
-        //     console.log(s);
+        //     console.log('OUTGOING', s);
         // })
 
         // client.on('raw:incoming', function(s) {
-        //     console.log(s);
+        //     console.log('INCOMING', s);
         // })
-
 
         return client;
     }
@@ -57,11 +68,11 @@ export function isConnected(store) {
 }
 
 export function hasJoinedRoom(store) {
-    return store.getState().getIn(['user', 'live', 'joinedRoom'], false);
+    return store.getState().hasIn(['stack', 'live', 'room']);
 }
 
 export function isJoiningRoom(store) {
-    return store.getState().getIn(['user', 'live', 'isJoiningRoom'], false);
+    return store.getState().getIn(['stack', 'live', 'isJoiningRoom']);
 }
 
 // group chat
@@ -98,7 +109,7 @@ function handleGroupChat(s, store) {
         // received comment
         const message = s.body;
         const nickname = s.from.resource;
-        if (nickname !== store.getState().getIn(['live', 'nickname'])) {
+        if (nickname !== store.getState().getIn(['stack', 'live', 'nickname'])) {
             return store.dispatch(receiveComment(message, nickname));
         }
     } else if (s.thread) {

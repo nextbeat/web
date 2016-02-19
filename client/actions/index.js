@@ -71,7 +71,7 @@ export function loadProfile(username) {
 // PAGINATION
 
 function getStackUuid(state) {
-    const stack_id = state.getIn(['stack', 'id'], 0);
+    const stack_id = state.getIn(['stack', 'meta', 'id'], 0);
     if (stack_id === 0) {
         return null;
     }
@@ -177,7 +177,7 @@ function postComment(stack_id, message) {
 export function sendComment(message) {
     return (dispatch, getState) => {
 
-        const stack_id = getState().getIn(['stack', 'id'], 0);
+        const stack_id = getState().getIn(['stack', 'meta', 'id'], 0);
         if (stack_id === 0) {
             return null;
         }
@@ -282,7 +282,7 @@ export function login(username, password) {
 export function logout() {
     return (dispatch, getState) => {
         // exit early if already logged out
-        if (!getState().hasIn(['user', 'id'])) {
+        if (!getState().hasIn(['user', 'meta', 'id'])) {
             return null;
         }
 
@@ -309,8 +309,10 @@ export function logout() {
  * XMPP CONNECTION
  *****************/
 
-export const XMPP_CONNECTION = 'CONNECT_TO_XMPP';
+export const CONNECT_XMPP = 'CONNECT_XMPP';
+export const DISCONNECT_XMPP = 'DISCONNECT_XMPP';
 export const JOIN_ROOM = 'JOIN_ROOM';
+export const LEAVE_ROOM = 'LEAVE_ROOM';
 export const RECEIVE_COMMENT = 'RECEIVE_COMMENT';
 export const RECEIVE_NOTIFICATION_COMMENT = 'RECEIVE_NOTIFICATION_COMMENT';
 export const RECEIVE_MEDIA_ITEM = 'RECEIVE_MEDIA_ITEM';
@@ -318,20 +320,25 @@ export const CHANGE_NICKNAME = 'CHANGE_NICKNAME';
 
 export function connectToXMPP() {
     return {
-        type: XMPP_CONNECTION
+        type: CONNECT_XMPP
     }
 }
 
-export function joinRoom(uuid, nickname="anon") {
-    if (Map.isMap(uuid)) {
-        // passed the stack object
-        uuid = uuid.get('uuid');
-    }
-    uuid = uuid.toLowerCase();
+export function disconnectXMPP() {
     return {
-        type: JOIN_ROOM,
-        uuid,
-        nickname
+        type: DISCONNECT_XMPP
+    }
+}
+
+export function joinRoom() {
+    return {
+        type: JOIN_ROOM
+    }
+}
+
+export function leaveRoom() {
+    return {
+        type: LEAVE_ROOM
     }
 }
 
@@ -356,13 +363,6 @@ export function receiveMediaItem(id, response) {
         type: RECEIVE_MEDIA_ITEM,
         id,
         response
-    }
-}
-
-export function changeNickname(nickname) {
-    return {
-        type: CHANGE_NICKNAME,
-        nickname
     }
 }
 

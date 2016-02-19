@@ -47,7 +47,7 @@ function callApi(options, store) {
     const { endpoint, schema, pagination, authenticated, queries } = options;
     const url = urlWithParams(endpoint, pagination, queries);
 
-    if (authenticated && !store.getState().hasIn(['user', 'token'])) {
+    if (authenticated && !store.getState().hasIn(['user', 'meta', 'token'])) {
         return Promise.reject("User is not logged in.");
     }
 

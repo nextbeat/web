@@ -28,15 +28,10 @@ class Theater extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (prevProps.params.stack_id !== this.props.params.stack_id) {
-            this.props.dispatch(clearStack())
-            const id = parseInt(this.props.params.stack_id)
-            this.props.dispatch(loadStack(id))
-        }
-
-        if (this.props.stack.get('id') > 0 && this.props.connected && !this.props.roomJoined) {
-            // stack is loaded and xmpp is connected
-            const nickname = this.props.user.getIn(['meta', 'username']); // undefined if user is not logged in
-            this.props.dispatch(joinRoom(this.props.stack, nickname));
+            const { params, dispatch } = this.props
+            dispatch(clearStack())
+            const id = parseInt(params.stack_id)
+            dispatch(loadStack(id))
         }
     }
 
@@ -64,14 +59,14 @@ function mapStateToProps(state, props) {
 
     const { isFetching=false, error } = state.getIn(['stack', 'meta'], Map()).toJS();
 
-    const roomJoined = state.getIn(['stack', 'live', 'roomJoined'], false);
+    const room = state.getIn(['stack', 'live', 'room']);
 
     return {
         stack,
         author,
         isFetching,
         error,
-        roomJoined
+        room
     }
 }
 
