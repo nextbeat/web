@@ -1,14 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import { Map, List } from 'immutable'
 
 import StackItem from '../components/StackItem.react'
 
 import { loadProfile, clearProfile, loadStacksForUser } from '../actions'
-import { getEntity, getPaginatedEntities } from '../utils'
+import { Profile } from '../models'
 
-class Profile extends React.Component {
+class ProfileComponent extends React.Component {
 
     constructor(props) {
         super(props);
@@ -62,19 +61,15 @@ class Profile extends React.Component {
 }
 
 function mapStateToProps(state, props) {
-    const { id=0, isFetching, error } = state.getIn(['profile', 'meta'], Map()).toJS()
-
-    const profile = getEntity(state, 'users', id);
-    const openStacks = getPaginatedEntities(state, 'profile', 'openStacks', 'stacks');
-    const closedStacks = getPaginatedEntities(state, 'profile', 'closedStacks', 'stacks');
+    const profile = new Profile(state)
 
     return {
-        isFetching,
-        error,
-        profile,
-        openStacks,
-        closedStacks
+        isFetching: profile.get('isFetching'),
+        error: profile.get('error'),
+        profile: profile.entity(),
+        openStacks: profile.openStacks(),
+        closedStacks: profile.closedStacks()
     }
 }
 
-export default connect(mapStateToProps)(Profile);
+export default connect(mapStateToProps)(ProfileComponent);

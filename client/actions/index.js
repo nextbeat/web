@@ -2,7 +2,7 @@ import { List, Map } from 'immutable'
 import Schemas from '../schemas'
 import fetch from 'isomorphic-fetch'
 import { assign } from 'lodash'
-import { getEntity } from '../utils'
+import { Stack, CurrentUser } from '../models'
 
 /***********
  * API CALLS
@@ -69,16 +69,6 @@ export function loadProfile(username) {
 }
 
 // PAGINATION
-
-function getStackUuid(state) {
-    const stack_id = state.getIn(['stack', 'meta', 'id'], 0);
-    if (stack_id === 0) {
-        return null;
-    }
-
-    const stack_uuid = getEntity(state, 'stacks', stack_id).get('uuid');
-    return stack_uuid;
-} 
 
 // todo: api server should handle stack_id inputs
 // todo: return nextUrl in api server?
@@ -177,12 +167,13 @@ function postComment(stack_id, message) {
 export function sendComment(message) {
     return (dispatch, getState) => {
 
-        const stack_id = getState().getIn(['stack', 'meta', 'id'], 0);
-        if (stack_id === 0) {
+        const stack = new Stack(getState())
+        const id = stack.get('id', 0)
+        if (id === 0) {
             return null;
         }
 
-        return dispatch(postComment(stack_id, message));
+        return dispatch(postComment(id, message));
     }
 }
 
@@ -202,13 +193,14 @@ export function selectMediaItem(id) {
 
 function navigate(isForward) {
     return (dispatch, getState) => {
-        let selectedId = getState().getIn(['stack', 'mediaItems', 'selected'], -1)
-        if (selectedId == -1) {
+        const stack = new Stack(getState())
+        let selectedId = stack.get('selectedMediaItemId', -1)
+        if (selectedId === -1) {
             return null;
         }
 
-        const paginatedIds = getState().getIn(['stack', 'pagination', 'mediaItems', 'ids'], List())
-        const liveIds = getState().getIn(['stack', 'live', 'mediaItems'], List())
+        const paginatedIds = stack.get('mediaItemIds', List())
+        const liveIds = stack.get('liveMediaItemIds', List())
         const ids = paginatedIds.concat(liveIds);
         const selectedIndex = ids.indexOf(selectedId);
 
@@ -247,7 +239,8 @@ export const LOGOUT = 'LOGOUT';
 export function login(username, password) {
     return (dispatch, getState) => {
         // exit early if already logged in
-        if (getState().hasIn(['user', 'id'])) {
+        const currentUser = new CurrentUser(getState())
+        if (currentUser.isLoggedIn()) {
             return null;
         }
 
@@ -282,7 +275,8 @@ export function login(username, password) {
 export function logout() {
     return (dispatch, getState) => {
         // exit early if already logged out
-        if (!getState().hasIn(['user', 'meta', 'id'])) {
+        const currentUser = new CurrentUser(getState())
+        if (!currentUser.isLoggedIn()) {
             return null;
         }
 

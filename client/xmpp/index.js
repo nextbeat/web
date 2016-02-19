@@ -4,7 +4,7 @@ import { assign } from 'lodash'
 import { normalize } from 'normalizr'
 import Schemas from '../schemas'
 import { receiveComment, receiveNotificationComment, receiveMediaItem } from '../actions'
-import { getPaginatedEntities } from '../utils'
+import { CurrentUser, Stack } from '../models'
 
 function xmppHost() {
     if (process.env.NODE_ENV === 'production') {
@@ -20,9 +20,10 @@ function xmppHost() {
 }
 
 export function getClient(store) {
+    const currentUser = new CurrentUser(store.getState())
     // creates a client unless one is already stored in state
-    if (store.getState().hasIn(['user', 'live', 'client'])) {
-        return store.getState().getIn(['user', 'live', 'client']) 
+    if (currentUser.has('client')) {
+        return currentUser.get('client');
     } else {
         let options = {
             transport: 'websocket',
@@ -33,13 +34,12 @@ export function getClient(store) {
             }
         }
 
-        if (store.getState().hasIn(['user', 'meta', 'id'])) {
+        if (currentUser.isLoggedIn()) {
             // user is logged in
-            const uuid = store.getState().getIn(['user', 'meta', 'uuid'])
+            const uuid = currentUser.get('uuid');
             options.jid = `${uuid}@xmpp.getbubble.me`
             options.password = uuid
         } else {
-            // connecting as anonymous user
             options.jid = 'anon@xmpp.getbubble.me'
         }
 
@@ -61,20 +61,6 @@ export function getClient(store) {
     }
 }
 
-// state status checks
-
-export function isConnected(store) {
-    return store.getState().getIn(['user', 'live', 'connected'], false);
-}
-
-export function hasJoinedRoom(store) {
-    return store.getState().hasIn(['stack', 'live', 'room']);
-}
-
-export function isJoiningRoom(store) {
-    return store.getState().getIn(['stack', 'live', 'isJoiningRoom']);
-}
-
 // group chat
 
 function normalizeMediaItem(data) {
@@ -91,8 +77,8 @@ function normalizeMediaItem(data) {
 function formatNotificationItem(data, store) {
     const type = data[1].indexOf('.jpg') !== -1 ? "photo" : "video";
     let count = data[0];
-    const mostRecentComment = getPaginatedEntities(store.getState(), 'comments').first()
-    console.log(mostRecentComment.toJS());
+    const stack = new Stack(store.getState());
+    const mostRecentComment = stack.comments().first()
     if (mostRecentComment.get('type') === 'notification' && mostRecentComment.get('notification_type') === type) {
         count = count - mostRecentComment.get('notification_count') + 1; 
         // TODO: the +1 should not be necessary, there must be a bug on the backend...
@@ -105,11 +91,12 @@ function formatNotificationItem(data, store) {
 }
 
 function handleGroupChat(s, store) {
+    const stack = new Stack(store.getState());
     if (s.chatState === "active") {
         // received comment
         const message = s.body;
         const nickname = s.from.resource;
-        if (nickname !== store.getState().getIn(['stack', 'live', 'nickname'])) {
+        if (nickname !== stack.get('nickname')) {
             return store.dispatch(receiveComment(message, nickname));
         }
     } else if (s.thread) {

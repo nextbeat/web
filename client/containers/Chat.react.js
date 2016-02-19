@@ -1,12 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Map, List } from 'immutable'
 
 import ChatItem from '../components/ChatItem.react'
 import NotificationChatItem from '../components/NotificationChatItem.react'
 import Compose from '../components/Compose.react'
+
 import { loadComments, sendComment } from '../actions'
-import { getPaginatedEntities } from '../utils'
+import { Stack } from '../models'
 
 class Chat extends React.Component {
 
@@ -133,19 +133,15 @@ class Chat extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const comments = getPaginatedEntities(state, 'stack', 'comments');
-
+    const stack = new Stack(state)
     const users = state.getIn(['entities', 'users']);
-    const { isFetching, error } = state.getIn(['stack', 'pagination', 'comments'], Map()).toJS();
-
-    const liveComments = state.getIn(['stack', 'live', 'comments'], List());
 
     return {
-        comments,
+        comments: stack.comments(),
         users,
-        isFetching,
-        error,
-        liveComments
+        isFetching: stack.get('commentsFetching'),
+        error: stack.get('commentsError'),
+        liveComments: stack.liveComments()
     }
 }
 

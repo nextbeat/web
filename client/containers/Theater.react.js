@@ -1,14 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { isEmpty } from 'lodash'
-import { Map, List } from 'immutable'
 
 import Media from '../containers/Media.react'
 import Chat from '../containers/Chat.react'
 import Info from '../components/Info.react'
 
 import { loadStack, joinRoom, clearStack } from '../actions'
-import { getEntity } from '../utils'
+import { Stack } from '../models'
 
 class Theater extends React.Component {
 
@@ -54,19 +53,14 @@ class Theater extends React.Component {
 }
 
 function mapStateToProps(state, props) {
-    const stack = getEntity(state, 'stacks', parseInt(props.params.stack_id));
-    const author = getEntity(state, 'users', stack.get('author', 0));
-
-    const { isFetching=false, error } = state.getIn(['stack', 'meta'], Map()).toJS();
-
-    const room = state.getIn(['stack', 'live', 'room']);
+    const stack = new Stack(state)
 
     return {
-        stack,
-        author,
-        isFetching,
-        error,
-        room
+        stack: stack.entity(),
+        author: stack.author(),
+        isFetching: stack.get('isFetching', false),
+        error: stack.get('error'),
+        room: stack.get('room'),
     }
 }
 

@@ -29,7 +29,6 @@ const reducers = {
 
 export default function(state = Map(), action) {
     if (action.type === ActionTypes.CLEAR_STACK) {
-        console.log('clearing stack');
         return Map()
     } else {
         return combineReducers(reducers)(state, action)

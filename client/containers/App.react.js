@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Header from '../components/Header.react'
 
 import { connectToXMPP, disconnectXMPP, login, logout } from '../actions'
+import { CurrentUser } from '../models'
 
 class App extends React.Component {
 
@@ -41,12 +42,11 @@ class App extends React.Component {
 }
 
 function mapStateToProps(state, props) {
-    const user = state.get('user');
-    const connected = state.getIn(['user', 'live', 'connected'], false);
+    const user = new CurrentUser(state)
 
     return {
         user,
-        connected
+        connected: user.get('connected')
     }
 }
 

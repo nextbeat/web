@@ -1,12 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { List, Map } from 'immutable'
 
 import Activity from '../components/Activity.react'
 import MediaPlayer from '../components/MediaPlayer.react'
 
 import { loadMediaItems, selectMediaItem, goBackward, goForward } from '../actions'
-import { getPaginatedEntities, getLiveEntities, getEntity } from '../utils'
+import { Stack } from '../models'
 
 class Media extends React.Component {
 
@@ -28,13 +27,6 @@ class Media extends React.Component {
     componentWillUnmount() {
         $(document.body).off('keydown', this.handleKeyDown);
     }
-
-    // componentWillReceiveProps(nextProps) {
-    //     if (nextProps.stack.get('id') !== this.props.stack.get('id')) {
-    //         // stack has loaded
-    //         this.props.dispatch(loadMediaItems());
-    //     }
-    // }
 
     componentDidUpdate(prevProps) {
         if (this.props.mediaItems.size > 0 && prevProps.mediaItems.size === 0) {
@@ -88,17 +80,12 @@ class Media extends React.Component {
 }
 
 function mapStateToProps(state, props) {    
-    const mediaItems = getPaginatedEntities(state, 'stack', 'mediaItems');
-
-    const selectedId = state.getIn(['stack', 'mediaItems', 'selected'], -1);
-    const selectedMediaItem = getEntity(state, 'mediaItems', selectedId);
-
-    const liveMediaItems = getLiveEntities(state, 'stack', 'mediaItems');
+    const stack = new Stack(state)
 
     return {
-        mediaItems,
-        selectedMediaItem,
-        liveMediaItems
+        mediaItems: stack.mediaItems(),
+        selectedMediaItem: stack.selectedMediaItem(),
+        liveMediaItems: stack.liveMediaItems()
     }
 }
 

@@ -2,16 +2,18 @@ import { assign, get } from 'lodash'
 import * as xmpp from '../xmpp'
 import * as ActionTypes from '../actions'
 import { Status } from '../actions' 
-import { getEntity } from '../utils'
+import { Stack, CurrentUser } from '../models'
 import uuid from 'node-uuid'
 
-const actions = ActionTypes
+const actions = ActionTypes;
 
 function connectClient(store, next, action) {
     const client = xmpp.getClient(store);
+    const stack = new Stack(store.getState());
+    const currentUser = new CurrentUser(store.getState());
 
     // exit early if client is already connected
-    if (xmpp.isConnected(store)) {
+    if (currentUser.isConnected()) {
         return next(actionWith(Status.SUCCESS, { client }))
     }
 
@@ -21,8 +23,7 @@ function connectClient(store, next, action) {
     
     next(actionWith(Status.REQUESTING));
 
-    const failureCb = function() {
-        console.log('disconnected!!!!');
+    function failureCb() {
         next(actionWith(Status.FAILURE));
     }
 
@@ -31,10 +32,9 @@ function connectClient(store, next, action) {
     // configure client for connection
     client.once('session:started', function() {
         next(actionWith(Status.SUCCESS, { client }));
-        console.log('removing event...')
         client.off('disconnected', failureCb)
         process.nextTick(() => {
-            if (store.getState().hasIn(['stack', 'meta', 'id'])) {
+            if (stack.has('id')) {
                 // stack is loaded, client is connected; join room
                 store.dispatch(actions.joinRoom())
             }
@@ -54,36 +54,35 @@ function disconnectClient(store, next, action) {
     next(actionWith(Status.REQUESTING));
 
     client.once('disconnected', function() {
-        console.log('DISCONNECTED');
         next(actionWith(Status.SUCCESS));
     })
 
-    console.log('DISCONNECTING');
     client.disconnect();
 }
 
 function joinRoom(store, next, action) {
     const client = xmpp.getClient(store);
+    const currentUser = new CurrentUser(store.getState());
+    const stack = new Stack(store.getState());
 
     function actionWith(status, data) {
         return assign({}, action, { status }, data);
     }
 
     // return early if not connected, if already in room, or if not currently looking at a stack
-    if (!xmpp.isConnected(store)) {
+    if (!currentUser.isConnected()) {
         return next(actionWith(Status.FAILURE));
-    } else if (xmpp.isJoiningRoom(store) || xmpp.hasJoinedRoom(store)) {
+    } else if (currentUser.isJoiningRoom() || currentUser.hasJoinedRoom()) {
         return null;
-    } else if (!store.getState().hasIn(['stack', 'meta', 'id'])) {
+    } else if (!stack.has('id')) {
         return null;
     }
 
     next(actionWith(Status.REQUESTING));
 
-    const id = store.getState().getIn(['stack', 'meta', 'id'], 0);
-    const stack_uuid = getEntity(store.getState(), 'stacks', id).get('uuid');
+    const stack_uuid = stack.get('uuid');
     const jid = `${stack_uuid}@conference.xmpp.getbubble.me`;
-    const nickname = store.getState().hasIn(['user', 'meta', 'id']) ? store.getState().getIn(['user', 'meta', 'username']) : uuid.v4();
+    const nickname = currentUser.isLoggedIn() ? currentUser.get('username') : uuid.v4();
 
     function removeRoomListeners() {
         client.off('presence', roomJoinedCb)
@@ -112,11 +111,16 @@ function joinRoom(store, next, action) {
 }
 
 function leaveRoom(store, next, action) {
-    if (!xmpp.hasJoinedRoom(store)) {
+    const client = xmpp.getClient(store);
+    const stack = new Stack(store.getState());
+    const currentUser = new CurrentUser(store.getState());
+
+    if (!currentUser.hasJoinedRoom()) {
         return null;
     }
-    const client = xmpp.getClient(store)
-    const { room, nickname } = store.getState().getIn(['stack', 'live']).toJS()
+
+    const room = stack.get('room');
+    const nickname = stack.get('nickname');
     client.leaveRoom(room, nickname);
 
     next(assign({}, action, { status: Status.SUCCESS }))
@@ -140,7 +144,8 @@ function handleLoginOrLogout(store, next, action) {
 }
 
 function handleLoadStack(store, next, action) {
-    if (action.status === Status.SUCCESS && store.getState().getIn(['user', 'live', 'connected'])) {
+    const currentUser = new CurrentUser(store.getState());
+    if (action.status === Status.SUCCESS && currentUser.isConnected()) {
         process.nextTick(() => {
             store.dispatch(actions.joinRoom())
         })
@@ -160,9 +165,11 @@ function sendComment(store, next, action) {
     // the comment has successfully been submitted
     if (action.status === Status.SUCCESS) {
         const client = xmpp.getClient(store);
-        const roomJid = store.getState().getIn(['stack', 'live', 'room']);
+        const stack = new Stack(store.getState());
+        const room = stack.get('room');
+
         client.sendMessage({
-            to: roomJid,
+            to: room,
             type: 'groupchat',
             body: action.message,
             chatState: 'active'

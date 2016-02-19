@@ -11,10 +11,10 @@ class Header extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.user && nextProps.user.getIn(['meta', 'error']) !== undefined) {
+        if (nextProps.user && nextProps.user.has('error')) {
             $('#login').show();
         }
-        if (this.props.user.getIn(['meta', 'isLoggingIn']) && nextProps.user.hasIn(['meta', 'id'])) {
+        if (this.props.user.get('isLoggingIn') && nextProps.user.isLoggedIn()) {
             // user has successfully logged in
             $('#login').hide();
         }
@@ -42,8 +42,8 @@ class Header extends React.Component {
         return (
             <section id="header">
                 <span className="logo">sodosopa</span>
-                { user.hasIn(['meta', 'id'])
-                    ? <span className="right">{user.getIn(['meta', 'username'])} / <a onClick={this.handleLogoutClick} href="#">logout</a></span>
+                { user.isLoggedIn()
+                    ? <span className="right">{user.get('username')} / <a onClick={this.handleLogoutClick} href="#">logout</a></span>
                     : <a className="right" onClick={this.handleLoginClick} href="#">login</a> } 
                 <div id="login">
                     <form id="login-form" onSubmit={this.handleSubmit}>
@@ -59,7 +59,7 @@ class Header extends React.Component {
                             <input type="submit" value="Log In"/>
                         </div>
                     </form>
-                    { user.hasIn(['meta', 'error']) && <div><span className="error">{user.getIn(['meta', 'error'])}</span></div> }
+                    { user.has('error') && <div><span className="error">{user.get('error')}</span></div> }
                 </div>
             </section>
         );
