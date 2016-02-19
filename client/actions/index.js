@@ -312,7 +312,7 @@ export const LEAVE_ROOM = 'LEAVE_ROOM';
 export const RECEIVE_COMMENT = 'RECEIVE_COMMENT';
 export const RECEIVE_NOTIFICATION_COMMENT = 'RECEIVE_NOTIFICATION_COMMENT';
 export const RECEIVE_MEDIA_ITEM = 'RECEIVE_MEDIA_ITEM';
-export const CHANGE_NICKNAME = 'CHANGE_NICKNAME';
+export const RECEIVE_STACK_CLOSED = 'RECEIVE_STACK_CLOSED';
 
 export function connectToXMPP() {
     return {
@@ -359,6 +359,12 @@ export function receiveMediaItem(id, response) {
         type: RECEIVE_MEDIA_ITEM,
         id,
         response
+    }
+}
+
+export function receiveStackClosed() {
+    return {
+        type: RECEIVE_STACK_CLOSED
     }
 }
 

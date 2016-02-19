@@ -1,9 +1,12 @@
 import { assign, get } from 'lodash'
+import uuid from 'node-uuid'
+import { normalize } from 'normalizr'
+
 import * as xmpp from '../xmpp'
 import * as ActionTypes from '../actions'
 import { Status } from '../actions' 
 import { Stack, CurrentUser } from '../models'
-import uuid from 'node-uuid'
+import Schemas from '../schemas'
 
 const actions = ActionTypes;
 
@@ -123,7 +126,19 @@ function leaveRoom(store, next, action) {
     const nickname = stack.get('nickname');
     client.leaveRoom(room, nickname);
 
-    next(assign({}, action, { status: Status.SUCCESS }))
+    return next(assign({}, action, { status: Status.SUCCESS }))
+}
+
+function handleReceiveStackClosed(store, next, action) {
+    const stack = new Stack(store.getState())
+    let updatedStack = {
+        id: stack.get('id'),
+        closed: true
+    }
+    const response = normalize(updatedStack, Schemas.STACK)
+    console.log(response)
+    // this triggers a state update in the entities sub-reducer
+    return next(assign({}, action, { response }))
 }
 
 function handleLoginOrLogout(store, next, action) {
@@ -190,6 +205,8 @@ export default store => next => action => {
             return leaveRoom(store, next, action);
         case ActionTypes.SEND_COMMENT:
             return sendComment(store, next, action);
+        case ActionTypes.RECEIVE_STACK_CLOSED:
+            return handleReceiveStackClosed(store, next, action);
         case ActionTypes.LOGIN:
         case ActionTypes.LOGOUT:
             return handleLoginOrLogout(store, next, action);

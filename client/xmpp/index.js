@@ -3,7 +3,7 @@ import moment from 'moment'
 import { assign } from 'lodash'
 import { normalize } from 'normalizr'
 import Schemas from '../schemas'
-import { receiveComment, receiveNotificationComment, receiveMediaItem } from '../actions'
+import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveStackClosed } from '../actions'
 import { CurrentUser, Stack } from '../models'
 
 function xmppHost() {
@@ -49,13 +49,13 @@ export function getClient(store) {
             handleGroupChat(s, store);
         });
 
-        // client.on('raw:outgoing', function(s) {
-        //     console.log('OUTGOING', s);
-        // })
+        client.on('raw:outgoing', function(s) {
+            console.log('OUTGOING', s);
+        })
 
-        // client.on('raw:incoming', function(s) {
-        //     console.log('INCOMING', s);
-        // })
+        client.on('raw:incoming', function(s) {
+            console.log('INCOMING', s);
+        })
 
         return client;
     }
@@ -114,6 +114,9 @@ function handleGroupChat(s, store) {
             case 'NEW_NOTIFICATION_COMMENT':
                 const comment = formatNotificationItem(data, store);
                 return store.dispatch(receiveNotificationComment(comment, username));
+            case 'STACK_CLOSED':
+                console.log('received stack closed xmpp')
+                return store.dispatch(receiveStackClosed());
         }
     }
 }
