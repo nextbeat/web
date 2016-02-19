@@ -1,8 +1,8 @@
-import { Map } from 'immutable'
+import { Map, List } from 'immutable'
 import * as ActionTypes from '../../actions'
 import { Status } from '../../actions'
 import live from './live'
-import { combineReducers } from '../utils'
+import { combineReducers, paginate } from '../utils'
 
 function meta(state=Map(), action) {
     if (action.type === ActionTypes.LOGIN) {
@@ -45,7 +45,42 @@ function meta(state=Map(), action) {
     return state;
 }
 
-export default combineReducers({
-    meta,
-    live
-})
+function bookmarkedStacks(state=Map(), action) {
+    if (action.type === ActionTypes.BOOKMARKED_STACKS && action.status === Status.SUCCESS) {
+
+        state = paginate(ActionTypes.BOOKMARKED_STACKS)(state, action)
+        // We don't need (or want) the usual pagination metadata here
+        return state.delete('beforeDate').delete('limit').delete('page').delete('total');
+
+    } else if (action.type === ActionTypes.BOOKMARK && action.status === Status.SUCCESS) {
+
+        if (state.get('ids', List()).includes(action.id)) {
+            return state;
+        }
+        return state.update('ids', List(), ids => ids.unshift(action.id));
+
+    } else if (action.type === ActionTypes.UNBOOKMARK && action.status === Status.SUCCESS) {
+
+        const index = state.get('ids', List()).indexOf(action.id);
+        if (index === -1) {
+            return state;
+        }
+        return state.update('ids', List(), ids => ids.delete(index));
+
+    }
+    return state;
+} 
+
+const reducers = {
+    meta, 
+    live,
+    bookmarkedStacks
+}
+
+export default function(state = Map(), action) {
+    if (action.type === ActionTypes.LOGOUT && action.status === Status.SUCCESS) {
+        return state.delete('meta').delete('bookmarkedStacks')
+    } else {
+        return combineReducers(reducers)(state, action)
+    }
+}

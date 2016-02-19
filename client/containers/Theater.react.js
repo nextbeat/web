@@ -6,13 +6,16 @@ import Media from '../containers/Media.react'
 import Chat from '../containers/Chat.react'
 import Info from '../components/Info.react'
 
-import { loadStack, joinRoom, clearStack } from '../actions'
+import { loadStack, joinRoom, clearStack, bookmark, unbookmark } from '../actions'
 import { Stack } from '../models'
 
 class Theater extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.handleBookmark = this.handleBookmark.bind(this);
+        this.handleUnbookmark = this.handleUnbookmark.bind(this);
     }
 
     componentDidMount() {
@@ -34,18 +37,27 @@ class Theater extends React.Component {
         }
     }
 
+    handleBookmark() {
+        this.props.dispatch(bookmark())
+    }
+
+    handleUnbookmark() {
+        this.props.dispatch(unbookmark())
+    }
+
     render() {
-        const { isFetching, error, stack, author, user } = this.props
+        const { isFetching, error, stack, stackEntity, author, user } = this.props
+        const isBookmarked = stack.isBookmarked()
         return (
         <section>
             <div id="theater">
             {isFetching && <p>Loading...</p>}
             {error && error.length > 0 && <p>Could not load stack.</p>}
                 <section id="theater-main">
-                    <Media stack={stack}/>
-                    <Info stack={stack} author={author} />
+                    <Media stack={stackEntity}/>
+                    <Info stack={stackEntity} author={author} isBookmarked={isBookmarked} handleBookmark={this.handleBookmark} handleUnbookmark={this.handleUnbookmark} />
                 </section>
-                <Chat stack={stack} user={user} />
+                <Chat stack={stackEntity} user={user} />
             </div>
         </section>
         );
@@ -56,7 +68,8 @@ function mapStateToProps(state, props) {
     const stack = new Stack(state)
 
     return {
-        stack: stack.entity(),
+        stack: stack,
+        stackEntity: stack.entity(),
         author: stack.author(),
         isFetching: stack.get('isFetching', false),
         error: stack.get('error'),

@@ -1,5 +1,7 @@
 import ModelBase from './base'
+
 import { List } from 'immutable'
+import CurrentUser from './currentUser'
 
 const KEY_MAP = {
     // meta
@@ -56,6 +58,16 @@ export default class Stack extends ModelBase {
         // instead of being stored as entities, so the method for retrieving them
         // is different
         return this.get('liveComments', List())
+    }
+
+    // queries
+
+    isBookmarked() {
+        const currentUser = new CurrentUser(this.state);
+        if (!currentUser.isLoggedIn()) {
+            return false;
+        }
+        return currentUser.get('bookmarkedStackIds', List()).indexOf(this.get('id')) !== -1;
     }
 
 }

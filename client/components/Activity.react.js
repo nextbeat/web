@@ -39,6 +39,11 @@ class Activity extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
+        if (prevProps.stack.get('id') !== this.props.stack.get('id')) {
+            // changed stack selection, this does not apply
+            return;
+        }
+        
         if (prevProps.selectedItem !== this.props.selectedItem) {
             const [ selected, activity ] = [ $('.selected'), $('#activity-inner') ];
 

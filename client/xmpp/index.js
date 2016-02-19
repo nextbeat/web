@@ -49,13 +49,13 @@ export function getClient(store) {
             handleGroupChat(s, store);
         });
 
-        client.on('raw:outgoing', function(s) {
-            console.log('OUTGOING', s);
-        })
+        // client.on('raw:outgoing', function(s) {
+        //     console.log('OUTGOING', s);
+        // })
 
-        client.on('raw:incoming', function(s) {
-            console.log('INCOMING', s);
-        })
+        // client.on('raw:incoming', function(s) {
+        //     console.log('INCOMING', s);
+        // })
 
         return client;
     }

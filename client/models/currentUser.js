@@ -1,18 +1,21 @@
 import ModelBase from './base'
 
-import { Map } from 'immutable'
+import { Map, List } from 'immutable'
 import Stack from './stack'
 
 const KEY_MAP = {
     // meta
     'id': ['user', 'meta', 'id'],
     'isLoggingIn': ['user', 'meta', 'isLoggingIn'],
+    'error': ['user', 'meta', 'error'],
     'token': ['user', 'meta', 'token'],
     'username': ['user', 'meta', 'username'],
     'uuid': ['user', 'meta', 'uuid'],
     // live
     'connected': ['user', 'live', 'connected'],
-    'client': ['user', 'live', 'client']
+    'client': ['user', 'live', 'client'],
+    // bookmarked stacks
+    'bookmarkedStackIds': ['user', 'bookmarkedStacks', 'ids']
 }
 
 export default class CurrentUser extends ModelBase {
@@ -27,6 +30,10 @@ export default class CurrentUser extends ModelBase {
     entity() {
         // todo: create user entity (involves changing passport serialization)
         return Map();
+    }
+
+    bookmarkedStacks() {
+        return this.get('bookmarkedStackIds', List()).map(id => this.__getEntity(id, 'stacks'));
     }
 
     isLoggedIn() {

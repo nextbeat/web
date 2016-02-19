@@ -68,10 +68,10 @@ class Media extends React.Component {
     // Render
 
     render() {
-        const { mediaItems, liveMediaItems, selectedMediaItem } = this.props;
+        const { stack, mediaItems, liveMediaItems, selectedMediaItem } = this.props;
         return (
             <section>
-                <Activity mediaItems={mediaItems} liveMediaItems={liveMediaItems} selectedItem={selectedMediaItem} handleClick={this.handleClick} selectNewestLiveItem={this.selectNewestLiveItem}/>
+                <Activity stack={stack} mediaItems={mediaItems} liveMediaItems={liveMediaItems} selectedItem={selectedMediaItem} handleClick={this.handleClick} selectNewestLiveItem={this.selectNewestLiveItem}/>
                 <MediaPlayer item={selectedMediaItem} handleForward={this.handleForward} handleBackward={this.handleBackward} />
                 <div className="clear" />
             </section>

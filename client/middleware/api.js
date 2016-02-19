@@ -5,6 +5,7 @@ import Promise from 'bluebird'
 import moment from 'moment'
 import { normalize } from 'normalizr'
 import { Status, selectMediaItem } from '../actions'
+import { CurrentUser } from '../models'
 
 const API_ROOT = '/api/';
 
@@ -46,9 +47,10 @@ function fetchOptions(options, store) {
 function callApi(options, store) {
     const { endpoint, schema, pagination, authenticated, queries } = options;
     const url = urlWithParams(endpoint, pagination, queries);
+    const currentUser = new CurrentUser(store.getState());
 
-    if (authenticated && !store.getState().hasIn(['user', 'meta', 'token'])) {
-        return Promise.reject("User is not logged in.");
+    if (authenticated && !currentUser.isLoggedIn()) {
+        return Promise.reject(new Error("User is not logged in."));
     }
 
     return fetch(url, fetchOptions(options, store))
@@ -87,17 +89,18 @@ export default store => next => action => {
     }
 
     // dispatch action which asserts request is being made
-    next(actionWith({ 
-        status: Status.REQUESTING,
-        pagination 
-    }));
+    let requestData = { status: Status.REQUESTING }
+    if (pagination) requestData.pagination = pagination
+    next(actionWith(requestData));
 
     // call api server with the given endpoint, then
     // dispatch action depending on success of the call
     callApi(apiCall, store)
         .then(response => {
             if (typeof onSuccess === 'function') {
-                onSuccess(store, response);
+                process.nextTick(() => {
+                    onSuccess(store, next, action, response);
+                })
             }
             return next(actionWith({
                 status: Status.SUCCESS,

@@ -1,6 +1,7 @@
 import { List, Map } from 'immutable'
 import Schemas from '../schemas'
 import fetch from 'isomorphic-fetch'
+import { normalize } from 'normalizr'
 import { assign } from 'lodash'
 import { Stack, CurrentUser } from '../models'
 
@@ -10,12 +11,17 @@ import { Stack, CurrentUser } from '../models'
 
 import { API_CALL } from '../middleware/api'
 
+export const ENTITY_UPDATE = 'ENTITY_UPDATE';
+
 export const STACK = 'STACK';
 export const USER_OPEN_STACKS = 'USER_OPEN_STACKS';
 export const USER_CLOSED_STACKS = 'USER_CLOSED_STACKS';
 export const MEDIA_ITEMS = 'MEDIA_ITEMS';
 export const COMMENTS = 'COMMENTS';
+export const BOOKMARKED_STACKS = 'BOOKMARKED_STACKS';
 export const SEND_COMMENT = 'SEND_COMMENT';
+export const BOOKMARK = 'BOOKMARK';
+export const UNBOOKMARK = 'UNBOOKMARK';
 export const USER = 'USER';
 
 export const Status = {
@@ -25,7 +31,7 @@ export const Status = {
     RESET: 'RESET'
 }
 
-function onStackSuccess(store, response) {
+function onStackSuccess(store, next, action, response) {
     const stack = response.entities.stacks[response.result];
     store.dispatch(loadMediaItems(stack.uuid));
     store.dispatch(loadComments(stack.uuid));
@@ -47,7 +53,7 @@ export function loadStack(id) {
     return fetchStack(id);
 }
 
-function onProfileSuccess(store, response) {
+function onProfileSuccess(store, next, action, response) {
     const profile = response.entities.users[response.result];
     store.dispatch(loadOpenStacksForUser(profile.username))
     store.dispatch(loadClosedStacksForUser(profile.username))
@@ -82,8 +88,6 @@ function loadPaginatedObjects(modelKey, objectKey, action, defaultLimit=20) {
             beforeDate = Date.now(),
             ids = []
         } = getState().getIn([modelKey, 'pagination', objectKey], Map()).toJS()
-
-        console.log(page, beforeDate)
 
         if (total >= 0 && total <= ids.length) {
             // reached the end of the list of objects
@@ -128,6 +132,28 @@ function fetchComments(stack_uuid, pagination) {
 
 export function loadComments(stack_uuid) {
     return loadPaginatedObjects('stack', 'comments', fetchComments.bind(this, stack_uuid), 25);
+}
+
+function fetchBookmarkedStacks(pagination) {
+    return {
+        type: BOOKMARKED_STACKS,
+        [API_CALL]: {
+            schema: Schemas.STACKS,
+            endpoint: `stacks/bookmarked`,
+            authenticated: true,
+            pagination
+        }
+    }
+}
+
+export function loadBookmarkedStacks() {
+    // we don't use loadPaginatedObjects because we want
+    // to be able to refresh this without incrementing the 
+    // page, setting a beforeDate, etc
+    return fetchBookmarkedStacks({
+        limit: "all",
+        page: "1"
+    })
 }
 
 function fetchStacksForUser(username, type, status, pagination) {
@@ -176,6 +202,82 @@ export function sendComment(message) {
         }
 
         return dispatch(postComment(id, message));
+    }
+}
+
+function onBookmarkSuccess(store, next, action, response) {
+    const stack = new Stack(store.getState())
+    const newStack = {
+        id: stack.get('id'),
+        bookmark_count: stack.get('bookmark_count', 0) + 1
+    }
+    store.dispatch({
+        type: ENTITY_UPDATE,
+        response: normalize(newStack, Schemas.STACK)
+    })
+}
+
+function postBookmark(stack_id) {
+    return {
+        type: BOOKMARK,
+        id: stack_id,
+        [API_CALL]: {
+            method: 'POST',
+            endpoint: `stacks/${stack_id}/bookmark`,
+            authenticated: true,
+            onSuccess: onBookmarkSuccess
+        }
+    }
+}
+
+function onUnbookmarkSuccess(store, next, action, response) {
+    const stack = new Stack(store.getState())
+    const newStack = {
+        id: stack.get('id'),
+        bookmark_count: stack.get('bookmark_count', 1) - 1
+    }
+    store.dispatch({
+        type: ENTITY_UPDATE,
+        response: normalize(newStack, Schemas.STACK)
+    })
+}
+
+function postUnbookmark(stack_id) {
+    return {
+        type: UNBOOKMARK,
+        id: stack_id,
+        [API_CALL]: {
+            method: 'POST',
+            endpoint: `stacks/${stack_id}/unbookmark`,
+            authenticated: true,
+            onSuccess: onUnbookmarkSuccess
+        }
+    }
+}
+
+export function bookmark() {
+    return (dispatch, getState) => {
+
+        const stack = new Stack(getState())
+        const id = stack.get('id')
+        if (!id || stack.isBookmarked()) {
+            return null;
+        }
+
+        return dispatch(postBookmark(id));
+    }
+}
+
+export function unbookmark() {
+    return (dispatch, getState) => {
+
+        const stack = new Stack(getState())
+        const id = stack.get('id')
+        if (!id || !stack.isBookmarked()) {
+            return null;
+        }
+        
+        return dispatch(postUnbookmark(id));
     }
 }
 
@@ -269,7 +371,11 @@ export function login(username, password) {
             if (!res.ok) {
                 return dispatch(actionWith(Status.FAILURE, json))
             }
-            return dispatch(actionWith(Status.SUCCESS, { user: json }))
+            dispatch(actionWith(Status.SUCCESS, { user: json }))
+            // we wait until the next tick so the reducer updates state first
+            process.nextTick(() => {
+                dispatch(loadBookmarkedStacks())
+            })
         });
     }
 }
