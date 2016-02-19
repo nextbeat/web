@@ -25,7 +25,7 @@ export default class CurrentUser extends ModelBase {
     }
 
     entity() {
-        // todo: create user entity (involves chaning passport serialization)
+        // todo: create user entity (involves changing passport serialization)
         return Map();
     }
 

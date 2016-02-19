@@ -99,17 +99,20 @@ class Chat extends React.Component {
     // Render
 
     renderComment(comment) {
-        const { users } = this.props;
+        const { users, stackAuthor } = this.props;
         const username = users.getIn([comment.get('author').toString(), 'username']);
+        const isCreator = (stackAuthor.get('username') === username);
         return comment.get('type') === 'message' ? 
-            <ChatItem key={comment.get('id')} message={comment.get('message')} username={username} />
+            <ChatItem key={comment.get('id')} message={comment.get('message')} username={username} isCreator={isCreator} />
             : <NotificationChatItem key={comment.get('id')} comment={comment} username={username} />
     }
 
     renderLiveComment(comment, idx) {
+        const { stackAuthor } = this.props;
         const key = `l${idx}`;
+        const isCreator = (stackAuthor.get('username') === comment.get('username'));
         return comment.get('type') === 'message' ? 
-            <ChatItem key={key} message={comment.get('message')} username={comment.get('username')} />
+            <ChatItem key={key} message={comment.get('message')} username={comment.get('username')} isCreator={isCreator} />
             : <NotificationChatItem key={key} comment={comment} username={comment.get('username')} />
     }
 
@@ -139,6 +142,7 @@ function mapStateToProps(state) {
     return {
         comments: stack.comments(),
         users,
+        stackAuthor: stack.author(),
         isFetching: stack.get('commentsFetching'),
         error: stack.get('commentsError'),
         liveComments: stack.liveComments()

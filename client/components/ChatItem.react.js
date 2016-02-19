@@ -7,8 +7,9 @@ class ChatItem extends React.Component {
     }
 
     render() {
-        const { message, username } = this.props;
-        return <li><span><strong>{username}</strong> {message}</span></li>;
+        const { message, username, isCreator } = this.props;
+        const creatorClass = isCreator ? "creator" : "";
+        return <li><span><strong className={creatorClass}>{username}</strong> {message}</span></li>;
     }
 }
 

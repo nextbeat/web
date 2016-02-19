@@ -79,6 +79,10 @@ input[type="submit"] {
     margin: 5px 0 0 10px; }
   #chat strong {
     color: #2258c5; }
+  #chat strong.creator {
+    color: #fff;
+    background-color: #2258c5;
+    padding: 0 3px; }
   #chat .notification {
     color: #999;
     font-style: italic; }
