@@ -72,7 +72,7 @@ export function loadProfile(username) {
 
 // todo: api server should handle stack_id inputs
 // todo: return nextUrl in api server?
-function loadPaginatedObjects(page, key, action, defaultLimit=20) {
+function loadPaginatedObjects(modelKey, objectKey, action, defaultLimit=20) {
     return (dispatch, getState) => {
 
         const { 
@@ -81,7 +81,9 @@ function loadPaginatedObjects(page, key, action, defaultLimit=20) {
             total = -1,
             beforeDate = Date.now(),
             ids = []
-        } = getState().getIn([page, 'pagination', key], Map()).toJS()
+        } = getState().getIn([modelKey, 'pagination', objectKey], Map()).toJS()
+
+        console.log(page, beforeDate)
 
         if (total >= 0 && total <= ids.length) {
             // reached the end of the list of objects

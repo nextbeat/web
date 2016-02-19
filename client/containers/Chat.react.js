@@ -64,10 +64,10 @@ class Chat extends React.Component {
     }
 
     handleScroll() {
-        const { isFetching, comments } = this.props;
+        const { isFetching, comments, stack, dispatch } = this.props;
         const history = document.getElementById('history');
         if (history.scrollTop == 0 && !isFetching) {
-            this.props.dispatch(loadComments());
+            dispatch(loadComments(stack.get('uuid')));
         } 
     }
 
