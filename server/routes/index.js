@@ -44,7 +44,7 @@ module.exports = {
             res.send('C4NnuJ1Egr1ntyVrehoMMqr2Ggxt-4M3M9Lm6J9yWK4.L8Y9FjWqaSJsTNtFMJYAdaeE66OYJB-fOJ9juFmMIao');
         });
 
-        // Login
+        // Login/signup
 
         router.post('/login',
             function(req, res, next) {
@@ -69,6 +69,22 @@ module.exports = {
         router.post('/logout', function(req, res) {
             req.logOut();
             return res.status(200).end();
+        });
+
+        router.post('/signup', function(req, res) {
+            api.post('signup', { 
+                email: req.body.email,
+                phone: '' // avoids db null error (todo: migrate db column status)
+            },{
+                user: req.body.username,
+                pass: req.body.password
+            }).then(function(_res) {
+                console.log(_res);
+                res.status(200).json(_res);
+            }).catch(function(e) {
+                var errorObj = e.error && e.error.error ? { error: e.error.error } : { error: 'Error signing up. Please try again in a few minutes.' }
+                res.status(400).json({ error: e.error.error });
+            })
         });
 
         // React

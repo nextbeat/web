@@ -7,7 +7,9 @@ const KEY_MAP = {
     // meta
     'id': ['user', 'meta', 'id'],
     'isLoggingIn': ['user', 'meta', 'isLoggingIn'],
-    'error': ['user', 'meta', 'error'],
+    'loginError': ['user', 'meta', 'loginError'],
+    'isSigningUp': ['user', 'meta', 'isSigningUp'],
+    'signupError': ['user', 'meta', 'signupError'],
     'token': ['user', 'meta', 'token'],
     'username': ['user', 'meta', 'username'],
     'uuid': ['user', 'meta', 'uuid'],

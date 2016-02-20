@@ -2,7 +2,7 @@ import { List, Map } from 'immutable'
 import Schemas from '../schemas'
 import fetch from 'isomorphic-fetch'
 import { normalize } from 'normalizr'
-import { assign } from 'lodash'
+import { assign, has } from 'lodash'
 import { Stack, CurrentUser } from '../models'
 
 /***********
@@ -333,12 +333,13 @@ export function goBackward() {
     return navigate(false);
 }
 
-/*******
- * LOGIN
- *******/
+/**************
+ * LOGIN/SIGNUP
+ **************/
 
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
+export const SIGNUP = 'SIGNUP';
 
 export function login(username, password) {
     return (dispatch, getState) => {
@@ -406,6 +407,42 @@ export function logout() {
         });
     }
 }
+
+export function signup(credentials) {
+    return (dispatch, getState) => {
+
+        function actionWith(status, data) {
+            return assign({ type: SIGNUP }, { status }, data)
+        }
+
+        if (!credentials.username || !credentials.password || !credentials.email) {
+            return dispatch(actionWith(Status.FAILURE, { error: 'All fields must be filled in.' }));
+        }
+
+        fetch('/signup', { 
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(credentials)
+        })
+        .then(res => res.json().then(json => ({json, res})))
+        .then(({json, res}) => {
+            if (!res.ok) {
+                return dispatch(actionWith(Status.FAILURE, json))
+            }
+            console.log(res);
+            dispatch(actionWith(Status.SUCCESS, { user: json }))
+            process.nextTick(() => {
+                dispatch(login(credentials.username, credentials.password))
+            })
+        });
+    }
+}
+
+
 
 /*****************
  * XMPP CONNECTION
@@ -480,6 +517,7 @@ export function receiveStackClosed() {
 
 export const CLEAR_STACK = 'CLEAR_STACK'
 export const CLEAR_PROFILE = 'CLEAR_PROFILE'
+export const CLEAR_LOGIN_SIGNUP = 'CLEAR_LOGIN_SIGNUP'
 
 export function clearStack() {
     return {
@@ -492,3 +530,19 @@ export function clearProfile() {
         type: CLEAR_PROFILE
     }
 }
+
+function clearLoginSignup() {
+    return {
+        type: CLEAR_LOGIN_SIGNUP
+    }
+}
+
+export function clearLogin() {
+    return clearLoginSignup()
+}
+
+export function clearSignup() {
+    return clearLoginSignup()
+}
+
+

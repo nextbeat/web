@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import Header from '../components/Header.react'
 import Sidebar from '../containers/Sidebar.react'
 
-import { connectToXMPP, disconnectXMPP, login, logout, loadBookmarkedStacks } from '../actions'
+import { connectToXMPP, disconnectXMPP, login, logout, signup, clearLogin, clearSignup, loadBookmarkedStacks } from '../actions'
 import { CurrentUser } from '../models'
 
 class App extends React.Component {
@@ -14,9 +14,12 @@ class App extends React.Component {
         super(props);
 
         this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
+        this.handleSignupSubmit = this.handleSignupSubmit.bind(this);
         this.handleLogoutClick = this.handleLogoutClick.bind(this);
         this.renderLogin = this.renderLogin.bind(this);
         this.renderSignup = this.renderSignup.bind(this);
+        this.dismissLogin = this.dismissLogin.bind(this);
+        this.dismissSignup = this.dismissSignup.bind(this);
     }
 
     // Component lifecycle
@@ -37,6 +40,7 @@ class App extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.user.get('isLoggingIn') && this.props.user.isLoggedIn()) {
             $('#login-container').hide();
+            $('#signup-container').hide();
         }
     }
 
@@ -64,13 +68,23 @@ class App extends React.Component {
         this.props.dispatch(login(username, password));
     }
 
+    handleSignupSubmit(e) {
+        e.preventDefault();
+        const email = findDOMNode(this.refs.signup_email).value;
+        const username = findDOMNode(this.refs.signup_username).value;
+        const password = findDOMNode(this.refs.signup_password).value;
+        this.props.dispatch(signup({ email, username, password }));
+    }   
+
     dismissLogin(e) {
         e.preventDefault();
+        this.props.dispatch(clearLogin());
         $('#login-container').hide();
     }
 
     dismissSignup(e) {
         e.preventDefault();
+        this.props.dispatch(clearSignup());
         $('#signup-container').hide();
     }
 
@@ -80,22 +94,22 @@ class App extends React.Component {
         const { user } = this.props;
         return (
             <div id="login-container" className="modal-container">
-                <div id="login">
+                <div id="login" className="modal-login">
                     <a onClick={this.dismissLogin}>X</a>
                     <form id="login-form" onSubmit={this.handleLoginSubmit}>
                         <div>
                             <label>Username: </label>
-                            <input type="text" ref="login_username" name="username"/>
+                            <input type="text" ref="login_username" name="login_username"/>
                         </div>
                         <div>
                             <label>Password: </label>
-                            <input type="password" ref="login_password" name="password"/>
+                            <input type="password" ref="login_password" name="login_password"/>
                         </div>
                         <div>
                             <input type="submit" value="Log In"/>
                         </div>
                     </form>
-                    { user.has('error') && <div><span className="error">{user.get('error')}</span></div> }
+                    { user.has('loginError') && <div><span className="error">{user.get('loginError')}</span></div> }
                 </div>
             </div>
         )
@@ -103,29 +117,31 @@ class App extends React.Component {
 
     renderSignup() {
         const { user } = this.props;
-        <div id="signup-container" className="modal-container">
-            <div id="signup">
-                <a onClick={this.dismissSignup}>X</a>
-                <form id="signup-form" onSubmit={this.handleSignupSubmit}>
-                    <div>
-                        <label>Email: </label>
-                        <input type="text" ref="signup_email" name="email"/>
-                    </div>
-                    <div>
-                        <label>Username: </label>
-                        <input type="text" ref="signup_username" name="username"/>
-                    </div>
-                    <div>
-                        <label>Password: </label>
-                        <input type="password" ref="signup_password" name="password"/>
-                    </div>
-                    <div>
-                        <input type="submit" value="Sign Up"/>
-                    </div>
-                </form>
-                { user.has('error') && <div><span className="error">{user.get('error')}</span></div> }
+        return (
+            <div id="signup-container" className="modal-container">
+                <div id="signup" className="modal-login">
+                    <a onClick={this.dismissSignup}>X</a>
+                    <form id="signup-form" onSubmit={this.handleSignupSubmit} >
+                        <div>
+                            <label>Email: </label>
+                            <input type="text" ref="signup_email" name="signup_email"/>
+                        </div>
+                        <div>
+                            <label>Username: </label>
+                            <input type="text" autocomplete="off" ref="signup_username" name="signup_username"/>
+                        </div>
+                        <div>
+                            <label>Password: </label>
+                            <input type="password" autocomplete="new-password" ref="signup_password" name="signup_password"/>
+                        </div>
+                        <div>
+                            <input type="submit" value="Sign Up"/>
+                        </div>
+                    </form>
+                    { user.has('signupError') && <div><span className="error">{user.get('signupError')}</span></div> }
+                </div>
             </div>
-        </div>
+        )
     }
 
     render() {

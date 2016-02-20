@@ -8,7 +8,7 @@ class StackItem extends React.Component {
     }
 
     render() {
-        const { stack } = this.props;
+        const { stack, author } = this.props;
         return (
             <div className="stack-item">
                 <div className="thumb">

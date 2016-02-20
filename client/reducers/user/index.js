@@ -22,7 +22,7 @@ function meta(state=Map(), action) {
             case Status.FAILURE:
                 return state.merge({
                     isLoggingIn: false,
-                    error: action.error
+                    loginError: action.error
                 })
         }
     } else if (action.type === ActionTypes.LOGOUT) {
@@ -41,6 +41,27 @@ function meta(state=Map(), action) {
                     isLoggingOut: false
                 })
         }
+    } else if (action.type === ActionTypes.SIGNUP) {
+        switch (action.status) {
+            case Status.REQUESTING:
+                return state.merge({
+                    isSigningUp: true
+                })
+            case Status.SUCCESS:
+                return state.merge({
+                    isSigningUp: false
+                })
+            case Status.FAILURE:
+                return state.merge({
+                    isSigningUp: false,
+                    signupError: action.error
+                })
+        }
+    } else if (action.type === ActionTypes.CLEAR_LOGIN_SIGNUP) {
+        return state.merge({
+            isSigningUp: false,
+            isLoggingIn: false
+        }).delete('loginError').delete('signupError');
     }
     return state;
 }

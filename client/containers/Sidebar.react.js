@@ -32,6 +32,12 @@ class Sidebar extends React.Component {
         )
     }
 
+    renderStackItem(stack) {
+        return (
+            <Link key={stack.get('id')} to={`/r/${stack.get('id')}`} activeClassName="active"><StackItem stack={stack} /></Link>
+        )
+    }
+
     render() {
         const { user } = this.props;
         return (
@@ -47,7 +53,7 @@ class Sidebar extends React.Component {
                         <div className="bookmarks">
                             <div className="title">BOOKMARKS</div>
                             {user.bookmarkedStacks().size === 0 && <div className="no-content">You have no open bookmarks.</div>}
-                            {user.bookmarkedStacks().map(stack => <Link key={stack.get('id')} to={`/r/${stack.get('id')}`}><StackItem stack={stack} /></Link>)}
+                            {user.bookmarkedStacks().map(stack => this.renderStackItem(stack))}
                         </div>
                     </div>
                 }

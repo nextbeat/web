@@ -45,7 +45,7 @@ html, body, #container, #content, #react {
     z-index: 100;
 }
 
-#login {
+.modal-login {
     position: absolute;
     width: 300px;
     left: calc(50% - 150px);
@@ -170,6 +170,14 @@ html, body, #container, #content, #react {
         .bookmarks {
             display: none;
         }
+
+        .open {
+            display: none;
+        }
+    }
+
+    .active .stack-item {
+        background-color: rgba($primary-color, 0.1);
     }
 }
 
