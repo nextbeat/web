@@ -13,9 +13,10 @@ class App extends React.Component {
     constructor(props) {
         super(props);
 
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
         this.handleLogoutClick = this.handleLogoutClick.bind(this);
         this.renderLogin = this.renderLogin.bind(this);
+        this.renderSignup = this.renderSignup.bind(this);
     }
 
     // Component lifecycle
@@ -51,10 +52,15 @@ class App extends React.Component {
         this.props.dispatch(logout());
     }
 
-    handleSubmit(e) {
+    handleSignupClick(e) {
         e.preventDefault();
-        const username = findDOMNode(this.refs.username).value;
-        const password = findDOMNode(this.refs.password).value;
+        $('#signup-container').toggle();
+    }
+
+    handleLoginSubmit(e) {
+        e.preventDefault();
+        const username = findDOMNode(this.refs.login_username).value;
+        const password = findDOMNode(this.refs.login_password).value;
         this.props.dispatch(login(username, password));
     }
 
@@ -63,22 +69,27 @@ class App extends React.Component {
         $('#login-container').hide();
     }
 
+    dismissSignup(e) {
+        e.preventDefault();
+        $('#signup-container').hide();
+    }
+
     // Render
 
     renderLogin() {
         const { user } = this.props;
         return (
-            <div id="login-container">
+            <div id="login-container" className="modal-container">
                 <div id="login">
                     <a onClick={this.dismissLogin}>X</a>
-                    <form id="login-form" onSubmit={this.handleSubmit}>
+                    <form id="login-form" onSubmit={this.handleLoginSubmit}>
                         <div>
                             <label>Username: </label>
-                            <input type="text" ref="username" name="username"/>
+                            <input type="text" ref="login_username" name="username"/>
                         </div>
                         <div>
                             <label>Password: </label>
-                            <input type="password" ref="password" name="password"/>
+                            <input type="password" ref="login_password" name="password"/>
                         </div>
                         <div>
                             <input type="submit" value="Log In"/>
@@ -90,12 +101,40 @@ class App extends React.Component {
         )
     }
 
+    renderSignup() {
+        const { user } = this.props;
+        <div id="signup-container" className="modal-container">
+            <div id="signup">
+                <a onClick={this.dismissSignup}>X</a>
+                <form id="signup-form" onSubmit={this.handleSignupSubmit}>
+                    <div>
+                        <label>Email: </label>
+                        <input type="text" ref="signup_email" name="email"/>
+                    </div>
+                    <div>
+                        <label>Username: </label>
+                        <input type="text" ref="signup_username" name="username"/>
+                    </div>
+                    <div>
+                        <label>Password: </label>
+                        <input type="password" ref="signup_password" name="password"/>
+                    </div>
+                    <div>
+                        <input type="submit" value="Sign Up"/>
+                    </div>
+                </form>
+                { user.has('error') && <div><span className="error">{user.get('error')}</span></div> }
+            </div>
+        </div>
+    }
+
     render() {
-        const { user, connected, children } = this.props
+        const { user, connected, children } = this.props;
         return (
             <section id="container">
                 {this.renderLogin()}
-                <Sidebar user={user} handleLoginClick={this.handleLoginClick} handleLogoutClick={this.handleLogoutClick} />
+                {this.renderSignup()}
+                <Sidebar user={user} handleLoginClick={this.handleLoginClick} handleLogoutClick={this.handleLogoutClick} handleSignupClick={this.handleSignupClick} />
                 <div id="content">
                     {React.cloneElement(children, { user, connected })}
                 </div>

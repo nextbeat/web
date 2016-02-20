@@ -30,11 +30,11 @@ html, body, #container, #content, #react {
     float: left;
 }
 
-/*******
- * LOGIN
- *******/
+/**************
+ * LOGIN/SIGNUP
+ **************/
 
-#login-container {
+.modal-container {
     height: 100%;
     width: 100%;
     background-color: rgba(255,255,255,0.75);
@@ -90,6 +90,10 @@ html, body, #container, #content, #react {
     border-right: 1px solid #eee;
     padding: 10px;
 
+    .header {
+        text-align: center;
+    }
+
     .logo {
         text-align: center;
         font-size: 1.4em;
@@ -104,10 +108,29 @@ html, body, #container, #content, #react {
         height: 1px;
     }
 
+    .user-info {
+        height: 25px;
+        position: relative;
+        margin: 0 auto;
+        display: inline-block;
+    }
+
     .user {
-        display: block;
-        width: 100%;
+        display: inline-block;
+        line-height: 25px;
+        width: 220px;
         text-align: left;
+        font-size: 1.2em;
+    }
+
+    .logout {
+        display: inline-block;
+        position: absolute;
+        right: 0;
+    }
+
+    .login {
+        margin-right: 10px;
     }
 
     .title {

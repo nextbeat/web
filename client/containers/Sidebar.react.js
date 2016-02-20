@@ -7,20 +7,41 @@ class Sidebar extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.renderLoggedIn = this.renderLoggedIn.bind(this);
+        this.renderGuest = this.renderGuest.bind(this);
+    }
+
+    renderLoggedIn() {
+        const { user, handleLogoutClick } = this.props; 
+        return (
+            <div className="user-info">
+                <Link to={`/u/${user.get('username')}`}><span className="user">{user.get('username')}</span></Link>
+                <input type="submit" className="logout" onClick={handleLogoutClick} value="Logout" />
+            </div>
+        )
+    }
+
+    renderGuest() {
+        const { handleLoginClick, handleSignupClick } = this.props;
+        return (
+            <div className="user-info">
+                <input type="submit" className="login" onClick={handleLoginClick} value="Login" />
+                <input type="submit" className="signup" onClick={handleSignupClick} value="Signup" />
+            </div>
+        )
     }
 
     render() {
-        const { user, handleLoginClick, handleLogoutClick } = this.props;
+        const { user } = this.props;
         return (
             <div id="sidebar">
                 <div className="header">
                     <span className="logo">sodosopa</span>
                     <div className="separator" />
-                    { user.isLoggedIn()
-                    ? <span className="user">{user.get('username')} / <a onClick={handleLogoutClick} href="#">logout</a></span>
-                    : <a className="user" onClick={handleLoginClick} href="#">login</a> } 
+                    { user.isLoggedIn() ? this.renderLoggedIn() : this.renderGuest() }
                 </div>
-                {user.isLoggedIn() && 
+                { user.isLoggedIn() && 
                     <div>
                         <div className="separator" />
                         <div className="bookmarks">

@@ -20,10 +20,10 @@ html, body, #container, #content, #react {
   width: calc(100% - 240px);
   float: left; }
 
-/*******
- * LOGIN
- *******/
-#login-container {
+/**************
+ * LOGIN/SIGNUP
+ **************/
+.modal-container {
   height: 100%;
   width: 100%;
   background-color: rgba(255, 255, 255, 0.75);
@@ -67,6 +67,8 @@ html, body, #container, #content, #react {
   float: left;
   border-right: 1px solid #eee;
   padding: 10px; }
+  #sidebar .header {
+    text-align: center; }
   #sidebar .logo {
     text-align: center;
     font-size: 1.4em;
@@ -77,10 +79,23 @@ html, body, #container, #content, #react {
     width: calc(100% - 20px);
     background-color: #ddd;
     height: 1px; }
+  #sidebar .user-info {
+    height: 25px;
+    position: relative;
+    margin: 0 auto;
+    display: inline-block; }
   #sidebar .user {
-    display: block;
-    width: 100%;
-    text-align: left; }
+    display: inline-block;
+    line-height: 25px;
+    width: 220px;
+    text-align: left;
+    font-size: 1.2em; }
+  #sidebar .logout {
+    display: inline-block;
+    position: absolute;
+    right: 0; }
+  #sidebar .login {
+    margin-right: 10px; }
   #sidebar .title {
     font-weight: bold;
     color: #666; }

@@ -25,7 +25,7 @@ class ProfileComponent extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.params.user_id !== this.props.params.user_id) {
+        if (prevProps.params.username !== this.props.params.username) {
             this.props.dispatch(clearProfile())
             this.props.dispatch(loadProfile(this.props.params.username))
         }

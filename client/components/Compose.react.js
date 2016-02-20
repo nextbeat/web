@@ -1,4 +1,5 @@
-import React from 'react';
+import React from 'react'
+import { cloneDeep } from 'lodash'
 
 class Compose extends React.Component {
 
@@ -9,7 +10,8 @@ class Compose extends React.Component {
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.chat = this.chat.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.renderChat = this.renderChat.bind(this);
     }
 
     handleChange(e) {
@@ -21,10 +23,17 @@ class Compose extends React.Component {
         this.setState({ message: '' })
     }
 
-    chat() {
+    handleKeyPress(e) {
+        if (e.charCode === 13) { // Enter
+            e.preventDefault();
+            this.handleSubmit();
+        }
+    }
+
+    renderChat() {
         return (
             <div>
-                <textarea onChange={this.handleChange} placeholder="Send a message" value={this.state.message}></textarea>
+                <textarea onChange={this.handleChange} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={this.state.message}></textarea>
                 <input type="submit" value="Send" disabled={this.state.message == 0} onClick={this.handleSubmit} />
             </div>
         )
@@ -34,7 +43,7 @@ class Compose extends React.Component {
         const { user, closed } = this.props;
         return (
             <div id="compose">
-            { closed ? <p>Room is no longer open.</p> : ( user.isLoggedIn() ? this.chat() : <p>Login to chat.</p> ) }
+            { closed ? <p>Room is no longer open.</p> : ( user.isLoggedIn() ? this.renderChat() : <p>Login to chat.</p> ) }
             </div>
         );
     }
