@@ -84,7 +84,7 @@ function formatNotificationItem(data, store) {
         // TODO: the +1 should not be necessary, there must be a bug on the backend...
     }
     return {
-        count: count,
+        count: parseInt(count),
         type: type,
         url: data[1]
     }

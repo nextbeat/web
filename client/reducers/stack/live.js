@@ -1,6 +1,5 @@
 import { Map, List } from 'immutable'
-import * as ActionTypes from '../../actions'
-import { Status } from '../../actions'
+import { ActionTypes, Status }  from '../../actions'
 
 function joinRoom(state, action) {
     switch (action.status) {

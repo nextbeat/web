@@ -1,0 +1,65 @@
+/********
+ * STATUS
+ ********/
+
+export const Status = {
+    REQUESTING: 'REQUESTING',
+    SUCCESS: 'SUCCESS',
+    FAILURE: 'FAILURE',
+    RESET: 'RESET'
+}
+
+export default {
+
+    /*******
+     * STACK
+     *******/
+
+    STACK: 'STACK',
+    MEDIA_ITEMS: 'MEDIA_ITEMS',
+    COMMENTS: 'COMMENTS',
+    SEND_COMMENT: 'SEND_COMMENT',
+    BOOKMARK: 'BOOKMARK',
+    UNBOOKMARK: 'UNBOOKMARK',
+    SELECT_MEDIA_ITEM: 'SELECT_MEDIA_ITEM',
+    CLEAR_STACK: 'CLEAR_STACK',
+
+    /*********
+     * PROFILE
+     *********/
+
+    USER_OPEN_STACKS: 'USER_OPEN_STACKS',
+    USER_CLOSED_STACKS: 'USER_CLOSED_STACKS',
+    USER: 'USER',
+
+    /******
+     * USER
+     ******/
+
+    LOGIN: 'LOGIN',
+    LOGOUT: 'LOGOUT',
+    SIGNUP: 'SIGNUP',
+    CLEAR_LOGIN_SIGNUP: 'CLEAR_LOGIN_SIGNUP',
+    BOOKMARKED_STACKS: 'BOOKMARKED_STACKS',
+
+    /******
+     * XMPP
+     ******/
+
+    CONNECT_XMPP: 'CONNECT_XMPP',
+    DISCONNECT_XMPP: 'DISCONNECT_XMPP',
+    JOIN_ROOM: 'JOIN_ROOM',
+    LEAVE_ROOM: 'LEAVE_ROOM',
+    RECEIVE_COMMENT: 'RECEIVE_COMMENT',
+    RECEIVE_NOTIFICATION_COMMENT: 'RECEIVE_NOTIFICATION_COMMENT',
+    RECEIVE_MEDIA_ITEM: 'RECEIVE_MEDIA_ITEM',
+    RECEIVE_STACK_CLOSED: 'RECEIVE_STACK_CLOSED',
+
+    /*******
+     * OTHER
+     *******/
+
+    ENTITY_UPDATE: 'ENTITY_UPDATE'
+
+}
+

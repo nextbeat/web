@@ -1,6 +1,5 @@
 import { Map, List } from 'immutable'
-import * as ActionTypes from '../../actions'
-import { Status } from '../../actions'
+import { ActionTypes, Status } from '../../actions'
 import live from './live'
 import { combineReducers, paginate } from '../utils'
 

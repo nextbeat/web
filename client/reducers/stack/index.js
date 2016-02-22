@@ -1,7 +1,6 @@
 import { Map } from 'immutable'
 import { mapValues } from 'lodash'
-import * as ActionTypes from '../../actions'
-import { Status } from '../../actions'
+import { ActionTypes, Status } from '../../actions'
 
 import live from './live'
 import { combineReducers, entity, paginate } from '../utils'

@@ -3,12 +3,10 @@ import uuid from 'node-uuid'
 import { normalize } from 'normalizr'
 
 import * as xmpp from '../xmpp'
-import * as ActionTypes from '../actions'
-import { Status } from '../actions' 
+import { Status, ActionTypes } from '../actions' 
+import * as actions from '../actions'
 import { Stack, CurrentUser } from '../models'
 import Schemas from '../schemas'
-
-const actions = ActionTypes;
 
 function connectClient(store, next, action) {
     const client = xmpp.getClient(store);
