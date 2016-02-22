@@ -85,7 +85,7 @@ function joinRoom(store, next, action) {
 
     const stack_uuid = stack.get('uuid');
     const jid = `${stack_uuid}@conference.xmpp.getbubble.me`;
-    const nickname = currentUser.isLoggedIn() ? currentUser.get('username') : uuid.v4();
+    const nickname = currentUser.isLoggedIn() ? `${currentUser.get('username')}#web` : uuid.v4();
 
     function removeRoomListeners() {
         client.off('presence', roomJoinedCb)

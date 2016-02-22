@@ -70,4 +70,12 @@ export default class Stack extends ModelBase {
         return currentUser.get('bookmarkedStackIds', List()).indexOf(this.get('id')) !== -1;
     }
 
+    currentUserIsAuthor() {
+        const currentUser = new CurrentUser(this.state);
+        if (!currentUser.isLoggedIn()) {
+            return false;
+        }
+        return this.author().get('username') === currentUser.get('username');
+    }
+
 }

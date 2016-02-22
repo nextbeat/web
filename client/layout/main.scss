@@ -21,13 +21,22 @@ input[type="submit"] {
     clear: both;
 }
 
+html, body {
+    overflow: hidden;
+}
+
 html, body, #container, #content, #react {
     height: 100%;
+}
+
+#container, #sidebar {
+    overflow: hidden;
 }
 
 #content {
     width: calc(100% - 240px);
     float: left;
+    overflow: auto;
 }
 
 /**************

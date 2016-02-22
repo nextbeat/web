@@ -260,7 +260,7 @@ export function bookmark() {
 
         const stack = new Stack(getState())
         const id = stack.get('id')
-        if (!id || stack.isBookmarked()) {
+        if (!id || stack.isBookmarked() || stack.currentUserIsAuthor()) {
             return null;
         }
 
@@ -273,7 +273,7 @@ export function unbookmark() {
 
         const stack = new Stack(getState())
         const id = stack.get('id')
-        if (!id || !stack.isBookmarked()) {
+        if (!id || !stack.isBookmarked() || stack.currentUserIsAuthor()) {
             return null;
         }
         

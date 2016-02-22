@@ -90,14 +90,22 @@ function formatNotificationItem(data, store) {
     }
 }
 
+function stripNickname(resource) {
+    // To allow users to be signed on from multiple clients at the same
+    // time (e.g. mobile and web) we append the user's client to their
+    // nickname (e.g. foo#web). This function strips the client info.
+    return resource.split('#')[0];
+}
+
 function handleGroupChat(s, store) {
     const stack = new Stack(store.getState());
     if (s.chatState === "active") {
         // received comment
         const message = s.body;
         const nickname = s.from.resource;
+
         if (nickname !== stack.get('nickname')) {
-            return store.dispatch(receiveComment(message, nickname));
+            return store.dispatch(receiveComment(message, stripNickname(nickname)));
         }
     } else if (s.thread) {
         // xmpp message contains a whole host of relevant data

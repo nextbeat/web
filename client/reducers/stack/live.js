@@ -70,7 +70,7 @@ function sendComment(state, action) {
     const comment = Map({
         type: 'message',
         message: action.message,
-        username: state.get('nickname')
+        username: state.get('nickname').split('#')[0]
     })
     return state.update('comments', comments => comments.push(comment));
 }
