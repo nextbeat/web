@@ -3,6 +3,7 @@ import { normalize } from 'normalizr'
 
 import ActionTypes from './types'
 import Schemas from '../schemas'
+import { markStackAsRead } from './user'
 import { loadPaginatedObjects } from './utils'
 import { Stack } from '../models'
 import { API_CALL } from '../middleware/api'
@@ -30,7 +31,10 @@ function fetchStack(id) {
 }
 
 export function loadStack(id) {
-    return fetchStack(id);
+    return dispatch => {
+        dispatch(markStackAsRead(id))
+        dispatch(fetchStack(id))
+    }
 }
 
 function fetchMediaItems(stack_uuid, pagination) {
@@ -111,7 +115,7 @@ function onBookmarkSuccess(store, next, action, response) {
 
 function postBookmark(stack_id) {
     return {
-        type: BOOKMARK,
+        type: ActionTypes.BOOKMARK,
         id: stack_id,
         [API_CALL]: {
             method: 'POST',
@@ -136,7 +140,7 @@ function onUnbookmarkSuccess(store, next, action, response) {
 
 function postUnbookmark(stack_id) {
     return {
-        type: UNBOOKMARK,
+        type: ActionTypes.UNBOOKMARK,
         id: stack_id,
         [API_CALL]: {
             method: 'POST',

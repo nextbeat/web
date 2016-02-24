@@ -10,6 +10,7 @@ class Sidebar extends React.Component {
 
         this.renderLoggedIn = this.renderLoggedIn.bind(this);
         this.renderGuest = this.renderGuest.bind(this);
+        this.renderStackItem = this.renderStackItem.bind(this);
     }
 
     renderLoggedIn() {
@@ -33,8 +34,9 @@ class Sidebar extends React.Component {
     }
 
     renderStackItem(stack) {
+        const { user } = this.props;
         return (
-            <Link key={stack.get('id')} to={`/r/${stack.get('id')}`} activeClassName="active"><StackItem stack={stack} /></Link>
+            <Link key={stack.get('id')} to={`/r/${stack.get('id')}`} activeClassName="active"><StackItem stack={stack} user={user} /></Link>
         )
     }
 

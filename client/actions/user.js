@@ -3,7 +3,7 @@ import fetch from 'isomorphic-fetch'
 
 import { Status } from './types'
 import ActionTypes from './types'
-import { CurrentUser } from '../models'
+import { CurrentUser, Stack } from '../models'
 import Schemas from '../schemas'
 import { API_CALL } from '../middleware/api'
 
@@ -71,7 +71,7 @@ export function login(username, password) {
             dispatch(actionWith(Status.SUCCESS, { user: json }))
             // we wait until the next tick so the reducer updates state first
             process.nextTick(() => {
-                dispatch(loadBookmarkedStacks())
+                dispatch(postLogin())
             })
         });
     }
@@ -129,12 +129,66 @@ export function signup(credentials) {
             if (!res.ok) {
                 return dispatch(actionWith(Status.FAILURE, json))
             }
-            console.log(res);
             dispatch(actionWith(Status.SUCCESS, { user: json }))
             process.nextTick(() => {
                 dispatch(login(credentials.username, credentials.password))
             })
         });
+    }
+}
+
+export function postLogin() {
+    return dispatch => {
+        dispatch(syncNotifications())
+        dispatch(loadBookmarkedStacks())
+    }
+}
+
+/***************
+ * NOTIFICATIONS
+ ***************/
+
+function onNotificationSyncSuccess(store, next, action, response) {
+    // if a stack is loaded on the app, mark as read immediately
+    store.dispatch(markStackAsRead())
+}
+
+export function syncNotifications() {
+    return {
+        type: ActionTypes.SYNC_NOTIFICATIONS,
+        [API_CALL]: {
+            method: 'POST',
+            endpoint: 'notifications/sync',
+            authenticated: true,
+            onSuccess: onNotificationSyncSuccess
+        }
+    }
+}
+
+function markAsRead(options) {
+    return (dispatch, getState) => {
+        const currentUser = new CurrentUser(getState())
+        if (!currentUser.isLoggedIn()) {
+            return null;
+        }
+
+        dispatch(assign({}, { type: ActionTypes.MARK_AS_READ }, options))
+    }
+}
+
+export function markStackAsRead(id) {
+    return (dispatch, getState) => {
+        const stack = new Stack(getState())
+        id = id || stack.get('id');
+        if (!id) {
+            // either did not specify stack id or no stack is loaded
+            return null;
+        }
+        if (typeof id === "number") {
+            id = id.toString();
+        }
+
+        dispatch(markAsRead({ stack: id }))
     }
 }
 

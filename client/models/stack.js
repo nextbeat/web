@@ -78,4 +78,8 @@ export default class Stack extends ModelBase {
         return this.author().get('username') === currentUser.get('username');
     }
 
+    isLoaded() {
+        return this.get('id', 0) !== 0;
+    }
+
 }

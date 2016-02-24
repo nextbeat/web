@@ -23,9 +23,12 @@ export {
 
 export {
     login,
+    postLogin,
     logout,
     signup,
     loadBookmarkedStacks,
+    syncNotifications,
+    markStackAsRead,
     clearLogin,
     clearSignup
 } from './user'

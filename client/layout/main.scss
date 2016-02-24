@@ -610,6 +610,14 @@ html, body, #container, #content, #react {
         font-size: 0.8em;
     }
 
+    .notification {
+        position: absolute;
+        top: 3px; 
+        right: 5px;
+        color: $error-color;
+        font-size: 0.8em;
+    }
+
 }
 
 .stack-item:hover {

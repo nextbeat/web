@@ -10,8 +10,8 @@ import Schemas from '../schemas'
 
 function connectClient(store, next, action) {
     const client = xmpp.getClient(store);
-    const stack = new Stack(store.getState());
-    const currentUser = new CurrentUser(store.getState());
+    let stack = new Stack(store.getState());
+    let currentUser = new CurrentUser(store.getState());
 
     // exit early if client is already connected
     if (currentUser.isConnected()) {
@@ -34,12 +34,35 @@ function connectClient(store, next, action) {
     client.once('session:started', function() {
         next(actionWith(Status.SUCCESS, { client }));
         client.off('disconnected', failureCb)
+        client.sendPresence()
         process.nextTick(() => {
-            if (stack.has('id')) {
-                // stack is loaded, client is connected; join room
+            stack = new Stack(store.getState());
+            if (stack.isLoaded()) {
                 store.dispatch(actions.joinRoom())
             }
         })
+    })
+
+    // if auth fails, register the user
+    // TODO: this is not the most elegant way to
+    // do this (should have out-of-band registration
+    // trigger when user signs up), but reflects
+    // behavior of the ios app
+    function authFailureCb() {
+        client.sendIq({
+            type: 'set',
+            register: {
+                username: currentUser.get('uuid'),
+                password: currentUser.get('uuid')
+            }
+        })
+        store.dispatch(actions.connectToXMPP());
+    }
+
+    client.once('auth:failed', authFailureCb);
+
+    client.once('auth:success', () => {
+        client.off('auth:failed', authFailureCb);
     })
 
     client.connect();
@@ -70,12 +93,12 @@ function joinRoom(store, next, action) {
         return assign({}, action, { status }, data);
     }
 
-    // return early if not connected, if already in room, or if not currently looking at a stack
+    // return early if not connected, if already in room, or if not currently looking at an open stack
     if (!currentUser.isConnected()) {
         return next(actionWith(Status.FAILURE));
     } else if (currentUser.isJoiningRoom() || currentUser.hasJoinedRoom()) {
         return null;
-    } else if (!stack.has('id')) {
+    } else if (!stack.has('id') || stack.get('closed')) {
         return null;
     }
 
@@ -134,7 +157,6 @@ function handleReceiveStackClosed(store, next, action) {
         closed: true
     }
     const response = normalize(updatedStack, Schemas.STACK)
-    console.log(response)
     // this triggers a state update in the entities sub-reducer
     return next(assign({}, action, { response }))
 }

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import Header from '../components/Header.react'
 import Sidebar from '../containers/Sidebar.react'
 
-import { connectToXMPP, disconnectXMPP, login, logout, signup, clearLogin, clearSignup, loadBookmarkedStacks } from '../actions'
+import { connectToXMPP, disconnectXMPP, login, logout, signup, clearLogin, clearSignup, postLogin } from '../actions'
 import { CurrentUser } from '../models'
 
 class App extends React.Component {
@@ -28,7 +28,7 @@ class App extends React.Component {
         const { user, dispatch } = this.props;
         dispatch(connectToXMPP());
         if (user.isLoggedIn()) {
-            dispatch(loadBookmarkedStacks());
+            dispatch(postLogin());
         }
 
     }

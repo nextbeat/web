@@ -1,6 +1,7 @@
 import { Map, List } from 'immutable'
 import { ActionTypes, Status } from '../../actions'
 import live from './live'
+import notifications from './notifications'
 import { combineReducers, paginate } from '../utils'
 
 function meta(state=Map(), action) {
@@ -94,6 +95,7 @@ function bookmarkedStacks(state=Map(), action) {
 const reducers = {
     meta, 
     live,
+    notifications,
     bookmarkedStacks
 }
 

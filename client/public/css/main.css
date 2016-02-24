@@ -458,6 +458,12 @@ html, body, #container, #content, #react {
     right: 5px;
     color: #15c599;
     font-size: 0.8em; }
+  .stack-item .notification {
+    position: absolute;
+    top: 3px;
+    right: 5px;
+    color: #ef585b;
+    font-size: 0.8em; }
 
 .stack-item:hover {
   text-decoration: none;

@@ -3,7 +3,7 @@ import moment from 'moment'
 import { assign } from 'lodash'
 import { normalize } from 'normalizr'
 import Schemas from '../schemas'
-import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveStackClosed } from '../actions'
+import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveStackClosed, syncNotifications } from '../actions'
 import { CurrentUser, Stack } from '../models'
 
 function xmppHost() {
@@ -29,18 +29,23 @@ export function getClient(store) {
             transport: 'websocket',
             sasl: ['plain'],
             wsURL: `ws://${xmppHost()}:5280/websocket`,
-            credentials: {
-                host: 'xmpp.getbubble.me'
-            }
+            useStreamManagement: true
         }
 
         if (currentUser.isLoggedIn()) {
             // user is logged in
             const uuid = currentUser.get('uuid');
             options.jid = `${uuid}@xmpp.getbubble.me`
-            options.password = uuid
+            options.password = uuid;
+            options.resource = "web"
+            options.credentials = {
+                host: 'xmpp.getbubble.me'
+            }
         } else {
-            options.jid = 'anon@xmpp.getbubble.me'
+            options.jid = 'anon@anon.xmpp.getbubble.me'
+            options.credentials = {
+                host: 'anon.xmpp.getbubble.me'
+            }
         }
 
         const client = XMPP.createClient(options)
@@ -49,12 +54,20 @@ export function getClient(store) {
             handleGroupChat(s, store);
         });
 
+        client.on('message', function(s) {
+            handleMessage(s, store);
+        });
+
         // client.on('raw:outgoing', function(s) {
         //     console.log('OUTGOING', s);
         // })
 
         // client.on('raw:incoming', function(s) {
         //     console.log('INCOMING', s);
+        // })
+
+        // client.on('disconnected', function() {
+        //     console.log('DISCONNECTED!!!');
         // })
 
         return client;
@@ -123,8 +136,17 @@ function handleGroupChat(s, store) {
                 const comment = formatNotificationItem(data, store);
                 return store.dispatch(receiveNotificationComment(comment, username));
             case 'STACK_CLOSED':
-                console.log('received stack closed xmpp')
                 return store.dispatch(receiveStackClosed());
+        }
+    }
+}
+
+// other messages
+
+function handleMessage(s, store) {
+    if (s.type === "chat") {
+        if (s.thread && s.thread === 'NEW_NOTIFICATION') {
+            store.dispatch(syncNotifications())
         }
     }
 }

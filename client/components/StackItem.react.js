@@ -8,7 +8,7 @@ class StackItem extends React.Component {
     }
 
     render() {
-        const { stack, author } = this.props;
+        const { stack, user } = this.props;
         return (
             <div className="stack-item">
                 <div className="thumb">
@@ -25,6 +25,7 @@ class StackItem extends React.Component {
                     {stack.get('bookmark_count')}<img src="/images/bookmark.png"/>
                 </div>
                 {!stack.get('closed') && <span className="open">OPEN</span>}
+                {user && user.hasUnreadNotificationsForStack(stack.get('id')) && <span className="notification">NEW</span>}
             </div>
         );
     }

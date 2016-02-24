@@ -1,6 +1,6 @@
 import ModelBase from './base'
 
-import { Map, List } from 'immutable'
+import { Map, List, Set } from 'immutable'
 import Stack from './stack'
 
 const KEY_MAP = {
@@ -16,6 +16,9 @@ const KEY_MAP = {
     // live
     'connected': ['user', 'live', 'connected'],
     'client': ['user', 'live', 'client'],
+    // notifications
+    'unreadNotifications': ['user', 'notifications', 'unread'],
+    'readNotifications': ['user', 'notifications', 'read'],
     // bookmarked stacks
     'bookmarkedStackIds': ['user', 'bookmarkedStacks', 'ids']
 }
@@ -38,6 +41,8 @@ export default class CurrentUser extends ModelBase {
         return this.get('bookmarkedStackIds', List()).map(id => this.__getEntity(id, 'stacks'));
     }
 
+    // Queries
+
     isLoggedIn() {
         return this.has('id');
     }
@@ -54,6 +59,13 @@ export default class CurrentUser extends ModelBase {
     hasJoinedRoom() {
         const stack = new Stack(this.state);
         return stack.has('room');
+    }
+
+    hasUnreadNotificationsForStack(id) {
+        if (typeof id === "number") {
+            id = id.toString();
+        }
+        return this.get('unreadNotifications', Map()).get('stacks_updated', Set()).has(id);
     }
 
 }

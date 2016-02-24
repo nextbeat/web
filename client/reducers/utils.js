@@ -31,8 +31,6 @@ export function paginate(type) {
                         isFetching: false,
                         error: 'Failed to load.'
                     });
-                case Status.RESET: 
-                    return Map();
             }
         }
         return state;
@@ -64,8 +62,6 @@ export function entity(type) {
                         isFetching: false,
                         error: 'Failed to load.'
                     })
-                case Status.RESET:
-                    return initialState
             }
         }
         return state;
