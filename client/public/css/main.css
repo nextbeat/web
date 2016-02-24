@@ -468,3 +468,9 @@ html, body, #container, #content, #react {
 .stack-item:hover {
   text-decoration: none;
   background-color: #f7f7f7; }
+
+/**********
+ * NO-MATCH
+ **********/
+.no-match {
+  margin: 10px; }

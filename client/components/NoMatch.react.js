@@ -7,7 +7,12 @@ class NoMatch extends React.Component {
     }
 
     render() {
-        return <div className="no-match">404 Error: This page does not exist. :(</div>
+        return (
+        <div className="no-match">
+            <h1>404 Error</h1> 
+            <p>This page does not exist. :(</p>
+        </div>
+        );
     }
 }
 
