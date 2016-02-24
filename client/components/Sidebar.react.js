@@ -45,7 +45,7 @@ class Sidebar extends React.Component {
         return (
             <div id="sidebar">
                 <div className="header">
-                    <span className="logo">sodosopa</span>
+                    <span className="logo"><Link to="/">sodosopa</Link></span>
                     <div className="separator" />
                     { user.isLoggedIn() ? this.renderLoggedIn() : this.renderGuest() }
                 </div>

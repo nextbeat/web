@@ -4,8 +4,14 @@
 
 body {
     font-family: 'BlinkMacSystemFont', -apple-system, sans-serif;
-    background: #f1f1f1;
+    background: #f6f6f6;
     height: 100%;
+}
+
+input {
+    border: 1px solid #eee;
+    border-radius: 3px;
+    padding: 3px;
 }
 
 input[type="submit"] {
@@ -14,8 +20,24 @@ input[type="submit"] {
     font-size: 0.8em;
     padding: 5px 10px;
     border: none;
+    border-radius: 0px;
 }
 
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+}
+
+::placeholder {
+    color: #999;
+}
+
+.input-hack {
+    width: 1px;
+    height: 1px;
+    padding: 0px;
+    border: none;
+    margin: 0 !important;
+}
 
 .clear {
     clear: both;
@@ -37,6 +59,76 @@ html, body, #container, #content, #react {
     width: calc(100% - 240px);
     float: left;
     overflow: auto;
+}
+
+/********
+ * SPLASH
+ ********/
+
+ #splash {
+    max-width: 800px;
+    margin: 0 auto;
+    margin-top: 100px;
+    height: 500px;
+    display: table;
+
+    .main {
+        width: 50%;
+        height: 100%;
+        display: table-cell;
+
+        .logo {
+            text-align: center;
+            margin-top: 100px;
+            width: 100%;
+            color: $primary-color;
+            font-weight: bold;
+            font-size: 2.5em;
+        }
+
+        .description {
+            text-align: center;
+            color: #666;
+            margin: 15px 20px;
+        }
+    }
+
+    .login-container {
+        width: 50%;
+        height: 100%;
+        display: table-cell;
+    }
+
+    .form-container {
+        margin: 0 auto;
+        width: 300px;
+        background-color: white;
+        padding: 20px 10px;
+        box-shadow: 0px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    input {
+        width: calc(100% - 40px);
+        margin: 0 20px 10px 20px;
+    }
+
+    input[type="submit"] {
+        margin: 0 auto;
+        width: 100px;
+        text-align: center;
+        display: block;
+    }
+
+    .options {
+        margin: 10px auto;
+        text-align: center;
+    }
+
+    .error {
+        font-size: 0.8em;
+        color: $error-color;
+        margin-top: 5px;
+    }
 }
 
 /**************
@@ -108,6 +200,11 @@ html, body, #container, #content, #react {
         font-size: 1.4em;
         width: 100%;
         display: block;
+
+        a {
+            text-decoration: none;
+            color: #000;
+        }
     }
 
     .separator {
@@ -268,10 +365,6 @@ html, body, #container, #content, #react {
         font-style: italic;
         color: #999;
     }
-}
-
-::placeholder {
-    font-style: italic;
 }
 
 #activity {

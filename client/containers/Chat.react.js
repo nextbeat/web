@@ -26,10 +26,6 @@ class Chat extends React.Component {
     // Component lifecycle methods
 
     componentWillReceiveProps(nextProps) {
-        // if (nextProps.stack.get('id') !== this.props.stack.get('id')) {
-        //     // stack has loaded
-        //     this.props.dispatch(loadComments());
-        // }
         this.setScrollState();
     }
 
