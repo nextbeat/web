@@ -44,3 +44,9 @@ export {
     receiveStackClosed
 } from './xmpp'
 
+export {
+    validatePasswordResetToken,
+    resetPassword,
+    sendPasswordResetRequest
+} from './support'
+

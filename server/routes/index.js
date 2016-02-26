@@ -1,10 +1,7 @@
 var express     = require('express'),
     _           = require('lodash'),
     api         = require('../lib/api'),
-    passport    = require('../lib/passport'),
-    React       = require('react'),
-    ReactServer = require('react-dom/server'),
-    Theater     = React.createFactory(require('../../client/containers/Theater.react').default);
+    passport    = require('../lib/passport');
 
 module.exports = {
 
@@ -25,8 +22,8 @@ module.exports = {
             api[method](req.url, req.body, token).then(function(_res) {
                 res.send(_res);
             }).catch(function(e) {
-                console.log(e);
-                res.status(404).end();
+                var statusCode = e.statusCode || 404;
+                res.status(statusCode).json({error: e.error});
             })
         })
 

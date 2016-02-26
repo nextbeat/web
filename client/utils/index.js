@@ -1,4 +1,7 @@
 import { List, Map } from 'immutable'
+import React from 'react'
+import { connect } from 'react-redux'
+import { CurrentUser } from '../models'
 
 export function getPaginatedEntities(state, page, key, entityKey) {
     entityKey = entityKey || key;
@@ -16,4 +19,20 @@ export function getEntity(state, key, id) {
         id = id.toString();
     }
     return state.getIn(['entities', key, id], Map());
+}
+
+export function componentWithUser(Component) {
+    class UserContainer extends React.Component {
+        render() {
+            return <Component {...this.props} />
+        }
+    }
+
+    function mapStateToProps(state) {
+        return { 
+            user: new CurrentUser(state)
+        }   
+    }
+
+    return connect(mapStateToProps)(UserContainer);
 }

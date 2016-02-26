@@ -33,7 +33,7 @@ export default class ModelBase {
     }
 
     entity() {
-        return this.__getEntity(this.get('id'))
+        return has(this.keyMap, 'id') ? this.__getEntity(this.get('id')) : Map();
     }
 
     __getEntity(id, entityName) {

@@ -57,13 +57,14 @@ function callApi(options, store) {
         .then(response => response.json().then(json => ({ json, response })))
         .then(({ json, response }) => {
             if (!response.ok) {
-                return Promise.reject(json)
+                return Promise.reject(new Error(json.error));
             }
             if (typeof pagination !== 'undefined') {
                 return assign({}, normalize(json.objects, schema), json.meta);
             } else if (typeof schema !== 'undefined') {
                 return normalize(json, schema);
             } else {
+                console.log('foo', json);
                 return json;
             }
         })
@@ -109,7 +110,7 @@ export default store => next => action => {
         })
         .catch(error => next(actionWith({
             status: Status.FAILURE,
-            error
+            error: error.message
         })));
     
 

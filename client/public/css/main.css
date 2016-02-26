@@ -538,6 +538,37 @@ html, body, #container, #content, #react {
   text-decoration: none;
   background-color: #f7f7f7; }
 
+/*********
+ * SUPPORT
+ *********/
+.password-reset {
+  margin: 10px auto;
+  max-width: 500px;
+  background-color: white;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+  padding: 10px; }
+  .password-reset h1 {
+    padding: 0;
+    margin: 0 0 15px 0;
+    text-align: center;
+    font-size: 2em; }
+  .password-reset input {
+    display: block;
+    margin: 0 auto; }
+  .password-reset input[type="email"] {
+    width: 300px;
+    margin-bottom: 10px; }
+  .password-reset input[type="password"] {
+    width: 300px;
+    margin-bottom: 10px; }
+  .password-reset input[type="submit"] {
+    width: 100px; }
+  .password-reset p {
+    color: #666; }
+  .password-reset .has-error {
+    color: #ef585b;
+    font-size: 0.9em; }
+
 /**********
  * NO-MATCH
  **********/

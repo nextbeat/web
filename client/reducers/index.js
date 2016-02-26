@@ -3,6 +3,7 @@ import { Map } from 'immutable'
 import user from './user'
 import stack from './stack'
 import profile from './profile'
+import support from './support'
 import { combineReducers } from './utils'
 
 const initialEntities = Map({
@@ -23,5 +24,6 @@ export default combineReducers({
     entities,
     stack,
     profile,
-    user
+    user,
+    support
 })
