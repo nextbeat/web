@@ -6,7 +6,14 @@ class DetailBar extends React.Component {
         this.displayName = 'DetailBar';
     }
     render() {
-        return <div className="detail-bar">DetailBar</div>;
+        return (
+            <div className="detail-bar">
+                <div className="detail-bar_header">
+                    <span className="detail-bar_tab">Chat</span>
+                    <span className="detail-bar_tab">Activity</span>
+                </div>
+            </div>
+        );
     }
 }
 

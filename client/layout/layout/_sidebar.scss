@@ -4,4 +4,50 @@
     left: 0;
     bottom: 0;
     width: $sidebar-width;
+    border-right: 1px solid $border-color;
+    padding: 15px;
+
+    .separator {
+        width: calc(100% - 10px)
+    }
+
+    h1 {
+        font-size: 12px;
+        color: $primary-color;
+    }
+}
+
+.sidebar_logo {
+    margin-bottom: 25px;
+    font-size: 24px;
+    text-align: center;
+    width: 100%;
+    display: block;
+}
+
+.sidebar_user-info {
+    margin-bottom: 15px;
+    height: 20px;
+}
+
+.sidebar_user {
+    float: left;
+    font-size: 14px;
+    color: $text-color;
+}
+
+.sidebar_logout {
+    float: right;
+    font-size: 12px;
+    font-weight: normal;
+    @include clearfix;
+}
+
+.sidebar_no-content {
+    text-align: center;
+    display: block;
+    font-size: 12px;
+    color: #999;
+    width: 100%;
+    margin: 10px 0;
 }

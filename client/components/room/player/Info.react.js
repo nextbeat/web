@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router';
+import React from 'react'
+import User from '../../shared/User.react'
 
 class Info extends React.Component {
 
@@ -12,13 +12,10 @@ class Info extends React.Component {
         const profpic_url = stack.author().get('profpic_thumbnail_url') || stack.author().get('profpic_url');
         const closed = stack.get('closed');
         return (
-            <section id="info">
-                <span className="username">
-                    <div className="profile"><img src={profpic_url} /></div>
-                    <Link to={`/u/${stack.author().get('username')}`}>{ stack.author().get('username') }</Link>
-                    {!closed && <span className="live">OPEN</span>}
-                </span>
-                <span className="description">{ stack.get('description') }</span>
+            <section className="player_info">
+                <User user={stack.author()} />
+                <span className="player_description">{ stack.get('description') }{ !closed && <span className="player_open">OPEN</span> }</span>
+                <div className="separator" />
             </section>
         );
     }

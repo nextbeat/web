@@ -7,19 +7,10 @@
     transform: translate(-50%, -50%);
 }
 
-@mixin ratio-outer($ratio) {
-    position: relative;
+@mixin clearfix {
     &::after {
         content: '';
-        display: block;
-        margin-left: $ratio;
+        display: table;
+        clear: both;
     }
-}
-
-@mixin ratio-inner {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
 }

@@ -1,14 +1,17 @@
-@import 'base/base';
-
 @import 'utils/variables';
 @import 'utils/mixins';
+
+@import 'base/base';
 
 @import 'layout/container';
 @import 'layout/main';
 @import 'layout/sidebar';
 
+@import 'components/button';
+@import 'components/modal';
 @import 'components/room-item';
-@import 'componets/user';
+@import 'components/separator';
+@import 'components/user';
 
 @import 'pages/room';
 

@@ -14,6 +14,8 @@ class Theater extends React.Component {
         super(props);
 
         this.handleSelectMediaItem = this.handleSelectMediaItem.bind(this);
+        this.handleForward = this.handleForward.bind(this);
+        this.handleBackward = this.handleBackward.bind(this);
         this.handleBookmark = this.handleBookmark.bind(this);
         this.handleUnbookmark = this.handleUnbookmark.bind(this);
     }

@@ -1,0 +1,50 @@
+.modal-container {
+    height: 100%;
+    width: 100%;
+    background-color: rgba(255,255,255,0.75);
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.modal-login {
+    position: absolute;
+    width: 300px;
+    left: calc(50% - 150px);
+    top: 100px;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    color: black;
+
+    input {
+        width: calc(100% - 40px);
+        margin: 0 20px 10px 20px;
+    }
+
+    input[type="submit"] {
+        margin: 0 auto;
+        width: 100px;
+        text-align: center;
+        display: block;
+    }
+
+    .error {
+        font-size: 0.8em;
+        font-style: italic;
+        color: $error-color;
+    }
+
+    .close {
+        float: right;
+        display: block;
+    }
+
+    p {
+        text-align: center;
+        margin: 10px 0 0 0;
+    }
+}

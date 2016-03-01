@@ -1,0 +1,25 @@
+.btn {
+    background-color: $primary-color;
+    color: white;
+    font-weight: normal;
+    font-size: 0.8em;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 0px;
+
+    &:hover {
+        background-color: $light-primary-color;
+    }
+
+    &:visited {
+        color: white;
+    }
+}
+
+.btn-light {
+    background-color: $light-primary-color;
+
+    &:hover {
+        background-color: lighten($light-primary-color, 15%);
+    }
+}
