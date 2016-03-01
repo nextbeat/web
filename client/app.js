@@ -6,12 +6,12 @@ import { Map } from 'immutable'
 import configureStore from './store'
 import { CurrentUser } from './models'
 
-import App from './containers/App.react'
-import Theater from './containers/Theater.react'
-import Profile from './containers/Profile.react'
-import Splash from './containers/Splash.react'
-import PasswordResetRequest from './containers/PasswordResetRequest.react'
-import PasswordReset from './containers/PasswordReset.react'
+import App from './components/App.react'
+import Room from './components/Room.react'
+import Profile from './components/Profile.react'
+import Splash from './components/Splash.react'
+import PasswordResetRequest from './components/support/PasswordResetRequest.react'
+import PasswordReset from './components/support/PasswordReset.react'
 import NoMatch from './components/NoMatch.react'
 
 const state = JSON.parse($('#state').text())
@@ -46,7 +46,7 @@ render(
                 <Route path="password-reset" component={PasswordReset} />
             </Route>
             <Route component={App}>
-                <Route path="/r/:stack_id" component={Theater} />
+                <Route path="/r/:stack_id" component={Room} />
                 <Route path="/u/:username" component={Profile} />
                 <Route path="*" component={NoMatch} />
             </Route>

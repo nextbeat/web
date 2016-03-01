@@ -32,6 +32,7 @@ function fetchStack(id) {
 
 export function loadStack(id) {
     return dispatch => {
+        id = parseInt(id)
         dispatch(markStackAsRead(id))
         dispatch(fetchStack(id))
     }

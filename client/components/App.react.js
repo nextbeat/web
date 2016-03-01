@@ -1,8 +1,8 @@
 import React from 'react'
 import { findDOMNode } from 'react-dom'
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
 
-import Header from '../components/Header.react'
 import Sidebar from '../components/Sidebar.react'
 
 import { connectToXMPP, disconnectXMPP, login, logout, signup, clearLogin, clearSignup, postLogin } from '../actions'
@@ -95,21 +95,20 @@ class App extends React.Component {
         return (
             <div id="login-container" className="modal-container">
                 <div id="login" className="modal-login">
-                    <a onClick={this.dismissLogin}>X</a>
+                    <a className="close" onClick={this.dismissLogin}>X</a>
                     <form id="login-form" onSubmit={this.handleLoginSubmit}>
                         <div>
-                            <label>Username: </label>
-                            <input type="text" ref="login_username" name="login_username"/>
+                            <input type="text" ref="login_username" name="login_username" placeholder="Username" />
                         </div>
                         <div>
-                            <label>Password: </label>
-                            <input type="password" ref="login_password" name="login_password"/>
+                            <input type="password" ref="login_password" name="login_password" placeholder="Password" />
                         </div>
                         <div>
                             <input type="submit" value="Log In"/>
                         </div>
                     </form>
                     { user.has('loginError') && <div><span className="error">{user.get('loginError')}</span></div> }
+                    <p><Link to="/support/password-reset-request">Forgot your password?</Link></p>
                 </div>
             </div>
         )
@@ -120,19 +119,18 @@ class App extends React.Component {
         return (
             <div id="signup-container" className="modal-container">
                 <div id="signup" className="modal-login">
-                    <a onClick={this.dismissSignup}>X</a>
+                    <a className="close" onClick={this.dismissSignup}>X</a>
                     <form id="signup-form" onSubmit={this.handleSignupSubmit} >
+                        <input style={{display: "none"}} type="text" name="somefakename" />
+                        <input style={{display: "none"}} type="password" name="anotherfakename" />
                         <div>
-                            <label>Email: </label>
-                            <input type="text" ref="signup_email" name="signup_email"/>
+                            <input type="text" ref="signup_email" name="signup_email" placeholder="Email" />
                         </div>
                         <div>
-                            <label>Username: </label>
-                            <input type="text" autocomplete="off" ref="signup_username" name="signup_username"/>
+                            <input type="text" autocomplete="off" ref="signup_username" name="signup_username" placeholder="Username" />
                         </div>
                         <div>
-                            <label>Password: </label>
-                            <input type="password" autocomplete="new-password" ref="signup_password" name="signup_password"/>
+                            <input type="password" autocomplete="new-password" ref="signup_password" name="signup_password" placeholder="Password" />
                         </div>
                         <div>
                             <input type="submit" value="Sign Up"/>
@@ -147,11 +145,11 @@ class App extends React.Component {
     render() {
         const { user, connected, children } = this.props;
         return (
-            <section id="container">
+            <section className="app-container">
                 {this.renderLogin()}
                 {this.renderSignup()}
                 <Sidebar user={user} handleLoginClick={this.handleLoginClick} handleLogoutClick={this.handleLogoutClick} handleSignupClick={this.handleSignupClick} />
-                <div id="content">
+                <div className="main">
                     {React.cloneElement(children, { user, connected })}
                 </div>
             </section>

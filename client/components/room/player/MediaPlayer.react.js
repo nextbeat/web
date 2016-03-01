@@ -9,9 +9,10 @@ class MediaPlayer extends React.Component {
     }
 
     render() {
-        const { item, handleForward, handleBackward } = this.props;
+        const { stack, handleForward, handleBackward } = this.props;
+        const item = stack.selectedMediaItem()
         return (
-        <div id="player">
+        <div id="media-player">
             <a className="nav-button" onClick={handleBackward} href="#">&lt;</a>
             <div>
                 {item.get('type') === "video" 

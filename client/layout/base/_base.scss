@@ -1,0 +1,20 @@
+body {
+    font-family: 'BlinkMacSystemFont', -apple-system, sans-serif;
+}
+
+/*
+ * Forces all elements to use the border-box style (which includes
+ * border and padding in the calculated width size) by default.
+ */
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}

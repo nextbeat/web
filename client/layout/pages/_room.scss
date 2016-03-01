@@ -1,0 +1,34 @@
+.room {
+    position: relative;
+    height: 100%;
+}
+
+/********
+ * PLAYER
+ ********/
+
+.player-container {
+    margin-right: $detail-bar-width;
+    height: 100%;
+    overflow: hidden;
+}
+
+.player {
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+}
+
+/************
+ * DETAIL BAR
+ ************/
+
+.detail-bar {
+    position: absolute;
+    width: $detail-bar-width;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    overflow: hidden;
+    background-color: #fff;
+}

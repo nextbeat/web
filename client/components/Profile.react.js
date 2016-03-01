@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 
-import StackItem from '../components/StackItem.react'
+import StackItem from './shared/StackItem.react'
 
 import { loadProfile, clearProfile, loadStacksForUser } from '../actions'
 import { Profile } from '../models'

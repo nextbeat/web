@@ -1,6 +1,7 @@
 import React from 'react'
 import { findDOMNode } from 'react-dom'
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
 
 import { CurrentUser } from '../models'
 import { login, signup, clearLogin, clearSignup } from '../actions'
@@ -74,7 +75,8 @@ class Splash extends React.Component {
                     {user.has('loginError') && <span className="error">{user.get('loginError')}</span>}
                 </div>
                 <div className="options">
-                    Don't have an account? <a onClick={this.showSignup}>Sign up</a>
+                    <p>Don't have an account? <a onClick={this.showSignup}>Sign up</a></p>
+                    <p><Link to="/support/password-reset-request">Forgot your password?</Link></p>
                 </div>
             </div>
         );

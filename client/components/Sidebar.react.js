@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router'
 
-import StackItem from '../components/StackItem.react'
+import StackItem from './shared/StackItem.react'
 
 class Sidebar extends React.Component {
 
@@ -43,7 +43,7 @@ class Sidebar extends React.Component {
     render() {
         const { user } = this.props;
         return (
-            <div id="sidebar">
+            <div className="sidebar">
                 <div className="header">
                     <span className="logo"><Link to="/">sodosopa</Link></span>
                     <div className="separator" />
