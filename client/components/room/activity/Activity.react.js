@@ -103,7 +103,7 @@ class Activity extends React.Component {
 
     // Button handlers
     handleNewMediaClick() {
-        this.props.selectNewestLiveItem();
+        this.props.handleSelectNewestLiveItem();
         this.setState({
             displayNewItem: false
         });
@@ -113,18 +113,18 @@ class Activity extends React.Component {
     // Render
 
     render() {
-        const { mediaItems, liveMediaItems } = this.props;
+        const { mediaItems, liveMediaItems, selectedItem, handleSelectMediaItem } = this.props;
         const { displayNewItem } = this.state;
         return (
         <section id="activity">
             <div id="activity-inner">
                 {mediaItems.map(mediaItem => {
-                    var selected = (mediaItem.get('id') === this.props.selectedItem.get('id'));
-                    return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} handleClick={this.props.handleClick}/>
+                    var selected = (mediaItem.get('id') === selectedItem.get('id'));
+                    return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} handleClick={handleSelectMediaItem}/>
                 })}
                 {liveMediaItems.map(mediaItem => {
-                    var selected = (mediaItem.get('id') === this.props.selectedItem.get('id'));
-                    return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} live={true} handleClick={this.props.handleClick}/>
+                    var selected = (mediaItem.get('id') === selectedItem.get('id'));
+                    return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} live={true} handleClick={handleSelectMediaItem}/>
                 })}
             </div>
             { displayNewItem && <div className="new-media" onClick={this.handleNewMediaClick}>New media added!</div> }

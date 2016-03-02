@@ -20,6 +20,6 @@
     background-color: $light-primary-color;
 
     &:hover {
-        background-color: lighten($light-primary-color, 15%);
+        background-color: $lighter-primary-color;
     }
 }

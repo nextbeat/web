@@ -17,6 +17,21 @@ a {
     }
 }
 
+textarea:hover, 
+input:hover, 
+textarea:active, 
+input:active, 
+textarea:focus, 
+input:focus,
+button:focus,
+button:active,
+button:hover
+{
+    border-color: none;
+    box-shadow: 0 0 4px #bbb;
+    outline: none;
+}
+
 /*
  * Forces all elements to use the border-box style (which includes
  * border and padding in the calculated width size) by default.

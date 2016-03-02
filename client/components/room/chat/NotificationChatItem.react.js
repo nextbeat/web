@@ -17,7 +17,7 @@ class NotificationChatItem extends React.Component {
         const plural = count !== 1 ? 's' : '';
         const addedStr = `${count} ${type}${plural}`;
 
-        return <li><span className="notification"><strong>{username}</strong> added {addedStr} to the room.</span></li>;
+        return <li className="chat_item chat_item-notification"><strong>{username}</strong> added {addedStr} to the room.</li>;
     }
 }
 

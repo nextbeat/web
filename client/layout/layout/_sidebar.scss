@@ -43,6 +43,17 @@
     @include clearfix;
 }
 
+.sidebar_login {
+    float: left;
+    margin-left: 40px;
+}
+
+.sidebar_signup {
+    float: right;
+    margin-right: 40px;
+    @include clearfix;
+}
+
 .sidebar_no-content {
     text-align: center;
     display: block;

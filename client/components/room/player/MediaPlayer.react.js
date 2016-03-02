@@ -13,6 +13,11 @@ class MediaPlayer extends React.Component {
         const item = stack.selectedMediaItem()
         return (
         <div className="player_main">
+            { stack.mediaItems().size > 0 &&
+            <div className="player_counter">
+                <span className="selected">{ stack.indexOfSelectedMediaItem() + 1 }</span> &#8725; { stack.mediaItems().size } 
+            </div>
+            }
             <div className="player_media">
                 {item.get('type') === "video" 
                     ? <Video item={item} />

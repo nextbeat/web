@@ -26,9 +26,9 @@ class Sidebar extends React.Component {
     renderGuest() {
         const { handleLoginClick, handleSignupClick } = this.props;
         return (
-            <div className="user-info">
-            <a className="login btn" onClick={handleLoginClick}>Login</a>
-            <a className="signup btn" onClick={handleSignupClick}>Signup</a>
+            <div className="sidebar_user-info">
+                <a className="sidebar_login btn" onClick={handleLoginClick}>Login</a>
+                <a className="sidebar_signup btn" onClick={handleSignupClick}>Signup</a>
             </div>
         )
     }

@@ -4,11 +4,13 @@
 
 $primary-color: #2258c5;
 $light-primary-color: #4c86fb;
+$lighter-primary-color: lighten($light-primary-color, 15%);
+
 $secondary-color: #ef585b;
 $success-color: #15c599;
 $error-color: #ef585b;
 
-$background-color: #f3f3f3;
+$background-color: #f6f6f6;
 $text-color: #333;
 $separator-color: #ccc;
 $border-color: #ddd;

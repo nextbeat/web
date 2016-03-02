@@ -14,6 +14,7 @@ class Theater extends React.Component {
         super(props);
 
         this.handleSelectMediaItem = this.handleSelectMediaItem.bind(this);
+        this.handleSelectNewestLiveItem = this.handleSelectNewestLiveItem.bind(this);
         this.handleForward = this.handleForward.bind(this);
         this.handleBackward = this.handleBackward.bind(this);
         this.handleBookmark = this.handleBookmark.bind(this);
@@ -52,6 +53,13 @@ class Theater extends React.Component {
         this.props.dispatch(selectMediaItem(id))
     }
 
+    handleSelectNewestLiveItem() {
+        const newestLiveItem = this.props.liveMediaItems.last();
+        if (newestLiveItem) {
+            this.props.dispatch(selectMediaItem(newestLiveItem.get('id')));
+        }
+    }
+
     handleForward() {
         this.props.dispatch(goForward())
     }
@@ -83,7 +91,8 @@ class Theater extends React.Component {
         }
         const detailBarProps = { 
             stack, 
-            handleSelectMediaItem: this.handleSelectMediaItem
+            handleSelectMediaItem: this.handleSelectMediaItem,
+            handleSelectNewestLiveItem: this.handleSelectNewestLiveItem
         }
         return (
         <section className="room">

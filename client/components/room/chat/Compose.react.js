@@ -32,9 +32,9 @@ class Compose extends React.Component {
 
     renderChat() {
         return (
-            <div>
+            <div className="chat_compose-inner">
                 <textarea onChange={this.handleChange} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={this.state.message}></textarea>
-                <input type="submit" value="Send" disabled={this.state.message == 0} onClick={this.handleSubmit} />
+                <input type="submit" className="btn" value="Send" disabled={this.state.message == 0} onClick={this.handleSubmit} />
             </div>
         )
     }
@@ -42,7 +42,7 @@ class Compose extends React.Component {
     render() {
         const { user, closed } = this.props;
         return (
-            <div id="compose">
+            <div className="chat_compose">
             { closed ? <p>Room is no longer open.</p> : ( user.isLoggedIn() ? this.renderChat() : <p>Login to chat.</p> ) }
             </div>
         );

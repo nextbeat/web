@@ -1,12 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import ChatItem from '../components/ChatItem.react'
-import NotificationChatItem from '../components/NotificationChatItem.react'
-import Compose from '../components/Compose.react'
+import ChatItem from './ChatItem.react'
+import NotificationChatItem from './NotificationChatItem.react'
+import Compose from './Compose.react'
 
-import { loadComments, sendComment } from '../actions'
-import { Stack } from '../models'
+import { loadComments, sendComment } from '../../../actions'
+import { Stack, CurrentUser } from '../../../models'
 
 class Chat extends React.Component {
 
@@ -116,16 +116,15 @@ class Chat extends React.Component {
         const { comments, isFetching, error, liveComments, user } = this.props;
         const closed = this.props.stack.get('closed');
         return (
-        <div id="chat">
-            <div id="history">
+        <div className="chat">
+            <div id="history" className="chat_history">
                 { isFetching && <p>Loading...</p>}
                 { error && error.length > 0 && <p>Could not load comments.</p>}
-                <ul>
+                <ul className="chat_items">
                     {comments.reverse().map(comment => this.renderComment(comment))}
                     {liveComments.map((comment, idx) => this.renderLiveComment(comment, idx))}
                 </ul>
-            </div>
-            <Compose user={user} closed={closed} sendComment={this.sendComment} />
+            </div><Compose user={user} closed={closed} sendComment={this.sendComment} />
         </div>
         );
     }
@@ -134,8 +133,11 @@ class Chat extends React.Component {
 function mapStateToProps(state) {
     const stack = new Stack(state)
     const users = state.getIn(['entities', 'users']);
+    const user = new CurrentUser(state)
 
     return {
+        stack,
+        user,
         comments: stack.comments(),
         users,
         stackAuthor: stack.author(),

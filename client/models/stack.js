@@ -17,6 +17,7 @@ const KEY_MAP = {
     'selectedMediaItemId': ['stack', 'mediaItems', 'selected'],
     'mediaItemIds': ['stack', 'pagination', 'mediaItems', 'ids'],
     'liveMediaItemIds': ['stack', 'live', 'mediaItems'],
+    'mediaItemsFetching': ['stack', 'pagination', 'mediaItems', 'isFetching'],
     // comments
     'commentsFetching': ['stack', 'pagination', 'comments', 'isFetching'],
     'commentsError': ['stack', 'pagination', 'comments', 'error']
@@ -80,6 +81,14 @@ export default class Stack extends ModelBase {
 
     isLoaded() {
         return this.get('id', 0) !== 0;
+    }
+
+    indexOfSelectedMediaItem() {
+        const selectedId = this.get('selectedMediaItemId', -1)
+        const paginatedIds = this.get('mediaItemIds', List())
+        const liveIds = this.get('liveMediaItemIds', List())
+        const ids = paginatedIds.concat(liveIds)
+        return ids.indexOf(selectedId)
     }
 
 }

@@ -17,18 +17,21 @@ class ActivityItem extends React.Component {
     }
 
     render() {
-        const { mediaItem, selected, live } = this.props;
+        const { mediaItem, selected, live, handleClick } = this.props;
         const url = this.url(mediaItem);
         const selectedClass = selected ? "selected" : "";
         const liveClass = live ? "live" : "";
         const videoClass = mediaItem.get('type') === 'video' ? "video" : "";
         return (
-            <div className={`activity-item ${selectedClass} ${liveClass}`} onClick={this.props.handleClick.bind(this, this.props.mediaItem)}>
-                <div className={`thumb ${videoClass}`}>
-                    <img className="content" src={url}/>
-                    { mediaItem.get('type') === 'video' && <img className="video" src="/images/video.png" /> }
+            <div className={`item item-activity ${selectedClass} ${liveClass}`} onClick={handleClick.bind(this, mediaItem.get('id'))}>
+                <div className={`item_thumb ${videoClass}`}>
+                    <img className="thumb_pixel" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+                    <div className="thumb_img-container">
+                        <img className="thumb_img" src={url} />
+                        { mediaItem.get('type') === 'video' && <img className="item-activity_video" src="/images/video.png" /> }
+                    </div>
                 </div>
-                <div className="time"><span>{moment(this.props.mediaItem.get('created_at')).fromNow()}</span></div>
+                <div className="item-activity_time"><span>{moment(this.props.mediaItem.get('created_at')).fromNow()}</span></div>
             </div>
         );
     }

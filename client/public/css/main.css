@@ -17,6 +17,19 @@ a {
   a:hover {
     color: #4c86fb; }
 
+textarea:hover,
+input:hover,
+textarea:active,
+input:active,
+textarea:focus,
+input:focus,
+button:focus,
+button:active,
+button:hover {
+  border-color: none;
+  box-shadow: 0 0 4px #bbb;
+  outline: none; }
+
 /*
  * Forces all elements to use the border-box style (which includes
  * border and padding in the calculated width size) by default.
@@ -48,7 +61,7 @@ html, body {
   height: 100%;
   z-index: 2;
   margin-left: 240px;
-  background-color: #f3f3f3; }
+  background-color: #f6f6f6; }
 
 .sidebar {
   position: absolute;
@@ -89,6 +102,18 @@ html, body {
     display: table;
     clear: both; }
 
+.sidebar_login {
+  float: left;
+  margin-left: 40px; }
+
+.sidebar_signup {
+  float: right;
+  margin-right: 40px; }
+  .sidebar_signup::after {
+    content: '';
+    display: table;
+    clear: both; }
+
 .sidebar_no-content {
   text-align: center;
   display: block;
@@ -114,6 +139,90 @@ html, body {
   background-color: #4c86fb; }
   .btn-light:hover {
     background-color: #97b9fd; }
+
+.item {
+  padding: 10px;
+  background-color: #fff;
+  position: relative; }
+
+.item_inner {
+  position: relative;
+  width: 100%;
+  height: 100%; }
+
+.item_thumb {
+  height: 100%;
+  position: relative;
+  float: left; }
+  .item_thumb .thumb_pixel {
+    height: 100%; }
+  .item_thumb .thumb_img-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden; }
+  .item_thumb .thumb_img {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%); }
+
+/******
+ * ROOM
+ ******/
+.item-room {
+  height: 110px;
+  width: 300px; }
+
+.item-room_main {
+  background-color: red;
+  overflow: hidden;
+  width: auto;
+  height: 100%;
+  margin-right: 20%; }
+
+.item-room_right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 20%;
+  background-color: blue; }
+
+/**********
+ * ACTIVITY
+ **********/
+.item-activity {
+  height: 90px;
+  width: 100%;
+  padding: 10px;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  position: relative; }
+  .item-activity.selected {
+    background-color: #eee; }
+  .item-activity.live {
+    background-color: rgba(34, 88, 197, 0.1); }
+  .item-activity.live.selected {
+    background-color: rgba(34, 88, 197, 0.3); }
+
+.item-activity_time {
+  margin-left: 10px;
+  height: 70px;
+  line-height: 70px;
+  color: #999;
+  font-size: 14px;
+  display: block;
+  float: left;
+  position: relative; }
+  .item-activity_time span {
+    vertical-align: middle;
+    display: inline-block; }
 
 .modal-container {
   height: 100%;
@@ -153,55 +262,6 @@ html, body {
   .modal-login p {
     text-align: center;
     margin: 10px 0 0 0; }
-
-.room-item {
-  height: 110px;
-  width: 300px;
-  padding: 10px;
-  background-color: #fff;
-  position: relative; }
-
-.room-item__inner {
-  position: relative;
-  width: 100%;
-  height: 100%; }
-
-.room-item__thumb {
-  height: 100%;
-  position: relative;
-  float: left; }
-  .room-item__thumb .thumb__pixel {
-    height: 100%; }
-  .room-item__thumb .thumb__img-container {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    overflow: hidden; }
-  .room-item__thumb .thumb__img {
-    position: absolute;
-    width: 100%;
-    height: auto;
-    top: 50%;
-    left: 50%;
-    -webkit-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%); }
-
-.room-item__main {
-  background-color: red;
-  overflow: hidden;
-  width: auto;
-  height: 100%;
-  margin-right: 20%; }
-
-.room-item__right {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 20%;
-  background-color: blue; }
 
 .separator {
   width: calc(100% - 80px);
@@ -274,7 +334,8 @@ html, body {
   margin-left: 8px; }
 
 .player_main {
-  margin-top: 15px; }
+  margin-top: 15px;
+  position: relative; }
 
 .player_media {
   margin: auto;
@@ -308,6 +369,18 @@ html, body {
     display: table;
     clear: both; }
 
+.player_counter {
+  position: absolute;
+  top: -52px;
+  height: 40px;
+  right: 20px;
+  width: 100px;
+  text-align: right;
+  color: #666;
+  font-size: 17px; }
+  .player_counter .selected {
+    font-weight: bold; }
+
 /************
  * DETAIL BAR
  ************/
@@ -324,7 +397,85 @@ html, body {
 .detail-bar_header {
   width: 100%;
   height: 40px;
-  border-bottom: 1px solid #eee; }
+  border-bottom: 1px solid #eee;
+  text-align: center; }
 
-.modal-container {
-  position: absolute; }
+.detail-bar_tab-container {
+  margin: 0 auto;
+  height: 100%;
+  display: inline-block; }
+
+.detail-bar_tab {
+  height: 100%;
+  color: #888;
+  padding: 0 10px;
+  display: inline-block;
+  line-height: 35px;
+  text-align: center;
+  margin-right: 30px; }
+  .detail-bar_tab.selected {
+    border-bottom: 5px solid #4c86fb;
+    color: #333; }
+    .detail-bar_tab.selected:hover {
+      border-bottom: 5px solid #4c86fb; }
+  .detail-bar_tab:last-child {
+    margin-right: 0; }
+  .detail-bar_tab:hover {
+    border-bottom: 5px solid #dbe7fe; }
+
+.detail-bar_main {
+  overflow: hidden;
+  height: calc(100% - 40px); }
+
+/******
+ * CHAT
+ ******/
+.chat {
+  width: 100%;
+  background: #fff;
+  height: 100%; }
+
+.chat_history {
+  overflow: auto;
+  height: calc(100% - 105px);
+  width: 100%;
+  padding: 3px; }
+
+.chat_items {
+  list-style-type: none;
+  margin: 0;
+  padding: 0; }
+
+.chat_item {
+  font-size: 13px;
+  margin: 12px 0 0 12px; }
+  .chat_item strong {
+    color: #2258c5; }
+  .chat_item strong.creator {
+    color: #fff;
+    background-color: #2258c5;
+    padding: 0 3px; }
+
+.chat_item-notification {
+  color: #999;
+  font-style: italic; }
+
+.chat_compose {
+  height: 105px;
+  width: 100%;
+  margin-top: -5px; }
+  .chat_compose textarea {
+    width: 100%;
+    margin: 0;
+    height: 50px;
+    resize: none;
+    padding: 7px;
+    font-size: 13px;
+    border: 1px solid #ccc; }
+  .chat_compose .btn {
+    display: block;
+    float: right;
+    margin-top: 5px; }
+
+.chat_compose-inner {
+  margin: 15px 15px 5px; }
