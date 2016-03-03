@@ -9,10 +9,11 @@
     position: relative;
     float: left;
     overflow: hidden;
+    border-radius: 25px;
+    z-index: 15; // fixes Webkit bug where border-radius clipping doesn't occur (http://stackoverflow.com/a/25206004/371747)
 
     img {
         @include center;
-        border-radius: 25px;
     }
 }
 
@@ -37,10 +38,7 @@
     .user_profpic {
         width: 100px;
         height: 100px;
-
-        img {
-            border-radius: 50px;
-        }
+        border-radius: 50px;
     }
 
     .user_username {
