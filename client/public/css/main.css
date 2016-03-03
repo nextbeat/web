@@ -131,14 +131,16 @@ html, body {
   border: none;
   border-radius: 0px; }
   .btn:hover {
-    background-color: #4c86fb; }
+    background-color: #4c86fb;
+    color: white; }
   .btn:visited {
     color: white; }
 
 .btn-light {
   background-color: #4c86fb; }
   .btn-light:hover {
-    background-color: #97b9fd; }
+    background-color: #97b9fd;
+    color: white; }
 
 .item {
   padding: 10px;
@@ -172,27 +174,75 @@ html, body {
     -webkit-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%); }
 
+.item_main {
+  overflow: hidden;
+  width: auto;
+  height: 100%; }
+
 /******
  * ROOM
  ******/
 .item-room {
   height: 110px;
-  width: 300px; }
+  width: 350px; }
+  .item-room a {
+    color: #333;
+    font-weight: normal; }
+    .item-room a:hover {
+      color: #333; }
+  .item-room:hover {
+    cursor: pointer; }
 
-.item-room_main {
-  background-color: red;
+.item-room_info {
   overflow: hidden;
-  width: auto;
+  float: left;
+  width: calc(100% - 50px);
+  padding-left: 10px;
   height: 100%;
-  margin-right: 20%; }
+  font-size: 14px; }
+
+.item-room_description {
+  height: 80%; }
+
+.item-room_details {
+  height: 20%;
+  position: relative; }
+
+.item-room_detail {
+  position: absolute;
+  bottom: 0;
+  font-size: 12px;
+  color: #666; }
+
+.item-room_channel {
+  left: 0;
+  font-weight: bold; }
+
+.item-room_time {
+  right: 0; }
 
 .item-room_right {
+  float: left;
+  width: 50px;
+  line-height: 90px;
+  text-align: right; }
+  .item-room_right::after {
+    content: '';
+    display: table;
+    clear: both; }
+
+.item-room_bookmark {
+  width: 15px;
+  height: 15px;
+  margin-bottom: -2px;
+  margin-left: 2px; }
+
+.item-room_open {
   position: absolute;
   top: 0;
   right: 0;
-  bottom: 0;
-  width: 20%;
-  background-color: blue; }
+  color: #15c599;
+  font-size: 12px; }
 
 /**********
  * ACTIVITY
@@ -210,6 +260,24 @@ html, body {
     background-color: rgba(34, 88, 197, 0.1); }
   .item-activity.live.selected {
     background-color: rgba(34, 88, 197, 0.3); }
+
+.item-activity_video-wrapper:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  background: linear-gradient(to bottom, transparent 70%, rgba(0, 0, 0, 0.5) 100%); }
+
+.item-activity_video {
+  position: absolute;
+  bottom: 1px;
+  left: 4px;
+  width: 15px;
+  height: auto;
+  z-index: 10; }
 
 .item-activity_time {
   margin-left: 10px;
@@ -303,6 +371,21 @@ html, body {
   left: 0;
   bottom: 0;
   margin-left: 60px; }
+
+.user-large .user_profpic {
+  width: 100px;
+  height: 100px; }
+  .user-large .user_profpic img {
+    border-radius: 50px; }
+
+.user-large .user_username {
+  font-size: 28px;
+  line-height: 70px; }
+
+.user-large .user_subscribe {
+  margin-left: 110px;
+  position: absolute;
+  bottom: 20px; }
 
 .room {
   position: relative;
@@ -449,12 +532,16 @@ html, body {
 .chat_item {
   font-size: 13px;
   margin: 12px 0 0 12px; }
+  .chat_item a {
+    color: #2258c5; }
   .chat_item strong {
     color: #2258c5; }
   .chat_item strong.creator {
-    color: #fff;
+    color: white;
     background-color: #2258c5;
     padding: 0 3px; }
+    .chat_item strong.creator a {
+      color: white; }
 
 .chat_item-notification {
   color: #999;
@@ -479,3 +566,24 @@ html, body {
 
 .chat_compose-inner {
   margin: 15px 15px 5px; }
+
+.chat_compose-notification {
+  text-align: center;
+  margin-top: 40px;
+  font-style: italic;
+  color: #999; }
+
+.profile {
+  overflow: auto;
+  height: 100%;
+  padding: 15px; }
+
+.profile_header {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+  margin-top: 20px; }
+
+.profile .item-room {
+  display: inline-block;
+  margin: 0 0 5px 5px; }

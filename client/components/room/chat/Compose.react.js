@@ -43,7 +43,7 @@ class Compose extends React.Component {
         const { user, closed } = this.props;
         return (
             <div className="chat_compose">
-            { closed ? <p>Room is no longer open.</p> : ( user.isLoggedIn() ? this.renderChat() : <p>Login to chat.</p> ) }
+            { closed ? <p className="chat_compose-notification">Room is no longer open.</p> : ( user.isLoggedIn() ? this.renderChat() : <p className="chat_compose-notification">Login to chat.</p> ) }
             </div>
         );
     }

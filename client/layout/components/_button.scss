@@ -9,6 +9,7 @@
 
     &:hover {
         background-color: $light-primary-color;
+        color: white;
     }
 
     &:visited {
@@ -21,5 +22,6 @@
 
     &:hover {
         background-color: $lighter-primary-color;
+        color: white;
     }
 }

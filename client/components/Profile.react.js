@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 
 import StackItem from './shared/StackItem.react'
+import User from './shared/User.react'
 
 import { loadProfile, clearProfile, loadStacksForUser } from '../actions'
 import { Profile } from '../models'
@@ -36,14 +37,15 @@ class ProfileComponent extends React.Component {
         const profpic_url = profile.get('profpic_thumbnail_url') || profile.get('profpic_url');
         return (
             <section>  
-                <section className="user">
-                    <div className="profile-picture"><img src={profpic_url} /></div>
-                    {profile.get('username')}
-                </section>
-                <div className="header">OPEN</div>
-                { openStacks.map(stack => <Link key={stack.get('id')} to={`/r/${stack.get('id')}`}><StackItem stack={stack} /></Link>)}
-                <div className="header">HISTORY</div>
-                { closedStacks.map(stack => <Link key={stack.get('id')} to={`/r/${stack.get('id')}`}><StackItem stack={stack} /></Link>)}
+                <User user={profile} style={"large"} />
+                <div className="profile_header">OPEN</div>
+                <div className="profile_rooms">
+                    { openStacks.map(stack => <StackItem key={stack.get('id')} stack={stack} />)}
+                </div>
+                <div className="profile_header">HISTORY</div>
+                <div className="profile_rooms">
+                    { closedStacks.map(stack => <StackItem key={stack.get('id')} stack={stack} />)}
+                </div>
             </section>
         )
     }
@@ -51,7 +53,7 @@ class ProfileComponent extends React.Component {
     render() {
         const { isFetching, error, profile } = this.props;
         return (
-            <div id="profile">
+            <div className="profile">
                 { isFetching && <span>Profile is loading...</span> }
                 { error && error.length > 0 && <span>{error}</span> }
                 { profile.get('id') && this.renderProfile() }
