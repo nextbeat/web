@@ -116,8 +116,8 @@ class Activity extends React.Component {
         const { mediaItems, liveMediaItems, selectedItem, handleSelectMediaItem } = this.props;
         const { displayNewItem } = this.state;
         return (
-        <section id="activity">
-            <div id="activity-inner">
+        <section className="activity">
+            <div className="activity_inner">
                 {mediaItems.map(mediaItem => {
                     var selected = (mediaItem.get('id') === selectedItem.get('id'));
                     return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} handleClick={handleSelectMediaItem}/>
@@ -127,7 +127,7 @@ class Activity extends React.Component {
                     return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} live={true} handleClick={handleSelectMediaItem}/>
                 })}
             </div>
-            { displayNewItem && <div className="new-media" onClick={this.handleNewMediaClick}>New media added!</div> }
+            { displayNewItem && <div className="activity_new-media" onClick={this.handleNewMediaClick}>New media added!</div> }
         </section>
         );
     }

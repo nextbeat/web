@@ -38,8 +38,8 @@ class Player extends React.Component {
         return (
             <section className="player-container">
                 <section className="player">
-                    <Info stack={stack} />
                     <MediaPlayer {...this.props} />
+                    <Info stack={stack} />
                 </section>
             </section>
         );

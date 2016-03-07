@@ -1,7 +1,7 @@
 .modal-container {
     height: 100%;
     width: 100%;
-    background-color: rgba(255,255,255,0.75);
+    background-color: rgba(255,255,255,0.85);
     display: none;
     position: absolute;
     top: 0;
@@ -9,42 +9,79 @@
     z-index: 100;
 }
 
-.modal-login {
-    position: absolute;
-    width: 300px;
-    left: calc(50% - 150px);
-    top: 100px;
+.modal {
+    margin: 0 auto;
+    margin-top: 100px;    
     background-color: white;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    color: black;
+    border: 1px solid $border-color;
 
     input {
-        width: calc(100% - 40px);
-        margin: 0 20px 10px 20px;
+        font-size: 14px;
+    }
+}
+
+.modal_close {
+    float: right;
+    width: 15px;
+    height: 15px;
+    background: url('/images/close.png') center no-repeat;
+    background-size: 12px;
+    opacity: 0.4;
+
+    &:hover {
+        opacity: 0.6;
     }
 
-    input[type="submit"] {
-        margin: 0 auto;
-        width: 100px;
-        text-align: center;
-        display: block;
+}
+
+.modal_form {
+    margin-top: 20px;
+}
+
+.modal_input-wrapper {
+    width: 100%;
+}
+
+.modal_form_submit {
+    width: 100px;
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+}
+
+// Specific styles
+
+.modal-auth {
+    width: 300px;
+
+    .modal_input-wrapper {
+        padding: 0px 20px 10px 20px;
+        position: relative;
     }
 
-    .error {
-        font-size: 0.8em;
-        font-style: italic;
-        color: $error-color;
+    input {
+        width: 100%;
     }
 
-    .close {
-        float: right;
-        display: block;
+    input.modal-login_password {
+        padding-right: 60px;
     }
+}
 
-    p {
-        text-align: center;
-        margin: 10px 0 0 0;
-    }
+.modal-login_forgot {
+    font-weight: normal;
+    font-size: 12px;
+    display: block;
+    position: absolute;
+    right: 29px;
+    top: 7px;
+    width: 60px;
+    height: 100%;
+    text-align: right;
+}
+
+.modal-auth_error {
+    color: $error-color;
+    font-size: 12px;
 }

@@ -20,19 +20,6 @@
     overflow-y: scroll;
 }
 
-.player_description {
-    font-size: 17px;
-    margin-top: 15px;
-    display: block;
-}
-
-.player_open {
-    color: $success-color;
-    font-size: 14px;
-    font-weight: bold;
-    margin-left: 8px;
-}
-
 .player_main {
     margin-top: 15px;
     position: relative;
@@ -88,6 +75,40 @@
         font-weight: bold;
     }
 }
+
+// Info
+
+.player_info {
+    background-color: white;
+    border: 1px solid $border-color;
+    padding: 10px;
+
+    .separator {
+        width: calc(100% - 20px);
+        background-color: #e6e6e6;
+        margin-top: 10px;
+    }
+}
+
+.player_description {
+    font-size: 17px;
+    min-height: 55px;
+    height: 55px; // Firefox fix
+    display: table;
+
+    & > span {
+        vertical-align: middle; 
+        display: table-cell;
+    }
+}
+
+.player_open {
+    color: $success-color;
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
 
 /************
  * DETAIL BAR
@@ -232,4 +253,29 @@
     margin-top: 40px;
     font-style: italic;
     color: #999;
+}
+
+/**********
+ * ACTIVITY
+ **********/
+
+.activity {
+    height: 100%;   
+    position: relative;
+}
+
+.activity_inner {
+    height: 100%;
+    overflow: auto;
+}
+
+.activity_new-media {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 8px 5px;
+    background-color: rgba($secondary-color, 0.85);
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
 }

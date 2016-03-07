@@ -17,6 +17,10 @@ a {
   a:hover {
     color: #4c86fb; }
 
+input {
+  border: 1px solid #ddd;
+  padding: 5px; }
+
 textarea:hover,
 input:hover,
 textarea:active,
@@ -26,9 +30,16 @@ input:focus,
 button:focus,
 button:active,
 button:hover {
-  border-color: none;
+  border: 1px solid #ddd;
   box-shadow: 0 0 4px #bbb;
-  outline: none; }
+  outline: none !important; }
+
+/*
+ * In Webkit, removes yellow background from form elements.
+ */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+  background-color: white !important; }
 
 /*
  * Forces all elements to use the border-box style (which includes
@@ -295,41 +306,68 @@ html, body {
 .modal-container {
   height: 100%;
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(255, 255, 255, 0.85);
   display: none;
   position: absolute;
   top: 0;
   left: 0;
   z-index: 100; }
 
-.modal-login {
-  position: absolute;
-  width: 300px;
-  left: calc(50% - 150px);
-  top: 100px;
+.modal {
+  margin: 0 auto;
+  margin-top: 100px;
   background-color: white;
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  color: black; }
-  .modal-login input {
-    width: calc(100% - 40px);
-    margin: 0 20px 10px 20px; }
-  .modal-login input[type="submit"] {
-    margin: 0 auto;
-    width: 100px;
-    text-align: center;
-    display: block; }
-  .modal-login .error {
-    font-size: 0.8em;
-    font-style: italic;
-    color: #ef585b; }
-  .modal-login .close {
-    float: right;
-    display: block; }
-  .modal-login p {
-    text-align: center;
-    margin: 10px 0 0 0; }
+  border: 1px solid #ddd; }
+  .modal input {
+    font-size: 14px; }
+
+.modal_close {
+  float: right;
+  width: 15px;
+  height: 15px;
+  background: url("/images/close.png") center no-repeat;
+  background-size: 12px;
+  opacity: 0.4; }
+  .modal_close:hover {
+    opacity: 0.6; }
+
+.modal_form {
+  margin-top: 20px; }
+
+.modal_input-wrapper {
+  width: 100%; }
+
+.modal_form_submit {
+  width: 100px;
+  text-align: center;
+  display: block;
+  margin: 0 auto; }
+
+.modal-auth {
+  width: 300px; }
+  .modal-auth .modal_input-wrapper {
+    padding: 0px 20px 10px 20px;
+    position: relative; }
+  .modal-auth input {
+    width: 100%; }
+  .modal-auth input.modal-login_password {
+    padding-right: 60px; }
+
+.modal-login_forgot {
+  font-weight: normal;
+  font-size: 12px;
+  display: block;
+  position: absolute;
+  right: 29px;
+  top: 7px;
+  width: 60px;
+  height: 100%;
+  text-align: right; }
+
+.modal-auth_error {
+  color: #ef585b;
+  font-size: 12px; }
 
 .separator {
   width: calc(100% - 80px);
@@ -338,7 +376,9 @@ html, body {
   height: 1px; }
 
 .user {
-  position: relative; }
+  position: relative;
+  display: inline-block;
+  min-width: 150px; }
   .user::after {
     content: '';
     display: table;
@@ -384,8 +424,22 @@ html, body {
 
 .user-large .user_subscribe {
   margin-left: 110px;
-  position: absolute;
   bottom: 20px; }
+
+.user-right {
+  float: right; }
+  .user-right .user_profpic {
+    float: right; }
+  .user-right .user_username {
+    margin-left: 0;
+    margin-right: 10px;
+    text-align: right;
+    float: right; }
+  .user-right .user_subscribe {
+    left: auto;
+    right: 0;
+    margin-left: 0;
+    margin-right: 60px; }
 
 .room {
   position: relative;
@@ -404,17 +458,6 @@ html, body {
   width: 100%;
   padding: 15px;
   overflow-y: scroll; }
-
-.player_description {
-  font-size: 17px;
-  margin-top: 15px;
-  display: block; }
-
-.player_open {
-  color: #15c599;
-  font-size: 14px;
-  font-weight: bold;
-  margin-left: 8px; }
 
 .player_main {
   margin-top: 15px;
@@ -463,6 +506,30 @@ html, body {
   font-size: 17px; }
   .player_counter .selected {
     font-weight: bold; }
+
+.player_info {
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 10px; }
+  .player_info .separator {
+    width: calc(100% - 20px);
+    background-color: #e6e6e6;
+    margin-top: 10px; }
+
+.player_description {
+  font-size: 17px;
+  min-height: 55px;
+  height: 55px;
+  display: table; }
+  .player_description > span {
+    vertical-align: middle;
+    display: table-cell; }
+
+.player_open {
+  color: #15c599;
+  font-size: 14px;
+  font-weight: bold;
+  margin-left: 5px; }
 
 /************
  * DETAIL BAR
@@ -572,6 +639,27 @@ html, body {
   margin-top: 40px;
   font-style: italic;
   color: #999; }
+
+/**********
+ * ACTIVITY
+ **********/
+.activity {
+  height: 100%;
+  position: relative; }
+
+.activity_inner {
+  height: 100%;
+  overflow: auto; }
+
+.activity_new-media {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 8px 5px;
+  background-color: rgba(239, 88, 91, 0.85);
+  text-align: center;
+  color: #fff;
+  font-weight: bold; }
 
 .profile {
   overflow: auto;

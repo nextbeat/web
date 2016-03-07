@@ -17,6 +17,11 @@ a {
     }
 }
 
+input {
+    border: 1px solid $border-color;
+    padding: 5px;
+}
+
 textarea:hover, 
 input:hover, 
 textarea:active, 
@@ -27,9 +32,17 @@ button:focus,
 button:active,
 button:hover
 {
-    border-color: none;
+    border: 1px solid $border-color;
     box-shadow: 0 0 4px #bbb;
-    outline: none;
+    outline: none !important;
+}
+
+/*
+ * In Webkit, removes yellow background from form elements.
+ */
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+    background-color: white !important;
 }
 
 /*

@@ -1,5 +1,7 @@
 .user {
     position: relative;
+    display: inline-block;
+    min-width: 150px;
     @include clearfix;
 }
 
@@ -48,9 +50,31 @@
 
     .user_subscribe {
         margin-left: 110px;
-        position: absolute;
         bottom: 20px;
     }
 
+}
+
+.user-right {
+
+    float: right;
+
+    .user_profpic {
+        float: right;
+    }
+
+    .user_username {
+        margin-left: 0;
+        margin-right: 10px;
+        text-align: right;
+        float: right;
+    }
+
+    .user_subscribe {
+        left: auto;
+        right: 0;
+        margin-left: 0;
+        margin-right: 60px;
+    }
 }
 

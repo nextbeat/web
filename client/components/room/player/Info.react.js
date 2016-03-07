@@ -13,8 +13,8 @@ class Info extends React.Component {
         const closed = stack.get('closed');
         return (
             <section className="player_info">
-                <User user={stack.author()} />
-                <span className="player_description">{ stack.get('description') }{ !closed && <span className="player_open">OPEN</span> }</span>
+                <User user={stack.author()} style={"right"} />
+                <div className="player_description"><span>{ stack.get('description') } { !closed && <span className="player_open">OPEN</span> } </span></div>
                 <div className="separator" />
             </section>
         );

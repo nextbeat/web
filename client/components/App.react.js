@@ -94,21 +94,21 @@ class App extends React.Component {
         const { user } = this.props;
         return (
             <div id="login-container" className="modal-container">
-                <div id="login" className="modal-login">
-                    <a className="close" onClick={this.dismissLogin}>X</a>
-                    <form id="login-form" onSubmit={this.handleLoginSubmit}>
-                        <div>
+                <div id="login" className="modal modal-auth">
+                    <div className="modal_close" onClick={this.dismissLogin} />
+                    <form className="modal_form" id="login-form">
+                        <div className="modal_input-wrapper">
                             <input type="text" ref="login_username" name="login_username" placeholder="Username" />
                         </div>
-                        <div>
-                            <input type="password" ref="login_password" name="login_password" placeholder="Password" />
+                        <div className="modal_input-wrapper">
+                            <input className="modal-login_password" type="password" ref="login_password" name="login_password" placeholder="Password" />
+                            <a href="/support/password-reset-request" className="modal-login_forgot">Forgot?</a>
                         </div>
-                        <div>
-                            <input type="submit" value="Log In"/>
+                        <div className="modal_input-wrapper">
+                            <a className="btn modal_form_submit" onClick={this.handleLoginSubmit}>Log In</a>
                         </div>
                     </form>
-                    { user.has('loginError') && <div><span className="error">{user.get('loginError')}</span></div> }
-                    <p><Link to="/support/password-reset-request">Forgot your password?</Link></p>
+                    { user.has('loginError') && <div className="modal-auth_error">{user.get('loginError')}</div> }
                 </div>
             </div>
         )
@@ -118,25 +118,25 @@ class App extends React.Component {
         const { user } = this.props;
         return (
             <div id="signup-container" className="modal-container">
-                <div id="signup" className="modal-login">
-                    <a className="close" onClick={this.dismissSignup}>X</a>
-                    <form id="signup-form" onSubmit={this.handleSignupSubmit} >
+                <div id="signup" className="modal modal-auth">
+                    <div className="modal_close" onClick={this.dismissSignup} />
+                    <form className="modal_form" id="signup-form" >
                         <input style={{display: "none"}} type="text" name="somefakename" />
                         <input style={{display: "none"}} type="password" name="anotherfakename" />
-                        <div>
+                        <div className="modal_input-wrapper">
                             <input type="text" ref="signup_email" name="signup_email" placeholder="Email" />
                         </div>
-                        <div>
+                        <div className="modal_input-wrapper">
                             <input type="text" autocomplete="off" ref="signup_username" name="signup_username" placeholder="Username" />
                         </div>
-                        <div>
+                        <div className="modal_input-wrapper">
                             <input type="password" autocomplete="new-password" ref="signup_password" name="signup_password" placeholder="Password" />
                         </div>
-                        <div>
-                            <input type="submit" value="Sign Up"/>
+                        <div className="modal_input-wrapper">
+                            <a className="btn modal_form_submit" onClick={this.handleSignupSubmit}>Sign Up</a>
                         </div>
                     </form>
-                    { user.has('signupError') && <div><span className="error">{user.get('signupError')}</span></div> }
+                    { user.has('signupError') && <div className="modal-auth_error">{user.get('signupError')}</div> }
                 </div>
             </div>
         )
