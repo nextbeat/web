@@ -117,7 +117,7 @@ class Activity extends React.Component {
         const { displayNewItem } = this.state;
         return (
         <section className="activity">
-            <div className="activity_inner">
+            <div className="activity_inner" id="activity-inner">
                 {mediaItems.map(mediaItem => {
                     var selected = (mediaItem.get('id') === selectedItem.get('id'));
                     return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} handleClick={handleSelectMediaItem}/>

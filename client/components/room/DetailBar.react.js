@@ -20,6 +20,7 @@ class DetailBar extends React.Component {
         const selected = type => this.state.selected === type ? "selected" : "";
         const { stack, handleSelectMediaItem, handleSelectNewestLiveItem  } = this.props;
         const activityProps = {
+            stack,
             mediaItems: stack.mediaItems(),
             liveMediaItems: stack.liveMediaItems(),
             selectedItem: stack.selectedMediaItem(),

@@ -6,7 +6,6 @@ class More extends React.Component {
         return (
             <div className="player_more">
                 <h1>MORE LIKE THIS</h1>
-
             </div>
         );
     }
