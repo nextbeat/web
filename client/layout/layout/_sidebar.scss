@@ -17,6 +17,10 @@
     }
 }
 
+/********
+ * HEADER
+ ********/
+
 .sidebar_logo {
     margin-bottom: 25px;
     font-size: 24px;
@@ -54,6 +58,10 @@
     @include clearfix;
 }
 
+/***************
+ * CONTENT VIEWS
+ ***************/
+
 .sidebar_no-content {
     text-align: center;
     display: block;
@@ -61,4 +69,31 @@
     color: #999;
     width: 100%;
     margin: 10px 0;
+}
+
+.sidebar_bookmarks {
+
+    .item-room {
+        width: 100%;
+        height: 60px;
+        padding: 0;
+        margin-bottom: 10px;
+    }
+
+    .item-room_info {
+        font-size: 13px;
+        width: 100%;
+    }
+
+    .item-room_right, .item-room_open {
+        display: none;
+    }
+
+    .item-room_detail {
+        font-size: 10px;
+    }
+
+
+
+
 }

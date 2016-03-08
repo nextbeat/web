@@ -1,5 +1,7 @@
 import React from 'react'
 import User from '../../shared/User.react'
+import Icon from '../../shared/Icon.react'
+import Bookmark from './Bookmark.react'
 
 class Info extends React.Component {
 
@@ -15,7 +17,11 @@ class Info extends React.Component {
             <section className="player_info">
                 <User user={stack.author()} style={"right"} />
                 <div className="player_description"><span>{ stack.get('description') } { !closed && <span className="player_open">OPEN</span> } </span></div>
-                <div className="separator" />
+                <div className="separator separator-player_info" />
+                <div className="player_buttons">
+                    <div className="player_button"><Bookmark {...this.props} /></div>
+                    <div className="player_button player_button-share"><Icon type="share" /><span>Share</span></div>
+                </div>
             </section>
         );
     }

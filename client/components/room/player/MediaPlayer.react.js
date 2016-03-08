@@ -1,12 +1,35 @@
-import React from 'react';
-import Video from './Video.react';
+import React from 'react'
+import Video from './Video.react'
+import Icon from '../../shared/Icon.react'
 
 class MediaPlayer extends React.Component {
 
     constructor(props) {
         super(props);
-        this.displayName = 'MediaPlayer';
+
+        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
+
+    // Lifecycle
+
+    componentDidMount() {
+        $(document.body).on('keydown', this.handleKeyDown);
+    }
+
+    componentWillUnmount() {
+        $(document.body).off('keydown', this.handleKeyDown);
+    }
+
+    // Navigation
+
+    handleKeyDown(e) {
+        if (e.keyCode === 37) { // left arrow
+            this.props.handleBackward();
+        } else if (e.keyCode === 39) {
+            this.props.handleForward(); // right arrow
+        }
+    }
+
 
     render() {
         const { stack, handleForward, handleBackward } = this.props;
@@ -24,8 +47,8 @@ class MediaPlayer extends React.Component {
                     : <img src={item.get('url')} />}
             </div>
             <div className="player_navigation">
-                <div className="player_nav-button player_nav-backward" onClick={handleBackward}></div>
-                <div className="player_nav-button player_nav-forward" onClick={handleForward}></div>
+                <div className="player_nav-button player_nav-backward" onClick={handleBackward}><Icon type={"chevron-left"} /></div>
+                <div className="player_nav-button player_nav-forward" onClick={handleForward}><Icon type={"chevron-right"} /></div>
             </div>
         </div>
         );

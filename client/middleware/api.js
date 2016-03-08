@@ -64,7 +64,6 @@ function callApi(options, store) {
             } else if (typeof schema !== 'undefined') {
                 return normalize(json, schema);
             } else {
-                console.log('foo', json);
                 return json;
             }
         })

@@ -2,7 +2,7 @@
     background-color: $primary-color;
     color: white;
     font-weight: normal;
-    font-size: 0.8em;
+    font-size: 13px;
     padding: 5px 10px;
     border: none;
     border-radius: 0px;
@@ -25,3 +25,45 @@
         color: white;
     }
 }
+
+// Bookmark
+
+.btn-bookmark {
+
+    .svg-icon-bookmark, .svg-icon-bookmark-outline {
+        height: 17px;
+        width: 17px;
+        fill: white;
+        margin: 0 0 0 -3px;
+        position: absolute;
+        left: 10px;
+        top: 5px;
+    }
+}
+
+.btn-bookmark_inner {
+
+    display: flex;
+
+    & > * {
+        display: inline-block;
+        position: relative;
+        align-items: stretch;
+    }
+}
+
+.btn-bookmark_count {
+    border: 1px solid $border-color;
+    border-right: none;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 26px;
+    padding: 0 5px;
+    color: $button-color;
+    min-width: 20px;
+}
+
+.btn-bookmark_text {
+    margin-left: 17px;
+}
+
