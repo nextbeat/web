@@ -23,7 +23,7 @@ export default class Profile extends ModelBase {
     }
 
     stacks() {
-        return this.__getPaginatedEntries('stacks')
+        return this.__getPaginatedEntities('stacks')
     }
 
 }

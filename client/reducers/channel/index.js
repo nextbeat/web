@@ -4,8 +4,16 @@ import { combineReducers, entity, paginate } from '../utils'
 
 const meta = entity(ActionTypes.CHANNEL);
 
+function stacks(state, action) {
+    if (action.type === ActionTypes.CLEAR_CHANNEL_STACKS) {
+        return Map()
+    } else {
+        return paginate(ActionTypes.CHANNEL_STACKS)(state, action)
+    }
+}
+
 const pagination = combineReducers({
-    stacks: paginate(ActionTypes.CHANNEL_STACKS)
+    stacks
 })
 
 const initialFiltersState = Map({

@@ -1,3 +1,41 @@
 .category {
-    padding: 10px;
+    padding: 15px;
+    height: 100%;
+    overflow: auto;
+}
+
+.category_header {
+    font-weight: bold;
+    font-size: 24px;
+    color: $text-color;
+    margin-bottom: 10px;
+}
+
+.category_filters {
+    margin-bottom: 10px;
+}
+
+.category_filter {
+    margin-right: 20px;
+    padding-bottom: 5px;
+    color: #666;
+
+    &.selected {
+        border-bottom: 3px solid $primary-color;
+        color: $text-color;
+        &:hover {
+            border-bottom: 3px solid $primary-color;
+        }
+    }
+
+    &:hover {
+        border-bottom: 3px solid mix(white, $light-primary-color, 80%);
+    }
+}
+
+.category_stacks {
+    .item-room {
+        display: inline-block;
+        margin: 0px 5px 5px 0;
+    }
 }

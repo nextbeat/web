@@ -2,6 +2,7 @@ import { assign } from 'lodash'
 
 import ActionTypes from './types'
 import Schemas from '../schemas'
+import { Channel } from '../models'
 import { loadPaginatedObjects } from './utils'
 import { API_CALL } from '../middleware/api'
 
@@ -10,8 +11,7 @@ import { API_CALL } from '../middleware/api'
  **********/
 
 function onChannelSuccess(store, next, action, response) {
-    const channel = response.entities.channels[response.result];
-    store.dispatch(loadStacksForChannel(channel.id, { sort: "hot" }))
+    store.dispatch(loadStacksForChannel({ sort: "hot" }))
 }
 
 function fetchChannel(name) {
@@ -20,7 +20,8 @@ function fetchChannel(name) {
         [API_CALL]: {
             schema: Schemas.CHANNEL,
             endpoint: "channels",
-            queries: { name }
+            queries: { name },
+            onSuccess: onChannelSuccess
         }
     }
 }
@@ -43,8 +44,23 @@ function fetchStacksForChannel(channel_id, options, pagination) {
     }
 }
 
-export function loadStacksForChannel(channel_id, options) {
-    return loadPaginatedObjects('channel', 'stack', fetchStacksForChannel.bind(this, channel_id, options), 12)
+function clearStacksForChannel() {
+    return {
+        type: ActionTypes.CLEAR_CHANNEL_STACKS
+    }
+}
+
+export function loadStacksForChannel(options) {
+    return (dispatch, getState) => {
+        const channel = new Channel(getState())
+        // todo: include status
+        if (options.sort !== channel.get('sort')) {
+            // we're requesting a new sort type, so we clear the stacks state
+            dispatch(clearStacksForChannel())
+        }
+        loadPaginatedObjects('channel', 'stack', fetchStacksForChannel.bind(this, channel.get('id'), options), 12)(dispatch, getState)
+    }
+
 }
 
 export function clearChannel() {

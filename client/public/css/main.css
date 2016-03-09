@@ -537,7 +537,34 @@ a.item-room.selected {
     margin-right: 50px; }
 
 .category {
-  padding: 10px; }
+  padding: 15px;
+  height: 100%;
+  overflow: auto; }
+
+.category_header {
+  font-weight: bold;
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 10px; }
+
+.category_filters {
+  margin-bottom: 10px; }
+
+.category_filter {
+  margin-right: 20px;
+  padding-bottom: 5px;
+  color: #666; }
+  .category_filter.selected {
+    border-bottom: 3px solid #2258c5;
+    color: #333; }
+    .category_filter.selected:hover {
+      border-bottom: 3px solid #2258c5; }
+  .category_filter:hover {
+    border-bottom: 3px solid #dbe7fe; }
+
+.category_stacks .item-room {
+  display: inline-block;
+  margin: 0px 5px 5px 0; }
 
 .profile {
   overflow: auto;

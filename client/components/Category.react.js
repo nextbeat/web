@@ -2,9 +2,16 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { Channel } from '../models'
-import { loadChannel, clearChannel } from '../actions'
+import { loadChannel, clearChannel, loadStacksForChannel } from '../actions'
+import StackItem from './shared/StackItem.react'
 
 class Category extends React.Component {
+
+    constructor(props) {
+        super(props)
+
+        this.setSort = this.setSort.bind(this)
+    }
 
     componentDidMount() {
         const { params: { name }, dispatch } = this.props
@@ -22,11 +29,26 @@ class Category extends React.Component {
         }
     }
 
+    setSort(type) {
+        console.log('foo')
+        this.props.dispatch(loadStacksForChannel({ sort: type }))
+    }
+
     render() {
-        const { channel } = this.props;
+        const { channel } = this.props
+        const selected = type => channel.get('sort') === type ? "selected" : ""
         return (
             <div className="category">
-                { channel.get('name') }
+                <div className="category_header">
+                    { channel.get('name') }
+                </div>
+                <div className="category_filters">
+                    <span className={`category_filter ${selected("hot")}`} onClick={this.setSort.bind(this, "hot")}>Hot</span>
+                    <span className={`category_filter ${selected("new")}`} onClick={this.setSort.bind(this, "new")}>New</span>
+                </div>
+                <div className="category_stacks">
+                    { channel.stacks().map(stack => <StackItem key={`s${stack.get('id')}`} stack={stack} />) }
+                </div>
             </div>
         );
     }
