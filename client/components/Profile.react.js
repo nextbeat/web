@@ -37,7 +37,7 @@ class ProfileComponent extends React.Component {
         const profpic_url = profile.get('profpic_thumbnail_url') || profile.get('profpic_url');
         return (
             <section>  
-                <User user={profile} style={"large"} />
+                <User user={profile.entity()} style={"large"} />
                 <div className="profile_header">OPEN</div>
                 <div className="profile_rooms">
                     { openStacks.map(stack => <StackItem key={stack.get('id')} stack={stack} />)}
@@ -68,7 +68,7 @@ function mapStateToProps(state, props) {
     return {
         isFetching: profile.get('isFetching'),
         error: profile.get('error'),
-        profile: profile.entity(),
+        profile: profile,
         openStacks: profile.openStacks(),
         closedStacks: profile.closedStacks()
     }

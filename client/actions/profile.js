@@ -33,7 +33,7 @@ function fetchStacksForUser(username, type, status, pagination) {
         type,
         [API_CALL]: {
             schema: Schemas.STACKS,
-            endpoint: `stacks`,
+            endpoint: "stacks",
             queries: { author: username, status: status },
             pagination
         }

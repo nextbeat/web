@@ -2,6 +2,7 @@
     padding: 10px;
     background-color: #fff;
     position: relative;
+    display: block;
 }
 
 .item_inner {
@@ -47,19 +48,25 @@
 .item-room {
     height: 110px;
     width: 350px;
+    border: 1px solid #eee;
 
-    a {
-        color: $text-color;
-        font-weight: normal;
-
-        &:hover {
-            color: $text-color;
-        }
-    }
+    color: $text-color;
+    font-weight: normal;
 
     &:hover {
         cursor: pointer;
+        color: $text-color;
     }
+    
+}
+
+a.item-room {
+    color: $text-color;
+    font-weight: normal;
+}
+
+a.item-room.selected {
+    background-color: rgba($primary-color, 0.1);
 }
 
 .item-room_info {
@@ -85,6 +92,12 @@
     bottom: 0;
     font-size: 12px;
     color: #666;
+}
+
+.item-room_author {
+    left: 0;
+    font-weight: bold;
+    display: none;
 }
 
 .item-room_channel {

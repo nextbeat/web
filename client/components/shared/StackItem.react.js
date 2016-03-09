@@ -1,18 +1,16 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import { Map } from 'immutable'
 import moment from 'moment'
 
 class StackItem extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
-        const { stack, user } = this.props;
+        const { stack, user, users } = this.props;
+        const author = users.get(stack.get('author_id').toString(), Map())
         return (
-            <div className="item-room item">
-                <Link to={`/r/${stack.get('id')}`}>
+            <Link to={`/r/${stack.get('id')}`} className="item-room item" activeClassName="selected">
                 <div className="item_inner">
                     <div className="item_thumb">
                         <img className="thumb_pixel" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
@@ -22,8 +20,9 @@ class StackItem extends React.Component {
                     </div>
                     <div className="item_main">
                         <div className="item-room_info">
-                            <div className="item-room_description">{stack.get('description')}</div>
+                            <div className="item-room_description">{stack.get('description') || "No description."}</div>
                             <div className="item-room_details">
+                                <span className="item-room_detail item-room_author">{ author.get('username') }</span>
                                 <span className="item-room_detail item-room_channel">{stack.getIn(['channel', 'name'])}</span>
                                 <span className="item-room_detail item-room_time">{moment(stack.get('most_recent_post_at')).fromNow()}</span>
                             </div>
@@ -35,10 +34,15 @@ class StackItem extends React.Component {
                     {!stack.get('closed') && <span className="item-room_open">OPEN</span>}
                     {user && user.hasUnreadNotificationsForStack(stack.get('id')) && <span className="item-room_notification">NEW</span>}
                 </div>
-                </Link>
-            </div>
+            </Link>
         );
     }
 }
 
-export default StackItem;
+function mapStateToProps(state) {
+    return { 
+        users: state.getIn(['entities', 'users'])
+    }
+}
+
+export default connect(mapStateToProps)(StackItem);

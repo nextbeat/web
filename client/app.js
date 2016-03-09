@@ -9,6 +9,7 @@ import { CurrentUser } from './models'
 import App from './components/App.react'
 import Room from './components/Room.react'
 import Profile from './components/Profile.react'
+import Category from './components/Category.react'
 import Splash from './components/Splash.react'
 import PasswordResetRequest from './components/support/PasswordResetRequest.react'
 import PasswordReset from './components/support/PasswordReset.react'
@@ -48,6 +49,7 @@ render(
             <Route component={App}>
                 <Route path="/r/:stack_id" component={Room} />
                 <Route path="/u/:username" component={Profile} />
+                <Route path="/c/:name" component={Category} />
                 <Route path="*" component={NoMatch} />
             </Route>
         </Router>

@@ -2,6 +2,7 @@ import React from 'react'
 
 import MediaPlayer from './player/MediaPlayer.react'
 import Info from './player/Info.react'
+import More from './player/More.react'
 
 class Player extends React.Component {
 
@@ -12,6 +13,7 @@ class Player extends React.Component {
                 <section className="player">
                     <MediaPlayer {...this.props} />
                     <Info {...this.props} />
+                    <More stack={stack} />
                 </section>
             </section>
         );

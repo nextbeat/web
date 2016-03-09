@@ -1,8 +1,9 @@
 import { join } from 'path'
-import { assign } from 'lodash'
+import { assign, isEmpty } from 'lodash'
 import fetch from 'isomorphic-fetch'
 import Promise from 'bluebird'
 import moment from 'moment'
+import { stringify } from 'querystring'
 import { normalize } from 'normalizr'
 import { Status, selectMediaItem } from '../actions'
 import { CurrentUser } from '../models'
@@ -10,20 +11,22 @@ import { CurrentUser } from '../models'
 const API_ROOT = '/api/';
 
 function urlWithParams(endpoint, pagination, queries) {
-    const url = join(API_ROOT, endpoint);
-    let fullUrl = url;
+    let url = join(API_ROOT, endpoint);
     queries = queries || {};
 
     if (typeof pagination !== 'undefined') {
-        const beforeDate = moment(pagination.before).format();
-        fullUrl = `${url}?page=${pagination.page}&limit=${pagination.limit}&before=${beforeDate}`;
+        queries = assign({}, queries, { 
+            page: pagination.page,
+            limit: pagination.limit,
+            before: moment(pagination.before).format()
+        })
     }
 
-    for (const key in queries) {
-        fullUrl += `&${key}=${queries[key]}`
+    if (!isEmpty(queries)) {
+        url += "?" + stringify(queries);
     }
 
-    return fullUrl;
+    return url;
 }
 
 function fetchOptions(options, store) {

@@ -10,6 +10,14 @@ export const Status = {
 
 export default {
 
+    /*********
+     * CHANNEL
+     *********/
+
+    CHANNEL: 'CHANNEL',
+    CHANNEL_STACKS: 'CHANNEL_STACKS',
+    CLEAR_CHANNEL: 'CLEAR_CHANNEL',
+
     /*******
      * STACK
      *******/
@@ -17,6 +25,7 @@ export default {
     STACK: 'STACK',
     MEDIA_ITEMS: 'MEDIA_ITEMS',
     COMMENTS: 'COMMENTS',
+    MORE_STACKS: 'MORE_STACKS',
     SEND_COMMENT: 'SEND_COMMENT',
     BOOKMARK: 'BOOKMARK',
     UNBOOKMARK: 'UNBOOKMARK',

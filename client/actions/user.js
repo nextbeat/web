@@ -16,7 +16,8 @@ function fetchBookmarkedStacks(pagination) {
         type: ActionTypes.BOOKMARKED_STACKS,
         [API_CALL]: {
             schema: Schemas.STACKS,
-            endpoint: `stacks/bookmarked`,
+            endpoint: "stacks",
+            queries: { bookmarked: "true" },
             authenticated: true,
             pagination
         }

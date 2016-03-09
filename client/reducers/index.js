@@ -4,6 +4,7 @@ import user from './user'
 import stack from './stack'
 import profile from './profile'
 import support from './support'
+import channel from './channel'
 import { combineReducers } from './utils'
 
 const initialEntities = Map({
@@ -24,6 +25,7 @@ export default combineReducers({
     entities,
     stack,
     profile,
+    channel,
     user,
     support
 })

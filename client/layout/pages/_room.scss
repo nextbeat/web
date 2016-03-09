@@ -20,6 +20,13 @@
     overflow-y: scroll;
 }
 
+.player_header {
+    font-size: 16px;
+    color: #666;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
 .player_main {
     position: relative;
 }
@@ -86,6 +93,7 @@
     background-color: white;
     border: 1px solid $border-color;
     padding: 10px;
+    margin-bottom: 20px;
 }
 
 .separator-player_info {
@@ -146,6 +154,26 @@
         width: 15px;
         height: 15px;
         margin: 0 6px 5px 0;
+    }
+}
+
+// More
+
+.player_more {
+
+    .item-room {
+        width: 260px;
+        height: 100px;
+        margin: 0 0 5px 5px;
+        display: inline-block;
+    }
+
+    .item-room_time, .item-room_channel {
+        display: none;
+    }
+
+    .item-room_author {
+        display: block;
     }
 }
 

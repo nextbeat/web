@@ -20,7 +20,9 @@ const KEY_MAP = {
     'mediaItemsFetching': ['stack', 'pagination', 'mediaItems', 'isFetching'],
     // comments
     'commentsFetching': ['stack', 'pagination', 'comments', 'isFetching'],
-    'commentsError': ['stack', 'pagination', 'comments', 'error']
+    'commentsError': ['stack', 'pagination', 'comments', 'error'],
+    // more
+    'moreStackIds': ['stack', 'more', 'ids']
 }
 
 export default class Stack extends ModelBase {
@@ -59,6 +61,10 @@ export default class Stack extends ModelBase {
         // instead of being stored as entities, so the method for retrieving them
         // is different
         return this.get('liveComments', List())
+    }
+
+    moreStacks() {
+        return this.get('moreStackIds', List()).map(id => this.__getEntity(id, 'stacks'))
     }
 
     // queries

@@ -2,9 +2,16 @@ export { default as ActionTypes } from './types'
 export { Status } from './types'
 
 export {
+    loadChannel,
+    loadStacksForChannel,
+    clearChannel
+} from './channel'
+
+export {
     loadStack,
     loadMediaItems,
     loadComments,
+    loadMoreStacks,
     sendComment,
     bookmark,
     unbookmark,

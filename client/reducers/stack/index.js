@@ -1,4 +1,4 @@
-import { Map } from 'immutable'
+import { Map, List } from 'immutable'
 import { mapValues } from 'lodash'
 import { ActionTypes, Status } from '../../actions'
 
@@ -19,11 +19,36 @@ function mediaItems(state = Map(), action) {
     return state;
 }
 
+function more(state = Map(), action) {
+    if (action.type === ActionTypes.MORE_STACKS) {
+        if (action.status === Status.REQUESTING) {
+            return state.merge({
+                isFetching: true
+            }).delete('error').delete('ids')
+        } else if (action.status === Status.SUCCESS) {
+            // 7 ids are returned; we need to cut out the loaded stack id, 
+            // if it's in the list, or the last one
+            const ids = List(action.response.result).filter(id => id !== action.stack_id).take(6)
+            return state.merge({
+                isFetching: false,
+                ids: ids
+            })
+        } else if (action.status === Status.FAILURE) {
+            return state.merge({
+                isFetching: false,
+                error: action.error
+            })
+        }
+    }
+    return state;
+}
+
 const reducers = {
     meta, 
     pagination,
     mediaItems,
-    live
+    live,
+    more
 }
 
 export default function(state = Map(), action) {

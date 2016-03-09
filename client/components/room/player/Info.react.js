@@ -16,7 +16,7 @@ class Info extends React.Component {
         return (
             <section className="player_info">
                 <User user={stack.author()} style={"right"} />
-                <div className="player_description"><span>{ stack.get('description') } { !closed && <span className="player_open">OPEN</span> } </span></div>
+                <div className="player_description"><span>{ stack.get('description') || "No description." } { !closed && <span className="player_open">OPEN</span> } </span></div>
                 <div className="separator separator-player_info" />
                 <div className="player_buttons">
                     <div className="player_button"><Bookmark {...this.props} /></div>
