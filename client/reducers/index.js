@@ -1,5 +1,6 @@
 import { Map } from 'immutable'
 
+import app from './app'
 import user from './user'
 import stack from './stack'
 import profile from './profile'
@@ -11,7 +12,8 @@ const initialEntities = Map({
     stacks: Map(),
     mediaItems: Map(),
     users: Map(),
-    comments: Map()
+    comments: Map(),
+    channels: Map()
 })
 
 function entities(state = initialEntities, action) {
@@ -23,6 +25,7 @@ function entities(state = initialEntities, action) {
 
 export default combineReducers({
     entities,
+    app,
     stack,
     profile,
     channel,

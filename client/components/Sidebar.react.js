@@ -41,7 +41,7 @@ class Sidebar extends React.Component {
     }
 
     render() {
-        const { user } = this.props;
+        const { user, app } = this.props;
         return (
             <div className="sidebar">
                 <div className="sidebar_header">
@@ -59,6 +59,10 @@ class Sidebar extends React.Component {
                         <div className="separator" />
                     </div>
                 }
+                <div className="sidebar_categories">
+                    <h1>CATEGORIES</h1>
+                    { app.channels().map(channel => <Link key={`c${channel.get('id')}`} to={`/c/${channel.get('name')}`} activeClassName="selected" >{channel.get('name')}</Link>) }
+                </div>
             </div>
         );
     }

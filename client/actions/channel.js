@@ -49,6 +49,6 @@ export function loadStacksForChannel(channel_id, options) {
 
 export function clearChannel() {
     return {
-        type: CLEAR_CHANNEL
+        type: ActionTypes.CLEAR_CHANNEL
     }
 }

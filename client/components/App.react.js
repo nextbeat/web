@@ -5,8 +5,8 @@ import { Link } from 'react-router'
 
 import Sidebar from '../components/Sidebar.react'
 
-import { connectToXMPP, disconnectXMPP, login, logout, signup, clearLogin, clearSignup, postLogin } from '../actions'
-import { CurrentUser } from '../models'
+import { connectToXMPP, disconnectXMPP, login, logout, signup, clearLogin, clearSignup, postLogin, loadChannels, clearApp } from '../actions'
+import { CurrentUser, App as AppModel } from '../models'
 
 class App extends React.Component {
 
@@ -27,6 +27,7 @@ class App extends React.Component {
     componentDidMount() {
         const { user, dispatch } = this.props;
         dispatch(connectToXMPP());
+        dispatch(loadChannels());
         if (user.isLoggedIn()) {
             dispatch(postLogin());
         }
@@ -35,6 +36,7 @@ class App extends React.Component {
 
     componentWillUnmount() {
         this.props.dispatch(disconnectXMPP());
+        this.props.dispatch(clearApp());
     }
 
     componentDidUpdate(prevProps) {
@@ -143,12 +145,19 @@ class App extends React.Component {
     }
 
     render() {
-        const { user, connected, children } = this.props;
+        const { user, app, connected, children } = this.props;
+        const sidebarProps = {
+            user,
+            app,
+            handleLoginClick: this.handleLoginClick,
+            handleLogoutClick: this.handleLogoutClick,
+            handleSignupClick: this.handleSignupClick
+        }
         return (
             <section className="app-container">
                 {this.renderLogin()}
                 {this.renderSignup()}
-                <Sidebar user={user} handleLoginClick={this.handleLoginClick} handleLogoutClick={this.handleLogoutClick} handleSignupClick={this.handleSignupClick} />
+                <Sidebar {...sidebarProps} />
                 <div className="main">
                     {React.cloneElement(children, { user, connected })}
                 </div>
@@ -159,9 +168,11 @@ class App extends React.Component {
 
 function mapStateToProps(state, props) {
     const user = new CurrentUser(state)
+    const app = new AppModel(state)
 
     return {
         user,
+        app,
         connected: user.get('connected')
     }
 }

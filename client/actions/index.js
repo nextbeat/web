@@ -2,6 +2,11 @@ export { default as ActionTypes } from './types'
 export { Status } from './types'
 
 export {
+    loadChannels,
+    clearApp
+} from './app'
+
+export {
     loadChannel,
     loadStacksForChannel,
     clearChannel

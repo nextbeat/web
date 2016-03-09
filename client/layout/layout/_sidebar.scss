@@ -71,6 +71,8 @@
     margin: 10px 0;
 }
 
+// Bookmarks
+
 .sidebar_bookmarks {
 
     margin: 0 -15px 0 -15px;
@@ -103,4 +105,25 @@
         display: block;
     }
 
+}
+
+// Categories
+
+.sidebar_categories {
+
+    a {
+        font-weight: normal;
+        color: $text-color;
+        display: block;
+        margin: 0 0 7px 15px;
+        font-size: 14px;
+
+        &:hover {
+            color: $primary-color;
+        }
+
+        &.selected {
+            font-weight: bold;
+        }
+    }
 }

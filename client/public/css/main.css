@@ -158,6 +158,17 @@ html, body {
   .sidebar_bookmarks .item-room_author {
     display: block; }
 
+.sidebar_categories a {
+  font-weight: normal;
+  color: #333;
+  display: block;
+  margin: 0 0 7px 15px;
+  font-size: 14px; }
+  .sidebar_categories a:hover {
+    color: #2258c5; }
+  .sidebar_categories a.selected {
+    font-weight: bold; }
+
 .btn {
   background-color: #2258c5;
   color: white;

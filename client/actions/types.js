@@ -10,6 +10,13 @@ export const Status = {
 
 export default {
 
+    /*****
+     * APP
+     *****/
+
+    CHANNELS: 'CHANNELS',
+    CLEAR_APP: 'CLEAR_APP',
+
     /*********
      * CHANNEL
      *********/

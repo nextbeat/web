@@ -16,6 +16,7 @@ comment.define({
 
 export default {
     CHANNEL: channel,
+    CHANNELS: arrayOf(channel),
     STACK: stack,
     STACKS: arrayOf(stack),
     MEDIA_ITEM: mediaItem,
