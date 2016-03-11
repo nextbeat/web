@@ -1,6 +1,7 @@
 body {
     font-family: 'BlinkMacSystemFont', -apple-system, sans-serif;
     color: $text-color;
+    background: $background-color;
 }
 
 a {
@@ -44,6 +45,18 @@ input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px white inset !important;
     background-color: white !important;
 }
+
+/*
+ * Workaround for Chrome auto-filling password inputs.
+ */
+.input-hack {
+    width: 1px;
+    height: 1px;
+    padding: 0px;
+    border: none;
+    margin: 0 !important;
+}
+
 
 /*
  * Forces all elements to use the border-box style (which includes

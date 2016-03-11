@@ -6,7 +6,8 @@
  ********/
 body {
   font-family: 'BlinkMacSystemFont', -apple-system, sans-serif;
-  color: #333; }
+  color: #333;
+  background: #f6f6f6; }
 
 a {
   text-decoration: none;
@@ -40,6 +41,16 @@ button:hover {
 input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0px 1000px white inset !important;
   background-color: white !important; }
+
+/*
+ * Workaround for Chrome auto-filling password inputs.
+ */
+.input-hack {
+  width: 1px;
+  height: 1px;
+  padding: 0px;
+  border: none;
+  margin: 0 !important; }
 
 /*
  * Forces all elements to use the border-box style (which includes
@@ -81,7 +92,9 @@ html, body {
   bottom: 0;
   width: 240px;
   border-right: 1px solid #ddd;
-  padding: 15px; }
+  background: white;
+  padding: 15px;
+  overflow: auto; }
   .sidebar .separator {
     width: calc(100% - 10px); }
   .sidebar h1 {
@@ -493,6 +506,16 @@ a.item-room.selected {
     left: 50%;
     -webkit-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%); }
+  .user_profpic .svg-icon-person {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+    width: 70%;
+    height: 70%; }
 
 .user_username {
   font-size: 13px;
@@ -565,6 +588,12 @@ a.item-room.selected {
 .category_stacks .item-room {
   display: inline-block;
   margin: 0px 5px 5px 0; }
+
+.category_stacks .item-room_channel {
+  display: none; }
+
+.category_stacks .item-room_author {
+  display: block; }
 
 .profile {
   overflow: auto;
@@ -845,3 +874,91 @@ a.item-room.selected {
   text-align: center;
   color: #fff;
   font-weight: bold; }
+
+.splash {
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 100px;
+  height: 500px;
+  display: table; }
+
+.splash_main {
+  width: 50%;
+  height: 100%;
+  display: table-cell; }
+
+.splash_logo {
+  text-align: center;
+  margin-top: 100px;
+  width: 100%;
+  color: #2258c5;
+  font-weight: bold;
+  font-size: 2.5em; }
+
+.splash_description {
+  text-align: center;
+  color: #666;
+  margin: 15px 20px; }
+
+.splash_auth-container {
+  width: 50%;
+  height: 100%;
+  display: table-cell; }
+
+.splash_form-container {
+  margin: 0 auto;
+  width: 300px;
+  background-color: white;
+  padding: 20px 10px;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1); }
+  .splash_form-container input {
+    width: calc(100% - 40px);
+    margin: 0 20px 10px 20px; }
+  .splash_form-container .btn {
+    margin: 0 auto;
+    width: 100px;
+    text-align: center;
+    display: block; }
+
+.splash_options {
+  margin: 10px auto;
+  text-align: center; }
+
+.splash_error {
+  font-size: 13px;
+  color: #ef585b;
+  margin-top: 5px; }
+
+.splash_forgot {
+  font-size: 13px; }
+
+.password-reset {
+  margin: 10px auto;
+  max-width: 500px;
+  background-color: white;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+  padding: 10px; }
+  .password-reset h1 {
+    padding: 0;
+    margin: 0 0 15px 0;
+    text-align: center;
+    font-size: 2em; }
+  .password-reset input {
+    display: block;
+    margin: 0 auto; }
+  .password-reset input[type="email"] {
+    width: 300px;
+    margin-bottom: 10px; }
+  .password-reset input[type="password"] {
+    width: 300px;
+    margin-bottom: 10px; }
+  .password-reset .btn {
+    width: 100px;
+    margin: 0 auto;
+    display: block;
+    text-align: center; }
+  .password-reset p {
+    color: #666; }
+  .password-reset .has-error {
+    color: #ef585b;
+    font-size: 14px; }

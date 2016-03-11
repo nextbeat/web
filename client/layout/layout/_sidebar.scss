@@ -5,7 +5,9 @@
     bottom: 0;
     width: $sidebar-width;
     border-right: 1px solid $border-color;
+    background: white;
     padding: 15px;
+    overflow: auto;
 
     .separator {
         width: calc(100% - 10px)

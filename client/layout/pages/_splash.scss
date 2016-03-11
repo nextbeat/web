@@ -1,0 +1,70 @@
+
+.splash {
+    max-width: 800px;
+    margin: 0 auto;
+    margin-top: 100px;
+    height: 500px;
+    display: table;
+}
+
+.splash_main {
+    width: 50%;
+    height: 100%;
+    display: table-cell;
+}
+
+.splash_logo {
+    text-align: center;
+    margin-top: 100px;
+    width: 100%;
+    color: $primary-color;
+    font-weight: bold;
+    font-size: 2.5em;
+}
+
+.splash_description {
+    text-align: center;
+    color: #666;
+    margin: 15px 20px;
+}
+
+.splash_auth-container {
+    width: 50%;
+    height: 100%;
+    display: table-cell;
+}
+
+.splash_form-container {
+    margin: 0 auto;
+    width: 300px;
+    background-color: white;        
+    padding: 20px 10px;
+    box-shadow: 0px 1px 2px rgba(0,0,0,0.1);
+
+    input {
+        width: calc(100% - 40px);
+        margin: 0 20px 10px 20px;
+    }
+
+    .btn {
+        margin: 0 auto;
+        width: 100px;
+        text-align: center;
+        display: block;
+    }
+}
+
+.splash_options {
+    margin: 10px auto;
+    text-align: center;
+}
+
+.splash_error {
+    font-size: 13px;
+    color: $error-color;
+    margin-top: 5px;
+}
+
+.splash_forgot {
+    font-size: 13px;
+}

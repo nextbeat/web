@@ -24,6 +24,6 @@ export function loadChannels() {
 
 export function clearApp() {
     return {
-        type: CLEAR_APP
+        type: ActionTypes.CLEAR_APP
     }
 }

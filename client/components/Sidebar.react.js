@@ -57,6 +57,10 @@ class Sidebar extends React.Component {
                             {user.bookmarkedStacks().map(stack => this.renderStackItem(stack))}
                         </div>
                         <div className="separator" />
+                        <div className="sidebar_subscriptions">
+                            <h1>SUBSCRIPTIONS</h1>
+                            {user.subscriptions().size === 0 && <div className="sidebar_no-content">You have no subscriptions.</div>}
+                        </div>
                     </div>
                 }
                 <div className="sidebar_categories">

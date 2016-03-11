@@ -1,4 +1,5 @@
 import { assign } from 'lodash'
+import { Map } from 'immutable'
 import fetch from 'isomorphic-fetch'
 
 import { Status } from './types'
@@ -17,7 +18,7 @@ function fetchBookmarkedStacks(pagination) {
         [API_CALL]: {
             schema: Schemas.STACKS,
             endpoint: "stacks",
-            queries: { bookmarked: "true" },
+            queries: { bookmarked: "true", "status": "open" },
             authenticated: true,
             pagination
         }
@@ -29,6 +30,26 @@ export function loadBookmarkedStacks() {
     // to be able to refresh this without incrementing the 
     // page, setting a beforeDate, etc
     return fetchBookmarkedStacks({
+        limit: "all",
+        page: "1"
+    })
+}
+
+function fetchSubscriptions(pagination) {
+    return {
+        type: ActionTypes.SUBSCRIPTIONS,
+        [API_CALL]: {
+            schema: Schemas.USERS,
+            endpoint: "users/subscriptions",
+            authenticated: true,
+            pagination
+        }
+    }
+}
+
+export function loadSubscriptions() {
+    // same logic as loadBookmarkedStacks
+    return fetchSubscriptions({
         limit: "all",
         page: "1"
     })
@@ -142,6 +163,53 @@ export function postLogin() {
     return dispatch => {
         dispatch(syncNotifications())
         dispatch(loadBookmarkedStacks())
+        dispatch(loadSubscriptions())
+    }
+}
+
+/**************
+ * SUBSCRIPTION
+ **************/
+
+function postSubscribe(subscription_id) {
+    return {
+        type: ActionTypes.SUBSCRIBE,
+        id: subscription_id,
+        [API_CALL]: {
+            method: 'POST',
+            endpoint: `users/${subscription_id}/subscribe`,
+            authenticated: true
+        }
+    }
+}
+
+export function subscribe(user) {
+    return dispatch => {
+        if (Map.isMap(user)) {
+            user = user.get('id')
+        }
+        dispatch(postSubscribe(user))
+    }
+}
+
+function postUnsubscribe(subscription_id) {
+    return {
+        type: ActionTypes.UNSUBSCRIBE,
+        id: subscription_id,
+        [API_CALL]: {
+            method: 'POST',
+            endpoint: `users/${subscription_id}/unsubscribe`,
+            authenticated: true
+        }
+    }
+}
+
+export function unsubscribe(user) {
+    return dispatch => {
+        if (Map.isMap(user)) {
+            user = user.get('id')
+        }
+        dispatch(postUnsubscribe(user))
     }
 }
 

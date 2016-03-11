@@ -18,6 +18,12 @@
     img {
         @include center;
     }
+
+    .svg-icon-person {
+        @include center;
+        width: 70%;
+        height: 70%;
+    }
 }
 
 .user_username {

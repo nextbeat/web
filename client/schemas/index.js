@@ -23,5 +23,6 @@ export default {
     MEDIA_ITEMS: arrayOf(mediaItem),
     COMMENT: comment,
     COMMENTS: arrayOf(comment),
-    USER: user
+    USER: user,
+    USERS: arrayOf(user)
 }

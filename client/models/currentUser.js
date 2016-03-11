@@ -20,7 +20,9 @@ const KEY_MAP = {
     'unreadNotifications': ['user', 'notifications', 'unread'],
     'readNotifications': ['user', 'notifications', 'read'],
     // bookmarked stacks
-    'bookmarkedStackIds': ['user', 'bookmarkedStacks', 'ids']
+    'bookmarkedStackIds': ['user', 'bookmarkedStacks', 'ids'],
+    // subscriptions
+    'subscriptionIds': ['user', 'subscriptions', 'ids']
 }
 
 export default class CurrentUser extends ModelBase {
@@ -39,6 +41,10 @@ export default class CurrentUser extends ModelBase {
 
     bookmarkedStacks() {
         return this.get('bookmarkedStackIds', List()).map(id => this.__getEntity(id, 'stacks'));
+    }
+
+    subscriptions() {
+        return this.get('subscriptionIds', List()).map(id => this.__getEntity(id, 'users'));
     }
 
     // Queries

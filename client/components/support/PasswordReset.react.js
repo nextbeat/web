@@ -58,10 +58,10 @@ class PasswordReset extends React.Component {
                 <p>We recommend a password with 6 or more characters, containing a combination of uppercase letters, lowercase letters, numbers, and symbols.</p>
                 { support.has('passwordResetError') && <p className="has-error">{support.get('passwordResetError')}</p> }
                 <p>Username: <em>{support.get('tokenUsername')}</em></p>
-                <form onSubmit={this.submitReset}>
+                <form>
                     <input type="password" ref="password" name="password" placeholder="Enter new password" />
                     <input type="password" ref="passwordConfirm" name="passwordConfirm" placeholder="Confirm new password" />
-                    <input type="submit" value="Submit" />
+                    <a className="btn" onClick={this.submitReset}>Submit</a>
                 </form>
             </div>
         );

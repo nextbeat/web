@@ -58,8 +58,8 @@ class Splash extends React.Component {
         const { user } = this.props;
         return (
             <div>
-                <div className="form-container">
-                    <form id="splash-login-form" autocomplete="off" onSubmit={this.handleLoginSubmit}>
+                <div className="splash_form-container">
+                    <form id="splash-login-form" autocomplete="off">
                         <input style={{display: "none"}} type="text" name="somefakename" />
                         <input className="input-hack" type="password" name="anotherfakename" />
                         <div>
@@ -69,14 +69,14 @@ class Splash extends React.Component {
                             <input type="password" autocomplete="off" ref="login_password" name="login_password" placeholder="Password"/>
                         </div>
                         <div>
-                            <input type="submit" value="Log In"/>
+                            <a className="btn" onClick={this.handleLoginSubmit}>Log In</a>
                         </div>
                     </form>
-                    {user.has('loginError') && <span className="error">{user.get('loginError')}</span>}
+                    {user.has('loginError') && <span className="splash_error">{user.get('loginError')}</span>}
                 </div>
-                <div className="options">
+                <div className="splash_options">
                     <p>Don't have an account? <a onClick={this.showSignup}>Sign up</a></p>
-                    <p><Link to="/support/password-reset-request">Forgot your password?</Link></p>
+                    <p className="splash_forgot"><Link to="/support/password-reset-request">Forgot your password?</Link></p>
                 </div>
             </div>
         );
@@ -86,8 +86,8 @@ class Splash extends React.Component {
         const { user } = this.props;
         return (
             <div>
-                <div className="form-container">
-                    <form id="splash-signup-form" autocomplete="off" onSubmit={this.handleSignupSubmit}>
+                <div className="splash_form-container">
+                    <form id="splash-signup-form" autocomplete="off">
                         <input style={{display: "none"}} type="text" name="somefakename" />
                         <input style={{display: "none"}} type="password" name="anotherfakename" />
                         <div>
@@ -100,12 +100,12 @@ class Splash extends React.Component {
                             <input type="password" autocomplete="off" ref="signup_password" name="signup_password" placeholder="Password"/>
                         </div>
                         <div>
-                            <input type="submit" value="Sign Up"/>
+                            <a className="btn" onClick={this.handleSignupSubmit}>Sign Up</a>
                         </div>
                     </form>
-                    {user.has('signupError') && <span className="error">{user.get('signupError')}</span>}
+                    {user.has('signupError') && <span className="splash_error">{user.get('signupError')}</span>}
                 </div>
-                <div className="options">
+                <div className="splash_options">
                     Have an account already? <a onClick={this.showLogin}>Log in</a>
                 </div>
             </div>
@@ -114,12 +114,12 @@ class Splash extends React.Component {
 
     render() {
         return (
-            <div id="splash">
-                <div className="main">
-                    <div className="logo">SODOSOPA</div>
-                    <div className="description">Transforming South Park's lower-income neighborhoods into vibrant cultural hubs... <br />so you don't have to.</div>
+            <div className="splash">
+                <div className="splash_main">
+                    <div className="splash_logo">SODOSOPA</div>
+                    <div className="splash_description">Transforming South Park's lower-income neighborhoods into vibrant cultural hubs... <br />so you don't have to.</div>
                 </div>
-                <div className="login-container">
+                <div className="splash_auth-container">
                     { this.state.showLogin ? this.renderLogin() : this.renderSignup() }
                 </div>
             </div>
