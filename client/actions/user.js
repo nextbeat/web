@@ -35,24 +35,19 @@ export function loadBookmarkedStacks() {
     })
 }
 
-function fetchSubscriptions(pagination) {
+function fetchSubscriptions() {
     return {
         type: ActionTypes.SUBSCRIPTIONS,
         [API_CALL]: {
             schema: Schemas.USERS,
-            endpoint: "users/subscriptions",
-            authenticated: true,
-            pagination
+            endpoint: "subscriptions",
+            authenticated: true
         }
     }
 }
 
 export function loadSubscriptions() {
-    // same logic as loadBookmarkedStacks
-    return fetchSubscriptions({
-        limit: "all",
-        page: "1"
-    })
+    return fetchSubscriptions();
 }
 
 /******

@@ -38,8 +38,11 @@
     left: 0;
     bottom: 0;
     margin-left: 50px;
-    padding: 3px 6px;
-    font-size: 12px;
+    
+    .btn {
+        font-size: 12px;
+        padding: 3px 6px;
+    }
 }
 
 // Alternate styles

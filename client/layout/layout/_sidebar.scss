@@ -109,6 +109,28 @@
 
 }
 
+// Subscriptions
+
+.sidebar_subscriptions {
+
+    a {
+        font-weight: normal;
+        color: $text-color;
+        display: block;
+        margin: 0 0 7px 15px;
+        font-size: 14px;
+
+        &:hover {
+            color: $primary-color;
+        }
+
+        &.selected {
+            font-weight: bold;
+        }
+    }
+    
+}
+
 // Categories
 
 .sidebar_categories {

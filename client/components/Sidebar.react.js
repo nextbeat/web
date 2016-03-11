@@ -60,6 +60,7 @@ class Sidebar extends React.Component {
                         <div className="sidebar_subscriptions">
                             <h1>SUBSCRIPTIONS</h1>
                             {user.subscriptions().size === 0 && <div className="sidebar_no-content">You have no subscriptions.</div>}
+                            {user.subscriptions().map(sub => <Link key={`sub${sub.get('id')}`} to={`/u/${sub.get('username')}`} activeClassName="selected" >{sub.get('username')}</Link>)}
                         </div>
                     </div>
                 }

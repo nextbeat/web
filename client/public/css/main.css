@@ -171,6 +171,17 @@ html, body {
   .sidebar_bookmarks .item-room_author {
     display: block; }
 
+.sidebar_subscriptions a {
+  font-weight: normal;
+  color: #333;
+  display: block;
+  margin: 0 0 7px 15px;
+  font-size: 14px; }
+  .sidebar_subscriptions a:hover {
+    color: #2258c5; }
+  .sidebar_subscriptions a.selected {
+    font-weight: bold; }
+
 .sidebar_categories a {
   font-weight: normal;
   color: #333;
@@ -202,6 +213,14 @@ html, body {
     background-color: #97b9fd;
     color: white; }
 
+.btn-inactive {
+  background-color: #707070; }
+
+.btn-light.btn-inactive {
+  background-color: darkgray; }
+  .btn-light.btn-inactive:hover {
+    background-color: #97b9fd; }
+
 .btn-bookmark .svg-icon-bookmark, .btn-bookmark .svg-icon-bookmark-outline {
   height: 17px;
   width: 17px;
@@ -210,6 +229,9 @@ html, body {
   position: absolute;
   left: 10px;
   top: 5px; }
+
+.btn-bookmark .btn:hover {
+  cursor: pointer; }
 
 .btn-bookmark_inner {
   display: -webkit-flex;
@@ -235,6 +257,9 @@ html, body {
 
 .btn-bookmark_text {
   margin-left: 17px; }
+
+.btn.btn-subscribe:hover {
+  cursor: pointer; }
 
 .svg-icon {
   width: 30px;
@@ -527,9 +552,10 @@ a.item-room.selected {
   position: absolute;
   left: 0;
   bottom: 0;
-  margin-left: 50px;
-  padding: 3px 6px;
-  font-size: 12px; }
+  margin-left: 50px; }
+  .user_subscribe .btn {
+    font-size: 12px;
+    padding: 3px 6px; }
 
 .user-large .user_profpic {
   width: 100px;

@@ -67,6 +67,13 @@ export default class CurrentUser extends ModelBase {
         return stack.has('room');
     }
 
+    isSubscribed(id) {
+        // if (typeof id === "number") {
+        //     id = id.toString();
+        // }
+        return this.get('subscriptionIds', List()).includes(id);
+    }
+
     hasUnreadNotificationsForStack(id) {
         if (typeof id === "number") {
             id = id.toString();

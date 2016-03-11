@@ -26,6 +26,18 @@
     }
 }
 
+.btn-inactive {
+    background-color: $button-color;
+}
+
+.btn-light.btn-inactive {
+    background-color: mix(white, $button-color, 40%);
+
+    &:hover {
+        background-color: $lighter-primary-color;
+    }
+}
+
 // Bookmark
 
 .btn-bookmark {
@@ -38,6 +50,12 @@
         position: absolute;
         left: 10px;
         top: 5px;
+    }
+
+    .btn {
+        &:hover {
+            cursor: pointer;
+        }
     }
 }
 
@@ -67,3 +85,10 @@
     margin-left: 17px;
 }
 
+// Subscribe
+
+.btn.btn-subscribe {
+    &:hover {
+        cursor: pointer;
+    }
+}
