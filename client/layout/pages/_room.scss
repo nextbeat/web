@@ -11,6 +11,10 @@
     margin-right: $detail-bar-width;
     height: 100%;
     overflow: hidden;
+
+    &.expand-right {
+        margin-right: $detail-bar-closed-width;
+    }
 }
 
 .player {
@@ -33,8 +37,8 @@
 
 .player_media {
     margin: auto;
-    height: 550px;
-    width: 550px * 9 / 16;
+    max-height: 550px;
+    max-width: 550px * 9 / 16;
 
     img, video {
         width: 100%;
@@ -162,10 +166,14 @@
 .player_more {
 
     .item-room {
-        width: 260px;
+        width: 280px;
         height: 100px;
         margin: 0 0 5px 5px;
         display: inline-block;
+    }
+
+    .item-room_info {
+        font-size: 13px;
     }
 
     .item-room_time, .item-room_channel {
@@ -191,7 +199,94 @@
     overflow: hidden;
     background-color: #fff;
     border-left: 1px solid $border-color;
+
+    // collapse logic
+    &.closed {
+        width: $detail-bar-closed-width;
+        overflow: visible;
+
+        .detail-bar_expanded {
+            position: absolute;
+            width: 0px;
+            top: 0;
+            right: 0;
+            overflow: visible;
+        }
+
+        .detail-bar_header {
+            height: 0;
+        }
+
+        .detail-bar_main {
+            border-left: 1px solid $border-color;
+            z-index: 20;
+            width: $detail-bar-width;
+            position: absolute;
+            top: 0;
+            right: -$detail-bar-width;
+            height: 100%;
+            overflow: visible;
+            transition-property: right;
+            transition-duration: 0.3s;
+
+            &.active {
+                right: 0;
+            }
+
+            &.active .detail-bar_collapse-icon {
+                display: block;
+            }
+        }
+    }
 }
+
+.detail-bar_expanded {
+    height: 100%;
+}
+
+.detail-bar_collapsed {
+
+    .svg-icon {
+        fill: $primary-color;
+        width: 25px;
+        height: 25px;
+        margin: 12px auto;
+        display: block;
+
+        &:hover {
+            fill: $light-primary-color;
+        }
+    }
+}
+
+.detail-bar.open .detail-bar_collapsed {
+    display: none;
+}
+
+.detail-bar.closed .detail-bar_collapsed, .detail-bar.open .detail-bar_expanded {
+    display: block;
+}
+
+.detail-bar_collapse-icon {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 3px 0 0 3px;
+    border: 1px solid $border-color;
+    border-right: none;
+    background: white;
+    left: -20px;
+    top: 10px;
+    z-index: 19;
+    display: none;
+
+    .svg-icon {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+// layout
 
 .detail-bar_header {
     width: 100%;
@@ -330,6 +425,7 @@
 .activity {
     height: 100%;   
     position: relative;
+    background-color: white;
 }
 
 .activity_inner {

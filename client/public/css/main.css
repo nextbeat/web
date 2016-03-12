@@ -82,8 +82,9 @@ html, body {
   position: relative;
   height: 100%;
   z-index: 2;
-  margin-left: 240px;
-  background-color: #f6f6f6; }
+  margin-left: 240px; }
+  .main.expand-left {
+    margin-left: 44px; }
 
 .sidebar {
   position: absolute;
@@ -100,6 +101,57 @@ html, body {
   .sidebar h1 {
     font-size: 12px;
     color: #2258c5; }
+  .sidebar.closed {
+    width: 44px;
+    padding: 0;
+    overflow: visible; }
+    .sidebar.closed .sidebar_expanded {
+      position: absolute;
+      background: white;
+      border-right: 1px solid #ddd;
+      width: 240px;
+      padding: 15px;
+      left: -240px;
+      z-index: 20;
+      transition: left 0.3s; }
+      .sidebar.closed .sidebar_expanded.active {
+        left: 0; }
+      .sidebar.closed .sidebar_expanded.active .sidebar_collapse-icon {
+        display: block; }
+
+.sidebar_expanded {
+  height: 100%; }
+
+.sidebar_collapsed .svg-icon {
+  fill: #2258c5;
+  width: 25px;
+  height: 25px;
+  margin: 12px auto;
+  display: block; }
+  .sidebar_collapsed .svg-icon:hover {
+    fill: #4c86fb; }
+
+.sidebar.open .sidebar_collapsed {
+  display: none; }
+
+.sidebar.closed .sidebar_collapsed, .sidebar.open .sidebar_expanded {
+  display: block; }
+
+.sidebar_collapse-icon {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 0 3px 3px 0;
+  border: 1px solid #ddd;
+  border-left: none;
+  background: white;
+  right: -20px;
+  top: 10px;
+  z-index: 19;
+  display: none; }
+  .sidebar_collapse-icon .svg-icon {
+    width: 100%;
+    height: 100%; }
 
 /********
  * HEADER
@@ -647,6 +699,8 @@ a.item-room.selected {
   margin-right: 300px;
   height: 100%;
   overflow: hidden; }
+  .player-container.expand-right {
+    margin-right: 44px; }
 
 .player {
   height: 100%;
@@ -665,8 +719,8 @@ a.item-room.selected {
 
 .player_media {
   margin: auto;
-  height: 550px;
-  width: 309.375px; }
+  max-height: 550px;
+  max-width: 309.375px; }
   .player_media img, .player_media video {
     width: 100%;
     height: 100%; }
@@ -760,10 +814,13 @@ a.item-room.selected {
     margin: 0 6px 5px 0; }
 
 .player_more .item-room {
-  width: 260px;
+  width: 280px;
   height: 100px;
   margin: 0 0 5px 5px;
   display: inline-block; }
+
+.player_more .item-room_info {
+  font-size: 13px; }
 
 .player_more .item-room_time, .player_more .item-room_channel {
   display: none; }
@@ -783,6 +840,66 @@ a.item-room.selected {
   overflow: hidden;
   background-color: #fff;
   border-left: 1px solid #ddd; }
+  .detail-bar.closed {
+    width: 44px;
+    overflow: visible; }
+    .detail-bar.closed .detail-bar_expanded {
+      position: absolute;
+      width: 0px;
+      top: 0;
+      right: 0;
+      overflow: visible; }
+    .detail-bar.closed .detail-bar_header {
+      height: 0; }
+    .detail-bar.closed .detail-bar_main {
+      border-left: 1px solid #ddd;
+      z-index: 20;
+      width: 300px;
+      position: absolute;
+      top: 0;
+      right: -300px;
+      height: 100%;
+      overflow: visible;
+      transition-property: right;
+      transition-duration: 0.3s; }
+      .detail-bar.closed .detail-bar_main.active {
+        right: 0; }
+      .detail-bar.closed .detail-bar_main.active .detail-bar_collapse-icon {
+        display: block; }
+
+.detail-bar_expanded {
+  height: 100%; }
+
+.detail-bar_collapsed .svg-icon {
+  fill: #2258c5;
+  width: 25px;
+  height: 25px;
+  margin: 12px auto;
+  display: block; }
+  .detail-bar_collapsed .svg-icon:hover {
+    fill: #4c86fb; }
+
+.detail-bar.open .detail-bar_collapsed {
+  display: none; }
+
+.detail-bar.closed .detail-bar_collapsed, .detail-bar.open .detail-bar_expanded {
+  display: block; }
+
+.detail-bar_collapse-icon {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px 0 0 3px;
+  border: 1px solid #ddd;
+  border-right: none;
+  background: white;
+  left: -20px;
+  top: 10px;
+  z-index: 19;
+  display: none; }
+  .detail-bar_collapse-icon .svg-icon {
+    width: 100%;
+    height: 100%; }
 
 .detail-bar_header {
   width: 100%;
@@ -885,7 +1002,8 @@ a.item-room.selected {
  **********/
 .activity {
   height: 100%;
-  position: relative; }
+  position: relative;
+  background-color: white; }
 
 .activity_inner {
   height: 100%;

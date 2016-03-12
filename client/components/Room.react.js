@@ -26,10 +26,15 @@ class Theater extends React.Component {
     componentDidMount() {
         const { params, dispatch } = this.props
         dispatch(loadStack(params.stack_id))
+
+        $(window).resize(this.resize)
+        $(window).resize();
     }
 
     componentWillUnmount() {
         this.props.dispatch(clearStack());
+
+        $(window).off("resize", this.resize);
     }
 
     componentDidUpdate(prevProps) {
@@ -45,6 +50,33 @@ class Theater extends React.Component {
             const id = stack.mediaItems().first().get('id')
             this.props.dispatch(selectMediaItem(id))
         }
+    }
+
+    // RESIZING
+
+    resize() {
+
+        if (Modernizr.mq('(max-width: 1000px')) {
+            $('.sidebar').addClass('closed');
+            $('.sidebar').removeClass('open');
+            $('.main').addClass('expand-left');
+        } else {
+            $('.sidebar').addClass('open');
+            $('.sidebar').removeClass('closed');
+            $('.main').removeClass('expand-left');
+        }
+
+        if (Modernizr.mq('(max-width: 810px')) {
+            $('.detail-bar').addClass('closed');
+            $('.detail-bar').removeClass('open');
+            $('.player-container').addClass('expand-right');
+            $('.detail-bar_main').removeClass('active');
+        } else {
+            $('.detail-bar').addClass('open');
+            $('.detail-bar').removeClass('closed');
+            $('.player-container').removeClass('expand-right');
+        }
+
     }
 
     // SELECT MEDIA ITEM
