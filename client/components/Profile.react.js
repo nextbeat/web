@@ -53,7 +53,7 @@ class ProfileComponent extends React.Component {
     render() {
         const { isFetching, error, profile } = this.props;
         return (
-            <div className="profile">
+            <div className="profile content">
                 { isFetching && <span>Profile is loading...</span> }
                 { error && error.length > 0 && <span>{error}</span> }
                 { profile.get('id') && this.renderProfile() }

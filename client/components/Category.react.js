@@ -30,7 +30,6 @@ class Category extends React.Component {
     }
 
     setSort(type) {
-        console.log('foo')
         this.props.dispatch(loadStacksForChannel({ sort: type }))
     }
 
@@ -38,7 +37,7 @@ class Category extends React.Component {
         const { channel } = this.props
         const selected = type => channel.get('sort') === type ? "selected" : ""
         return (
-            <div className="category">
+            <div className="category content">
                 <div className="category_header">
                     { channel.get('name') }
                 </div>

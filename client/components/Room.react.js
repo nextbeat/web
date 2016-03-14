@@ -28,7 +28,7 @@ class Theater extends React.Component {
         dispatch(loadStack(params.stack_id))
 
         $(window).resize(this.resize)
-        $(window).resize();
+        this.resize();
     }
 
     componentWillUnmount() {
@@ -55,16 +55,6 @@ class Theater extends React.Component {
     // RESIZING
 
     resize() {
-
-        if (Modernizr.mq('(max-width: 1000px')) {
-            $('.sidebar').addClass('closed');
-            $('.sidebar').removeClass('open');
-            $('.main').addClass('expand-left');
-        } else {
-            $('.sidebar').addClass('open');
-            $('.sidebar').removeClass('closed');
-            $('.main').removeClass('expand-left');
-        }
 
         if (Modernizr.mq('(max-width: 810px')) {
             $('.detail-bar').addClass('closed');

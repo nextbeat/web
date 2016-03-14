@@ -11,10 +11,8 @@
     margin-top: 20px;
 }
 
-.profile {
-    .item-room {
-        display: inline-block;
-        margin: 0 0 5px 5px;
-    }
+.profile_rooms {
+    width: 100%;
+    @include clearfix;
 }
 

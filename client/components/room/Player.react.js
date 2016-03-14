@@ -10,7 +10,7 @@ class Player extends React.Component {
         const { stack } = this.props;
         return (
             <section className="player-container">
-                <section className="player">
+                <section className="player content" id="player">
                     <MediaPlayer {...this.props} />
                     <Info {...this.props} />
                     <More stack={stack} />

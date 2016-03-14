@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 
 import StackItem from './shared/StackItem.react'
 import Icon from './shared/Icon.react'
@@ -14,6 +14,42 @@ class Sidebar extends React.Component {
         this.renderStackItem = this.renderStackItem.bind(this);
     }
 
+    // Lifecycle
+
+    resize() {
+        const contentWidth = parseInt($('.content').css('width'));
+        const sidebarWidth = parseInt($('.sidebar').css('width'));
+        const $detailBar = $('.detail-bar');
+        const detailBarIsClosed = $.contains(document.documentElement, $detailBar[0]) && $detailBar.hasClass('closed');
+        if (contentWidth + sidebarWidth < 700 || detailBarIsClosed) {
+            $('.sidebar').addClass('closed');
+            $('.sidebar').removeClass('open');
+            $('.main').addClass('expand-left');
+        } else {
+            $('.sidebar').addClass('open');
+            $('.sidebar').removeClass('closed');
+            $('.main').removeClass('expand-left');
+        }
+
+    }
+
+    componentDidMount() {
+        // update sidebar width on resize or on router change
+        $(window).resize(this.resize);
+        browserHistory.listen(function(e) {
+            process.nextTick(function() {
+                this.resize();
+            }.bind(this))
+        }.bind(this))
+        this.resize();
+    }
+
+    componentWillUnmount() {
+        $(window).off('resize', this.resize);
+    }
+
+    // Accessors
+
     setActive() {
         $('.sidebar_expanded').addClass('active');
     }   
@@ -21,6 +57,8 @@ class Sidebar extends React.Component {
     setInactive() {
         $('.sidebar_expanded').removeClass('active');
     }
+
+    // Render
 
     renderLoggedIn() {
         const { user, handleLogoutClick } = this.props; 

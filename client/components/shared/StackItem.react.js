@@ -2,21 +2,55 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { Map } from 'immutable'
+import { without } from 'lodash'
 import moment from 'moment'
 
 class StackItem extends React.Component {
+
+    resize(node, parent) {
+
+        // resize room items
+        function switchClass(klass) {
+            const klasses = ['one-across', 'two-across', 'three-across'];
+            const klassesToRemove = without(klasses, klass);
+            node.removeClass(klassesToRemove.join(" "));
+            node.addClass(klass);
+        }
+
+        if (parent.width() > 800) {
+            switchClass('three-across');
+        } else if (parent.width() > 500) {
+            switchClass('two-across');
+        } else {
+            switchClass('one-across');
+        }
+
+        // resize thumbnail
+        const thumb = node.find('.item_thumb');
+        thumb.width(thumb.height());
+
+    }
+
+    componentDidMount() {
+        const node = $(this._node);
+        const parent = node.parent();
+        $(window).resize(this.resize.bind(this, node, parent));
+        this.resize(node, parent);
+    }
+
+    componentWillUnmount() {
+        $(window).off('resize', this.resize);
+    }
 
     render() {
         const { stack, user, users } = this.props;
         const author = users.get(stack.get('author_id').toString(), Map())
         return (
+            <div className="item_container" ref={(c) => this._node = c} >
             <Link to={`/r/${stack.get('id')}`} className="item-room item" activeClassName="selected">
                 <div className="item_inner">
                     <div className="item_thumb">
-                        <img className="thumb_pixel" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
-                        <div className="thumb_img-container">
-                            <img className="thumb_img" src={stack.get('thumbnail_url')} />
-                        </div>
+                        <img className="thumb_img" src={stack.get('thumbnail_url')} />
                     </div>
                     <div className="item_main">
                         <div className="item-room_info">
@@ -28,13 +62,16 @@ class StackItem extends React.Component {
                             </div>
                         </div>
                         <div className="item-room_right">
-                            {stack.get('bookmark_count')}<img className="item-room_bookmark" src="/images/bookmark.png"/>
+                            <div className="item-room_right-inner">
+                                {stack.get('bookmark_count')}<img className="item-room_bookmark" src="/images/bookmark.png"/>
+                            </div>
                         </div>
                     </div>
                     {!stack.get('closed') && <span className="item-room_open">OPEN</span>}
                     {user && user.hasUnreadNotificationsForStack(stack.get('id')) && <span className="item-room_notification">NEW</span>}
                 </div>
             </Link>
+            </div>
         );
     }
 }

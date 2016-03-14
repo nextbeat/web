@@ -67,6 +67,12 @@ html, body {
   overflow: hidden; }
 
 /*
+ * Susy defaults
+ */
+*, *:before, *:after {
+  box-sizing: border-box; }
+
+/*
  * Prevents app from scrolling.
  */
 .app-container {
@@ -322,31 +328,59 @@ html, body {
     width: 100%;
     height: 100%; }
 
+.item_container {
+  float: left;
+  margin-bottom: 10px;
+  width: 100%; }
+  .item_container.two-across {
+    width: 48.78049%;
+    float: left;
+    margin-right: 2.43902%;
+    margin-bottom: 2.43902%; }
+    .item_container.two-across:nth-child(even) {
+      width: 48.78049%;
+      float: right;
+      margin-right: 0; }
+      .item_container.two-across:nth-child(even)::after {
+        content: '';
+        display: table;
+        clear: both; }
+  .item_container.three-across {
+    width: 32.67974%;
+    float: left;
+    margin-right: 0.98039%;
+    margin-bottom: 0.98039%; }
+    .item_container.three-across:nth-child(3n) {
+      width: 32.67974%;
+      float: right;
+      margin-right: 0; }
+      .item_container.three-across:nth-child(3n)::after {
+        content: '';
+        display: table;
+        clear: both; }
+
 .item {
-  padding: 10px;
+  padding-bottom: 35%;
   background-color: #fff;
   position: relative;
   display: block; }
 
 .item_inner {
-  position: relative;
-  width: 100%;
-  height: 100%; }
+  position: absolute;
+  padding: 10px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0; }
 
 .item_thumb {
   height: 100%;
   position: relative;
-  float: left; }
+  float: left;
+  overflow: hidden; }
   .item_thumb .thumb_pixel {
-    height: 100%; }
-  .item_thumb .thumb_img-container {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    overflow: hidden;
-    background-color: #ddd; }
+    height: 100%;
+    display: block; }
   .item_thumb .thumb_img {
     position: absolute;
     width: 100%;
@@ -365,8 +399,6 @@ html, body {
  * ROOM
  ******/
 .item-room {
-  height: 110px;
-  width: 350px;
   border: 1px solid #eee;
   color: #333;
   font-weight: normal; }
@@ -417,12 +449,23 @@ a.item-room.selected {
 .item-room_right {
   float: left;
   width: 50px;
-  line-height: 90px;
-  text-align: right; }
+  height: 100%;
+  text-align: right;
+  position: relative; }
   .item-room_right::after {
     content: '';
     display: table;
     clear: both; }
+
+.item-room_right-inner {
+  width: 100%;
+  position: absolute;
+  width: 100%;
+  height: auto;
+  top: 50%;
+  left: 0;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%); }
 
 .item-room_bookmark {
   width: 15px;
@@ -432,8 +475,8 @@ a.item-room.selected {
 
 .item-room_open {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 5px;
+  right: 5px;
   color: #15c599;
   font-size: 12px; }
 
@@ -663,15 +706,12 @@ a.item-room.selected {
   .category_filter:hover {
     border-bottom: 3px solid #dbe7fe; }
 
-.category_stacks .item-room {
-  display: inline-block;
-  margin: 0px 5px 5px 0; }
-
-.category_stacks .item-room_channel {
-  display: none; }
-
-.category_stacks .item-room_author {
-  display: block; }
+.category_stacks {
+  width: 100%; }
+  .category_stacks .item-room_channel {
+    display: none; }
+  .category_stacks .item-room_author {
+    display: block; }
 
 .profile {
   overflow: auto;
@@ -684,9 +724,12 @@ a.item-room.selected {
   margin-bottom: 10px;
   margin-top: 20px; }
 
-.profile .item-room {
-  display: inline-block;
-  margin: 0 0 5px 5px; }
+.profile_rooms {
+  width: 100%; }
+  .profile_rooms::after {
+    content: '';
+    display: table;
+    clear: both; }
 
 .room {
   position: relative;
@@ -812,12 +855,6 @@ a.item-room.selected {
     width: 15px;
     height: 15px;
     margin: 0 6px 5px 0; }
-
-.player_more .item-room {
-  width: 280px;
-  height: 100px;
-  margin: 0 0 5px 5px;
-  display: inline-block; }
 
 .player_more .item-room_info {
   font-size: 13px; }
