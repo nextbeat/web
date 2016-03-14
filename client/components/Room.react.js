@@ -56,7 +56,7 @@ class Theater extends React.Component {
 
     resize() {
 
-        if (Modernizr.mq('(max-width: 810px')) {
+        if ($('.app-container').width() < 810) {
             $('.detail-bar').addClass('closed');
             $('.detail-bar').removeClass('open');
             $('.player-container').addClass('expand-right');
