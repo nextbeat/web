@@ -1,7 +1,7 @@
 import ActionTypes from './types'
 import Schemas from '../schemas'
 import { loadPaginatedObjects } from './utils'
-import { API_CALL } from '../middleware/api'
+import { API_CALL, API_CANCEL } from './types'
 
 /**********
  * FETCHING
@@ -55,6 +55,9 @@ export function loadClosedStacksForUser(username) {
 
 export function clearProfile() {
     return {
-        type: ActionTypes.CLEAR_PROFILE
+        type: ActionTypes.CLEAR_PROFILE,
+        [API_CANCEL]: {
+            actionTypes: [ActionTypes.USER_OPEN_STACKS, ActionTypes.USER_CLOSED_STACKS, ActionTypes.USER]
+        }
     }
 }

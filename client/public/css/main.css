@@ -622,9 +622,9 @@ a.item-room.selected {
   .spinner.spinner-grey > div > div {
     background: #666; }
   .spinner.spinner-large {
-    width: 50px;
-    height: 50px;
-    font-size: 50px; }
+    width: 40px;
+    height: 40px;
+    font-size: 40px; }
 
 @-webkit-keyframes spinner {
   0% {
@@ -889,6 +889,8 @@ a.item-room.selected {
   width: 100%;
   padding: 15px;
   overflow-y: scroll; }
+  .player .spinner-player {
+    margin: 100px auto 0 auto; }
 
 .player_header {
   font-size: 16px;
@@ -1118,6 +1120,8 @@ a.item-room.selected {
 .detail-bar_main {
   overflow: hidden;
   height: calc(100% - 40px); }
+  .detail-bar_main .spinner {
+    margin: 50px auto; }
 
 /******
  * CHAT

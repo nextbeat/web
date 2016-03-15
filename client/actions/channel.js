@@ -4,7 +4,7 @@ import ActionTypes from './types'
 import Schemas from '../schemas'
 import { Channel } from '../models'
 import { loadPaginatedObjects } from './utils'
-import { API_CALL } from '../middleware/api'
+import { API_CALL, API_CANCEL } from './types'
 
 /**********
  * FETCHING
@@ -44,9 +44,13 @@ function fetchStacksForChannel(channel_id, options, pagination) {
     }
 }
 
+// private
 function clearStacksForChannel() {
     return {
-        type: ActionTypes.CLEAR_CHANNEL_STACKS
+        type: ActionTypes.CLEAR_CHANNEL_STACKS,
+        [API_CANCEL]: {
+            actionTypes: [ActionTypes.CHANNEL_STACKS]
+        }
     }
 }
 
@@ -63,8 +67,15 @@ export function loadStacksForChannel(options) {
 
 }
 
+/*******
+ * RESET
+ *******/
+
 export function clearChannel() {
     return {
-        type: ActionTypes.CLEAR_CHANNEL
+        type: ActionTypes.CLEAR_CHANNEL,
+        [API_CANCEL]: {
+            actionTypes: [ActionTypes.CHANNEL_STACKS, ActionTypes.CHANNEL]
+        }
     }
 }

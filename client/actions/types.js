@@ -5,8 +5,11 @@
 export const Status = {
     REQUESTING: 'REQUESTING',
     SUCCESS: 'SUCCESS',
-    FAILURE: 'FAILURE'
+    FAILURE: 'FAILURE',
 }
+
+export const API_CALL = Symbol('API_CALL');
+export const API_CANCEL = Symbol('API_CANCEL');
 
 export default {
 
@@ -90,7 +93,8 @@ export default {
      * OTHER
      *******/
 
-    ENTITY_UPDATE: 'ENTITY_UPDATE'
+    ENTITY_UPDATE: 'ENTITY_UPDATE',
+    CLEAR_FETCH: 'CLEAR_FETCH'
 
 }
 

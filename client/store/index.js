@@ -1,10 +1,10 @@
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
-import { api, xmpp } from '../middleware'
+import { api, xmpp, cancel } from '../middleware'
 import { Map, Iterable } from 'immutable'
 import reducer from '../reducers'
 
-const middlewares = [thunkMiddleware, api, xmpp];
+const middlewares = [thunkMiddleware, api, cancel, xmpp];
 
 if (process.env.NODE_ENV !== "production") {
     const createLogger = require('redux-logger');

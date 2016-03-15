@@ -4,7 +4,12 @@ const KEY_MAP = {
     // meta
     'id': ['profile', 'meta', 'id'],
     'isFetching': ['profile', 'meta', 'isFetching'],
-    'error': ['profile', 'meta', 'error']
+    'error': ['profile', 'meta', 'error'],
+    // pagination
+    'openStacksFetching': ['profile', 'pagination', 'openStacks', 'isFetching'],
+    'openStacksError': ['profile', 'pagination', 'openStacks', 'error'],
+    'closedStacksFetching': ['profile', 'pagination', 'closedStacks', 'isFetching'],
+    'closedStacksError': ['profile', 'pagination', 'closedStacks', 'error']
 }
 
 export default class Profile extends ModelBase {

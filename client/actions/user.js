@@ -6,7 +6,7 @@ import { Status } from './types'
 import ActionTypes from './types'
 import { CurrentUser, Stack } from '../models'
 import Schemas from '../schemas'
-import { API_CALL } from '../middleware/api'
+import { API_CALL, API_CANCEL } from './types'
 
 /**********
  * FETCHING

@@ -5,9 +5,10 @@ import Promise from 'bluebird'
 import moment from 'moment'
 import { stringify } from 'querystring'
 import { normalize } from 'normalizr'
-import { Status, selectMediaItem } from '../actions'
+import { Status, API_CALL } from '../actions'
 import { CurrentUser } from '../models'
 
+class CancelError extends Error {}
 const API_ROOT = '/api/';
 
 function urlWithParams(endpoint, pagination, queries) {
@@ -47,8 +48,8 @@ function fetchOptions(options, store) {
     }
 }
 
-function callApi(options, store) {
-    const { endpoint, schema, pagination, authenticated, queries } = options;
+function callApi(options, store, action) {
+    const { endpoint, schema, pagination, authenticated, queries, cancelOn } = options;
     const url = urlWithParams(endpoint, pagination, queries);
     const currentUser = new CurrentUser(store.getState());
 
@@ -73,9 +74,10 @@ function callApi(options, store) {
                 return json;
             }
         })
-}
 
-export const API_CALL = Symbol('API_CALL');
+
+
+}
 
 // A Redux middleware function which looks for actions
 // which call the API server and fetches the data
@@ -88,21 +90,17 @@ export default store => next => action => {
 
     const { pagination, onSuccess } = apiCall;
 
+    // call api server with the given endpoint, then
+    // dispatch action depending on success of the call
+    const fetchPromise = callApi(apiCall, store, action)
+
     function actionWith(data) {
-        var newAction = assign({}, action, data);
+        var newAction = assign({}, action, data, { fetchPromise });
         delete newAction[API_CALL];
         return newAction;
     }
 
-    // dispatch action which asserts request is being made
-    let requestData = { status: Status.REQUESTING }
-    if (pagination) requestData.pagination = pagination
-    next(actionWith(requestData));
-
-    // call api server with the given endpoint, then
-    // dispatch action depending on success of the call
-    callApi(apiCall, store)
-        .then(response => {
+    fetchPromise.then(response => {
             if (typeof onSuccess === 'function') {
                 process.nextTick(() => {
                     onSuccess(store, next, action, response);
@@ -117,6 +115,12 @@ export default store => next => action => {
             status: Status.FAILURE,
             error: error.message
         })));
+
+    // dispatch action which asserts request is being made
+    // include fetch promise so we can cancel it if need be
+    let requestData = { status: Status.REQUESTING }
+    if (pagination) requestData.pagination = pagination
+    next(actionWith(requestData));
     
 
 }

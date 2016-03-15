@@ -18,6 +18,7 @@ const KEY_MAP = {
     'mediaItemIds': ['stack', 'pagination', 'mediaItems', 'ids'],
     'liveMediaItemIds': ['stack', 'live', 'mediaItems'],
     'mediaItemsFetching': ['stack', 'pagination', 'mediaItems', 'isFetching'],
+    'mediaItemError': ['stack', 'pagination', 'mediaItems', 'error'],
     // comments
     'commentsFetching': ['stack', 'pagination', 'comments', 'isFetching'],
     'commentsError': ['stack', 'pagination', 'comments', 'error'],
@@ -95,6 +96,11 @@ export default class Stack extends ModelBase {
         const liveIds = this.get('liveMediaItemIds', List())
         const ids = paginatedIds.concat(liveIds)
         return ids.indexOf(selectedId)
+    }
+
+    // returns true if fetching the stack OR its media items
+    isFetchingDeep() {
+        return !this.get('error') && this.mediaItems().size === 0 && !this.get('mediaItemsError')
     }
 
 }

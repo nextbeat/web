@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import ChatItem from './ChatItem.react'
 import NotificationChatItem from './NotificationChatItem.react'
 import Compose from './Compose.react'
+import Spinner from '../../shared/Spinner.react'
 
 import { loadComments, sendComment } from '../../../actions'
 import { Stack, CurrentUser } from '../../../models'
@@ -118,7 +119,7 @@ class Chat extends React.Component {
         return (
         <div className="chat">
             <div id="history" className="chat_history">
-                { isFetching && <p>Loading...</p>}
+                { isFetching && <Spinner type="grey" />}
                 { error && error.length > 0 && <p>Could not load comments.</p>}
                 <ul className="chat_items">
                     {comments.reverse().map(comment => this.renderComment(comment))}

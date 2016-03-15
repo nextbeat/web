@@ -1,5 +1,5 @@
 export { default as ActionTypes } from './types'
-export { Status } from './types'
+export { Status, API_CALL, API_CANCEL } from './types'
 
 export {
     loadChannels,

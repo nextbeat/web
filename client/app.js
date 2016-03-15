@@ -3,6 +3,7 @@ import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 import { Map } from 'immutable'
+import Promise from 'bluebird'
 import configureStore from './store'
 import { CurrentUser } from './models'
 
@@ -14,6 +15,11 @@ import Splash from './components/Splash.react'
 import PasswordResetRequest from './components/support/PasswordResetRequest.react'
 import PasswordReset from './components/support/PasswordReset.react'
 import NoMatch from './components/NoMatch.react'
+
+// configure bluebird
+Promise.config({
+    cancellation: true
+})
 
 const state = JSON.parse($('#state').text())
 let initialState = {}

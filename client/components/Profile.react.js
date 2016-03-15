@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 
 import StackItem from './shared/StackItem.react'
 import User from './shared/User.react'
+import Spinner from './shared/Spinner.react'
 
 import { loadProfile, clearProfile, loadStacksForUser } from '../actions'
 import { Profile } from '../models'
@@ -54,9 +55,9 @@ class ProfileComponent extends React.Component {
         const { isFetching, error, profile } = this.props;
         return (
             <div className="profile content">
-                { isFetching && <span>Profile is loading...</span> }
-                { error && error.length > 0 && <span>{error}</span> }
-                { profile.get('id') && this.renderProfile() }
+                { isFetching && <Spinner type="grey large" /> }
+                { error && (error.length > 0) && <span>{error}</span> }
+                { profile.get('id') !== 0 && this.renderProfile() }
             </div>
         );
     }

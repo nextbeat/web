@@ -1,5 +1,6 @@
-import React from 'react';
+import React from 'react'
 import ActivityItem from './ActivityItem.react'
+import Spinner from '../../shared/Spinner.react'
 
 class Activity extends React.Component {
 
@@ -113,11 +114,12 @@ class Activity extends React.Component {
     // Render
 
     render() {
-        const { mediaItems, liveMediaItems, selectedItem, handleSelectMediaItem } = this.props;
+        const { mediaItems, liveMediaItems, selectedItem, handleSelectMediaItem, stack } = this.props;
         const { displayNewItem } = this.state;
         return (
         <section className="activity">
             <div className="activity_inner" id="activity-inner">
+                {stack.get('mediaItemsFetching') && <Spinner type="grey" />}
                 {mediaItems.map(mediaItem => {
                     var selected = (mediaItem.get('id') === selectedItem.get('id'));
                     return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} handleClick={handleSelectMediaItem}/>

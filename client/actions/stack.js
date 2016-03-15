@@ -6,7 +6,7 @@ import Schemas from '../schemas'
 import { markStackAsRead } from './user'
 import { loadPaginatedObjects } from './utils'
 import { Stack } from '../models'
-import { API_CALL } from '../middleware/api'
+import { API_CALL, API_CANCEL } from './types'
 
 /**********
  * FETCHING
@@ -253,7 +253,10 @@ export function goBackward() {
 
 export function clearStack() {
     return {
-        type: ActionTypes.CLEAR_STACK
+        type: ActionTypes.CLEAR_STACK,
+        [API_CANCEL]: {
+            actionTypes: [ActionTypes.COMMENTS, ActionTypes.MEDIA_ITEMS, ActionTypes.MORE_STACK, ActionTypes.STACK]
+        }
     }
 }
 
