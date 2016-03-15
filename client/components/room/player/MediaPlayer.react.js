@@ -1,6 +1,7 @@
 import React from 'react'
 import Video from './Video.react'
 import Icon from '../../shared/Icon.react'
+import Spinner from '../../shared/Spinner.react'
 
 class MediaPlayer extends React.Component {
 
@@ -42,9 +43,10 @@ class MediaPlayer extends React.Component {
             </div>
             }
             <div className="player_media">
-                {item.get('type') === "video" 
+                {stack.mediaItems().size == 0 && !stack.get('mediaItemsError') && <Spinner type="large grey"/>}
+                {!item.isEmpty() && (item.get('type') === "video" 
                     ? <Video item={item} />
-                    : <img src={item.get('url')} />}
+                    : <img src={item.get('url')} />)}
             </div>
             <div className="player_navigation">
                 <div className="player_nav-button player_nav-backward" onClick={handleBackward}><Icon type={"chevron-left"} /></div>

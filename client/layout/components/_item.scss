@@ -25,6 +25,11 @@
     
 }
 
+/**
+ * Setting padding-bottom here allows us to adjust height as a percentage
+ * of width. We then use absolute positioning in item_inner to create
+ * a container for content which spans the full space.
+ */
 .item {
     padding-bottom: 35%;
     background-color: #fff;

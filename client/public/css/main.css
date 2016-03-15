@@ -359,6 +359,11 @@ html, body {
         display: table;
         clear: both; }
 
+/**
+ * Setting padding-bottom here allows us to adjust height as a percentage
+ * of width. We then use absolute positioning in item_inner to create
+ * a container for content which spans the full space.
+ */
 .item {
   padding-bottom: 35%;
   background-color: #fff;
@@ -600,6 +605,140 @@ a.item-room.selected {
   background: #ccc;
   height: 1px; }
 
+/*
+ * Modified version of loading.io spinner
+ */
+/**
+ * 1. font-size enables us to use em sizing on child elements, 
+ * letting us set values relative to spinner size 
+ */
+.spinner {
+  background: none;
+  position: relative;
+  width: 25px;
+  height: 25px;
+  font-size: 25px;
+  /* 1 */ }
+  .spinner.spinner-grey > div > div {
+    background: #666; }
+  .spinner.spinner-large {
+    width: 50px;
+    height: 50px;
+    font-size: 50px; }
+
+@-webkit-keyframes spinner {
+  0% {
+    opacity: 1;
+    -webkit-transform: scale(1.8);
+            transform: scale(1.8); }
+  100% {
+    opacity: 0.1;
+    -webkit-transform: scale(1);
+            transform: scale(1); } }
+
+@keyframes spinner {
+  0% {
+    opacity: 1;
+    -webkit-transform: scale(1.8);
+            transform: scale(1.8); }
+  100% {
+    opacity: 0.1;
+    -webkit-transform: scale(1);
+            transform: scale(1); } }
+
+.spinner > div {
+  width: 10%;
+  height: 10%;
+  margin-left: 3%;
+  margin-top: 3%;
+  position: absolute; }
+
+.spinner > div > div {
+  width: 100%;
+  height: 100%;
+  border-radius: .5em;
+  background: #2258c5; }
+
+.spinner > div:nth-of-type(1) > div {
+  -webkit-animation: spinner 1s linear infinite;
+          animation: spinner 1s linear infinite;
+  -webkit-animation-delay: 0s;
+          animation-delay: 0s; }
+
+.spinner > div:nth-of-type(1) {
+  -webkit-transform: translate(0.42em, 0.42em) rotate(45deg) translate(0.35em, 0);
+          transform: translate(0.42em, 0.42em) rotate(45deg) translate(0.35em, 0); }
+
+.spinner > div:nth-of-type(2) > div {
+  -webkit-animation: spinner 1s linear infinite;
+          animation: spinner 1s linear infinite;
+  -webkit-animation-delay: 0.12s;
+          animation-delay: 0.12s; }
+
+.spinner > div:nth-of-type(2) {
+  -webkit-transform: translate(0.42em, 0.42em) rotate(90deg) translate(0.35em, 0);
+          transform: translate(0.42em, 0.42em) rotate(90deg) translate(0.35em, 0); }
+
+.spinner > div:nth-of-type(3) > div {
+  -webkit-animation: spinner 1s linear infinite;
+          animation: spinner 1s linear infinite;
+  -webkit-animation-delay: 0.25s;
+          animation-delay: 0.25s; }
+
+.spinner > div:nth-of-type(3) {
+  -webkit-transform: translate(0.42em, 0.42em) rotate(135deg) translate(0.35em, 0);
+          transform: translate(0.42em, 0.42em) rotate(135deg) translate(0.35em, 0); }
+
+.spinner > div:nth-of-type(4) > div {
+  -webkit-animation: spinner 1s linear infinite;
+          animation: spinner 1s linear infinite;
+  -webkit-animation-delay: 0.37s;
+          animation-delay: 0.37s; }
+
+.spinner > div:nth-of-type(4) {
+  -webkit-transform: translate(0.42em, 0.42em) rotate(180deg) translate(0.35em, 0);
+          transform: translate(0.42em, 0.42em) rotate(180deg) translate(0.35em, 0); }
+
+.spinner > div:nth-of-type(5) > div {
+  -webkit-animation: spinner 1s linear infinite;
+          animation: spinner 1s linear infinite;
+  -webkit-animation-delay: 0.5s;
+          animation-delay: 0.5s; }
+
+.spinner > div:nth-of-type(5) {
+  -webkit-transform: translate(0.42em, 0.42em) rotate(225deg) translate(0.35em, 0);
+          transform: translate(0.42em, 0.42em) rotate(225deg) translate(0.35em, 0); }
+
+.spinner > div:nth-of-type(6) > div {
+  -webkit-animation: spinner 1s linear infinite;
+          animation: spinner 1s linear infinite;
+  -webkit-animation-delay: 0.62s;
+          animation-delay: 0.62s; }
+
+.spinner > div:nth-of-type(6) {
+  -webkit-transform: translate(0.42em, 0.42em) rotate(270deg) translate(0.35em, 0);
+          transform: translate(0.42em, 0.42em) rotate(270deg) translate(0.35em, 0); }
+
+.spinner > div:nth-of-type(7) > div {
+  -webkit-animation: spinner 1s linear infinite;
+          animation: spinner 1s linear infinite;
+  -webkit-animation-delay: 0.75s;
+          animation-delay: 0.75s; }
+
+.spinner > div:nth-of-type(7) {
+  -webkit-transform: translate(0.42em, 0.42em) rotate(315deg) translate(0.35em, 0);
+          transform: translate(0.42em, 0.42em) rotate(315deg) translate(0.35em, 0); }
+
+.spinner > div:nth-of-type(8) > div {
+  -webkit-animation: spinner 1s linear infinite;
+          animation: spinner 1s linear infinite;
+  -webkit-animation-delay: 0.87s;
+          animation-delay: 0.87s; }
+
+.spinner > div:nth-of-type(8) {
+  -webkit-transform: translate(0.42em, 0.42em) rotate(360deg) translate(0.35em, 0);
+          transform: translate(0.42em, 0.42em) rotate(360deg) translate(0.35em, 0); }
+
 .user {
   position: relative;
   display: inline-block;
@@ -763,10 +902,19 @@ a.item-room.selected {
 .player_media {
   margin: auto;
   max-height: 550px;
-  max-width: 309.375px; }
+  position: relative;
+  max-width: 309.375px;
+  height: 550px;
+  width: 550px; }
   .player_media img, .player_media video {
     width: 100%;
     height: 100%; }
+  .player_media .spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%); }
 
 .player_navigation {
   width: 130px;

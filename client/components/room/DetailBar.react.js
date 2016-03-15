@@ -15,7 +15,6 @@ class DetailBar extends React.Component {
 
     setSelected(selected) {
         this.setState({ selected })
-        console.log('adding class');
         $('.detail-bar_main').addClass('active');
     }
 
