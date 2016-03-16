@@ -29,4 +29,10 @@ export default class Profile extends ModelBase {
         return this.__getPaginatedEntities('closedStacks', 'stacks')
     }
 
+    // queries 
+
+    stacksFetching() {
+        return this.get('openStacksFetching') || this.get('closedStacksFetching')
+    }
+
 }

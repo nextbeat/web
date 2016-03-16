@@ -3,6 +3,7 @@ import { Link, browserHistory } from 'react-router'
 
 import StackItem from './shared/StackItem.react'
 import Icon from './shared/Icon.react'
+import Spinner from './shared/Spinner.react'
 
 class Sidebar extends React.Component {
 
@@ -98,7 +99,8 @@ class Sidebar extends React.Component {
                         { user.isLoggedIn() ? this.renderLoggedIn() : this.renderGuest() }
                         <div className="separator" />
                     </div>
-                    { user.isLoggedIn() && 
+                    { user.isLoggedIn() && user.isFetchingUserData() && <Spinner type="grey" /> }
+                    { user.isLoggedIn() && !user.isFetchingUserData() &&
                         <div>
                             <div className="sidebar_bookmarks">
                                 <h1>BOOKMARKS</h1>
@@ -111,10 +113,12 @@ class Sidebar extends React.Component {
                                 {user.subscriptions().size === 0 && <div className="sidebar_no-content">You have no subscriptions.</div>}
                                 {user.subscriptions().map(sub => <Link key={`sub${sub.get('id')}`} to={`/u/${sub.get('username')}`} activeClassName="selected" >{sub.get('username')}</Link>)}
                             </div>
+                            <div className="separator" />
                         </div>
                     }
                     <div className="sidebar_categories">
                         <h1>CATEGORIES</h1>
+                        { app.get('channelsFetching') && <Spinner type="grey" />}
                         { app.channels().map(channel => <Link key={`c${channel.get('id')}`} to={`/c/${channel.get('name')}`} activeClassName="selected" >{channel.get('name')}</Link>) }
                     </div>
                 </div>

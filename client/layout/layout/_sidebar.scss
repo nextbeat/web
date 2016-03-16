@@ -9,6 +9,10 @@
     padding: 15px;
     overflow: auto;
 
+    .spinner {
+        margin: 20px auto;
+    }
+
     .separator {
         width: calc(100% - 10px)
     }
@@ -153,6 +157,10 @@
 
     h1 {
         margin-left: 15px;
+    }
+
+    .item_container {
+        float: none;
     }
 
     .item-room {

@@ -39,14 +39,19 @@ class ProfileComponent extends React.Component {
         return (
             <section>  
                 <User user={profile.entity()} style={"large"} />
-                <div className="profile_header">OPEN</div>
-                <div className="profile_rooms">
-                    { openStacks.map(stack => <StackItem key={stack.get('id')} stack={stack} />)}
+                { profile.stacksFetching() && <Spinner type="grey profile-rooms" /> }
+                { !profile.stacksFetching() &&
+                <div>
+                    <div className="profile_header">OPEN</div>
+                    <div className="profile_rooms">
+                        { openStacks.map(stack => <StackItem key={stack.get('id')} stack={stack} />)}
+                    </div>
+                    <div className="profile_header">HISTORY</div>
+                    <div className="profile_rooms">
+                        { closedStacks.map(stack => <StackItem key={stack.get('id')} stack={stack} />)}
+                    </div>
                 </div>
-                <div className="profile_header">HISTORY</div>
-                <div className="profile_rooms">
-                    { closedStacks.map(stack => <StackItem key={stack.get('id')} stack={stack} />)}
-                </div>
+                }
             </section>
         )
     }
@@ -55,7 +60,7 @@ class ProfileComponent extends React.Component {
         const { isFetching, error, profile } = this.props;
         return (
             <div className="profile content">
-                { isFetching && <Spinner type="grey large" /> }
+                { isFetching && <Spinner type="grey large profile" /> }
                 { error && (error.length > 0) && <span>{error}</span> }
                 { profile.get('id') !== 0 && this.renderProfile() }
             </div>

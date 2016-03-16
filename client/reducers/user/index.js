@@ -70,7 +70,7 @@ function meta(state=Map(), action) {
 // TODO: refactor into single function if/when subscriptions are paginated
 function bookmarkedStacks(state=Map(), action) {
 
-    if (action.type === ActionTypes.BOOKMARKED_STACKS && action.status === Status.SUCCESS) {
+    if (action.type === ActionTypes.BOOKMARKED_STACKS) {
 
         state = paginate(ActionTypes.BOOKMARKED_STACKS)(state, action)
         // We don't need (or want) the usual pagination metadata here
@@ -97,11 +97,23 @@ function bookmarkedStacks(state=Map(), action) {
 
 function subscriptions(state=Map(), action) {
 
-    if (action.type === ActionTypes.SUBSCRIPTIONS && action.status === Status.SUCCESS) {
+    if (action.type === ActionTypes.SUBSCRIPTIONS) {
 
-        return state.merge({
-            ids: List(action.response.result)
-        })
+        if (action.status === Status.REQUESTING) {
+            return state.merge({
+                isFetching: true
+            }).delete('error').delete('ids')
+        } else if (action.status === Status.SUCCESS) {
+            return state.merge({
+                isFetching: false,
+                ids: List(action.response.result)
+            })
+        } else if (action.status === Status.FAILURE) {
+            return state.merge({
+                isFetching: false,
+                error: action.error
+            })
+        }
 
     } else if (action.type === ActionTypes.SUBSCRIBE && action.status === Status.SUCCESS) {
 

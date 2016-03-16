@@ -21,8 +21,12 @@ const KEY_MAP = {
     'readNotifications': ['user', 'notifications', 'read'],
     // bookmarked stacks
     'bookmarkedStackIds': ['user', 'bookmarkedStacks', 'ids'],
+    'bookmarkedStacksFetching': ['user', 'bookmarkedStacks', 'isFetching'],
+    'bookmarkedStacksError': ['user', 'bookmarkedStacks', 'error'],
     // subscriptions
-    'subscriptionIds': ['user', 'subscriptions', 'ids']
+    'subscriptionIds': ['user', 'subscriptions', 'ids'],
+    'subscriptionsFetching': ['user', 'subscriptions', 'isFetching'],
+    'subscriptionsError': ['user', 'subscriptions', 'error']
 }
 
 export default class CurrentUser extends ModelBase {
@@ -79,6 +83,10 @@ export default class CurrentUser extends ModelBase {
             id = id.toString();
         }
         return this.get('unreadNotifications', Map()).get('stacks_updated', Set()).has(id);
+    }
+
+    isFetchingUserData() {
+        return this.get('bookmarkedStacksFetching') || this.get('subscriptionsFetching');
     }
 
 }

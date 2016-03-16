@@ -2,6 +2,14 @@
     padding: 15px;
     height: 100%;
     overflow: auto;
+
+    .spinner-category {
+        margin: 20px auto;
+    }
+
+    .spinner-category-rooms {
+        margin: 20px auto; 
+    }
 }
 
 .category_header {
@@ -44,4 +52,12 @@
     .item-room_author {
         display: block;
     }
+}
+
+.category_no-content {
+    font-size: 14px;
+    padding-top: 10px;
+    font-style: italic;
+    color: #888;
+    display: block;
 }
