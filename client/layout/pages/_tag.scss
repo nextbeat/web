@@ -1,29 +1,29 @@
-.category {
+.tag {
     padding: 15px;
     height: 100%;
     overflow: auto;
 
-    .spinner-category {
+    .spinner-tag {
         margin: 20px auto;
     }
 
-    .spinner-category-rooms {
+    .spinner-tag-rooms {
         margin: 20px auto; 
     }
 }
 
-.category_header {
+.tag_header {
     font-weight: bold;
     font-size: 24px;
     color: $text-color;
     margin-bottom: 10px;
 }
 
-.category_filters {
+.tag_filters {
     margin-bottom: 10px;
 }
 
-.category_filter {
+.tag_filter {
     margin-right: 20px;
     padding-bottom: 5px;
     color: #666;
@@ -41,11 +41,11 @@
     }
 }
 
-.category_stacks {
+.tag_stacks {
 
     width: 100%;
 
-    .item-room_channel {
+    .item-room_tag {
         display: none;
     }
 
@@ -54,7 +54,7 @@
     }
 }
 
-.category_no-content {
+.tag_no-content {
     font-size: 14px;
     padding-top: 10px;
     font-style: italic;

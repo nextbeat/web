@@ -8,18 +8,18 @@ import { API_CALL, API_CANCEL } from './types'
  * FETCHING
  **********/
 
-function fetchChannels() {
+function fetchTags() {
     return {
-        type: ActionTypes.CHANNELS,
+        type: ActionTypes.TAGS,
         [API_CALL]: {
-            schema: Schemas.CHANNELS,
-            endpoint: "channels",
+            schema: Schemas.TAGS,
+            endpoint: "tags",
         }
     }
 }
 
-export function loadChannels() {
-    return fetchChannels();
+export function loadTags() {
+    return fetchTags();
 }
 
 export function clearApp() {

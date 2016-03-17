@@ -2,10 +2,10 @@ import { List } from 'immutable'
 import ModelBase from './base'
 
 const KEY_MAP = {
-    // channels
-    'channelsFetching': ['app', 'channels', 'isFetching'],
-    'channelsError': ['app', 'channels', 'error'],
-    'channelsIds': ['app', 'channels', 'ids']
+    // tags
+    'tagsFetching': ['app', 'tags', 'isFetching'],
+    'tagsError': ['app', 'tags', 'error'],
+    'tagsIds': ['app', 'tags', 'ids']
 }
 
 export default class Profile extends ModelBase {
@@ -16,8 +16,8 @@ export default class Profile extends ModelBase {
         this.name = "app";
     }
 
-    channels() {
-        return this.get('channelsIds', List()).map(id => this.__getEntity(id, 'channels'))
+    tags() {
+        return this.get('tagsIds', List()).map(id => this.__getEntity(id, 'tags'))
     }
 
 }

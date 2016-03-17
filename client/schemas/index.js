@@ -1,6 +1,6 @@
 import { Schema, arrayOf } from 'normalizr'
 
-const channel = new Schema('channels');
+const tag = new Schema('tags');
 const stack = new Schema('stacks');
 const user = new Schema('users');
 const mediaItem = new Schema('mediaItems');
@@ -15,8 +15,8 @@ comment.define({
 })
 
 export default {
-    CHANNEL: channel,
-    CHANNELS: arrayOf(channel),
+    TAG: tag,
+    TAGS: arrayOf(tag),
     STACK: stack,
     STACKS: arrayOf(stack),
     MEDIA_ITEM: mediaItem,

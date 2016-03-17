@@ -2,15 +2,15 @@ export { default as ActionTypes } from './types'
 export { Status, API_CALL, API_CANCEL } from './types'
 
 export {
-    loadChannels,
+    loadTags,
     clearApp
 } from './app'
 
 export {
-    loadChannel,
-    loadStacksForChannel,
-    clearChannel
-} from './channel'
+    loadTag,
+    loadStacksForTag,
+    clearTag
+} from './tag'
 
 export {
     loadStack,

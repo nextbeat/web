@@ -2,8 +2,8 @@ import { Map, List } from 'immutable'
 import { ActionTypes, Status } from '../../actions'
 import { combineReducers } from '../utils'
 
-function channels(state = Map(), action) {
-    if (action.type === ActionTypes.CHANNELS) {
+function tags(state = Map(), action) {
+    if (action.type === ActionTypes.TAGS) {
         if (action.status === Status.REQUESTING) {
             return state.merge({
                 isFetching: true
@@ -24,7 +24,7 @@ function channels(state = Map(), action) {
 }
 
 const reducers = {
-    channels
+    tags
 }
 
 export default function(state = Map(), action) {

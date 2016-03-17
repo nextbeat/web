@@ -17,17 +17,17 @@ export default {
      * APP
      *****/
 
-    CHANNELS: 'CHANNELS',
+    TAGS: 'TAGS',
     CLEAR_APP: 'CLEAR_APP',
 
     /*********
-     * CHANNEL
+     * TAG
      *********/
 
-    CHANNEL: 'CHANNEL',
-    CHANNEL_STACKS: 'CHANNEL_STACKS',
-    CLEAR_CHANNEL: 'CLEAR_CHANNEL',
-    CLEAR_CHANNEL_STACKS: 'CLEAR_CHANNEL_STACKS',
+    TAG: 'TAG',
+    TAG_STACKS: 'TAG_STACKS',
+    CLEAR_TAG: 'CLEAR_TAG',
+    CLEAR_TAG_STACKS: 'CLEAR_TAG_STACKS',
 
     /*******
      * STACK

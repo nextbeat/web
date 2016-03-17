@@ -16,7 +16,7 @@ function onStackSuccess(store, next, action, response) {
     const stack = response.entities.stacks[response.result];
     store.dispatch(loadMediaItems(stack.uuid));
     store.dispatch(loadComments(stack.uuid));
-    store.dispatch(loadMoreStacks(stack.id, stack.channel_id));
+    store.dispatch(loadMoreStacks(stack.id, stack.tag_id));
 }
 
 function fetchStack(id) {
@@ -39,21 +39,21 @@ export function loadStack(id) {
     }
 }
 
-function fetchMoreStacks(stack_id, channel_id) {
+function fetchMoreStacks(stack_id, tag_id) {
     return {
         type: ActionTypes.MORE_STACKS,
         stack_id,
         [API_CALL]: {
             schema: Schemas.STACKS,
             endpoint: "stacks",
-            queries: { channel: channel_id, sort: "hot" },
+            queries: { tag: tag_id, sort: "hot" },
             pagination: { limit: 7, page: 1 }
         }
     }
 }
 
-export function loadMoreStacks(stack_id, channel_id) {
-    return fetchMoreStacks(stack_id, channel_id)
+export function loadMoreStacks(stack_id, tag_id) {
+    return fetchMoreStacks(stack_id, tag_id)
 }
 
 function fetchMediaItems(stack_uuid, pagination) {

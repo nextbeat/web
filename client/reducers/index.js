@@ -6,7 +6,7 @@ import user from './user'
 import stack from './stack'
 import profile from './profile'
 import support from './support'
-import channel from './channel'
+import tag from './tag'
 import { combineReducers } from './utils'
 import { Status, ActionTypes } from '../actions'
 
@@ -15,7 +15,7 @@ const initialEntities = Map({
     mediaItems: Map(),
     users: Map(),
     comments: Map(),
-    channels: Map()
+    tags: Map()
 })
 
 function entities(state = initialEntities, action) {
@@ -48,7 +48,7 @@ export default combineReducers({
     app,
     stack,
     profile,
-    channel,
+    tag,
     user,
     support
 })

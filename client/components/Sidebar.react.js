@@ -117,9 +117,9 @@ class Sidebar extends React.Component {
                         </div>
                     }
                     <div className="sidebar_categories">
-                        <h1>CATEGORIES</h1>
-                        { app.get('channelsFetching') && <Spinner type="grey" />}
-                        { app.channels().map(channel => <Link key={`c${channel.get('id')}`} to={`/c/${channel.get('name')}`} activeClassName="selected" >{channel.get('name')}</Link>) }
+                        <h1>POPULAR TAGS</h1>
+                        { app.get('tagsFetching') && <Spinner type="grey" />}
+                        { app.tags().map(tag => <Link key={`c${tag.get('id')}`} to={`/t/${tag.get('name')}`} activeClassName="selected" >{tag.get('name')}</Link>) }
                     </div>
                 </div>
                 <div className="sidebar_collapsed">

@@ -57,7 +57,7 @@ class StackItem extends React.Component {
                             <div className="item-room_description">{stack.get('description') || "No description."}</div>
                             <div className="item-room_details">
                                 <span className="item-room_detail item-room_author">{ author.get('username') }</span>
-                                <span className="item-room_detail item-room_channel">{stack.getIn(['channel', 'name'])}</span>
+                                <span className="item-room_detail item-room_tag">{stack.getIn(['tag', 'name'])}</span>
                                 <span className="item-room_detail item-room_time">{moment(stack.get('most_recent_post_at')).fromNow()}</span>
                             </div>
                         </div>

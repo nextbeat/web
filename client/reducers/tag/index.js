@@ -2,13 +2,13 @@ import { Map } from 'immutable'
 import { ActionTypes, Status } from '../../actions'
 import { combineReducers, entity, paginate } from '../utils'
 
-const meta = entity(ActionTypes.CHANNEL);
+const meta = entity(ActionTypes.TAG);
 
 function stacks(state, action) {
-    if (action.type === ActionTypes.CLEAR_CHANNEL_STACKS) {
+    if (action.type === ActionTypes.CLEAR_TAG_STACKS) {
         return Map()
     } else {
-        return paginate(ActionTypes.CHANNEL_STACKS)(state, action)
+        return paginate(ActionTypes.TAG_STACKS)(state, action)
     }
 }
 
@@ -21,7 +21,7 @@ const initialFiltersState = Map({
     sort: "hot"
 })
 function filters(state = initialFiltersState, action) {
-    if (action.type === ActionTypes.CHANNEL_STACKS && action.status === Status.REQUESTING) {
+    if (action.type === ActionTypes.TAG_STACKS && action.status === Status.REQUESTING) {
         return state.merge({
             status: action.status,
             sort: action.sort
@@ -37,7 +37,7 @@ const reducers = {
 }
 
 export default function(state = Map(), action) {
-    if (action.type === ActionTypes.CLEAR_CHANNEL) {
+    if (action.type === ActionTypes.CLEAR_TAG) {
         return Map()
     } else {
         return combineReducers(reducers)(state, action)

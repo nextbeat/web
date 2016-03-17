@@ -5,7 +5,7 @@ import { Link } from 'react-router'
 
 import Sidebar from '../components/Sidebar.react'
 
-import { connectToXMPP, disconnectXMPP, login, logout, signup, clearLogin, clearSignup, postLogin, loadChannels, clearApp } from '../actions'
+import { connectToXMPP, disconnectXMPP, login, logout, signup, clearLogin, clearSignup, postLogin, loadTags, clearApp } from '../actions'
 import { CurrentUser, App as AppModel } from '../models'
 
 class App extends React.Component {
@@ -27,7 +27,7 @@ class App extends React.Component {
     componentDidMount() {
         const { user, dispatch } = this.props;
         dispatch(connectToXMPP());
-        dispatch(loadChannels());
+        dispatch(loadTags());
         if (user.isLoggedIn()) {
             dispatch(postLogin());
         }
