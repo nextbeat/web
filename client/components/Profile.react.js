@@ -38,7 +38,7 @@ class ProfileComponent extends React.Component {
         const profpic_url = profile.get('profpic_thumbnail_url') || profile.get('profpic_url');
         return (
             <section>  
-                <User user={profile.entity()} style={"large"} />
+            <div className="profile_user-container"><User user={profile.entity()} style={"large"} /></div>
                 { profile.stacksFetching() && <Spinner type="grey profile-rooms" /> }
                 { !profile.stacksFetching() &&
                 <div>

@@ -7,4 +7,10 @@
     &.expand-left {
         margin-left: $sidebar-closed-width;
     }
+
+    @include media('<=medium') {
+        margin-left: 0;
+        height: calc(100% - 50px);
+    }
+
 }

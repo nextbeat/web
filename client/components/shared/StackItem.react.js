@@ -7,6 +7,12 @@ import moment from 'moment'
 
 class StackItem extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this.resize = this.resize.bind(this);
+    }
+
     resize(node, parent) {
 
         // resize room items
@@ -17,18 +23,19 @@ class StackItem extends React.Component {
             node.addClass(klass);
         }
 
-        if (parent.width() > 800) {
-            switchClass('three-across');
-        } else if (parent.width() > 500) {
-            switchClass('two-across');
-        } else {
-            switchClass('one-across');
+        if (!this.props.static) {
+            if (parent.width() > 800) {
+                switchClass('three-across');
+            } else if (parent.width() > 500) {
+                switchClass('two-across');
+            } else {
+                switchClass('one-across');
+            }
         }
 
         // resize thumbnail
         const thumb = node.find('.item_thumb');
         thumb.width(thumb.height());
-
     }
 
     componentDidMount() {

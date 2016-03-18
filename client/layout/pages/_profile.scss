@@ -24,3 +24,10 @@
     @include clearfix;
 }
 
+.profile_user-container {
+    width: 100%;
+    @include media('<=medium') {
+        text-align: center;
+    }
+}
+

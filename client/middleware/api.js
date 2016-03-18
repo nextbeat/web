@@ -51,7 +51,6 @@ function fetchOptions(options, store) {
 function callApi(options, store, action) {
     const { endpoint, schema, pagination, authenticated, queries, cancelOn } = options;
     const url = urlWithParams(endpoint, pagination, queries);
-    console.log(url);
     const currentUser = new CurrentUser(store.getState());
 
     if (authenticated && !currentUser.isLoggedIn()) {
@@ -67,7 +66,6 @@ function callApi(options, store, action) {
             if (!response.ok) {
                 return Promise.reject(new Error(json.error));
             }
-            console.log(json);
             if (typeof pagination !== 'undefined') {
                 return assign({}, normalize(json.objects, schema), json.meta);
             } else if (typeof schema !== 'undefined') {

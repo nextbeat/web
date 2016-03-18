@@ -15,49 +15,17 @@ class Sidebar extends React.Component {
         this.renderStackItem = this.renderStackItem.bind(this);
     }
 
-    // Lifecycle
-
-    resize() {
-        const contentWidth = parseInt($('.content').css('width'));
-        const sidebarWidth = parseInt($('.sidebar').css('width'));
-        const $detailBar = $('.detail-bar');
-        const detailBarIsClosed = $.contains(document.documentElement, $detailBar[0]) && $detailBar.hasClass('closed');
-        if (contentWidth + sidebarWidth < 700 || detailBarIsClosed) {
-            $('.sidebar').addClass('closed');
-            $('.sidebar').removeClass('open');
-            $('.main').addClass('expand-left');
-        } else {
-            $('.sidebar').addClass('open');
-            $('.sidebar').removeClass('closed');
-            $('.main').removeClass('expand-left');
-        }
-
-    }
-
-    componentDidMount() {
-        // update sidebar width on resize or on router change
-        $(window).resize(this.resize);
-        browserHistory.listen(function(e) {
-            process.nextTick(function() {
-                this.resize();
-            }.bind(this))
-        }.bind(this))
-        this.resize();
-    }
-
-    componentWillUnmount() {
-        $(window).off('resize', this.resize);
-    }
-
     // Accessors
 
-    setActive() {
-        $('.sidebar_expanded').addClass('active');
+    toggleActive() {
+        if ($('.sidebar').hasClass('collapsed-side')) {
+            $('.sidebar_expanded').toggleClass('active-medium');
+        } else {
+            $('.sidebar_expanded').toggleClass('active-small');
+            $('.detail-bar').removeClass('active');
+        }
+        $(window).resize() // trigger resize event
     }   
-
-    setInactive() {
-        $('.sidebar_expanded').removeClass('active');
-    }
 
     // Render
 
@@ -75,8 +43,10 @@ class Sidebar extends React.Component {
         const { handleLoginClick, handleSignupClick } = this.props;
         return (
             <div className="sidebar_user-info">
-                <a className="sidebar_login btn" onClick={handleLoginClick}>Login</a>
-                <a className="sidebar_signup btn" onClick={handleSignupClick}>Signup</a>
+                <div className="sidebar_login-buttons">
+                    <a className="sidebar_login btn" onClick={handleLoginClick}>Login</a>
+                    <a className="sidebar_signup btn" onClick={handleSignupClick}>Signup</a>
+                </div>
             </div>
         )
     }
@@ -84,7 +54,7 @@ class Sidebar extends React.Component {
     renderStackItem(stack) {
         const { user } = this.props;
         return (
-            <StackItem key={stack.get('id')} stack={stack} user={user} />
+            <StackItem key={stack.get('id')} stack={stack} user={user} static={true} />
         )
     }
 
@@ -92,38 +62,38 @@ class Sidebar extends React.Component {
         const { user, app } = this.props;
         return (
             <div className="sidebar">
+
                 <div className="sidebar_expanded">
-                    <div className="sidebar_collapse-icon" onClick={this.setInactive}><Icon type="chevron-left" /></div>
-                    <div className="sidebar_header">
+                    <div className="sidebar_collapse-icon" onClick={this.toggleActive}><Icon type="chevron-left" /></div>
+                    <div className="sidebar_section">
                         <span className="sidebar_logo"><Link to="/">sodosopa</Link></span>
                         { user.isLoggedIn() ? this.renderLoggedIn() : this.renderGuest() }
-                        <div className="separator" />
                     </div>
                     { user.isLoggedIn() && user.isFetchingUserData() && <Spinner type="grey" /> }
                     { user.isLoggedIn() && !user.isFetchingUserData() &&
                         <div>
-                            <div className="sidebar_bookmarks">
+                            <div className="sidebar_bookmarks sidebar_section">
                                 <h1>BOOKMARKS</h1>
                                 {user.bookmarkedStacks().size === 0 && <div className="sidebar_no-content">You have no open bookmarks.</div>}
                                 {user.bookmarkedStacks().map(stack => this.renderStackItem(stack))}
                             </div>
-                            <div className="separator" />
-                            <div className="sidebar_subscriptions">
+                            <div className="sidebar_subscriptions sidebar_section">
                                 <h1>SUBSCRIPTIONS</h1>
                                 {user.subscriptions().size === 0 && <div className="sidebar_no-content">You have no subscriptions.</div>}
                                 {user.subscriptions().map(sub => <Link key={`sub${sub.get('id')}`} to={`/u/${sub.get('username')}`} activeClassName="selected" >{sub.get('username')}</Link>)}
                             </div>
-                            <div className="separator" />
                         </div>
                     }
-                    <div className="sidebar_categories">
+                    <div className="sidebar_categories sidebar_section">
                         <h1>POPULAR TAGS</h1>
                         { app.get('tagsFetching') && <Spinner type="grey" />}
                         { app.tags().map(tag => <Link key={`c${tag.get('id')}`} to={`/t/${tag.get('name')}`} activeClassName="selected" >{tag.get('name')}</Link>) }
                     </div>
                 </div>
+
                 <div className="sidebar_collapsed">
-                    <div onClick={this.setActive}><Icon type="menu" /></div>
+                    <span className="sidebar_logo"><Link to="/">sodosopa</Link></span>
+                    <div onClick={this.toggleActive}><Icon type="menu" /></div>
                 </div>
             </div>
         );

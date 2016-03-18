@@ -9,23 +9,47 @@
     padding: 15px;
     overflow: auto;
 
-    .spinner {
-        margin: 20px auto;
-    }
-
-    .separator {
-        width: calc(100% - 10px)
-    }
-
     h1 {
         font-size: 12px;
         color: $primary-color;
     }
 
-    &.closed {
+    .spinner {
+        margin: 20px auto;
+    }
+
+    .svg-icon-menu {
+        fill: $primary-color;
+        display: block;
+        width: 30px;
+        height: 30px;
+
+        &:hover {
+            fill: $light-primary-color;
+        }
+    }
+
+    .sidebar_collapsed {
+        display: none;
+    }
+
+    // collapsed bar on side
+    &.collapsed-side {
         width: $sidebar-closed-width;
         padding: 0;
         overflow: visible;
+
+        .sidebar_collapsed {
+            display: block;
+
+            .svg-icon-menu {
+                margin: 12px auto;
+            }
+
+            .sidebar_logo {
+                display: none;
+            }
+        }
 
         .sidebar_expanded {
             position: absolute;
@@ -37,42 +61,82 @@
             z-index: 20;
             transition: left 0.3s;
 
-            &.active {
+            &.active-medium {
                 left: 0;
             }
 
-            &.active .sidebar_collapse-icon {
+            &.active-medium .sidebar_collapse-icon {
                 display: block;
             }
+        }
+    }
+
+    // collapsed bar on top
+    @include media('<=medium') {
+        width: 100%;
+        padding: 0;
+        position: static;
+        height: 50px;
+        border-right: none;
+        border-bottom: 1px solid $border-color;
+
+        .sidebar_collapsed {
+            display: block;
+            height: 100%;
+
+            & > div {
+                height: 100%;
+                position: relative;
+            }
+
+            .svg-icon {
+                @include centerY;
+                margin: auto 15px;
+                width: 30px;
+                height: 30px;
+            }
+
+            .sidebar_logo {
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+
+        .sidebar_expanded {
+            display: none;
+            padding: 15px;
+
+            &.active-small {
+                display: block;
+                position: absolute;
+                top: 50px;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                z-index: 30;
+            }
+        }
+
+        .sidebar_logo {
+            display: none;
+        }
+    } 
+
+    @include media ('<=small') {
+        .sidebar_collapsed .sidebar_logo {
+            font-size: 16px;
+            margin-top: 15px;
         }
     }
 }
 
 .sidebar_expanded {
     height: 100%;
-}
-
-.sidebar_collapsed {
-
-    .svg-icon {
-        fill: $primary-color;
-        width: 25px;
-        height: 25px;
-        margin: 12px auto;
-        display: block;
-
-        &:hover {
-            fill: $light-primary-color;
-        }
-    }
-}
-
-.sidebar.open .sidebar_collapsed {
-    display: none;
-}
-
-.sidebar.closed .sidebar_collapsed, .sidebar.open .sidebar_expanded {
-    display: block;
+    background: white;
 }
 
 .sidebar_collapse-icon {
@@ -92,6 +156,10 @@
         width: 100%;
         height: 100%;
     }
+}
+
+.sidebar_section {
+    margin-bottom: 15px;
 }
 
 
@@ -125,14 +193,17 @@
     @include clearfix;
 }
 
+.sidebar_login-buttons {
+    width: 140px;
+    margin: 0 auto;
+}
+
 .sidebar_login {
     float: left;
-    margin-left: 40px;
 }
 
 .sidebar_signup {
     float: right;
-    margin-right: 40px;
     @include clearfix;
 }
 

@@ -12,8 +12,8 @@
     height: 100%;
     overflow: hidden;
 
-    &.expand-right {
-        margin-right: $detail-bar-closed-width;
+    @include media('<=medium') {
+        margin-right: 0;
     }
 }
 
@@ -37,15 +37,22 @@
 
 .player_main {
     position: relative;
+
+    .room_counter {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        @include media('<=medium') {
+            display: none;
+        }
+    }
 }
 
 .player_media {
     margin: auto;
-    max-height: 550px;
     position: relative;
-    max-width: 550px * 9 / 16;
-    height: 550px;
-    width: 550px; // max-<dim> overrides these, but they're necessary for some browsers
+    // note: height and width are set in javascript
 
     img, video {
         width: 100%;
@@ -88,21 +95,6 @@
 .player_nav-forward {
     float: right;
     @include clearfix;
-}
-
-.player_counter {
-    position: absolute;
-    top: 0;
-    height: 40px;
-    right: 0;
-    width: 100px;
-    text-align: right;
-    color: #666;
-    font-size: 17px;
-
-    .selected {
-        font-weight: bold;
-    }
 }
 
 // Info
@@ -232,40 +224,56 @@ a.player_tag {
     background-color: #fff;
     border-left: 1px solid $border-color;
 
-    // collapse logic
-    &.closed {
-        width: $detail-bar-closed-width;
-        overflow: visible;
+    .detail-bar_collapsed {
+        display: none;
+    }
 
-        .detail-bar_expanded {
+    // collapse logic
+    @include media('<=medium') {
+        width: 100%;
+        overflow: visible;
+        height: 0px;
+
+        &.active {
+            height: auto;
+
+            .detail-bar_expanded {
+                display: block;
+            }
+
+            .selected .svg-icon {
+                fill: $light-primary-color;
+            }
+        }
+
+        .detail-bar_collapsed {
             position: absolute;
-            width: 0px;
-            top: 0;
-            right: 0;
-            overflow: visible;
+            display: block;
+            top: -50px;
+            right: 0px;
+            height: 50px;
         }
 
         .detail-bar_header {
-            height: 0;
+            display: none;
         }
 
         .detail-bar_main {
-            border-left: 1px solid $border-color;
-            z-index: 20;
-            width: $detail-bar-width;
+            height: 100%;
+        }
+
+        .detail-bar_expanded {
+            z-index: 30;
             position: absolute;
             top: 0;
-            right: -$detail-bar-width;
-            height: 100%;
+            bottom: 0;
+            left: 0; 
+            right: 0;
             overflow: visible;
-            transition-property: right;
-            transition-duration: 0.3s;
+            background: white;
+            display: none;
 
             &.active {
-                right: 0;
-            }
-
-            &.active .detail-bar_collapse-icon {
                 display: block;
             }
         }
@@ -291,30 +299,15 @@ a.player_tag {
     }
 }
 
-.detail-bar.open .detail-bar_collapsed {
-    display: none;
-}
+.detail-bar_icon {
+    float: right;
+    margin-right: 15px;
 
-.detail-bar.closed .detail-bar_collapsed, .detail-bar.open .detail-bar_expanded {
-    display: block;
-}
-
-.detail-bar_collapse-icon {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border-radius: 3px 0 0 3px;
-    border: 1px solid $border-color;
-    border-right: none;
-    background: white;
-    left: -20px;
-    top: 10px;
-    z-index: 19;
-    display: none;
-
-    .svg-icon {
-        width: 100%;
-        height: 100%;
+    .room_counter {
+        margin-top: 12px;
+        font-size: 18px;
+        color: $primary-color;
+        margin-right: 5px;
     }
 }
 
@@ -478,4 +471,19 @@ a.player_tag {
     text-align: center;
     color: #fff;
     font-weight: bold;
+}
+
+/********
+ * SHARED
+ ********/
+
+.room_counter {
+    height: 40px;
+    color: #666;
+    font-size: 17px;
+    display: inline-block;
+
+    .selected {
+        font-weight: bold;
+    }
 }

@@ -1,5 +1,6 @@
 import React from 'react'
 import Video from './Video.react'
+import Counter from './Counter.react'
 import Icon from '../../shared/Icon.react'
 import Spinner from '../../shared/Spinner.react'
 
@@ -15,10 +16,25 @@ class MediaPlayer extends React.Component {
 
     componentDidMount() {
         $(document.body).on('keydown', this.handleKeyDown);
+        $(window).resize(this.resize)
+        this.resize();
     }
 
     componentWillUnmount() {
+        $(window).off("resize", this.resize);
         $(document.body).off('keydown', this.handleKeyDown);
+    }
+
+    // Resize
+
+    resize() {
+        const roomHeight = parseInt($('.room').css('height'));
+        console.log(roomHeight);
+        const mediaHeight = Math.min(550, roomHeight-60);
+        const mediaWidth = mediaHeight*9/16;
+        console.log(mediaHeight);
+        $('.player_media').height(mediaHeight);
+        $('.player_media').width(mediaWidth);
     }
 
     // Navigation
@@ -37,11 +53,7 @@ class MediaPlayer extends React.Component {
         const item = stack.selectedMediaItem()
         return (
         <div className="player_main">
-            { stack.mediaItems().size > 0 &&
-            <div className="player_counter">
-                <span className="selected">{ stack.indexOfSelectedMediaItem() + 1 }</span> &#8725; { stack.mediaItems().size } 
-            </div>
-            }
+            <Counter stack={stack} />
             <div className="player_media">
                 {stack.mediaItems().size == 0 && !stack.get('mediaItemsError') && <Spinner type="large grey"/>}
                 {!item.isEmpty() && (item.get('type') === "video" 

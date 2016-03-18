@@ -3,6 +3,7 @@ import React from 'react'
 import Chat from './chat/Chat.react'
 import Activity from './activity/Activity.react'
 import Icon from '../shared/Icon.react'
+import Counter from './player/Counter.react'
 
 class DetailBar extends React.Component {
 
@@ -14,13 +15,13 @@ class DetailBar extends React.Component {
     }
 
     setSelected(selected) {
+        if (this.state.selected === selected) {
+            $('.detail-bar').toggleClass('active');
+        } else {
+            $('.detail-bar').addClass('active');
+        }
+        $('.sidebar_expanded').removeClass('active-small');
         this.setState({ selected })
-        $('.detail-bar_main').addClass('active');
-    }
-
-
-    setInactive() {
-        $('.detail-bar_main').removeClass('active');
     }
 
     render() {
@@ -36,6 +37,10 @@ class DetailBar extends React.Component {
         }
         return (
             <div className="detail-bar">
+                <div className="detail-bar_collapsed">
+                    <div onClick={this.setSelected.bind(this, "chat")} className={`detail-bar_icon ${selected("chat")}`}><Icon type="chat" /></div>
+                    <div onClick={this.setSelected.bind(this, "activity")} className={`detail-bar_icon ${selected("activity")}`}><Counter stack={stack} /></div>
+                </div>
                 <div className="detail-bar_expanded">
                     <div className="detail-bar_header">
                         <div className="detail-bar_tab-container">
@@ -44,14 +49,9 @@ class DetailBar extends React.Component {
                         </div>
                     </div>
                     <div className="detail-bar_main">
-                        <div className="detail-bar_collapse-icon" onClick={this.setInactive}><Icon type="chevron-right" /></div>
                         { this.state.selected === "chat" && <Chat /> }
                         { this.state.selected === "activity" && <Activity {...activityProps} /> }
                     </div>
-                </div>
-                <div className="detail-bar_collapsed">
-                    <div onClick={this.setSelected.bind(this, "chat")}><Icon type="chat" /></div>
-                    <div onClick={this.setSelected.bind(this, "activity")}><Icon type="activity" /></div>
                 </div>
             </div>
         );

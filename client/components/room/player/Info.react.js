@@ -13,7 +13,6 @@ class Info extends React.Component {
 
     render() {
         const { stack } = this.props;
-        console.log(stack.get('tags'));
         const profpic_url = stack.author().get('profpic_thumbnail_url') || stack.author().get('profpic_url');
         const closed = stack.get('closed');
         return (

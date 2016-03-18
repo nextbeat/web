@@ -35,6 +35,9 @@ class Theater extends React.Component {
         this.props.dispatch(clearStack());
 
         $(window).off("resize", this.resize);
+        $('.sidebar').removeClass('collapsed-side');
+        $('.main').removeClass('expand-left');
+        $('.sidebar_expanded').removeClass('active-medium');
     }
 
     componentDidUpdate(prevProps) {
@@ -56,15 +59,13 @@ class Theater extends React.Component {
 
     resize() {
 
-        if ($('.app-container').width() < 810) {
-            $('.detail-bar').addClass('closed');
-            $('.detail-bar').removeClass('open');
-            $('.player-container').addClass('expand-right');
-            $('.detail-bar_main').removeClass('active');
+        if ($('.app-container').width() < 1100 && !Modernizr.mq('(max-width:800px)')) {
+            $('.sidebar').addClass('collapsed-side');
+            $('.main').addClass('expand-left');
         } else {
-            $('.detail-bar').addClass('open');
-            $('.detail-bar').removeClass('closed');
-            $('.player-container').removeClass('expand-right');
+            $('.sidebar').removeClass('collapsed-side');
+            $('.main').removeClass('expand-left');
+            $('.sidebar_expanded').removeClass('active-medium');
         }
 
     }
@@ -73,12 +74,14 @@ class Theater extends React.Component {
 
     handleSelectMediaItem(id) {
         this.props.dispatch(selectMediaItem(id))
+        $('.detail-bar').removeClass('active');
     }
 
     handleSelectNewestLiveItem() {
         const newestLiveItem = this.props.liveMediaItems.last();
         if (newestLiveItem) {
             this.props.dispatch(selectMediaItem(newestLiveItem.get('id')));
+            $('.detail-bar').removeClass('active');
         }
     }
 
