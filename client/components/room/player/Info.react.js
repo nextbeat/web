@@ -23,7 +23,7 @@ class Info extends React.Component {
                 </div>
                 <div className="separator separator-player_info" />
                 <div className="player_tags">
-                    {stack.get('tags').map(tag => <Link to={`/t/${tag.get('name')}`} key={`t-${tag.get('name')}`} className="player_tag">{tag.get('name')}</Link>)}
+                    {stack.get('tags').map(tag => <Link to={`/t/${tag}`} key={`t-${tag}`} className="player_tag">{tag}</Link>)}
                 </div>
                 <div className="player_buttons">
                     <div className="player_button"><Bookmark {...this.props} /></div>

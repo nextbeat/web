@@ -11,11 +11,11 @@ module.exports = {
 
         passport.use(new LocalStrategy(
             function(username, password, done) {
-                api.post('login?resource=web', {}, { 
+                api.post('login?resource=web&expireImmediately=true', {}, { 
                     user: username,
                     pass: password
                 }).then(function(res) {
-                    done(null, res);
+                    done(null, res.body);
                 }).catch(function(e) {
                     var message = e.error ? e.error.error : "";
                     done(null, false, { message: message });

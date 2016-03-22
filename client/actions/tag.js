@@ -10,17 +10,12 @@ import { API_CALL, API_CANCEL } from './types'
  * FETCHING
  **********/
 
-function onTagSuccess(store, next, action, response) {
-    store.dispatch(loadStacksForTag({ sort: "hot" }))
-}
-
 function fetchTag(name) {
     return {
         type: ActionTypes.TAG,
         [API_CALL]: {
             schema: Schemas.TAG,
-            endpoint: `tags/${name}`,
-            onSuccess: onTagSuccess
+            endpoint: `tags/${name}`
         }
     }
 }
@@ -53,16 +48,15 @@ function clearStacksForTag() {
     }
 }
 
-export function loadStacksForTag(options) {
+export function loadStacksForTag(name, options) {
     return (dispatch, getState) => {
         const tag = new Tag(getState())
-        console.log(tag.entity().toJS());
         // todo: include status
         if (options.sort !== tag.get('sort')) {
             // we're requesting a new sort type, so we clear the stacks state
             dispatch(clearStacksForTag())
         }
-        loadPaginatedObjects('tag', 'stack', fetchStacksForTag.bind(this, tag.get('name'), options), 12)(dispatch, getState)
+        loadPaginatedObjects('tag', 'stack', fetchStacksForTag.bind(this, name, options), 12)(dispatch, getState)
     }
 
 }

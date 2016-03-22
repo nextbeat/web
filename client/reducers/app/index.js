@@ -23,8 +23,18 @@ function tags(state = Map(), action) {
     return state
 }
 
+function authError(state = false, action) {
+    if (action.status && action.status === Status.FAILURE && action.error === "User is not logged in.") {
+        return true;
+    } else if (action.type === ActionTypes.CLEAR_LOGIN_SIGNUP || action.type === ActionTypes.LOGIN) {
+        return false;
+    }
+    return state;
+}
+
 const reducers = {
-    tags
+    tags,
+    authError
 }
 
 export default function(state = Map(), action) {

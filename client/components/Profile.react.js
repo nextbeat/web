@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import StackItem from './shared/StackItem.react'
 import User from './shared/User.react'
 import Spinner from './shared/Spinner.react'
+import PageError from './shared/PageError.react'
 
 import { loadProfile, clearProfile, loadStacksForUser } from '../actions'
 import { Profile } from '../models'
@@ -61,7 +62,7 @@ class ProfileComponent extends React.Component {
         return (
             <div className="profile content">
                 { isFetching && <Spinner type="grey large profile" /> }
-                { error && (error.length > 0) && <span>{error}</span> }
+                { error && (error.length > 0) && <PageError>User not found.</PageError> }
                 { profile.get('id') !== 0 && this.renderProfile() }
             </div>
         );

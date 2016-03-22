@@ -13,11 +13,13 @@ function _request(method, url, body, auth) {
         auth = { bearer: auth }
     }
 
-    return request[method]({
+    return request({
+        method: method,
         url: url,
         baseUrl: baseUrl,
         body: body,
-        auth: auth
+        auth: auth,
+        resolveWithFullResponse: true
     });
 }
 
@@ -55,19 +57,19 @@ module.exports = {
     },
 
     get: function(url, body, auth) {
-        return _request('get', url, body, auth);
+        return _request('GET', url, body, auth);
     },
 
     post: function(url, body, auth) {
-        return _request('post', url, body, auth);
+        return _request('POST', url, body, auth);
     },
 
     put: function(url, body, auth) {
-        return _request('put', url, body, auth);
+        return _request('PUT', url, body, auth);
     },
 
     del: function(url, body, auth) {
-        return _request('delete', url, body, auth);
+        return _request('DELETE', url, body, auth);
     }
 
 };

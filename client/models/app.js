@@ -5,7 +5,9 @@ const KEY_MAP = {
     // tags
     'tagsFetching': ['app', 'tags', 'isFetching'],
     'tagsError': ['app', 'tags', 'error'],
-    'tagsIds': ['app', 'tags', 'ids']
+    'tagsIds': ['app', 'tags', 'ids'],
+    // authError
+    'authError': ['app', 'authError']
 }
 
 export default class Profile extends ModelBase {
@@ -18,6 +20,10 @@ export default class Profile extends ModelBase {
 
     tags() {
         return this.get('tagsIds', List()).map(id => this.__getEntity(id, 'tags'))
+    }
+
+    hasAuthError() {
+        return this.get('authError', true)
     }
 
 }

@@ -44,6 +44,10 @@ class App extends React.Component {
             $('#login-container').hide();
             $('#signup-container').hide();
         }
+
+        if (this.props.app.hasAuthError()) {
+            $('#login-container').show();
+        }
     }
 
     // Login

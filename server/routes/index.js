@@ -20,7 +20,16 @@ module.exports = {
             var method = req.method.toLowerCase();
             var token = req.user ? req.user.token : undefined;
             api[method](req.url, req.body, token).then(function(_res) {
-                res.send(_res);
+                // we check for the header which is set if the current token
+                // has expired, and update the user's token
+                if (_.has(_res.headers, 'x-bbl-jwt-token')) {
+                    var newUser = _.assign({}, req.user, { token: _res.headers['x-bbl-jwt-token'] })
+                    req.logIn(newUser, function(err) {
+                        res.send(_res.body);
+                    })
+                } else {
+                    res.send(_res.body);
+                }
             }).catch(function(e) {
                 var statusCode = e.statusCode || 404;
                 res.status(statusCode).json({error: e.error});
