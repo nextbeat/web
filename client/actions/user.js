@@ -163,7 +163,6 @@ export function postLogin() {
     return dispatch => {
         dispatch(syncNotifications())
         dispatch(loadBookmarkedStacks("open"))
-        dispatch(loadBookmarkedStacks("closed"))
         dispatch(loadSubscriptions())
     }
 }

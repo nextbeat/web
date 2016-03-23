@@ -32,8 +32,7 @@ function urlWithParams(endpoint, pagination, queries) {
 function fetchOptions(options, store) {
     let { 
         method="GET", 
-        body={},
-        authenticated
+        body={}
     } = options
     method = method.toUpperCase()
     return {
@@ -43,7 +42,7 @@ function fetchOptions(options, store) {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        credentials: authenticated ? 'same-origin' : 'omit'
+        credentials: 'same-origin' 
     }
 }
 

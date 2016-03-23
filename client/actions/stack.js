@@ -8,6 +8,7 @@ import { loadPaginatedObjects } from './utils'
 import { Stack } from '../models'
 import { API_CALL, API_CANCEL } from './types'
 
+
 /**********
  * FETCHING
  **********/
@@ -86,6 +87,7 @@ export function loadComments(stack_uuid) {
     return loadPaginatedObjects('stack', 'comments', fetchComments.bind(this, stack_uuid), 25);
 }
 
+
 /******************
  * SENDING COMMENTS
  ******************/
@@ -124,7 +126,8 @@ function onBookmarkSuccess(store, next, action, response) {
     const stack = new Stack(store.getState())
     const newStack = {
         id: stack.get('id'),
-        bookmark_count: stack.get('bookmark_count', 0) + 1
+        bookmark_count: stack.get('bookmark_count', 0) + 1,
+        bookmarked: true
     }
     store.dispatch({
         type: ActionTypes.ENTITY_UPDATE,
@@ -150,7 +153,8 @@ function onUnbookmarkSuccess(store, next, action, response) {
     const stack = new Stack(store.getState())
     const newStack = {
         id: stack.get('id'),
-        bookmark_count: stack.get('bookmark_count', 1) - 1
+        bookmark_count: stack.get('bookmark_count', 1) - 1,
+        bookmarked: false
     }
     store.dispatch({
         type: ActionTypes.ENTITY_UPDATE,
@@ -205,7 +209,6 @@ export function unbookmark() {
  * MEDIA ITEM SELECTION
  **********************/
 
-
 export function selectMediaItem(id) {
     return {
         type: ActionTypes.SELECT_MEDIA_ITEM,
@@ -250,6 +253,7 @@ export function goForward() {
 export function goBackward() {
     return navigate(false);
 }
+
 
 /*******
  * RESET

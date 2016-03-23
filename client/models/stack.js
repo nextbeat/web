@@ -80,7 +80,7 @@ export default class Stack extends ModelBase {
             return false;
         }
         const bookmarkIds = currentUser.get('openBookmarkIds', List()).concat(currentUser.get('closedBookmarkIds', List()))
-        return bookmarkIds.indexOf(this.get('id')) !== -1;
+        return this.get('bookmarked') || bookmarkIds.indexOf(this.get('id')) !== -1;
     }
 
     currentUserIsAuthor() {
