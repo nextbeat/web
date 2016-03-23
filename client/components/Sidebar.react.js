@@ -54,7 +54,7 @@ class Sidebar extends React.Component {
     renderStackItem(stack) {
         const { user } = this.props;
         return (
-            <StackItem key={stack.get('id')} stack={stack} user={user} static={true} />
+            <StackItem key={`bk${stack.get('id')}`} stack={stack} user={user} static={true} />
         )
     }
 

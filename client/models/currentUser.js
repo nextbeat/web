@@ -20,9 +20,12 @@ const KEY_MAP = {
     'unreadNotifications': ['user', 'notifications', 'unread'],
     'readNotifications': ['user', 'notifications', 'read'],
     // bookmarked stacks
-    'bookmarkedStackIds': ['user', 'bookmarkedStacks', 'ids'],
-    'bookmarkedStacksFetching': ['user', 'bookmarkedStacks', 'isFetching'],
-    'bookmarkedStacksError': ['user', 'bookmarkedStacks', 'error'],
+    'openBookmarkIds': ['user', 'bookmarks', 'open', 'ids'],
+    'openBookmarksFetching': ['user', 'bookmarks', 'open', 'isFetching'],
+    'openBookmarksError': ['user', 'bookmarks', 'open', 'error'],
+    'closedBookmarkIds': ['user', 'bookmarks', 'closed', 'ids'],
+    'closedBookmarksFetching': ['user', 'bookmarks', 'closed', 'isFetching'],
+    'closedBookmarksError': ['user', 'bookmarks', 'closed', 'error'],
     // subscriptions
     'subscriptionIds': ['user', 'subscriptions', 'ids'],
     'subscriptionsFetching': ['user', 'subscriptions', 'isFetching'],
@@ -44,7 +47,7 @@ export default class CurrentUser extends ModelBase {
     }
 
     bookmarkedStacks() {
-        return this.get('bookmarkedStackIds', List()).map(id => this.__getEntity(id, 'stacks'));
+        return this.get('openBookmarkIds', List()).map(id => this.__getEntity(id, 'stacks'));
     }
 
     subscriptions() {
@@ -86,7 +89,7 @@ export default class CurrentUser extends ModelBase {
     }
 
     isFetchingUserData() {
-        return this.get('bookmarkedStacksFetching') || this.get('subscriptionsFetching');
+        return this.get('openBookmarksFetching') || this.get('subscriptionsFetching');
     }
 
 }

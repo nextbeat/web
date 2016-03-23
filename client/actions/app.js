@@ -8,18 +8,22 @@ import { API_CALL, API_CANCEL } from './types'
  * FETCHING
  **********/
 
-function fetchTags() {
+function fetchTags(pagination) {
     return {
         type: ActionTypes.TAGS,
         [API_CALL]: {
             schema: Schemas.TAGS,
             endpoint: "tags",
+            pagination
         }
     }
 }
 
 export function loadTags() {
-    return fetchTags();
+    return fetchTags({
+        limit: "all",
+        page: 1
+    });
 }
 
 export function clearApp() {

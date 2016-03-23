@@ -70,12 +70,17 @@ export default class Stack extends ModelBase {
 
     // queries
 
+    status() {
+        return this.get('closed') ? "closed" : "open"
+    }
+
     isBookmarked() {
         const currentUser = new CurrentUser(this.state);
         if (!currentUser.isLoggedIn()) {
             return false;
         }
-        return currentUser.get('bookmarkedStackIds', List()).indexOf(this.get('id')) !== -1;
+        const bookmarkIds = currentUser.get('openBookmarkIds', List()).concat(currentUser.get('closedBookmarkIds', List()))
+        return bookmarkIds.indexOf(this.get('id')) !== -1;
     }
 
     currentUserIsAuthor() {

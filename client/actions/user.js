@@ -12,42 +12,47 @@ import { API_CALL, API_CANCEL } from './types'
  * FETCHING
  **********/
 
-function fetchBookmarkedStacks(pagination) {
+function fetchBookmarkedStacks(stackStatus, pagination) {
     return {
         type: ActionTypes.BOOKMARKED_STACKS,
+        stackStatus,
         [API_CALL]: {
             schema: Schemas.STACKS,
             endpoint: "stacks",
-            queries: { bookmarked: "true", "status": "open" },
+            queries: { bookmarked: "true", "status": stackStatus },
             authenticated: true,
             pagination
         }
     }
 }
 
-export function loadBookmarkedStacks() {
+export function loadBookmarkedStacks(stackStatus="open") {
     // we don't use loadPaginatedObjects because we want
     // to be able to refresh this without incrementing the 
     // page, setting a beforeDate, etc
-    return fetchBookmarkedStacks({
+    return fetchBookmarkedStacks(stackStatus, {
         limit: "all",
         page: "1"
     })
 }
 
-function fetchSubscriptions() {
+function fetchSubscriptions(pagination) {
     return {
         type: ActionTypes.SUBSCRIPTIONS,
         [API_CALL]: {
             schema: Schemas.USERS,
             endpoint: "subscriptions",
-            authenticated: true
+            authenticated: true,
+            pagination
         }
     }
 }
 
 export function loadSubscriptions() {
-    return fetchSubscriptions();
+    return fetchSubscriptions({
+        limit: "all",
+        page: 1
+    });
 }
 
 /******
@@ -157,7 +162,8 @@ export function signup(credentials) {
 export function postLogin() {
     return dispatch => {
         dispatch(syncNotifications())
-        dispatch(loadBookmarkedStacks())
+        dispatch(loadBookmarkedStacks("open"))
+        dispatch(loadBookmarkedStacks("closed"))
         dispatch(loadSubscriptions())
     }
 }

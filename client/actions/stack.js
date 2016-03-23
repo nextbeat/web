@@ -132,10 +132,11 @@ function onBookmarkSuccess(store, next, action, response) {
     })
 }
 
-function postBookmark(stack_id) {
+function postBookmark(stack_id, stackStatus) {
     return {
         type: ActionTypes.BOOKMARK,
         id: stack_id,
+        stackStatus,
         [API_CALL]: {
             method: 'POST',
             endpoint: `stacks/${stack_id}/bookmark`,
@@ -157,10 +158,11 @@ function onUnbookmarkSuccess(store, next, action, response) {
     })
 }
 
-function postUnbookmark(stack_id) {
+function postUnbookmark(stack_id, stackStatus) {
     return {
         type: ActionTypes.UNBOOKMARK,
         id: stack_id,
+        stackStatus,
         [API_CALL]: {
             method: 'POST',
             endpoint: `stacks/${stack_id}/unbookmark`,
@@ -175,11 +177,12 @@ export function bookmark() {
 
         const stack = new Stack(getState())
         const id = stack.get('id')
+        const status = stack.status()
         if (!id || stack.isBookmarked() || stack.currentUserIsAuthor()) {
             return null;
         }
 
-        return dispatch(postBookmark(id));
+        return dispatch(postBookmark(id, status));
     }
 }
 
@@ -188,11 +191,12 @@ export function unbookmark() {
 
         const stack = new Stack(getState())
         const id = stack.get('id')
+        const status = stack.status()
         if (!id || !stack.isBookmarked() || stack.currentUserIsAuthor()) {
             return null;
         }
         
-        return dispatch(postUnbookmark(id));
+        return dispatch(postUnbookmark(id, status));
     }
 }
 
