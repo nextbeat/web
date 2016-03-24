@@ -15,6 +15,20 @@ class Sidebar extends React.Component {
         this.renderStackItem = this.renderStackItem.bind(this);
     }
 
+    componentDidMount() {
+        $('.sidebar_expanded').on('click', (e) => {
+            const $section = $(e.target.closest('.sidebar_section'))
+            if ($section.hasClass('sidebar_bookmarks') || $section.hasClass('sidebar_subscriptions') || $section.hasClass('sidebar_categories')) {
+                $('.sidebar_expanded').removeClass('active-small');
+                $('.detail-bar').removeClass('active');
+            }  
+        })
+    }
+
+    componentWillUnmount() {
+        $('.sidebar_expanded').off('click');
+    }
+
     // Accessors
 
     toggleActive() {
@@ -93,7 +107,7 @@ class Sidebar extends React.Component {
 
                 <div className="sidebar_collapsed">
                     <span className="sidebar_logo"><Link to="/">sodosopa</Link></span>
-                    <div onClick={this.toggleActive}><Icon type="menu" /></div>
+                    <div className="sidebar_menu-icon" onClick={this.toggleActive}><Icon type="menu" /></div>
                 </div>
             </div>
         );
