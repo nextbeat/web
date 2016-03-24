@@ -163,7 +163,8 @@
 }
 
 .sidebar_menu-icon {
-    display: inline-block;
+    display: block;
+    width: $sidebar_closed_width - 1px;
 }
 
 

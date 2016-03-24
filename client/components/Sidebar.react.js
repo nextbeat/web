@@ -16,9 +16,11 @@ class Sidebar extends React.Component {
     }
 
     componentDidMount() {
-        $('.sidebar_expanded').on('click', (e) => {
-            const $section = $(e.target.closest('.sidebar_section'))
-            if ($section.hasClass('sidebar_bookmarks') || $section.hasClass('sidebar_subscriptions') || $section.hasClass('sidebar_categories')) {
+        $('.sidebar').on('click', (e) => {
+            const $section = $(e.target.closest('.sidebar_section, .sidebar_logo'))
+            if ($section.hasClass('sidebar_bookmarks') || $section.hasClass('sidebar_subscriptions') 
+                || $section.hasClass('sidebar_categories') || $section.hasClass('sidebar_logo')) 
+            {
                 $('.sidebar_expanded').removeClass('active-small');
                 $('.detail-bar').removeClass('active');
             }  
@@ -26,7 +28,7 @@ class Sidebar extends React.Component {
     }
 
     componentWillUnmount() {
-        $('.sidebar_expanded').off('click');
+        $('.sidebar').off('click');
     }
 
     // Accessors

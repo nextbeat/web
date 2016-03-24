@@ -217,7 +217,8 @@ html, body {
   margin-bottom: 15px; }
 
 .sidebar_menu-icon {
-  display: inline-block; }
+  display: block;
+  width: 49px; }
 
 /********
  * HEADER
