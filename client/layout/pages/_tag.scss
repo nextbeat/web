@@ -13,36 +13,39 @@
 }
 
 .tag_header {
-    font-weight: bold;
-    font-size: 24px;
+    font-weight: 400;
+    font-size: 30px;
     color: $text-color;
-    margin-bottom: 10px;
+    margin: 10px 0 25px 0;
 }
 
 .tag_filters {
-    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #bbb;
 }
 
 .tag_filter {
     margin-right: 20px;
-    padding-bottom: 5px;
+    padding: 0 3px 5px 3px;
+    font-size: 16px;
     color: #666;
 
     &.selected {
-        border-bottom: 3px solid $primary-color;
+        border-bottom: 5px solid $light-primary-color;
         color: $text-color;
         &:hover {
-            border-bottom: 3px solid $primary-color;
+            border-bottom: 5px solid $light-primary-color;
         }
     }
 
     &:hover {
-        border-bottom: 3px solid mix(white, $light-primary-color, 80%);
+        border-bottom: 5px solid mix(white, $light-primary-color, 80%);
+        cursor: pointer;
     }
 }
 
 .tag_stacks {
-
+    margin-top: 40px;
     width: 100%;
 
     .item-room_tag {
@@ -52,6 +55,9 @@
     .item-room_author {
         display: block;
     }
+
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .tag_no-content {

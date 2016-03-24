@@ -104,7 +104,7 @@
     background-color: white;
     border: 1px solid $border-color;
     padding: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     overflow: auto;
 }
 
@@ -208,6 +208,11 @@ a.player_tag {
     .item-room_author {
         display: block;
     }
+}
+
+.player_rooms {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 

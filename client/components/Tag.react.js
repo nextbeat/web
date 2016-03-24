@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import { Tag } from '../models'
 import { loadTag, clearTag, loadStacksForTag } from '../actions'
-import StackItem from './shared/StackItem.react'
+import LargeStackItem from './shared/LargeStackItem.react'
 import Spinner from './shared/Spinner.react'
 
 class TagComponent extends React.Component {
@@ -50,7 +50,7 @@ class TagComponent extends React.Component {
         if (tag.stacks().size === 0) {
             return <div className="tag_no-content">Looks like we couldn't find any rooms here!</div>
         }
-        return tag.stacks().map(stack => <StackItem key={`s${stack.get('id')}`} stack={stack} />) 
+        return tag.stacks().map(stack => <LargeStackItem key={`s${stack.get('id')}`} stack={stack} />) 
     }
 
     renderTag() {

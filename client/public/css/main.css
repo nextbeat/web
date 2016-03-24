@@ -415,14 +415,15 @@ html, body {
 .item_container {
   float: left;
   margin-bottom: 10px;
+  display: block;
   width: 100%; }
   .item_container.two-across {
-    width: 48.78049%;
+    width: 48.07692%;
     float: left;
-    margin-right: 2.43902%;
-    margin-bottom: 2.43902%; }
+    margin-right: 3.84615%;
+    margin-bottom: 3.84615%; }
     .item_container.two-across:nth-child(even) {
-      width: 48.78049%;
+      width: 48.07692%;
       float: right;
       margin-right: 0; }
       .item_container.two-across:nth-child(even)::after {
@@ -430,15 +431,28 @@ html, body {
         display: table;
         clear: both; }
   .item_container.three-across {
-    width: 32.67974%;
+    width: 32.05128%;
     float: left;
-    margin-right: 0.98039%;
-    margin-bottom: 0.98039%; }
+    margin-right: 1.92308%;
+    margin-bottom: 1.92308%; }
     .item_container.three-across:nth-child(3n) {
-      width: 32.67974%;
+      width: 32.05128%;
       float: right;
       margin-right: 0; }
       .item_container.three-across:nth-child(3n)::after {
+        content: '';
+        display: table;
+        clear: both; }
+  .item_container.four-across {
+    width: 23.92344%;
+    float: left;
+    margin-right: 1.43541%;
+    margin-bottom: 1.43541%; }
+    .item_container.four-across:nth-child(4n) {
+      width: 23.92344%;
+      float: right;
+      margin-right: 0; }
+      .item_container.four-across:nth-child(4n)::after {
         content: '';
         display: table;
         clear: both; }
@@ -521,7 +535,7 @@ a.item-room.selected {
   position: absolute;
   bottom: 0;
   font-size: 12px;
-  color: #666; }
+  color: #888; }
 
 .item-room_author {
   left: 0;
@@ -568,6 +582,62 @@ a.item-room.selected {
   right: 5px;
   color: #15c599;
   font-size: 12px; }
+
+/************
+ * LARGE ROOM
+ ************/
+.item-room-large_container > a {
+  color: #333;
+  font-weight: normal; }
+
+.item-room-large {
+  padding-bottom: 56.25%; }
+
+.item-room-large_inner {
+  padding: 0; }
+
+.item-room-large_thumb {
+  width: 100%; }
+
+.item-room-large_thumb:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  background: linear-gradient(to bottom, transparent 75%, rgba(0, 0, 0, 0.7) 100%); }
+
+.item-room-large_bookmarks {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  z-index: 10;
+  color: white; }
+  .item-room-large_bookmarks .svg-icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+    fill: white;
+    width: 18px;
+    height: 18px; }
+
+.item-room-large_bookmark-count {
+  margin-right: 19px; }
+
+.item-room-large_description {
+  font-size: 14px;
+  margin-top: 6px; }
+
+.item-room-large_details {
+  color: #888;
+  font-size: 11px;
+  margin-top: 6px; }
+
+.item-room-large_author {
+  font-weight: bold;
+  margin-right: 5px; }
 
 /**********
  * ACTIVITY
@@ -913,28 +983,38 @@ a.item-room.selected {
     margin: 20px auto; }
 
 .tag_header {
-  font-weight: bold;
-  font-size: 24px;
+  font-weight: 400;
+  font-size: 30px;
   color: #333;
-  margin-bottom: 10px; }
+  margin: 10px 0 25px 0; }
 
 .tag_filters {
-  margin-bottom: 10px; }
+  padding-bottom: 10px;
+  border-bottom: 1px solid #bbb; }
 
 .tag_filter {
   margin-right: 20px;
-  padding-bottom: 5px;
+  padding: 0 3px 5px 3px;
+  font-size: 16px;
   color: #666; }
   .tag_filter.selected {
-    border-bottom: 3px solid #2258c5;
+    border-bottom: 5px solid #4c86fb;
     color: #333; }
     .tag_filter.selected:hover {
-      border-bottom: 3px solid #2258c5; }
+      border-bottom: 5px solid #4c86fb; }
   .tag_filter:hover {
-    border-bottom: 3px solid #dbe7fe; }
+    border-bottom: 5px solid #dbe7fe;
+    cursor: pointer; }
 
 .tag_stacks {
-  width: 100%; }
+  margin-top: 40px;
+  width: 100%;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap; }
   .tag_stacks .item-room_tag {
     display: none; }
   .tag_stacks .item-room_author {
@@ -1057,7 +1137,7 @@ a.item-room.selected {
   background-color: white;
   border: 1px solid #ddd;
   padding: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   overflow: auto; }
 
 .player_info-top {
@@ -1135,6 +1215,14 @@ a.player_tag {
 
 .player_more .item-room_author {
   display: block; }
+
+.player_rooms {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap; }
 
 /************
  * DETAIL BAR

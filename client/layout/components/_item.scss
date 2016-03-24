@@ -1,24 +1,35 @@
 .item_container {
     float: left;
     margin-bottom: 10px;
+    display: block;
     width: 100%;
 
     &.two-across {
-        @include span(1 of 2 .05);
-        margin-bottom: gutter(2 .05);
+        @include span(1 of 2 .08);
+        margin-bottom: gutter(2 .08);
 
         &:nth-child(even) {
-            @include span(1 of 2 .05 last);
+            @include span(1 of 2 .08 last);
             @include clearfix;
         }
     }
 
     &.three-across {
-        @include span(1 of 3 .03);
-        margin-bottom: gutter(3 .03);
+        @include span(1 of 3 .06);
+        margin-bottom: gutter(3 .06);
 
         &:nth-child(3n) {
-            @include span(1 of 3 .03 last);
+            @include span(1 of 3 .06 last);
+            @include clearfix;
+        }
+    }
+
+    &.four-across {
+        @include span(1 of 4 .06);
+        margin-bottom: gutter(4 .06);
+
+        &:nth-child(4n) {
+            @include span(1 of 4 .06 last);
             @include clearfix;
         }
     }
@@ -161,6 +172,75 @@ a.item-room.selected {
     right: 5px;
     color: $success-color;
     font-size: 12px;
+}
+
+/************
+ * LARGE ROOM
+ ************/
+
+.item-room-large_container > a {
+    color: $text-color;
+    font-weight: normal;
+ }
+
+.item-room-large {
+    padding-bottom: 56.25%;
+}
+
+.item-room-large_inner {
+    padding: 0;
+}
+
+.item-room-large_thumb {
+    width: 100%;
+}
+
+.item-room-large_thumb:after {
+    content:'';
+    position:absolute;
+    left:0; 
+    top:0;
+    width:100%; 
+    height:100%;
+    display:inline-block;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 75%, rgba(0,0,0,0.7) 100%); 
+}
+
+.item-room-large_bookmarks {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    z-index: 10;
+    color: white;
+
+    .svg-icon {
+        position: absolute;
+        right: 0;
+        top: 0;
+        fill: white;
+        width: 18px;
+        height: 18px;
+    }
+}
+
+.item-room-large_bookmark-count {
+    margin-right: 19px;
+}
+
+.item-room-large_description {
+    font-size: 14px;
+    margin-top: 6px;
+}
+
+.item-room-large_details {
+    color: $detail-text-color;
+    font-size: 11px;
+    margin-top: 6px;
+}
+
+.item-room-large_author {
+    font-weight: bold;
+    margin-right: 5px;
 }
 
 /**********
