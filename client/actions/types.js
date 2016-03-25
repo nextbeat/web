@@ -20,9 +20,16 @@ export default {
     TAGS: 'TAGS',
     CLEAR_APP: 'CLEAR_APP',
 
-    /*********
+    /******
+     * HOME
+     ******/
+
+    HOME: 'HOME',
+    CLEAR_HOME: 'CLEAR_HOME',
+
+    /*****
      * TAG
-     *********/
+     *****/
 
     TAG: 'TAG',
     TAG_STACKS: 'TAG_STACKS',

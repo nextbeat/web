@@ -632,7 +632,8 @@ a.item-room.selected {
 
 .item-room-large_description {
   font-size: 14px;
-  margin-top: 6px; }
+  margin-top: 6px;
+  white-space: normal; }
 
 .item-room-large_details {
   color: #888;
@@ -977,59 +978,91 @@ a.item-room.selected {
     margin-left: 0;
     margin-right: 50px; }
 
-.tag {
-  padding: 15px;
-  height: 100%;
-  overflow: auto; }
-  .tag .spinner-tag {
-    margin: 20px auto; }
-  .tag .spinner-tag-rooms {
-    margin: 20px auto; }
+.home {
+  overflow: auto;
+  height: 100%; }
+  .home .spinner-home {
+    margin: 50px auto; }
 
-.tag_header {
-  font-weight: 400;
-  font-size: 30px;
-  color: #333;
-  margin: 10px 0 25px 0; }
+.home_section {
+  width: 100%;
+  height: auto;
+  margin-top: 25px;
+  position: relative; }
+  .home_section.highlighted {
+    color: #f6f6f6;
+    background: #333;
+    word-spacing: 110%; }
+    .home_section.highlighted .item-room-large_description {
+      color: #f6f6f6; }
+    .home_section.highlighted .home_section_description, .home_section.highlighted .item-room-large_details {
+      color: #bbb; }
+    .home_section.highlighted .svg-icon-chevron-left, .home_section.highlighted .svg-icon-chevron-right {
+      fill: #f6f6f6; }
 
-.tag_filters {
-  padding-bottom: 10px;
-  border-bottom: 1px solid #bbb; }
+.home_section_inner {
+  width: 100%;
+  margin: 5px auto;
+  display: block;
+  white-space: nowrap;
+  vertical-align: top;
+  position: relative; }
 
-.tag_filter {
-  margin-right: 20px;
-  padding: 0 3px 5px 3px;
-  font-size: 16px;
-  color: #666; }
-  .tag_filter.selected {
-    border-bottom: 5px solid #4c86fb;
-    color: #333; }
-    .tag_filter.selected:hover {
-      border-bottom: 5px solid #4c86fb; }
-  .tag_filter:hover {
-    border-bottom: 5px solid #dbe7fe;
+.home_section_header {
+  margin-bottom: 10px; }
+
+.home_section_name {
+  font-size: 15px;
+  font-weight: bold;
+  padding-top: 5px; }
+
+.home_section_description {
+  font-size: 12px;
+  color: #888;
+  margin-top: 3px; }
+
+.home_section_stacks {
+  position: relative;
+  width: 100%; }
+
+.home_section_stacks-inner {
+  overflow: hidden; }
+  .home_section_stacks-inner .item-room-large_container {
+    margin-right: 10px;
+    float: none;
+    display: inline-block;
+    vertical-align: top; }
+
+.home_section_stacks-list {
+  transition-property: left;
+  position: relative;
+  width: 100%; }
+
+.home_section_nav {
+  position: absolute;
+  top: 35px;
+  width: 40px;
+  height: 60px; }
+  .home_section_nav .svg-icon {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px; }
+  .home_section_nav:hover .svg-icon {
+    fill: #4c86fb;
     cursor: pointer; }
 
-.tag_stacks {
-  margin-top: 40px;
-  width: 100%;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-wrap: wrap;
-      -ms-flex-wrap: wrap;
-          flex-wrap: wrap; }
-  .tag_stacks .item-room_tag {
-    display: none; }
-  .tag_stacks .item-room_author {
-    display: block; }
+.home_section_left {
+  left: -40px; }
 
-.tag_no-content {
-  font-size: 14px;
-  padding-top: 10px;
-  font-style: italic;
-  color: #888;
-  display: block; }
+.home_section_right {
+  right: -40px;
+  left: auto; }
 
 .profile {
   overflow: auto;
@@ -1515,3 +1548,57 @@ a.player_tag {
   .password-reset .has-error {
     color: #ef585b;
     font-size: 14px; }
+
+.tag {
+  padding: 15px;
+  height: 100%;
+  overflow: auto; }
+  .tag .spinner-tag {
+    margin: 20px auto; }
+  .tag .spinner-tag-rooms {
+    margin: 20px auto; }
+
+.tag_header {
+  font-weight: 400;
+  font-size: 30px;
+  color: #333;
+  margin: 10px 0 25px 0; }
+
+.tag_filters {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #bbb; }
+
+.tag_filter {
+  margin-right: 20px;
+  padding: 0 3px 5px 3px;
+  font-size: 16px;
+  color: #666; }
+  .tag_filter.selected {
+    border-bottom: 5px solid #4c86fb;
+    color: #333; }
+    .tag_filter.selected:hover {
+      border-bottom: 5px solid #4c86fb; }
+  .tag_filter:hover {
+    border-bottom: 5px solid #dbe7fe;
+    cursor: pointer; }
+
+.tag_stacks {
+  margin-top: 40px;
+  width: 100%;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap; }
+  .tag_stacks .item-room_tag {
+    display: none; }
+  .tag_stacks .item-room_author {
+    display: block; }
+
+.tag_no-content {
+  font-size: 14px;
+  padding-top: 10px;
+  font-style: italic;
+  color: #888;
+  display: block; }

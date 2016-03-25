@@ -1,0 +1,112 @@
+.home {
+    overflow: auto;
+    height: 100%;
+
+    .spinner-home {
+        margin: 50px auto;
+    }
+}
+
+.home_section {
+    width: 100%;
+    height: auto;
+    margin-top: 25px;
+    position: relative;
+    
+    &.highlighted {
+        color: $background-color;
+        background: #333;
+        word-spacing: 110%;
+
+        .item-room-large_description {
+            color: $background-color;
+        }
+
+        .home_section_description, .item-room-large_details {
+            color: #bbb;
+        }
+
+        .svg-icon-chevron-left, .svg-icon-chevron-right {
+            fill: $background-color;
+        }
+    }
+}
+
+.home_section_inner {
+    width: 100%;
+    margin: 5px auto;
+    display: block;
+    white-space: nowrap;
+    vertical-align: top;
+    position: relative;
+}
+
+.home_section_header {
+    margin-bottom: 10px;
+}
+
+.home_section_name {
+    font-size: 15px;
+    font-weight: bold;
+    padding-top: 5px;
+}
+
+.home_section_description {
+    font-size: 12px;
+    color: $detail-text-color;
+    margin-top: 3px;
+}
+
+.home_section_stacks {
+    position: relative;
+    width: 100%;
+}
+
+.home_section_stacks-inner {
+    overflow: hidden;
+
+    .item-room-large_container {
+        // width: 220px;
+        margin-right: 10px;
+        float: none;
+        display: inline-block;
+        vertical-align: top;
+    }
+}
+
+.home_section_stacks-list {
+    transition-property: left;
+    position: relative;
+    width: 100%;
+}
+
+// Navigation
+
+.home_section_nav {
+    position: absolute;
+    top: 35px;
+    width: 40px;
+    height: 60px;
+    // background: red;
+
+    .svg-icon {
+        @include center;
+        width: 40px;
+        height: 40px;
+    }
+
+    &:hover .svg-icon {
+        fill: $light-primary-color;
+        cursor: pointer;
+    }
+}
+
+.home_section_left {
+    left: -40px;
+}
+
+.home_section_right {
+    right: -40px;
+    left: auto;
+}
+

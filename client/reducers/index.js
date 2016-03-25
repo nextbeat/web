@@ -2,6 +2,7 @@ import { Map, List } from 'immutable'
 import { includes } from 'lodash'
 
 import app from './app'
+import home from './home'
 import user from './user'
 import stack from './stack'
 import profile from './profile'
@@ -46,6 +47,7 @@ export default combineReducers({
     entities,
     fetches,
     app,
+    home,
     stack,
     profile,
     tag,

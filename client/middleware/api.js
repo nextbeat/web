@@ -83,7 +83,7 @@ export default store => next => action => {
         return next(action);
     }
 
-    const { pagination, onSuccess } = apiCall;
+    const { pagination, onSuccess, onSuccessImmediate } = apiCall;
 
     // call api server with the given endpoint, then
     // dispatch action depending on success of the call
@@ -96,15 +96,24 @@ export default store => next => action => {
     }
 
     fetchPromise.then(response => {
+
+            // success callback which runs after reducer 
             if (typeof onSuccess === 'function') {
                 process.nextTick(() => {
                     onSuccess(store, next, action, response);
                 })
             }
+
+            // success callback which runs before reducer
+            if (typeof onSuccessImmediate === 'function') {
+                onSuccessImmediate(store, next, action, response);
+            }
+
             return next(actionWith({
                 status: Status.SUCCESS,
                 response
             }))
+
         })
         .catch(error => next(actionWith({
             status: Status.FAILURE,

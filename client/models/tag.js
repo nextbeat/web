@@ -13,7 +13,7 @@ const KEY_MAP = {
     'status': ['tag', 'filters', 'status']
 }
 
-export default class Profile extends ModelBase {
+export default class Tag extends ModelBase {
 
     constructor(state) {
         super(state);

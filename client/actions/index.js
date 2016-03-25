@@ -7,6 +7,11 @@ export {
 } from './app'
 
 export {
+    loadHome,
+    clearHome
+} from './home'
+
+export {
     loadTag,
     loadStacksForTag,
     clearTag

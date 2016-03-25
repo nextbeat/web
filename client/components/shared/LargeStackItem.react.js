@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router' 
 import { connect } from 'react-redux'
 import { Map } from 'immutable'
-import { without } from 'lodash'
+import { without, isNumber } from 'lodash'
 import moment from 'moment'
 
 import Icon from './Icon.react'
@@ -60,11 +60,13 @@ class LargeStackItem extends React.Component {
     }
 
     render() {
-        const { stack, user, users } = this.props;
+        const { stack, user, users, static: staticNum } = this.props;
         const author = users.get(stack.get('author_id').toString(), Map())
         const bookmarkType = stack.get('bookmarked') ? "bookmark" : "bookmark-outline";
+        const itemWidth = isNumber(staticNum) ? staticNum + "px" : null
+
         return (
-            <div className="item_container item-room-large_container" ref={(c) => this._node = c}>
+            <div className="item_container item-room-large_container" ref={(c) => this._node = c} style={itemWidth && {width: itemWidth}}>
                 <Link to={`/r/${stack.get('id')}`}>
                 <div className="item-room-large item">
                     <div className="item_inner item-room-large_inner">

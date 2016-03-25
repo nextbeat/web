@@ -5,13 +5,12 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 import { Map } from 'immutable'
 import Promise from 'bluebird'
 import configureStore from './store'
-import { CurrentUser } from './models'
 
 import App from './components/App.react'
 import Room from './components/Room.react'
 import Profile from './components/Profile.react'
 import Tag from './components/Tag.react'
-import Splash from './components/Splash.react'
+import Home from './components/Home.react'
 import PasswordResetRequest from './components/support/PasswordResetRequest.react'
 import PasswordReset from './components/support/PasswordReset.react'
 import NoMatch from './components/NoMatch.react'
@@ -37,22 +36,15 @@ if (state.error) {
 
 const store = configureStore(Map(initialState))
 
-function checkAuth(nextState, replace) {
-    const currentUser = new CurrentUser(store.getState())
-    if (currentUser.isLoggedIn()) {
-        replace(`/u/${currentUser.get('username')}`)
-    }
-}
-
 render(
     <Provider store={store}>
         <Router history={browserHistory}>
-            <Route path="/" component={Splash} onEnter={checkAuth} /> 
             <Route path="/support">
                 <Route path="password-reset-request" component={PasswordResetRequest} />
                 <Route path="password-reset" component={PasswordReset} />
             </Route>
             <Route component={App}>
+                <Route path="/" component={Home} /> 
                 <Route path="/r/:stack_id" component={Room} />
                 <Route path="/u/:username" component={Profile} />
                 <Route path="/t/:name" component={Tag} />

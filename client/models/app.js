@@ -10,7 +10,7 @@ const KEY_MAP = {
     'authError': ['app', 'authError']
 }
 
-export default class Profile extends ModelBase {
+export default class App extends ModelBase {
 
     constructor(state) {
         super(state);
