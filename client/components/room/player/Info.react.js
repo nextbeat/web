@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router'
+import { List } from 'immutable'
 
 import User from '../../shared/User.react'
 import Icon from '../../shared/Icon.react'
@@ -23,7 +24,7 @@ class Info extends React.Component {
                 </div>
                 <div className="separator separator-player_info" />
                 <div className="player_tags">
-                    {stack.get('tags').map(tag => <Link to={`/t/${tag}`} key={`t-${tag}`} className="player_tag">{tag}</Link>)}
+                    {stack.get('tags', List()).map(tag => <Link to={`/t/${tag}`} key={`t-${tag}`} className="player_tag">{tag}</Link>)}
                 </div>
                 <div className="player_buttons">
                     <div className="player_button"><Bookmark {...this.props} /></div>
