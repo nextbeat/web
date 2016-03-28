@@ -26,12 +26,9 @@ function more(state = Map(), action) {
                 isFetching: true
             }).delete('error').delete('ids')
         } else if (action.status === Status.SUCCESS) {
-            // 7 ids are returned; we need to cut out the loaded stack id, 
-            // if it's in the list, or the last one
-            const ids = List(action.response.result).filter(id => id !== action.stack_id).take(6)
             return state.merge({
                 isFetching: false,
-                ids: ids
+                ids: action.response.result
             })
         } else if (action.status === Status.FAILURE) {
             return state.merge({
