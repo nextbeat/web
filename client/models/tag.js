@@ -9,8 +9,10 @@ const KEY_MAP = {
     'stacksFetching': ['tag', 'pagination', 'stacks', 'isFetching'],
     'stacksError': ['tag', 'pagination', 'stacks', 'error'],
     // filters
+    'filters': ['tag', 'filters'],
     'sort': ['tag', 'filters', 'sort'],
-    'status': ['tag', 'filters', 'status']
+    'status': ['tag', 'filters', 'status'],
+    'time': ['tag', 'filters', 'time']
 }
 
 export default class Tag extends ModelBase {

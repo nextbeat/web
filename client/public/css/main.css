@@ -1552,7 +1552,8 @@ a.player_tag {
 .tag {
   padding: 15px;
   height: 100%;
-  overflow: auto; }
+  overflow: auto;
+  position: relative; }
   .tag .spinner-tag {
     margin: 20px auto; }
   .tag .spinner-tag-rooms {
@@ -1564,14 +1565,56 @@ a.player_tag {
   color: #333;
   margin: 10px 0 25px 0; }
 
+.tag_times {
+  position: absolute;
+  top: 40px;
+  right: 15px;
+  color: #888;
+  font-size: 14px;
+  width: 80px; }
+  .tag_times a {
+    color: #888;
+    text-decoration: underline;
+    font-weight: normal; }
+    .tag_times a:hover {
+      cursor: pointer; }
+  .tag_times .svg-icon-arrow-drop-down {
+    position: absolute;
+    right: 0;
+    top: -3px;
+    width: 25px;
+    height: 25px; }
+
+.tag_dropdown {
+  display: none;
+  background: white;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  padding: 5px;
+  padding-bottom: 0;
+  margin-left: -5px; }
+  .tag_dropdown ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0; }
+  .tag_dropdown li {
+    margin-bottom: 5px;
+    color: #2258c5; }
+    .tag_dropdown li:hover {
+      cursor: pointer;
+      color: #4c86fb; }
+
 .tag_filters {
   padding-bottom: 10px;
-  border-bottom: 1px solid #bbb; }
+  border-bottom: 1px solid #bbb;
+  width: 100%;
+  white-space: nowrap;
+  overflow: auto; }
 
 .tag_filter {
   margin-right: 20px;
   padding: 0 3px 5px 3px;
-  font-size: 16px;
+  font-size: 14px;
   color: #666; }
   .tag_filter.selected {
     border-bottom: 5px solid #4c86fb;

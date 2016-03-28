@@ -1,10 +1,27 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Map } from 'immutable'
 
 import { Tag } from '../models'
 import { loadTag, clearTag, loadStacksForTag } from '../actions'
 import LargeStackItem from './shared/LargeStackItem.react'
 import Spinner from './shared/Spinner.react'
+import Icon from './shared/Icon.react'
+
+const SORT_TYPES = [
+    { name: "hot", display: "Hot" },
+    { name: "new", display: "New" },
+    { name: "lastUpdated", display: "Recently Updated" },
+    { name: "bookmarks", display: "Most Bookmarked" },
+    { name: "views", display: "Most Viewed" }
+]
+
+const FILTER_TYPES = [
+    { query: {status: "open", time: "all"}, display: "Open" },
+    { query: {status: "all", time: "week"}, display: "Week" },
+    { query: {status: "all", time: "month"}, display: "Month" },
+    { query: {status: "all", time: "all"}, display: "All Time"}
+]
 
 class TagComponent extends React.Component {
 
@@ -13,7 +30,9 @@ class TagComponent extends React.Component {
 
         this.load = this.load.bind(this);
         this.setSort = this.setSort.bind(this)
+        this.setTimeFilter = this.setTimeFilter.bind(this)
         this.renderTag = this.renderTag.bind(this)
+        this.renderFilters = this.renderFilters.bind(this)
     }
 
     componentDidMount() {
@@ -34,14 +53,20 @@ class TagComponent extends React.Component {
     // Actions
 
     load() {
-        const { params: { name }, dispatch } = this.props
+        const { dispatch, params: { name }} = this.props
         dispatch(loadTag(name))
         this.setSort("hot");
     }
 
     setSort(type) {
-        const { dispatch, params: { name }} = this.props;
+        const { dispatch, params: { name }} = this.props
         dispatch(loadStacksForTag(name, { sort: type }))
+    }
+
+    setTimeFilter(options) {
+        const { dispatch, params: { name }} = this.props
+        dispatch(loadStacksForTag(name, options))
+        $('.tag_dropdown').hide()
     }
 
     // Render
@@ -55,17 +80,34 @@ class TagComponent extends React.Component {
 
     renderTag() {
         const { tag } = this.props
-        const selected = type => tag.get('sort') === type ? "selected" : ""
+        const selectedSort = type => tag.get('sort') === type ? "selected" : ""
         return (
             <div>   
                 <div className="tag_filters">
-                    <span className={`tag_filter ${selected("hot")}`} onClick={this.setSort.bind(this, "hot")}>Hot</span>
-                    <span className={`tag_filter ${selected("new")}`} onClick={this.setSort.bind(this, "new")}>New</span>
+                    { SORT_TYPES.map(sort => 
+                        <span className={`tag_filter ${selectedSort(sort.name)}`} onClick={this.setSort.bind(this, sort.name)}>{sort.display}</span>
+                    )}
                 </div>
                 <div className="tag_stacks">
                     { tag.get('stacksFetching') && <Spinner type="grey tag-rooms" /> }
                     { !tag.get('stacksFetching') && !tag.get('stacksError') && this.renderRooms(tag) }
                        
+                </div>
+            </div>
+        )
+    }
+
+    renderFilters() {
+        const { tag } = this.props 
+        const selectedFilter = FILTER_TYPES.filter(filter => Map(filter.query).isSubset(tag.get('filters'))).shift()
+        const otherFilters = FILTER_TYPES.filter(filter => filter !== selectedFilter)
+        return (
+            <div className="tag_times">
+                <a onClick={() => { $('.tag_dropdown').toggle() }}>{ selectedFilter.display } <Icon type="arrow-drop-down" /></a>
+                <div className="tag_dropdown">
+                    <ul>
+                        { otherFilters.map(filter => <li onClick={this.setTimeFilter.bind(this, filter.query)}>{filter.display}</li>) }
+                    </ul>
                 </div>
             </div>
         )
@@ -78,6 +120,7 @@ class TagComponent extends React.Component {
                 <div className="tag_header">
                     { name }
                 </div>
+                { this.renderFilters() }
                 { this.renderTag() }
             </div>
         );

@@ -17,15 +17,13 @@ const pagination = combineReducers({
 })
 
 const initialFiltersState = Map({
+    time: "all",
     status: "all",
     sort: "hot"
 })
 function filters(state = initialFiltersState, action) {
     if (action.type === ActionTypes.TAG_STACKS && action.status === Status.REQUESTING) {
-        return state.merge({
-            status: action.status,
-            sort: action.sort
-        })
+        return state.merge(Map(action.options))
     } 
     return state
 }

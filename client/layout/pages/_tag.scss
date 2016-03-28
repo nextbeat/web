@@ -2,6 +2,7 @@
     padding: 15px;
     height: 100%;
     overflow: auto;
+    position: relative;
 
     .spinner-tag {
         margin: 20px auto;
@@ -19,15 +20,71 @@
     margin: 10px 0 25px 0;
 }
 
+.tag_times {
+    position: absolute;
+    top: 40px;
+    right: 15px;
+    color: $detail-text-color;
+    font-size: 14px;
+    width: 80px;
+
+    a {
+        color: $detail-text-color;
+        text-decoration: underline;
+        font-weight: normal;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    .svg-icon-arrow-drop-down {
+        position: absolute;
+        right: 0;
+        top: -3px;
+        width: 25px;
+        height: 25px;
+    }
+}
+
+.tag_dropdown {
+    display: none;
+    background: white;
+    margin-top: 5px;
+    border: 1px solid $border-color;
+    padding: 5px;
+    padding-bottom: 0;
+    margin-left: -5px;
+
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        margin-bottom: 5px;
+        color: $primary-color;
+
+        &:hover {
+            cursor: pointer;
+            color: $light-primary-color;
+        }
+    }
+}
+
 .tag_filters {
     padding-bottom: 10px;
     border-bottom: 1px solid #bbb;
+    width: 100%;
+    white-space: nowrap;
+    overflow: auto;
 }
 
 .tag_filter {
     margin-right: 20px;
     padding: 0 3px 5px 3px;
-    font-size: 16px;
+    font-size: 14px;
     color: #666;
 
     &.selected {

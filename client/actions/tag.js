@@ -1,4 +1,5 @@
 import { assign } from 'lodash'
+import { Map } from 'immutable'
 
 import ActionTypes from './types'
 import Schemas from '../schemas'
@@ -27,8 +28,7 @@ export function loadTag(name) {
 function fetchStacksForTag(tag_name, options, pagination) {
     return {
         type: ActionTypes.TAG_STACKS,
-        status: options.status,
-        sort: options.sort,
+        options,
         [API_CALL]: {
             schema: Schemas.STACKS,
             endpoint: "stacks",
@@ -51,11 +51,8 @@ function clearStacksForTag() {
 export function loadStacksForTag(name, options) {
     return (dispatch, getState) => {
         const tag = new Tag(getState())
-        // todo: include status
-        if (options.sort !== tag.get('sort')) {
-            // we're requesting a new sort type, so we clear the stacks state
-            dispatch(clearStacksForTag())
-        }
+        options = tag.get('filters').merge(Map(options)).toJS();
+        dispatch(clearStacksForTag())
         loadPaginatedObjects('tag', 'stack', fetchStacksForTag.bind(this, name, options), 12)(dispatch, getState)
     }
 
