@@ -1,8 +1,7 @@
 .profile {
     overflow: auto;
     height: 100%;
-    padding: 15px;
-
+    
     .spinner-profile {
         margin: 50px auto;
     }
@@ -10,6 +9,12 @@
     .spinner-profile-rooms {
         margin: 50px auto;
     }
+}
+
+.profile_inner {
+    width: 100%;
+    max-width: 960px;
+    padding: 15px;
 }
 
 .profile_header {

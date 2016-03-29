@@ -3,7 +3,6 @@
     height: 100%;
     overflow: auto;
     position: relative;
-
     .spinner-tag {
         margin: 20px auto;
     }
@@ -11,6 +10,12 @@
     .spinner-tag-rooms {
         margin: 20px auto; 
     }
+}
+
+.tag_inner {
+    width: 100%;
+    max-width: 960px;
+    position: relative;
 }
 
 .tag_header {

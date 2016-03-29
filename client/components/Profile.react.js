@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 
-import StackItem from './shared/StackItem.react'
+import LargeStackItem from './shared/LargeStackItem.react'
 import User from './shared/User.react'
 import Spinner from './shared/Spinner.react'
 import PageError from './shared/PageError.react'
@@ -45,11 +45,11 @@ class ProfileComponent extends React.Component {
                 <div>
                     <div className="profile_header">OPEN</div>
                     <div className="profile_rooms">
-                        { openStacks.map(stack => <StackItem key={stack.get('id')} stack={stack} />)}
+                        { openStacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
                     </div>
                     <div className="profile_header">HISTORY</div>
                     <div className="profile_rooms">
-                        { closedStacks.map(stack => <StackItem key={stack.get('id')} stack={stack} />)}
+                        { closedStacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
                     </div>
                 </div>
                 }
@@ -61,9 +61,11 @@ class ProfileComponent extends React.Component {
         const { isFetching, error, profile } = this.props;
         return (
             <div className="profile content">
-                { isFetching && <Spinner type="grey large profile" /> }
-                { error && (error.length > 0) && <PageError>User not found.</PageError> }
-                { profile.get('id') !== 0 && this.renderProfile() }
+                <div className="profile_inner">
+                    { isFetching && <Spinner type="grey large profile" /> }
+                    { error && (error.length > 0) && <PageError>User not found.</PageError> }
+                    { profile.get('id') !== 0 && this.renderProfile() }
+                </div>
             </div>
         );
     }
