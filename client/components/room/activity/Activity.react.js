@@ -1,4 +1,5 @@
 import React from 'react'
+import ScrollComponent from '../../utils/ScrollComponent.react'
 import ActivityItem from './ActivityItem.react'
 import Spinner from '../../shared/Spinner.react'
 
@@ -7,99 +8,9 @@ class Activity extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            scrollTop: 0,
-            scrollHeight: 0,
             displayNewItem: false
         }
-        this.handleScroll = this.handleScroll.bind(this);
-        this.setScrollState = this.setScrollState.bind(this);
-        this.isScrolledToBottom = this.isScrolledToBottom.bind(this);
-        this.scrollToBottomIfNeeded = this.scrollToBottomIfNeeded.bind(this);
         this.handleNewMediaClick = this.handleNewMediaClick.bind(this);
-    }
-
-    // Lifecycle methods
-
-    componentDidMount() {
-        $('#activity-inner').on('scroll', this.handleScroll);
-    }
-
-    componentWillUnmount() {
-        $('#activity-inner').off('scroll', this.handleScroll);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.liveMediaItems.size !== this.props.liveMediaItems.size) {
-            if (!this.isScrolledToBottom()) {
-                this.setState({
-                    displayNewItem: true
-                })
-            }
-        }
-        this.setScrollState();
-    }
-
-    componentDidUpdate(prevProps) {
-        if (prevProps.stack.get('id') !== this.props.stack.get('id')) {
-            // changed stack selection, this does not apply
-            return;
-        }
-        
-        if (prevProps.selectedItem !== this.props.selectedItem) {
-            const [ selected, activity ] = [ $('.selected'), $('#activity-inner') ];
-
-            // adjust position to keep selected element at bottom of view
-            if (selected.position().top + selected.outerHeight() > activity.scrollTop() + activity.height()) {
-                const pos = selected.position().top + selected.outerHeight() - activity.height();
-                activity.animate({ scrollTop: pos}, 100);
-            }
-        
-            // similar logic for selected element at top of view
-            if (activity.scrollTop() > selected.position().top) {
-                const pos = selected.position().top;
-                activity.animate({ scrollTop: pos}, 100);
-            }
-
-            this.setScrollState();
-        }
-
-        if (prevProps.liveMediaItems.size !== this.props.liveMediaItems.size) {
-            this.scrollToBottomIfNeeded();
-            this.setScrollState();
-        }
-    }
-
-    // Scroll logic
-
-    handleScroll() {
-        const activity = document.getElementById('activity-inner');
-        // we don't use isScrolledToBottom() here because that uses old scroll positions stored in state
-        let isAtBottom = activity.scrollHeight - activity.clientHeight <= activity.scrollTop + 1;
-        if (isAtBottom) {
-            this.setState({
-                displayNewItem: false
-            });
-        }
-    }
-
-    setScrollState() {
-        const activity = document.getElementById('activity-inner');
-        this.setState({
-            scrollTop: activity.scrollTop,
-            scrollHeight: activity.scrollHeight
-        });
-    }
-
-    isScrolledToBottom() {
-        const activity = document.getElementById('activity-inner');
-        return this.state.scrollHeight - activity.clientHeight <= this.state.scrollTop + 1;
-    }
-
-    scrollToBottomIfNeeded() {
-        const activity = document.getElementById('activity-inner');
-        if (this.isScrolledToBottom()) {
-            activity.scrollTop = activity.scrollHeight - activity.clientHeight;
-        }
     }
 
     // Button handlers
@@ -135,4 +46,53 @@ class Activity extends React.Component {
     }
 }
 
-export default Activity;
+const scrollOptions = {
+
+    onScrollToBottom: function() {
+        this.setState({
+            displayNewItem: false
+        });
+    },
+
+    onComponentWillReceiveProps: function(scrollComponent, nextProps) {
+        if (nextProps.liveMediaItems.size !== this.props.liveMediaItems.size) {
+            if (!scrollComponent.isScrolledToBottom()) {
+                this.setState({
+                    displayNewItem: true
+                })
+            }
+        }
+    },
+
+    onComponentDidUpdate: function(ScrollComponent, prevProps) {
+        if (prevProps.stack.get('id') !== this.props.stack.get('id')) {
+            // changed stack selection, this does not apply
+            return;
+        }
+        
+        if (prevProps.selectedItem !== this.props.selectedItem) {
+            const [ selected, activity ] = [ $('.selected'), $('#activity-inner') ];
+
+            // adjust position to keep selected element at bottom of view
+            if (selected.position().top + selected.outerHeight() > activity.scrollTop() + activity.height()) {
+                const pos = selected.position().top + selected.outerHeight() - activity.height();
+                activity.animate({ scrollTop: pos}, 100);
+            }
+        
+            // similar logic for selected element at top of view
+            if (activity.scrollTop() > selected.position().top) {
+                const pos = selected.position().top;
+                activity.animate({ scrollTop: pos}, 100);
+            }
+
+            scrollComponent.setScrollState();
+        }
+
+        if (prevProps.liveMediaItems.size !== this.props.liveMediaItems.size) {
+            scrollComponent.scrollToBottomIfPreviouslyAtBottom();
+            ScrollComponent.setScrollState();
+        }
+    }
+}
+
+export default ScrollComponent('activity-inner', scrollOptions)(Activity);

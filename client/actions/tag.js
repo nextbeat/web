@@ -48,12 +48,14 @@ function clearStacksForTag() {
     }
 }
 
-export function loadStacksForTag(name, options) {
+export function loadStacksForTag(name, options={}) {
     return (dispatch, getState) => {
         const tag = new Tag(getState())
-        options = tag.get('filters').merge(Map(options)).toJS();
-        dispatch(clearStacksForTag())
-        loadPaginatedObjects('tag', 'stack', fetchStacksForTag.bind(this, name, options), 12)(dispatch, getState)
+        options = tag.get('filters').merge(Map(options));
+        if (!options.equals(tag.get('filters'))) {
+            dispatch(clearStacksForTag())
+        }
+        loadPaginatedObjects('tag', 'stacks', fetchStacksForTag.bind(this, name, options.toJS()), 12)(dispatch, getState)
     }
 
 }

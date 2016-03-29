@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import ScrollComponent from './utils/ScrollComponent.react'
 import { Map } from 'immutable'
 
 import { Tag } from '../models'
@@ -72,7 +73,7 @@ class TagComponent extends React.Component {
     // Render
 
     renderRooms(tag) {
-        if (tag.stacks().size === 0) {
+        if (!tag.get('stacksFetching') && tag.stacks().size === 0) {
             return <div className="tag_no-content">Looks like we couldn't find any rooms here!</div>
         }
         return tag.stacks().map(stack => <LargeStackItem key={`s${stack.get('id')}`} stack={stack} />) 
@@ -85,13 +86,12 @@ class TagComponent extends React.Component {
             <div>   
                 <div className="tag_filters">
                     { SORT_TYPES.map(sort => 
-                        <span className={`tag_filter ${selectedSort(sort.name)}`} onClick={this.setSort.bind(this, sort.name)}>{sort.display}</span>
+                        <span key={`sort${sort.name}`} className={`tag_filter ${selectedSort(sort.name)}`} onClick={this.setSort.bind(this, sort.name)}>{sort.display}</span>
                     )}
                 </div>
                 <div className="tag_stacks">
+                    { this.renderRooms(tag) }
                     { tag.get('stacksFetching') && <Spinner type="grey tag-rooms" /> }
-                    { !tag.get('stacksFetching') && !tag.get('stacksError') && this.renderRooms(tag) }
-                       
                 </div>
             </div>
         )
@@ -106,7 +106,7 @@ class TagComponent extends React.Component {
                 <a onClick={() => { $('.tag_dropdown').toggle() }}>{ selectedFilter.display } <Icon type="arrow-drop-down" /></a>
                 <div className="tag_dropdown">
                     <ul>
-                        { otherFilters.map(filter => <li onClick={this.setTimeFilter.bind(this, filter.query)}>{filter.display}</li>) }
+                        { otherFilters.map(filter => <li key={`filter${filter.display}`} onClick={this.setTimeFilter.bind(this, filter.query)}>{filter.display}</li>) }
                     </ul>
                 </div>
             </div>
@@ -116,7 +116,7 @@ class TagComponent extends React.Component {
     render() {
         const { tag, params: { name } } = this.props
         return (
-            <div className="tag content">
+            <div className="tag content" id="tag">
                 <div className="tag_header">
                     { name }
                 </div>
@@ -134,4 +134,14 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(TagComponent);
+const scrollOptions = {
+
+    onScrollToBottom: function() {
+        const { tag, dispatch, params: { name } } = this.props 
+        if (!tag.get('stacksFetching') && tag.stacks().size > 0) {
+            dispatch(loadStacksForTag(name))
+        }
+    }
+}
+
+export default connect(mapStateToProps)(ScrollComponent('tag', scrollOptions)(TagComponent));
