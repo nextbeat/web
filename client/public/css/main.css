@@ -611,7 +611,16 @@ a.item-room.selected {
   width: 100%;
   height: 100%;
   display: inline-block;
-  background: linear-gradient(to bottom, transparent 75%, rgba(0, 0, 0, 0.7) 100%); }
+  background: linear-gradient(to bottom, transparent 70%, rgba(0, 0, 0, 0.9) 100%); }
+
+.item-room-large_open {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  color: #2ccba3;
+  z-index: 10;
+  font-weight: bold;
+  font-size: 16px; }
 
 .item-room-large_bookmarks {
   position: absolute;
