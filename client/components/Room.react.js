@@ -78,7 +78,7 @@ class Theater extends React.Component {
     }
 
     handleSelectNewestLiveItem() {
-        const newestLiveItem = this.props.liveMediaItems.last();
+        const newestLiveItem = this.props.stack.liveMediaItems().last();
         if (newestLiveItem) {
             this.props.dispatch(selectMediaItem(newestLiveItem.get('id')));
             $('.detail-bar').removeClass('active');

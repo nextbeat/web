@@ -466,17 +466,23 @@ a.player_tag {
 .activity_inner {
     height: 100%;
     overflow: auto;
+    position: relative;
 }
 
 .activity_new-media {
     position: absolute;
     bottom: 0;
     left: 0;
+    right: 0;
     padding: 8px 5px;
     background-color: rgba($secondary-color, 0.85);
     text-align: center;
     color: #fff;
     font-weight: bold;
+
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 /********

@@ -15,6 +15,7 @@ class Activity extends React.Component {
 
     // Button handlers
     handleNewMediaClick() {
+        console.log('handling new media click')
         this.props.handleSelectNewestLiveItem();
         this.setState({
             displayNewItem: false
@@ -40,7 +41,7 @@ class Activity extends React.Component {
                     return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} live={true} handleClick={handleSelectMediaItem}/>
                 })}
             </div>
-            { displayNewItem && <div className="activity_new-media" onClick={this.handleNewMediaClick}>New media added!</div> }
+            { displayNewItem && <div className="activity_new-media" onClick={this.handleNewMediaClick} >New media added!</div> }
         </section>
         );
     }
@@ -64,14 +65,14 @@ const scrollOptions = {
         }
     },
 
-    onComponentDidUpdate: function(ScrollComponent, prevProps) {
+    onComponentDidUpdate: function(scrollComponent, prevProps) {
         if (prevProps.stack.get('id') !== this.props.stack.get('id')) {
             // changed stack selection, this does not apply
             return;
         }
         
         if (prevProps.selectedItem !== this.props.selectedItem) {
-            const [ selected, activity ] = [ $('.selected'), $('#activity-inner') ];
+            const [ selected, activity ] = [ $('.item-activity.selected'), $('#activity-inner') ];
 
             // adjust position to keep selected element at bottom of view
             if (selected.position().top + selected.outerHeight() > activity.scrollTop() + activity.height()) {
@@ -90,7 +91,7 @@ const scrollOptions = {
 
         if (prevProps.liveMediaItems.size !== this.props.liveMediaItems.size) {
             scrollComponent.scrollToBottomIfPreviouslyAtBottom();
-            ScrollComponent.setScrollState();
+            scrollComponent.setScrollState();
         }
     }
 }

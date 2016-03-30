@@ -55,7 +55,7 @@ export function loadStacksForTag(name, options={}) {
         if (!options.equals(tag.get('filters'))) {
             dispatch(clearStacksForTag())
         }
-        loadPaginatedObjects('tag', 'stacks', fetchStacksForTag.bind(this, name, options.toJS()), 12)(dispatch, getState)
+        loadPaginatedObjects('tag', 'stacks', fetchStacksForTag.bind(this, name, options.toJS()), 24)(dispatch, getState)
     }
 
 }
