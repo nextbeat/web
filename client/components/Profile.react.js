@@ -1,13 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
+import ScrollComponent from './utils/ScrollComponent.react'
 
 import LargeStackItem from './shared/LargeStackItem.react'
 import User from './shared/User.react'
 import Spinner from './shared/Spinner.react'
 import PageError from './shared/PageError.react'
 
-import { loadProfile, clearProfile, loadStacksForUser } from '../actions'
+import { loadProfile, clearProfile, loadClosedStacksForUser } from '../actions'
 import { Profile } from '../models'
 
 class ProfileComponent extends React.Component {
@@ -39,20 +40,29 @@ class ProfileComponent extends React.Component {
         const profpic_url = profile.get('profpic_thumbnail_url') || profile.get('profpic_url');
         return (
             <section>  
-            <div className="profile_user-container"><User user={profile.entity()} style={"large"} /></div>
-                { profile.stacksFetching() && <Spinner type="grey profile-rooms" /> }
-                { !profile.stacksFetching() &&
+                <div className="profile_user-container"><User user={profile.entity()} style={"large"} /></div>
+
+                { openStacks.size > 0 && 
                 <div>
                     <div className="profile_header">OPEN</div>
                     <div className="profile_rooms">
                         { openStacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
                     </div>
+                </div>
+                }
+
+                { /* Show no-content history only if the user has no open stacks */ }
+                { (closedStacks.size > 0 || (openStacks.size === 0 && !profile.stacksFetching())) && 
+                <div>
                     <div className="profile_header">HISTORY</div>
                     <div className="profile_rooms">
+                        { closedStacks.size === 0 && !profile.stacksFetching() && <div className="profile_no-content">{profile.get('username')} has not made any rooms!</div> }
                         { closedStacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
                     </div>
                 </div>
                 }
+
+                { profile.stacksFetching() && <Spinner type="grey profile-rooms" /> }
             </section>
         )
     }
@@ -60,7 +70,7 @@ class ProfileComponent extends React.Component {
     render() {
         const { isFetching, error, profile } = this.props;
         return (
-            <div className="profile content">
+            <div className="profile content" id="profile">
                 { isFetching && <Spinner type="grey large profile" /> }
                 { error && (error.length > 0) && <PageError>User not found.</PageError> }
                 { profile.get('id') !== 0 && this.renderProfile() }
@@ -81,4 +91,14 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps)(ProfileComponent);
+const scrollOptions = {
+
+     onScrollToBottom: function() {
+        const { profile, dispatch, closedStacks } = this.props 
+        if (!profile.stacksFetching() && closedStacks.size > 0) {
+            dispatch(loadClosedStacksForUser())
+        }
+     }  
+}
+
+export default connect(mapStateToProps)(ScrollComponent('profile', scrollOptions)(ProfileComponent));

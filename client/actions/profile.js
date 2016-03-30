@@ -2,6 +2,7 @@ import ActionTypes from './types'
 import Schemas from '../schemas'
 import { loadPaginatedObjects } from './utils'
 import { API_CALL, API_CANCEL } from './types'
+import { Profile } from '../models'
 
 /**********
  * FETCHING
@@ -19,7 +20,7 @@ function fetchProfile(username) {
         [API_CALL]: {
             schema: Schemas.USER,
             endpoint: `users/${username}`,
-            onSuccess: onProfileSuccess
+            onSuccessImmediate: onProfileSuccess
         }
     }
 }
@@ -41,12 +42,18 @@ function fetchStacksForUser(username, type, status, pagination) {
 }
 
 export function loadOpenStacksForUser(username) {
-    return loadPaginatedObjects('profile', 'stacks', fetchStacksForUser.bind(this, username, ActionTypes.USER_OPEN_STACKS, "open"), "all");
+    return loadPaginatedObjects('profile', 'openStacks', fetchStacksForUser.bind(this, username, ActionTypes.USER_OPEN_STACKS, "open"), "all");
 }
 
 export function loadClosedStacksForUser(username) {
-    // TODO: paginate closed stacks
-    return loadPaginatedObjects('profile', 'stacks', fetchStacksForUser.bind(this, username, ActionTypes.USER_CLOSED_STACKS, "closed", "all"));
+    return (dispatch, getState) => {
+        if (!username) {
+            const profile = new Profile(getState())
+            username = profile.get('username')
+        }
+        const fetchFn = fetchStacksForUser.bind(this, username, ActionTypes.USER_CLOSED_STACKS, "closed")
+        loadPaginatedObjects('profile', 'closedStacks', fetchFn, 24)(dispatch, getState);
+    }
 }
 
 /*******

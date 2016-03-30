@@ -1114,9 +1114,12 @@ a.item-room.selected {
 
 .profile_header {
   font-weight: bold;
-  color: #333;
+  font-size: 16px;
+  color: #666;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #ddd;
   margin-bottom: 10px;
-  margin-top: 20px; }
+  margin-top: 30px; }
 
 .profile_rooms {
   width: 100%;
@@ -1130,6 +1133,11 @@ a.item-room.selected {
     content: '';
     display: table;
     clear: both; }
+
+.profile_no-content {
+  color: #888;
+  font-size: 14px;
+  font-style: italic; }
 
 .profile_user-container {
   width: 100%; }
