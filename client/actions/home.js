@@ -3,6 +3,7 @@ import { normalize } from 'normalizr'
 
 import ActionTypes from './types'
 import Schemas from '../schemas'
+import { loadPaginatedObjects } from './utils'
 import { API_CALL, API_CANCEL } from './types'
 
 /**********

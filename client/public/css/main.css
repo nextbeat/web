@@ -460,6 +460,32 @@ html, body {
         content: '';
         display: table;
         clear: both; }
+  .item_container.five-across {
+    width: 19.08397%;
+    float: left;
+    margin-right: 1.14504%;
+    margin-bottom: 1.14504%; }
+    .item_container.five-across:nth-child(5n) {
+      width: 19.08397%;
+      float: right;
+      margin-right: 0; }
+      .item_container.five-across:nth-child(5n)::after {
+        content: '';
+        display: table;
+        clear: both; }
+  .item_container.six-across {
+    width: 15.87302%;
+    float: left;
+    margin-right: 0.95238%;
+    margin-bottom: 0.95238%; }
+    .item_container.six-across:nth-child(6n) {
+      width: 15.87302%;
+      float: right;
+      margin-right: 0; }
+      .item_container.six-across:nth-child(6n)::after {
+        content: '';
+        display: table;
+        clear: both; }
 
 /**
  * Setting padding-bottom here allows us to adjust height as a percentage
@@ -1026,6 +1052,8 @@ a.item-room.selected {
   font-size: 15px;
   font-weight: bold;
   padding-top: 5px; }
+  .home_section_name a {
+    color: #333; }
 
 .home_section_description {
   font-size: 12px;
@@ -1076,17 +1104,13 @@ a.item-room.selected {
   left: auto; }
 
 .profile {
+  padding: 15px;
   overflow: auto;
   height: 100%; }
   .profile .spinner-profile {
     margin: 50px auto; }
   .profile .spinner-profile-rooms {
     margin: 50px auto; }
-
-.profile_inner {
-  width: 100%;
-  max-width: 960px;
-  padding: 15px; }
 
 .profile_header {
   font-weight: bold;
@@ -1482,6 +1506,33 @@ a.player_tag {
   .room_counter .selected {
     font-weight: bold; }
 
+.section {
+  padding: 15px;
+  height: 100%;
+  overflow: auto; }
+  .section .spinner-section {
+    margin: 25px auto; }
+
+.section_header {
+  font-size: 24px;
+  font-weight: 400;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #bbb; }
+
+.section_description {
+  font-size: 14px;
+  margin-top: 5px;
+  color: #888; }
+
+.section_rooms {
+  margin-top: 30px;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap; }
+
 .splash {
   max-width: 800px;
   margin: 0 auto;
@@ -1579,11 +1630,6 @@ a.player_tag {
     margin: 20px auto; }
   .tag .spinner-tag-rooms {
     margin: 20px auto; }
-
-.tag_inner {
-  width: 100%;
-  max-width: 960px;
-  position: relative; }
 
 .tag_header {
   font-weight: 400;

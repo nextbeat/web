@@ -11,6 +11,7 @@ import Room from './components/Room.react'
 import Profile from './components/Profile.react'
 import Tag from './components/Tag.react'
 import Home from './components/Home.react'
+import Section from './components/Section.react'
 import PasswordResetRequest from './components/support/PasswordResetRequest.react'
 import PasswordReset from './components/support/PasswordReset.react'
 import NoMatch from './components/NoMatch.react'
@@ -45,6 +46,7 @@ render(
             </Route>
             <Route component={App}>
                 <Route path="/" component={Home} /> 
+                <Route path="/s/:slug" component={Section} />
                 <Route path="/r/:stack_id" component={Room} />
                 <Route path="/u/:username" component={Profile} />
                 <Route path="/t/:name" component={Tag} />

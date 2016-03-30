@@ -1,5 +1,6 @@
 export { default as App } from './app'
 export { default as Home } from './home'
+export { default as Section } from './section'
 export { default as Stack } from './stack'
 export { default as Profile } from './profile'
 export { default as CurrentUser } from './currentUser'

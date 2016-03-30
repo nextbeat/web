@@ -1,4 +1,6 @@
 import React from 'react'
+import { Link } from 'react-router'
+
 import LargeStackItem from '../shared/LargeStackItem.react'
 import Icon from '../shared/Icon.react'
 
@@ -100,6 +102,8 @@ class HomeSection extends React.Component {
         const { section, stacks, index } = this.props
         const { leftIndex, numAcross, itemWidth, shouldAnimate } = this.state
 
+        const sectionUrl = section.get('slug') ? `/s/${section.get('slug')}` : section.get('url', '#');
+
         const highlightedKlass = section.get('highlighted_') ? "highlighted" : ""
         const leftOffset = -(leftIndex*itemWidth + leftIndex*MARGIN_WIDTH) + 'px'
         const innerWidth = numAcross*itemWidth + (numAcross-1)*MARGIN_WIDTH + 'px'
@@ -112,7 +116,7 @@ class HomeSection extends React.Component {
             <div className={`home_section ${highlightedKlass}`} ref={c => this._node = c}>
                 <div className="home_section_inner" style={{width: innerWidth }} >
                     <div className="home_section_header">
-                        <div className="home_section_name">{section.get('name')}</div>
+                        <div className="home_section_name"><Link to={sectionUrl}>{section.get('name')}</Link></div>
                         {section.get('description') && <div className="home_section_description">{section.get('description')}</div>}
                     </div>
                     <div className="home_section_stacks">

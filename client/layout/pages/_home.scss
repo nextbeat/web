@@ -49,6 +49,10 @@
     font-size: 15px;
     font-weight: bold;
     padding-top: 5px;
+
+    a {
+        color: $text-color;
+    }
 }
 
 .home_section_description {

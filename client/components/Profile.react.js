@@ -61,11 +61,9 @@ class ProfileComponent extends React.Component {
         const { isFetching, error, profile } = this.props;
         return (
             <div className="profile content">
-                <div className="profile_inner">
-                    { isFetching && <Spinner type="grey large profile" /> }
-                    { error && (error.length > 0) && <PageError>User not found.</PageError> }
-                    { profile.get('id') !== 0 && this.renderProfile() }
-                </div>
+                { isFetching && <Spinner type="grey large profile" /> }
+                { error && (error.length > 0) && <PageError>User not found.</PageError> }
+                { profile.get('id') !== 0 && this.renderProfile() }
             </div>
         );
     }

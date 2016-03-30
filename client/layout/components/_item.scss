@@ -33,6 +33,26 @@
             @include clearfix;
         }
     }
+
+    &.five-across {
+        @include span(1 of 5 .06);
+        margin-bottom: gutter(5 .06);
+
+        &:nth-child(5n) {
+            @include span(1 of 5 .06 last);
+            @include clearfix;
+        }
+    }
+
+    &.six-across {
+        @include span(1 of 6 .06);
+        margin-bottom: gutter(6 .06);
+
+        &:nth-child(6n) {
+            @include span(1 of 6 .06 last);
+            @include clearfix;
+        }
+    }
     
 }
 

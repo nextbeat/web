@@ -19,14 +19,18 @@ class LargeStackItem extends React.Component {
 
         // resize room items
         function switchClass(klass) {
-            const klasses = ['one-across', 'two-across', 'three-across', 'four-across'];
+            const klasses = ['one-across', 'two-across', 'three-across', 'four-across', 'five-across', 'six-across'];
             const klassesToRemove = without(klasses, klass);
             node.removeClass(klassesToRemove.join(" "));
             node.addClass(klass);
         }
 
         if (!this.props.static) {
-            if (parent.width() > 880) {
+            if (parent.width() > 1480) {
+                switchClass('six-across');
+            } else if (parent.width() > 1180) {
+                switchClass('five-across');
+            } else if (parent.width() > 880) {
                 switchClass('four-across');
             } else if (parent.width() > 580) {
                 switchClass('three-across');

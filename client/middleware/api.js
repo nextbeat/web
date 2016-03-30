@@ -65,11 +65,11 @@ function callApi(options, store, action) {
                 return Promise.reject(new Error(json.error));
             }
             if (typeof pagination !== 'undefined') {
-                return assign({}, normalize(json.objects, schema), json.meta);
+                return [assign({}, normalize(json.objects, schema), json.meta), json];
             } else if (typeof schema !== 'undefined') {
-                return normalize(json, schema);
+                return [normalize(json, schema), json];
             } else {
-                return json;
+                return [json, json];
             }
         })
 }
@@ -95,23 +95,24 @@ export default store => next => action => {
         return newAction;
     }
 
-    fetchPromise.then(response => {
+    fetchPromise.spread((response, rawResponse) => {
 
             // success callback which runs after reducer 
             if (typeof onSuccess === 'function') {
                 process.nextTick(() => {
-                    onSuccess(store, next, action, response);
+                    onSuccess(store, next, action, response, rawResponse);
                 })
             }
 
             // success callback which runs before reducer
             if (typeof onSuccessImmediate === 'function') {
-                onSuccessImmediate(store, next, action, response);
+                onSuccessImmediate(store, next, action, response, rawResponse);
             }
 
             return next(actionWith({
                 status: Status.SUCCESS,
-                response
+                response,
+                rawResponse
             }))
 
         })

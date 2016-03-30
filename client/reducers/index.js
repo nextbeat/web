@@ -3,6 +3,7 @@ import { includes } from 'lodash'
 
 import app from './app'
 import home from './home'
+import section from './section'
 import user from './user'
 import stack from './stack'
 import profile from './profile'
@@ -48,6 +49,7 @@ export default combineReducers({
     fetches,
     app,
     home,
+    section,
     stack,
     profile,
     tag,

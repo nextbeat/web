@@ -12,6 +12,11 @@ export {
 } from './home'
 
 export {
+    loadSection,
+    clearSection
+} from './section'
+
+export {
     loadTag,
     loadStacksForTag,
     clearTag

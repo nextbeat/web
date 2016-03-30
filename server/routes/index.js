@@ -22,7 +22,6 @@ module.exports = {
             api[method](req.url, req.body, token).then(function(_res) {
                 // we check for the header which is set if the current token
                 // has expired, and update the user's token
-                console.log(_res.headers);
                 if (_.has(_res.headers, 'x-bbl-jwt-token')) {
                     var newUser = _.assign({}, req.user, { token: _res.headers['x-bbl-jwt-token'] })
                     req.logIn(newUser, function(err) {

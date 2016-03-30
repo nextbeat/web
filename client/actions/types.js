@@ -27,6 +27,13 @@ export default {
     HOME: 'HOME',
     CLEAR_HOME: 'CLEAR_HOME',
 
+    /**************
+     * HOME SECTION
+     **************/
+
+    SECTION: 'SECTION',
+    CLEAR_SECTION: 'CLEAR_SECTION',
+
     /*****
      * TAG
      *****/

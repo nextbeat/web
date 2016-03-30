@@ -29,7 +29,7 @@ class Chat extends React.Component {
 
     renderComment(comment) {
         const { users, stackAuthor } = this.props;
-        const username = users.getIn([comment.get('author').toString(), 'username']);
+        const username = users.getIn([comment.get('author').toString(), 'username'], 'anon');
         const isCreator = (stackAuthor.get('username') === username);
         return comment.get('type') === 'message' ? 
             <ChatItem key={comment.get('id')} message={comment.get('message')} username={username} isCreator={isCreator} />

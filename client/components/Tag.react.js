@@ -117,13 +117,11 @@ class TagComponent extends React.Component {
         const { tag, params: { name } } = this.props
         return (
             <div className="tag content" id="tag">
-                <div className="tag_inner">
-                    <div className="tag_header">
-                        { name }
-                    </div>
-                    { this.renderFilters() }
-                    { this.renderTag() }
+                <div className="tag_header">
+                    { name }
                 </div>
+                { this.renderFilters() }
+                { this.renderTag() }
             </div>
         );
     }
