@@ -620,7 +620,8 @@ a.item-room.selected {
   color: #2ccba3;
   z-index: 10;
   font-weight: bold;
-  font-size: 16px; }
+  font-size: 13px;
+  letter-spacing: 0.5px; }
 
 .item-room-large_bookmarks {
   position: absolute;
@@ -1094,7 +1095,13 @@ a.item-room.selected {
   margin-top: 20px; }
 
 .profile_rooms {
-  width: 100%; }
+  width: 100%;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap; }
   .profile_rooms::after {
     content: '';
     display: table;

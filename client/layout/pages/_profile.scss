@@ -27,6 +27,8 @@
 .profile_rooms {
     width: 100%;
     @include clearfix;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .profile_user-container {

@@ -72,7 +72,7 @@ class LargeStackItem extends React.Component {
                     <div className="item_inner item-room-large_inner">
                         <div className="item_thumb item-room-large_thumb">
                             <img className="thumb_img" src={this.fancyThumbnailUrl(stack)} />
-                            { !stack.get('closed') && <div className="item-room-large_open">&#9679;</div> }
+                            { !stack.get('closed') && <div className="item-room-large_open">OPEN</div> }
                             <div className="item-room-large_bookmarks">
                                 <span className="item-room-large_bookmark-count">{stack.get('bookmark_count')}</span><Icon type={bookmarkType} />
                             </div>
