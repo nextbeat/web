@@ -1,5 +1,6 @@
 import XMPP from 'stanza.io'
 import moment from 'moment'
+import { v4 as generateUuid }from 'node-uuid'
 import { assign } from 'lodash'
 import { normalize } from 'normalizr'
 import Schemas from '../schemas'
@@ -37,7 +38,7 @@ export function getClient(store) {
             const uuid = currentUser.get('uuid');
             options.jid = `${uuid}@xmpp.getbubble.me`
             options.password = uuid;
-            options.resource = "web"
+            options.resource = generateUuid();
             options.credentials = {
                 host: 'xmpp.getbubble.me'
             }

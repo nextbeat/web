@@ -13,6 +13,8 @@ function _request(method, url, body, auth) {
         auth = { bearer: auth }
     }
 
+    console.log("auth:", auth)
+
     return request({
         method: method,
         url: url,

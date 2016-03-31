@@ -62,6 +62,7 @@ function callApi(options, store, action) {
         // .delay(1000) // FOR DEBUG
         .then(({ json, response }) => {
             if (!response.ok) {
+                console.log(response);
                 return Promise.reject(new Error(json.error));
             }
             if (typeof pagination !== 'undefined') {
