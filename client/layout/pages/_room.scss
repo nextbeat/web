@@ -394,6 +394,7 @@ a.player_tag {
 .chat_item {
     font-size: 13px;
     margin: 12px 0 0 12px;
+    white-space: pre-wrap;
 
     a {
         color: $primary-color;

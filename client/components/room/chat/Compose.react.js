@@ -24,7 +24,7 @@ class Compose extends React.Component {
     }
 
     handleKeyPress(e) {
-        if (e.charCode === 13) { // Enter
+        if (e.charCode === 13 && !e.shiftKey) { // Enter
             e.preventDefault();
             this.handleSubmit();
         }
