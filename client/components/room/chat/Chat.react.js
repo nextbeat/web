@@ -32,7 +32,7 @@ class Chat extends React.Component {
         const username = users.getIn([comment.get('author').toString(), 'username'], 'anon');
         const isCreator = (stackAuthor.get('username') === username);
         return comment.get('type') === 'message' ? 
-            <ChatItem key={comment.get('id')} message={comment.get('message')} username={username} isCreator={isCreator} />
+            <ChatItem key={comment.get('id')} comment={comment} username={username} isCreator={isCreator} />
             : <NotificationChatItem key={comment.get('id')} comment={comment} username={username} />
     }
 

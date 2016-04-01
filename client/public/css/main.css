@@ -1452,6 +1452,11 @@ a.player_tag {
     .chat_item strong.creator a {
       color: white; }
 
+a.chat_mention {
+  font-weight: normal; }
+  a.chat_mention:hover {
+    color: #4c86fb; }
+
 .chat_item-notification {
   color: #999;
   font-style: italic; }
@@ -1501,7 +1506,7 @@ a.player_tag {
   left: 0;
   right: 0;
   padding: 8px 5px;
-  background-color: rgba(239, 88, 91, 0.85);
+  background-color: rgba(175, 19, 220, 0.85);
   text-align: center;
   color: #fff;
   font-weight: bold; }

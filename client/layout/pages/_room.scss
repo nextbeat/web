@@ -415,6 +415,13 @@ a.player_tag {
     }
 }
 
+a.chat_mention {
+    font-weight: normal;
+    &:hover {
+        color: $light-primary-color;
+    }
+}
+
 .chat_item-notification {
     color: #999;
     font-style: italic;

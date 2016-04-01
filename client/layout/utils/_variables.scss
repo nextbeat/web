@@ -6,7 +6,8 @@ $primary-color: #2258c5;
 $light-primary-color: #4c86fb;
 $lighter-primary-color: lighten($light-primary-color, 15%);
 
-$secondary-color: #ef585b;
+$secondary-color: #af13dc;
+$light-secondary-color: mix($secondary-color, white, 40%);
 $success-color: #15c599;
 $error-color: #ef585b;
 
