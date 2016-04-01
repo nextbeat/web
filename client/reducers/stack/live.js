@@ -43,14 +43,11 @@ function receiveNotificationComment(state, action) {
         type: 'notification',
         username: action.username,
         notification_count: action.data.count,
-        notification_type: "photo",
         notification_url: action.data.url
     });
     const lastComment = state.get('comments').last();
     // we replace the most recent notification comment if it is the latest live comment
-    if (lastComment 
-        && lastComment.get('type') === comment.get('type') 
-        && lastComment.get('notification_type') === comment.get('notification_type')) {
+    if (lastComment && lastComment.get('type') === 'notification') {
         return state.update('comments', comments => comments.set(-1, comment));
     } else {
         return state.update('comments', comments => comments.push(comment));

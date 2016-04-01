@@ -11,7 +11,7 @@ module.exports = {
 
         passport.use(new LocalStrategy(
             function(username, password, done) {
-                api.post('login?resource=web&expireImmediately=true', {}, { 
+                api.post('login', {}, { 
                     user: username,
                     pass: password
                 }).then(function(res) {

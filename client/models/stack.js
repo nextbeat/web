@@ -103,6 +103,10 @@ export default class Stack extends ModelBase {
         return ids.indexOf(selectedId)
     }
 
+    mostRecentComment() {
+        return this.liveComments().size > 0 ? this.liveComments().last() : this.comments().first()
+    }
+
     // returns true if fetching the stack OR its media items
     isFetchingDeep() {
         return !this.get('error') && this.mediaItems().size === 0 && !this.get('mediaItemsError')

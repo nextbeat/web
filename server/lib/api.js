@@ -1,11 +1,14 @@
 var request = require('request-promise'),
+    Promise = require('bluebird'),
+    _       = require('lodash'),
 
     baseUrl,
     clientToken;
 
 function _request(method, url, body, auth) {
     
-    if (!auth) {
+    var isAuthorized = !!auth;
+    if (!isAuthorized) {
         auth = { bearer: clientToken }
     }
 
@@ -13,15 +16,19 @@ function _request(method, url, body, auth) {
         auth = { bearer: auth }
     }
 
-    console.log("auth:", auth)
-
-    return request({
-        method: method,
-        url: url,
-        baseUrl: baseUrl,
-        body: body,
-        auth: auth,
-        resolveWithFullResponse: true
+    return Promise.resolve().then(function() {
+        return request({
+            method: method,
+            url: url,
+            baseUrl: baseUrl,
+            body: body,
+            auth: auth,
+            resolveWithFullResponse: true
+        })
+    }).tap(function(res) {
+        if (!isAuthorized && _.has(res.headers, 'x-bbl-jwt-token')) {
+            clientToken = res.headers['x-bbl-jwt-token'];
+        }
     });
 }
 
@@ -46,14 +53,16 @@ module.exports = {
         });
 
         return request.post({
-            url: 'clients/authenticate',
+            url: 'clients/authenticate?expireImmediately=true',
             baseUrl: baseUrl,
             auth: {
                 user: process.env.CLIENT_NAME,
                 pass: process.env.CLIENT_SECRET
-            }
+            },
+            resolveWithFullResponse: true
         }).then(function(res) {
-            clientToken = res.token;
+            console.log('authenticate headers', res.headers);
+            clientToken = res.body.token;
         });
 
     },

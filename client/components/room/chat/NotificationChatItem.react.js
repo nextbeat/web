@@ -9,15 +9,13 @@ class NotificationChatItem extends React.Component {
 
     render() {
         const { comment, username } = this.props;
-        const [ count, type, url ] = [ 
+        const [ count, url ] = [ 
             comment.get('notification_count'), 
-            comment.get('notification_type'), 
             comment.get('notification_url')
         ];
-        const plural = count !== 1 ? 's' : '';
-        const addedStr = `${count} ${type}${plural}`;
+        const countStr = count === 1 ? "a post" : `${count} posts`;
 
-        return <li className="chat_item chat_item-notification"><strong>{username}</strong> added {addedStr} to the room.</li>;
+        return <li className="chat_item chat_item-notification"><strong>{username}</strong> added {countStr} to the room.</li>;
     }
 }
 

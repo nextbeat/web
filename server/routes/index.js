@@ -22,7 +22,7 @@ module.exports = {
             api[method](req.url, req.body, token).then(function(_res) {
                 // we check for the header which is set if the current token
                 // has expired, and update the user's token
-                if (_.has(_res.headers, 'x-bbl-jwt-token')) {
+                if (req.user && _.has(_res.headers, 'x-bbl-jwt-token')) {
                     var newUser = _.assign({}, req.user, { token: _res.headers['x-bbl-jwt-token'] })
                     req.logIn(newUser, function(err) {
                         res.send(_res.body);
@@ -74,7 +74,6 @@ module.exports = {
 
         router.post('/logout', function(req, res) {
             req.logOut();
-            console.log(req.user);
             return res.status(200).end();
         });
 
@@ -86,7 +85,6 @@ module.exports = {
                 user: req.body.username,
                 pass: req.body.password
             }).then(function(_res) {
-                console.log(_res);
                 res.status(200).json(_res);
             }).catch(function(e) {
                 var errorObj = e.error && e.error.error ? { error: e.error.error } : { error: 'Error signing up. Please try again in a few minutes.' }
@@ -104,17 +102,6 @@ module.exports = {
                 state: JSON.stringify(state)
             });
         });
-
-        // Support
-
-        // router.get('/password-reset', support.getPasswordReset);
-        // router.post('/password-reset', support.postPasswordReset);
-        // router.get('/password-reset-request', support.getPasswordResetRequest);
-        // router.post('/password-reset-request', support.postPasswordResetRequest);
-
-        // router.post('/get-app-sms', support.sendGetAppSMS);
-
-        // router.get('/app', support.redirectToAppStore);
 
     }
 };

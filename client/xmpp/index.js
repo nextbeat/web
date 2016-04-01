@@ -63,9 +63,9 @@ export function getClient(store) {
         //     console.log('OUTGOING', s);
         // })
 
-        client.on('raw:incoming', function(s) {
-            console.log('INCOMING', s);
-        })
+        // client.on('raw:incoming', function(s) {
+        //     console.log('INCOMING', s);
+        // })
 
         // client.on('disconnected', function() {
         //     console.log('DISCONNECTED!!!');
@@ -89,17 +89,14 @@ function normalizeMediaItem(data) {
 }
 
 function formatNotificationItem(data, store) {
-    const type = data[1].indexOf('.jpg') !== -1 ? "photo" : "video";
     let count = data[0];
     const stack = new Stack(store.getState());
-    const mostRecentComment = stack.comments().first()
-    if (mostRecentComment.get('type') === 'notification' && mostRecentComment.get('notification_type') === type) {
-        count = count - mostRecentComment.get('notification_count') + 1; 
-        // TODO: the +1 should not be necessary, there must be a bug on the backend...
+    const mostRecentRemoteComment = stack.comments().first()
+    if (mostRecentRemoteComment.get('type') === 'notification' && stack.liveComments().size === 0) {
+        count = count - mostRecentRemoteComment.get('notification_count');
     }
     return {
         count: parseInt(count),
-        type: type,
         url: data[1]
     }
 }
