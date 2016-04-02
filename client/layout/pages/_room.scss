@@ -422,6 +422,10 @@ a.chat_mention {
     }
 }
 
+.chat_live-mention {
+    color: $detail-text-color;
+}
+
 .chat_item-notification {
     color: #999;
     font-style: italic;

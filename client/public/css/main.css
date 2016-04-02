@@ -1457,6 +1457,9 @@ a.chat_mention {
   a.chat_mention:hover {
     color: #4c86fb; }
 
+.chat_live-mention {
+  color: #888; }
+
 .chat_item-notification {
   color: #999;
   font-style: italic; }

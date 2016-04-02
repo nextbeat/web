@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import ScrollComponent from '../../utils/ScrollComponent.react'
 
 import ChatItem from './ChatItem.react'
+import LiveChatItem from './LiveChatItem.react'
 import NotificationChatItem from './NotificationChatItem.react'
 import Compose from './Compose.react'
 import Spinner from '../../shared/Spinner.react'
@@ -41,7 +42,7 @@ class Chat extends React.Component {
         const key = `l${idx}`;
         const isCreator = (stackAuthor.get('username') === comment.get('username'));
         return comment.get('type') === 'message' ? 
-            <ChatItem key={key} message={comment.get('message')} username={comment.get('username')} isCreator={isCreator} />
+            <LiveChatItem key={key} comment={comment} isCreator={isCreator} />
             : <NotificationChatItem key={key} comment={comment} username={comment.get('username')} />
     }
 
