@@ -32,7 +32,7 @@ gulp.task('build', ['styles'], function() {
         .bundle()
         .pipe(source('bundle.min.js'))
         .pipe(buffer())
-        .pipe(uglify())
+        // .pipe(uglify())
         .pipe(gulp.dest('client/public/js'));
 });
 
