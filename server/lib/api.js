@@ -41,9 +41,9 @@ module.exports = {
         if (node_env === 'local') {
             baseUrl = 'http://api/v1/';
         } else if (node_env === 'development') {
-            baseUrl = 'http://api.dev.getbubble.int/v1/';
+            baseUrl = 'http://api.dev.nextbeat.int/v1/';
         } else if (node_env === 'production') {
-            baseUrl = 'http://api.getbubble.int/v1/';
+            baseUrl = 'http://api.nextbeat.int/v1/';
         } else if (node_env === 'mac') {
             baseUrl = 'http://localhost:8000/v1/';
         }

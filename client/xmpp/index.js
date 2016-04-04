@@ -9,9 +9,9 @@ import { CurrentUser, Stack } from '../models'
 
 function xmppHost() {
     if (process.env.NODE_ENV === 'production') {
-        return 'xmpp.getbubble.me';
+        return 'xmpp.nextbeat.co';
     } else if (process.env.NODE_ENV === 'development') {
-        return 'xmpp.dev.getbubble.me';
+        return 'xmpp.dev.nextbeat.co';
     } else if (process.env.NODE_ENV === 'local') {
         return 'xmpp';
     } else if (process.env.NODE_ENV === 'mac') {
@@ -36,16 +36,16 @@ export function getClient(store) {
         if (currentUser.isLoggedIn()) {
             // user is logged in
             const uuid = currentUser.get('uuid');
-            options.jid = `${uuid}@xmpp.getbubble.me`
+            options.jid = `${uuid}@xmpp.nextbeat.co`
             options.password = uuid;
             options.resource = generateUuid();
             options.credentials = {
-                host: 'xmpp.getbubble.me'
+                host: 'xmpp.nextbeat.co'
             }
         } else {
-            options.jid = 'anon@anon.xmpp.getbubble.me'
+            options.jid = 'anon@anon.xmpp.nextbeat.co'
             options.credentials = {
-                host: 'anon.xmpp.getbubble.me'
+                host: 'anon.xmpp.nextbeat.co'
             }
         }
 

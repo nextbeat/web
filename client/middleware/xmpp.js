@@ -105,7 +105,7 @@ function joinRoom(store, next, action) {
     next(actionWith(Status.REQUESTING));
 
     const stack_uuid = stack.get('uuid');
-    const jid = `${stack_uuid}@conference.xmpp.getbubble.me`;
+    const jid = `${stack_uuid}@conference.xmpp.nextbeat.co`;
     const nickname = currentUser.isLoggedIn() ? `${currentUser.get('username')}#${uuid.v4()}` : uuid.v4();
 
     function removeRoomListeners() {
