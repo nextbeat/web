@@ -1103,6 +1103,25 @@ a.item-room.selected {
   right: -40px;
   left: auto; }
 
+.legal-container {
+  padding: 10px;
+  height: 100%;
+  overflow: auto; }
+
+.legal {
+  margin: 0 auto;
+  max-width: 700px; }
+  .legal h1 {
+    font-size: 24px;
+    text-align: center;
+    color: #2258c5; }
+  .legal h2 {
+    font-size: 18px; }
+  .legal h3 {
+    font-size: 16px; }
+  .legal p, .legal li {
+    font-size: 14px; }
+
 .profile {
   padding: 15px;
   overflow: auto;
