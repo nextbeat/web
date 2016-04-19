@@ -35,7 +35,7 @@ export function getClient(store) {
 
         if (currentUser.isLoggedIn()) {
             // user is logged in
-            const uuid = currentUser.get('uuid');
+            const uuid = currentUser.get('uuid').toLowerCase();
             options.jid = `${uuid}@xmpp.nextbeat.co`
             options.password = uuid;
             options.resource = generateUuid();
