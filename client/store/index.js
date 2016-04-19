@@ -6,7 +6,7 @@ import reducer from '../reducers'
 
 const middlewares = [thunkMiddleware, api, cancel, xmpp];
 
-if (process.env.NODE_ENV !== "production") {
+// if (process.env.NODE_ENV !== "production") {
     const createLogger = require('redux-logger');
 
     const stateTransformer = state => {
@@ -19,7 +19,7 @@ if (process.env.NODE_ENV !== "production") {
     });
 
     middlewares.push(logger);
-}
+// }
 
 export default function configureStore(initialState = Map()) {
     return createStore(
