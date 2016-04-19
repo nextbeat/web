@@ -49,8 +49,6 @@ export function getClient(store) {
             }
         }
 
-        console.log(options);
-
         const client = XMPP.createClient(options)
 
         client.on('groupchat', function(s) {
@@ -61,17 +59,17 @@ export function getClient(store) {
             handleMessage(s, store);
         });
 
-        client.on('raw:outgoing', function(s) {
-            console.log('OUTGOING', s);
-        })
+        // client.on('raw:outgoing', function(s) {
+        //     console.log('OUTGOING', s);
+        // })
 
-        client.on('raw:incoming', function(s) {
-            console.log('INCOMING', s);
-        })
+        // client.on('raw:incoming', function(s) {
+        //     console.log('INCOMING', s);
+        // })
 
-        client.on('disconnected', function() {
-            console.log('DISCONNECTED!!!');
-        })
+        // client.on('disconnected', function() {
+        //     console.log('DISCONNECTED!!!');
+        // })
 
         return client;
     }
