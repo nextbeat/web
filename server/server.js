@@ -3,6 +3,7 @@ require("babel-core/register");
 var express     = require('express'),
     web         = express(),
     api         = require('./lib/api'),
+    redis       = require('./lib/redis'),
     session     = require('express-session'),
     RedisStore  = require('connect-redis')(session),
     bodyParser  = require('body-parser'),
@@ -23,12 +24,12 @@ web.use(bodyParser.urlencoded({
     limit: '1mb'
 }));
 
-// todo: make secure for production
 web.use(session({
-    secret: 'foo',
-    resave: true,
-    saveUninitialized: true
-}))
+    store: new RedisStore({ client: redis.client() }),
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
 
 // Handlebars
 web.set('views', './server/views');

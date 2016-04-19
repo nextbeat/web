@@ -15,7 +15,8 @@ var _               = require('lodash'),
 const MAC_ENV = {
     NODE_ENV: 'mac',
     CLIENT_NAME: 'web',
-    CLIENT_SECRET: 'CLIENT_SECRET'
+    CLIENT_SECRET: 'CLIENT_SECRET',
+    SESSION_SECRET: 'secret'
 }
 
 gulp.task('styles', function() {
