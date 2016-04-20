@@ -23,6 +23,9 @@ Promise.config({
 
 const state = JSON.parse($('#state').text())
 let initialState = {}
+initialState.app = Map({
+    environment: state.environment
+})
 if (state.id) {
     const { id, username, token, uuid } = state
     initialState.user = Map({ meta: {
@@ -34,6 +37,7 @@ if (state.error) {
         error: state.error
     }})
 }
+
 
 const store = configureStore(Map(initialState))
 

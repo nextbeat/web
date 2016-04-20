@@ -2,6 +2,7 @@ import React from 'react'
 import { findDOMNode } from 'react-dom'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import Helmet from 'react-helmet'
 
 import Sidebar from '../components/Sidebar.react'
 
@@ -16,6 +17,7 @@ class App extends React.Component {
         this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
         this.handleSignupSubmit = this.handleSignupSubmit.bind(this);
         this.handleLogoutClick = this.handleLogoutClick.bind(this);
+        this.setTitle = this.setTitle.bind(this);
         this.renderLogin = this.renderLogin.bind(this);
         this.renderSignup = this.renderSignup.bind(this);
         this.dismissLogin = this.dismissLogin.bind(this);
@@ -96,6 +98,32 @@ class App extends React.Component {
 
     // Render
 
+    setTitle() {
+        const { app } = this.props;
+        const environment = app.get('environment', 'development');
+        let envLabel = '';
+        switch (environment) {
+            case 'development':
+                envLabel = '[DEV] ';
+                break;
+            case 'local':
+                envLabel = '[LOCAL] ';
+                break;
+            case 'mac':
+                envLabel = '[MAC] ';
+                break;
+            case 'production':
+            default:
+                break;
+        }
+        return (
+            <Helmet
+                defaultTitle = {`${envLabel}Nextbeat`}
+                titleTemplate = {`${envLabel}%s - Nextbeat`}
+            />
+        );
+    }
+
     renderLogin() {
         const { user } = this.props;
         return (
@@ -159,6 +187,7 @@ class App extends React.Component {
         }
         return (
             <section className="app-container">
+                {this.setTitle()}
                 {this.renderLogin()}
                 {this.renderSignup()}
                 <Sidebar {...sidebarProps} />

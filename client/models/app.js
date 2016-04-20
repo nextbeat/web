@@ -7,7 +7,9 @@ const KEY_MAP = {
     'tagsError': ['app', 'tags', 'error'],
     'tagsIds': ['app', 'tags', 'ids'],
     // authError
-    'authError': ['app', 'authError']
+    'authError': ['app', 'authError'],
+    // environment
+    'environment': ['app', 'environment']
 }
 
 export default class App extends ModelBase {

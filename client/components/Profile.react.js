@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
+import Helmet from 'react-helmet'
 import ScrollComponent from './utils/ScrollComponent.react'
 
 import LargeStackItem from './shared/LargeStackItem.react'
@@ -40,6 +41,7 @@ class ProfileComponent extends React.Component {
         const profpic_url = profile.get('profpic_thumbnail_url') || profile.get('profpic_url');
         return (
             <section>  
+                <Helmet title={profile.get('username')} />
                 <div className="profile_user-container"><User user={profile.entity()} style={"large"} /></div>
 
                 { openStacks.size > 0 && 
