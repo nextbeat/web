@@ -95,7 +95,7 @@ module.exports = {
         // React
 
         router.get('*', function(req, res) {
-            var state = _.assign({}, req.user, req.authInfo);
+            var state = _.assign({}, req.user, req.authInfo, { environment: process.env.NODE_ENV || "development" });
             var bundle = process.env.NODE_ENV === 'mac' ? "/js/bundle.js" : "/js/bundle.min.js";
             res.render('app', {
                 bundle: bundle,

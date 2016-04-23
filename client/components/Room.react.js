@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import Helmet from 'react-helmet'
 import { isEmpty } from 'lodash'
 
 import Player from './room/Player.react'
@@ -121,6 +122,7 @@ class Theater extends React.Component {
         }
         return (
         <section className="room">
+            <Helmet title={stack.get('description')} />
             <Player {...playerProps} />
             <DetailBar {...detailBarProps} />
         </section>

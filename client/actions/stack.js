@@ -112,6 +112,9 @@ export function sendComment(message) {
         if (id === 0) {
             return null;
         }
+        if (!message || message.trim().length === 0) {
+            return null;
+        }
 
         return dispatch(postComment(id, message));
     }
