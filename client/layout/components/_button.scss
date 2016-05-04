@@ -10,6 +10,7 @@
     &:hover {
         background-color: $light-primary-color;
         color: white;
+        cursor: pointer;
     }
 
     &:visited {
@@ -22,6 +23,24 @@
 
     &:hover {
         background-color: $lighter-primary-color;
+        color: white;
+    }
+}
+
+.btn-secondary {
+    background-color: $secondary-color;
+
+    &:hover {
+        background-color: $light-secondary-color;
+        color: white;
+    }
+}
+
+.btn-light.btn-secondary {
+    background-color: $light-secondary-color;
+
+    &:hover {
+        background-color: $lighter-secondary-color;
         color: white;
     }
 }
@@ -52,11 +71,6 @@
         top: 5px;
     }
 
-    .btn {
-        &:hover {
-            cursor: pointer;
-        }
-    }
 }
 
 .btn-bookmark_inner {
@@ -88,6 +102,7 @@
 // Subscribe
 
 .btn.btn-subscribe {
+
     &:hover {
         cursor: pointer;
     }

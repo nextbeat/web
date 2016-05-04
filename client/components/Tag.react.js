@@ -11,8 +11,7 @@ import Icon from './shared/Icon.react'
 
 const SORT_TYPES = [
     { name: "hot", display: "Hot" },
-    { name: "new", display: "New" },
-    { name: "lastUpdated", display: "Recently Updated" },
+    { name: "lastUpdated", display: "New" },
     { name: "bookmarks", display: "Most Bookmarked" },
     { name: "views", display: "Most Viewed" }
 ]
