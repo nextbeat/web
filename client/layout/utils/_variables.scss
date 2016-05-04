@@ -2,12 +2,13 @@
  * COLORS
  ********/
 
-$primary-color: #2258c5;
-$light-primary-color: #4c86fb;
-$lighter-primary-color: lighten($light-primary-color, 15%);
+$primary-color: #f15929;
+$light-primary-color: #ff825a;
+$lighter-primary-color: mix($light-primary-color, white, 40%);
 
-$secondary-color: #af13dc;
-$light-secondary-color: mix($secondary-color, white, 40%);
+$secondary-color: #28b8c2;
+$light-secondary-color: mix($secondary-color, white, 70%);
+$lighter-secondary-color: mix($secondary-color, white, 40%);
 $success-color: #15c599;
 $error-color: #ef585b;
 

@@ -32,13 +32,13 @@ class Activity extends React.Component {
         <section className="activity">
             <div className="activity_inner" id="activity-inner">
                 {stack.get('mediaItemsFetching') && <Spinner type="grey" />}
-                {mediaItems.map(mediaItem => {
+                {mediaItems.map((mediaItem, idx) => {
                     var selected = (mediaItem.get('id') === selectedItem.get('id'));
-                    return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} handleClick={handleSelectMediaItem}/>
+                    return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} index={idx} handleClick={handleSelectMediaItem}/>
                 })}
-                {liveMediaItems.map(mediaItem => {
+                {liveMediaItems.map((mediaItem, idx) => {
                     var selected = (mediaItem.get('id') === selectedItem.get('id'));
-                    return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} live={true} handleClick={handleSelectMediaItem}/>
+                    return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} live={true} index={idx+mediaItems.size} handleClick={handleSelectMediaItem}/>
                 })}
             </div>
             { displayNewItem && <div className="activity_new-media" onClick={this.handleNewMediaClick} >New media added!</div> }

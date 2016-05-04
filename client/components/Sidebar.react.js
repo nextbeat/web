@@ -4,6 +4,7 @@ import { Link, browserHistory } from 'react-router'
 import StackItem from './shared/StackItem.react'
 import Icon from './shared/Icon.react'
 import Spinner from './shared/Spinner.react'
+import Logo from './shared/Logo.react'
 
 class Sidebar extends React.Component {
 
@@ -82,7 +83,7 @@ class Sidebar extends React.Component {
                 <div className="sidebar_expanded">
                     <div className="sidebar_collapse-icon" onClick={this.toggleActive}><Icon type="chevron-left" /></div>
                     <div className="sidebar_section">
-                        <span className="sidebar_logo"><Link to="/">Nextbeat</Link></span>
+                        <span className="sidebar_logo"><Link to="/"><Logo /></Link></span>
                         { user.isLoggedIn() ? this.renderLoggedIn() : this.renderGuest() }
                     </div>
                     { user.isLoggedIn() && user.isFetchingUserData() && <Spinner type="grey" /> }
@@ -108,7 +109,7 @@ class Sidebar extends React.Component {
                 </div>
 
                 <div className="sidebar_collapsed">
-                    <span className="sidebar_logo"><Link to="/">Nextbeat</Link></span>
+                    <span className="sidebar_logo"><Link to="/"><Logo /></Link></span>
                     <div className="sidebar_menu-icon" onClick={this.toggleActive}><Icon type="menu" /></div>
                 </div>
             </div>

@@ -19,7 +19,7 @@ class Bookmark extends React.Component {
     renderBookmarked() {
         const { stack, handleUnbookmark } = this.props;
         return (
-            <div className="btn btn-inactive" onClick={handleUnbookmark} onMouseOver={() => this.setState({hover: true})} onMouseOut={() => this.setState({hover: false})}>
+            <div className="btn btn-secondary btn-inactive" onClick={handleUnbookmark} onMouseOver={() => this.setState({hover: true})} onMouseOut={() => this.setState({hover: false})}>
                 <Icon type={"bookmark"} /><span className="btn-bookmark_text">{ this.state.hover ? "Unbookmark" : "Bookmarked" }</span>
             </div>
         )
@@ -28,7 +28,7 @@ class Bookmark extends React.Component {
     renderUnbookmarked() {
         const { stack, handleBookmark } = this.props;
         return (
-            <div className="btn" onClick={handleBookmark} >
+            <div className="btn btn-secondary" onClick={handleBookmark} >
                 <Icon type={"bookmark-outline"} /><span className="btn-bookmark_text">Bookmark</span>
             </div>
         )

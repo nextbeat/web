@@ -30,11 +30,11 @@ class Subscribe extends React.Component {
     }
 
     renderSubscribed() {
-        return <a className="btn btn-light btn-inactive" onClick={this.handleUnsubscribe}>{ this.state.hover ? "Unsubscribe" : "Subscribed" }</a>
+        return <a className="btn btn-light btn-secondary btn-inactive" onClick={this.handleUnsubscribe}>{ this.state.hover ? "Unsubscribe" : "Subscribed" }</a>
     }
 
     renderUnsubscribed() {
-        return <a className="btn btn-light" onClick={this.handleSubscribe}>Subscribe</a>
+        return <a className="btn btn-light btn-secondary" onClick={this.handleSubscribe}>Subscribe</a>
     }
 
     render() {
