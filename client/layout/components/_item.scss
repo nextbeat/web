@@ -113,6 +113,12 @@
         cursor: pointer;
         color: $text-color;
     }
+
+    .badge-open {
+        display: none;
+    }
+
+    
     
 }
 
@@ -187,15 +193,7 @@ a.item-room.selected {
     margin-left: 2px;
 }
 
-// .item-room_open {
-//     position: absolute;
-//     top: 5px; 
-//     right: 5px;
-//     color: $success-color;
-//     font-size: 12px;
-// }
-
-.item-room_badge-open {
+.item-room_badge {
     position: absolute;
     top: 6px;
     left: 6px;
@@ -235,7 +233,7 @@ a.item-room.selected {
     background: linear-gradient(to bottom, rgba(0,0,0,0) 70%, rgba(0,0,0,0.9) 100%); 
 }
 
-.item-room-large_badge-open {
+.item-room-large_badge {
     position: absolute;
     top: -3px;
     left: -2px;

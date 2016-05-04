@@ -6,7 +6,7 @@ import { without, isNumber } from 'lodash'
 import moment from 'moment'
 
 import Icon from './Icon.react'
-import OpenBadge from './OpenBadge.react'
+import Badge from './Badge.react'
 
 class LargeStackItem extends React.Component {
 
@@ -75,7 +75,7 @@ class LargeStackItem extends React.Component {
                 <Link to={`/r/${stack.get('id')}`}>
                 <div className="item-room-large item">
                     <div className="item_inner item-room-large_inner">
-                        { !stack.get('closed') && <OpenBadge type="item-room-large"/> }
+                        { !stack.get('closed') && <Badge elementType="item-room-large" type="open" /> }
                         <div className="item_thumb item-room-large_thumb">
                             <img className="thumb_img" src={this.fancyThumbnailUrl(stack)} />
                             <div className="item-room-large_bookmarks">

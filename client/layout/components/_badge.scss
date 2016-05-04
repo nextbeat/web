@@ -1,9 +1,18 @@
-.badge-open {
-    background: #fff;
-    color: $primary-color;
+.badge {
     padding: 3px 5px;
     font-size: 11px;
     display: inline-block;
 
     box-shadow: 1px 1px 5px 1px rgba(0,0,0,0.12);
 }
+
+.badge-open {
+    background: #fff;
+    color: $primary-color;
+}
+
+.badge-new {
+    background: $secondary-color;
+    color: #fff;
+}
+

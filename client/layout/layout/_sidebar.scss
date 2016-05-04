@@ -18,6 +18,12 @@
         margin: 20px auto;
     }
 
+    .separator {
+        width: calc(100% - 20px);
+        background: mix($separator-color, white, 50%);
+
+    }
+
     .svg-icon-menu {
         fill: $primary-color;
         display: block;
@@ -193,6 +199,19 @@
     float: left;
     font-size: 14px;
     color: $text-color;
+
+    div {
+        float: left;
+    }
+
+    span {
+        float: left;
+        @include clearfix;
+    }
+
+    &:hover {
+        color: $primary-color;
+    }
 }
 
 .sidebar_logout {
@@ -231,6 +250,27 @@
     color: #999;
     width: 100%;
     margin: 10px 0;
+}
+
+.sidebar_icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 3px;
+    background: #ddd;
+
+    img {
+        @include center;
+    }
+
+    .svg-icon-person {
+        @include center;
+        width: 70%;
+        height: 70%;
+    }
 }
 
 // Bookmarks
@@ -281,8 +321,9 @@
         font-weight: normal;
         color: $text-color;
         display: block;
-        margin: 0 0 7px 15px;
+        margin: 0 0 7px 5px;
         font-size: 14px;
+        @include clearfix;
 
         &:hover {
             color: $primary-color;
@@ -291,6 +332,11 @@
         &.selected {
             font-weight: bold;
         }
+
+        .sidebar_icon {
+            float: left;
+        }
+
     }
     
 }
@@ -303,8 +349,9 @@
         font-weight: normal;
         color: $text-color;
         display: block;
-        margin: 0 0 7px 15px;
+        margin: 0 0 7px 5px;
         font-size: 14px;
+        @include clearfix;
 
         &:hover {
             color: $primary-color;
@@ -312,6 +359,11 @@
 
         &.selected {
             font-weight: bold;
+        }
+
+        .sidebar_icon {
+            float: left;
+            background: $primary-color;
         }
     }
 }

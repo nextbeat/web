@@ -46,6 +46,10 @@ export default class CurrentUser extends ModelBase {
         return Map();
     }
 
+    profileThumbnailUrl() {
+        return this.get('profpic_thumbnail_url') || this.get('profpic_url');
+    }
+
     bookmarkedStacks() {
         return this.get('openBookmarkIds', List()).map(id => this.__getEntity(id, 'stacks'));
     }

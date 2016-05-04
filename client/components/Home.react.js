@@ -26,9 +26,11 @@ class HomeComponent extends React.Component {
         return (
             <div className="home content">
                 {home.get('sectionsFetching') && <Spinner type="grey large home" />}
-                {home.get('sections', List()).map((section, idx) => 
-                    <HomeSection key={`sec${idx}`} stacks={home.stacks(idx)} section={section} index={idx} />
-                )}
+                <div className="home_sections">
+                    {home.get('sections', List()).map((section, idx) => 
+                        <HomeSection key={`sec${idx}`} stacks={home.stacks(idx)} section={section} index={idx} />
+                    )}
+                </div>
             </div>
         )
     }

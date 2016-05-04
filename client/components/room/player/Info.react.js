@@ -5,7 +5,7 @@ import { List } from 'immutable'
 import User from '../../shared/User.react'
 import Icon from '../../shared/Icon.react'
 import Bookmark from './Bookmark.react'
-import OpenBadge from '../../shared/OpenBadge.react'
+import Badge from '../../shared/Badge.react'
 
 class Info extends React.Component {
 
@@ -21,7 +21,7 @@ class Info extends React.Component {
             <section className="player_info">
                 <div className="player_info-top">
                     <User user={stack.author()} style={"right"} />
-                    <div className="player_description"><span>{ stack.get('description') || "No description." } { !closed && <OpenBadge type="player" /> } </span></div>
+                    <div className="player_description"><span>{ stack.get('description') || "No description." } { !closed && <Badge elementType="player" type="open" /> } </span></div>
                 </div>
                 <div className="separator separator-player_info" />
                 <div className="player_tags">
