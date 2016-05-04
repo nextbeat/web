@@ -167,7 +167,7 @@ class App extends React.Component {
                             <input type="password" autocomplete="new-password" ref="signup_password" name="signup_password" placeholder="Password" />
                         </div>
                         <div className="modal_input-wrapper">
-                            <a className="btn modal_form_submit" onClick={this.handleSignupSubmit}>Sign Up</a>
+                            <a className="btn btn-secondary modal_form_submit" onClick={this.handleSignupSubmit}>Sign Up</a>
                         </div>
                     </form>
                     { user.has('signupError') && <div className="modal-auth_error">{user.get('signupError')}</div> }

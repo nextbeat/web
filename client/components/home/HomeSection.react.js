@@ -6,6 +6,8 @@ import Icon from '../shared/Icon.react'
 
 const DEFAULT_ITEM_WIDTH = 220;
 const MARGIN_WIDTH = 10;
+const BADGE_OFFSET_LEFT = 5;
+const BADGE_OFFSET_TOP = 5;
 
 class HomeSection extends React.Component {
 
@@ -26,9 +28,9 @@ class HomeSection extends React.Component {
 
     componentDidMount() {
         const node = $(this._node);
-        const parent = node.parent();
-        $(window).on(`resize.section${this.props.index}`, this.resize.bind(this, node, parent));
-        this.resize(node, parent);
+        const content = node.parent().parent();
+        $(window).on(`resize.section${this.props.index}`, this.resize.bind(this, node, content));
+        this.resize(node, content);
     }
 
     componentWillUnmount() {
@@ -40,6 +42,7 @@ class HomeSection extends React.Component {
     resize(node, parent) {
         const { leftIndex, numAcross } = this.state 
         const { stacks } = this.props 
+        console.log(parent.width())
 
         /**
          * We use component state to dynamically resize the stacks list and shift
@@ -105,8 +108,8 @@ class HomeSection extends React.Component {
         const sectionUrl = section.get('slug') ? `/s/${section.get('slug')}` : section.get('url', '#');
 
         const highlightedKlass = section.get('highlighted_') ? "highlighted" : ""
-        const leftOffset = -(leftIndex*itemWidth + leftIndex*MARGIN_WIDTH) + 'px'
-        const innerWidth = numAcross*itemWidth + (numAcross-1)*MARGIN_WIDTH + 'px'
+        const leftOffset = -(leftIndex*itemWidth + leftIndex*MARGIN_WIDTH - BADGE_OFFSET_LEFT) + 'px'
+        const innerWidth = numAcross*itemWidth + (numAcross-1)*MARGIN_WIDTH + BADGE_OFFSET_LEFT + 'px'
 
         const leftDisplay = leftIndex > 0 ? "block" : "none"
         const rightDisplay = leftIndex < stacks.size-numAcross ? "block" : "none"

@@ -39,6 +39,17 @@ button:hover
 }
 
 /*
+ * Removes ugly styling from input elements on Mobile Safari.
+ */
+textarea,
+input[type="text"],
+input[type="button"],
+input[type="submit"] {
+     -webkit-appearance: none;
+     border-radius: 0;
+}
+
+/*
  * In Webkit, removes yellow background from form elements.
  */
 input:-webkit-autofill {

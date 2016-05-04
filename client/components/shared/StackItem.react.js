@@ -5,7 +5,7 @@ import { Map } from 'immutable'
 import { without } from 'lodash'
 import moment from 'moment'
 
-import OpenBadge from './OpenBadge.react'
+import Badge from './Badge.react'
 
 class StackItem extends React.Component {
 
@@ -76,8 +76,8 @@ class StackItem extends React.Component {
                             </div>
                         </div>
                     </div>
-                    {!stack.get('closed') && <OpenBadge type="item-room" />}
-                    {user && user.hasUnreadNotificationsForStack(stack.get('id')) && <span className="item-room_notification">NEW</span>}
+                    {!stack.get('closed') && <Badge elementType="item-room" type="open" />}
+                    {user && user.hasUnreadNotificationsForStack(stack.get('id')) && <Badge elementType="item-room" type="new" />}
                 </div>
             </Link>
             </div>
