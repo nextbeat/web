@@ -105,12 +105,7 @@ class Sidebar extends React.Component {
             <div className="sidebar">
 
                 <div className="sidebar_expanded">
-                    <div className="sidebar_collapse-icon" onClick={this.toggleActive}><Icon type="chevron-left" /></div>
-                    <div className="sidebar_section">
-                        <span className="sidebar_logo"><Link to="/"><Logo /></Link></span>
-                        { user.isLoggedIn() ? this.renderLoggedIn() : this.renderGuest() }
-                    </div>
-                    <div className="separator" />
+                    <div className="sidebar_collapse-icon" onClick={this.toggleActive}><Icon type="chevron-left" /></div>    
                     { user.isLoggedIn() && user.isFetchingUserData() && <Spinner type="grey" /> }
                     { user.isLoggedIn() && !user.isFetchingUserData() &&
                         <div>
@@ -144,5 +139,12 @@ class Sidebar extends React.Component {
         );
     }
 }
+
+/*
+ <div className="sidebar_section">
+    <span className="sidebar_logo"><Link to="/"><Logo /></Link></span>
+    { user.isLoggedIn() ? this.renderLoggedIn() : this.renderGuest() }
+</div>
+*/
 
 export default Sidebar;

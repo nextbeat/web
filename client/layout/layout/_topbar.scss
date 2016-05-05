@@ -1,0 +1,76 @@
+.topbar {
+    width: 100%;
+    height: 50px;
+    background: $dark-background-color;
+    position: relative;
+
+    border-bottom: 1px solid $border-color;
+}
+
+.topbar_logo-container {
+    position: relative;
+    width: $sidebar-width;
+    height: 100%;
+    display: inline-block;
+}
+
+.topbar_logo {
+    @include center; 
+    width: 95px;
+
+    svg {
+        fill: $primary-color;
+        width: 100%;
+    }
+
+    &:hover svg {
+        fill: $light-primary-color;
+    }
+}
+
+.topbar_search {
+    display: inline-block;
+    vertical-align: top;
+    height: 100%;
+    position: relative;
+    width: 300px;
+
+    .svg-icon-search {
+        z-index: 10;
+        display: block;
+        @include centerY;
+        width: 18px;
+        left: auto;
+        right: 12px;
+        padding-top: 3px;
+    }
+}
+
+input.topbar_search-bar {
+    @include centerY;
+    width: 100%;
+    height: 33px;
+    border-radius: 8px;
+    padding: 5px 40px 5px 10px;
+    font-size: 14px;
+    font-weight: 300;
+    color: $text-color;
+
+    &::placeholder {
+        color: #ccc;
+    }
+}
+
+.topbar_user {
+    position: absolute;
+    height: 100%;
+    right: 0;
+    top: 0;
+    padding: 12px 10px;
+    display: inline-block;
+
+    .btn {
+        display: inline-block;
+        margin-left: 10px;
+    }
+}
