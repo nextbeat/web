@@ -42,7 +42,6 @@ class HomeSection extends React.Component {
     resize(node, parent) {
         const { leftIndex, numAcross } = this.state 
         const { stacks } = this.props 
-        console.log(parent.width())
 
         /**
          * We use component state to dynamically resize the stacks list and shift

@@ -46,8 +46,8 @@ class ProfileComponent extends React.Component {
 
                 { openStacks.size > 0 && 
                 <div>
-                    <div className="profile_header">OPEN</div>
-                    <div className="profile_rooms">
+                    <div className="rooms-list_header">OPEN</div>
+                    <div className="rooms-list_rooms">
                         { openStacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
                     </div>
                 </div>
@@ -56,15 +56,15 @@ class ProfileComponent extends React.Component {
                 { /* Show no-content history only if the user has no open stacks */ }
                 { (closedStacks.size > 0 || (openStacks.size === 0 && !profile.stacksFetching())) && 
                 <div>
-                    <div className="profile_header">HISTORY</div>
-                    <div className="profile_rooms">
+                    <div className="rooms-list_header">HISTORY</div>
+                    <div className="rooms-list_rooms">
                         { closedStacks.size === 0 && !profile.stacksFetching() && <div className="profile_no-content">{profile.get('username')} has not made any rooms!</div> }
                         { closedStacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
                     </div>
                 </div>
                 }
 
-                { profile.stacksFetching() && <Spinner type="grey profile-rooms" /> }
+                { profile.stacksFetching() && <Spinner type="grey rooms-list" /> }
             </section>
         )
     }

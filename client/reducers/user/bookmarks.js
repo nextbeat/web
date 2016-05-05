@@ -13,14 +13,14 @@ function bookmarks(stackStatus, state=Map(), action) {
             }
             return state;
 
-        } else if (action.type === ActionTypes.BOOKMARK && action.status === Status.SUCCESS) {
+        } else if (action.type === ActionTypes.BOOKMARK && action.status === Status.SUCCESS && action.stackStatus === 'open') {
 
             if (state.get('ids', List()).includes(action.id)) {
                 return state;
             }
             return state.update('ids', List(), ids => ids.unshift(action.id));
 
-        } else if (action.type === ActionTypes.UNBOOKMARK && action.status === Status.SUCCESS) {
+        } else if (action.type === ActionTypes.UNBOOKMARK && action.status === Status.SUCCESS && action.stackStatus === 'open') {
 
             const index = state.get('ids', List()).indexOf(action.id);
             if (index === -1) {
@@ -28,6 +28,9 @@ function bookmarks(stackStatus, state=Map(), action) {
             }
             return state.update('ids', List(), ids => ids.delete(index));
 
+        } else if (action.type === ActionTypes.CLEAR_CLOSED_BOOKMARKED_STACKS && action.stackStatus === 'closed') {
+
+            return Map();
         }
     }
     return state;

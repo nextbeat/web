@@ -116,8 +116,9 @@ class Sidebar extends React.Component {
                         <div>
                             <div className="sidebar_bookmarks sidebar_section">
                                 <h1>BOOKMARKS</h1>
-                                {user.bookmarkedStacks().size === 0 && <div className="sidebar_no-content">You have no open bookmarks.</div>}
-                                {user.bookmarkedStacks().map(stack => this.renderStackItem(stack))}
+                                {user.openBookmarkedStacks().size === 0 && <div className="sidebar_no-content">You have no open bookmarks.</div>}
+                                {user.openBookmarkedStacks().map(stack => this.renderStackItem(stack))}
+                                <Link to="/bookmarks" className="sidebar_bookmarks-see-all">See All</Link>
                             </div>
                             <div className="separator" />
                             <div className="sidebar_subscriptions sidebar_section">

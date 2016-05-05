@@ -7,6 +7,7 @@ import Promise from 'bluebird'
 import configureStore from './store'
 
 import App from './components/App.react'
+import Bookmarks from './components/Bookmarks.react'
 import Room from './components/Room.react'
 import Profile from './components/Profile.react'
 import Tag from './components/Tag.react'
@@ -54,6 +55,7 @@ render(
                 <Route path="/r/:stack_id" component={Room} />
                 <Route path="/u/:username" component={Profile} />
                 <Route path="/t/:name" component={Tag} />
+                <Route path="/bookmarks" component={Bookmarks} />
                 <Route path="*" component={NoMatch} />
             </Route>
         </Router>

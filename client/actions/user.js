@@ -278,3 +278,10 @@ export function clearLogin() {
 export function clearSignup() {
     return clearLoginSignup()
 }
+
+export function clearClosedBookmarkedStacks() {
+    return {
+        type: ActionTypes.CLEAR_CLOSED_BOOKMARKED_STACKS,
+        stackStatus: 'closed'
+    }
+}

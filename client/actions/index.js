@@ -55,7 +55,8 @@ export {
     syncNotifications,
     markStackAsRead,
     clearLogin,
-    clearSignup
+    clearSignup,
+    clearClosedBookmarkedStacks,
 } from './user'
 
 export {
