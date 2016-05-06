@@ -82,6 +82,13 @@ export default {
     SYNC_NOTIFICATIONS: 'SYNC_NOTIFICATIONS',
     MARK_AS_READ: 'MARK_AS_READ',
 
+    /********
+     * SEARCH
+     ********/
+
+    SEARCH: 'SEARCH',
+    CLEAR_SEARCH: 'CLEAR_SEARCH',
+
     /******
      * XMPP
      ******/
