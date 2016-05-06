@@ -18,11 +18,11 @@ class Sidebar extends React.Component {
 
     componentDidMount() {
         $('.sidebar').on('click', (e) => {
-            const $section = $(e.target.closest('.sidebar_section, .sidebar_logo'))
+            const $section = $(e.target.closest('.sidebar_section'))
             if ($section.hasClass('sidebar_bookmarks') || $section.hasClass('sidebar_subscriptions') 
-                || $section.hasClass('sidebar_categories') || $section.hasClass('sidebar_logo')) 
+                || $section.hasClass('sidebar_categories')) 
             {
-                $('.sidebar_expanded').removeClass('active-small');
+                $('.sidebar').removeClass('active');
                 $('.detail-bar').removeClass('active');
             }  
         })
@@ -34,15 +34,15 @@ class Sidebar extends React.Component {
 
     // Accessors
 
-    toggleActive() {
-        if ($('.sidebar').hasClass('collapsed-side')) {
-            $('.sidebar_expanded').toggleClass('active-medium');
-        } else {
-            $('.sidebar_expanded').toggleClass('active-small');
-            $('.detail-bar').removeClass('active');
-        }
-        $(window).resize() // trigger resize event
-    }   
+    // toggleActive() {
+    //     if ($('.sidebar').hasClass('collapsed-side')) {
+    //         $('.sidebar_expanded').toggleClass('active-medium');
+    //     } else {
+    //         $('.sidebar_expanded').toggleClass('active-small');
+    //         $('.detail-bar').removeClass('active');
+    //     }
+    //     $(window).resize() // trigger resize event
+    // }   
 
     // Render
 
@@ -104,37 +104,30 @@ class Sidebar extends React.Component {
         return (
             <div className="sidebar">
 
-                <div className="sidebar_expanded">
-                    <div className="sidebar_collapse-icon" onClick={this.toggleActive}><Icon type="chevron-left" /></div>    
-                    { user.isLoggedIn() && user.isFetchingUserData() && <Spinner type="grey" /> }
-                    { user.isLoggedIn() && !user.isFetchingUserData() &&
-                        <div>
-                            <div className="sidebar_bookmarks sidebar_section">
-                                <h1>BOOKMARKS</h1>
-                                {user.openBookmarkedStacks().size === 0 && <div className="sidebar_no-content">You have no open bookmarks.</div>}
-                                {user.openBookmarkedStacks().map(stack => this.renderStackItem(stack))}
-                                <Link to="/bookmarks" className="sidebar_bookmarks-see-all">See All</Link>
-                            </div>
-                            <div className="separator" />
-                            <div className="sidebar_subscriptions sidebar_section">
-                                <h1>SUBSCRIPTIONS</h1>
-                                {user.subscriptions().size === 0 && <div className="sidebar_no-content">You have no subscriptions.</div>}
-                                {user.subscriptions().map(sub => this.renderSubscription(sub))}
-                            </div>
-                            <div className="separator" />
+                { user.isLoggedIn() && user.isFetchingUserData() && <Spinner type="grey" /> }
+                { user.isLoggedIn() && !user.isFetchingUserData() &&
+                    <div>
+                        <div className="sidebar_bookmarks sidebar_section">
+                            <h1>BOOKMARKS</h1>
+                            {user.openBookmarkedStacks().size === 0 && <div className="sidebar_no-content">You have no open bookmarks.</div>}
+                            {user.openBookmarkedStacks().map(stack => this.renderStackItem(stack))}
+                            <Link to="/bookmarks" className="sidebar_bookmarks-see-all">See All</Link>
                         </div>
-                    }
-                    <div className="sidebar_categories sidebar_section">
-                        <h1>POPULAR TAGS</h1>
-                        { app.get('tagsFetching') && <Spinner type="grey" />}
-                        { app.tags().map(tag => this.renderTag(tag)) }
+                        <div className="separator" />
+                        <div className="sidebar_subscriptions sidebar_section">
+                            <h1>SUBSCRIPTIONS</h1>
+                            {user.subscriptions().size === 0 && <div className="sidebar_no-content">You have no subscriptions.</div>}
+                            {user.subscriptions().map(sub => this.renderSubscription(sub))}
+                        </div>
+                        <div className="separator" />
                     </div>
+                }
+                <div className="sidebar_categories sidebar_section">
+                    <h1>POPULAR TAGS</h1>
+                    { app.get('tagsFetching') && <Spinner type="grey" />}
+                    { app.tags().map(tag => this.renderTag(tag)) }
                 </div>
 
-                <div className="sidebar_collapsed">
-                    <span className="sidebar_logo"><Link to="/"><Logo /></Link></span>
-                    <div className="sidebar_menu-icon" onClick={this.toggleActive}><Icon type="menu" /></div>
-                </div>
             </div>
         );
     }

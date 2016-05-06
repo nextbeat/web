@@ -35,141 +35,75 @@
         }
     }
 
-    .sidebar_collapsed {
+    &.collapsed {
         display: none;
     }
 
-    // collapsed bar on side
-    &.collapsed-side {
-        width: $sidebar-closed-width;
-        padding: 0;
-        overflow: visible;
-
-        .sidebar_collapsed {
-            display: block;
-
-            .svg-icon-menu {
-                margin: 12px auto;
-            }
-
-            .sidebar_logo {
-                display: none;
-            }
-        }
-
-        .sidebar_expanded {
-            position: absolute;
-            background: white;
-            border-right: 1px solid $border-color;
-            width: $sidebar-width;
-            padding: 15px;
-            left: -$sidebar-width;
-            z-index: 20;
-            transition: left 0.3s;
-
-            &.active-medium {
-                left: 0;
-            }
-
-            &.active-medium .sidebar_collapse-icon {
-                display: block;
-            }
-        }
+    &.collapsed.active {
+        display: block;
+        z-index: 30;
     }
 
-    // collapsed bar on top
+    // // collapsed bar on side
+    // &.collapsed-side {
+    //     width: $sidebar-closed-width;
+    //     padding: 0;
+    //     overflow: visible;
+
+    //     .sidebar_collapsed {
+    //         display: block;
+
+    //         .svg-icon-menu {
+    //             margin: 12px auto;
+    //         }
+
+    //         .sidebar_logo {
+    //             display: none;
+    //         }
+    //     }
+
+    //     .sidebar_expanded {
+    //         position: absolute;
+    //         background: white;
+    //         border-right: 1px solid $border-color;
+    //         width: $sidebar-width;
+    //         padding: 15px;
+    //         left: -$sidebar-width;
+    //         z-index: 20;
+    //         transition: left 0.3s;
+
+    //         &.active-medium {
+    //             left: 0;
+    //         }
+
+    //         &.active-medium .sidebar_collapse-icon {
+    //             display: block;
+    //         }
+    //     }
+    // }
+
+    // hidden by default, expands to fill width of screen
     @include media('<=medium') {
-        width: 100%;
-        padding: 0;
-        position: static;
-        height: 50px;
-        border-right: none;
-        border-bottom: 1px solid $border-color;
 
-        .sidebar_collapsed {
+        display: none;
+
+        &.active {
             display: block;
-            height: 100%;
-
-            & > div {
-                height: 100%;
-                position: relative;
-            }
-
-            .svg-icon {
-                @include centerY;
-                margin: auto 15px;
-                width: 30px;
-                height: 30px;
-            }
-
-            .sidebar_logo {
-                position: absolute;
-                display: block;
-                margin-top: 15px;
-            }
+            position: absolute;
+            width: 100%;
+            border: none;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            z-index: 30;
         }
 
-        .sidebar_expanded {
-            display: none;
-            padding: 15px;
-
-            &.active-small {
-                display: block;
-                position: absolute;
-                top: 50px;
-                left: 0;
-                bottom: 0;
-                right: 0;
-                z-index: 30;
-            }
-        }
-
-        .sidebar_logo {
-            display: none;
-        }
     } 
-
-    @include media ('<=small') {
-        .sidebar_collapsed .sidebar_logo {
-            margin-top: 17px;
-            svg {
-                width: 80px;
-            }
-        }
-    }
-}
-
-.sidebar_expanded {
-    height: 100%;
-    background: white;
-}
-
-.sidebar_collapse-icon {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border-radius: 0 3px 3px 0;
-    border: 1px solid $border-color;
-    border-left: none;
-    background: white;
-    right: -20px;
-    top: 10px;
-    z-index: 19;
-    display: none;
-
-    .svg-icon {
-        width: 100%;
-        height: 100%;
-    }
 }
 
 .sidebar_section {
     margin-bottom: 15px;
-}
-
-.sidebar_menu-icon {
-    display: block;
-    width: $sidebar_closed_width - 1px;
 }
 
 

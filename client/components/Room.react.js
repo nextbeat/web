@@ -30,15 +30,17 @@ class Theater extends React.Component {
 
         $(window).resize(this.resize)
         this.resize();
+        $('.topbar').addClass('topbar-in-room');
     }
 
     componentWillUnmount() {
         this.props.dispatch(clearStack());
 
         $(window).off("resize", this.resize);
-        $('.sidebar').removeClass('collapsed-side');
+        $('.sidebar').removeClass('collapsed');
         $('.main').removeClass('expand-left');
-        $('.sidebar_expanded').removeClass('active-medium');
+        $('.topbar_menu-icon').removeClass('active');
+        $('.topbar').removeClass('topbar-in-room');
     }
 
     componentDidUpdate(prevProps) {
@@ -61,12 +63,13 @@ class Theater extends React.Component {
     resize() {
 
         if ($('.app-container').width() < 1100 && !Modernizr.mq('(max-width:800px)')) {
-            $('.sidebar').addClass('collapsed-side');
+            $('.sidebar').addClass('collapsed');
             $('.main').addClass('expand-left');
+            $('.topbar_menu-icon').addClass('active');
         } else {
-            $('.sidebar').removeClass('collapsed-side');
+            $('.sidebar').removeClass('collapsed');
             $('.main').removeClass('expand-left');
-            $('.sidebar_expanded').removeClass('active-medium');
+            $('.topbar_menu-icon').removeClass('active');
         }
 
     }

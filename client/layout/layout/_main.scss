@@ -5,12 +5,11 @@
     margin-left: $sidebar-width;
 
     &.expand-left {
-        margin-left: $sidebar-closed-width;
+        margin-left: 0;
     }
 
     @include media('<=medium') {
         margin-left: 0;
-        height: calc(100% - 50px);
     }
 
 }

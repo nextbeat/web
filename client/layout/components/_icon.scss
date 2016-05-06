@@ -9,3 +9,16 @@
         height: 100%;
     }
 }
+
+/*
+ * Icon-specific styles
+ */
+
+.svg-icon-small-logo {
+    .cls-1 {
+        fill: $primary-color;
+    }
+    .cls-2 {
+        fill: white;
+    }
+}

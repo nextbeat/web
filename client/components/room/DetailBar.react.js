@@ -20,7 +20,7 @@ class DetailBar extends React.Component {
         } else {
             $('.detail-bar').addClass('active');
         }
-        $('.sidebar_expanded').removeClass('active-small');
+        $('.sidebar').removeClass('active');
         this.setState({ selected })
     }
 

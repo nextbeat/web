@@ -7,6 +7,29 @@
     border-bottom: 1px solid $border-color;
 }
 
+.topbar_menu-icon {
+    width: 30px;
+    height: 30px;
+    display: none;
+    position: absolute;
+    z-index: 30;
+    top: 10px;
+    left: 10px;
+
+    &.active {
+        display: block;
+    }
+
+    .svg-icon-menu {
+        fill: $primary-color;
+    }
+
+    &:hover .svg-icon-menu {
+        fill: $light-primary-color;
+        cursor: pointer;
+    }
+}
+
 .topbar_logo-container {
     position: relative;
     width: $sidebar-width;
@@ -26,6 +49,12 @@
     &:hover svg {
         fill: $light-primary-color;
     }
+}
+
+.topbar_logo-small {
+    display: none;
+    @include center;
+    width: 30px;
 }
 
 .topbar_search {
@@ -72,5 +101,86 @@ input.topbar_search-bar {
     .btn {
         display: inline-block;
         margin-left: 10px;
+    }
+}
+
+a.topbar_username {
+    font-size: 13px;
+    font-weight: bold;
+    color: $text-color;
+    margin-right: 10px;
+}
+
+.topbar_logout {
+    font-size: 13px;
+    font-weight: normal;
+}
+
+// Responsiveness
+
+.topbar {
+    @include media('<=medium') {
+        .topbar_menu-icon {
+            display: block;
+        }
+
+        .topbar_logo-container {
+            margin-left: 55px;
+            width: 120px;
+        }
+
+        .topbar_logo {
+            left: 0;
+            width: 80px;
+            transform: translateY(-50%);
+        }
+
+        .topbar_search {
+            position: absolute;
+            display: block;
+            top: 0;
+            left: 0;
+            max-width: calc(100% - 310px);
+            margin-left: 150px;
+            margin-right: 160px;
+        }
+    }
+
+    @include media('<=small') {
+        .topbar_logo-container {
+            width: 40px;
+        }
+
+        .topbar_logo {
+            display: none;
+        }
+
+        .topbar_logo-small {
+            display: block;
+        }
+
+        .topbar_search {
+            position: absolute;
+            display: block;
+            top: 0;
+            left: 0;
+            max-width: calc(100% - 220px);
+            margin-left: 110px;
+            margin-right: 110px;
+        }
+
+        .topbar_signup {
+            display: none;
+        }
+    }
+}
+
+// In-room responsiveness
+
+.topbar.topbar-in-room {
+    @include media('<=medium') {
+        .topbar_user {
+            display: none;
+        }
     }
 }
