@@ -19,6 +19,7 @@ const SEARCH_TYPES = {
  **********/
 
 function fetchSearchResults(query, searchType, pagination) {
+    console.log(searchType)
     const { endpoint, schema } = SEARCH_TYPES[searchType];
     return {
         type: ActionTypes.SEARCH,
@@ -34,7 +35,7 @@ function fetchSearchResults(query, searchType, pagination) {
 }
 
 export function loadSearchResults(query, searchType) {
-    return loadPaginatedObjects('search', searchType, fetchSearchResults.bind(query, searchType), 15)
+    return loadPaginatedObjects('search', searchType, fetchSearchResults.bind(this, query, searchType), 15)
 }
 
 /*******

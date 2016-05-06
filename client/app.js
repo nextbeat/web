@@ -13,6 +13,7 @@ import Profile from './components/Profile.react'
 import Tag from './components/Tag.react'
 import Home from './components/Home.react'
 import Section from './components/Section.react'
+import Search from './components/Search.react'
 import PasswordResetRequest from './components/support/PasswordResetRequest.react'
 import PasswordReset from './components/support/PasswordReset.react'
 import NoMatch from './components/NoMatch.react'
@@ -55,6 +56,7 @@ render(
                 <Route path="/r/:stack_id" component={Room} />
                 <Route path="/u/:username" component={Profile} />
                 <Route path="/t/:name" component={Tag} />
+                <Route path="/search" component={Search} />
                 <Route path="/bookmarks" component={Bookmarks} />
                 <Route path="*" component={NoMatch} />
             </Route>

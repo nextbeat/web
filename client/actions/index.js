@@ -60,6 +60,11 @@ export {
 } from './user'
 
 export {
+    loadSearchResults,
+    clearSearch
+} from './search'
+
+export {
     connectToXMPP,
     disconnectXMPP,
     joinRoom,

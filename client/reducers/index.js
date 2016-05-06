@@ -9,6 +9,7 @@ import stack from './stack'
 import profile from './profile'
 import support from './support'
 import tag from './tag'
+import search from './search'
 import { combineReducers } from './utils'
 import { Status, ActionTypes } from '../actions'
 
@@ -54,5 +55,6 @@ export default combineReducers({
     profile,
     tag,
     user,
+    search,
     support
 })

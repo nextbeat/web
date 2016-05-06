@@ -2,7 +2,11 @@ import { Map } from 'immutable'
 import { ActionTypes, Status } from '../../actions'
 import { combineReducers, entity, paginate } from '../utils'
 
-function meta(state, action) {
+const initialMetaState = Map({
+    searchType: 'users'
+})
+
+function meta(state=initialMetaState, action) {
     if (action.type === ActionTypes.SEARCH) {
         return state.merge({
             searchType: action.searchType,
@@ -12,7 +16,7 @@ function meta(state, action) {
     return state;
 }
 
-function pagination(state, action) {
+function pagination(state=Map(), action) {
     if (action.type === ActionTypes.SEARCH) {
         return state.set(action.searchType, paginate(ActionTypes.SEARCH)(state, action))
     }
