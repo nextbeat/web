@@ -3,9 +3,12 @@ import ModelBase from './base'
 const KEY_MAP = {
     // meta
     'query': ['search', 'meta', 'query'],
-    'searchType': ['search', 'meta', 'searchType']
+    'searchType': ['search', 'meta', 'searchType'],
     // pagination
-    // TODO
+    'usersFetching': ['search', 'pagination', 'users', 'isFetching'],
+    'usersError': ['search', 'pagination', 'users', 'error'],
+    'tagsFetching': ['search', 'pagination', 'tags', 'isFetching'],
+    'tagsError': ['search', 'pagination', 'tags', 'error']
 }
 
 export default class Search extends ModelBase {

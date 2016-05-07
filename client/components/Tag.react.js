@@ -83,9 +83,9 @@ class TagComponent extends React.Component {
         const selectedSort = type => tag.get('sort') === type ? "selected" : ""
         return (
             <div>   
-                <div className="tag_filters">
+                <div className="filters">
                     { SORT_TYPES.map(sort => 
-                        <span key={`sort${sort.name}`} className={`tag_filter ${selectedSort(sort.name)}`} onClick={this.setSort.bind(this, sort.name)}>{sort.display}</span>
+                        <span key={`sort${sort.name}`} className={`filter ${selectedSort(sort.name)}`} onClick={this.setSort.bind(this, sort.name)}>{sort.display}</span>
                     )}
                 </div>
                 <div className="tag_stacks">

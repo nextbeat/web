@@ -3,6 +3,10 @@
     display: inline-block;
     min-width: 150px;
     @include clearfix;
+
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 .user_profpic {
@@ -31,6 +35,10 @@
     color: $text-color;
     float: left;
     margin-left: 10px;
+
+    &:hover {
+        color: $primary-color;
+    }
 }
 
 .user_subscribe {

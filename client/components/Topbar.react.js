@@ -1,5 +1,6 @@
 import React from 'react'
-import { Link } from 'react-router'
+import { findDOMNode } from 'react-dom'
+import { Link, browserHistory } from 'react-router'
 
 import Icon from './shared/Icon.react'
 import Logo from './shared/Logo.react'
@@ -10,6 +11,7 @@ class Topbar extends React.Component {
     constructor(props) {
         super(props);
 
+        this.handleSearchKeyPress = this.handleSearchKeyPress.bind(this);
         this.renderLoggedIn = this.renderLoggedIn.bind(this);
         this.renderGuest = this.renderGuest.bind(this);
     }
@@ -17,6 +19,19 @@ class Topbar extends React.Component {
     toggleSidebar() {
         $('.sidebar').toggleClass('active');
         $('.detail-bar').removeClass('active');
+    }
+
+    handleSearchKeyPress(e) {
+        if (e.charCode === 13) { // enter
+            const query = findDOMNode(this.refs.search_bar).value;
+            if (query && query.length > 0) {
+                browserHistory.push({
+                    pathname: '/search',
+                    query: { q: query }
+                })
+                findDOMNode(this.refs.search_bar).value = '';
+            }
+        }
     }
 
     renderLoggedIn() {
@@ -49,7 +64,7 @@ class Topbar extends React.Component {
                     <span className="topbar_logo-small"><Link to="/"><SmallLogo /></Link></span>
                 </div>
                 <div className="topbar_search">
-                    <input className="topbar_search-bar" type="text" placeholder="Search" /><Icon type="search" />
+                    <input className="topbar_search-bar" type="text" placeholder="Search" ref="search_bar" onKeyPress={this.handleSearchKeyPress} /><Icon type="search" />
                 </div>
                 { user.isLoggedIn() ? this.renderLoggedIn() : this.renderGuest() }
             </div>

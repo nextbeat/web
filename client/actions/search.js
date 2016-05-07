@@ -2,6 +2,7 @@ import ActionTypes from './types'
 import Schemas from '../schemas'
 import { loadPaginatedObjects } from './utils'
 import { API_CALL, API_CANCEL } from './types'
+import { Search } from '../models'
 
 const SEARCH_TYPES = {
     'tags': {
@@ -19,7 +20,6 @@ const SEARCH_TYPES = {
  **********/
 
 function fetchSearchResults(query, searchType, pagination) {
-    console.log(searchType)
     const { endpoint, schema } = SEARCH_TYPES[searchType];
     return {
         type: ActionTypes.SEARCH,
@@ -35,7 +35,13 @@ function fetchSearchResults(query, searchType, pagination) {
 }
 
 export function loadSearchResults(query, searchType) {
-    return loadPaginatedObjects('search', searchType, fetchSearchResults.bind(this, query, searchType), 15)
+    return (dispatch, getState) => {
+        const search = new Search(getState())
+        if (searchType !== search.get('searchType')) {
+            dispatch(clearSearch())
+        }
+        loadPaginatedObjects('search', searchType, fetchSearchResults.bind(this, query, searchType), 15)(dispatch, getState)
+    }
 }
 
 /*******
