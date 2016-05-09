@@ -21,6 +21,27 @@ class Topbar extends React.Component {
         $('.detail-bar').removeClass('active');
     }
 
+    toggleUserDropdown() {
+        const $dropdown = $('.topbar_dropdown');
+        if (!$dropdown.is(':visible')) {
+            // add event which detects clicks outside of dropdown to close it
+            $(document).on('mouseup.hideDropdown', function(e) {
+                // check that target isn't div. note that we DO want to hide if the 
+                // target is one of the div's descendants, since all of those are 
+                // links which should, on click, collapse the dropdown
+                if (!$dropdown.is(e.target)) {
+                    $dropdown.hide();
+                }
+            });
+            $dropdown.show();
+        } else {
+            // unbind event when dropdown is hidden
+            $(document).off('.hideDropdown');
+            $dropdown.hide();
+        }
+
+    }
+
     handleSearchKeyPress(e) {
         if (e.charCode === 13) { // enter
             const query = findDOMNode(this.refs.search_bar).value;
@@ -35,11 +56,11 @@ class Topbar extends React.Component {
     }
 
     renderLoggedIn() {
-        const { user, handleLogoutClick } = this.props;
+        const { user } = this.props;
+        const profpic_url = user.profileThumbnailUrl();
         return (
             <div className="topbar_user">
-                <Link to={`/u/${user.get('username')}`} className="topbar_username">{ user.get('username') }</Link>
-                <a className="topbar_logout" onClick={handleLogoutClick}>Log Out</a>
+                <span className="topbar_user-icon" onClick={this.toggleUserDropdown} >{ profpic_url ? <img src={profpic_url} /> : <Icon type="person" /> }</span>
             </div>
         )
     }
@@ -52,6 +73,16 @@ class Topbar extends React.Component {
                 <a className="btn btn-secondary topbar_signup" onClick={handleSignupClick}>Sign Up</a>
             </div>
         )
+    }
+
+    renderUserDropdown() {
+        const { user, handleLogoutClick } = this.props 
+        return (
+            <div className="topbar_dropdown">
+                <Link to={`/u/${user.get('username')}`} className="topbar_dropdown-option">Profile</Link>
+                <a onClick={handleLogoutClick} className="topbar_dropdown-option">Log Out</a>
+            </div>
+        )   
     }
 
     render() {
@@ -67,6 +98,7 @@ class Topbar extends React.Component {
                     <input className="topbar_search-bar" type="text" placeholder="Search" ref="search_bar" onKeyPress={this.handleSearchKeyPress} /><Icon type="search" />
                 </div>
                 { user.isLoggedIn() ? this.renderLoggedIn() : this.renderGuest() }
+                { this.renderUserDropdown() }
             </div>
         );
     }

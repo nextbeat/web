@@ -44,44 +44,6 @@
         z-index: 30;
     }
 
-    // // collapsed bar on side
-    // &.collapsed-side {
-    //     width: $sidebar-closed-width;
-    //     padding: 0;
-    //     overflow: visible;
-
-    //     .sidebar_collapsed {
-    //         display: block;
-
-    //         .svg-icon-menu {
-    //             margin: 12px auto;
-    //         }
-
-    //         .sidebar_logo {
-    //             display: none;
-    //         }
-    //     }
-
-    //     .sidebar_expanded {
-    //         position: absolute;
-    //         background: white;
-    //         border-right: 1px solid $border-color;
-    //         width: $sidebar-width;
-    //         padding: 15px;
-    //         left: -$sidebar-width;
-    //         z-index: 20;
-    //         transition: left 0.3s;
-
-    //         &.active-medium {
-    //             left: 0;
-    //         }
-
-    //         &.active-medium .sidebar_collapse-icon {
-    //             display: block;
-    //         }
-    //     }
-    // }
-
     // hidden by default, expands to fill width of screen
     @include media('<=medium') {
 

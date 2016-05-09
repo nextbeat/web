@@ -10,9 +10,6 @@ const KEY_MAP = {
     'loginError': ['user', 'meta', 'loginError'],
     'isSigningUp': ['user', 'meta', 'isSigningUp'],
     'signupError': ['user', 'meta', 'signupError'],
-    'token': ['user', 'meta', 'token'],
-    'username': ['user', 'meta', 'username'],
-    'uuid': ['user', 'meta', 'uuid'],
     // live
     'connected': ['user', 'live', 'connected'],
     'client': ['user', 'live', 'client'],
@@ -39,11 +36,6 @@ export default class CurrentUser extends ModelBase {
         this.keyMap = KEY_MAP;
         this.name = "user";
         this.entityName = "users";
-    }
-
-    entity() {
-        // todo: create user entity (involves changing passport serialization)
-        return Map();
     }
 
     profileThumbnailUrl() {

@@ -324,6 +324,7 @@ html, body {
   height: 50px;
   background: #f6f6f6;
   position: relative;
+  overflow: visible;
   border-bottom: 1px solid #ddd; }
 
 .topbar_menu-icon {
@@ -424,21 +425,64 @@ input.topbar_search-bar {
   height: 100%;
   right: 0;
   top: 0;
-  padding: 12px 10px;
+  padding: 10px 10px;
   display: inline-block; }
   .topbar_user .btn {
     display: inline-block;
     margin-left: 10px; }
 
-a.topbar_username {
-  font-size: 13px;
-  font-weight: bold;
-  color: #333;
-  margin-right: 10px; }
+.topbar_user-icon {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 5px;
+  margin-right: 3px;
+  background: #ddd; }
+  .topbar_user-icon img {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%); }
+  .topbar_user-icon .svg-icon-person {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+    width: 70%;
+    height: 70%; }
+  .topbar_user-icon:hover {
+    cursor: pointer; }
 
-.topbar_logout {
-  font-size: 13px;
-  font-weight: normal; }
+.topbar_dropdown {
+  display: none;
+  z-index: 1000;
+  position: absolute;
+  top: 45px;
+  right: 10px;
+  width: 80px;
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 0 13px rgba(0, 0, 0, 0.11); }
+
+a.topbar_dropdown-option {
+  display: block;
+  width: 100%;
+  padding: 8px 0;
+  color: #333;
+  font-size: 14px;
+  font-weight: 300; }
+  a.topbar_dropdown-option:hover {
+    color: #f15929;
+    cursor: pointer; }
 
 @media (max-width: 800px) {
   .topbar .topbar_menu-icon {
@@ -472,9 +516,9 @@ a.topbar_username {
     display: block;
     top: 0;
     left: 0;
-    max-width: calc(100% - 220px);
+    max-width: calc(100% - 180px);
     margin-left: 110px;
-    margin-right: 110px; }
+    margin-right: 70px; }
   .topbar .topbar_signup {
     display: none; } }
 

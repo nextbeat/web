@@ -19,7 +19,7 @@ module.exports = {
         apiRouter.all('*', function(req, res) {
             var method = req.method.toLowerCase();
             var token = req.user ? req.user.token : undefined;
-            api[method](req.url, req.body, token).then(function(_res) {
+            api[method](req.url, req.body, { auth: token }).then(function(_res) {
                 // we check for the header which is set if the current token
                 // has expired, and update the user's token
                 if (req.user && _.has(_res.headers, 'x-bbl-jwt-token')) {
@@ -81,9 +81,11 @@ module.exports = {
             api.post('signup', { 
                 email: req.body.email,
                 phone: '' // avoids db null error (todo: migrate db column status)
-            },{
-                user: req.body.username,
-                pass: req.body.password
+            }, { 
+                auth: {
+                    user: req.body.username,
+                    pass: req.body.password
+                }
             }).then(function(_res) {
                 res.status(200).json(_res);
             }).catch(function(e) {
@@ -95,7 +97,7 @@ module.exports = {
         // React
 
         router.get('*', function(req, res) {
-            var state = _.assign({}, req.user, req.authInfo, { environment: process.env.NODE_ENV || "development" });
+            var state = _.assign({}, { user: req.user }, req.authInfo, { environment: process.env.NODE_ENV || "development" });
             var bundle = process.env.NODE_ENV === 'mac' ? "/js/bundle.js" : "/js/bundle.min.js";
             res.render('app', {
                 bundle: bundle,

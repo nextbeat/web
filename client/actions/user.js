@@ -1,6 +1,7 @@
 import { assign } from 'lodash'
 import { Map } from 'immutable'
 import fetch from 'isomorphic-fetch'
+import { normalize } from 'normalizr'
 
 import { Status } from './types'
 import ActionTypes from './types'
@@ -91,6 +92,10 @@ export function login(username, password) {
                 return dispatch(actionWith(Status.FAILURE, json))
             }
             dispatch(actionWith(Status.SUCCESS, { user: json }))
+            dispatch({
+                type: ActionTypes.ENTITY_UPDATE,
+                response: normalize(json, Schemas.USER)
+            })
             // we wait until the next tick so the reducer updates state first
             process.nextTick(() => {
                 dispatch(postLogin())

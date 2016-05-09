@@ -2,7 +2,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { Router, Route, IndexRoute, browserHistory } from 'react-router'
-import { Map } from 'immutable'
+import { Map, fromJS } from 'immutable'
 import Promise from 'bluebird'
 import configureStore from './store'
 
@@ -28,11 +28,19 @@ let initialState = {}
 initialState.app = Map({
     environment: state.environment
 })
-if (state.id) {
-    const { id, username, token, uuid } = state
-    initialState.user = Map({ meta: {
-        id, username, token, uuid
-    }})
+
+if (state.user && state.user.id) {
+    const { id, username, token, uuid } = state.user
+    initialState.user = Map({ 
+        meta: {
+            id
+        }
+    })
+    initialState.entities = fromJS({
+        users: {
+            [state.user.id.toString()]: state.user
+        }
+    })
 }
 if (state.error) {
     initialState.user = Map({ meta: {
