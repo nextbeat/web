@@ -23,17 +23,22 @@ class Topbar extends React.Component {
 
     toggleUserDropdown() {
         const $dropdown = $('.topbar_dropdown');
+        const $userIcon = $('.topbar_user-icon');
         if (!$dropdown.is(':visible')) {
+            $dropdown.show();
             // add event which detects clicks outside of dropdown to close it
             $(document).on('mouseup.hideDropdown', function(e) {
-                // check that target isn't div. note that we DO want to hide if the 
-                // target is one of the div's descendants, since all of those are 
+                // check that target isn't dropdown or user icon. note that we DO want to hide 
+                // if the target is one of the dropdown's descendants, since all of those are 
                 // links which should, on click, collapse the dropdown
-                if (!$dropdown.is(e.target)) {
+                if (!($dropdown.is(e.target)
+                    || $userIcon.is(e.target) 
+                    || $userIcon.has(e.target).length > 0)) 
+                {
+                    $(document).off('.hideDropdown');
                     $dropdown.hide();
                 }
             });
-            $dropdown.show();
         } else {
             // unbind event when dropdown is hidden
             $(document).off('.hideDropdown');
