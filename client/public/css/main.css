@@ -5,6 +5,7 @@
  * LAYOUT
  ********/
 @import url(https://fonts.googleapis.com/css?family=Roboto);
+@import url(https://fonts.googleapis.com/css?family=Roboto);
 body {
   font-family: 'BlinkMacSystemFont', -apple-system, sans-serif;
   color: #333;
@@ -83,6 +84,9 @@ html, body {
 *, *:before, *:after {
   box-sizing: border-box; }
 
+/*
+ * Web fonts
+ */
 /*
  * Prevents app from scrolling.
  */
@@ -1615,7 +1619,14 @@ a.item-room.selected {
   .player_main .room_counter {
     position: absolute;
     top: 0;
-    right: 0; }
+    right: 0;
+    z-index: 50;
+    margin: 10px;
+    background: rgba(224, 224, 224, 0.5);
+    padding: 5px 8px;
+    border: 1px solid rgba(153, 153, 153, 0.3);
+    color: #999;
+    font-family: 'Roboto', sans-serif; }
     @media (max-width: 800px) {
       .player_main .room_counter {
         display: none; } }
@@ -1995,8 +2006,6 @@ a.chat_mention {
  * SHARED
  ********/
 .room_counter {
-  height: 40px;
-  color: #666;
   font-size: 17px;
   display: inline-block; }
   .room_counter .selected {

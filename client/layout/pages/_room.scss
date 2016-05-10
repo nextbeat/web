@@ -43,6 +43,13 @@
         position: absolute;
         top: 0;
         right: 0;
+        z-index: 50;
+        margin: 10px;
+        background: rgba(#e0e0e0, 0.5);
+        padding: 5px 8px;
+        border: 1px solid rgba(#999, 0.3); 
+        color: #999;
+        font-family: 'Roboto', sans-serif;
 
         @include media('<=medium') {
             display: none;
@@ -535,8 +542,6 @@ a.chat_mention {
  ********/
 
 .room_counter {
-    height: 40px;
-    color: #666;
     font-size: 17px;
     display: inline-block;
 
