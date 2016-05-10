@@ -35,6 +35,39 @@
     z-index: 10;
 }
 
+.video_progress-bar-container {
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    z-index: 15;
+}
+
+.video_progress-bar {
+    position: relative;
+    height: 100%;
+    background: rgba(255,255,255,0.6);
+}
+
+.video_progress-play {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: $light-primary-color;
+    transform-origin: 0 0;
+    z-index: 20;
+}
+
+.video_progress-buffer {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: white;
+    transform-origin: 0 0;
+    z-index: 19;
+}
+
 .video_controls {
     width: 100%;
     color: white;
@@ -60,6 +93,8 @@
     }
 
     height: 100%;
+    float: left;
+    margin-left: 5px;
 }
 
 .video_control-play-pause {
@@ -81,5 +116,7 @@
         float: right;
     }
 
+    height: 100%;
+    float: right;
     @include clearfix;
 }

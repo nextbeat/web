@@ -74,33 +74,59 @@
 }
 
 .player_navigation {
-    width: 130px;
-    height: 50px;
-    margin: 0 auto;
+    width: 100%;
+    height: 60px;
+    @include clearfix;
+    border-bottom: 1px solid $border-color;
 }
 
 .player_nav-button {
-    height: 50px;
-    width: 50px;
+    height: 100%;
+    width: 50%;
+    float: left;
+    position: relative;
+    transition: box-shadow 0.2s;
 
-    .svg-icon-chevron-left, .svg-icon-chevron-right {
+    .svg-icon {
+        fill: $light-primary-color;
+        @include center;
         height: 50px;
         width: 50px;
-        fill: $primary-color;
+        transition: fill 0.2s;
+    }
 
-        &:hover {
-            fill: $light-primary-color;
+    &:hover:not(.disabled) {
+        box-shadow: inset 0px 0px 8px 2px rgba($primary-color, 0.12);
+
+        .svg-icon {
+            fill: $primary-color;
         }
+    }
+
+    &.disabled .svg-icon {
+        fill: #ccc;
     }
 }
 
 .player_nav-backward {
-    float: left;
+    border-right: 1px solid #eee;
 }
 
-.player_nav-forward {
-    float: right;
-    @include clearfix;
+// Animation to indicate progress when using arrow keys to navigate
+.player_nav-button-flash {
+    animation-duration: 0.15s;
+    animation-direction: alternate;
+    animation-iteration-count: 2;
+    animation-name: player_nav-button-flash;
+}
+
+@keyframes player_nav-button-flash {
+    from {
+        box-shadow: none;
+    }
+    to {
+        box-shadow: inset 0px 0px 8px 2px rgba($primary-color, 0.15);
+    }
 }
 
 // Info
@@ -108,7 +134,7 @@
 .player_info {
     background-color: white;
     padding: 10px 25px;
-    margin-bottom: 30px;
+    margin: 30px 0;
     overflow: auto;
 }
 

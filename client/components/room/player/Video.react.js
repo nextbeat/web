@@ -17,12 +17,16 @@ class Video extends React.Component {
         this.isPlaying = this.isPlaying.bind(this);
         this.didPause = this.didPause.bind(this);
         this.isWaiting = this.isWaiting.bind(this);
+        this.didProgressDownload = this.didProgressDownload.bind(this);
+
         this.playPause = this.playPause.bind(this);
 
         this.state = {
             currentTime: 0,
-            duration: 0,
-            isPlaying: true
+            loadedDuration: 0,
+            duration: 0.5,
+            isPlaying: true,
+            timeIntervalId: -1
         };
     }
 
@@ -36,6 +40,7 @@ class Video extends React.Component {
         video.addEventListener('playing', this.isPlaying);
         video.addEventListener('pause', this.didPause);
         video.addEventListener('waiting', this.isWaiting);
+        video.addEventListener('progress', this.didProgressDownload);
     }
 
     componentWillUnmount() {
@@ -46,7 +51,9 @@ class Video extends React.Component {
         video.removeEventListener('playing', this.isPlaying);
         video.removeEventListener('pause', this.didPause);
         video.removeEventListener('waiting', this.isWaiting);
+        video.removeEventListener('progress', this.didProgressDownload);
 
+        clearInterval(this.state.timeIntervalId);
     }
 
     componentDidUpdate(prevProps) {
@@ -57,42 +64,55 @@ class Video extends React.Component {
 
     // Events 
 
-    didLoadMetadata(e) {
-        const video = e.target;
+    didLoadMetadata() {
+        const video = document.getElementById('video_player');
         this.setState({
             duration: video.duration
         });
     }
 
-    didUpdateTime(e) {
-        const video = e.target;
+    didUpdateTime() {
+        const video = document.getElementById('video_player');
         this.setState({
             currentTime: video.currentTime
         });
     }
 
-    isPlaying(e) {
-        console.log('playing');
-        const video = e.target;
+    isPlaying() {
+        const video = document.getElementById('video_player');
+        const timeIntervalId = setInterval(this.didUpdateTime, 50);
+
         this.setState({
+            timeIntervalId,
             isPlaying: true
         });
     }
 
-    didPause(e) {
-        console.log('paused');
-        const video = e.target;
+    didPause() {
+        const video = document.getElementById('video_player');
+        clearInterval(this.state.timeIntervalId);
+
         this.setState({
             isPlaying: false
         });
     }
 
-    isWaiting(e) {
-        console.log('is waiting');
-        const video = e.target;
+    isWaiting() {
+        const video = document.getElementById('video_player');
+        clearInterval(this.state.timeIntervalId);
+
         this.setState({
             isPlaying: false
         });
+    }
+
+    didProgressDownload() {
+        const video = document.getElementById('video_player');
+        if (video.buffered.length >= 1) {
+            this.setState({
+                loadedDuration: video.buffered.end(0)
+            })
+        }
     }
 
     // Actions
@@ -115,7 +135,7 @@ class Video extends React.Component {
 
     render() {
         const { item } = this.props;
-        const { currentTime, duration, isPlaying } = this.state;
+        const { currentTime, duration, loadedDuration, isPlaying } = this.state;
         const timeStr = time => `${padNumber(Math.floor(time/60.0))}:${padNumber(Math.floor(time % 60))}`
         return (
             <div className="video_container">
@@ -129,8 +149,8 @@ class Video extends React.Component {
                     <div className="video_progress-bar-container">
                         <div className="video_progress-scrubber"></div>
                         <div className="video_progress-bar">
-                            <div className="video_progress-play"></div>
-                            <div className="video_progress-buffer"></div>
+                            <div className="video_progress-play" style={{ transform: `scaleX(${ currentTime/duration })` }}></div>
+                            <div className="video_progress-buffer" style={{ transform: `scaleX(${ loadedDuration/duration })` }}></div>
                             <div className="video_progress-hover"></div>
                         </div>
                     </div>
