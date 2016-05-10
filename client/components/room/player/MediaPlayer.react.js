@@ -30,9 +30,9 @@ class MediaPlayer extends React.Component {
     resize() {
         const roomHeight = parseInt($('.room').css('height'));
         const mediaHeight = Math.min(550, roomHeight-60);
-        const mediaWidth = mediaHeight*9/16;
+        // const mediaWidth = mediaHeight*9/16;
         $('.player_media').height(mediaHeight);
-        $('.player_media').width(mediaWidth);
+        // $('.player_media').width(mediaWidth);
     }
 
     // Navigation
@@ -53,10 +53,10 @@ class MediaPlayer extends React.Component {
         <div className="player_main">
             <Counter stack={stack} />
             <div className="player_media">
-                {stack.mediaItems().size == 0 && !stack.get('mediaItemsError') && <Spinner type="large grey"/>}
-                {!item.isEmpty() && (item.get('type') === "video" 
+                { stack.mediaItems().size == 0 && !stack.get('mediaItemsError') && <Spinner type="large grey"/> }
+                { !item.isEmpty() && (item.get('type') === "video" 
                     ? <Video item={item} />
-                    : <img src={item.get('url')} />)}
+                    : <div className="player_photo" style={{backgroundImage: `url(${item.get('url')})`}}></div>) }
             </div>
             <div className="player_navigation">
                 <div className="player_nav-button player_nav-backward" onClick={handleBackward}><Icon type={"chevron-left"} /></div>
