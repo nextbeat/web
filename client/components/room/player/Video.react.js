@@ -25,12 +25,12 @@ class Video extends React.Component {
 
         this.handleOnMouseOver = this.handleOnMouseOver.bind(this);
         this.handleOnMouseOut = this.handleOnMouseOut.bind(this);
+        this.handleOnMouseMove = this.handleOnMouseMove.bind(this);
+        this.handleOnMouseUp = this.handleOnMouseUp.bind(this);
 
         this.handleProgressBarOnMouseOver = this.handleProgressBarOnMouseOver.bind(this);
         this.handleProgressBarOnMouseOut = this.handleProgressBarOnMouseOut.bind(this);
         this.handleProgressBarOnMouseDown = this.handleProgressBarOnMouseDown.bind(this);
-        this.handleProgressBarOnMouseMove = this.handleProgressBarOnMouseMove.bind(this);
-        this.handleProgressBarOnMouseUp = this.handleProgressBarOnMouseUp.bind(this);
 
         this.playPause = this.playPause.bind(this);
         this.seek = this.seek.bind(this);
@@ -195,15 +195,31 @@ class Video extends React.Component {
         }
     }
 
+    handleOnMouseMove(e) {
+        if (this.state.isDraggingProgressBar) {
+            console.log('wheeee');
+            this.seek(e);
+        }
+    }
+
+    handleOnMouseUp(e) {
+        if (this.state.isDraggingProgressBar) {
+            this.seek(e);
+            this.setState({
+                isDraggingProgressBar: false
+            });
+            $('.video_progress-scrubber').removeClass('active');
+        }
+    }
+
     handleProgressBarOnMouseOver() {
         $('.video_progress-scrubber').addClass('active');
     }
 
     handleProgressBarOnMouseOut() {
-        $('.video_progress-scrubber').removeClass('active');
-        this.setState({
-            isDraggingProgressBar: false
-        })
+        if (!this.state.isDraggingProgressBar) {
+            $('.video_progress-scrubber').removeClass('active');
+        }
     }
 
     handleProgressBarOnMouseDown(e) {
@@ -213,34 +229,25 @@ class Video extends React.Component {
         });
     }
 
-    handleProgressBarOnMouseMove(e) {
-        if (this.state.isDraggingProgressBar) {
-            this.seek(e);
-        }
-    }
-
-    handleProgressBarOnMouseUp(e) {
-        this.seek(e);
-        this.setState({
-            isDraggingProgressBar: false
-        });
-    }
-
     // Render
 
     render() {
         const { item } = this.props;
         const { currentTime, duration, loadedDuration, isPlaying, displayControls } = this.state;
         const displayControlsClass = displayControls ? "display-controls" : "";
+        const videoContainerEvents = {
+            onMouseOver: this.handleOnMouseOver,
+            onMouseOut: this.handleOnMouseOut,
+            onMouseMove: this.handleOnMouseMove,
+            onMouseUp: this.handleOnMouseUp
+        }
         const progressBarEvents = {
             onMouseOver: this.handleProgressBarOnMouseOver,
             onMouseOut: this.handleProgressBarOnMouseOut,
             onMouseDown: this.handleProgressBarOnMouseDown,
-            onMouseMove: this.handleProgressBarOnMouseMove,
-            onMouseUp: this.handleProgressBarOnMouseUp,
         }
         return (
-            <div className="video_container" onMouseOver={this.handleOnMouseOver} onMouseOut={this.handleOnMouseOut}>
+            <div className="video_container" {...videoContainerEvents}>
                 <div className="video_player-container">
                     <video id="video_player" className="video_player" autoPlay autoload preload="auto" poster={item.get('firstframe_url')} >
                         <source src={item.get('url')} type="video/mp4" />
