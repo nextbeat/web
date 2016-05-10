@@ -26,7 +26,14 @@ class Video extends React.Component {
         this.handleOnMouseOver = this.handleOnMouseOver.bind(this);
         this.handleOnMouseOut = this.handleOnMouseOut.bind(this);
 
+        this.handleProgressBarOnMouseOver = this.handleProgressBarOnMouseOver.bind(this);
+        this.handleProgressBarOnMouseOut = this.handleProgressBarOnMouseOut.bind(this);
+        this.handleProgressBarOnMouseDown = this.handleProgressBarOnMouseDown.bind(this);
+        this.handleProgressBarOnMouseMove = this.handleProgressBarOnMouseMove.bind(this);
+        this.handleProgressBarOnMouseUp = this.handleProgressBarOnMouseUp.bind(this);
+
         this.playPause = this.playPause.bind(this);
+        this.seek = this.seek.bind(this);
 
         this.state = {
             currentTime: 0,
@@ -35,7 +42,8 @@ class Video extends React.Component {
             isPlaying: true,
             timeIntervalId: -1,
             displayControls: true,
-            isMouseOver: false
+            isMouseOver: false,
+            isDraggingProgressBar: false
         };
     }
 
@@ -159,6 +167,16 @@ class Video extends React.Component {
         }
     }
 
+    seek(e) {
+        const video = document.getElementById('video_player');
+        const offset = e.pageX - $('.video_progress-bar').offset().left;
+        const width = $('.video_progress-bar').width()
+        video.currentTime = offset/width * video.duration;
+        this.setState({
+            currentTime: video.currentTime
+        });
+    }
+
     handleOnMouseOver() {
         this.setState({
             displayControls: true,
@@ -177,12 +195,50 @@ class Video extends React.Component {
         }
     }
 
+    handleProgressBarOnMouseOver() {
+        $('.video_progress-scrubber').addClass('active');
+    }
+
+    handleProgressBarOnMouseOut() {
+        $('.video_progress-scrubber').removeClass('active');
+        this.setState({
+            isDraggingProgressBar: false
+        })
+    }
+
+    handleProgressBarOnMouseDown(e) {
+        this.seek(e);
+        this.setState({
+            isDraggingProgressBar: true
+        });
+    }
+
+    handleProgressBarOnMouseMove(e) {
+        if (this.state.isDraggingProgressBar) {
+            this.seek(e);
+        }
+    }
+
+    handleProgressBarOnMouseUp(e) {
+        this.seek(e);
+        this.setState({
+            isDraggingProgressBar: false
+        });
+    }
+
     // Render
 
     render() {
         const { item } = this.props;
         const { currentTime, duration, loadedDuration, isPlaying, displayControls } = this.state;
         const displayControlsClass = displayControls ? "display-controls" : "";
+        const progressBarEvents = {
+            onMouseOver: this.handleProgressBarOnMouseOver,
+            onMouseOut: this.handleProgressBarOnMouseOut,
+            onMouseDown: this.handleProgressBarOnMouseDown,
+            onMouseMove: this.handleProgressBarOnMouseMove,
+            onMouseUp: this.handleProgressBarOnMouseUp,
+        }
         return (
             <div className="video_container" onMouseOver={this.handleOnMouseOver} onMouseOut={this.handleOnMouseOut}>
                 <div className="video_player-container">
@@ -193,7 +249,8 @@ class Video extends React.Component {
                 <div className={`video_bottom ${displayControlsClass}`}>
                     <div className="video_gradient-bottom"></div>
                     <div className="video_progress-bar-container">
-                        <div className="video_progress-scrubber"></div>
+                        <div className="video_progress-bar-padding" {...progressBarEvents}></div>
+                        <div className="video_progress-scrubber" style={{ left: `${ currentTime/duration*100 }%` }} ></div>
                         <div className="video_progress-bar">
                             <div className="video_progress-play" style={{ transform: `scaleX(${ currentTime/duration })` }}></div>
                             <div className="video_progress-buffer" style={{ transform: `scaleX(${ loadedDuration/duration })` }}></div>
