@@ -5,7 +5,6 @@
  * LAYOUT
  ********/
 @import url(https://fonts.googleapis.com/css?family=Roboto);
-@import url(https://fonts.googleapis.com/css?family=Roboto);
 body {
   font-family: 'BlinkMacSystemFont', -apple-system, sans-serif;
   color: #333;
@@ -1346,7 +1345,11 @@ a.item-room.selected {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 100%; }
+  width: 100%;
+  opacity: 0;
+  transition: opacity 0.1s ease-in; }
+  .video_bottom.display-controls {
+    opacity: 1; }
 
 .video_gradient-bottom {
   background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.15) 60%, rgba(0, 0, 0, 0.3) 100%);
@@ -2010,6 +2013,9 @@ a.chat_mention {
   display: inline-block; }
   .room_counter .selected {
     font-weight: bold; }
+
+.room_counter-separator {
+  margin: 0 5px; }
 
 .search {
   padding: 15px;

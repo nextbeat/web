@@ -7,6 +7,10 @@ function padNumber(num) {
     return ('00'+str).substring(str.length);
 }
 
+function timeStr(time) {
+    return `${padNumber(Math.floor(time/60.0))}:${padNumber(Math.floor(time % 60))}`
+}
+
 class Video extends React.Component {
 
     constructor(props) {
@@ -19,14 +23,19 @@ class Video extends React.Component {
         this.isWaiting = this.isWaiting.bind(this);
         this.didProgressDownload = this.didProgressDownload.bind(this);
 
+        this.handleOnMouseOver = this.handleOnMouseOver.bind(this);
+        this.handleOnMouseOut = this.handleOnMouseOut.bind(this);
+
         this.playPause = this.playPause.bind(this);
 
         this.state = {
             currentTime: 0,
             loadedDuration: 0,
-            duration: 0.5,
+            duration: 0.5, // not zero to avoid divide by zero bugs
             isPlaying: true,
-            timeIntervalId: -1
+            timeIntervalId: -1,
+            displayControls: true,
+            isMouseOver: false
         };
     }
 
@@ -86,6 +95,24 @@ class Video extends React.Component {
             timeIntervalId,
             isPlaying: true
         });
+
+        if (video.currentTime === 0) {
+            this.setState({
+                displayControls: true
+            })
+            setTimeout(() => {
+                if (this.state.isPlaying && !this.state.isMouseOver) {
+                    this.setState({
+                        displayControls: false
+                    })
+                }
+            }, 2500);
+        } else if (!this.state.isMouseOver) {
+            this.setState({
+                displayControls: false
+            })
+        }
+
     }
 
     didPause() {
@@ -93,7 +120,8 @@ class Video extends React.Component {
         clearInterval(this.state.timeIntervalId);
 
         this.setState({
-            isPlaying: false
+            isPlaying: false,
+            displayControls: true
         });
     }
 
@@ -131,20 +159,38 @@ class Video extends React.Component {
         }
     }
 
+    handleOnMouseOver() {
+        this.setState({
+            displayControls: true,
+            isMouseOver: true
+        })
+    }
+
+    handleOnMouseOut() {
+        this.setState({
+            isMouseOver: false
+        })
+        if (this.state.isPlaying) {
+            this.setState({
+                displayControls: false
+            })
+        }
+    }
+
     // Render
 
     render() {
         const { item } = this.props;
-        const { currentTime, duration, loadedDuration, isPlaying } = this.state;
-        const timeStr = time => `${padNumber(Math.floor(time/60.0))}:${padNumber(Math.floor(time % 60))}`
+        const { currentTime, duration, loadedDuration, isPlaying, displayControls } = this.state;
+        const displayControlsClass = displayControls ? "display-controls" : "";
         return (
-            <div className="video_container">
+            <div className="video_container" onMouseOver={this.handleOnMouseOver} onMouseOut={this.handleOnMouseOut}>
                 <div className="video_player-container">
                     <video id="video_player" className="video_player" autoPlay autoload preload="auto" poster={item.get('firstframe_url')} >
                         <source src={item.get('url')} type="video/mp4" />
                     </video>
                 </div>
-                <div className="video_bottom">
+                <div className={`video_bottom ${displayControlsClass}`}>
                     <div className="video_gradient-bottom"></div>
                     <div className="video_progress-bar-container">
                         <div className="video_progress-scrubber"></div>
