@@ -37,10 +37,6 @@ class DetailBar extends React.Component {
         }
         return (
             <div className="detail-bar">
-                <div className="detail-bar_collapsed">
-                    <div onClick={this.setSelected.bind(this, "chat")} className={`detail-bar_icon ${selected("chat")}`}><Icon type="chat" /></div>
-                    <div onClick={this.setSelected.bind(this, "activity")} className={`detail-bar_icon ${selected("activity")}`}><Counter stack={stack} /></div>
-                </div>
                 <div className="detail-bar_expanded">
                     <div className="detail-bar_header">
                         <div className="detail-bar_tab-container">

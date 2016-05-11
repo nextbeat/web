@@ -30,7 +30,7 @@ class Theater extends React.Component {
 
         $(window).resize(this.resize)
         this.resize();
-        $('.topbar').addClass('topbar-in-room');
+        // $('.topbar').addClass('topbar-in-room');
     }
 
     componentWillUnmount() {
@@ -40,7 +40,7 @@ class Theater extends React.Component {
         $('.sidebar').removeClass('collapsed');
         $('.main').removeClass('expand-left');
         $('.topbar_menu-icon').removeClass('active');
-        $('.topbar').removeClass('topbar-in-room');
+        // $('.topbar').removeClass('topbar-in-room');
     }
 
     componentDidUpdate(prevProps) {

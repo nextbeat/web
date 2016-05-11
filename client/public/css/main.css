@@ -524,11 +524,11 @@ a.topbar_dropdown-option {
     margin-left: 110px;
     margin-right: 70px; }
   .topbar .topbar_signup {
-    display: none; } }
-
-@media (max-width: 800px) {
-  .topbar.topbar-in-room .topbar_user {
-    display: none; } }
+    display: none; }
+  .topbar .btn.topbar_login {
+    background: none;
+    color: #f15929;
+    padding-right: 0; } }
 
 .badge {
   padding: 3px 5px;
@@ -1696,20 +1696,35 @@ a.item-room.selected {
 
 .player_main {
   position: relative; }
-  .player_main .room_counter {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 50;
-    margin: 10px;
-    background: rgba(224, 224, 224, 0.5);
-    padding: 5px 8px;
-    border: 1px solid rgba(153, 153, 153, 0.3);
-    color: #999;
-    font-family: 'Roboto', sans-serif; }
-    @media (max-width: 800px) {
-      .player_main .room_counter {
-        display: none; } }
+
+.player_hover-button {
+  position: absolute;
+  z-index: 50;
+  margin: 10px;
+  background: rgba(224, 224, 224, 0.5);
+  padding: 5px 8px;
+  border: 1px solid rgba(153, 153, 153, 0.3);
+  color: rgba(51, 51, 51, 0.7); }
+
+.player_chat-button {
+  top: 0;
+  left: 0;
+  display: none; }
+  @media (max-width: 800px) {
+    .player_chat-button {
+      display: block; } }
+
+.player_counter {
+  top: 0;
+  right: 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 17px;
+  display: inline-block; }
+  .player_counter .selected {
+    font-weight: bold; }
+
+.player_counter-separator {
+  margin: 0 5px; }
 
 .player_media {
   margin: auto;
@@ -1890,8 +1905,6 @@ a.player_tag {
   overflow: hidden;
   background-color: #fff;
   border-left: 1px solid #ddd; }
-  .detail-bar .detail-bar_collapsed {
-    display: none; }
   @media (max-width: 800px) {
     .detail-bar {
       width: 100%;
@@ -1903,12 +1916,6 @@ a.player_tag {
           display: block; }
         .detail-bar.active .selected .svg-icon {
           fill: #ff825a; }
-      .detail-bar .detail-bar_collapsed {
-        position: absolute;
-        display: block;
-        top: -50px;
-        right: 0px;
-        height: 50px; }
       .detail-bar .detail-bar_header {
         display: none; }
       .detail-bar .detail-bar_main {
@@ -1928,15 +1935,6 @@ a.player_tag {
 
 .detail-bar_expanded {
   height: 100%; }
-
-.detail-bar_collapsed .svg-icon {
-  fill: #f15929;
-  width: 25px;
-  height: 25px;
-  margin: 12px auto;
-  display: block; }
-  .detail-bar_collapsed .svg-icon:hover {
-    fill: #ff825a; }
 
 .detail-bar_icon {
   float: right;
@@ -2081,18 +2079,6 @@ a.chat_mention {
   font-weight: bold; }
   .activity_new-media:hover {
     cursor: pointer; }
-
-/********
- * SHARED
- ********/
-.room_counter {
-  font-size: 17px;
-  display: inline-block; }
-  .room_counter .selected {
-    font-weight: bold; }
-
-.room_counter-separator {
-  margin: 0 5px; }
 
 .search {
   padding: 15px;

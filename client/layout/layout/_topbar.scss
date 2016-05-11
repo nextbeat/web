@@ -214,15 +214,21 @@ a.topbar_dropdown-option {
         .topbar_signup {
             display: none;
         }
+
+        .btn.topbar_login {
+            background: none;
+            color: $primary-color;
+            padding-right: 0;
+        }
     }
 }
 
 // In-room responsiveness
 
-.topbar.topbar-in-room {
-    @include media('<=medium') {
-        .topbar_user {
-            display: none;
-        }
-    }
-}
+// .topbar.topbar-in-room {
+//     @include media('<=medium') {
+//         .topbar_user {
+//             display: none;
+//         }
+//     }
+// }

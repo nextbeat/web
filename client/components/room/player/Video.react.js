@@ -337,14 +337,13 @@ class Video extends React.Component {
                             </div>
                         </div>
                         <div className="video_controls-right">
-                            <a className="video_control video_control-fullscreen"><Icon type="fullscreen" /></a>
+                            { /* <a className="video_control video_control-fullscreen"><Icon type="fullscreen" /></a> */ }
                             <div className="video_control video_control-volume">
                                 <span className="video_volume-icon"><Icon type={volumeIcon} /></span>
                                 <div className="video_volume-slider-container" {...volumeEvents} >
                                     <div className="video_volume-slider" style={{ transform: `translateY(-50%) scaleX(${volume})`}}></div>
                                     <div className="video_volume-slider-backdrop"></div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
