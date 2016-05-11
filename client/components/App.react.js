@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 import Helmet from 'react-helmet'
 
 import Sidebar from '../components/Sidebar.react'
+import Topbar from '../components/Topbar.react'
 
 import { connectToXMPP, disconnectXMPP, login, logout, signup, clearLogin, clearSignup, postLogin, loadTags, clearApp } from '../actions'
 import { CurrentUser, App as AppModel } from '../models'
@@ -178,7 +179,7 @@ class App extends React.Component {
 
     render() {
         const { user, app, connected, children } = this.props;
-        const sidebarProps = {
+        const barProps = {
             user,
             app,
             handleLoginClick: this.handleLoginClick,
@@ -190,9 +191,12 @@ class App extends React.Component {
                 {this.setTitle()}
                 {this.renderLogin()}
                 {this.renderSignup()}
-                <Sidebar {...sidebarProps} />
-                <div className="main">
-                    {React.cloneElement(children, { user, connected })}
+                <Topbar {...barProps} />
+                <div className="main-container">
+                    <Sidebar {...barProps} />
+                    <div className="main">
+                        {React.cloneElement(children, { user, connected })}
+                    </div>
                 </div>
             </section>
         );

@@ -1,5 +1,6 @@
 var passport        = require('passport'),
     LocalStrategy   = require('passport-local').Strategy,
+    _               = require('lodash'),
     api             = require('./api');
 
 module.exports = {
@@ -12,8 +13,10 @@ module.exports = {
         passport.use(new LocalStrategy(
             function(username, password, done) {
                 api.post('login', {}, { 
-                    user: username,
-                    pass: password
+                    auth: {
+                        user: username,
+                        pass: password
+                    }
                 }).then(function(res) {
                     done(null, res.body);
                 }).catch(function(e) {
@@ -34,7 +37,11 @@ module.exports = {
         });
 
         passport.deserializeUser(function(user, done) {
-            done(null, user);
+            var url = 'users/' + user.username;
+            api.get(url).then(function(res) {
+                var userObj = _.assign({}, res.body, { token : user.token });
+                done(null, userObj);
+            })
         })
 
         return passport;

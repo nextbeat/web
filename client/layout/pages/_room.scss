@@ -20,7 +20,7 @@
 .player {
     height: 100%;
     width: 100%;
-    padding: 15px;
+    // padding: 15px;
     overflow-y: scroll;
     position: relative;
 
@@ -38,27 +38,51 @@
 
 .player_main {
     position: relative;
+}
 
-    .room_counter {
-        position: absolute;
-        top: 0;
-        right: 0;
+.player_hover-button {
+    position: absolute;
+    z-index: 50;
+    margin: 10px;
+    background: rgba(#e0e0e0, 0.5);
+    padding: 5px 8px;
+    border: 1px solid rgba(#999, 0.3); 
+    color: rgba(#333, 0.7);
+}
 
-        @include media('<=medium') {
-            display: none;
-        }
+.player_chat-button {
+    top: 0;
+    left: 0;
+    display: none;
+
+    @include media('<=medium') {
+        display: block;
     }
 }
+
+.player_counter {
+    top: 0;
+    right: 0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 17px;
+    display: inline-block;
+
+    .selected {
+        font-weight: bold;
+    }
+}
+
+.player_counter-separator {
+    margin: 0 5px;
+}
+
 
 .player_media {
     margin: auto;
     position: relative;
-    // note: height and width are set in javascript
-
-    img, video {
-        width: 100%;
-        height: 100%;
-    }
+    width: 100%; 
+    background-color: $dark-background-color;  
+    // height set in javascript
 
     .spinner {
         position: absolute;
@@ -68,43 +92,77 @@
     }
 }
 
+.player_photo {
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+}
+
 .player_navigation {
-    width: 130px;
-    height: 50px;
-    margin: 0 auto;
+    width: 100%;
+    height: 60px;
+    @include clearfix;
+    border-bottom: 1px solid $border-color;
 }
 
 .player_nav-button {
-    height: 50px;
-    width: 50px;
+    height: 100%;
+    width: 50%;
+    float: left;
+    position: relative;
+    transition: box-shadow 0.2s;
 
-    .svg-icon-chevron-left, .svg-icon-chevron-right {
+    .svg-icon {
+        fill: $light-primary-color;
+        @include center;
         height: 50px;
         width: 50px;
-        fill: $primary-color;
+        transition: fill 0.2s;
+    }
 
-        &:hover {
-            fill: $light-primary-color;
+    &:hover:not(.disabled) {
+        box-shadow: inset 0px 0px 8px 2px rgba($primary-color, 0.12);
+        cursor: pointer;
+
+        .svg-icon {
+            fill: $primary-color;
         }
+    }
+
+    &.disabled .svg-icon {
+        fill: #ccc;
     }
 }
 
 .player_nav-backward {
-    float: left;
+    border-right: 1px solid #eee;
 }
 
-.player_nav-forward {
-    float: right;
-    @include clearfix;
+// Animation to indicate progress when using arrow keys to navigate
+.player_nav-button-flash {
+    animation-duration: 0.15s;
+    animation-direction: alternate;
+    animation-iteration-count: 2;
+    animation-name: player_nav-button-flash;
+}
+
+@keyframes player_nav-button-flash {
+    from {
+        box-shadow: none;
+    }
+    to {
+        box-shadow: inset 0px 0px 8px 2px rgba($primary-color, 0.15);
+    }
 }
 
 // Info
 
 .player_info {
     background-color: white;
-    border: 1px solid $border-color;
-    padding: 10px;
-    margin-bottom: 30px;
+    padding: 10px 25px;
+    margin: 30px 0;
     overflow: auto;
 }
 
@@ -196,6 +254,8 @@ a.player_tag {
 
 .player_more {
 
+    padding: 0 15px;
+
     .item-room_info {
         font-size: 13px;
     }
@@ -229,10 +289,6 @@ a.player_tag {
     background-color: #fff;
     border-left: 1px solid $border-color;
 
-    .detail-bar_collapsed {
-        display: none;
-    }
-
     // collapse logic
     @include media('<=medium') {
         width: 100%;
@@ -249,14 +305,6 @@ a.player_tag {
             .selected .svg-icon {
                 fill: $light-primary-color;
             }
-        }
-
-        .detail-bar_collapsed {
-            position: absolute;
-            display: block;
-            top: -50px;
-            right: 0px;
-            height: 50px;
         }
 
         .detail-bar_header {
@@ -287,21 +335,6 @@ a.player_tag {
 
 .detail-bar_expanded {
     height: 100%;
-}
-
-.detail-bar_collapsed {
-
-    .svg-icon {
-        fill: $primary-color;
-        width: 25px;
-        height: 25px;
-        margin: 12px auto;
-        display: block;
-
-        &:hover {
-            fill: $light-primary-color;
-        }
-    }
 }
 
 .detail-bar_icon {
@@ -495,20 +528,5 @@ a.chat_mention {
 
     &:hover {
         cursor: pointer;
-    }
-}
-
-/********
- * SHARED
- ********/
-
-.room_counter {
-    height: 40px;
-    color: #666;
-    font-size: 17px;
-    display: inline-block;
-
-    .selected {
-        font-weight: bold;
     }
 }

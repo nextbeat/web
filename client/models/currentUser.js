@@ -10,9 +10,6 @@ const KEY_MAP = {
     'loginError': ['user', 'meta', 'loginError'],
     'isSigningUp': ['user', 'meta', 'isSigningUp'],
     'signupError': ['user', 'meta', 'signupError'],
-    'token': ['user', 'meta', 'token'],
-    'username': ['user', 'meta', 'username'],
-    'uuid': ['user', 'meta', 'uuid'],
     // live
     'connected': ['user', 'live', 'connected'],
     'client': ['user', 'live', 'client'],
@@ -41,17 +38,17 @@ export default class CurrentUser extends ModelBase {
         this.entityName = "users";
     }
 
-    entity() {
-        // todo: create user entity (involves changing passport serialization)
-        return Map();
-    }
-
     profileThumbnailUrl() {
+        // todo: need to load entity!!
         return this.get('profpic_thumbnail_url') || this.get('profpic_url');
     }
 
-    bookmarkedStacks() {
+    openBookmarkedStacks() {
         return this.get('openBookmarkIds', List()).map(id => this.__getEntity(id, 'stacks'));
+    }
+
+    closedBookmarkedStacks() {
+        return this.get('closedBookmarkIds', List()).map(id => this.__getEntity(id, 'stacks'));
     }
 
     subscriptions() {

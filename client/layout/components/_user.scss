@@ -3,6 +3,10 @@
     display: inline-block;
     min-width: 150px;
     @include clearfix;
+
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 .user_profpic {
@@ -13,6 +17,7 @@
     overflow: hidden;
     border-radius: 20px;
     background-color: #ddd;
+    user-select: none;  
     z-index: 15; // fixes Webkit bug where border-radius clipping doesn't occur (http://stackoverflow.com/a/25206004/371747)
 
     img {
@@ -31,6 +36,10 @@
     color: $text-color;
     float: left;
     margin-left: 10px;
+
+    &:hover {
+        color: $primary-color;
+    }
 }
 
 .user_subscribe {

@@ -55,8 +55,14 @@ export {
     syncNotifications,
     markStackAsRead,
     clearLogin,
-    clearSignup
+    clearSignup,
+    clearClosedBookmarkedStacks,
 } from './user'
+
+export {
+    loadSearchResults,
+    clearSearch
+} from './search'
 
 export {
     connectToXMPP,

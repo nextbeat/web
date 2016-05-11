@@ -3,6 +3,7 @@
     height: 100%;
     overflow: auto;
     position: relative;
+    
     .spinner-tag {
         margin: 20px auto;
     }
@@ -69,34 +70,6 @@
             cursor: pointer;
             color: $light-primary-color;
         }
-    }
-}
-
-.tag_filters {
-    padding-bottom: 10px;
-    border-bottom: 1px solid #bbb;
-    width: 100%;
-    white-space: nowrap;
-    overflow: auto;
-}
-
-.tag_filter {
-    margin-right: 20px;
-    padding: 0 3px 5px 3px;
-    font-size: 14px;
-    color: #666;
-
-    &.selected {
-        border-bottom: 5px solid $light-primary-color;
-        color: $text-color;
-        &:hover {
-            border-bottom: 5px solid $light-primary-color;
-        }
-    }
-
-    &:hover {
-        border-bottom: 5px solid mix(white, $light-primary-color, 80%);
-        cursor: pointer;
     }
 }
 

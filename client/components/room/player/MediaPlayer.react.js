@@ -30,18 +30,29 @@ class MediaPlayer extends React.Component {
     resize() {
         const roomHeight = parseInt($('.room').css('height'));
         const mediaHeight = Math.min(550, roomHeight-60);
-        const mediaWidth = mediaHeight*9/16;
         $('.player_media').height(mediaHeight);
-        $('.player_media').width(mediaWidth);
     }
 
     // Navigation
 
     handleKeyDown(e) {
+        const { stack, handleBackward, handleForward } = this.props;
         if (e.keyCode === 37) { // left arrow
-            this.props.handleBackward();
+            if (stack.indexOfSelectedMediaItem() !== 0) {
+                $('.player_nav-backward').removeClass('player_nav-button-flash');
+                process.nextTick(() => {
+                    $('.player_nav-backward').addClass('player_nav-button-flash');
+                })
+            }
+            handleBackward();
         } else if (e.keyCode === 39) {
-            this.props.handleForward(); // right arrow
+            if (stack.indexOfSelectedMediaItem() !== stack.mediaItems().size-1) {
+                $('.player_nav-forward').removeClass('player_nav-button-flash');
+                process.nextTick(() => {
+                    $('.player_nav-forward').addClass('player_nav-button-flash');
+                })
+            }
+            handleForward(); // right arrow
         }
     }
 
@@ -49,18 +60,21 @@ class MediaPlayer extends React.Component {
     render() {
         const { stack, handleForward, handleBackward } = this.props;
         const item = stack.selectedMediaItem()
+        const leftDisabledClass = stack.indexOfSelectedMediaItem() === 0 ? 'disabled' : '';
+        const rightDisabledClass = stack.indexOfSelectedMediaItem() === stack.mediaItems().size-1 ? 'disabled' : ''; 
         return (
         <div className="player_main">
             <Counter stack={stack} />
+            {/* <div className="player_hover-button player_chat-button" onClick={this.handleChat}>Chat</div> */}
             <div className="player_media">
-                {stack.mediaItems().size == 0 && !stack.get('mediaItemsError') && <Spinner type="large grey"/>}
-                {!item.isEmpty() && (item.get('type') === "video" 
+                { stack.mediaItems().size == 0 && !stack.get('mediaItemsError') && <Spinner type="large grey"/> }
+                { !item.isEmpty() && (item.get('type') === "video" 
                     ? <Video item={item} />
-                    : <img src={item.get('url')} />)}
+                    : <div className="player_photo" style={{backgroundImage: `url(${item.get('url')})`}}></div>) }
             </div>
             <div className="player_navigation">
-                <div className="player_nav-button player_nav-backward" onClick={handleBackward}><Icon type={"chevron-left"} /></div>
-                <div className="player_nav-button player_nav-forward" onClick={handleForward}><Icon type={"chevron-right"} /></div>
+                <div className={`player_nav-button player_nav-backward ${leftDisabledClass}`} onClick={handleBackward}><Icon type="arrow-back" /></div>
+                <div className={`player_nav-button player_nav-forward ${rightDisabledClass}`} onClick={handleForward}><Icon type="arrow-forward" /></div>
             </div>
         </div>
         );

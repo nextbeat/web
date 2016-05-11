@@ -1,0 +1,27 @@
+.filters {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #bbb;
+    width: 100%;
+    white-space: nowrap;
+    overflow: auto;
+}
+
+.filter {
+    margin-right: 20px;
+    padding: 0 3px 5px 3px;
+    font-size: 14px;
+    color: $detail-text-color;
+
+    &.selected {
+        border-bottom: 5px solid $light-primary-color;
+        color: $text-color;
+        &:hover {
+            border-bottom: 5px solid $light-primary-color;
+        }
+    }
+
+    &:hover {
+        border-bottom: 5px solid mix(white, $light-primary-color, 80%);
+        cursor: pointer;
+    }
+}

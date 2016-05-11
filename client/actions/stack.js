@@ -83,7 +83,7 @@ function fetchComments(stack_uuid, pagination) {
 }
 
 export function loadComments(stack_uuid) {
-    return loadPaginatedObjects('stack', 'comments', fetchComments.bind(this, stack_uuid), 25);
+    return loadPaginatedObjects('stack', 'comments', fetchComments.bind(this, stack_uuid), 60);
 }
 
 

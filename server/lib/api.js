@@ -5,9 +5,12 @@ var request = require('request-promise'),
     baseUrl,
     clientToken;
 
-function _request(method, url, body, auth) {
+function _request(method, url, body, options) {
     
-    var isAuthorized = !!auth;
+    var options = options || {},
+        isAuthorized = !!options.auth,
+        auth = options.auth;
+
     if (!isAuthorized) {
         auth = { bearer: clientToken }
     }
@@ -16,15 +19,17 @@ function _request(method, url, body, auth) {
         auth = { bearer: auth }
     }
 
+    options = _.omit(options, ['auth']);
+
     return Promise.resolve().then(function() {
-        return request({
+        return request(_.assign({}, {
             method: method,
             url: url,
             baseUrl: baseUrl,
             body: body,
             auth: auth,
             resolveWithFullResponse: true
-        })
+        }, options))
     }).tap(function(res) {
         if (!isAuthorized && _.has(res.headers, 'x-bbl-jwt-token')) {
             clientToken = res.headers['x-bbl-jwt-token'];
@@ -53,7 +58,7 @@ module.exports = {
         });
 
         return request.post({
-            url: 'clients/authenticate?expireImmediately=true',
+            url: 'clients/authenticate',
             baseUrl: baseUrl,
             auth: {
                 user: process.env.CLIENT_NAME,
@@ -61,26 +66,25 @@ module.exports = {
             },
             resolveWithFullResponse: true
         }).then(function(res) {
-            console.log('authenticate headers', res.headers);
             clientToken = res.body.token;
         });
 
     },
 
-    get: function(url, body, auth) {
-        return _request('GET', url, body, auth);
+    get: function(url, body, options) {
+        return _request('GET', url, body, options);
     },
 
-    post: function(url, body, auth) {
-        return _request('POST', url, body, auth);
+    post: function(url, body, options) {
+        return _request('POST', url, body, options);
     },
 
-    put: function(url, body, auth) {
-        return _request('PUT', url, body, auth);
+    put: function(url, body, options) {
+        return _request('PUT', url, body, options);
     },
 
-    del: function(url, body, auth) {
-        return _request('DELETE', url, body, auth);
+    del: function(url, body, options) {
+        return _request('DELETE', url, body, options);
     }
 
 };

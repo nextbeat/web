@@ -1,0 +1,234 @@
+.topbar {
+    width: 100%;
+    height: 50px;
+    background: $dark-background-color;
+    position: relative;
+    overflow: visible;
+
+    border-bottom: 1px solid $border-color;
+}
+
+.topbar_menu-icon {
+    width: 30px;
+    height: 30px;
+    display: none;
+    position: absolute;
+    z-index: 30;
+    top: 10px;
+    left: 10px;
+
+    &.active {
+        display: block;
+    }
+
+    .svg-icon-menu {
+        fill: $primary-color;
+    }
+
+    &:hover .svg-icon-menu {
+        fill: $light-primary-color;
+        cursor: pointer;
+    }
+}
+
+.topbar_logo-container {
+    position: relative;
+    width: $sidebar-width;
+    height: 100%;
+    display: inline-block;
+}
+
+.topbar_logo {
+    @include center; 
+    width: 95px;
+
+    svg {
+        fill: $primary-color;
+        width: 100%;
+    }
+
+    &:hover svg {
+        fill: $light-primary-color;
+    }
+}
+
+.topbar_logo-small {
+    display: none;
+    @include center;
+    width: 30px;
+}
+
+.topbar_search {
+    display: inline-block;
+    vertical-align: top;
+    height: 100%;
+    position: relative;
+    width: 300px;
+
+    .svg-icon-search {
+        z-index: 10;
+        display: block;
+        @include centerY;
+        width: 18px;
+        left: auto;
+        right: 12px;
+        padding-top: 3px;
+    }
+}
+
+input.topbar_search-bar {
+    @include centerY;
+    width: 100%;
+    height: 33px;
+    border-radius: 8px;
+    padding: 5px 40px 5px 10px;
+    font-size: 14px;
+    font-weight: 300;
+    color: $text-color;
+
+    &::placeholder {
+        color: #ccc;
+    }
+}
+
+.topbar_user {
+    position: absolute;
+    height: 100%;
+    right: 0;
+    top: 0;
+    padding: 10px 10px;
+    display: inline-block;
+
+    .btn {
+        display: inline-block;
+        margin-left: 10px;
+    }
+}
+
+.topbar_user-icon {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 5px;
+    margin-right: 3px;
+    background: #ddd;
+
+    img {
+        @include center;
+    }
+
+    .svg-icon-person {
+        @include center;
+        width: 70%;
+        height: 70%;
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.topbar_dropdown {
+    display: none;
+    z-index: 1000;
+    position: absolute;
+    top: 45px;
+    right: 10px;
+    width: 80px;
+
+    padding: 6px 12px;
+    background: white;
+    border: 1px solid $border-color;
+    box-shadow: 0 0 13px rgba(0,0,0,.11);
+}
+
+a.topbar_dropdown-option {
+    display: block;
+    width: 100%;
+    padding: 8px 0;
+    color: $text-color;
+    font-size: 14px;
+    font-weight: 300;
+
+    &:hover {
+        color: $primary-color;
+        cursor: pointer;
+    }
+}
+
+// Responsiveness
+
+.topbar {
+    @include media('<=medium') {
+        .topbar_menu-icon {
+            display: block;
+        }
+
+        .topbar_logo-container {
+            margin-left: 55px;
+            width: 120px;
+        }
+
+        .topbar_logo {
+            left: 0;
+            width: 80px;
+            transform: translateY(-50%);
+        }
+
+        .topbar_search {
+            position: absolute;
+            display: block;
+            top: 0;
+            left: 0;
+            max-width: calc(100% - 310px);
+            margin-left: 150px;
+            margin-right: 160px;
+        }
+    }
+
+    @include media('<=small') {
+        .topbar_logo-container {
+            width: 40px;
+        }
+
+        .topbar_logo {
+            display: none;
+        }
+
+        .topbar_logo-small {
+            display: block;
+        }
+
+        .topbar_search {
+            position: absolute;
+            display: block;
+            top: 0;
+            left: 0;
+            max-width: calc(100% - 180px);
+            margin-left: 110px;
+            margin-right: 70px;
+        }
+
+        .topbar_signup {
+            display: none;
+        }
+
+        .btn.topbar_login {
+            background: none;
+            color: $primary-color;
+            padding-right: 0;
+        }
+    }
+}
+
+// In-room responsiveness
+
+// .topbar.topbar-in-room {
+//     @include media('<=medium') {
+//         .topbar_user {
+//             display: none;
+//         }
+//     }
+// }

@@ -1,38 +1,29 @@
-import { List, Map } from 'immutable'
-import React from 'react'
-import { connect } from 'react-redux'
-import { CurrentUser } from '../models'
+/************
+ * FULLSCREEN
+ ************/
 
-export function getPaginatedEntities(state, page, key, entityKey) {
-    entityKey = entityKey || key;
-    return state.getIn([page, 'pagination', key, 'ids'], List())
-        .map(id => getEntity(state, entityKey, id));
+// Code sourced from https://developer.mozilla.org/en-US/Apps/Fundamentals/Audio_and_video_delivery/cross_browser_video_player
+
+export function isFullScreenEnabled() {
+    return !!(document.fullscreenEnabled || document.mozFullScreenEnabled || document.msFullscreenEnabled || document.webkitSupportsFullscreen || document.webkitFullscreenEnabled || document.createElement('video').webkitRequestFullScreen);
+} 
+
+export function isFullScreen() {
+    return !!(document.fullScreen || document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement || document.fullscreenElement);
 }
 
-export function getLiveEntities(state, page, key) {
-    return state.getIn([page, 'live', key], List())
-        .map(id => getEntity(state, key, id));
-}
-
-export function getEntity(state, key, id) {
-    if (typeof id === "number") {
-        id = id.toString();
-    }
-    return state.getIn(['entities', key, id], Map());
-}
-
-export function componentWithUser(Component) {
-    class UserContainer extends React.Component {
-        render() {
-            return <Component {...this.props} />
-        }
-    }
-
-    function mapStateToProps(state) {
-        return { 
-            user: new CurrentUser(state)
-        }   
-    }
-
-    return connect(mapStateToProps)(UserContainer);
+export function toggleFullScreen(element, callback) {
+    if (isFullScreen()) {
+      if (document.exitFullscreen) document.exitFullscreen();
+      else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+      else if (document.webkitCancelFullScreen) document.webkitCancelFullScreen();
+      else if (document.msExitFullscreen) document.msExitFullscreen();
+      if (callback) callback(false);
+   } else {
+      if (element.requestFullscreen) element.requestFullscreen();
+      else if (element.mozRequestFullScreen) element.mozRequestFullScreen();
+      else if (element.webkitRequestFullScreen) element.webkitRequestFullScreen();
+      else if (element.msRequestFullscreen) element.msRequestFullscreen();
+      if (callback) callback(true);
+   }
 }
