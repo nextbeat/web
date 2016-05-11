@@ -17,6 +17,7 @@
     overflow: hidden;
     border-radius: 20px;
     background-color: #ddd;
+    user-select: none;  
     z-index: 15; // fixes Webkit bug where border-radius clipping doesn't occur (http://stackoverflow.com/a/25206004/371747)
 
     img {

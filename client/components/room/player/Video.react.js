@@ -32,18 +32,26 @@ class Video extends React.Component {
         this.handleProgressBarOnMouseOut = this.handleProgressBarOnMouseOut.bind(this);
         this.handleProgressBarOnMouseDown = this.handleProgressBarOnMouseDown.bind(this);
 
+        this.handleVolumeOnMouseDown = this.handleVolumeOnMouseDown.bind(this);
+        this.handleVolumeOnMouseMove = this.handleVolumeOnMouseMove.bind(this);
+        this.handleVolumeOnMouseUp = this.handleVolumeOnMouseUp.bind(this);
+        this.handleVolumeOnMouseOut = this.handleVolumeOnMouseOut.bind(this);
+
         this.playPause = this.playPause.bind(this);
         this.seek = this.seek.bind(this);
+        this.adjustVolume = this.adjustVolume.bind(this);
 
         this.state = {
             currentTime: 0,
             loadedDuration: 0,
             duration: 0.5, // not zero to avoid divide by zero bugs
+            volume: 1,
             isPlaying: true,
             timeIntervalId: -1,
             displayControls: true,
             isMouseOver: false,
-            isDraggingProgressBar: false
+            isDraggingProgressBar: false,
+            isDraggingVolume: false,
         };
     }
 
@@ -170,12 +178,29 @@ class Video extends React.Component {
     seek(e) {
         const video = document.getElementById('video_player');
         const offset = e.pageX - $('.video_progress-bar').offset().left;
-        const width = $('.video_progress-bar').width()
+        const width = $('.video_progress-bar').width();
         video.currentTime = offset/width * video.duration;
         this.setState({
             currentTime: video.currentTime
         });
     }
+
+    adjustVolume(e) {
+        const video = document.getElementById('video_player');
+        const offset = e.pageX - $('.video_volume-slider-container').offset().left;
+        const width = $('.video_volume-slider-container').width();
+        let volume = offset/width;
+        if (volume < 0.05) {
+            volume = 0;
+        }
+        if (volume > 0.95) {
+            volume = 1;
+        }
+        video.volume = volume;
+        this.setState({ volume });
+    }
+
+    // Video container eventd
 
     handleOnMouseOver() {
         this.setState({
@@ -197,7 +222,6 @@ class Video extends React.Component {
 
     handleOnMouseMove(e) {
         if (this.state.isDraggingProgressBar) {
-            console.log('wheeee');
             this.seek(e);
         }
     }
@@ -211,6 +235,8 @@ class Video extends React.Component {
             $('.video_progress-scrubber').removeClass('active');
         }
     }
+
+    // Progress bar events
 
     handleProgressBarOnMouseOver() {
         $('.video_progress-scrubber').addClass('active');
@@ -229,12 +255,41 @@ class Video extends React.Component {
         });
     }
 
+    // Volume events
+
+    handleVolumeOnMouseDown(e) {
+        this.adjustVolume(e);
+        this.setState({
+            isDraggingVolume: true
+        })
+    }
+
+    handleVolumeOnMouseMove(e) {
+        if (this.state.isDraggingVolume) {
+            this.adjustVolume(e);
+        }
+    }
+
+    handleVolumeOnMouseUp(e) {
+        this.adjustVolume(e);
+        this.setState({
+            isDraggingVolume: false
+        })
+    }
+
+    handleVolumeOnMouseOut(e) {
+        this.setState({
+            isDraggingVolume: false
+        })
+    }
+
     // Render
 
     render() {
         const { item } = this.props;
-        const { currentTime, duration, loadedDuration, isPlaying, displayControls } = this.state;
+        const { currentTime, duration, loadedDuration, volume, isPlaying, displayControls } = this.state;
         const displayControlsClass = displayControls ? "display-controls" : "";
+        const volumeIcon = volume === 0 ? "volume-mute" : (volume < 0.4 ? "volume-down" : "volume-up");
         const videoContainerEvents = {
             onMouseOver: this.handleOnMouseOver,
             onMouseOut: this.handleOnMouseOut,
@@ -245,6 +300,12 @@ class Video extends React.Component {
             onMouseOver: this.handleProgressBarOnMouseOver,
             onMouseOut: this.handleProgressBarOnMouseOut,
             onMouseDown: this.handleProgressBarOnMouseDown,
+        }
+        const volumeEvents = {
+            onMouseDown: this.handleVolumeOnMouseDown,
+            onMouseMove: this.handleVolumeOnMouseMove,
+            onMouseUp: this.handleVolumeOnMouseUp,
+            onMouseOut: this.handleVolumeOnMouseOut
         }
         return (
             <div className="video_container" {...videoContainerEvents}>
@@ -278,9 +339,9 @@ class Video extends React.Component {
                         <div className="video_controls-right">
                             <a className="video_control video_control-fullscreen"><Icon type="fullscreen" /></a>
                             <div className="video_control video_control-volume">
-                                <span className="video_volume-icon"><Icon type="volume-up" /></span>
-                                <div className="video_volume-slider-container">
-                                    <div className="video_volume-slider"></div>
+                                <span className="video_volume-icon"><Icon type={volumeIcon} /></span>
+                                <div className="video_volume-slider-container" {...volumeEvents} >
+                                    <div className="video_volume-slider" style={{ transform: `translateY(-50%) scaleX(${volume})`}}></div>
                                     <div className="video_volume-slider-backdrop"></div>
                                 </div>
 

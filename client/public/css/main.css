@@ -1254,6 +1254,10 @@ a.item-room.selected {
   overflow: hidden;
   border-radius: 20px;
   background-color: #ddd;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
   z-index: 15; }
   .user_profpic img {
     position: absolute;
@@ -1373,6 +1377,8 @@ a.item-room.selected {
   width: 100%;
   height: 16px;
   z-index: 25; }
+  .video_progress-bar-padding:hover {
+    cursor: pointer; }
 
 .video_progress-bar {
   position: relative;
@@ -1435,13 +1441,14 @@ a.item-room.selected {
     margin-top: 5px;
     transition: fill 0.1s; }
     .video_controls .svg-icon:hover {
-      fill: #fff; }
+      fill: #fff;
+      cursor: pointer; }
 
 .video_controls-left {
   height: 100%;
   float: left;
   margin-left: 5px; }
-  .video_controls-left * {
+  .video_controls-left > * {
     float: left; }
 
 .video_control-play-pause {
@@ -1457,13 +1464,56 @@ a.item-room.selected {
 
 .video_controls-right {
   height: 100%;
-  float: right; }
-  .video_controls-right * {
+  float: right;
+  margin-right: 5px; }
+  .video_controls-right > * {
     float: right; }
   .video_controls-right::after {
     content: '';
     display: table;
     clear: both; }
+
+.video_volume-icon .svg-icon {
+  margin-top: 7px;
+  width: 26px;
+  height: 26px; }
+
+.video_volume-slider-container {
+  width: 50px;
+  height: 40px;
+  vertical-align: top;
+  margin-left: 5px;
+  position: relative;
+  display: inline-block; }
+  .video_volume-slider-container:hover {
+    cursor: pointer; }
+
+.video_volume-slider-backdrop {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  top: 50%;
+  left: 0;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  height: 6px;
+  background: rgba(255, 255, 255, 0.6); }
+
+.video_volume-slider {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  top: 50%;
+  left: 0;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  height: 6px;
+  background: white;
+  -webkit-transform-origin: 0 50%;
+          transform-origin: 0 50%; }
+
+.video_control-fullscreen {
+  margin-left: 15px; }
 
 .bookmarks {
   padding: 15px;
