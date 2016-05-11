@@ -778,7 +778,10 @@ a.topbar_dropdown-option {
   height: 100%;
   position: relative;
   float: left;
-  overflow: hidden; }
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center; }
   .item_thumb .thumb_pixel {
     height: 100%;
     display: block; }

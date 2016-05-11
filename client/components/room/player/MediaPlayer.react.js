@@ -29,7 +29,7 @@ class MediaPlayer extends React.Component {
 
     resize() {
         const roomHeight = parseInt($('.room').css('height'));
-        const mediaHeight = Math.min(550, roomHeight-60);
+        const mediaHeight = Math.min(500, roomHeight-150);
         $('.player_media').height(mediaHeight);
     }
 

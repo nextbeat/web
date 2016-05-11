@@ -42,8 +42,7 @@ class ActivityItem extends React.Component {
         return (
             <div className={`item item-activity ${selectedClass} ${liveClass}`} onClick={handleClick.bind(this, mediaItem.get('id'))} ref={(c) => this._node = c}>
                 <div className="item_inner">
-                    <div className="item_thumb">
-                        <img className="thumb_img" src={url} />
+                    <div className="item_thumb" style={{ backgroundImage: `url(${url})`}}>
                         { mediaItem.get('type') === 'video' && <img className="item-activity_video" src="/images/video.png" /> }
                     </div>
                     <div className="item_main">
