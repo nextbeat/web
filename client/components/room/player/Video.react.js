@@ -43,6 +43,7 @@ class Video extends React.Component {
         this.seek = this.seek.bind(this);
         this.adjustVolume = this.adjustVolume.bind(this);
         this.fullScreen = this.fullScreen.bind(this);
+        this.hideControlsAfterDelay = this.hideControlsAfterDelay.bind(this);
 
         this.state = {
             currentTime: 0,
@@ -50,12 +51,13 @@ class Video extends React.Component {
             duration: 0.5, // not zero to avoid divide by zero bugs
             volume: 1,
             isPlaying: true,
-            timeIntervalId: -1,
             displayControls: true,
             isMouseOver: false,
             isDraggingProgressBar: false,
             isDraggingVolume: false,
             isFullScreen: false,
+            timeIntervalId: -1,
+            hoverTimeoutId: -1
         };
     }
 
@@ -65,7 +67,6 @@ class Video extends React.Component {
         const video = document.getElementById('video_player');
 
         video.addEventListener('loadedmetadata', this.didLoadMetadata);
-        video.addEventListener('timeupdate', this.didUpdateTime);
         video.addEventListener('playing', this.isPlaying);
         video.addEventListener('pause', this.didPause);
         video.addEventListener('waiting', this.isWaiting);
@@ -76,18 +77,18 @@ class Video extends React.Component {
         const video = document.getElementById('video_player');
 
         video.removeEventListener('loadedmetadata', this.didLoadMetadata);
-        video.removeEventListener('timeupdate', this.didUpdateTime);
         video.removeEventListener('playing', this.isPlaying);
         video.removeEventListener('pause', this.didPause);
         video.removeEventListener('waiting', this.isWaiting);
         video.removeEventListener('progress', this.didProgressDownload);
 
         clearInterval(this.state.timeIntervalId);
+        clearInterval(this.state.hoverTimeoutId);
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.item !== this.props.item) {
-            this.loadVideo(item);
+            this.loadVideo(this.props.item);
         }
     }
 
@@ -109,30 +110,27 @@ class Video extends React.Component {
 
     isPlaying() {
         const video = document.getElementById('video_player');
-        const timeIntervalId = setInterval(this.didUpdateTime, 50);
+
+        clearInterval(this.state.timeIntervalId);
+        const timeIntervalId = setInterval(this.didUpdateTime, 500);
 
         this.setState({
+            currentTime: video.currentTime,
             timeIntervalId,
             isPlaying: true
         });
 
         if (video.currentTime === 0) {
+            this.hideControlsAfterDelay();
             this.setState({
                 displayControls: true
             })
-            setTimeout(() => {
-                if (this.state.isPlaying && !this.state.isMouseOver) {
-                    this.setState({
-                        displayControls: false
-                    })
-                }
-            }, 2500);
-        } else if (!this.state.isMouseOver) {
-            this.setState({
-                displayControls: false
-            })
-        }
-
+        } 
+        // else if (!this.state.isMouseOver) {
+        //     this.setState({
+        //         displayControls: false
+        //     })
+        // }
     }
 
     didPause() {
@@ -140,6 +138,7 @@ class Video extends React.Component {
         clearInterval(this.state.timeIntervalId);
 
         this.setState({
+            currentTime: video.currentTime,
             isPlaying: false,
             displayControls: true
         });
@@ -166,8 +165,17 @@ class Video extends React.Component {
     // Actions
 
     loadVideo(item) {
+        clearInterval(this.state.timeIntervalId);
+        clearInterval(this.state.hoverTimeoutId);
+
         const video = document.getElementById('video_player');
         video.load();
+
+        this.setState({
+            currentTime: 0,
+            duration: 0.5,
+            loadedDuration: 0
+        });
     }
 
     playPause() {
@@ -210,13 +218,28 @@ class Video extends React.Component {
         });
     }
 
-    // Video container eventd
+    hideControlsAfterDelay(delay=2500) {
+        clearTimeout(this.state.hoverTimeoutId);
+        const hoverTimeoutId = setTimeout(() => {
+            if (this.state.isPlaying) {
+                this.setState({
+                    displayControls: false
+                })
+            }
+        }, delay);
+        this.setState({
+            hoverTimeoutId
+        });
+    }
+
+    // Video container events
 
     handleOnMouseOver() {
         this.setState({
             displayControls: true,
             isMouseOver: true
         })
+        this.hideControlsAfterDelay()
     }
 
     handleOnMouseOut() {
@@ -234,6 +257,10 @@ class Video extends React.Component {
         if (this.state.isDraggingProgressBar) {
             this.seek(e);
         }
+        this.setState({
+            displayControls: true
+        });
+        this.hideControlsAfterDelay()
     }
 
     handleOnMouseUp(e) {
@@ -243,6 +270,7 @@ class Video extends React.Component {
                 isDraggingProgressBar: false
             });
             $('.video_progress-scrubber').removeClass('active');
+            $('.video_progress-bar').removeClass('active');
         }
     }
 
@@ -250,11 +278,13 @@ class Video extends React.Component {
 
     handleProgressBarOnMouseOver() {
         $('.video_progress-scrubber').addClass('active');
+        $('.video_progress-bar').addClass('active');
     }
 
     handleProgressBarOnMouseOut() {
         if (!this.state.isDraggingProgressBar) {
             $('.video_progress-scrubber').removeClass('active');
+            $('.video_progress-bar').removeClass('active');
         }
     }
 
@@ -298,9 +328,12 @@ class Video extends React.Component {
     render() {
         const { item } = this.props;
         const { currentTime, duration, loadedDuration, volume, isPlaying, displayControls, isFullScreen } = this.state;
+
         const displayControlsClass = displayControls ? "display-controls" : "";
+        const displayControlsVideoStyle = displayControls ? { cursor: 'auto' } : { cursor: 'none' };
         const volumeIcon = volume === 0 ? "volume-mute" : (volume < 0.4 ? "volume-down" : "volume-up");
         const fullScreenIcon = isFullScreen ? "fullscreen-exit" : "fullscreen";
+
         const videoContainerEvents = {
             onMouseOver: this.handleOnMouseOver,
             onMouseOut: this.handleOnMouseOut,
@@ -318,8 +351,9 @@ class Video extends React.Component {
             onMouseUp: this.handleVolumeOnMouseUp,
             onMouseOut: this.handleVolumeOnMouseOut
         }
+
         return (
-            <div className="video_container" id="video_container" {...videoContainerEvents}>
+            <div className="video_container" id="video_container" style={displayControlsVideoStyle} {...videoContainerEvents}>
                 <div className="video_player-container">
                     <video id="video_player" className="video_player" autoPlay autoload preload="auto" poster={item.get('firstframe_url')} >
                         <source src={item.get('url')} type="video/mp4" />
