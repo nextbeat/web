@@ -71,6 +71,8 @@ class Video extends React.Component {
         video.addEventListener('pause', this.didPause);
         video.addEventListener('waiting', this.isWaiting);
         video.addEventListener('progress', this.didProgressDownload);
+
+        this.loadVideo(this.props.item);
     }
 
     componentWillUnmount() {
@@ -355,7 +357,8 @@ class Video extends React.Component {
         return (
             <div className="video_container" id="video_container" style={displayControlsVideoStyle} {...videoContainerEvents}>
                 <div className="video_player-container">
-                    <video id="video_player" className="video_player" autoPlay autoload preload="auto" poster={item.get('firstframe_url')} >
+                    <div className="video_player-background" style={{ backgroundImage: `url(${item.get('firstframe_url')})`}}></div>
+                    <video id="video_player" className="video_player" autoPlay autoload preload="auto">
                         <source src={item.get('url')} type="video/mp4" />
                     </video>
                 </div>
