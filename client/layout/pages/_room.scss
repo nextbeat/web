@@ -124,6 +124,7 @@
 
     &:hover:not(.disabled) {
         box-shadow: inset 0px 0px 8px 2px rgba($primary-color, 0.12);
+        cursor: pointer;
 
         .svg-icon {
             fill: $primary-color;

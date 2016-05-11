@@ -1,6 +1,8 @@
 import React from 'react'
+import { toggleFullScreen } from '../../../utils'
 
 import Icon from '../../shared/Icon.react'
+
 
 function padNumber(num) {
     const str = num.toString();
@@ -40,6 +42,7 @@ class Video extends React.Component {
         this.playPause = this.playPause.bind(this);
         this.seek = this.seek.bind(this);
         this.adjustVolume = this.adjustVolume.bind(this);
+        this.fullScreen = this.fullScreen.bind(this);
 
         this.state = {
             currentTime: 0,
@@ -52,6 +55,7 @@ class Video extends React.Component {
             isMouseOver: false,
             isDraggingProgressBar: false,
             isDraggingVolume: false,
+            isFullScreen: false,
         };
     }
 
@@ -200,6 +204,12 @@ class Video extends React.Component {
         this.setState({ volume });
     }
 
+    fullScreen() {
+        toggleFullScreen(document.getElementById('video_container'), (isFullScreen) => {
+            this.setState({ isFullScreen })
+        });
+    }
+
     // Video container eventd
 
     handleOnMouseOver() {
@@ -287,9 +297,10 @@ class Video extends React.Component {
 
     render() {
         const { item } = this.props;
-        const { currentTime, duration, loadedDuration, volume, isPlaying, displayControls } = this.state;
+        const { currentTime, duration, loadedDuration, volume, isPlaying, displayControls, isFullScreen } = this.state;
         const displayControlsClass = displayControls ? "display-controls" : "";
         const volumeIcon = volume === 0 ? "volume-mute" : (volume < 0.4 ? "volume-down" : "volume-up");
+        const fullScreenIcon = isFullScreen ? "fullscreen-exit" : "fullscreen";
         const videoContainerEvents = {
             onMouseOver: this.handleOnMouseOver,
             onMouseOut: this.handleOnMouseOut,
@@ -308,7 +319,7 @@ class Video extends React.Component {
             onMouseOut: this.handleVolumeOnMouseOut
         }
         return (
-            <div className="video_container" {...videoContainerEvents}>
+            <div className="video_container" id="video_container" {...videoContainerEvents}>
                 <div className="video_player-container">
                     <video id="video_player" className="video_player" autoPlay autoload preload="auto" poster={item.get('firstframe_url')} >
                         <source src={item.get('url')} type="video/mp4" />
@@ -337,7 +348,7 @@ class Video extends React.Component {
                             </div>
                         </div>
                         <div className="video_controls-right">
-                            { /* <a className="video_control video_control-fullscreen"><Icon type="fullscreen" /></a> */ }
+                            <a className="video_control video_control-fullscreen" onClick={this.fullScreen}><Icon type={fullScreenIcon} /></a>
                             <div className="video_control video_control-volume">
                                 <span className="video_volume-icon"><Icon type={volumeIcon} /></span>
                                 <div className="video_volume-slider-container" {...volumeEvents} >
