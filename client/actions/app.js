@@ -26,6 +26,17 @@ export function loadTags() {
     });
 }
 
+/********
+ * RESIZE
+ ********/
+
+export function resizeWindow(width) {
+    return {
+        type: ActionTypes.RESIZE,
+        width
+    }
+}
+
 export function clearApp() {
     return {
         type: ActionTypes.CLEAR_APP

@@ -3,6 +3,7 @@ export { Status, API_CALL, API_CANCEL } from './types'
 
 export {
     loadTags,
+    resizeWindow,
     clearApp
 } from './app'
 

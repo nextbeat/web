@@ -133,11 +133,4 @@ class Sidebar extends React.Component {
     }
 }
 
-/*
- <div className="sidebar_section">
-    <span className="sidebar_logo"><Link to="/"><Logo /></Link></span>
-    { user.isLoggedIn() ? this.renderLoggedIn() : this.renderGuest() }
-</div>
-*/
-
 export default Sidebar;

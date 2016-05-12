@@ -56,6 +56,7 @@ class MediaPlayer extends React.Component {
         }
     }
 
+    // Render
 
     render() {
         const { stack, handleForward, handleBackward } = this.props;
@@ -65,7 +66,7 @@ class MediaPlayer extends React.Component {
         return (
         <div className="player_main">
             <Counter stack={stack} />
-            {/* <div className="player_hover-button player_chat-button" onClick={this.handleChat}>Chat</div> */}
+            <div className="player_hover-button player_chat-button" onClick={this.handleChat}>Chat</div>
             <div className="player_media">
                 { stack.mediaItems().size == 0 && !stack.get('mediaItemsError') && <Spinner type="large grey"/> }
                 { !item.isEmpty() && (item.get('type') === "video" 

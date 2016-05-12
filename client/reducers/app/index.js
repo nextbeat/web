@@ -1,4 +1,5 @@
 import { Map, List } from 'immutable'
+import { inRange } from 'lodash'
 import { ActionTypes, Status } from '../../actions'
 import { combineReducers } from '../utils'
 
@@ -32,9 +33,25 @@ function authError(state = false, action) {
     return state;
 }
 
+const WIDTH_RANGES = [
+    { range: [0, 500], type: 'small' },
+    { range: [501, 800], type: 'medium' },
+    { range: [801, 1100], type: 'room-medium' },
+    { range: [1101, Infinity], type: 'large' } 
+]
+
+function width(state='', action) {
+    if (action.type === ActionTypes.RESIZE) {
+        const size = WIDTH_RANGES.find(r => inRange(Math.max(action.width, 0), ...r.range))['type'];
+        return size;
+    }
+    return state;
+}
+
 const reducers = {
     tags,
-    authError
+    authError,
+    width
 }
 
 export default function(state = Map(), action) {

@@ -18,6 +18,7 @@ export default {
      *****/
 
     TAGS: 'TAGS',
+    RESIZE: 'RESIZE',
     CLEAR_APP: 'CLEAR_APP',
 
     /******

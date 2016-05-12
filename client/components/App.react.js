@@ -7,7 +7,7 @@ import Helmet from 'react-helmet'
 import Sidebar from '../components/Sidebar.react'
 import Topbar from '../components/Topbar.react'
 
-import { connectToXMPP, disconnectXMPP, login, logout, signup, clearLogin, clearSignup, postLogin, loadTags, clearApp } from '../actions'
+import { connectToXMPP, disconnectXMPP, login, logout, signup, clearLogin, clearSignup, postLogin, loadTags, clearApp, resizeWindow } from '../actions'
 import { CurrentUser, App as AppModel } from '../models'
 
 class App extends React.Component {
@@ -18,6 +18,9 @@ class App extends React.Component {
         this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
         this.handleSignupSubmit = this.handleSignupSubmit.bind(this);
         this.handleLogoutClick = this.handleLogoutClick.bind(this);
+
+        this.resize = this.resize.bind(this);
+
         this.setTitle = this.setTitle.bind(this);
         this.renderLogin = this.renderLogin.bind(this);
         this.renderSignup = this.renderSignup.bind(this);
@@ -35,11 +38,15 @@ class App extends React.Component {
             dispatch(postLogin());
         }
 
+        $(window).resize(this.resize);
+        this.resize();
     }
 
     componentWillUnmount() {
         this.props.dispatch(disconnectXMPP());
         this.props.dispatch(clearApp());
+
+        $(window).off('resize', this.resize);
     }
 
     componentDidUpdate(prevProps) {
@@ -51,6 +58,13 @@ class App extends React.Component {
         if (this.props.app.hasAuthError()) {
             $('#login-container').show();
         }
+    }
+
+    // Resize
+
+    resize(e) {
+        const width = $('#app-container').width();
+        this.props.dispatch(resizeWindow(width));
     }
 
     // Login
@@ -187,7 +201,7 @@ class App extends React.Component {
             handleSignupClick: this.handleSignupClick
         }
         return (
-            <section className="app-container">
+            <section className="app-container" id="app-container">
                 {this.setTitle()}
                 {this.renderLogin()}
                 {this.renderSignup()}
