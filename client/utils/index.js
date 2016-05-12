@@ -27,3 +27,13 @@ export function toggleFullScreen(element, callback) {
       if (callback) callback(true);
    }
 }
+
+/********
+ * DEVICE
+ ********/
+
+// Code sourced from http://stackoverflow.com/questions/9038625
+
+export function isIOSDevice() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}

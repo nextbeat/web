@@ -30,6 +30,11 @@
 
     background-color: white;
     padding: 0 20px;
+    border-bottom: 1px solid #e6e6e6;
+
+    &:last-child {
+        border-bottom: none;
+    }
     
     &.highlighted {
         color: $background-color;
@@ -50,12 +55,7 @@
     }
 
     @include media('<=medium') {
-        margin: 0;
-        border-bottom: none;
-
-        &:last-child {
-            border-bottom: 1px solid $border-color;
-        }
+        margin-bottom: 10px;
     }
 }
 

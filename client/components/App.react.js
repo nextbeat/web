@@ -162,10 +162,10 @@ class App extends React.Component {
                             <input type="text" ref="signup_email" name="signup_email" placeholder="Email" />
                         </div>
                         <div className="modal_input-wrapper">
-                            <input type="text" autocomplete="off" ref="signup_username" name="signup_username" placeholder="Username" />
+                            <input type="text" autoComplete="off" ref="signup_username" name="signup_username" placeholder="Username" />
                         </div>
                         <div className="modal_input-wrapper">
-                            <input type="password" autocomplete="new-password" ref="signup_password" name="signup_password" placeholder="Password" />
+                            <input type="password" autoComplete="new-password" ref="signup_password" name="signup_password" placeholder="Password" />
                         </div>
                         <div className="modal_input-wrapper">
                             <a className="btn btn-secondary modal_form_submit" onClick={this.handleSignupSubmit}>Sign Up</a>

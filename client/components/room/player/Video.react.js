@@ -1,5 +1,5 @@
 import React from 'react'
-import { toggleFullScreen } from '../../../utils'
+import { toggleFullScreen, isIOSDevice } from '../../../utils'
 
 import Icon from '../../shared/Icon.react'
 
@@ -56,6 +56,7 @@ class Video extends React.Component {
             isDraggingProgressBar: false,
             isDraggingVolume: false,
             isFullScreen: false,
+            isIOSDevice: false,
             timeIntervalId: -1,
             hoverTimeoutId: -1
         };
@@ -71,6 +72,13 @@ class Video extends React.Component {
         video.addEventListener('pause', this.didPause);
         video.addEventListener('waiting', this.isWaiting);
         video.addEventListener('progress', this.didProgressDownload);
+
+        this.loadVideo(this.props.item);
+
+        // iOS does not do custom controls well
+        this.setState({
+            isIOSDevice: isIOSDevice()
+        })
     }
 
     componentWillUnmount() {
@@ -327,7 +335,7 @@ class Video extends React.Component {
 
     render() {
         const { item } = this.props;
-        const { currentTime, duration, loadedDuration, volume, isPlaying, displayControls, isFullScreen } = this.state;
+        const { currentTime, duration, loadedDuration, volume, isPlaying, displayControls, isFullScreen, isIOSDevice } = this.state;
 
         const displayControlsClass = displayControls ? "display-controls" : "";
         const displayControlsVideoStyle = displayControls ? { cursor: 'auto' } : { cursor: 'none' };
@@ -354,46 +362,57 @@ class Video extends React.Component {
 
         return (
             <div className="video_container" id="video_container" style={displayControlsVideoStyle} {...videoContainerEvents}>
+                { window.MSStream }
                 <div className="video_player-container">
-                    <video id="video_player" className="video_player" autoPlay autoload preload="auto" poster={item.get('firstframe_url')} >
-                        <source src={item.get('url')} type="video/mp4" />
-                    </video>
+                    <div className="video_player-background" style={{ backgroundImage: `url(${item.get('firstframe_url')})`}}></div>
+                    { isIOSDevice && 
+                        <video id="video_player" className="video_player" autoload controls preload="auto">
+                            <source src={item.get('url')} type="video/mp4" />
+                        </video>
+                    }
+                    { !isIOSDevice && 
+                        <video id="video_player" className="video_player" autoPlay autoload preload="auto">
+                            <source src={item.get('url')} type="video/mp4" />
+                        </video>
+                    }
+                    
                 </div>
-                <div className={`video_bottom ${displayControlsClass}`}>
-                    <div className="video_gradient-bottom"></div>
-                    <div className="video_progress-bar-container">
-                        <div className="video_progress-bar-padding" {...progressBarEvents}></div>
-                        <div className="video_progress-scrubber" style={{ left: `${ currentTime/duration*100 }%` }} ></div>
-                        <div className="video_progress-bar">
-                            <div className="video_progress-play" style={{ transform: `scaleX(${ currentTime/duration })` }}></div>
-                            <div className="video_progress-buffer" style={{ transform: `scaleX(${ loadedDuration/duration })` }}></div>
-                            <div className="video_progress-hover"></div>
-                        </div>
-                    </div>
-                    <div className="video_controls">
-                        <div className="video_controls-left">
-                            <a className="video_control video_control-play-pause" onClick={this.playPause}>
-                                { isPlaying ? <Icon type="pause" /> : <Icon type="play" /> }
-                            </a>
-                            <div className="video_control video_control-time">
-                                <span className="video_time-current">{timeStr(currentTime)}</span>
-                                <span className="video_time-separator">/</span>
-                                <span className="video_time-duration">{timeStr(duration)}</span>
+                { !isIOSDevice &&
+                    <div className={`video_bottom ${displayControlsClass}`}>
+                        <div className="video_gradient-bottom"></div>
+                        <div className="video_progress-bar-container">
+                            <div className="video_progress-bar-padding" {...progressBarEvents}></div>
+                            <div className="video_progress-scrubber" style={{ left: `${ currentTime/duration*100 }%` }} ></div>
+                            <div className="video_progress-bar">
+                                <div className="video_progress-play" style={{ transform: `scaleX(${ currentTime/duration })` }}></div>
+                                <div className="video_progress-buffer" style={{ transform: `scaleX(${ loadedDuration/duration })` }}></div>
+                                <div className="video_progress-hover"></div>
                             </div>
                         </div>
-                        <div className="video_controls-right">
-                            <a className="video_control video_control-fullscreen" onClick={this.fullScreen}><Icon type={fullScreenIcon} /></a>
-                            <div className="video_control video_control-volume">
-                                <span className="video_volume-icon"><Icon type={volumeIcon} /></span>
-                                <div className="video_volume-slider-container" {...volumeEvents} >
-                                    <div className="video_volume-slider" style={{ transform: `translateY(-50%) scaleX(${volume})`}}></div>
-                                    <div className="video_volume-slider-backdrop"></div>
+                        <div className="video_controls">
+                            <div className="video_controls-left">
+                                <a className="video_control video_control-play-pause" onClick={this.playPause}>
+                                    { isPlaying ? <Icon type="pause" /> : <Icon type="play" /> }
+                                </a>
+                                <div className="video_control video_control-time">
+                                    <span className="video_time-current">{timeStr(currentTime)}</span>
+                                    <span className="video_time-separator">/</span>
+                                    <span className="video_time-duration">{timeStr(duration)}</span>
+                                </div>
+                            </div>
+                            <div className="video_controls-right">
+                                <a className="video_control video_control-fullscreen" onClick={this.fullScreen}><Icon type={fullScreenIcon} /></a>
+                                <div className="video_control video_control-volume">
+                                    <span className="video_volume-icon"><Icon type={volumeIcon} /></span>
+                                    <div className="video_volume-slider-container" {...volumeEvents} >
+                                        <div className="video_volume-slider" style={{ transform: `translateY(-50%) scaleX(${volume})`}}></div>
+                                        <div className="video_volume-slider-backdrop"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
+                }
             </div>
         );
     }

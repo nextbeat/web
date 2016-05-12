@@ -18,7 +18,7 @@ if (process.env.NODE_ENV !== "production") {
         stateTransformer
     });
 
-    // middlewares.push(logger);
+    middlewares.push(logger);
 }
 
 export default function configureStore(initialState = Map()) {

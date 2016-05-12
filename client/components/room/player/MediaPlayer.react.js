@@ -29,7 +29,7 @@ class MediaPlayer extends React.Component {
 
     resize() {
         const roomHeight = parseInt($('.room').css('height'));
-        const mediaHeight = Math.min(550, roomHeight-60);
+        const mediaHeight = Math.min(500, roomHeight-150);
         $('.player_media').height(mediaHeight);
     }
 
@@ -46,7 +46,7 @@ class MediaPlayer extends React.Component {
             }
             handleBackward();
         } else if (e.keyCode === 39) {
-            if (stack.indexOfSelectedMediaItem() !== stack.mediaItems().size-1) {
+            if (stack.indexOfSelectedMediaItem() !== stack.mediaItemsSize()-1) {
                 $('.player_nav-forward').removeClass('player_nav-button-flash');
                 process.nextTick(() => {
                     $('.player_nav-forward').addClass('player_nav-button-flash');
@@ -61,7 +61,7 @@ class MediaPlayer extends React.Component {
         const { stack, handleForward, handleBackward } = this.props;
         const item = stack.selectedMediaItem()
         const leftDisabledClass = stack.indexOfSelectedMediaItem() === 0 ? 'disabled' : '';
-        const rightDisabledClass = stack.indexOfSelectedMediaItem() === stack.mediaItems().size-1 ? 'disabled' : ''; 
+        const rightDisabledClass = stack.indexOfSelectedMediaItem() === stack.mediaItemsSize()-1 ? 'disabled' : ''; 
         return (
         <div className="player_main">
             <Counter stack={stack} />
