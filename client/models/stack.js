@@ -103,6 +103,12 @@ export default class Stack extends ModelBase {
         return ids.indexOf(selectedId)
     }
 
+    mediaItemsSize() {
+        const paginatedIds = this.get('mediaItemIds', List())
+        const liveIds = this.get('liveMediaItemIds', List())
+        return paginatedIds.size + liveIds.size
+    }
+
     mostRecentComment() {
         return this.liveComments().size > 0 ? this.liveComments().last() : this.comments().first()
     }

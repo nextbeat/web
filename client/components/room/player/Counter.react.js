@@ -6,9 +6,9 @@ class Counter extends React.Component {
         const { stack } = this.props;
         return (
             <div className="player_hover-button player_counter">
-                { stack.mediaItems().size > 0 && 
+                { stack.mediaItemsSize() > 0 && 
                     <div>
-                        <span className="selected">{ stack.indexOfSelectedMediaItem() + 1 }</span><span className="player_counter-separator">/</span>{ stack.mediaItems().size } 
+                        <span className="selected">{ stack.indexOfSelectedMediaItem() + 1 }</span><span className="player_counter-separator">/</span>{ stack.mediaItemsSize() } 
                     </div>
                 }
             </div>
