@@ -2047,8 +2047,38 @@ a.chat_mention {
   color: #888; }
 
 .chat_item-notification {
-  color: #999;
-  font-style: italic; }
+  color: white;
+  background-color: #69cdd4;
+  border: 1px solid #28b8c2;
+  border-radius: 3px;
+  padding: 5px;
+  position: relative; }
+  .chat_item-notification strong {
+    color: white; }
+  .chat_item-notification::after {
+    content: '';
+    display: table;
+    clear: both; }
+
+.chat_item-notification_thumb {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 22px;
+  width: 30px;
+  display: inline-block;
+  border-radius: 2px;
+  border: 1px solid white;
+  float: left;
+  vertical-align: middle; }
+
+.chat_item-notification_text {
+  display: inline-block;
+  vertical-align: top;
+  float: left;
+  width: calc(100% - 30px);
+  padding: 2px 0 0 7px;
+  vertical-align: middle; }
 
 .chat_compose {
   height: 105px;
