@@ -40,37 +40,49 @@ class HomeSection extends React.Component {
     // Resize
 
     resize(node, parent) {
-        const { leftIndex, numAcross } = this.state 
+        const { leftIndex: oldLeftIndex } = this.state 
         const { stacks } = this.props 
 
         /**
          * We use component state to dynamically resize the stacks list and shift
          * the left index appropriately.
          */
-        if (parent.width() > 1040) {
-            this.setState({ 
-                numAcross: 4,
-                leftIndex: Math.max(0, Math.min(stacks.size-4, leftIndex)),
-                shouldAnimate: false 
-            })
-        } else if (parent.width() > 820) {
-            this.setState({ 
-                numAcross: 3,
-                leftIndex: Math.max(0, Math.min(stacks.size-3, leftIndex)),
-                shouldAnimate: false 
-            })
-        } else {    
-            // If the viewport is small enough we also want to resize stack items
-            let itemWidth = DEFAULT_ITEM_WIDTH
-            if (parent.width() < 530) {
-                itemWidth = Math.floor((parent.width() - 80 - MARGIN_WIDTH) / 2) 
-            } 
-            this.setState({ 
-                numAcross: 2,
-                itemWidth: itemWidth,
-                shouldAnimate: false 
-            })
-        }
+        const parentWidth = parent.width()
+        let numAcross = Math.max(2, Math.floor((parentWidth - 100)/DEFAULT_ITEM_WIDTH))
+        let leftIndex = Math.max(0, Math.min(stacks.size-numAcross, oldLeftIndex))
+        let itemWidth = Math.floor((parentWidth - 100 - MARGIN_WIDTH*(numAcross-1)) / numAcross)
+
+        this.setState({
+            numAcross,
+            leftIndex,
+            itemWidth,
+            shouldAnimate: false
+        })
+
+        // if (parent.width() > 1040) {
+        //     this.setState({ 
+        //         numAcross: 4,
+        //         leftIndex: Math.max(0, Math.min(stacks.size-4, oldLeftIndex)),
+        //         shouldAnimate: false 
+        //     })
+        // } else if (parent.width() > 820) {
+        //     this.setState({ 
+        //         numAcross: 3,
+        //         leftIndex: Math.max(0, Math.min(stacks.size-3, oldLeftIndex)),
+        //         shouldAnimate: false 
+        //     })
+        // } else {    
+        //     // If the viewport is small enough we also want to resize stack items
+        //     let itemWidth = DEFAULT_ITEM_WIDTH
+        //     if (parent.width() < 530) {
+        //         itemWidth = Math.floor((parent.width() - 80 - MARGIN_WIDTH) / 2) 
+        //     } 
+        //     this.setState({ 
+        //         numAcross: 2,
+        //         itemWidth: itemWidth,
+        //         shouldAnimate: false 
+        //     })
+        // }
     }
 
     // Actions
