@@ -19,7 +19,7 @@ class ChatItem extends React.Component {
         mentions.forEach(m => {
             const [start, end] = m.get('indices').toJS()
             const spanKey = `@${id},${idx},${start}`
-            elems.push(<span key={spanKey}>{ message.substring(0, start) }</span>)
+            elems.push(<span key={spanKey}>{ message.substring(idx, start) }</span>)
 
             const mentionKey = `@${id},${start},${end}`
             const url = `/u/${m.get('username')}`
@@ -28,6 +28,7 @@ class ChatItem extends React.Component {
             idx = end
         })
         elems.push(<span key={`@${id},${idx}`}>{ message.substring(idx) }</span>)
+        console.log(elems);
 
         return (
             <span>
