@@ -221,7 +221,7 @@ class Video extends React.Component {
     }
 
     fullScreen() {
-        toggleFullScreen(document.getElementById('video_container'), (isFullScreen) => {
+        toggleFullScreen(document.getElementById('player_media-inner'), (isFullScreen) => {
             this.setState({ isFullScreen })
         });
     }

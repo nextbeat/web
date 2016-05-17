@@ -67,10 +67,12 @@ class MediaPlayer extends React.Component {
             <Counter stack={stack} />
             {/* <div className="player_hover-button player_chat-button" onClick={this.handleChat}>Chat</div> */}
             <div className="player_media">
+                <div className="player_media-inner" id="player_media-inner">
                 { stack.mediaItems().size == 0 && !stack.get('mediaItemsError') && <Spinner type="large grey"/> }
                 { !item.isEmpty() && (item.get('type') === "video" 
                     ? <Video item={item} />
                     : <div className="player_photo" style={{backgroundImage: `url(${item.get('url')})`}}></div>) }
+                </div>
             </div>
             <div className="player_navigation">
                 <div className={`player_nav-button player_nav-backward ${leftDisabledClass}`} onClick={handleBackward}><Icon type="arrow-back" /></div>
