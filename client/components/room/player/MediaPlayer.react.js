@@ -1,5 +1,7 @@
 import React from 'react'
+
 import Video from './Video.react'
+import Photo from './Photo.react'
 import Counter from './Counter.react'
 import Icon from '../../shared/Icon.react'
 import Spinner from '../../shared/Spinner.react'
@@ -69,9 +71,7 @@ class MediaPlayer extends React.Component {
             <div className="player_media">
                 <div className="player_media-inner" id="player_media-inner">
                 { stack.mediaItems().size == 0 && !stack.get('mediaItemsError') && <Spinner type="large grey"/> }
-                { !item.isEmpty() && (item.get('type') === "video" 
-                    ? <Video item={item} />
-                    : <div className="player_photo" style={{backgroundImage: `url(${item.get('url')})`}}></div>) }
+                { !item.isEmpty() && (item.get('type') === "video" ? <Video item={item} /> : <Photo item={item} /> ) }
                 </div>
             </div>
             <div className="player_navigation">

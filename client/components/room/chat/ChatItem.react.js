@@ -28,7 +28,6 @@ class ChatItem extends React.Component {
             idx = end
         })
         elems.push(<span key={`@${id},${idx}`}>{ message.substring(idx) }</span>)
-        console.log(elems);
 
         return (
             <span>

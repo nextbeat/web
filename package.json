@@ -5,6 +5,7 @@
   "dependencies": {
     "bluebird": "*",
     "body-parser": "^1.14.2",
+    "compression": "^1.6.2",
     "connect-flash": "^0.1.1",
     "connect-redis": "^3.0.2",
     "express": "4.x",
