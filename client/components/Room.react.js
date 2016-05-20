@@ -20,6 +20,8 @@ class Theater extends React.Component {
         this.handleBackward = this.handleBackward.bind(this);
         this.handleBookmark = this.handleBookmark.bind(this);
         this.handleUnbookmark = this.handleUnbookmark.bind(this);
+
+        this.renderDocumentHead = this.renderDocumentHead.bind(this);
     }
 
     // LIFECYCLE
@@ -109,6 +111,25 @@ class Theater extends React.Component {
 
     // RENDER
 
+    renderDocumentHead(stack) {
+        const url = `https://nextbeat.co/${this.props.location.pathname}`
+        const thumb_url = stack.get('fb_thumbnail_url') || stack.get('thumbnail_url') || ''
+        return (
+            <Helmet 
+                title={stack.get('description')}
+                meta={[
+                    {"property": "og:title", "content": stack.get('description')},
+                    {"property": "og:url", "content": url},
+                    {"property": "og:description", "content": `Check out this room created by ${stack.author().get('username')}!`},
+                    {"property": "og:image", "content": thumb_url},
+                    {"property": "og:image:width", "content": 1200},
+                    {"property": "og:image:height", "content": 900}
+                ]}
+            />
+        )
+
+    }
+
     render() {
         const { stack } = this.props;
         const playerProps = { 
@@ -125,7 +146,7 @@ class Theater extends React.Component {
         }
         return (
         <section className="room">
-            <Helmet title={stack.get('description')} />
+            {this.renderDocumentHead(stack)}
             <Player {...playerProps} />
             <DetailBar {...detailBarProps} />
         </section>

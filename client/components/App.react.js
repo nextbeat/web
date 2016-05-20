@@ -121,6 +121,9 @@ class App extends React.Component {
             <Helmet
                 defaultTitle = {`${envLabel}Nextbeat`}
                 titleTemplate = {`${envLabel}%s - Nextbeat`}
+                meta={[
+                    {"property": "og:site-name", "content": "Nextbeat"}
+                ]}
             />
         );
     }

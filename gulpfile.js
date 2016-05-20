@@ -3,10 +3,12 @@ var _               = require('lodash'),
     sass            = require('gulp-sass'),
     autoprefixer    = require('gulp-autoprefixer'),
     nodemon         = require('gulp-nodemon'),
+    babel           = require('gulp-babel'),
+    cache           = require('gulp-file-cache'),
     uglify          = require('gulp-uglify'),
     browserify      = require('browserify'),
     watchify        = require('watchify'),
-    babelify        = require('babelify'),
+    babelify        = require('babelify'), // because this one's for browserify!!
     envify          = require('envify/custom'),
     source          = require('vinyl-source-stream'),
     buffer          = require('vinyl-buffer'),
@@ -26,22 +28,31 @@ gulp.task('styles', function() {
         .pipe(gulp.dest('client/public/css'));
 });
 
-gulp.task('build', ['styles'], function() {
+gulp.task('build', ['styles', 'server-compile'], function() {
     return browserify('client/app.js')
         .transform(babelify, { presets: ['react', 'es2015']})
         .transform(envify())
         .bundle()
         .pipe(source('bundle.min.js'))
         .pipe(buffer())
-        // .pipe(uglify())
+        .pipe(uglify())
         .pipe(gulp.dest('client/public/js'));
 });
 
-gulp.task('server', function() {
+gulp.task('server-compile', function() {
+    return gulp.src('./server/**/*.js')
+        .pipe(cache.filter())
+        .pipe(babel({ presets: ['react', 'es2015'] }))
+        .pipe(cache.cache())
+        .pipe(gulp.dest('./server_dist'))
+})
+
+gulp.task('server', ['server-compile'], function() {
     nodemon({
-        script: 'server/server.js',
+        script: 'server_dist/server.js',
         ext: 'html js',
         watch: 'server/*',
+        tasks: ['server-compile'],
         env: MAC_ENV
     });
 });

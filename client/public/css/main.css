@@ -293,7 +293,8 @@ html, body {
   color: #333;
   display: block;
   margin: 0 0 7px 5px;
-  font-size: 14px; }
+  font-size: 14px;
+  position: relative; }
   .sidebar_subscriptions a::after {
     content: '';
     display: table;
@@ -304,6 +305,13 @@ html, body {
     font-weight: bold; }
   .sidebar_subscriptions a .sidebar_icon {
     float: left; }
+
+.badge.sidebar_badge {
+  border: 1px solid #e6e6e6;
+  box-shadow: none;
+  position: absolute;
+  font-size: 10px;
+  left: 150px; }
 
 .sidebar_categories a {
   font-weight: normal;

@@ -42,7 +42,8 @@ function fetchSubscriptions(pagination) {
         type: ActionTypes.SUBSCRIPTIONS,
         [API_CALL]: {
             schema: Schemas.USERS,
-            endpoint: "subscriptions",
+            endpoint: "users",
+            queries: { "subscriptions": "true" },
             authenticated: true,
             pagination
         }
