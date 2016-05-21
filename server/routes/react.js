@@ -4,9 +4,10 @@ import { match, RouterContext } from 'react-router'
 import { renderToString } from 'react-dom/server'
 import { Provider } from 'react-redux'
 
-import configureStore from '../../../client/store'
+import configureStore from '../../client/store'
 import { Map, fromJS } from 'immutable'
-import { assign } from 'lodash'
+import { assign, last } from 'lodash'
+import Helmet from 'react-helmet'
 
 function getInitialState(req) {
     let state = {
@@ -37,7 +38,7 @@ function getInitialState(req) {
 }
 
 // todo: use handlebars
-function renderFullPage(html, initialState) {
+function renderFullPage(html, head, initialState) {
     return `
         <!doctype html>
         <html lang="en">
@@ -45,7 +46,8 @@ function renderFullPage(html, initialState) {
             <meta charset="utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 
-            <title>Nextbeat</title>
+            ${head.title.toString()}
+            ${head.meta.toString()}
 
             <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
             <script src="/js/modernizr.js"></script>
@@ -64,6 +66,17 @@ function renderFullPage(html, initialState) {
     `
 }
 
+function renderAndSend(res, renderProps, store) {
+     const html = renderToString(
+        <Provider store={store}>
+            <RouterContext {...renderProps} />
+        </Provider>
+    )
+    const state = store.getState()
+    const head = Helmet.rewind()
+    res.status(200).send(renderFullPage(html, head, state))
+}
+
 export function handleReactRender(req, res) {
     match({ routes, location: req.url }, ( error, redirectLocation, renderProps) => {
         if (error) {
@@ -72,13 +85,15 @@ export function handleReactRender(req, res) {
             res.redirect(302, redirectLocation.pathname + redirectLocation.search)
         } else if (renderProps) {
             const store = configureStore(getInitialState(req))
-            const html = renderToString(
-                <Provider store={store}>
-                    <RouterContext {...renderProps} />
-                </Provider>
-            )
-            const initialState = store.getState()
-            res.status(200).send(renderFullPage(html, initialState))
+            const component = last(renderProps.components)
+            if (typeof component.fetchData === "function") {
+                component.fetchData(store, renderProps.params).then((newStore)=> {
+                    renderAndSend(res, renderProps, newStore)
+                })
+            } else {
+                renderAndSend(res, renderProps, store)
+            }
+           
         }
     })
 }

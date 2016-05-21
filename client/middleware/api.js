@@ -10,6 +10,24 @@ import { CurrentUser } from '../models'
 
 const API_ROOT = '/api/';
 
+// Server-side requests require absolute urls
+function absoluteURL(url) {
+    if (process && process.env && process.env.NODE_ENV) {
+        switch (process.env.NODE_ENV) {
+            case "production":
+                return `http://nextbeat.co${url}`
+            case "development":
+                return `http://dev.nextbeat.co${url}`
+            case "local":
+                return `http://localhost:8080${url}`
+            case "mac":
+            default:
+                return `http://localhost:3000${url}`
+        }
+    }
+    return url;
+}
+
 function urlWithParams(endpoint, pagination, queries) {
     let url = join(API_ROOT, endpoint);
     queries = queries || {};
@@ -26,7 +44,7 @@ function urlWithParams(endpoint, pagination, queries) {
         url += "?" + stringify(queries);
     }
 
-    return url;
+    return absoluteURL(url);
 }
 
 function fetchOptions(options, store) {
@@ -117,10 +135,14 @@ export default store => next => action => {
             }))
 
         })
-        .catch(error => next(actionWith({
-            status: Status.FAILURE,
-            error: error.message
-        })));
+        .catch(error => {
+            console.log(error)
+            console.log(error.stack)
+            return next(actionWith({
+                status: Status.FAILURE,
+                error: error.message
+            }))
+        });
 
     // dispatch action which asserts request is being made
     // include fetch promise so we can cancel it if need be

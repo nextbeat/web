@@ -41,6 +41,7 @@ gulp.task('build', ['styles', 'server-compile', 'routes-compile'], function() {
         .pipe(gulp.dest('client/public/js'));
 });
 
+// todo: single function for these
 gulp.task('server-compile', function() {
     return gulp.src('./server/**/*.js')
         .pipe(cache.filter())
@@ -57,12 +58,12 @@ gulp.task('routes-compile', function() {
         .pipe(gulp.dest('./dist/routes'))
 });
 
-gulp.task('server', ['server-compile'], function() {
+gulp.task('server', function() {
     nodemon({
-        script: 'dist/server/server.js',
+        script: 'server/server.js',
         ext: 'html js',
         watch: ['server/*', 'routes/*'],
-        tasks: ['server-compile', 'routes-compile'],
+        // tasks: ['server-compile', 'routes-compile'],
         env: MAC_ENV
     });
 });

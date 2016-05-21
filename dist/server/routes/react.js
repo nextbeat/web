@@ -19,7 +19,7 @@ var _server = require('react-dom/server');
 
 var _reactRedux = require('react-redux');
 
-var _store = require('../../../client/store');
+var _store = require('../../client/store');
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -64,6 +64,16 @@ function renderFullPage(html, initialState) {
     return '\n        <!doctype html>\n        <html lang="en">\n        <head>\n            <meta charset="utf-8" />\n            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />\n\n            <title>Nextbeat</title>\n\n            <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>\n            <script src="/js/modernizr.js"></script>\n\n            <link rel="stylesheet" href="/css/main.css" />\n        </head>\n\n        <body> \n            <div id="react">' + html + '</div>\n            <script src="/js/bundle.js"></script>\n            <script>\n                window.__INITIAL_STATE__ = ' + JSON.stringify(initialState) + '\n            </script>\n        </body>\n        </html>\n    ';
 }
 
+function renderAndSend(res, renderProps, store) {
+    var html = (0, _server.renderToString)(_react2.default.createElement(
+        _reactRedux.Provider,
+        { store: store },
+        _react2.default.createElement(_reactRouter.RouterContext, renderProps)
+    ));
+    var state = store.getState();
+    res.status(200).send(renderFullPage(html, state));
+}
+
 function handleReactRender(req, res) {
     (0, _reactRouter.match)({ routes: _routes2.default, location: req.url }, function (error, redirectLocation, renderProps) {
         if (error) {
@@ -72,13 +82,16 @@ function handleReactRender(req, res) {
             res.redirect(302, redirectLocation.pathname + redirectLocation.search);
         } else if (renderProps) {
             var store = (0, _store2.default)(getInitialState(req));
-            var html = (0, _server.renderToString)(_react2.default.createElement(
-                _reactRedux.Provider,
-                { store: store },
-                _react2.default.createElement(_reactRouter.RouterContext, renderProps)
-            ));
-            var initialState = store.getState();
-            res.status(200).send(renderFullPage(html, initialState));
+            var component = (0, _lodash.last)(renderProps.components);
+            if (typeof component.fetchData === "function") {
+                console.log('fetching data');
+                component.fetchData(store, renderProps.params).then(function (newStore) {
+                    console.log('data fetched');
+                    renderAndSend(res, renderProps, newStore);
+                });
+            } else {
+                renderAndSend(res, renderProps, store);
+            }
         }
     });
 }

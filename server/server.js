@@ -13,8 +13,8 @@ var express     = require('express'),
 var exphbs      = require('express-handlebars'),
     favicon     = require('serve-favicon');
 
-web.use(express.static(path.join(__dirname, '../../client/public/html')));
-web.use(express.static(path.join(__dirname, '../../client/public')));
+web.use(express.static(path.join(__dirname, '../client/public/html')));
+web.use(express.static(path.join(__dirname, '../client/public')));
 
 // todo: look into using a reverse proxy
 
@@ -42,7 +42,7 @@ web.engine('handlebars', exphbs({
 web.set('view engine', 'handlebars');
 
 // Favicon
-web.use(favicon(path.join(__dirname, '../../client/public/images/favicon.ico')));
+web.use(favicon(path.join(__dirname, '../client/public/images/favicon.ico')));
 
 routes.init(web);
 api.init().then(function() {

@@ -99,15 +99,6 @@ module.exports = {
 
         // React
 
-        // router.get('*', function(req, res) {
-        //     var state = _.assign({}, { user: req.user }, req.authInfo, { environment: process.env.NODE_ENV || "development" });
-        //     var bundle = process.env.NODE_ENV === 'mac' ? "/js/bundle.js" : "/js/bundle.min.js";
-        //     res.render('app', {
-        //         bundle: bundle,
-        //         state: JSON.stringify(state)
-        //     });
-        // });
-
         router.get('*', _react.handleReactRender);
     }
 };

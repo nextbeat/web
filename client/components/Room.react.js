@@ -9,7 +9,7 @@ import DetailBar from './room/DetailBar.react'
 import { loadStack, joinRoom, clearStack, bookmark, unbookmark, selectMediaItem, goForward, goBackward } from '../actions'
 import { Stack } from '../models'
 
-class Theater extends React.Component {
+class Room extends React.Component {
 
     constructor(props) {
         super(props);
@@ -160,4 +160,19 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps)(Theater);
+Room.fetchData = (store, params) => {
+    return new Promise((resolve, reject) => {
+
+        // todo: unsubscribe
+        const unsubscribe = store.subscribe(() => {
+            const stack = new Stack(store.getState())
+                if (stack.isLoaded()) {
+                    unsubscribe()
+                    resolve(store)
+                }
+            })
+        store.dispatch(loadStack(params.stack_id))
+    })
+}
+
+export default connect(mapStateToProps)(Room);

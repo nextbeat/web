@@ -1,17 +1,17 @@
 import React from 'react'
 import { Route } from 'react-router'
 
-import App from '../../client/components/App.react'
-import Bookmarks from '../../client/components/Bookmarks.react'
-import Room from '../../client/components/Room.react'
-import Profile from '../../client/components/Profile.react'
-import Tag from '../../client/components/Tag.react'
-import Home from '../../client/components/Home.react'
-import Section from '../../client/components/Section.react'
-import Search from '../../client/components/Search.react'
-import PasswordResetRequest from '../../client/components/support/PasswordResetRequest.react'
-import PasswordReset from '../../client/components/support/PasswordReset.react'
-import NoMatch from '../../client/components/NoMatch.react'
+import App from '../client/components/App.react'
+import Bookmarks from '../client/components/Bookmarks.react'
+import Room from '../client/components/Room.react'
+import Profile from '../client/components/Profile.react'
+import Tag from '../client/components/Tag.react'
+import Home from '../client/components/Home.react'
+import Section from '../client/components/Section.react'
+import Search from '../client/components/Search.react'
+import PasswordResetRequest from '../client/components/support/PasswordResetRequest.react'
+import PasswordReset from '../client/components/support/PasswordReset.react'
+import NoMatch from '../client/components/NoMatch.react'
 
 
 export default [
