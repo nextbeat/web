@@ -4,7 +4,7 @@ var _               = require('lodash'),
     autoprefixer    = require('gulp-autoprefixer'),
     nodemon         = require('gulp-nodemon'),
     babel           = require('gulp-babel'),
-    cache           = require('gulp-file-cache'),
+    Cache           = require('gulp-file-cache'),
     uglify          = require('gulp-uglify'),
     browserify      = require('browserify'),
     watchify        = require('watchify'),
@@ -21,6 +21,8 @@ const MAC_ENV = {
     SESSION_SECRET: 'secret'
 }
 
+const cache = new Cache();
+
 gulp.task('styles', function() {
     return gulp.src('client/layout/main.scss')
         .pipe(sass())
@@ -28,7 +30,7 @@ gulp.task('styles', function() {
         .pipe(gulp.dest('client/public/css'));
 });
 
-gulp.task('build', ['styles', 'server-compile'], function() {
+gulp.task('build', ['styles', 'server-compile', 'routes-compile'], function() {
     return browserify('client/app.js')
         .transform(babelify, { presets: ['react', 'es2015']})
         .transform(envify())
@@ -44,15 +46,23 @@ gulp.task('server-compile', function() {
         .pipe(cache.filter())
         .pipe(babel({ presets: ['react', 'es2015'] }))
         .pipe(cache.cache())
-        .pipe(gulp.dest('./server_dist'))
-})
+        .pipe(gulp.dest('./dist/server'))
+});
+
+gulp.task('routes-compile', function() {
+    return gulp.src('./routes/**/*.js')
+        .pipe(cache.filter())
+        .pipe(babel({ presets: ['react', 'es2015'] }))
+        .pipe(cache.cache())
+        .pipe(gulp.dest('./dist/routes'))
+});
 
 gulp.task('server', ['server-compile'], function() {
     nodemon({
-        script: 'server_dist/server.js',
+        script: 'dist/server/server.js',
         ext: 'html js',
-        watch: 'server/*',
-        tasks: ['server-compile'],
+        watch: ['server/*', 'routes/*'],
+        tasks: ['server-compile', 'routes-compile'],
         env: MAC_ENV
     });
 });

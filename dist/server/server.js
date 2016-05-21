@@ -1,17 +1,19 @@
+'use strict';
+
 require("babel-core/register");
 
-var express     = require('express'),
-    web         = express(),
-    api         = require('./lib/api'),
-    redis       = require('./lib/redis'),
-    session     = require('express-session'),
-    RedisStore  = require('connect-redis')(session),
-    bodyParser  = require('body-parser'),
-    routes      = require('./routes'),
-    path        = require('path');
+var express = require('express'),
+    web = express(),
+    api = require('./lib/api'),
+    redis = require('./lib/redis'),
+    session = require('express-session'),
+    RedisStore = require('connect-redis')(session),
+    bodyParser = require('body-parser'),
+    routes = require('./routes'),
+    path = require('path');
 
-var exphbs      = require('express-handlebars'),
-    favicon     = require('serve-favicon');
+var exphbs = require('express-handlebars'),
+    favicon = require('serve-favicon');
 
 web.use(express.static(path.join(__dirname, '../../client/public/html')));
 web.use(express.static(path.join(__dirname, '../../client/public')));
@@ -45,11 +47,10 @@ web.set('view engine', 'handlebars');
 web.use(favicon(path.join(__dirname, '../../client/public/images/favicon.ico')));
 
 routes.init(web);
-api.init().then(function() {
+api.init().then(function () {
     console.log('app initialized!');
     var port = process.env.NODE_ENV === 'mac' ? 3000 : 80;
     web.listen(port);
-}).catch(function(e) {
+}).catch(function (e) {
     console.log(e);
-})
-
+});
