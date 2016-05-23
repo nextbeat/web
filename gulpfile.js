@@ -12,6 +12,7 @@ var _               = require('lodash'),
     envify          = require('envify/custom'),
     source          = require('vinyl-source-stream'),
     buffer          = require('vinyl-buffer'),
+    gutil           = require('gulp-util'),
     livereload      = require('gulp-livereload');
 
 const MAC_ENV = {
@@ -32,7 +33,10 @@ gulp.task('styles', function() {
 
 gulp.task('build', ['styles', 'server-compile', 'routes-compile'], function() {
     return browserify('client/app.js')
-        .transform(babelify, { presets: ['react', 'es2015']})
+        .transform(babelify, { 
+            presets: ['react', 'es2015'], 
+            plugins: ['transform-object-rest-spread']
+        })
         .transform(envify())
         .bundle()
         .pipe(source('bundle.min.js'))

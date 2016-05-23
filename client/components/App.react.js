@@ -122,7 +122,7 @@ class App extends React.Component {
                 defaultTitle = {`${envLabel}Nextbeat`}
                 titleTemplate = {`${envLabel}%s - Nextbeat`}
                 meta={[
-                    {"property": "og:site-name", "content": "Nextbeat"}
+                    {"property": "og:site_name", "content": "Nextbeat"}
                 ]}
             />
         );
