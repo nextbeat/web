@@ -89,6 +89,9 @@ export function handleReactRender(req, res) {
             if (typeof component.fetchData === "function") {
                 component.fetchData(store, renderProps.params).then((newStore)=> {
                     renderAndSend(res, renderProps, newStore)
+                }).catch(e => {
+                    // send regardless of error
+                    renderAndSend(res, renderProps, store)
                 })
             } else {
                 renderAndSend(res, renderProps, store)

@@ -7,26 +7,9 @@ import { stringify } from 'querystring'
 import { normalize } from 'normalizr'
 import { Status, API_CALL } from '../actions'
 import { CurrentUser } from '../models'
+import { baseUrl } from '../utils'
 
 const API_ROOT = '/api/';
-
-// Server-side requests require absolute urls
-function absoluteURL(url) {
-    if (process && process.env && process.env.NODE_ENV) {
-        switch (process.env.NODE_ENV) {
-            case "production":
-                return `http://nextbeat.co${url}`
-            case "development":
-                return `http://dev.nextbeat.co${url}`
-            case "local":
-                return `http://localhost:8080${url}`
-            case "mac":
-            default:
-                return `http://localhost:3000${url}`
-        }
-    }
-    return url;
-}
 
 function urlWithParams(endpoint, pagination, queries) {
     let url = join(API_ROOT, endpoint);
@@ -44,7 +27,7 @@ function urlWithParams(endpoint, pagination, queries) {
         url += "?" + stringify(queries);
     }
 
-    return absoluteURL(url);
+    return `${baseUrl()}${url}`;
 }
 
 function fetchOptions(options, store) {

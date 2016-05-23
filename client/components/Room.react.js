@@ -1,4 +1,5 @@
 import React from 'react'
+import Promise from 'bluebird'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { isEmpty } from 'lodash'
@@ -8,6 +9,7 @@ import DetailBar from './room/DetailBar.react'
 
 import { loadStack, joinRoom, clearStack, bookmark, unbookmark, selectMediaItem, goForward, goBackward } from '../actions'
 import { Stack } from '../models'
+import { baseUrl } from '../utils'
 
 class Room extends React.Component {
 
@@ -112,7 +114,7 @@ class Room extends React.Component {
     // RENDER
 
     renderDocumentHead(stack) {
-        const url = `https://nextbeat.co/${this.props.location.pathname}`
+        const url = `${baseUrl()}${this.props.location.pathname}`
         const thumb_url = stack.get('fb_thumbnail_url') || stack.get('thumbnail_url') || ''
         return (
             <Helmet 
@@ -163,12 +165,15 @@ function mapStateToProps(state, props) {
 Room.fetchData = (store, params) => {
     return new Promise((resolve, reject) => {
 
-        // todo: unsubscribe
         const unsubscribe = store.subscribe(() => {
             const stack = new Stack(store.getState())
                 if (stack.isLoaded()) {
                     unsubscribe()
                     resolve(store)
+                }
+                if (stack.get('error')) {
+                    unsubscribe()
+                    reject(new Error('Stack does not exist.'))
                 }
             })
         store.dispatch(loadStack(params.stack_id))
