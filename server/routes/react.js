@@ -39,6 +39,7 @@ function getInitialState(req) {
 
 // todo: use handlebars
 function renderFullPage(html, head, initialState) {
+    const jsPath = process.env.NODE_ENV === "mac" ? "bundle.js" : "bundle.min.js"
     return `
         <!doctype html>
         <html lang="en">
@@ -57,7 +58,7 @@ function renderFullPage(html, head, initialState) {
 
         <body> 
             <div id="react">${html}</div>
-            <script src="/js/bundle.js"></script>
+            <script src="/js/${jsPath}"></script>
             <script>
                 window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
             </script>
