@@ -49,6 +49,9 @@ export function baseUrl(env, secure=true) {
 }
 
 export function secureUrl(url) {
+  if (!url) {
+    return null
+  }
   return url.replace(/http:\/\//, 'https://')
 }
 
