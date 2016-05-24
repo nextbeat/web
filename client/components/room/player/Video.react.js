@@ -1,5 +1,5 @@
 import React from 'react'
-import { toggleFullScreen, isIOSDevice } from '../../../utils'
+import { toggleFullScreen, isIOSDevice, secureUrl } from '../../../utils'
 
 import Icon from '../../shared/Icon.react'
 
@@ -364,15 +364,15 @@ class Video extends React.Component {
             <div className="video_container" id="video_container" style={displayControlsVideoStyle} {...videoContainerEvents}>
                 { window.MSStream }
                 <div className="video_player-container">
-                    <div className="video_player-background" style={{ backgroundImage: `url(${item.get('firstframe_url')})`}}></div>
+                    <div className="video_player-background" style={{ backgroundImage: `url(${secureUrl(item.get('firstframe_url'))})`}}></div>
                     { isIOSDevice && 
                         <video id="video_player" className="video_player" autoload controls preload="auto">
-                            <source src={item.get('url')} type="video/mp4" />
+                            <source src={secureUrl(item.get('url'))} type="video/mp4" />
                         </video>
                     }
                     { !isIOSDevice && 
                         <video id="video_player" className="video_player" autoPlay autoload preload="auto">
-                            <source src={item.get('url')} type="video/mp4" />
+                            <source src={secureUrl(item.get('url'))} type="video/mp4" />
                         </video>
                     }
                     

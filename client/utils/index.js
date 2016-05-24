@@ -40,12 +40,16 @@ export function baseUrl(env, secure=true) {
             return `${scheme}nextbeat.co`
         case 'development':
             return `${scheme}dev.nextbeat.co`
-        case 'localhost':
+        case 'local':
             return `http://localhost:8080`
         case 'mac':
         default:
             return `http://localhost:3000`
     }
+}
+
+export function secureUrl(url) {
+  return url.replace(/http:\/\//, 'https://')
 }
 
 /********

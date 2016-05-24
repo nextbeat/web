@@ -1,7 +1,7 @@
 import React from 'react'
 
 import Promise from 'bluebird'
-import { getOrientationFromFile } from '../../../utils'
+import { getOrientationFromFile, secureUrl } from '../../../utils'
 
 function getImageOrientation(url) {
     return new Promise((resolve, reject) => {
@@ -49,7 +49,7 @@ class Photo extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (prevProps.item.get('url') !== this.props.item.get('url')) {
-            this.updateStateForURL(this.props.item.get('url'))
+            this.updateStateForURL(secureUrl(this.props.item.get('url')))
         }
     }
 

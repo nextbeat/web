@@ -1,5 +1,7 @@
-import React from 'react';
-import moment from 'moment';
+import React from 'react'
+import moment from 'moment'
+
+import { secureUrl } from '../../../utils'
 
 class ActivityItem extends React.Component {
 
@@ -35,7 +37,7 @@ class ActivityItem extends React.Component {
 
     render() {
         const { mediaItem, selected, live, handleClick, index } = this.props;
-        const url = this.url(mediaItem);
+        const url = secureUrl(this.url(mediaItem));
         const selectedClass = selected ? "selected" : "";
         const liveClass = live ? "live" : "";
         const videoClass = mediaItem.get('type') === 'video' ? "item-activity_video-wrapper" : "";
