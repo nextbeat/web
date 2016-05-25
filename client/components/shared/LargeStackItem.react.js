@@ -57,7 +57,7 @@ class LargeStackItem extends React.Component {
     }
 
     fancyThumbnailUrl(stack) {
-        if (stack.has('fb_thumbnail_url')) {
+        if (stack.get('fb_thumbnail_url')) {
             return stack.get('fb_thumbnail_url');
         }
 
