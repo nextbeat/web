@@ -28,6 +28,33 @@ export function toggleFullScreen(element, callback) {
    }
 }
 
+/*****
+ * URL
+ *****/
+
+export function baseUrl(env, secure=true) {
+    env = env || process.env.NODE_ENV || 'development'
+    const scheme = secure ? 'https://' : 'http://'
+    switch(env) {
+        case 'production':
+            return `${scheme}nextbeat.co`
+        case 'development':
+            return `${scheme}dev.nextbeat.co`
+        case 'local':
+            return `http://localhost:8080`
+        case 'mac':
+        default:
+            return `http://localhost:3000`
+    }
+}
+
+export function secureUrl(url) {
+  if (!url) {
+    return null
+  }
+  return url.replace(/http:\/\//, 'https://')
+}
+
 /********
  * DEVICE
  ********/

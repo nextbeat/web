@@ -5,6 +5,7 @@ import StackItem from './shared/StackItem.react'
 import Icon from './shared/Icon.react'
 import Spinner from './shared/Spinner.react'
 import Logo from './shared/Logo.react'
+import Badge from './shared/Badge.react'
 
 class Sidebar extends React.Component {
 
@@ -85,7 +86,8 @@ class Sidebar extends React.Component {
         return (
             <Link key={`sub${sub.get('id')}`} to={`/u/${sub.get('username')}`} activeClassName="selected">
                 <div className="sidebar_icon">{ url ? <img src={url} /> : <Icon type="person" /> }</div>
-                {sub.get('username')}
+                { sub.get('username') }
+                { sub.get('open_stacks') > 0 && <Badge elementType="sidebar" type="open" /> }
             </Link>
         )
     }
@@ -132,12 +134,5 @@ class Sidebar extends React.Component {
         );
     }
 }
-
-/*
- <div className="sidebar_section">
-    <span className="sidebar_logo"><Link to="/"><Logo /></Link></span>
-    { user.isLoggedIn() ? this.renderLoggedIn() : this.renderGuest() }
-</div>
-*/
 
 export default Sidebar;

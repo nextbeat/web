@@ -20,6 +20,18 @@ function xmppHost() {
     return '';
 }
 
+function xmppScheme() {
+    switch(process.env.NODE_ENV) {
+        case 'production':
+        case 'development':
+            return 'wss://'
+        case 'local':
+        case 'mac':
+        default:
+            return 'ws://'
+    }
+}
+
 export function getClient(store) {
     const currentUser = new CurrentUser(store.getState())
     // creates a client unless one is already stored in state
@@ -29,7 +41,7 @@ export function getClient(store) {
         let options = {
             transport: 'websocket',
             sasl: ['plain'],
-            wsURL: `ws://${xmppHost()}:5280/websocket`,
+            wsURL: `${xmppScheme()}${xmppHost()}:5280/websocket`,
             useStreamManagement: true
         }
 
@@ -67,9 +79,9 @@ export function getClient(store) {
         //     console.log('INCOMING', s);
         // })
 
-        // client.on('disconnected', function() {
-        //     console.log('DISCONNECTED!!!');
-        // })
+        client.on('disconnected', function() {
+            console.log('DISCONNECTED!!!');
+        })
 
         return client;
     }

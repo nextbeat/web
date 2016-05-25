@@ -1,7 +1,11 @@
+// TODO: finish transition to ES6
 var express     = require('express'),
     _           = require('lodash'),
+
     api         = require('../lib/api'),
     passport    = require('../lib/passport');
+
+import { handleReactRender } from './react'
 
 module.exports = {
 
@@ -96,14 +100,7 @@ module.exports = {
 
         // React
 
-        router.get('*', function(req, res) {
-            var state = _.assign({}, { user: req.user }, req.authInfo, { environment: process.env.NODE_ENV || "development" });
-            var bundle = process.env.NODE_ENV === 'mac' ? "/js/bundle.js" : "/js/bundle.min.js";
-            res.render('app', {
-                bundle: bundle,
-                state: JSON.stringify(state)
-            });
-        });
+        router.get('*', handleReactRender)
 
     }
 };

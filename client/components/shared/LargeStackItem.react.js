@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { Map } from 'immutable'
 import { without, isNumber } from 'lodash'
 import moment from 'moment'
+import { secureUrl } from '../../utils'
 
 import Icon from './Icon.react'
 import Badge from './Badge.react'
@@ -56,6 +57,10 @@ class LargeStackItem extends React.Component {
     }
 
     fancyThumbnailUrl(stack) {
+        if (stack.get('fb_thumbnail_url')) {
+            return stack.get('fb_thumbnail_url');
+        }
+
         let url = stack.get('thumbnail_url', '');
         const suffix = '_200px.jpg';
         if (url.substring(url.length-suffix.length) === suffix) {
@@ -77,7 +82,7 @@ class LargeStackItem extends React.Component {
                     <div className="item_inner item-room-large_inner">
                         { !stack.get('closed') && <Badge elementType="item-room-large" type="open" /> }
                         <div className="item_thumb item-room-large_thumb">
-                            <img className="thumb_img" src={this.fancyThumbnailUrl(stack)} />
+                            <img className="thumb_img" src={secureUrl(this.fancyThumbnailUrl(stack))} />
                             <div className="item-room-large_bookmarks">
                                 <span className="item-room-large_bookmark-count">{stack.get('bookmark_count')}</span><Icon type={bookmarkType} />
                             </div>

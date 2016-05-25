@@ -1,5 +1,6 @@
-import React from 'react';
-import moment from 'moment';
+import React from 'react'
+import moment from 'moment'
+import { secureUrl } from '../../../utils'
 
 class NotificationChatItem extends React.Component {
 
@@ -17,7 +18,7 @@ class NotificationChatItem extends React.Component {
 
         return (
             <li className="chat_item chat_item-notification">
-                <div className="chat_item-notification_thumb" style={{ backgroundImage: `url(${url})`}}></div>
+                <div className="chat_item-notification_thumb" style={{ backgroundImage: `url(${secureUrl(url)})`}}></div>
                 <span className="chat_item-notification_text"><strong>{username}</strong> added {countStr} to the room.</span>
             </li>
         );

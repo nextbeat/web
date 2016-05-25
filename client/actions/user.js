@@ -42,7 +42,8 @@ function fetchSubscriptions(pagination) {
         type: ActionTypes.SUBSCRIPTIONS,
         [API_CALL]: {
             schema: Schemas.USERS,
-            endpoint: "subscriptions",
+            endpoint: "users",
+            queries: { "subscriptions": "true" },
             authenticated: true,
             pagination
         }
@@ -227,15 +228,28 @@ function onNotificationSyncSuccess(store, next, action, response) {
     store.dispatch(markStackAsRead())
 }
 
-export function syncNotifications() {
+function postSyncNotifications(readNotifications) {
     return {
         type: ActionTypes.SYNC_NOTIFICATIONS,
         [API_CALL]: {
             method: 'POST',
             endpoint: 'notifications/sync',
             authenticated: true,
+            body: readNotifications,
             onSuccess: onNotificationSyncSuccess
         }
+    }
+}
+
+export function syncNotifications() {
+    return (dispatch, getState) => {
+        const currentUser = new CurrentUser(getState())
+        if (!currentUser.isLoggedIn()) {
+            return null;
+        }
+
+        const readNotifications = currentUser.get('readNotifications').toJS()
+        dispatch(postSyncNotifications(readNotifications))
     }
 }
 
@@ -247,6 +261,8 @@ function markAsRead(options) {
         }
 
         dispatch(assign({}, { type: ActionTypes.MARK_AS_READ }, options))
+        // sync notifications to update server
+        dispatch(syncNotifications())
     }
 }
 

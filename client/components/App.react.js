@@ -103,9 +103,11 @@ class App extends React.Component {
         const { app } = this.props;
         const environment = app.get('environment', 'development');
         let envLabel = '';
+        let fbAppId = '';
         switch (environment) {
             case 'development':
                 envLabel = '[DEV] ';
+                fbAppId = '1021249581291875'
                 break;
             case 'local':
                 envLabel = '[LOCAL] ';
@@ -115,12 +117,18 @@ class App extends React.Component {
                 break;
             case 'production':
             default:
+                fbAppId = '1021241104626056'
                 break;
         }
+
         return (
             <Helmet
                 defaultTitle = {`${envLabel}Nextbeat`}
                 titleTemplate = {`${envLabel}%s - Nextbeat`}
+                meta={[
+                    {"property": "og:site_name", "content": "Nextbeat"},
+                    {"property": "fb:app_id", "content": fbAppId}
+                ]}
             />
         );
     }

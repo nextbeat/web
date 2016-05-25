@@ -1,4 +1,5 @@
 import React from 'react'
+import Promise from 'bluebird'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { isEmpty } from 'lodash'
@@ -8,8 +9,9 @@ import DetailBar from './room/DetailBar.react'
 
 import { loadStack, joinRoom, clearStack, bookmark, unbookmark, selectMediaItem, goForward, goBackward } from '../actions'
 import { Stack } from '../models'
+import { baseUrl } from '../utils'
 
-class Theater extends React.Component {
+class Room extends React.Component {
 
     constructor(props) {
         super(props);
@@ -20,6 +22,8 @@ class Theater extends React.Component {
         this.handleBackward = this.handleBackward.bind(this);
         this.handleBookmark = this.handleBookmark.bind(this);
         this.handleUnbookmark = this.handleUnbookmark.bind(this);
+
+        this.renderDocumentHead = this.renderDocumentHead.bind(this);
     }
 
     // LIFECYCLE
@@ -109,6 +113,25 @@ class Theater extends React.Component {
 
     // RENDER
 
+    renderDocumentHead(stack) {
+        const url = `${baseUrl()}${this.props.location.pathname}`
+        const thumb_url = stack.get('fb_thumbnail_url') || stack.get('thumbnail_url') || ''
+        return (
+            <Helmet 
+                title={stack.get('description')}
+                meta={[
+                    {"property": "og:title", "content": stack.get('description')},
+                    {"property": "og:url", "content": url},
+                    {"property": "og:description", "content": `Check out this room created by ${stack.author().get('username')}!`},
+                    {"property": "og:image", "content": thumb_url},
+                    {"property": "og:image:width", "content": 1200},
+                    {"property": "og:image:height", "content": 900}
+                ]}
+            />
+        )
+
+    }
+
     render() {
         const { stack } = this.props;
         const playerProps = { 
@@ -125,7 +148,7 @@ class Theater extends React.Component {
         }
         return (
         <section className="room">
-            <Helmet title={stack.get('description')} />
+            {this.renderDocumentHead(stack)}
             <Player {...playerProps} />
             <DetailBar {...detailBarProps} />
         </section>
@@ -139,4 +162,22 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps)(Theater);
+Room.fetchData = (store, params) => {
+    return new Promise((resolve, reject) => {
+
+        const unsubscribe = store.subscribe(() => {
+            const stack = new Stack(store.getState())
+                if (stack.isLoaded()) {
+                    unsubscribe()
+                    resolve(store)
+                }
+                if (stack.get('error')) {
+                    unsubscribe()
+                    reject(new Error('Stack does not exist.'))
+                }
+            })
+        store.dispatch(loadStack(params.stack_id))
+    })
+}
+
+export default connect(mapStateToProps)(Room);
