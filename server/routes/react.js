@@ -58,10 +58,10 @@ function renderFullPage(html, head, initialState) {
 
         <body> 
             <div id="react">${html}</div>
-            <script src="/js/${jsPath}"></script>
             <script>
                 window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
             </script>
+            <script src="/js/${jsPath}"></script>
         </body>
         </html>
     `
