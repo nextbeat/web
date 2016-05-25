@@ -38,7 +38,7 @@ class Photo extends React.Component {
 
     componentDidMount() {
         const node = $(this._node)
-        this.updateStateForURL(this.props.item.get('url'))
+        this.updateStateForURL(secureUrl(this.props.item.get('url')))
         $(window).on('resize.photo', this.handleResize.bind(this, node))
         this.handleResize(node);
     }
