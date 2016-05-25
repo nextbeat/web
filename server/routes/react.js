@@ -22,7 +22,7 @@ function getInitialState(req) {
                 meta: { id: req.user.id }
             },
             entities: {
-                users: { [req.user.id.toString()]: user }
+                users: { [req.user.id.toString()]: req.user }
             }
         })
     }
