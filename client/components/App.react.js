@@ -127,7 +127,10 @@ class App extends React.Component {
                 titleTemplate = {`${envLabel}%s - Nextbeat`}
                 meta={[
                     {"property": "og:site_name", "content": "Nextbeat"},
-                    {"property": "fb:app_id", "content": fbAppId}
+                    {"property": "fb:app_id", "content": fbAppId},
+                    {"property": "al:ios:url", "content": "nextbeat://"},
+                    {"property": "al:ios:app_store_id", "content": "1101932727"},
+                    {"property": "al:ios:app_name", "content": "Nextbeat"}
                 ]}
             />
         );

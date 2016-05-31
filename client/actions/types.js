@@ -11,6 +11,13 @@ export const Status = {
 export const API_CALL = Symbol('API_CALL');
 export const API_CANCEL = Symbol('API_CANCEL');
 
+export const ANALYTICS = Symbol('ANALYTICS');
+export const AnalyticsTypes = {
+    IDENTIFY: 'IDENTIFY',
+    TRACK: 'TRACK',
+    PAGE: 'PAGE'
+}
+
 export default {
 
     /*****
@@ -116,7 +123,8 @@ export default {
      *******/
 
     ENTITY_UPDATE: 'ENTITY_UPDATE',
-    CLEAR_FETCH: 'CLEAR_FETCH'
+    CLEAR_FETCH: 'CLEAR_FETCH',
+    ANALYTICS: 'ANALYTICS'
 
 }
 

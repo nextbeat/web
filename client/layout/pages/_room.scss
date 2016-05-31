@@ -105,6 +105,27 @@
     background-position: center;
 }
 
+.player_decoration {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.player_caption {
+    width: 100%;
+    padding: 5px;
+    background-color: rgba(#000, 0.6);
+    color: white;
+    text-align: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+// Navigation
+
 .player_navigation {
     width: 100%;
     height: 60px;

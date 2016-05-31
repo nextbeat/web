@@ -8,6 +8,7 @@ import ActionTypes from './types'
 import { CurrentUser, Stack } from '../models'
 import Schemas from '../schemas'
 import { API_CALL, API_CANCEL } from './types'
+import { analyticsIdentify } from './analytics'
 
 /**********
  * FETCHING
@@ -166,7 +167,10 @@ export function signup(credentials) {
 }
 
 export function postLogin() {
-    return dispatch => {
+    return (dispatch, getState) => {
+        const user = new CurrentUser(getState())
+        dispatch(analyticsIdentify(user))
+        
         dispatch(syncNotifications())
         dispatch(loadBookmarkedStacks("open"))
         dispatch(loadSubscriptions())

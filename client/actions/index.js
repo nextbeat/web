@@ -1,5 +1,5 @@
 export { default as ActionTypes } from './types'
-export { Status, API_CALL, API_CANCEL } from './types'
+export { Status, API_CALL, API_CANCEL, AnalyticsTypes, ANALYTICS } from './types'
 
 export {
     loadTags,
@@ -80,4 +80,9 @@ export {
     resetPassword,
     sendPasswordResetRequest
 } from './support'
+
+export {
+    analyticsIdentify,
+    analyticsPage
+} from './analytics'
 

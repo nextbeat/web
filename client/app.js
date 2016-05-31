@@ -18,7 +18,9 @@ const store = configureStore(fromJS(initialState))
 
 render(
     <Provider store={store}>
-        <Router history={browserHistory} children={routes} />
+        <Router history={browserHistory}>
+            {routes(store)}
+        </Router>
     </Provider>,
     document.getElementById('react')
 );

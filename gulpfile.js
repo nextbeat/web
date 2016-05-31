@@ -19,7 +19,8 @@ const MAC_ENV = {
     NODE_ENV: 'mac',
     CLIENT_NAME: 'web',
     CLIENT_SECRET: 'CLIENT_SECRET',
-    SESSION_SECRET: 'secret'
+    SESSION_SECRET: 'secret',
+    GOOGLE_ANALYTICS_ID: 'UA-78319133-2'
 }
 
 const cache = new Cache();

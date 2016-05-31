@@ -125,7 +125,8 @@ class Room extends React.Component {
                     {"property": "og:description", "content": `Check out this room created by ${stack.author().get('username')}!`},
                     {"property": "og:image", "content": thumb_url},
                     {"property": "og:image:width", "content": 1200},
-                    {"property": "og:image:height", "content": 900}
+                    {"property": "og:image:height", "content": 900},
+                    {"property": "al:ios:url", "content": `nextbeat://rooms/${stack.get('uuid')}`},
                 ]}
             />
         )
