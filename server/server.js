@@ -33,6 +33,8 @@ web.use(session({
     saveUninitialized: false
 }));
 
+web.set('json spaces', 2);
+
 // Handlebars
 web.set('views', './server/views');
 web.engine('handlebars', exphbs({

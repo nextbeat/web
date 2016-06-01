@@ -56,7 +56,7 @@ module.exports = {
         });
 
         // Universal links
-        router.get('/.well-known/apple-app-site-association', function(req, res) {
+        router.get('/apple-app-site-association', function(req, res) {
             res.json(universalLinks);
         })
 
