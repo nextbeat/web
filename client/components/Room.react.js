@@ -116,16 +116,22 @@ class Room extends React.Component {
     renderDocumentHead(stack) {
         const url = `${baseUrl()}${this.props.location.pathname}`
         const thumb_url = stack.get('fb_thumbnail_url') || stack.get('thumbnail_url') || ''
+        const description = `Check out this room created by ${stack.author().get('username')}!`
         return (
             <Helmet 
                 title={stack.get('description')}
                 meta={[
                     {"property": "og:title", "content": stack.get('description')},
                     {"property": "og:url", "content": url},
-                    {"property": "og:description", "content": `Check out this room created by ${stack.author().get('username')}!`},
+                    {"property": "og:description", "content": description},
                     {"property": "og:image", "content": thumb_url},
                     {"property": "og:image:width", "content": 1200},
                     {"property": "og:image:height", "content": 900},
+                    {"property": "twitter:card", "content": "summary_large_image"},
+                    {"property": "twitter:site", "content": "@nextbeatTV"},
+                    {"property": "twitter:title", "content": stack.get('description')},
+                    {"property": "twitter:description", "content": description},
+                    {"property": "twitter:image", "content": thumb_url},
                     {"property": "al:ios:url", "content": `nextbeat://rooms/${stack.get('uuid')}`},
                 ]}
             />

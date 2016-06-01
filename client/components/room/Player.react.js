@@ -5,6 +5,7 @@ import Info from './player/Info.react'
 import More from './player/More.react'
 import Spinner from '../shared/Spinner.react'
 import PageError from '../shared/PageError.react'
+import AppBanner from '../shared/AppBanner.react'
 
 class Player extends React.Component {
 
@@ -13,6 +14,7 @@ class Player extends React.Component {
         return (
             <section className="player-container">
                 <section className="player content" id="player">
+                    <AppBanner url={`nextbeat://rooms/${stack.get('uuid')}`} />
                     {/* we only display once the stack has loaded */}
                     { stack.isFetchingDeep() &&  <Spinner type="large grey player" />}
                     { stack.get('error') && <PageError>The room could not be found, or it has been deleted by its owner.</PageError>}

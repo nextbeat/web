@@ -1,9 +1,10 @@
 // TODO: finish transition to ES6
-var express     = require('express'),
-    _           = require('lodash'),
+var express         = require('express'),
+    _               = require('lodash'),
 
-    api         = require('../lib/api'),
-    passport    = require('../lib/passport');
+    api             = require('../lib/api'),
+    passport        = require('../lib/passport'),
+    universalLinks  = require('../conf/universal-links');
 
 import { handleReactRender } from './react'
 
@@ -53,6 +54,11 @@ module.exports = {
         router.get('/.well-known/acme-challenge/C4NnuJ1Egr1ntyVrehoMMqr2Ggxt-4M3M9Lm6J9yWK4', function(req, res) {
             res.send('C4NnuJ1Egr1ntyVrehoMMqr2Ggxt-4M3M9Lm6J9yWK4.L8Y9FjWqaSJsTNtFMJYAdaeE66OYJB-fOJ9juFmMIao');
         });
+
+        // Universal links
+        router.get('/.well-known/apple-app-site-association', function(req, res) {
+            res.json(universalLinks);
+        })
 
         // Login/signup
 

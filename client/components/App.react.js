@@ -6,6 +6,7 @@ import Helmet from 'react-helmet'
 
 import Sidebar from '../components/Sidebar.react'
 import Topbar from '../components/Topbar.react'
+import AppBanner from '../components/shared/AppBanner.react'
 
 import { connectToXMPP, disconnectXMPP, login, logout, signup, clearLogin, clearSignup, postLogin, loadTags, clearApp } from '../actions'
 import { CurrentUser, App as AppModel } from '../models'

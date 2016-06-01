@@ -8,6 +8,7 @@ import LargeStackItem from './shared/LargeStackItem.react'
 import User from './shared/User.react'
 import Spinner from './shared/Spinner.react'
 import PageError from './shared/PageError.react'
+import AppBanner from './shared/AppBanner.react'
 
 import { loadBookmarkedStacks, clearClosedBookmarkedStacks } from '../actions'
 import { CurrentUser } from '../models'
@@ -63,6 +64,7 @@ class Bookmarks extends React.Component {
         const { user } = this.props;
         return (
             <div className="bookmarks content" id="bookmarks">
+                <AppBanner />
                 <Helmet title="Bookmarks" />
                 { !user.isLoggedIn() && <PageError>Must be logged in.</PageError> }
                 { this.renderBookmarks() }

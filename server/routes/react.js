@@ -3,16 +3,25 @@ import React from 'react'
 import { match, RouterContext } from 'react-router'
 import { renderToString } from 'react-dom/server'
 import { Provider } from 'react-redux'
+import uaParser from 'ua-parser-js'
 
 import configureStore from '../../client/store'
 import { Map, fromJS } from 'immutable'
 import { assign, last } from 'lodash'
 import Helmet from 'react-helmet'
 
+
 function getInitialState(req) {
+    const ua = uaParser(req.headers['user-agent']);
+
     let state = {
         app: {
-            environment: process.env.NODE_ENV || "development"
+            environment: process.env.NODE_ENV || "development",
+            ua: {
+                os: ua.os,
+                browser: ua.browser,
+                device: ua.device
+            }
         }
     }
     // if user is logged in, requests include user info

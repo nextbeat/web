@@ -8,6 +8,7 @@ import LargeStackItem from './shared/LargeStackItem.react'
 import User from './shared/User.react'
 import Spinner from './shared/Spinner.react'
 import PageError from './shared/PageError.react'
+import AppBanner from './shared/AppBanner.react'
 
 import { loadProfile, clearProfile, loadClosedStacksForUser } from '../actions'
 import { Profile } from '../models'
@@ -73,6 +74,7 @@ class ProfileComponent extends React.Component {
         const { isFetching, error, profile } = this.props;
         return (
             <div className="profile content" id="profile">
+                <AppBanner />
                 { isFetching && <Spinner type="grey large profile" /> }
                 { error && (error.length > 0) && <PageError>User not found.</PageError> }
                 { profile.get('id') !== 0 && this.renderProfile() }
