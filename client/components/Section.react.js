@@ -6,6 +6,7 @@ import { loadSection, clearSection } from '../actions'
 import { Section } from '../models'
 import LargeStackItem from './shared/LargeStackItem.react'
 import Spinner from './shared/Spinner.react'
+import AppBanner from './shared/AppBanner.react'
 
 class SectionComponent extends React.Component {
 
@@ -21,7 +22,8 @@ class SectionComponent extends React.Component {
     render() {
         const { section } = this.props
         return (
-            <div className="section" id="section">
+            <div className="section content" id="section">
+                <AppBanner />
                 <div className="section_inner">
                     { section.get('name') && 
                     <div className="section_header">

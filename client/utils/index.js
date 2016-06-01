@@ -55,6 +55,23 @@ export function secureUrl(url) {
   return url.replace(/http:\/\//, 'https://')
 }
 
+/**************
+ * AVAILABILITY
+ **************/
+
+export function storageAvailable(storageType) {
+  try {
+    var storage = window[storageType],
+      x = '__storage_test__';
+    storage.setItem(x, x);
+    storage.removeItem(x);
+    return true;
+  }
+  catch(e) {
+      return false;
+  }
+}
+
 /********
  * DEVICE
  ********/

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Route } from 'react-router'
+import { assign } from 'lodash'
 
 import App from '../client/components/App.react'
 import Bookmarks from '../client/components/Bookmarks.react'
@@ -13,20 +14,34 @@ import PasswordResetRequest from '../client/components/support/PasswordResetRequ
 import PasswordReset from '../client/components/support/PasswordReset.react'
 import NoMatch from '../client/components/NoMatch.react'
 
+import { analyticsPage } from '../client/actions'
 
-export default [
-    <Route path="/support">
-        <Route path="password-reset-request" component={PasswordResetRequest} />
-        <Route path="password-reset" component={PasswordReset} />
-    </Route>,
-    <Route component={App}>
-        <Route path="/" component={Home} /> 
-        <Route path="/s/:slug" component={Section} />
-        <Route path="/r/:stack_id" component={Room} />
-        <Route path="/u/:username" component={Profile} />
-        <Route path="/t/:name" component={Tag} />
-        <Route path="/search" component={Search} />
-        <Route path="/bookmarks" component={Bookmarks} />
-        <Route path="*" component={NoMatch} />
-    </Route>
-]
+export default store => {
+
+    class AnalyticsRoute extends Route {}
+    AnalyticsRoute.defaultProps = assign({}, AnalyticsRoute.defaultProps, {
+        onEnter: function(nextState) {
+            if (typeof window !== 'undefined') { // in browser only
+                store.dispatch(analyticsPage())
+            }
+        }
+    })
+
+    return [
+        <Route path="/support">
+            <AnalyticsRoute path="password-reset-request" component={PasswordResetRequest} />
+            <AnalyticsRoute path="password-reset" component={PasswordReset} />
+        </Route>,
+        <Route component={App}>
+            <AnalyticsRoute path="/" component={Home} /> 
+            <AnalyticsRoute path="/s/:slug" component={Section} />
+            <AnalyticsRoute path="/r/:stack_id" component={Room} />
+            <AnalyticsRoute path="/u/:username" component={Profile} />
+            <AnalyticsRoute path="/t/:name" component={Tag} />
+            <AnalyticsRoute path="/search" component={Search} />
+            <AnalyticsRoute path="/bookmarks" component={Bookmarks} />
+            <AnalyticsRoute path="*" component={NoMatch} />
+        </Route>
+    ]
+
+} 

@@ -8,6 +8,7 @@ import { loadTag, clearTag, loadStacksForTag } from '../actions'
 import LargeStackItem from './shared/LargeStackItem.react'
 import Spinner from './shared/Spinner.react'
 import Icon from './shared/Icon.react'
+import AppBanner from './shared/AppBanner.react'
 
 const SORT_TYPES = [
     { name: "hot", display: "Hot" },
@@ -116,6 +117,7 @@ class TagComponent extends React.Component {
         const { tag, params: { name } } = this.props
         return (
             <div className="tag content" id="tag">
+                <AppBanner />
                 <div className="tag_header">
                     { name }
                 </div>
