@@ -30,11 +30,10 @@ class Room extends React.Component {
 
     componentDidMount() {
         const { params, dispatch } = this.props
-        dispatch(loadStack(params.stack_id))
+        dispatch(loadStack(params.hid))
 
         $(window).resize(this.resize)
         this.resize();
-        // $('.topbar').addClass('topbar-in-room');
     }
 
     componentWillUnmount() {
@@ -44,15 +43,14 @@ class Room extends React.Component {
         $('.sidebar').removeClass('collapsed');
         $('.main').removeClass('expand-left');
         $('.topbar_menu-icon').removeClass('active');
-        // $('.topbar').removeClass('topbar-in-room');
     }
 
     componentDidUpdate(prevProps) {
         const { params, dispatch, stack } = this.props
-        if (prevProps.params.stack_id !== params.stack_id) {
+        if (prevProps.params.hid !== params.hid) {
             // new stack, reload
             dispatch(clearStack())
-            dispatch(loadStack(params.stack_id))
+            dispatch(loadStack(params.hid))
         }
 
         if (prevProps.stack.mediaItems().size === 0 && stack.mediaItems().size > 0) {
@@ -132,7 +130,7 @@ class Room extends React.Component {
                     {"property": "twitter:title", "content": stack.get('description')},
                     {"property": "twitter:description", "content": description},
                     {"property": "twitter:image", "content": thumb_url},
-                    {"property": "al:ios:url", "content": `nextbeat://rooms/${stack.get('uuid')}`},
+                    {"property": "al:ios:url", "content": `nextbeat://rooms/${stack.get('hid')}`},
                 ]}
             />
         )
@@ -183,7 +181,7 @@ Room.fetchData = (store, params) => {
                     reject(new Error('Stack does not exist.'))
                 }
             })
-        store.dispatch(loadStack(params.stack_id))
+        store.dispatch(loadStack(params.hid))
     })
 }
 

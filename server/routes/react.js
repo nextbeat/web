@@ -104,11 +104,13 @@ export function handleReactRender(req, res) {
             res.redirect(302, redirectLocation.pathname + redirectLocation.search)
         } else if (renderProps) {
             const component = last(renderProps.components)
+            // Load data before displaying page
+            console.log(component)
             if (typeof component.fetchData === "function") {
                 component.fetchData(store, renderProps.params).then((newStore)=> {
                     renderAndSend(res, renderProps, newStore)
                 }).catch(e => {
-                    // send regardless of error
+                    // Send regardless of error
                     renderAndSend(res, renderProps, store)
                 })
             } else {

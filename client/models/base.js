@@ -36,6 +36,10 @@ export default class ModelBase {
         return has(this.keyMap, 'id') ? this.__getEntity(this.get('id')) : Map();
     }
 
+    isLoaded() {
+        return this.get('id', 0) !== 0;
+    }
+
     __getEntity(id, entityName) {
         entityName = entityName || this.entityName;
         if (typeof id === "number") {

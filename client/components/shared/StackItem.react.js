@@ -57,7 +57,7 @@ class StackItem extends React.Component {
         const author = users.get(stack.get('author_id').toString(), Map())
         return (
             <div className="item_container" ref={(c) => this._node = c} >
-            <Link to={`/r/${stack.get('id')}`} className="item-room item" activeClassName="selected">
+            <Link to={`/r/${stack.get('hid')}`} className="item-room item" activeClassName="selected">
                 <div className="item_inner">
                     <div className="item_thumb">
                         <img className="thumb_img" src={secureUrl(stack.get('thumbnail_url'))} />

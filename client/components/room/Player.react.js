@@ -14,7 +14,7 @@ class Player extends React.Component {
         return (
             <section className="player-container">
                 <section className="player content" id="player">
-                    <AppBanner url={`nextbeat://rooms/${stack.get('uuid')}`} />
+                    <AppBanner url={`nextbeat://rooms/${stack.get('hid')}`} />
                     {/* we only display once the stack has loaded */}
                     { stack.isFetchingDeep() &&  <Spinner type="large grey player" />}
                     { stack.get('error') && <PageError>The room could not be found, or it has been deleted by its owner.</PageError>}

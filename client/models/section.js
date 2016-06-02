@@ -26,4 +26,8 @@ export default class Section extends ModelBase {
         return this.__getPaginatedEntities('stacks')
     }
 
+    isLoaded() {
+        return this.get('name', null) !== null;
+    }
+
 }

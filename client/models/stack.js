@@ -91,10 +91,6 @@ export default class Stack extends ModelBase {
         return this.author().get('username') === currentUser.get('username');
     }
 
-    isLoaded() {
-        return this.get('id', 0) !== 0;
-    }
-
     indexOfSelectedMediaItem() {
         const selectedId = this.get('selectedMediaItemId', -1)
         const paginatedIds = this.get('mediaItemIds', List())
