@@ -2,7 +2,7 @@ import React from 'react'
 import Promise from 'bluebird'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
-import { isEmpty } from 'lodash'
+import { isEmpty, assign } from 'lodash'
 
 import Player from './room/Player.react'
 import DetailBar from './room/DetailBar.react'
@@ -113,25 +113,40 @@ class Room extends React.Component {
 
     renderDocumentHead(stack) {
         const url = `${baseUrl()}${this.props.location.pathname}`
-        const thumb_url = stack.get('fb_thumbnail_url') || stack.get('thumbnail_url') || ''
-        const description = `Check out this room created by ${stack.author().get('username')}!`
+        let meta = [
+            {"property": "og:url", "content": url},
+            {"property": "twitter:site", "content": "@nextbeatTV"},
+            {"property": "al:ios:url", "content": `nextbeat://rooms/${stack.get('hid')}`},
+        ]
+        if (!stack.get('error')) {
+            const description = `Check out this room created by ${stack.author().get('username')}!`
+            const thumb_url = stack.get('fb_thumbnail_url') || stack.get('thumbnail_url') || ''
+            meta.push.apply(meta, [
+                {"property": "og:title", "content": stack.get('description')},
+                {"property": "og:description", "content": description},
+                {"property": "og:image", "content": thumb_url},
+                {"property": "og:image:width", "content": 1200},
+                {"property": "og:image:height", "content": 900},
+                {"property": "twitter:card", "content": "summary_large_image"},
+                {"property": "twitter:title", "content": stack.get('description')},
+                {"property": "twitter:description", "content": description},
+                {"property": "twitter:image", "content": thumb_url}
+            ])
+        } else {
+            const description = "This room does not exist or has been deleted by its owner."
+            meta.push.apply(meta, [
+                {"property": "og:title", "content": "Room Not Found"},
+                {"property": "og:description", "content": description},
+                {"property": "twitter:card", "content": "summary"},
+                {"property": "twitter:title", "content": "Room Not Found"},
+                {"property": "twitter:description", "content": description}
+            ])
+        }
+
         return (
             <Helmet 
                 title={stack.get('description')}
-                meta={[
-                    {"property": "og:title", "content": stack.get('description')},
-                    {"property": "og:url", "content": url},
-                    {"property": "og:description", "content": description},
-                    {"property": "og:image", "content": thumb_url},
-                    {"property": "og:image:width", "content": 1200},
-                    {"property": "og:image:height", "content": 900},
-                    {"property": "twitter:card", "content": "summary_large_image"},
-                    {"property": "twitter:site", "content": "@nextbeatTV"},
-                    {"property": "twitter:title", "content": stack.get('description')},
-                    {"property": "twitter:description", "content": description},
-                    {"property": "twitter:image", "content": thumb_url},
-                    {"property": "al:ios:url", "content": `nextbeat://rooms/${stack.get('hid')}`},
-                ]}
+                meta={meta}
             />
         )
 

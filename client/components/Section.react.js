@@ -27,10 +27,10 @@ class SectionComponent extends React.Component {
                 <Helmet
                     title={section.get('name')}
                     meta={[
-                        {"property": "al:ios:url", "content": `nextbeat://section/${section.get('slug')}`}
+                        {"property": "al:ios:url", "content": `nextbeat://sections/${section.get('slug')}`}
                     ]}
                 />
-                <AppBanner url={`nextbeat://section/${section.get('slug')}`}/>
+                <AppBanner url={`nextbeat://sections/${section.get('slug')}`}/>
                 <div className="section_inner">
                     { section.get('name') && 
                     <div className="section_header">
