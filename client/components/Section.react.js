@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import Helmet from 'react-helmet'
 import ScrollComponent from './utils/ScrollComponent.react'
 
 import { loadSection, clearSection } from '../actions'
@@ -23,7 +24,13 @@ class SectionComponent extends React.Component {
         const { section } = this.props
         return (
             <div className="section content" id="section">
-                <AppBanner />
+                <Helmet
+                    title={section.get('name')}
+                    meta={[
+                        {"property": "al:ios:url", "content": `nextbeat://sections/${section.get('slug')}`}
+                    ]}
+                />
+                <AppBanner url={`nextbeat://sections/${section.get('slug')}`}/>
                 <div className="section_inner">
                     { section.get('name') && 
                     <div className="section_header">
@@ -56,5 +63,24 @@ function mapStateToProps(state) {
         section: new Section(state)
     }
 }
+
+SectionComponent.fetchData = (store, params) => {
+    return new Promise((resolve, reject) => {
+
+        const unsubscribe = store.subscribe(() => {
+            const section = new Section(store.getState())
+                if (section.isLoaded()) {
+                    unsubscribe()
+                    resolve(store)
+                }
+                if (section.get('error')) {
+                    unsubscribe()
+                    reject(new Error('Profile does not exist.'))
+                }
+            })
+        store.dispatch(loadSection(params.slug))
+    })
+}
+
 
 export default connect(mapStateToProps)(ScrollComponent('section', scrollOptions)(SectionComponent))

@@ -42,7 +42,12 @@ class ProfileComponent extends React.Component {
         const profpic_url = profile.get('profpic_thumbnail_url') || profile.get('profpic_url');
         return (
             <section>  
-                <Helmet title={profile.get('username')} />
+                <Helmet 
+                    title={profile.get('username')} 
+                    meta={[
+                        {"property": "al:ios:url", "content": `nextbeat://users/${profile.get('username')}`}
+                    ]}
+                />
                 <div className="profile_user-container"><User user={profile.entity()} style={"large"} /></div>
 
                 { openStacks.size > 0 && 
@@ -74,7 +79,7 @@ class ProfileComponent extends React.Component {
         const { isFetching, error, profile } = this.props;
         return (
             <div className="profile content" id="profile">
-                <AppBanner />
+                <AppBanner url={`nextbeat://users/${profile.get('username')}`} />
                 { isFetching && <Spinner type="grey large profile" /> }
                 { error && (error.length > 0) && <PageError>User not found.</PageError> }
                 { profile.get('id') !== 0 && this.renderProfile() }
@@ -103,6 +108,24 @@ const scrollOptions = {
             dispatch(loadClosedStacksForUser())
         }
      }  
+}
+
+ProfileComponent.fetchData = (store, params) => {
+    return new Promise((resolve, reject) => {
+
+        const unsubscribe = store.subscribe(() => {
+            const profile = new Profile(store.getState())
+            if (profile.isLoaded()) {
+                unsubscribe()
+                resolve(store)
+            }
+            if (profile.get('error')) {
+                unsubscribe()
+                reject(new Error('Profile does not exist.'))
+            }
+        })
+        store.dispatch(loadProfile(params.username))
+    })
 }
 
 export default connect(mapStateToProps)(ScrollComponent('profile', scrollOptions)(ProfileComponent));

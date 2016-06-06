@@ -77,7 +77,7 @@ class LargeStackItem extends React.Component {
 
         return (
             <div className="item_container item-room-large_container" ref={(c) => this._node = c} style={itemWidth && {width: itemWidth}}>
-                <Link to={`/r/${stack.get('id')}`}>
+                <Link to={`/r/${stack.get('hid')}`}>
                 <div className="item-room-large item">
                     <div className="item_inner item-room-large_inner">
                         { !stack.get('closed') && <Badge elementType="item-room-large" type="open" /> }

@@ -35,7 +35,7 @@ export default store => {
         <Route component={App}>
             <AnalyticsRoute path="/" component={Home} /> 
             <AnalyticsRoute path="/s/:slug" component={Section} />
-            <AnalyticsRoute path="/r/:stack_id" component={Room} />
+            <AnalyticsRoute path="/r/:hid" component={Room} />
             <AnalyticsRoute path="/u/:username" component={Profile} />
             <AnalyticsRoute path="/t/:name" component={Tag} />
             <AnalyticsRoute path="/search" component={Search} />

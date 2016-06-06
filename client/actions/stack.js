@@ -18,26 +18,23 @@ function onStackSuccess(store, next, action, response) {
     store.dispatch(loadMediaItems(stack.uuid));
     store.dispatch(loadComments(stack.uuid));
     store.dispatch(loadMoreStacks(stack.id));
+    store.dispatch(markStackAsRead(stack.id));
 }
 
-function fetchStack(id) {
+function fetchStack(hid) {
     return {
         type: ActionTypes.STACK,
-        id: id,
         [API_CALL]: {
             schema: Schemas.STACK,
-            endpoint: `stacks/${id}`,
+            endpoint: `stacks/${hid}`,
+            queries: { 'idAttribute': 'hid' },
             onSuccess: onStackSuccess
         }
     }
 }
 
-export function loadStack(id) {
-    return dispatch => {
-        id = parseInt(id)
-        dispatch(markStackAsRead(id))
-        dispatch(fetchStack(id))
-    }
+export function loadStack(hid) {
+    return fetchStack(hid)
 }
 
 function fetchMoreStacks(stack_id) {

@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import Helmet from 'react-helmet'
 import ScrollComponent from './utils/ScrollComponent.react'
 import { Map } from 'immutable'
 
@@ -117,7 +118,13 @@ class TagComponent extends React.Component {
         const { tag, params: { name } } = this.props
         return (
             <div className="tag content" id="tag">
-                <AppBanner />
+                <Helmet 
+                    title={name}
+                    meta={[
+                        {"property": "al:ios:url", "content": `nextbeat://tags/${name}`}
+                    ]}
+                />
+                <AppBanner url={`nextbeat://tags/${name}`}/>
                 <div className="tag_header">
                     { name }
                 </div>
@@ -144,5 +151,24 @@ const scrollOptions = {
         }
     }
 }
+
+TagComponent.fetchData = (store, params) => {
+    return new Promise((resolve, reject) => {
+
+        const unsubscribe = store.subscribe(() => {
+            const tag = new Tag(store.getState())
+                if (tag.isLoaded()) {
+                    unsubscribe()
+                    resolve(store)
+                }
+                if (tag.get('error')) {
+                    unsubscribe()
+                    reject(new Error('Tag does not exist.'))
+                }
+            })
+        store.dispatch(loadTag(params.name))
+    })
+}
+
 
 export default connect(mapStateToProps)(ScrollComponent('tag', scrollOptions)(TagComponent));

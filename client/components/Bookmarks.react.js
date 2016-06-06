@@ -64,8 +64,13 @@ class Bookmarks extends React.Component {
         const { user } = this.props;
         return (
             <div className="bookmarks content" id="bookmarks">
-                <AppBanner />
-                <Helmet title="Bookmarks" />
+                <AppBanner url="nextbeat://bookmarks"/>
+                <Helmet 
+                    title="Bookmarks"
+                    meta={[
+                        {"property": "al:ios:url", "content": "nextbeat://bookmarks"}
+                    ]} 
+                />
                 { !user.isLoggedIn() && <PageError>Must be logged in.</PageError> }
                 { this.renderBookmarks() }
             </div>
