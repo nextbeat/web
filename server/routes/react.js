@@ -90,8 +90,12 @@ function renderAndSend(res, renderProps, store) {
             <RouterContext {...renderProps} />
         </Provider>
     )
-    const state = store.getState()
+    let state = store.getState()
     const head = Helmet.rewind()
+
+    // strip state of any in-progress fetches
+    state = state.delete('fetches')
+
     res.status(200).send(renderFullPage(html, head, state))
 }
 
@@ -105,7 +109,6 @@ export function handleReactRender(req, res) {
         } else if (renderProps) {
             const component = last(renderProps.components)
             // Load data before displaying page
-            console.log(component)
             if (typeof component.fetchData === "function") {
                 component.fetchData(store, renderProps.params).then((newStore)=> {
                     renderAndSend(res, renderProps, newStore)
