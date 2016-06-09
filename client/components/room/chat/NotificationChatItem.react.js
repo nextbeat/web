@@ -6,9 +6,11 @@ class NotificationChatItem extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.renderNewMediaItemNotification = this.renderNewMediaItemNotification.bind(this);
     }
 
-    render() {
+    renderNewMediaItemNotification() {
         const { comment, username } = this.props;
         const [ count, url ] = [ 
             comment.get('notification_count'), 
@@ -22,6 +24,19 @@ class NotificationChatItem extends React.Component {
                 <span className="chat_item-notification_text"><strong>{username}</strong> added {countStr} to the room.</span>
             </li>
         );
+    }
+
+    renderCloseNotification() {
+        return (
+            <li className="chat_item chat_item-notification chat_item-notification-close">
+                <span className="chat_item-notification_text">This room is no longer open.</span>
+            </li>
+        );
+    }
+
+    render() {
+        return this.props.comment.get('notification_type', 'mediaitem') === 'mediaitem' ? 
+            this.renderNewMediaItemNotification() : this.renderCloseNotification()
     }
 }
 

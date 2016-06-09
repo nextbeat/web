@@ -3,6 +3,7 @@ export { Status, API_CALL, API_CANCEL, AnalyticsTypes, ANALYTICS } from './types
 
 export {
     loadTags,
+    onBeforeUnload,
     clearApp
 } from './app'
 

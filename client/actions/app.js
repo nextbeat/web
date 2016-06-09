@@ -31,3 +31,13 @@ export function clearApp() {
         type: ActionTypes.CLEAR_APP
     }
 }
+
+/********
+ * EVENTS
+ ********/
+
+export function onBeforeUnload() {
+    return {
+        type: ActionTypes.ON_BEFORE_UNLOAD
+    }
+}

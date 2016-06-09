@@ -170,7 +170,6 @@ export function postLogin() {
     return (dispatch, getState) => {
         const user = new CurrentUser(getState())
         dispatch(analyticsIdentify(user))
-        
         dispatch(syncNotifications())
         dispatch(loadBookmarkedStacks("open"))
         dispatch(loadSubscriptions())
@@ -273,13 +272,22 @@ function markAsRead(options) {
 export function markStackAsRead(id) {
     return (dispatch, getState) => {
         const stack = new Stack(getState())
+        const currentUser = new CurrentUser(getState())
         id = id || stack.get('id');
+        if (typeof id === "number") {
+            id = id.toString();
+        }
+
         if (!id) {
             // either did not specify stack id or no stack is loaded
             return null;
         }
-        if (typeof id === "number") {
-            id = id.toString();
+        if (!currentUser.hasUnreadNotificationsForStack(id)) {
+            // if stack already marked as read, do nothing
+            //
+            // note that this method call might need to change 
+            // when we have more than one notification type
+            return null;
         }
 
         dispatch(markAsRead({ stack: id }))

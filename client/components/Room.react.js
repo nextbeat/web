@@ -60,7 +60,7 @@ class Room extends React.Component {
         }
     }
 
-    // RESIZING
+    // EVENTS
 
     resize() {
 

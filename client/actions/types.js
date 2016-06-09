@@ -25,6 +25,7 @@ export default {
      *****/
 
     TAGS: 'TAGS',
+    ON_BEFORE_UNLOAD: 'ON_BEFORE_UNLOAD',
     CLEAR_APP: 'CLEAR_APP',
 
     /******
