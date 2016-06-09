@@ -119,8 +119,6 @@ export default store => next => action => {
 
         })
         .catch(error => {
-            console.log(error)
-            console.log(error.stack)
             return next(actionWith({
                 status: Status.FAILURE,
                 error: error.message
