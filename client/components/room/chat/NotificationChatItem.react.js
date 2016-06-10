@@ -35,8 +35,8 @@ class NotificationChatItem extends React.Component {
     }
 
     render() {
-        return this.props.comment.get('notification_type', 'mediaitem') === 'mediaitem' ? 
-            this.renderNewMediaItemNotification() : this.renderCloseNotification()
+        return this.props.comment.get('notification_type', 'close') === 'close' ? 
+           this.renderCloseNotification() : this.renderNewMediaItemNotification()
     }
 }
 

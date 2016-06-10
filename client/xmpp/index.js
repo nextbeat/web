@@ -101,16 +101,23 @@ function normalizeMediaItem(data) {
 }
 
 function formatNotificationItem(data, store) {
-    let count = data[0];
-    const stack = new Stack(store.getState());
-    const mostRecentRemoteComment = stack.comments().first()
-    if (mostRecentRemoteComment.get('type') === 'notification' && stack.liveComments().size === 0) {
-        count = count - mostRecentRemoteComment.get('notification_count');
+    const type = data[0] // "mediaitem" or "close"
+    let comment = { type }
+
+    if (type === "mediaitem") {
+        let count = data[1]
+        const stack = new Stack(store.getState());
+        const mostRecentRemoteComment = stack.comments().first()
+        if (mostRecentRemoteComment.get('type') === 'notification' && stack.liveComments().size === 0) {
+            count = count - mostRecentRemoteComment.get('notification_count')
+        }
+        assign(comment, {
+            count: parseInt(count),
+            url: data[2]
+        })
     }
-    return {
-        count: parseInt(count),
-        url: data[1]
-    }
+
+    return comment
 }
 
 function stripNickname(resource) {

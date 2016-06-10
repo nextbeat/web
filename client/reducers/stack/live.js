@@ -41,13 +41,14 @@ function receiveComment(state, action) {
 function receiveNotificationComment(state, action) {
     const comment = Map({
         type: 'notification',
+        notification_type: action.data.type,
         username: action.username,
         notification_count: action.data.count,
         notification_url: action.data.url
     });
     const lastComment = state.get('comments').last();
     // we replace the most recent notification comment if it is the latest live comment
-    if (lastComment && lastComment.get('type') === 'notification') {
+    if (lastComment && lastComment.get('type') === 'notification' && lastComment.get('notification_type') === 'mediaitem' && action.data.type === 'mediaitem') {
         return state.update('comments', comments => comments.set(-1, comment));
     } else {
         return state.update('comments', comments => comments.push(comment));
