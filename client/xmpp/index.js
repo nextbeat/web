@@ -115,6 +115,11 @@ function formatNotificationItem(data, store) {
         const mostRecentRemoteComment = stack.comments().first()
         if (mostRecentRemoteComment.get('type') === 'notification' && stack.liveComments().size === 0) {
             count = count - mostRecentRemoteComment.get('notification_count')
+        } else if (stack.liveComments().size > 0) {
+            const mostRecentLiveComment = stack.liveComments().last()
+            if (mostRecentLiveComment.get('type') === 'notification') {
+                count = mostRecentLiveComment.get('notification_count') + 1
+            }
         }
         assign(comment, {
             count: parseInt(count),
