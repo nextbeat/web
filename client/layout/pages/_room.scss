@@ -97,20 +97,14 @@
     height: 100%;
 }
 
-.player_photo {
-    background-repeat: no-repeat;
-    background-size: contain;
-    width: 100%;
-    height: 100%;
-    background-position: center;
+.player_photo-container {
+    @include center;
+    overflow: hidden;
 }
 
-.player_decoration {
+.player_photo {
     width: 100%;
     height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
 }
 
 .player_caption {
@@ -120,8 +114,19 @@
     color: white;
     text-align: center;
     position: absolute;
-    left: 0;
     top: 0;
+    left: 0;
+    font-size: 14px;
+
+    a {
+        font-weight: normal;
+        color: $light-secondary-color;
+
+        &:hover {
+            cursor: pointer;
+            color: $lighter-secondary-color;
+        }
+    }
 }
 
 // Navigation

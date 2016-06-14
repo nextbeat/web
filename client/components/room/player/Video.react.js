@@ -1,6 +1,7 @@
 import React from 'react'
 import { toggleFullScreen, isIOSDevice, secureUrl } from '../../../utils'
 
+import Decoration from './Decoration.react'
 import Icon from '../../shared/Icon.react'
 
 
@@ -17,6 +18,8 @@ class Video extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.resize = this.resize.bind(this);
 
         this.didLoadMetadata = this.didLoadMetadata.bind(this);
         this.didUpdateTime = this.didUpdateTime.bind(this);
@@ -58,7 +61,11 @@ class Video extends React.Component {
             isFullScreen: false,
             isIOSDevice: false,
             timeIntervalId: -1,
-            hoverTimeoutId: -1
+            hoverTimeoutId: -1,
+            firstFrameImage: new Image(),
+            firstFrameUrl: '',
+            firstFrameWidth: 0,
+            firstFrameHeight: 0
         };
     }
 
@@ -74,6 +81,15 @@ class Video extends React.Component {
         video.addEventListener('progress', this.didProgressDownload);
 
         this.loadVideo(this.props.item);
+
+        // display first frame image once fully loaded
+        this.state.firstFrameImage.addEventListener('load', () => {
+            this.setState({ firstFrameUrl: this.props.item.get('firstframe_url') })
+            this.resize()
+        })
+        this.state.firstFrameImage.src = this.props.item.get('firstframe_url')
+
+        window.addEventListener('resize', this.resize)
 
         // iOS does not do custom controls well
         this.setState({
@@ -92,15 +108,40 @@ class Video extends React.Component {
 
         clearInterval(this.state.timeIntervalId);
         clearInterval(this.state.hoverTimeoutId);
+
+        window.removeEventListener('resize', this.resize);
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.item !== this.props.item) {
             this.loadVideo(this.props.item);
+
+            this.setState({ firstFrameUrl: '' })
+            this.state.firstFrameImage.src = this.props.item.get('firstframe_url')
         }
     }
 
     // Events 
+
+    resize() {
+        const { firstFrameImage } = this.state 
+        const containerWidth = $('.player_media-inner').width()
+        const containerHeight = $('.player_media-inner').height()
+        const imageRatio = firstFrameImage.width/firstFrameImage.height
+        const containerRatio = containerWidth/containerHeight
+
+        if (imageRatio > containerRatio) {
+            this.setState({
+                firstFrameWidth: containerWidth,
+                firstFrameHeight: Math.floor(containerWidth/imageRatio)
+            })
+        } else {
+            this.setState({
+                firstFrameWidth: Math.floor(containerHeight*imageRatio),
+                firstFrameHeight: containerHeight
+            })
+        }
+    }
 
     didLoadMetadata() {
         const video = document.getElementById('video_player');
@@ -134,11 +175,6 @@ class Video extends React.Component {
                 displayControls: true
             })
         } 
-        // else if (!this.state.isMouseOver) {
-        //     this.setState({
-        //         displayControls: false
-        //     })
-        // }
     }
 
     didPause() {
@@ -335,7 +371,9 @@ class Video extends React.Component {
 
     render() {
         const { item } = this.props;
-        const { currentTime, duration, loadedDuration, volume, isPlaying, displayControls, isFullScreen, isIOSDevice } = this.state;
+        const { currentTime, duration, loadedDuration, volume, isPlaying, 
+                displayControls, isFullScreen, isIOSDevice, 
+                firstFrameImage, firstFrameHeight, firstFrameWidth, firstFrameUrl } = this.state;
 
         const displayControlsClass = displayControls ? "display-controls" : "";
         const displayControlsVideoStyle = displayControls ? { cursor: 'auto' } : { cursor: 'none' };
@@ -364,7 +402,7 @@ class Video extends React.Component {
             <div className="video_container" id="video_container" style={displayControlsVideoStyle} {...videoContainerEvents}>
                 { window.MSStream }
                 <div className="video_player-container">
-                    <div className="video_player-background" style={{ backgroundImage: `url(${secureUrl(item.get('firstframe_url'))})`}}></div>
+                    <div className="video_player-background" style={{ backgroundImage: `url(${secureUrl(firstFrameUrl)})`}}></div>
                     { isIOSDevice && 
                         <video id="video_player" className="video_player" autoload controls preload="auto">
                             <source src={secureUrl(item.get('url'))} type="video/mp4" />
@@ -374,6 +412,11 @@ class Video extends React.Component {
                         <video id="video_player" className="video_player" autoPlay autoload preload="auto">
                             <source src={secureUrl(item.get('url'))} type="video/mp4" />
                         </video>
+                    }
+                    { firstFrameUrl.length > 0 && item.get('decoration') && 
+                        <div className="video_player-decoration" style={{width: `${firstFrameWidth}px`, height: `${firstFrameHeight}px`}}>
+                            <Decoration decoration={item.get('decoration')} />
+                        </div>
                     }
                     
                 </div>

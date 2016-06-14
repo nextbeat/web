@@ -75,9 +75,9 @@ export function getClient(store) {
         //     console.log('OUTGOING', s);
         // })
 
-        // client.on('raw:incoming', function(s) {
-        //     console.log('INCOMING', s);
-        // })
+        client.on('raw:incoming', function(s) {
+            console.log('INCOMING', s);
+        })
 
         client.on('disconnected', function() {
             console.log('DISCONNECTED!!!');
@@ -90,12 +90,17 @@ export function getClient(store) {
 // group chat
 
 function normalizeMediaItem(data) {
-    const mediaItem = {
+    let mediaItem = {
         type: data[1],
         url: data[2],
         firstframe_url: data[3],
         id: parseInt(data[4]),
         created_at: moment().format()
+    }
+    if (data[5].length > 0) {
+        // recreate decoration object
+        let decoration = JSON.parse(data.slice(5).join('#'))
+        mediaItem.decoration = decoration
     }
     return normalize(mediaItem, Schemas.MEDIA_ITEM);
 }

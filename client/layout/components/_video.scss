@@ -28,6 +28,11 @@
     @include center;
 }
 
+.video_player-decoration {
+    @include center;
+    position: absolute;
+}
+
 .video_bottom {
     position: absolute;
     bottom: 0;
