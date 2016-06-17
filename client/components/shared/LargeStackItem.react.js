@@ -60,11 +60,13 @@ class LargeStackItem extends React.Component {
             return stack.get('fb_thumbnail_url');
         }
 
-        let url = stack.get('thumbnail_url', '');
+        let url = stack.get('thumbnail_url', '') || '';
         const suffix = '_200px.jpg';
+        console.log(url);
         if (url.substring(url.length-suffix.length) === suffix) {
             url = url.substring(0, url.length-suffix.length) + '.jpg';
         }
+        console.log(url);
         return url;
     }
 
