@@ -25,7 +25,14 @@ module.exports = {
             console.log(req.ip);
             var method = req.method.toLowerCase();
             var token = req.user ? req.user.token : undefined;
-            api[method](req.url, req.body, { auth: token }).then(function(_res) {
+            var options = {
+                auth: token,
+                headers: {
+                    'X-Forwarded-For': req.ip
+                }
+            };
+
+            api[method](req.url, req.body, options).then(function(_res) {
                 // we check for the header which is set if the current token
                 // has expired, and update the user's token
                 if (req.user && _.has(_res.headers, 'x-bbl-jwt-token')) {
