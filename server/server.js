@@ -16,7 +16,7 @@ var exphbs      = require('express-handlebars'),
 web.use(express.static(path.join(__dirname, '../client/public/html')));
 web.use(express.static(path.join(__dirname, '../client/public')));
 
-// todo: look into using a reverse proxy
+web.set('trust proxy', true);
 
 web.use(bodyParser.json({
     limit: '1mb'

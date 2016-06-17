@@ -34,6 +34,7 @@ export {
     selectMediaItem,
     goForward,
     goBackward,
+    recordView,
     clearStack
 } from './stack'
 

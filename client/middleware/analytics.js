@@ -1,5 +1,6 @@
 import { AnalyticsTypes, ANALYTICS } from '../actions'
 import { assign } from 'lodash'
+import fetch from 'isomorphic-fetch'
 
 function handleIdentify(data) {
     const user = data.user

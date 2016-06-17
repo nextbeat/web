@@ -85,6 +85,11 @@ export default store => next => action => {
         return next(action);
     }
 
+    // skip if on server and clientOnly specified
+    if (typeof window === 'undefined' && apiCall.clientOnly) {
+        return next(action);
+    }
+
     const { pagination, onSuccess, onSuccessImmediate } = apiCall;
 
     // call api server with the given endpoint, then

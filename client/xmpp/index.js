@@ -75,9 +75,9 @@ export function getClient(store) {
         //     console.log('OUTGOING', s);
         // })
 
-        client.on('raw:incoming', function(s) {
-            console.log('INCOMING', s);
-        })
+        // client.on('raw:incoming', function(s) {
+        //     console.log('INCOMING', s);
+        // })
 
         client.on('disconnected', function() {
             console.log('DISCONNECTED!!!');

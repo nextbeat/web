@@ -19,6 +19,7 @@ function onStackSuccess(store, next, action, response) {
     store.dispatch(loadComments(stack.uuid));
     store.dispatch(loadMoreStacks(stack.id));
     store.dispatch(markStackAsRead(stack.id));
+    store.dispatch(recordView(stack.id));
 }
 
 function fetchStack(hid) {
@@ -253,6 +254,21 @@ export function goBackward() {
     return navigate(false);
 }
 
+/*******
+ * VIEWS
+ *******/
+
+export function recordView(stack_id) {
+    console.log('CALLING RECORD VIEW');
+    return {
+        type: ActionTypes.RECORD_VIEW,
+        [API_CALL]: {
+            method: 'PUT',
+            endpoint: `stacks/views/${stack_id}`,
+            clientOnly: true
+        }
+    }
+}
 
 /*******
  * RESET
