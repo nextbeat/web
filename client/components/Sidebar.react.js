@@ -31,19 +31,7 @@ class Sidebar extends React.Component {
 
     componentWillUnmount() {
         $('.sidebar').off('click');
-    }
-
-    // Accessors
-
-    // toggleActive() {
-    //     if ($('.sidebar').hasClass('collapsed-side')) {
-    //         $('.sidebar_expanded').toggleClass('active-medium');
-    //     } else {
-    //         $('.sidebar_expanded').toggleClass('active-small');
-    //         $('.detail-bar').removeClass('active');
-    //     }
-    //     $(window).resize() // trigger resize event
-    // }   
+    } 
 
     // Render
 
@@ -105,7 +93,12 @@ class Sidebar extends React.Component {
         const { user, app } = this.props;
         return (
             <div className="sidebar">
-
+                <div className="sidebar_section sidebar_topnav">
+                    <Link to="/" activeClassName="selected">
+                        <div className="sidebar_icon"><Icon type="home" /></div>Home
+                    </Link>
+                    <div className="separator" />
+                </div>
                 { user.isLoggedIn() && user.isFetchingUserData() && <Spinner type="grey" /> }
                 { user.isLoggedIn() && !user.isFetchingUserData() &&
                     <div>
