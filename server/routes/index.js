@@ -22,7 +22,6 @@ module.exports = {
         // matches any requests with the prefix api/
         // and forwards to the api server
         apiRouter.all('*', function(req, res) {
-            console.log(req.ip);
             var method = req.method.toLowerCase();
             var token = req.user ? req.user.token : undefined;
             var options = {

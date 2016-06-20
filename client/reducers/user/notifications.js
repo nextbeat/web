@@ -22,11 +22,11 @@ function syncNotifications(state, action) {
 
 function markAsRead(state, action) {
     if (action.stack) {
-        // only handles stacks_updated key for now
-        if (state.getIn(['unread', 'stacks_updated'], Set()).has(action.stack)) {
+        // only handles new_mediaitem key for now
+        if (state.getIn(['unread', 'new_mediaitem'], Set()).has(action.stack)) {
             return state
-                .updateIn(['unread', 'stacks_updated'], Set(), stacks => stacks.filter(s => s !== action.stack))
-                .updateIn(['read', 'stacks_updated'], Set(), stacks => stacks.add(action.stack))
+                .updateIn(['unread', 'new_mediaitem'], Set(), stacks => stacks.filter(s => s !== action.stack))
+                .updateIn(['read', 'new_mediaitem'], Set(), stacks => stacks.add(action.stack))
         }
     }
     return state;

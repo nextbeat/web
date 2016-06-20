@@ -86,7 +86,7 @@ export default class CurrentUser extends ModelBase {
         if (typeof id === "number") {
             id = id.toString();
         }
-        return this.get('unreadNotifications', Map()).get('stacks_updated', Set()).has(id);
+        return this.get('unreadNotifications', Map()).get('new_mediaitem', Set()).has(id);
     }
 
     isFetchingUserData() {
