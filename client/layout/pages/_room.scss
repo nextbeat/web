@@ -509,6 +509,12 @@ a.chat_mention {
         border: 1px solid $primary-color;
         padding-bottom: 7px;
     }
+
+    &:hover {
+        cursor: pointer;
+        background-color: mix($light-secondary-color, white, 80%);
+        border: 1px solid mix($secondary-color, white, 80%);
+    }
 }
 
 

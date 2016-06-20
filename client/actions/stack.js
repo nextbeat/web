@@ -259,7 +259,6 @@ export function goBackward() {
  *******/
 
 export function recordView(stack_id) {
-    console.log('CALLING RECORD VIEW');
     return {
         type: ActionTypes.RECORD_VIEW,
         [API_CALL]: {
