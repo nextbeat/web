@@ -207,12 +207,17 @@
 
     margin: 0 -15px 0 -15px;
 
+    a {
+        margin: 0;
+    }
+
     h1 {
         margin-left: 15px;
     }
 
     .item_container {
         float: none;
+        margin-bottom: 0;
     }
 
     .item-room {

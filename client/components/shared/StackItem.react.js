@@ -39,6 +39,15 @@ class StackItem extends React.Component {
         // resize thumbnail
         const thumb = node.find('.item_thumb');
         thumb.width(thumb.height());
+
+        // resize text
+        const $description = node.find('.item-room_description');
+        const height = $description.height();
+        let fontSize =  parseInt($description.css('font-size'));
+        while ($description.prop('scrollHeight') > height) {
+            $description.css('font-size', --fontSize)
+            console.log('text height:', $description.prop('scrollHeight'))
+        }
     }
 
     componentDidMount() {
