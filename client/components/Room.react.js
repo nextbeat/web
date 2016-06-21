@@ -9,7 +9,7 @@ import DetailBar from './room/DetailBar.react'
 
 import { loadStack, joinRoom, clearStack, bookmark, unbookmark, selectMediaItem, goForward, goBackward } from '../actions'
 import { Stack } from '../models'
-import { baseUrl } from '../utils'
+import { baseUrl, storageAvailable } from '../utils'
 
 class Room extends React.Component {
 
@@ -55,7 +55,16 @@ class Room extends React.Component {
 
         if (prevProps.stack.mediaItems().size === 0 && stack.mediaItems().size > 0) {
             // first page of media items has loaded, select the first
-            const id = stack.mediaItems().first().get('id')
+            let id = stack.mediaItems().first().get('id')
+
+            // unless last seen media item id stored in sessionStorage
+            if (storageAvailable('sessionStorage')) {
+                const mediaItemId = sessionStorage.getItem(stack.get('hid'))
+                if (mediaItemId) {
+                    id = parseInt(mediaItemId, 10)
+                }
+            }
+
             this.props.dispatch(selectMediaItem(id))
         }
     }

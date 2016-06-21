@@ -41,6 +41,7 @@ class ActivityItem extends React.Component {
         const selectedClass = selected ? "selected" : "";
         const liveClass = live ? "live" : "";
         const videoClass = mediaItem.get('type') === 'video' ? "item-activity_video-wrapper" : "";
+        
         return (
             <div className={`item item-activity ${selectedClass} ${liveClass}`} onClick={handleClick.bind(this, mediaItem.get('id'))} ref={(c) => this._node = c}>
                 <div className="item_inner">

@@ -7,6 +7,7 @@ import { markStackAsRead } from './user'
 import { loadPaginatedObjects } from './utils'
 import { Stack } from '../models'
 import { API_CALL, API_CANCEL } from './types'
+import { storageAvailable } from '../utils'
 
 
 /**********
@@ -209,10 +210,23 @@ export function unbookmark() {
  * MEDIA ITEM SELECTION
  **********************/
 
-export function selectMediaItem(id) {
+function performSelectMediaItem(id) {
     return {
         type: ActionTypes.SELECT_MEDIA_ITEM,
         id 
+    }
+}
+
+export function selectMediaItem(id) {
+    // We store the last selected media item from each stack
+    // in the session in sessionStorage, so that it persists
+    // through page refreshes
+    return (dispatch, getState) => {
+        const stack = new Stack(getState())
+        if (storageAvailable('sessionStorage')) {
+            sessionStorage.setItem(stack.get('hid'), id)
+        }
+        return dispatch(performSelectMediaItem(id))
     }
 }
 

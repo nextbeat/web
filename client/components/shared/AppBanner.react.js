@@ -36,7 +36,6 @@ class AppBanner extends React.Component {
 
         const { app, user, url } = this.props
         window.location = url;
-        console.log(url);
         // Fallback to App Store url if user does not have the app installed
         setTimeout(() => {
             window.top.location = STORE_URL;

@@ -15,7 +15,6 @@ class Activity extends React.Component {
 
     // Button handlers
     handleNewMediaClick() {
-        console.log('handling new media click')
         this.props.handleSelectNewestLiveItem();
         this.setState({
             displayNewItem: false
