@@ -33,7 +33,7 @@ class Bookmarks extends React.Component {
     renderBookmarks() {
         const { openStacks, closedStacks, closedFetching } = this.props;
         return (
-            <section>  
+            <section className="content_inner">  
                 <h1>BOOKMARKS</h1>
                 { openStacks.size > 0 && 
                 <div>

@@ -59,8 +59,7 @@ class StackItem extends React.Component {
             <div className="item_container" ref={(c) => this._node = c} >
             <Link to={`/r/${stack.get('hid')}`} className="item-room item" activeClassName="selected">
                 <div className="item_inner">
-                    <div className="item_thumb">
-                        <img className="thumb_img" src={secureUrl(stack.get('thumbnail_url'))} />
+                    <div className="item_thumb" style={{backgroundImage: `url(${secureUrl(stack.get('thumbnail_url'))})`}}>
                     </div>
                     <div className="item_main">
                         <div className="item-room_info">

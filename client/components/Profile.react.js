@@ -41,7 +41,7 @@ class ProfileComponent extends React.Component {
         const { profile, openStacks, closedStacks } = this.props;
         const profpic_url = profile.get('profpic_thumbnail_url') || profile.get('profpic_url');
         return (
-            <section>  
+            <section className="content_inner">  
                 <Helmet 
                     title={profile.get('username')} 
                     meta={[

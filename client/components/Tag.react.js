@@ -125,11 +125,13 @@ class TagComponent extends React.Component {
                     ]}
                 />
                 <AppBanner url={`nextbeat://tags/${name}`}/>
-                <div className="tag_header">
-                    { name }
+                <div className="content_inner tag_inner">
+                    <div className="tag_header">
+                        { name }
+                    </div>
+                    { this.renderFilters() }
+                    { this.renderTag() }
                 </div>
-                { this.renderFilters() }
-                { this.renderTag() }
             </div>
         );
     }

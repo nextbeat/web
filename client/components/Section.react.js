@@ -31,7 +31,7 @@ class SectionComponent extends React.Component {
                     ]}
                 />
                 <AppBanner url={`nextbeat://sections/${section.get('slug')}`}/>
-                <div className="section_inner">
+                <div className="content_inner section_inner">
                     { section.get('name') && 
                     <div className="section_header">
                         { section.get('name') }
