@@ -59,9 +59,9 @@ class Room extends React.Component {
 
             // unless last seen media item id stored in sessionStorage
             if (storageAvailable('sessionStorage')) {
-                const mediaItemId = sessionStorage.getItem(stack.get('hid'))
-                if (mediaItemId) {
-                    id = parseInt(mediaItemId, 10)
+                const mediaItemId = parseInt(sessionStorage.getItem(stack.get('hid')), 10)
+                if (mediaItemId && stack.indexOfMediaItem(mediaItemId) >= 0) {
+                    id = mediaItemId
                 }
             }
 

@@ -36,10 +36,10 @@ class ActivityItem extends React.Component {
     }
 
     render() {
-        const { mediaItem, selected, live, handleClick, index } = this.props;
+        const { mediaItem, selected, live, unseen, handleClick, index } = this.props;
         const url = secureUrl(this.url(mediaItem));
         const selectedClass = selected ? "selected" : "";
-        const liveClass = live ? "live" : "";
+        const liveClass = live && unseen ? "live" : "";
         const videoClass = mediaItem.get('type') === 'video' ? "item-activity_video-wrapper" : "";
         
         return (

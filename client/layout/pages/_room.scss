@@ -403,6 +403,7 @@ a.player_tag {
     line-height: 35px;
     text-align: center;
     margin-right: 30px;
+    position: relative;
 
     &.selected {
         border-bottom: 5px solid $light-primary-color;
@@ -429,6 +430,23 @@ a.player_tag {
     .spinner {
         margin: 10px auto;
     }
+}
+
+// Badges
+
+.detail-bar_activity-badge {
+    position: absolute;
+    left: 100%;
+    display: inline-block;
+    top: 0;
+}
+
+.detail-bar_activity-badge_inner {
+    background-color: $primary-color;
+    color: white;
+    font-size: 12px;
+    padding: 3px;
+    border-radius: 2px;
 }
 
 /******
