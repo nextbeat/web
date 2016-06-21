@@ -25,10 +25,10 @@ class Activity extends React.Component {
     // Render
 
     render() {
-        const { mediaItems, liveMediaItems, selectedItem, handleSelectMediaItem, stack } = this.props;
+        const { mediaItems, liveMediaItems, selectedItem, handleSelectMediaItem, stack, display } = this.props;
         const { displayNewItem } = this.state;
         return (
-        <section className="activity">
+        <section className="activity" style={{ display: (display ? "block" : "none") }}>
             <div className="activity_inner" id="activity-inner">
                 {stack.get('mediaItemsFetching') && <Spinner type="grey" />}
                 {mediaItems.map((mediaItem, idx) => {

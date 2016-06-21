@@ -57,8 +57,8 @@ class DetailBar extends React.Component {
                         </div>
                     </div>
                     <div className="detail-bar_main">
-                        { !stack.get('isFetching') && !stack.get('error') && this.state.selected === "chat" && <Chat /> }
-                        { !stack.get('isFetching') && !stack.get('error') && this.state.selected === "activity" && <Activity {...activityProps} /> }
+                        { !stack.get('isFetching') && !stack.get('error') && <Chat display={this.state.selected === "chat"} /> }
+                        { !stack.get('isFetching') && !stack.get('error') && <Activity display={this.state.selected === "activity"} {...activityProps} /> }
                     </div>
                 </div>
             </div>
