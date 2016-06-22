@@ -5,6 +5,7 @@ import { List } from 'immutable'
 import User from '../../shared/User.react'
 import Icon from '../../shared/Icon.react'
 import Bookmark from './Bookmark.react'
+import Share from './Share.react'
 import Badge from '../../shared/Badge.react'
 
 class Info extends React.Component {
@@ -29,7 +30,7 @@ class Info extends React.Component {
                 </div>
                 <div className="player_buttons">
                     <div className="player_button"><Bookmark {...this.props} /></div>
-                    <div className="player_button player_button-share"><Icon type="share" /><span>Share</span></div>
+                    <div className="player_button"><Share stack={stack} /></div>
                 </div>
             </section>
         );

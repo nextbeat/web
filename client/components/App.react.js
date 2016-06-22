@@ -113,13 +113,12 @@ class App extends React.Component {
     setTitle() {
         const { app, user } = this.props;
         const environment = app.get('environment', 'development');
-        let envLabel = '';
-        let fbAppId = '';
+        const fbAppId = app.get('facebookAppId');
 
+        let envLabel = '';
         switch (environment) {
             case 'development':
                 envLabel = '[DEV] ';
-                fbAppId = '1021249581291875'
                 break;
             case 'local':
                 envLabel = '[LOCAL] ';
@@ -129,7 +128,6 @@ class App extends React.Component {
                 break;
             case 'production':
             default:
-                fbAppId = '1021241104626056'
                 break;
         }
 

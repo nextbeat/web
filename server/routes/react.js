@@ -21,7 +21,8 @@ function getInitialState(req) {
                 os: ua.os,
                 browser: ua.browser,
                 device: ua.device
-            }
+            },
+            facebookAppId: process.env.FACEBOOK_APP_ID
         }
     }
     // if user is logged in, requests include user info

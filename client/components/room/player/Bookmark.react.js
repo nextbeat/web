@@ -14,8 +14,6 @@ class Bookmark extends React.Component {
         }
     }
 
-
-
     renderBookmarked() {
         const { stack, handleUnbookmark } = this.props;
         return (

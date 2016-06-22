@@ -13,7 +13,9 @@ const KEY_MAP = {
     // user-agent
     'os': ['app', 'ua', 'os', 'name'],
     'device': ['app', 'ua', 'device', 'name'],
-    'browser': ['app', 'ua', 'browser', 'name']
+    'browser': ['app', 'ua', 'browser', 'name'],
+    // facebook
+    'facebookAppId': ['app', 'facebookAppId']
 }
 
 export default class App extends ModelBase {

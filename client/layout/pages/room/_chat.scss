@@ -1,0 +1,145 @@
+.chat {
+    width: 100%;
+    background: #fff;
+    height: 100%;
+}
+
+.chat_history {
+    overflow: auto;
+    height: calc(100% - 105px);
+    width: 100%;
+    padding: 3px;
+    // border-bottom: 1px solid #eee;
+}
+
+.chat_items {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.chat_item {
+    font-size: 13px;
+    margin: 12px 8px 0 12px;
+    white-space: pre-wrap;
+
+    a {
+        color: $secondary-color;
+    }
+
+    strong {
+        color: $secondary-color;
+    }
+
+    strong.creator {
+        color: white;
+        background-color: $secondary-color;
+        padding: 0 3px;
+
+        a {
+            color: white;
+        }
+    }
+}
+
+a.chat_mention {
+    font-weight: normal;
+    &:hover {
+        color: $light-secondary-color;
+    }
+}
+
+.chat_live-mention {
+    color: $detail-text-color;
+}
+
+.chat_item-notification {
+    color: white;
+    background-color: $light-secondary-color;
+    border: 1px solid $secondary-color;
+    border-radius: 3px;
+    padding: 5px;
+    position: relative;
+
+    strong {
+        color:white;
+    }
+
+    @include clearfix;
+
+    &.chat_item-notification-close {
+        background-color: $light-primary-color;
+        border: 1px solid $primary-color;
+        padding-bottom: 7px;
+    }
+
+    &:hover {
+        cursor: pointer;
+        background-color: mix($light-secondary-color, white, 80%);
+        border: 1px solid mix($secondary-color, white, 80%);
+    }
+}
+
+
+.chat_item-notification_thumb {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    height: 22px;
+    width: 30px;
+    display: inline-block;
+    border-radius: 2px;
+    border: 1px solid rgba(white, 1.0);
+    float: left;
+    vertical-align: middle;
+}
+
+.chat_item-notification_text {
+    display: inline-block;
+    vertical-align: top;
+    float: left;
+    width: calc(100% - 30px);
+    padding: 2px 0 0 7px;
+    vertical-align: middle;
+}
+
+.chat_compose {
+    height: 105px;
+    width: 100%;
+    margin-top: -5px;
+
+    textarea {
+        width: 100%;
+        margin: 0;
+        height: 50px;
+        resize: none;
+        padding: 7px;
+        font-size: 13px;
+        border: 1px solid #ccc;
+    }
+
+    .btn {
+        display: block;
+        float: right;
+        margin-top: 5px;
+        background-color: $secondary-color;
+    }
+
+}
+
+.chat_compose-inner {
+    margin: 15px 15px 5px;
+}
+
+a.chat_compose-notification {
+    text-align: center;
+    margin-top: 40px;
+    display: block;
+    font-style: italic;
+    font-weight: normal;
+    font-size: 14px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
