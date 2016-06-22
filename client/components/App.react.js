@@ -111,10 +111,11 @@ class App extends React.Component {
     // Render
 
     setTitle() {
-        const { app } = this.props;
+        const { app, user } = this.props;
         const environment = app.get('environment', 'development');
         let envLabel = '';
         let fbAppId = '';
+
         switch (environment) {
             case 'development':
                 envLabel = '[DEV] ';
@@ -132,10 +133,16 @@ class App extends React.Component {
                 break;
         }
 
+        let badge = '';
+        let count = user.totalUnreadNotificationCount();
+        if (count > 0) {
+            badge = `(${count}) `
+        }
+
         return (
             <Helmet
-                defaultTitle = {`${envLabel}Nextbeat`}
-                titleTemplate = {`${envLabel}%s - Nextbeat`}
+                defaultTitle = {`${badge}${envLabel}Nextbeat`}
+                titleTemplate = {`${badge}${envLabel}%s - Nextbeat`}
                 meta={[
                     {"property": "og:site_name", "content": "Nextbeat"},
                     {"property": "fb:app_id", "content": fbAppId},

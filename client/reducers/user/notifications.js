@@ -6,14 +6,27 @@ const initialState = {
     read: Map()
 }
 
-function unreadReviver(key, value) {
-    return Iterable.isIndexed(value) ? value.toSet() : value.toMap();
+function transform(response) {
+    let unread = fromJS(response)
+    for (var key of unread.keys()) {
+        unread = unread.update(key, v => {
+            let notes = Set()
+            v.forEach( note => {
+                notes = notes.add(Map({
+                    stack: note.get(0),
+                    count: note.get(1, 1)
+                }))
+            })
+            return notes
+        })
+    }
+    return unread
 }
 
 function syncNotifications(state, action) {
     if (action.status === Status.SUCCESS) {
         return state.merge({
-            unread: fromJS(action.response, unreadReviver),
+            unread: transform(action.response),
             read: Map()
         });
     }
@@ -23,10 +36,12 @@ function syncNotifications(state, action) {
 function markAsRead(state, action) {
     if (action.stack) {
         // only handles new_mediaitem key for now
-        if (state.getIn(['unread', 'new_mediaitem'], Set()).has(action.stack)) {
+        var id = parseInt(action.stack, 10)
+        let note = state.getIn(['unread', 'new_mediaitem'], Set()).find(note => note.get('stack') === id)
+        if (!!note) {
             return state
-                .updateIn(['unread', 'new_mediaitem'], Set(), stacks => stacks.filter(s => s !== action.stack))
-                .updateIn(['read', 'new_mediaitem'], Set(), stacks => stacks.add(action.stack))
+                .updateIn(['unread', 'new_mediaitem'], Set(), notes => notes.delete(note))
+                .updateIn(['read', 'new_mediaitem'], Set(), notes => notes.add(note))
         }
     }
     return state;

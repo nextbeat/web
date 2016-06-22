@@ -46,7 +46,6 @@ class StackItem extends React.Component {
         let fontSize =  parseInt($description.css('font-size'));
         while ($description.prop('scrollHeight') > height) {
             $description.css('font-size', --fontSize)
-            console.log('text height:', $description.prop('scrollHeight'))
         }
     }
 
@@ -64,6 +63,7 @@ class StackItem extends React.Component {
     render() {
         const { stack, user, users } = this.props;
         const author = users.get(stack.get('author_id').toString(), Map())
+        const unreadNotificationCount = user && user.unreadNotificationCountForStack(stack.get('id'))
         return (
             <div className="item_container" ref={(c) => this._node = c} >
             <Link to={`/r/${stack.get('hid')}`} className="item-room item" activeClassName="selected">
@@ -86,7 +86,7 @@ class StackItem extends React.Component {
                         </div>
                     </div>
                     {!stack.get('closed') && <Badge elementType="item-room" type="open" />}
-                    {user && user.hasUnreadNotificationsForStack(stack.get('id')) && <Badge elementType="item-room" type="new" />}
+                    {user && unreadNotificationCount > 0 && <Badge elementType="item-room" type="new">{unreadNotificationCount}</Badge>}
                 </div>
             </Link>
             </div>

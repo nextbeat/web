@@ -251,7 +251,7 @@ export function syncNotifications() {
             return null;
         }
 
-        const readNotifications = currentUser.get('readNotifications').toJS()
+        const readNotifications = currentUser.readNotificationsJSON()
         dispatch(postSyncNotifications(readNotifications))
     }
 }
@@ -282,7 +282,8 @@ export function markStackAsRead(id) {
             // either did not specify stack id or no stack is loaded
             return null;
         }
-        if (!currentUser.hasUnreadNotificationsForStack(id)) {
+
+        if (currentUser.unreadNotificationCountForStack(id) === 0) {
             // if stack already marked as read, do nothing
             //
             // note that this method call might need to change 
