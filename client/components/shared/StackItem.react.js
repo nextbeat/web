@@ -4,7 +4,6 @@ import { Link } from 'react-router'
 import { Map } from 'immutable'
 import { without } from 'lodash'
 import moment from 'moment'
-import { secureUrl } from '../../utils'
 
 import Badge from './Badge.react'
 
@@ -64,11 +63,12 @@ class StackItem extends React.Component {
         const { stack, user, users } = this.props;
         const author = users.get(stack.get('author_id').toString(), Map())
         const unreadNotificationCount = user && user.unreadNotificationCountForStack(stack.get('id'))
+        const thumbnailUrl = stack.get('thumbnail_small_url') || stack.get('thumbnail_url', '')
         return (
             <div className="item_container" ref={(c) => this._node = c} >
             <Link to={`/r/${stack.get('hid')}`} className="item-room item" activeClassName="selected">
                 <div className="item_inner">
-                    <div className="item_thumb" style={{backgroundImage: `url(${secureUrl(stack.get('thumbnail_url'))})`}}>
+                    <div className="item_thumb" style={{backgroundImage: `url(${thumbnailUrl})`}}>
                     </div>
                     <div className="item_main">
                         <div className="item-room_info">

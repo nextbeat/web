@@ -129,7 +129,7 @@ class Room extends React.Component {
         ]
         if (!stack.get('error')) {
             const description = `Check out this room created by ${stack.author().get('username')}!`
-            const thumb_url = stack.get('fb_thumbnail_url') || stack.get('thumbnail_url') || ''
+            const thumb_url = stack.get('thumbnail_url') || ''
             meta.push.apply(meta, [
                 {"property": "og:title", "content": stack.get('description')},
                 {"property": "og:description", "content": description},

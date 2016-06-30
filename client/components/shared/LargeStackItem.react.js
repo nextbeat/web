@@ -55,25 +55,12 @@ class LargeStackItem extends React.Component {
         $(window).off('resize', this.resize);
     }
 
-    fancyThumbnailUrl(stack) {
-        if (stack.get('fb_thumbnail_url')) {
-            return stack.get('fb_thumbnail_url');
-        }
-
-        let url = stack.get('thumbnail_url', '') || '';
-        const suffix = '_200px.jpg';
-        if (url.substring(url.length-suffix.length) === suffix) {
-            url = url.substring(0, url.length-suffix.length) + '.jpg';
-        }
-        return url;
-    }
-
     render() {
         const { stack, user, users, static: staticNum } = this.props;
         const author = users.get(stack.get('author_id').toString(), Map())
         const bookmarkType = stack.get('bookmarked') ? "bookmark" : "bookmark-outline";
         const itemWidth = isNumber(staticNum) ? staticNum + "px" : null
-        const imageUrl = this.fancyThumbnailUrl(stack)
+        const imageUrl = stack.get('thumbnail_medium_url') || stack.get('thumbnail_url');
 
         return (
             <div className="item_container item-room-large_container" ref={(c) => this._node = c} style={itemWidth && {width: itemWidth}}>
