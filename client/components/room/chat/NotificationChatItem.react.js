@@ -27,7 +27,7 @@ class NotificationChatItem extends React.Component {
         const countStr = count === 1 ? "a post" : `${count} posts`;
 
         return (
-            <li className="chat_item chat_item-notification" onClick={this.handleSelectMediaItem.bind(this, mediaitem_id)}>
+            <li className="chat_item chat_item-notification chat_item-notification-mediaitem" onClick={this.handleSelectMediaItem.bind(this, mediaitem_id)}>
                 <div className="chat_item-notification_thumb" style={{ backgroundImage: `url(${url})`}}></div>
                 <span className="chat_item-notification_text"><strong>{username}</strong> added {countStr} to the room.</span>
             </li>

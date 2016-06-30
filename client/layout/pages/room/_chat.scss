@@ -72,7 +72,9 @@ a.chat_mention {
         border: 1px solid $primary-color;
         padding-bottom: 7px;
     }
+}
 
+.chat_item-notification-message {
     &:hover {
         cursor: pointer;
         background-color: mix($light-secondary-color, white, 80%);

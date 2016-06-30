@@ -80,7 +80,8 @@ export {
 export {
     validatePasswordResetToken,
     resetPassword,
-    sendPasswordResetRequest
+    sendPasswordResetRequest,
+    sendEmailUnsubscribeRequest
 } from './support'
 
 export {

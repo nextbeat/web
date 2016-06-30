@@ -12,6 +12,7 @@ import Section from '../client/components/Section.react'
 import Search from '../client/components/Search.react'
 import PasswordResetRequest from '../client/components/support/PasswordResetRequest.react'
 import PasswordReset from '../client/components/support/PasswordReset.react'
+import Unsubscribe from '../client/components/support/Unsubscribe.react'
 import NoMatch from '../client/components/NoMatch.react'
 
 import { analyticsPage } from '../client/actions'
@@ -31,6 +32,7 @@ export default store => {
         <Route path="/support">
             <AnalyticsRoute path="password-reset-request" component={PasswordResetRequest} />
             <AnalyticsRoute path="password-reset" component={PasswordReset} />
+            <AnalyticsRoute path="unsubscribe" component={Unsubscribe} />
         </Route>,
         <Route component={App}>
             <AnalyticsRoute path="/" component={Home} /> 

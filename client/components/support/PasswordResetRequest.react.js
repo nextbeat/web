@@ -46,7 +46,7 @@ class PasswordResetRequest extends React.Component {
     render() {
         const { support } = this.props;
         return (
-            <div className="password-reset">
+            <div className="support">
                 <h1>Reset Password Request</h1>
                 { support.get('resetRequestSent') ? this.renderRequestSent() : this.renderRequest() }
             </div>
