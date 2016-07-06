@@ -41,7 +41,10 @@ class Subscribe extends React.Component {
         const { currentUser, user } = this.props;
         return (
             <div className="user_subscribe" onMouseOver={() => this.setState({hover: true})} onMouseOut={() => this.setState({hover: false})}>
-            { currentUser.isSubscribed(user.get('id')) ? this.renderSubscribed() : this.renderUnsubscribed()}
+                <div className="btn-subscribe">
+                    { currentUser.isSubscribed(user.get('id')) ? this.renderSubscribed() : this.renderUnsubscribed()}
+                    <div className="btn-subscribe_count">{user.get('subscriber_count')}</div>
+                </div>
             </div>
         );
     }

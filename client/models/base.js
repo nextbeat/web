@@ -62,5 +62,10 @@ export default class ModelBase {
             .map(id => this.__getEntity(id, paginatedEntityKey));
     }
 
+    static getEntity(state, id) {
+        let model = new this(state)
+        return model.__getEntity(id)
+    }
+
 }
 

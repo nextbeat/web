@@ -180,6 +180,18 @@ export function postLogin() {
  * SUBSCRIPTION
  **************/
 
+ function onSubscribeSuccess(store, next, action, response) {
+    const user = CurrentUser.getEntity(store.getState(), action.id)
+    const newUser = {
+        id: user.get('id'),
+        subscriber_count: user.get('subscriber_count', 0) + 1
+    }
+    store.dispatch({
+        type: ActionTypes.ENTITY_UPDATE,
+        response: normalize(newUser, Schemas.USER)
+    })
+}
+
 function postSubscribe(subscription_id) {
     return {
         type: ActionTypes.SUBSCRIBE,
@@ -187,7 +199,8 @@ function postSubscribe(subscription_id) {
         [API_CALL]: {
             method: 'POST',
             endpoint: `users/${subscription_id}/subscribe`,
-            authenticated: true
+            authenticated: true,
+            onSuccess: onSubscribeSuccess
         }
     }
 }
@@ -201,6 +214,18 @@ export function subscribe(user) {
     }
 }
 
+function onUnsubscribeSuccess(store, next, action, response) {
+    const user = CurrentUser.getEntity(store.getState(), action.id)
+    const newUser = {
+        id: user.get('id'),
+        subscriber_count: user.get('subscriber_count', 0) - 1
+    }
+    store.dispatch({
+        type: ActionTypes.ENTITY_UPDATE,
+        response: normalize(newUser, Schemas.USER)
+    })
+}
+
 function postUnsubscribe(subscription_id) {
     return {
         type: ActionTypes.UNSUBSCRIBE,
@@ -208,7 +233,8 @@ function postUnsubscribe(subscription_id) {
         [API_CALL]: {
             method: 'POST',
             endpoint: `users/${subscription_id}/unsubscribe`,
-            authenticated: true
+            authenticated: true,
+            onSuccess: onUnsubscribeSuccess
         }
     }
 }

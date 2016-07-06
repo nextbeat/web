@@ -107,3 +107,26 @@
         cursor: pointer;
     }
 }
+
+// Subscribe
+
+.btn-subscribe {
+    display: flex;
+
+    & > * {
+        display: inline-block;
+        position: relative;
+        align-items: stretch;
+    }
+}
+
+.btn-subscribe_count {
+    border: 1px solid $border-color;
+    border-left: none;
+    text-align: center;
+    padding: 0 5px;
+    color: $button-color;
+    min-width: 20px;
+    font-size: 12px;
+    line-height: 20px;
+}
