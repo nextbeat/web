@@ -206,10 +206,17 @@ function postSubscribe(subscription_id) {
 }
 
 export function subscribe(user) {
-    return dispatch => {
+    return (dispatch, getState) => {
         if (Map.isMap(user)) {
             user = user.get('id')
         }
+
+        const currentUser = new CurrentUser(getState())
+        if (currentUser.get('id') === user) {
+            // can't subscribe to yourself
+            return;
+        }
+
         dispatch(postSubscribe(user))
     }
 }
@@ -243,6 +250,11 @@ export function unsubscribe(user) {
     return dispatch => {
         if (Map.isMap(user)) {
             user = user.get('id')
+        }
+        const currentUser = new CurrentUser(getState())
+        if (currentUser.get('id') === user) {
+            // can't unsubscribe to yourself
+            return;
         }
         dispatch(postUnsubscribe(user))
     }

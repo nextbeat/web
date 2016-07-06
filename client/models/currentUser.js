@@ -39,7 +39,6 @@ export default class CurrentUser extends ModelBase {
     }
 
     profileThumbnailUrl() {
-        // todo: need to load entity!!
         return this.get('profpic_thumbnail_url') || this.get('profpic_url');
     }
 

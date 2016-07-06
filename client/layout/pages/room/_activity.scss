@@ -4,6 +4,15 @@
     background-color: white;
 }
 
+.activity_time {
+    color: #777;
+    font-size: 13px;
+    padding: 10px;
+    background-color: white;
+    text-align: right;
+    border-bottom: 1px solid $border-color;
+}
+
 .activity_inner {
     height: 100%;
     overflow: auto;

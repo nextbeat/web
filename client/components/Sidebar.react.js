@@ -97,6 +97,12 @@ class Sidebar extends React.Component {
                     <Link to="/" activeClassName="selected">
                         <div className="sidebar_icon"><Icon type="home" /></div>Home
                     </Link>
+                    { user.isLoggedIn() && 
+                        <Link to={`/u/${user.get('username')}`} activeClassName="selected">
+                            <div className="sidebar_icon">{ user.profileThumbnailUrl() ? <img src={user.profileThumbnailUrl()} /> : <Icon type="person" /> }</div>
+                            My Profile
+                        </Link>
+                    }
                     <div className="separator" />
                 </div>
                 { user.isLoggedIn() && user.isFetchingUserData() && <Spinner type="grey" /> }

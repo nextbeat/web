@@ -39,6 +39,12 @@ class MediaPlayer extends React.Component {
 
     handleKeyDown(e) {
         const { stack, handleBackward, handleForward } = this.props;
+
+        if (['textarea', 'input'].indexOf(e.target.tagName.toLowerCase()) !== -1) {
+            // don't navigate if inside text field
+            return;
+        }
+
         if (e.keyCode === 37) { // left arrow
             if (stack.indexOfSelectedMediaItem() !== 0) {
                 $('.player_nav-backward').removeClass('player_nav-button-flash');

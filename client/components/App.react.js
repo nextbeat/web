@@ -18,6 +18,8 @@ class App extends React.Component {
 
         this.handleBeforeUnload = this.handleBeforeUnload.bind(this);
 
+        this.handleLoginClick = this.handleLoginClick.bind(this);
+        this.handleSignupClick = this.handleSignupClick.bind(this);
         this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
         this.handleSignupSubmit = this.handleSignupSubmit.bind(this);
         this.handleLogoutClick = this.handleLogoutClick.bind(this);
@@ -27,6 +29,11 @@ class App extends React.Component {
         this.renderSignup = this.renderSignup.bind(this);
         this.dismissLogin = this.dismissLogin.bind(this);
         this.dismissSignup = this.dismissSignup.bind(this);
+
+        this.state = {
+            showLoginModal: false,
+            showSignupModal: false
+        }
     }
 
     // Component lifecycle
@@ -49,12 +56,17 @@ class App extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (prevProps.user.get('isLoggingIn') && this.props.user.isLoggedIn()) {
-            $('#login-container').hide();
-            $('#signup-container').hide();
+            this.setState({
+                showLoginModal: false,
+                showSignupModal: false
+            })
         }
 
         if (this.props.app.hasAuthError()) {
-            $('#login-container').show();
+            this.setState({
+                showLoginModal: true,
+                showSignupModal: false
+            })
         }
     }
 
@@ -68,7 +80,10 @@ class App extends React.Component {
 
     handleLoginClick(e) {
         e.preventDefault();
-        $('#login-container').toggle();
+        this.setState({
+            showLoginModal: true,
+            showSignupModal: false
+        })
     }
 
     handleLogoutClick(e) {
@@ -78,7 +93,10 @@ class App extends React.Component {
 
     handleSignupClick(e) {
         e.preventDefault();
-        $('#signup-container').toggle();
+        this.setState({
+            showLoginModal: false,
+            showSignupModal: true
+        })
     }
 
     handleLoginSubmit(e) {
@@ -99,13 +117,23 @@ class App extends React.Component {
     dismissLogin(e) {
         e.preventDefault();
         this.props.dispatch(clearLogin());
-        $('#login-container').hide();
+        this.setState({
+            showLoginModal: false
+        })
     }
 
     dismissSignup(e) {
         e.preventDefault();
         this.props.dispatch(clearSignup());
-        $('#signup-container').hide();
+        this.setState({
+            showSignupModal: false
+        })
+    }
+
+    handleKeyPress(fn, e) {
+        if (e.charCode === 13) { // enter
+            fn(e)
+        }
     }
 
     // Render
@@ -154,11 +182,12 @@ class App extends React.Component {
 
     renderLogin() {
         const { user } = this.props;
+        const { showLoginModal } = this.state;
         return (
-            <div id="login-container" className="modal-container">
+            <div id="login-container" className="modal-container" style={{ display: (showLoginModal ? 'block' : 'none') }}>
                 <div id="login" className="modal modal-auth">
                     <div className="modal_close" onClick={this.dismissLogin} />
-                    <form className="modal_form" id="login-form">
+                    <form className="modal_form" id="login-form" onKeyPress={this.handleKeyPress.bind(this, this.handleLoginSubmit)}>
                         <div className="modal_input-wrapper">
                             <input type="text" ref="login_username" name="login_username" placeholder="Username" />
                         </div>
@@ -170,6 +199,7 @@ class App extends React.Component {
                             <a className="btn modal_form_submit" onClick={this.handleLoginSubmit}>Log In</a>
                         </div>
                     </form>
+                    <div className="modal_extra">Don't have an account? <a onClick={this.handleSignupClick}>Sign up!</a></div>
                     { user.has('loginError') && <div className="modal-auth_error">{user.get('loginError')}</div> }
                 </div>
             </div>
@@ -178,11 +208,12 @@ class App extends React.Component {
 
     renderSignup() {
         const { user } = this.props;
+        const { showSignupModal } = this.state;
         return (
-            <div id="signup-container" className="modal-container">
+            <div id="signup-container" className="modal-container" style={{ display: (showSignupModal ? 'block' : 'none') }}>
                 <div id="signup" className="modal modal-auth">
                     <div className="modal_close" onClick={this.dismissSignup} />
-                    <form className="modal_form" id="signup-form" >
+                    <form className="modal_form" id="signup-form" onKeyPress={this.handleKeyPress.bind(this, this.handleSignupSubmit)} >
                         <input style={{display: "none"}} type="text" name="somefakename" />
                         <input style={{display: "none"}} type="password" name="anotherfakename" />
                         <div className="modal_input-wrapper">
