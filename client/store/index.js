@@ -18,7 +18,9 @@ if (process.env.NODE_ENV !== "production") {
         stateTransformer
     });
 
-    // middlewares.push(logger);
+    if (typeof window !== 'undefined') { // in browser only
+        middlewares.push(logger);
+    }
 }
 
 export default function configureStore(initialState = Map()) {
