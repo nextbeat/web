@@ -16,7 +16,6 @@ Promise.config({
 let initialState = window.__INITIAL_STATE__
 const store = configureStore(fromJS(initialState))
 
-
 if (initialState.app.environment !== 'production') {
     const Perf = require('react-addons-perf')
     window.Perf = Perf
