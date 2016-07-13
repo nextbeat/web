@@ -86,8 +86,17 @@ export default class CurrentUser extends ModelBase {
         return note ? note.get('count', 1) : 0;
     }
 
-    totalUnreadNotificationCount() {
-         return this.get('unreadNotifications', Map()).get('new_mediaitem', Set()).reduce((total, note) => total + note.get('count', 1), 0)
+    totalUnreadNotificationCount(open=false) {
+        let notes = this.get('unreadNotifications', Map()).get('new_mediaitem', Set())
+
+        if (open) {
+            // return only notifications for open stacks
+            const openBookmarkIds = this.get('openBookmarkIds', List())
+            notes = notes.filter(note => openBookmarkIds.includes(note.get('stack')))
+        }
+        
+        return notes.reduce((total, note) => total + note.get('count', 1), 0)
+        
     }
 
     isFetchingUserData() {

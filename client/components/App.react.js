@@ -160,7 +160,7 @@ class App extends React.Component {
         }
 
         let badge = '';
-        let count = user.totalUnreadNotificationCount();
+        let count = user.totalUnreadNotificationCount(true);
         if (count > 0) {
             badge = `(${count}) `
         }
