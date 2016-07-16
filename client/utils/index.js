@@ -43,6 +43,7 @@ export function baseUrl(env, secure=true) {
         case 'local':
             return `http://localhost:8080`
         case 'mac':
+        case 'mac-dev':
         default:
             return `http://localhost:3000`
     }

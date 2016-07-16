@@ -154,6 +154,9 @@ class App extends React.Component {
             case 'mac':
                 envLabel = '[MAC] ';
                 break;
+            case 'mac-dev':
+                envLabel = '[MACDEV] ';
+                break;
             case 'production':
             default:
                 break;

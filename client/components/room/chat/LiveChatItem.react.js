@@ -7,6 +7,10 @@ class LiveChatItem extends React.Component {
         super(props)
     }
 
+    shouldComponentUpdate(nextProps) {
+        return this.props.comment !== nextProps.comment
+    }
+
     renderMessage(comment) {
         // We handle rendering live chat items differently from remote chat items.
         // Since we do a bit of work on the backend to isolate @mentions which 

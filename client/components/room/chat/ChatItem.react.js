@@ -7,6 +7,10 @@ class ChatItem extends React.Component {
         super(props)
     }
 
+    shouldComponentUpdate(nextProps) {
+        return this.props.comment !== nextProps.comment
+    }
+
     renderMessage(comment) {
         const id        = comment.get('id')
         const message   = comment.get('message')

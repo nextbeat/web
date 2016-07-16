@@ -8,6 +8,8 @@ import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveSt
 import { CurrentUser, Stack } from '../models'
 
 function xmppHost() {
+    console.log('foo');
+    console.log(process.env.NODE_ENV);
     if (process.env.NODE_ENV === 'production') {
         return 'xmpp.nextbeat.co';
     } else if (process.env.NODE_ENV === 'development') {
@@ -16,6 +18,8 @@ function xmppHost() {
         return 'xmpp';
     } else if (process.env.NODE_ENV === 'mac') {
         return 'localhost';
+    } else if (process.env.NODE_ENV === 'mac-dev') {
+        return 'xmpp.dev.nextbeat.co';
     }
     return '';
 }
@@ -24,6 +28,7 @@ function xmppScheme() {
     switch(process.env.NODE_ENV) {
         case 'production':
         case 'development':
+        case 'mac-dev':
             return 'wss://'
         case 'local':
         case 'mac':

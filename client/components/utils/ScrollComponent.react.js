@@ -1,5 +1,6 @@
 import React from 'react'
 import hoistStatics from 'hoist-non-react-statics'
+import shallowCompare from 'react-addons-shallow-compare'
 
 /**
  * Higher order component enabling scroll-dependent behavior
@@ -45,6 +46,10 @@ export default function ScrollComponent(domId, scrollOptions={}) {
                 }
                 this.setScrollState()
             }
+
+            // shouldComponentUpdate(nextProps, nextState) {
+            //     return shallowCompare(this, nextProps, nextState)
+            // }
 
             componentDidUpdate(prevProps) {
                 if (typeof onComponentDidUpdate === 'function') {

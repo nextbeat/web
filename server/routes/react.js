@@ -49,7 +49,7 @@ function getInitialState(req) {
 
 // todo: use handlebars
 function renderFullPage(html, head, initialState) {
-    const jsPath = process.env.NODE_ENV === "mac" ? "bundle.js" : "bundle.min.js"
+    const jsPath = (process.env.NODE_ENV === "mac" || process.env.NODE_ENV === "mac-dev") ? "bundle.js" : "bundle.min.js"
     return `
         <!doctype html>
         <html lang="en">
