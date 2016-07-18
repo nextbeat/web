@@ -1,5 +1,7 @@
 import React from 'react'
-import { cloneDeep } from 'lodash'
+import { connect } from 'react-redux'
+
+import { promptModal } from '../../../actions'
 
 class Compose extends React.Component {
 
@@ -36,7 +38,7 @@ class Compose extends React.Component {
 
     handleLoginClick(e) {
         e.preventDefault();
-        $('#login-container').show();
+        this.props.dispatch(promptModal('login'))
     }
 
     renderChat() {
@@ -58,4 +60,4 @@ class Compose extends React.Component {
     }
 }
 
-export default Compose;
+export default connect()(Compose);

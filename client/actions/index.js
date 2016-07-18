@@ -4,6 +4,8 @@ export { Status, API_CALL, API_CANCEL, AnalyticsTypes, ANALYTICS } from './types
 export {
     loadTags,
     onBeforeUnload,
+    promptModal,
+    closeModal,
     clearApp
 } from './app'
 

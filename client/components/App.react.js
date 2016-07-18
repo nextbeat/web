@@ -8,7 +8,7 @@ import Sidebar from '../components/Sidebar.react'
 import Topbar from '../components/Topbar.react'
 import AppBanner from '../components/shared/AppBanner.react'
 
-import { connectToXMPP, disconnectXMPP, login, logout, signup, clearLogin, clearSignup, postLogin, loadTags, clearApp, onBeforeUnload } from '../actions'
+import { connectToXMPP, disconnectXMPP, login, logout, signup, clearLogin, clearSignup, postLogin, loadTags, promptModal, closeModal, clearApp, onBeforeUnload } from '../actions'
 import { CurrentUser, App as AppModel } from '../models'
 
 class App extends React.Component {
@@ -29,11 +29,6 @@ class App extends React.Component {
         this.renderSignup = this.renderSignup.bind(this);
         this.dismissLogin = this.dismissLogin.bind(this);
         this.dismissSignup = this.dismissSignup.bind(this);
-
-        this.state = {
-            showLoginModal: false,
-            showSignupModal: false
-        }
     }
 
     // Component lifecycle
@@ -56,17 +51,11 @@ class App extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (prevProps.user.get('isLoggingIn') && this.props.user.isLoggedIn()) {
-            this.setState({
-                showLoginModal: false,
-                showSignupModal: false
-            })
+            this.props.dispatch(closeModal())
         }
 
         if (this.props.app.hasAuthError()) {
-            this.setState({
-                showLoginModal: true,
-                showSignupModal: false
-            })
+            this.props.dispatch(promptModal('login'))
         }
     }
 
@@ -80,10 +69,7 @@ class App extends React.Component {
 
     handleLoginClick(e) {
         e.preventDefault();
-        this.setState({
-            showLoginModal: true,
-            showSignupModal: false
-        })
+        this.props.dispatch(promptModal('login'))
     }
 
     handleLogoutClick(e) {
@@ -92,11 +78,7 @@ class App extends React.Component {
     }
 
     handleSignupClick(e) {
-        e.preventDefault();
-        this.setState({
-            showLoginModal: false,
-            showSignupModal: true
-        })
+        this.props.dispatch(promptModal('signup'))
     }
 
     handleLoginSubmit(e) {
@@ -117,17 +99,13 @@ class App extends React.Component {
     dismissLogin(e) {
         e.preventDefault();
         this.props.dispatch(clearLogin());
-        this.setState({
-            showLoginModal: false
-        })
+        this.props.dispatch(closeModal());
     }
 
     dismissSignup(e) {
         e.preventDefault();
         this.props.dispatch(clearSignup());
-        this.setState({
-            showSignupModal: false
-        })
+        this.props.dispatch(closeModal());
     }
 
     handleKeyPress(fn, e) {
@@ -184,8 +162,8 @@ class App extends React.Component {
     }
 
     renderLogin() {
-        const { user } = this.props;
-        const { showLoginModal } = this.state;
+        const { user, app } = this.props;
+        const showLoginModal = app.get('openModal') === 'login'
         return (
             <div id="login-container" className="modal-container" style={{ display: (showLoginModal ? 'block' : 'none') }}>
                 <div id="login" className="modal modal-auth">
@@ -210,8 +188,8 @@ class App extends React.Component {
     }
 
     renderSignup() {
-        const { user } = this.props;
-        const { showSignupModal } = this.state;
+        const { user, app } = this.props;
+        const showSignupModal = app.get('openModal') === 'signup'
         return (
             <div id="signup-container" className="modal-container" style={{ display: (showSignupModal ? 'block' : 'none') }}>
                 <div id="signup" className="modal modal-auth">

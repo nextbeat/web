@@ -25,6 +25,8 @@ export default {
      *****/
 
     TAGS: 'TAGS',
+    PROMPT_MODAL: 'PROMPT_MODAL',
+    CLOSE_MODAL: 'CLOSE_MODAL',
     ON_BEFORE_UNLOAD: 'ON_BEFORE_UNLOAD',
     CLEAR_APP: 'CLEAR_APP',
 

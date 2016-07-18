@@ -32,6 +32,23 @@ export function clearApp() {
     }
 }
 
+/**************
+ * USER ACTIONS
+ **************/
+
+export function promptModal(modalType) {
+    return {
+        type: ActionTypes.PROMPT_MODAL,
+        modalType
+    }
+}
+
+export function closeModal() {
+    return {
+        type: ActionTypes.CLOSE_MODAL
+    }
+}
+
 /********
  * EVENTS
  ********/

@@ -32,9 +32,21 @@ function authError(state = false, action) {
     return state;
 }
 
+function state(state = Map(), action) {
+    if (action.type === ActionTypes.PROMPT_MODAL) {
+        return state.merge({
+            modal: action.modalType
+        });
+    } else if (action.type === ActionTypes.CLOSE_MODAL) {
+        return state.delete('modal')
+    }
+    return state
+}
+
 const reducers = {
     tags,
-    authError
+    authError,
+    state
 }
 
 export default function(state = Map(), action) {

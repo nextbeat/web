@@ -15,7 +15,9 @@ const KEY_MAP = {
     'device': ['app', 'ua', 'device', 'name'],
     'browser': ['app', 'ua', 'browser', 'name'],
     // facebook
-    'facebookAppId': ['app', 'facebookAppId']
+    'facebookAppId': ['app', 'facebookAppId'],
+    // state
+    'openModal': ['app', 'state', 'modal']
 }
 
 export default class App extends ModelBase {
