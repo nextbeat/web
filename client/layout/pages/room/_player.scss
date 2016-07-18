@@ -112,6 +112,8 @@
     a {
         font-weight: normal;
         color: $light-secondary-color;
+        /* the video player disables pointer events on the parent element of .player_caption, so this reinstates them */
+        pointer-events: auto; 
 
         &:hover {
             cursor: pointer;

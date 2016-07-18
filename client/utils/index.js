@@ -45,7 +45,7 @@ export function baseUrl(env, secure=true) {
         case 'mac':
         case 'mac-dev':
         default:
-            return `http://localhost:3000`
+            return `http://${(window && window.location.hostname) || 'localhost'}:3000`
     }
 }
 

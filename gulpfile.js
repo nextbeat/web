@@ -15,23 +15,23 @@ var _               = require('lodash'),
     gutil           = require('gulp-util'),
     livereload      = require('gulp-livereload');
 
-const MAC_ENV = {
-    NODE_ENV: 'mac-dev',
-    CLIENT_NAME: 'api_client',
-    CLIENT_SECRET: 'xxxxxxx',
-    SESSION_SECRET: 'secret',
-    GOOGLE_ANALYTICS_ID: 'UA-78319133-2',
-    FACEBOOK_APP_ID: '1021249581291875'
-}
-
 // const MAC_ENV = {
-//     NODE_ENV: 'mac',
-//     CLIENT_NAME: 'web',
-//     CLIENT_SECRET: 'CLIENT_SECRET',
+//     NODE_ENV: 'mac-dev',
+//     CLIENT_NAME: 'api_client',
+//     CLIENT_SECRET: 'xxxxxxx',
 //     SESSION_SECRET: 'secret',
 //     GOOGLE_ANALYTICS_ID: 'UA-78319133-2',
 //     FACEBOOK_APP_ID: '1021249581291875'
 // }
+
+const MAC_ENV = {
+    NODE_ENV: 'mac',
+    CLIENT_NAME: 'web',
+    CLIENT_SECRET: 'CLIENT_SECRET',
+    SESSION_SECRET: 'secret',
+    GOOGLE_ANALYTICS_ID: 'UA-78319133-2',
+    FACEBOOK_APP_ID: '1021249581291875'
+}
 
 const cache = new Cache();
 
