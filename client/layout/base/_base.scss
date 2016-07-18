@@ -50,6 +50,13 @@ input[type="submit"] {
 }
 
 /*
+ * Enforces correct font rendering in Firefox.
+ */
+textarea {
+    font-family: 'BlinkMacSystemFont', -apple-system, sans-serif;
+}
+
+/*
  * In Webkit, removes yellow background from form elements.
  */
 input:-webkit-autofill {
