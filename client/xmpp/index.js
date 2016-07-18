@@ -8,7 +8,6 @@ import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveSt
 import { CurrentUser, Stack } from '../models'
 
 function xmppHost() {
-    console.log('foo');
     console.log(process.env.NODE_ENV);
     if (process.env.NODE_ENV === 'production') {
         return 'xmpp.nextbeat.co';
@@ -115,21 +114,13 @@ function formatNotificationItem(data, store) {
     let comment = { type }
 
     if (type === "mediaitem") {
-        let count = data[1]
-        const stack = new Stack(store.getState());
-        const mostRecentRemoteComment = stack.comments().first()
-        if (mostRecentRemoteComment.get('type') === 'notification' && stack.liveComments().size === 0) {
-            count = count - mostRecentRemoteComment.get('notification_count')
-        } else if (stack.liveComments().size > 0) {
-            const mostRecentLiveComment = stack.liveComments().last()
-            if (mostRecentLiveComment.get('type') === 'notification') {
-                count = mostRecentLiveComment.get('notification_count') + 1
-            }
-        }
         assign(comment, {
-            count: parseInt(count),
+            count: parseInt(data[1]),
             url: data[2]
         })
+        if (data.length >= 5) {
+            assign(comment, { id: parseInt(data[4]) })
+        }
     }
 
     return comment
@@ -166,6 +157,7 @@ function handleGroupChat(s, store) {
                 return store.dispatch(receiveMediaItem(id, response));
             case 'NEW_NOTIFICATION_COMMENT':
                 const comment = formatNotificationItem(data, store);
+                // todo: update 
                 return store.dispatch(receiveNotificationComment(comment, username));
             case 'STACK_CLOSED':
                 return store.dispatch(receiveStackClosed());

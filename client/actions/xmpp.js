@@ -1,4 +1,9 @@
+import { Map } from 'immutable'
+import { normalize } from 'normalizr'
+
 import ActionTypes from './types'
+import Schemas from '../schemas'
+import { Stack } from '../models'
 
 export function connectToXMPP() {
     return {
@@ -33,11 +38,31 @@ export function receiveComment(message, username) {
 }
 
 export function receiveNotificationComment(data, username) {
-    return {
-        type: ActionTypes.RECEIVE_NOTIFICATION_COMMENT,
-        data,
-        username
+    return (dispatch, getState) => {
+        const stack = new Stack(getState())
+        const mostRecentComment = stack.comments().first() || Map()
+        if (mostRecentComment.get('type') === 'notification' && mostRecentComment.get('notification_type') === 'mediaitem') {
+            // update the most recent notification item instead of posting a new one
+            const newComment = {
+                id: mostRecentComment.get('id'),
+                notification_count: data.count
+            }
+            console.log(newComment)
+            return dispatch({
+                type: ActionTypes.ENTITY_UPDATE,
+                response: normalize(newComment, Schemas.COMMENT)
+            })
+        } else {
+            // post as new notification comment in live section
+            return dispatch({
+                type: ActionTypes.RECEIVE_NOTIFICATION_COMMENT,
+                data,
+                username
+            })
+        }
+
     }
+    
 }   
 
 export function receiveMediaItem(id, response) {

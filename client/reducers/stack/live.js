@@ -44,7 +44,8 @@ function receiveNotificationComment(state, action) {
         notification_type: action.data.type,
         username: action.username,
         notification_count: action.data.count,
-        notification_url: action.data.url
+        notification_url: action.data.url,
+        mediaitem_id: action.data.id
     });
     const lastComment = state.get('comments').last();
     // we replace the most recent notification comment if it is the latest live comment
