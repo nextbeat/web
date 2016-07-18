@@ -32,6 +32,7 @@ class Video extends React.Component {
         this.handleOnMouseOut = this.handleOnMouseOut.bind(this);
         this.handleOnMouseMove = this.handleOnMouseMove.bind(this);
         this.handleOnMouseUp = this.handleOnMouseUp.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
 
         this.handleProgressBarOnMouseOver = this.handleProgressBarOnMouseOver.bind(this);
         this.handleProgressBarOnMouseOut = this.handleProgressBarOnMouseOut.bind(this);
@@ -318,6 +319,13 @@ class Video extends React.Component {
         }
     }
 
+    handleKeyPress(e) {
+        if (e.charCode === 32) { // spacebar
+            e.preventDefault();
+            this.playPause();
+        }
+    }
+
     // Progress bar events
 
     handleProgressBarOnMouseOver() {
@@ -384,7 +392,8 @@ class Video extends React.Component {
             onMouseOver: this.handleOnMouseOver,
             onMouseOut: this.handleOnMouseOut,
             onMouseMove: this.handleOnMouseMove,
-            onMouseUp: this.handleOnMouseUp
+            onMouseUp: this.handleOnMouseUp,
+            onKeyPress: this.handleKeyPress,
         }
         const progressBarEvents = {
             onMouseOver: this.handleProgressBarOnMouseOver,
@@ -399,7 +408,7 @@ class Video extends React.Component {
         }
 
         return (
-            <div className="video_container" id="video_container" style={displayControlsVideoStyle} {...videoContainerEvents}>
+            <div className="video_container" id="video_container" tabIndex="-1" style={displayControlsVideoStyle} {...videoContainerEvents}>
                 { window.MSStream }
                 <div className="video_player-container">
                     <div className="video_player-background" style={{ backgroundImage: `url(${secureUrl(firstFrameUrl)})`}}></div>
