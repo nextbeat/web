@@ -46,6 +46,7 @@ class Video extends React.Component {
         this.playPause = this.playPause.bind(this);
         this.seek = this.seek.bind(this);
         this.adjustVolume = this.adjustVolume.bind(this);
+        this.mute = this.mute.bind(this);
         this.fullScreen = this.fullScreen.bind(this);
         this.hideControlsAfterDelay = this.hideControlsAfterDelay.bind(this);
 
@@ -54,6 +55,7 @@ class Video extends React.Component {
             loadedDuration: 0,
             duration: 0.5, // not zero to avoid divide by zero bugs
             volume: 1,
+            storedVolume: 1, // stores last set volume when volume = 0 due to muting
             isPlaying: true,
             displayControls: true,
             isMouseOver: false,
@@ -257,6 +259,26 @@ class Video extends React.Component {
         this.setState({ volume });
     }
 
+    mute(e) {
+        const video = document.getElementById('video_player');
+        const { volume, storedVolume } = this.state
+        if (volume > 0) {
+            // mute and store previous volume
+            video.volume = 0;
+            this.setState({
+                volume: 0,
+                storedVolume: volume
+            })
+        } else {
+            // unmute and reset stored volume
+            video.volume = storedVolume;
+            this.setState({
+                volume: storedVolume,
+                storedVolume: 1
+            })
+        }
+    }
+
     fullScreen() {
         toggleFullScreen(document.getElementById('player_media-inner'), (isFullScreen) => {
             this.setState({ isFullScreen })
@@ -455,7 +477,7 @@ class Video extends React.Component {
                             <div className="video_controls-right">
                                 <a className="video_control video_control-fullscreen" onClick={this.fullScreen}><Icon type={fullScreenIcon} /></a>
                                 <div className="video_control video_control-volume">
-                                    <span className="video_volume-icon"><Icon type={volumeIcon} /></span>
+                                    <span className="video_volume-icon" onClick={this.mute}><Icon type={volumeIcon} /></span>
                                     <div className="video_volume-slider-container" {...volumeEvents} >
                                         <div className="video_volume-slider" style={{ transform: `translateY(-50%) scaleX(${volume})`}}></div>
                                         <div className="video_volume-slider-backdrop"></div>
