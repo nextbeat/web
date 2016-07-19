@@ -88,55 +88,52 @@ class Photo extends React.Component {
     // Events
 
     resize() {
-        const { processed } = this.props
-        if (processed) {
-            const { image } = this.state 
-            const containerWidth = $('.player_media-inner').width()
-            const containerHeight = $('.player_media-inner').height()
-            const imageRatio = image.width/image.height
-            const containerRatio = containerWidth/containerHeight
+        const { image } = this.state 
+        const containerWidth = $('.player_media-inner').width()
+        const containerHeight = $('.player_media-inner').height()
+        const imageRatio = image.width/image.height
+        const containerRatio = containerWidth/containerHeight
 
-            if (imageRatio > containerRatio) {
-                this.setState({
-                    width: containerWidth,
-                    height: Math.floor(containerWidth/imageRatio)
-                })
-            } else {
-                this.setState({
-                    width: Math.floor(containerHeight*imageRatio),
-                    height: containerHeight
-                })
-            }
-        } else {
-            const node = $(this._node)
+        if (imageRatio > containerRatio) {
             this.setState({
-                scale: node.width()/node.height()
+                width: containerWidth,
+                height: Math.floor(containerWidth/imageRatio)
             })
-        }    
+        } else {
+            this.setState({
+                width: Math.floor(containerHeight*imageRatio),
+                height: containerHeight
+            })
+        }
+
+        const node = $(this._node)
+        this.setState({
+            scale: node.width()/node.height()
+        })  
     }
 
     // Render
 
     imageStyle(state) {
-        const { orientation, scale } = state
+        const { orientation, scale, url } = state
 
+        let style = { backgroundImage: `url(${url})` }
         if (orientation === 8) {
-            return { transform: `rotate(-90deg) scale(${scale})`}
+            style.transform = `rotate(-90deg) scale(${scale})`
         } else if (orientation === 6) {
-            return { transform: `rotate(90deg) scale(${scale})` }
-        } else {
-            // orientation value is unsupported or undefined (i.e. image is processed)
-            return {}
+            style.transform = `rotate(90deg) scale(${scale})`
         }
-
+        return style;
     }
 
-    containerStyle(state) {
-        const { width, height } = state
-        if (width > 0 && height > 0)  {
-            return {height: `${height}px`, width: `${width}px`}
+    captionStyle(state) {
+        const { orientation, width, height } = state 
+        if (orientation === 6 || orientation === 8) {
+            const containerWidth = $('.player_media-inner').width()
+            const containerHeight = $('.player_media-inner').height()
+            return {width: `${containerWidth}px`, height: `${containerHeight}px`}
         } else {
-            return {}
+            return {width: `${width}px`, height: `${height}px`}
         }
     }
 
@@ -151,10 +148,12 @@ class Photo extends React.Component {
         }
 
         return (
-            <div className="player_photo-container" style={this.containerStyle(this.state)} >
-                <img ref={(c) => this._node = c} className="player_photo" src={url} style={this.imageStyle(this.state)}/>
+            <div className="player_photo-container">
+                <div ref={(c) => this._node = c} className="player_photo" style={this.imageStyle(this.state)} />
                 {url.length > 0 && decoration && 
-                    <Decoration decoration={decoration} />
+                    <div className="player_decoration-container" style={this.captionStyle(this.state)}>
+                        <Decoration decoration={decoration} />
+                    </div>
                 }
             </div>
         )

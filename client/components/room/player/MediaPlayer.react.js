@@ -94,8 +94,7 @@ class MediaPlayer extends React.Component {
             <div className="player_media">
                 <div className="player_media-inner" id="player_media-inner">
                 { stack.mediaItems().size == 0 && !stack.get('mediaItemsError') && <Spinner type="large grey"/> }
-                { <Video item={SAMPLE_VIDEO} processed={false} /> }
-                { /* !item.isEmpty() && (item.get('type') === "video" ? <Video item={item} /> : <Photo item={item} processed={item.get('processed', false)} /> ) */}
+                { !item.isEmpty() && (item.get('type') === "video" ? <Video item={item} /> : <Photo item={item} processed={item.get('processed', false)} /> ) }
                 </div>
             </div>
             <div className="player_navigation">

@@ -90,15 +90,17 @@
 }
 
 .player_photo-container {
-    @include center;
-    overflow: hidden;
-    // width: 100%;
-    // height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 .player_photo {
     width: 100%;
     height: 100%;
+    position: relative;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
 }
 
 .player_caption {
@@ -123,6 +125,11 @@
             color: $lighter-secondary-color;
         }
     }
+}
+
+.player_decoration-container {
+    @include center;
+    position: absolute;
 }
 
 // Navigation
