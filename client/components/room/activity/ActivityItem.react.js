@@ -50,7 +50,7 @@ class ActivityItem extends React.Component {
                     </div>
                     <div className="item_main">
                         <div className="item-activity_index"><span>{index+1}</span></div>
-                        <div className="item-activity_time"><span>{moment(this.props.mediaItem.get('created_at')).format('h:mm a')}</span></div>
+                        <div className="item-activity_time"><span>{moment(this.props.mediaItem.get('user_created_at')).format('h:mm a')}</span></div>
                     </div>
                 </div>
             </div>
