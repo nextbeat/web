@@ -1,10 +1,27 @@
 import React from 'react'
+import { fromJS } from 'immutable'
 
 import Video from './Video.react'
 import Photo from './Photo.react'
 import Counter from './Counter.react'
 import Icon from '../../shared/Icon.react'
 import Spinner from '../../shared/Spinner.react'
+
+const SAMPLE_PHOTO = fromJS({ 
+    url: 'http://localhost:3000/images/p9.jpg',
+    decoration: {
+        caption_text: 'Foobar',
+        caption_offset: 0
+    } 
+})
+const SAMPLE_VIDEO = fromJS({ 
+    url: 'http://localhost:3000/images/ot5.m4v', 
+    firstframe_url: 'http://localhost:3000/images/p9.jpg',
+    decoration: {
+        caption_text: 'Foobar',
+        caption_offset: 0
+    } 
+})
 
 class MediaPlayer extends React.Component {
 
@@ -77,8 +94,8 @@ class MediaPlayer extends React.Component {
             <div className="player_media">
                 <div className="player_media-inner" id="player_media-inner">
                 { stack.mediaItems().size == 0 && !stack.get('mediaItemsError') && <Spinner type="large grey"/> }
-                { !item.isEmpty() && (item.get('type') === "video" ? <Video item={item} /> : <Photo item={item} /> ) }
-                { /* item.get('decoration') && <Decoration decoration={item.get('decoration')} /> */ }
+                { <Video item={SAMPLE_VIDEO} processed={false} /> }
+                { /* !item.isEmpty() && (item.get('type') === "video" ? <Video item={item} /> : <Photo item={item} processed={item.get('processed', false)} /> ) */}
                 </div>
             </div>
             <div className="player_navigation">

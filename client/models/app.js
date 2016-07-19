@@ -14,6 +14,7 @@ const KEY_MAP = {
     'os': ['app', 'ua', 'os', 'name'],
     'device': ['app', 'ua', 'device', 'name'],
     'browser': ['app', 'ua', 'browser', 'name'],
+    'version': ['app', 'ua', 'browser', 'major'],
     // facebook
     'facebookAppId': ['app', 'facebookAppId'],
     // state

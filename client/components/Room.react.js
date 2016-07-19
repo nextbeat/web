@@ -205,7 +205,6 @@ Room.fetchData = (store, params) => {
                     reject(new Error('Stack does not exist.'))
                 }
             })
-        console.log(params, params.hid)
         store.dispatch(loadStack(params.hid))
     })
 }
