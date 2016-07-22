@@ -42,3 +42,30 @@ export function clearApp() {
         type: ActionTypes.CLEAR_APP
     }
 }
+
+/**************
+ * USER ACTIONS
+ **************/
+
+export function promptModal(modalType) {
+    return {
+        type: ActionTypes.PROMPT_MODAL,
+        modalType
+    }
+}
+
+export function closeModal() {
+    return {
+        type: ActionTypes.CLOSE_MODAL
+    }
+}
+
+/********
+ * EVENTS
+ ********/
+
+export function onBeforeUnload() {
+    return {
+        type: ActionTypes.ON_BEFORE_UNLOAD
+    }
+}

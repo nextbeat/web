@@ -1,0 +1,38 @@
+.activity {
+    height: 100%;   
+    position: relative;
+    background-color: white;
+}
+
+.activity_time {
+    color: #777;
+    font-size: 13px;
+    padding-right: 10px;
+    height: 35px;
+    line-height: 35px;
+    background-color: white;
+    text-align: right;
+    border-bottom: 1px solid $border-color;
+}
+
+.activity_inner {
+    height: calc(100% - 35px);
+    overflow: auto;
+    position: relative;
+}
+
+.activity_new-media {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 5px;
+    background-color: rgba($secondary-color, 0.85);
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+
+    &:hover {
+        cursor: pointer;
+    }
+}

@@ -51,6 +51,8 @@ module.exports = {
             baseUrl = 'http://api.nextbeat.int/v1/';
         } else if (node_env === 'mac') {
             baseUrl = 'http://localhost:8000/v1/';
+        } else if (node_env === 'mac-dev') {
+            baseUrl = 'http://api.dev.nextbeat.co/v1/';
         }
 
         request = request.defaults({

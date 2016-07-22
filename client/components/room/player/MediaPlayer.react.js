@@ -1,8 +1,27 @@
 import React from 'react'
+import { fromJS } from 'immutable'
+
 import Video from './Video.react'
+import Photo from './Photo.react'
 import Counter from './Counter.react'
 import Icon from '../../shared/Icon.react'
 import Spinner from '../../shared/Spinner.react'
+
+const SAMPLE_PHOTO = fromJS({ 
+    url: 'http://localhost:3000/images/p9.jpg',
+    decoration: {
+        caption_text: 'Foobar',
+        caption_offset: 0
+    } 
+})
+const SAMPLE_VIDEO = fromJS({ 
+    url: 'http://localhost:3000/images/ot5.m4v', 
+    firstframe_url: 'http://localhost:3000/images/p9.jpg',
+    decoration: {
+        caption_text: 'Foobar',
+        caption_offset: 0
+    } 
+})
 
 class MediaPlayer extends React.Component {
 
@@ -37,6 +56,12 @@ class MediaPlayer extends React.Component {
 
     handleKeyDown(e) {
         const { stack, handleBackward, handleForward } = this.props;
+
+        if (['textarea', 'input'].indexOf(e.target.tagName.toLowerCase()) !== -1) {
+            // don't navigate if inside text field
+            return;
+        }
+
         if (e.keyCode === 37) { // left arrow
             if (stack.indexOfSelectedMediaItem() !== 0) {
                 $('.player_nav-backward').removeClass('player_nav-button-flash');
@@ -68,10 +93,13 @@ class MediaPlayer extends React.Component {
             <Counter stack={stack} />
             <div className="player_hover-button player_chat-button" onClick={this.handleChat}>Chat</div>
             <div className="player_media">
+                <div className="player_media-inner" id="player_media-inner">
                 { stack.mediaItems().size == 0 && !stack.get('mediaItemsError') && <Spinner type="large grey"/> }
-                { !item.isEmpty() && (item.get('type') === "video" 
-                    ? <Video item={item} />
-                    : <div className="player_photo" style={{backgroundImage: `url(${item.get('url')})`}}></div>) }
+                { !item.isEmpty() && (item.get('type') === "video" ? 
+                    <Video item={item} processed={item.get('processed', false)} /> : 
+                    <Photo item={item} processed={item.get('processed', false)} /> ) 
+                }
+                </div>
             </div>
             <div className="player_navigation">
                 <div className={`player_nav-button player_nav-backward ${leftDisabledClass}`} onClick={handleBackward}><Icon type="arrow-back" /></div>

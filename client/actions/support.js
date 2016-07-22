@@ -33,3 +33,17 @@ export function sendPasswordResetRequest(email) {
         }
     }
 }
+
+export function sendEmailUnsubscribeRequest(uuid, signature) {
+    return {
+        type: ActionTypes.SEND_EMAIL_UNSUBSCRIBE_REQUEST,
+        [API_CALL]: {
+            endpoint: 'support/unsubscribe',
+            method: 'POST',
+            body: {
+                uuid,
+                signature
+            }
+        }
+    }
+}

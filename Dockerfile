@@ -1,4 +1,4 @@
-FROM node:5.6
+FROM node:5.11
 
 ADD docker/scripts/start.sh /sbin/start.sh
 RUN chmod +x /sbin/start.sh

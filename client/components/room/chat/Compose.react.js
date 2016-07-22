@@ -1,16 +1,22 @@
 import React from 'react'
-import { cloneDeep } from 'lodash'
+import { connect } from 'react-redux'
+
+import { promptModal } from '../../../actions'
 
 class Compose extends React.Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
             message: ''
         };
+
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.handleLoginClick = this.handleLoginClick.bind(this);
+
         this.renderChat = this.renderChat.bind(this);
     }
 
@@ -30,6 +36,11 @@ class Compose extends React.Component {
         }
     }
 
+    handleLoginClick(e) {
+        e.preventDefault();
+        this.props.dispatch(promptModal('login'))
+    }
+
     renderChat() {
         return (
             <div className="chat_compose-inner">
@@ -43,10 +54,10 @@ class Compose extends React.Component {
         const { user, closed } = this.props;
         return (
             <div className="chat_compose">
-            { closed ? <p className="chat_compose-notification">Room is no longer open.</p> : ( user.isLoggedIn() ? this.renderChat() : <p className="chat_compose-notification">Login to chat.</p> ) }
+            { user.isLoggedIn() ? this.renderChat() : <a className="chat_compose-notification" onClick={this.handleLoginClick}>Login to chat.</a> }
             </div>
         );
     }
 }
 
-export default Compose;
+export default connect()(Compose);

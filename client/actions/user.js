@@ -8,6 +8,7 @@ import ActionTypes from './types'
 import { CurrentUser, Stack } from '../models'
 import Schemas from '../schemas'
 import { API_CALL, API_CANCEL } from './types'
+import { analyticsIdentify } from './analytics'
 
 /**********
  * FETCHING
@@ -42,7 +43,8 @@ function fetchSubscriptions(pagination) {
         type: ActionTypes.SUBSCRIPTIONS,
         [API_CALL]: {
             schema: Schemas.USERS,
-            endpoint: "subscriptions",
+            endpoint: "users",
+            queries: { "subscriptions": "true" },
             authenticated: true,
             pagination
         }
@@ -165,7 +167,9 @@ export function signup(credentials) {
 }
 
 export function postLogin() {
-    return dispatch => {
+    return (dispatch, getState) => {
+        const user = new CurrentUser(getState())
+        dispatch(analyticsIdentify(user))
         dispatch(syncNotifications())
         dispatch(loadBookmarkedStacks("open"))
         dispatch(loadSubscriptions())
@@ -176,6 +180,18 @@ export function postLogin() {
  * SUBSCRIPTION
  **************/
 
+ function onSubscribeSuccess(store, next, action, response) {
+    const user = CurrentUser.getEntity(store.getState(), action.id)
+    const newUser = {
+        id: user.get('id'),
+        subscriber_count: user.get('subscriber_count', 0) + 1
+    }
+    store.dispatch({
+        type: ActionTypes.ENTITY_UPDATE,
+        response: normalize(newUser, Schemas.USER)
+    })
+}
+
 function postSubscribe(subscription_id) {
     return {
         type: ActionTypes.SUBSCRIBE,
@@ -183,18 +199,38 @@ function postSubscribe(subscription_id) {
         [API_CALL]: {
             method: 'POST',
             endpoint: `users/${subscription_id}/subscribe`,
-            authenticated: true
+            authenticated: true,
+            onSuccess: onSubscribeSuccess
         }
     }
 }
 
 export function subscribe(user) {
-    return dispatch => {
+    return (dispatch, getState) => {
         if (Map.isMap(user)) {
             user = user.get('id')
         }
+
+        const currentUser = new CurrentUser(getState())
+        if (currentUser.get('id') === user) {
+            // can't subscribe to yourself
+            return;
+        }
+
         dispatch(postSubscribe(user))
     }
+}
+
+function onUnsubscribeSuccess(store, next, action, response) {
+    const user = CurrentUser.getEntity(store.getState(), action.id)
+    const newUser = {
+        id: user.get('id'),
+        subscriber_count: user.get('subscriber_count', 0) - 1
+    }
+    store.dispatch({
+        type: ActionTypes.ENTITY_UPDATE,
+        response: normalize(newUser, Schemas.USER)
+    })
 }
 
 function postUnsubscribe(subscription_id) {
@@ -204,7 +240,8 @@ function postUnsubscribe(subscription_id) {
         [API_CALL]: {
             method: 'POST',
             endpoint: `users/${subscription_id}/unsubscribe`,
-            authenticated: true
+            authenticated: true,
+            onSuccess: onUnsubscribeSuccess
         }
     }
 }
@@ -213,6 +250,11 @@ export function unsubscribe(user) {
     return dispatch => {
         if (Map.isMap(user)) {
             user = user.get('id')
+        }
+        const currentUser = new CurrentUser(getState())
+        if (currentUser.get('id') === user) {
+            // can't unsubscribe to yourself
+            return;
         }
         dispatch(postUnsubscribe(user))
     }
@@ -227,15 +269,28 @@ function onNotificationSyncSuccess(store, next, action, response) {
     store.dispatch(markStackAsRead())
 }
 
-export function syncNotifications() {
+function postSyncNotifications(readNotifications) {
     return {
         type: ActionTypes.SYNC_NOTIFICATIONS,
         [API_CALL]: {
             method: 'POST',
             endpoint: 'notifications/sync',
             authenticated: true,
+            body: readNotifications,
             onSuccess: onNotificationSyncSuccess
         }
+    }
+}
+
+export function syncNotifications() {
+    return (dispatch, getState) => {
+        const currentUser = new CurrentUser(getState())
+        if (!currentUser.isLoggedIn()) {
+            return null;
+        }
+
+        const readNotifications = currentUser.readNotificationsJSON()
+        dispatch(postSyncNotifications(readNotifications))
     }
 }
 
@@ -247,19 +302,31 @@ function markAsRead(options) {
         }
 
         dispatch(assign({}, { type: ActionTypes.MARK_AS_READ }, options))
+        // sync notifications to update server
+        dispatch(syncNotifications())
     }
 }
 
 export function markStackAsRead(id) {
     return (dispatch, getState) => {
         const stack = new Stack(getState())
+        const currentUser = new CurrentUser(getState())
         id = id || stack.get('id');
+        if (typeof id === "number") {
+            id = id.toString();
+        }
+
         if (!id) {
             // either did not specify stack id or no stack is loaded
             return null;
         }
-        if (typeof id === "number") {
-            id = id.toString();
+
+        if (currentUser.unreadNotificationCountForStack(id) === 0) {
+            // if stack already marked as read, do nothing
+            //
+            // note that this method call might need to change 
+            // when we have more than one notification type
+            return null;
         }
 
         dispatch(markAsRead({ stack: id }))

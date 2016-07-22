@@ -1,7 +1,19 @@
 import React from 'react'
+import moment from 'moment'
+
 import ScrollComponent from '../../utils/ScrollComponent.react'
 import ActivityItem from './ActivityItem.react'
 import Spinner from '../../shared/Spinner.react'
+
+function fromNow(date) {
+    var hours = moment(date).diff(moment(), 'hours');
+    if (hours >= 1) {
+        return `${hours} hour${hours > 1 && 's'} left`
+    } else {
+        var minutes = Math.max(1, moment(date).diff(moment(), 'minutes'));
+        return `${minutes} minute${minutes > 1 && 's'} left` 
+    }
+}
 
 class Activity extends React.Component {
 
@@ -15,7 +27,6 @@ class Activity extends React.Component {
 
     // Button handlers
     handleNewMediaClick() {
-        console.log('handling new media click')
         this.props.handleSelectNewestLiveItem();
         this.setState({
             displayNewItem: false
@@ -26,19 +37,38 @@ class Activity extends React.Component {
     // Render
 
     render() {
-        const { mediaItems, liveMediaItems, selectedItem, handleSelectMediaItem, stack } = this.props;
+        const { mediaItems, liveMediaItems, selectedItem, handleSelectMediaItem, stack, display } = this.props;
         const { displayNewItem } = this.state;
         return (
-        <section className="activity">
+        <section className="activity" style={{ display: (display ? "block" : "none") }}>
+            <div className="activity_time">
+                { stack.get('closed') && moment(stack.get('created_at')).format('MMMM D, YYYY') }
+                { !stack.get('closed') && fromNow(stack.get('expires')) }
+            </div>
             <div className="activity_inner" id="activity-inner">
                 {stack.get('mediaItemsFetching') && <Spinner type="grey" />}
                 {mediaItems.map((mediaItem, idx) => {
                     var selected = (mediaItem.get('id') === selectedItem.get('id'));
-                    return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} index={idx} handleClick={handleSelectMediaItem}/>
+                    return <ActivityItem 
+                        key={mediaItem.get('id')} 
+                        mediaItem={mediaItem} 
+                        selected={selected} 
+                        index={idx} 
+                        handleClick={handleSelectMediaItem}
+                    />
                 })}
                 {liveMediaItems.map((mediaItem, idx) => {
                     var selected = (mediaItem.get('id') === selectedItem.get('id'));
-                    return <ActivityItem key={mediaItem.get('id')} mediaItem={mediaItem} selected={selected} live={true} index={idx+mediaItems.size} handleClick={handleSelectMediaItem}/>
+                    var unseen = stack.isUnseen(mediaItem.get('id'));
+                    return <ActivityItem 
+                        key={mediaItem.get('id')} 
+                        mediaItem={mediaItem} 
+                        selected={selected} 
+                        live={true} 
+                        unseen={unseen}
+                        index={idx+mediaItems.size} 
+                        handleClick={handleSelectMediaItem}
+                    />
                 })}
             </div>
             { displayNewItem && <div className="activity_new-media" onClick={this.handleNewMediaClick} >New media added!</div> }

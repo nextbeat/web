@@ -9,7 +9,16 @@ const KEY_MAP = {
     // authError
     'authError': ['app', 'authError'],
     // environment
-    'environment': ['app', 'environment']
+    'environment': ['app', 'environment'],
+    // user-agent
+    'os': ['app', 'ua', 'os', 'name'],
+    'device': ['app', 'ua', 'device', 'name'],
+    'browser': ['app', 'ua', 'browser', 'name'],
+    'version': ['app', 'ua', 'browser', 'major'],
+    // facebook
+    'facebookAppId': ['app', 'facebookAppId'],
+    // state
+    'openModal': ['app', 'state', 'modal']
 }
 
 export default class App extends ModelBase {
@@ -26,6 +35,10 @@ export default class App extends ModelBase {
 
     hasAuthError() {
         return this.get('authError', true)
+    }
+
+    isIOS() {
+        return this.get('os') === 'iOS'
     }
 
 }

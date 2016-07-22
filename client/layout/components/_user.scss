@@ -7,6 +7,10 @@
     &:hover {
         cursor: pointer;
     }
+
+    .btn-subscribe_count {
+        display: none;
+    }
 }
 
 .user_profpic {
@@ -73,6 +77,10 @@
     .user_subscribe {
         margin-left: 110px;
         bottom: 20px;
+    }
+
+    .btn-subscribe_count {
+        display: inline-block;
     }
 
 }

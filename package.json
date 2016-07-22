@@ -1,6 +1,6 @@
 {
   "name": "nextbeat-web",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": "true",
   "dependencies": {
     "bluebird": "*",
@@ -10,7 +10,9 @@
     "express": "4.x",
     "express-handlebars": "1.1.0",
     "express-session": "^1.13.0",
+    "hoist-non-react-statics": "^1.0.6",
     "immutable": "^3.7.6",
+    "linkifyjs": "2.0.3",
     "lodash": "3.10.0",
     "moment": "2.11.1",
     "node-fetch": "^1.3.3",
@@ -21,6 +23,8 @@
     "path": "^0.12.7",
     "querystring": "^0.2.0",
     "react": "0.14.6",
+    "react-addons-perf": "0.14.6",
+    "react-addons-shallow-compare": "0.14.6",
     "react-dom": "0.14.6",
     "react-helmet": "^3.0.2",
     "react-redux": "^4.1.0",
@@ -31,7 +35,8 @@
     "redux-thunk": "^1.0.3",
     "request-promise": "0.4.2",
     "serve-favicon": "2.1.6",
-    "stanza.io": "^7.4.0"
+    "stanza.io": "^8.0.0",
+    "ua-parser-js": "0.7.10"
   },
   "devDependencies": {
     "babel-cli": "^6.0.0",
@@ -44,16 +49,19 @@
     "envify": "^3.4.0",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.1.0",
+    "gulp-babel": "^6.1.2",
+    "gulp-file-cache": "0.0.1",
     "gulp-livereload": "^3.8.1",
     "gulp-nodemon": "^2.0.6",
     "gulp-sass": "^2.1.1",
     "gulp-uglify": "^1.5.1",
+    "gulp-util": "^3.0.7",
     "isomorphic-fetch": "^2.2.1",
     "loose-envify": "^1.1.0",
     "nodemon": "^1.2.1",
     "uglify-js": "~2.4.15",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "~2.0.0"
+    "watchify": "^3.7.0"
   }
 }

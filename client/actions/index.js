@@ -1,9 +1,12 @@
 export { default as ActionTypes } from './types'
-export { Status, API_CALL, API_CANCEL } from './types'
+export { Status, API_CALL, API_CANCEL, AnalyticsTypes, ANALYTICS } from './types'
 
 export {
     loadTags,
     resizeWindow,
+    onBeforeUnload,
+    promptModal,
+    closeModal,
     clearApp
 } from './app'
 
@@ -34,6 +37,7 @@ export {
     selectMediaItem,
     goForward,
     goBackward,
+    recordView,
     clearStack
 } from './stack'
 
@@ -79,6 +83,12 @@ export {
 export {
     validatePasswordResetToken,
     resetPassword,
-    sendPasswordResetRequest
+    sendPasswordResetRequest,
+    sendEmailUnsubscribeRequest
 } from './support'
+
+export {
+    analyticsIdentify,
+    analyticsPage
+} from './analytics'
 

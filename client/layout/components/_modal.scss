@@ -51,6 +51,17 @@
     margin: 0 auto;
 }
 
+.modal_extra {
+    text-align: center;
+    width: 100%;
+    padding: 5px;
+    font-size: 12px;
+
+    a:hover {
+        cursor: pointer;
+    }
+}
+
 // Specific styles
 
 .modal-auth {

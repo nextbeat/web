@@ -24,6 +24,18 @@ class DetailBar extends React.Component {
         this.setState({ selected })
     }
 
+    renderBadge(stack) {
+        const count = stack.unseenLiveMediaItemsCount()
+        if (count === 0) {
+            return null;
+        }
+        return (
+            <div className="detail-bar_activity-badge">
+                <span className="detail-bar_activity-badge_inner">{count}</span>
+            </div>
+        )
+    }
+
     render() {
         const selected = type => this.state.selected === type ? "selected" : "";
         const { stack, handleSelectMediaItem, handleSelectNewestLiveItem  } = this.props;
@@ -41,12 +53,12 @@ class DetailBar extends React.Component {
                     <div className="detail-bar_header">
                         <div className="detail-bar_tab-container">
                             <span className={`detail-bar_tab ${selected("chat")}`} onClick={this.setSelected.bind(this, "chat")}>Chat</span>
-                            <span className={`detail-bar_tab ${selected("activity")}`} onClick={this.setSelected.bind(this, "activity")}>Activity</span>
+                            <span className={`detail-bar_tab ${selected("activity")}`} onClick={this.setSelected.bind(this, "activity")}>Activity{this.renderBadge(stack)}</span>
                         </div>
                     </div>
                     <div className="detail-bar_main">
-                        { !stack.get('isFetching') && !stack.get('error') && this.state.selected === "chat" && <Chat /> }
-                        { !stack.get('isFetching') && !stack.get('error') && this.state.selected === "activity" && <Activity {...activityProps} /> }
+                        { !stack.get('isFetching') && !stack.get('error') && <Chat display={this.state.selected === "chat"} /> }
+                        { !stack.get('isFetching') && !stack.get('error') && <Activity display={this.state.selected === "activity"} {...activityProps} /> }
                     </div>
                 </div>
             </div>

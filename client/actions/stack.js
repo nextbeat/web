@@ -7,6 +7,7 @@ import { markStackAsRead } from './user'
 import { loadPaginatedObjects } from './utils'
 import { Stack } from '../models'
 import { API_CALL, API_CANCEL } from './types'
+import { storageAvailable } from '../utils'
 
 
 /**********
@@ -18,26 +19,24 @@ function onStackSuccess(store, next, action, response) {
     store.dispatch(loadMediaItems(stack.uuid));
     store.dispatch(loadComments(stack.uuid));
     store.dispatch(loadMoreStacks(stack.id));
+    store.dispatch(markStackAsRead(stack.id));
+    store.dispatch(recordView(stack.id));
 }
 
-function fetchStack(id) {
+function fetchStack(hid) {
     return {
         type: ActionTypes.STACK,
-        id: id,
         [API_CALL]: {
             schema: Schemas.STACK,
-            endpoint: `stacks/${id}`,
+            endpoint: `stacks/${hid}`,
+            queries: { 'idAttribute': 'hid' },
             onSuccess: onStackSuccess
         }
     }
 }
 
-export function loadStack(id) {
-    return dispatch => {
-        id = parseInt(id)
-        dispatch(markStackAsRead(id))
-        dispatch(fetchStack(id))
-    }
+export function loadStack(hid) {
+    return fetchStack(hid)
 }
 
 function fetchMoreStacks(stack_id) {
@@ -211,10 +210,23 @@ export function unbookmark() {
  * MEDIA ITEM SELECTION
  **********************/
 
-export function selectMediaItem(id) {
+function performSelectMediaItem(id) {
     return {
         type: ActionTypes.SELECT_MEDIA_ITEM,
         id 
+    }
+}
+
+export function selectMediaItem(id) {
+    // We store the last selected media item from each stack
+    // in the session in sessionStorage, so that it persists
+    // through page refreshes
+    return (dispatch, getState) => {
+        const stack = new Stack(getState())
+        if (storageAvailable('sessionStorage')) {
+            sessionStorage.setItem(stack.get('hid'), id)
+        }
+        return dispatch(performSelectMediaItem(id))
     }
 }
 
@@ -256,6 +268,20 @@ export function goBackward() {
     return navigate(false);
 }
 
+/*******
+ * VIEWS
+ *******/
+
+export function recordView(stack_id) {
+    return {
+        type: ActionTypes.RECORD_VIEW,
+        [API_CALL]: {
+            method: 'PUT',
+            endpoint: `stacks/views/${stack_id}`,
+            clientOnly: true
+        }
+    }
+}
 
 /*******
  * RESET

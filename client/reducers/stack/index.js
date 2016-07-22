@@ -1,4 +1,4 @@
-import { Map, List } from 'immutable'
+import { Map, List, Set } from 'immutable'
 import { mapValues } from 'lodash'
 import { ActionTypes, Status } from '../../actions'
 
@@ -14,7 +14,9 @@ const pagination = combineReducers({
 
 function mediaItems(state = Map(), action) {
     if (action.type === ActionTypes.SELECT_MEDIA_ITEM) {
-        return state.set('selected', action.id);
+        return state
+            .set('selected', action.id)
+            .update('seen', Set(), v => v.add(action.id))
     }
     return state;
 }

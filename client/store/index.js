@@ -1,10 +1,10 @@
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
-import { api, xmpp, cancel } from '../middleware'
+import { api, analytics, xmpp, cancel } from '../middleware'
 import { Map, Iterable } from 'immutable'
 import reducer from '../reducers'
 
-const middlewares = [thunkMiddleware, api, cancel, xmpp];
+const middlewares = [thunkMiddleware, api, analytics, cancel, xmpp];
 
 if (process.env.NODE_ENV !== "production") {
     const createLogger = require('redux-logger');
@@ -18,7 +18,9 @@ if (process.env.NODE_ENV !== "production") {
         stateTransformer
     });
 
-    middlewares.push(logger);
+    if (typeof window !== 'undefined') { // in browser only
+        // middlewares.push(logger);
+    }
 }
 
 export default function configureStore(initialState = Map()) {

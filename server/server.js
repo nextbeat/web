@@ -16,6 +16,8 @@ var exphbs      = require('express-handlebars'),
 web.use(express.static(path.join(__dirname, '../client/public/html')));
 web.use(express.static(path.join(__dirname, '../client/public')));
 
+web.set('trust proxy', true);
+
 web.use(bodyParser.json({
     limit: '1mb'
 }));
@@ -31,6 +33,8 @@ web.use(session({
     saveUninitialized: false
 }));
 
+web.set('json spaces', 2);
+
 // Handlebars
 web.set('views', './server/views');
 web.engine('handlebars', exphbs({
@@ -44,8 +48,8 @@ web.use(favicon(path.join(__dirname, '../client/public/images/favicon.ico')));
 
 routes.init(web);
 api.init().then(function() {
-    console.log('app initialized!');
-    var port = process.env.NODE_ENV === 'mac' ? 3000 : 80;
+    console.log('app initialized!', process.env.NODE_ENV);
+    var port = (process.env.NODE_ENV === 'mac' || process.env.NODE_ENV === 'mac-dev') ? 3000 : 80;
     web.listen(port);
 }).catch(function(e) {
     console.log(e);

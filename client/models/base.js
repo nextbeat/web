@@ -36,6 +36,10 @@ export default class ModelBase {
         return has(this.keyMap, 'id') ? this.__getEntity(this.get('id')) : Map();
     }
 
+    isLoaded() {
+        return this.get('id', 0) !== 0;
+    }
+
     __getEntity(id, entityName) {
         entityName = entityName || this.entityName;
         if (typeof id === "number") {
@@ -56,6 +60,11 @@ export default class ModelBase {
         name = name || this.name;
         return this.state.getIn([name, 'live', key], List())
             .map(id => this.__getEntity(id, paginatedEntityKey));
+    }
+
+    static getEntity(state, id) {
+        let model = new this(state)
+        return model.__getEntity(id)
     }
 
 }

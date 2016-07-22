@@ -93,12 +93,12 @@ function joinRoom(store, next, action) {
         return assign({}, action, { status }, data);
     }
 
-    // return early if not connected, if already in room, or if not currently looking at an open stack
+    // return early if not connected or if already in room
     if (!currentUser.isConnected()) {
         return next(actionWith(Status.FAILURE));
     } else if (currentUser.isJoiningRoom() || currentUser.hasJoinedRoom()) {
         return null;
-    } else if (!stack.has('id') || stack.get('closed')) {
+    } else if (!stack.has('id')) {
         return null;
     }
 
@@ -139,7 +139,7 @@ function leaveRoom(store, next, action) {
     const stack = new Stack(store.getState());
     const currentUser = new CurrentUser(store.getState());
 
-    if (!currentUser.hasJoinedRoom()) {
+    if (!currentUser.hasJoinedRoom() || !stack.isLoaded()) {
         return null;
     }
 
@@ -194,6 +194,13 @@ function handleClearStack(store, next, action) {
     return next(action);
 }
 
+function handleBeforeUnload(store, next, action) {
+    // leave room and disconnect before unloading window
+    store.dispatch(actions.leaveRoom())
+    store.dispatch(actions.disconnectXMPP())
+    return next(action);
+}
+
 function sendComment(store, next, action) {
     // once the xmpp middleware receives this, it will already
     // have gone through the api middleware, so we can see if
@@ -234,6 +241,8 @@ export default store => next => action => {
             return handleLoadStack(store, next, action);
         case ActionTypes.CLEAR_STACK:
             return handleClearStack(store, next, action);
+        case ActionTypes.ON_BEFORE_UNLOAD:
+            return handleBeforeUnload(store, next, action);
         default:
             return next(action);
     }

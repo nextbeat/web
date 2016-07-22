@@ -40,18 +40,27 @@ const WIDTH_RANGES = [
     { range: [1101, Infinity], type: 'large' } 
 ]
 
-function width(state='', action) {
-    if (action.type === ActionTypes.RESIZE) {
+function state(state = Map(), action) {
+    if (action.type === ActionTypes.PROMPT_MODAL) {
+        return state.merge({
+            modal: action.modalType
+        });
+    } else if (action.type === ActionTypes.CLOSE_MODAL) {
+        return state.delete('modal')
+    } else if (action.type === ActionTypes.RESIZE) {
         const size = WIDTH_RANGES.find(r => inRange(Math.max(action.width, 0), ...r.range))['type'];
-        return size;
+        return state.merge({
+            width: size;
+        })
     }
-    return state;
+    return state
 }
 
 const reducers = {
     tags,
     authError,
     width
+    state
 }
 
 export default function(state = Map(), action) {

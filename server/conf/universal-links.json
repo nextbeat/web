@@ -1,0 +1,15 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "XZU5XGTDME.co.nextbeat.nextbeat",
+                "paths": [ 
+                    "NOT /password-reset-request",
+                    "NOT /password-reset",
+                    "*"
+                ] 
+            }
+        ]
+    }
+}

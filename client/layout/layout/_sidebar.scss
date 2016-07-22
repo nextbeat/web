@@ -139,6 +139,32 @@
  * CONTENT VIEWS
  ***************/
 
+.sidebar a {
+    font-weight: normal;
+    color: $text-color;
+    display: block;
+    margin: 0 0 7px 5px;
+    font-size: 14px;
+    @include clearfix;
+
+    &:hover {
+        color: $primary-color;
+    }
+
+    &.selected {
+        font-weight: bold;
+    }
+
+    .sidebar_icon {
+        float: left;
+        background: $primary-color;
+         
+        svg {
+            fill: white;
+        }
+    }
+}
+
 .sidebar_no-content {
     text-align: center;
     display: block;
@@ -167,6 +193,12 @@
         width: 70%;
         height: 70%;
     }
+
+    .svg-icon-home {
+        @include center;
+        width: 80%;
+        height: 80%;
+    }
 }
 
 // Bookmarks
@@ -175,17 +207,22 @@
 
     margin: 0 -15px 0 -15px;
 
+    a {
+        margin: 0;
+    }
+
     h1 {
         margin-left: 15px;
     }
 
     .item_container {
         float: none;
+        margin-bottom: 0;
     }
 
     .item-room {
         width: 100%;
-        height: 70px;
+        height: 65px;
         padding: 10px 15px;
         border: none;
     }
@@ -209,9 +246,10 @@
 
 }
 
-.sidebar_bookmarks-see-all {
+a.sidebar_bookmarks-see-all {
     text-align: center;
     font-weight: normal;
+    color: $primary-color;
     font-size: 12px;
     width: 100%;
     display: block;
@@ -219,55 +257,10 @@
 
 // Subscriptions
 
-.sidebar_subscriptions {
-
-    a {
-        font-weight: normal;
-        color: $text-color;
-        display: block;
-        margin: 0 0 7px 5px;
-        font-size: 14px;
-        @include clearfix;
-
-        &:hover {
-            color: $primary-color;
-        }
-
-        &.selected {
-            font-weight: bold;
-        }
-
-        .sidebar_icon {
-            float: left;
-        }
-
-    }
-    
-}
-
-// Categories
-
-.sidebar_categories {
-
-    a {
-        font-weight: normal;
-        color: $text-color;
-        display: block;
-        margin: 0 0 7px 5px;
-        font-size: 14px;
-        @include clearfix;
-
-        &:hover {
-            color: $primary-color;
-        }
-
-        &.selected {
-            font-weight: bold;
-        }
-
-        .sidebar_icon {
-            float: left;
-            background: $primary-color;
-        }
-    }
+.badge.sidebar_badge {
+    border: 1px solid #e6e6e6;
+    box-shadow: none;
+    position: absolute;
+    font-size: 10px;
+    left: 150px;
 }

@@ -30,7 +30,7 @@ class Chat extends React.Component {
 
     renderComment(comment) {
         const { users, stackAuthor } = this.props;
-        const username = users.getIn([comment.get('author').toString(), 'username'], 'anon');
+        const username = comment.get('author') && users.getIn([comment.get('author').toString(), 'username'], 'anon');
         const isCreator = (stackAuthor.get('username') === username);
         return comment.get('type') === 'message' ? 
             <ChatItem key={comment.get('id')} comment={comment} username={username} isCreator={isCreator} />
@@ -47,10 +47,10 @@ class Chat extends React.Component {
     }
 
     render() {
-        const { comments, isFetching, error, liveComments, user } = this.props;
+        const { comments, isFetching, error, liveComments, user, display } = this.props;
         const closed = this.props.stack.get('closed');
         return (
-        <div className="chat">
+        <div className="chat" style={{ display: (display ? "block" : "none") }}>
             <div id="history" className="chat_history">
                 { isFetching && <Spinner type="grey" />}
                 { error && error.length > 0 && <p>Could not load comments.</p>}

@@ -2,6 +2,7 @@
     width: 100%;
     height: 100%;
     position: relative;
+    outline: none;
 }
 
 .video_player-container {
@@ -26,6 +27,13 @@
     max-height: 100%;
     max-width: 100%;
     @include center;
+}
+
+.video_player-decoration {
+    @include center;
+    position: absolute;
+    /* allow passthrough on mouse events to enable video playback on mobile */
+    pointer-events: none;
 }
 
 .video_bottom {

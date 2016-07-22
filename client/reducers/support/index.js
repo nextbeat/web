@@ -20,7 +20,7 @@ function validatePasswordResetToken(state, action) {
                 tokenError: action.error
             })
     }
-    return action;
+    return state
 }
 
 function resetPassword(state, action) {
@@ -41,7 +41,7 @@ function resetPassword(state, action) {
                 passwordResetError: action.error
             })
     }
-    return action;
+    return state;
 }
 
 function sendPasswordResetRequest(state, action) {
@@ -65,6 +65,27 @@ function sendPasswordResetRequest(state, action) {
     return state;
 }
 
+function sendEmailUnsubscribeRequest(state, action) {
+    switch (action.status) {
+        case Status.REQUESTING:
+            return state.merge({
+                isSendingUnsubscribeRequest: true
+            }).delete('unsubscribeRequestSent')
+        case Status.SUCCESS:
+            return state.merge({
+                isSendingUnsubscribeRequest: false,
+                unsubscribeRequestSent: true
+            })
+        case Status.FAILURE:
+            return state.merge({
+                isSendingUnsubscribeRequest: false,
+                unsubscribeRequestSent: false,
+                unsubscribeRequestError: "Bad request."
+            })
+    }
+    return state;
+}
+
 export default function(state=Map(), action) {
     switch (action.type) {
         case ActionTypes.VALIDATE_PASSWORD_RESET_TOKEN:
@@ -72,7 +93,9 @@ export default function(state=Map(), action) {
         case ActionTypes.RESET_PASSWORD:
             return resetPassword(state, action)
         case ActionTypes.SEND_PASSWORD_RESET_REQUEST:
-            return sendPasswordResetRequest(state, action);
+            return sendPasswordResetRequest(state, action)
+        case ActionTypes.SEND_EMAIL_UNSUBSCRIBE_REQUEST:
+            return sendEmailUnsubscribeRequest(state, action)
     }
     return state;
 }

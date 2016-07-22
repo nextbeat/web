@@ -7,6 +7,7 @@ import { stringify } from 'querystring'
 import { normalize } from 'normalizr'
 import { Status, API_CALL } from '../actions'
 import { CurrentUser } from '../models'
+import { baseUrl } from '../utils'
 
 const API_ROOT = '/api/';
 
@@ -26,7 +27,7 @@ function urlWithParams(endpoint, pagination, queries) {
         url += "?" + stringify(queries);
     }
 
-    return url;
+    return `${baseUrl()}${url}`;
 }
 
 function fetchOptions(options, store) {
@@ -84,6 +85,11 @@ export default store => next => action => {
         return next(action);
     }
 
+    // skip if on server and clientOnly specified
+    if (typeof window === 'undefined' && apiCall.clientOnly) {
+        return next(action);
+    }
+
     const { pagination, onSuccess, onSuccessImmediate } = apiCall;
 
     // call api server with the given endpoint, then
@@ -117,10 +123,12 @@ export default store => next => action => {
             }))
 
         })
-        .catch(error => next(actionWith({
-            status: Status.FAILURE,
-            error: error.message
-        })));
+        .catch(error => {
+            return next(actionWith({
+                status: Status.FAILURE,
+                error: error.message
+            }))
+        });
 
     // dispatch action which asserts request is being made
     // include fetch promise so we can cancel it if need be

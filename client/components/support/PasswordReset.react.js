@@ -74,7 +74,7 @@ class PasswordReset extends React.Component {
     render() {
         const { support } = this.props;
         return (
-            <div className="password-reset">
+            <div className="support">
                 <h1>Reset Your Password</h1>
                 { support.get('tokenValidated') ? 
                     ( support.get('passwordReset') ? this.renderSuccess() : this.renderPasswordResetForm() )

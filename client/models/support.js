@@ -10,7 +10,10 @@ const KEY_MAP = {
     'passwordResetError': ['support', 'passwordResetError'],
     'isSendingResetRequest': ['support', 'isSendingResetRequest'],
     'resetRequestSent': ['support', 'resetRequestSent'],
-    'resetRequestError': ['support', 'resetRequestError']
+    'resetRequestError': ['support', 'resetRequestError'],
+    'isSendingUnsubscribeRequest': ['support', 'isSendingUnsubscribeRequest'],
+    'unsubscribeRequestSent': ['support', 'unsubscribeRequestSent'],
+    'unsubscribeRequestError': ['support', 'unsubscribeRequestError']
 }
 
 export default class Support extends ModelBase {

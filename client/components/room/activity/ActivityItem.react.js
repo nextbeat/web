@@ -1,5 +1,7 @@
-import React from 'react';
-import moment from 'moment';
+import React from 'react'
+import moment from 'moment'
+
+import { secureUrl } from '../../../utils'
 
 class ActivityItem extends React.Component {
 
@@ -34,11 +36,12 @@ class ActivityItem extends React.Component {
     }
 
     render() {
-        const { mediaItem, selected, live, handleClick, index } = this.props;
-        const url = this.url(mediaItem);
+        const { mediaItem, selected, live, unseen, handleClick, index } = this.props;
+        const url = secureUrl(this.url(mediaItem));
         const selectedClass = selected ? "selected" : "";
-        const liveClass = live ? "live" : "";
+        const liveClass = live && unseen ? "live" : "";
         const videoClass = mediaItem.get('type') === 'video' ? "item-activity_video-wrapper" : "";
+        
         return (
             <div className={`item item-activity ${selectedClass} ${liveClass}`} onClick={handleClick.bind(this, mediaItem.get('id'))} ref={(c) => this._node = c}>
                 <div className="item_inner">
@@ -47,7 +50,7 @@ class ActivityItem extends React.Component {
                     </div>
                     <div className="item_main">
                         <div className="item-activity_index"><span>{index+1}</span></div>
-                        <div className="item-activity_time"><span>{moment(this.props.mediaItem.get('created_at')).format('h:mm a')}</span></div>
+                        <div className="item-activity_time"><span>{moment(this.props.mediaItem.get('user_created_at')).format('h:mm a')}</span></div>
                     </div>
                 </div>
             </div>

@@ -55,29 +55,20 @@ class LargeStackItem extends React.Component {
         $(window).off('resize', this.resize);
     }
 
-    fancyThumbnailUrl(stack) {
-        let url = stack.get('thumbnail_url', '');
-        const suffix = '_200px.jpg';
-        if (url.substring(url.length-suffix.length) === suffix) {
-            url = url.substring(0, url.length-suffix.length) + '.jpg';
-        }
-        return url;
-    }
-
     render() {
         const { stack, user, users, static: staticNum } = this.props;
         const author = users.get(stack.get('author_id').toString(), Map())
         const bookmarkType = stack.get('bookmarked') ? "bookmark" : "bookmark-outline";
         const itemWidth = isNumber(staticNum) ? staticNum + "px" : null
+        const imageUrl = stack.get('thumbnail_medium_url') || stack.get('thumbnail_url');
 
         return (
             <div className="item_container item-room-large_container" ref={(c) => this._node = c} style={itemWidth && {width: itemWidth}}>
-                <Link to={`/r/${stack.get('id')}`}>
+                <Link to={`/r/${stack.get('hid')}`}>
                 <div className="item-room-large item">
                     <div className="item_inner item-room-large_inner">
                         { !stack.get('closed') && <Badge elementType="item-room-large" type="open" /> }
-                        <div className="item_thumb item-room-large_thumb">
-                            <img className="thumb_img" src={this.fancyThumbnailUrl(stack)} />
+                        <div className="item_thumb item-room-large_thumb" style={{backgroundImage: `url(${imageUrl})`}}>
                             <div className="item-room-large_bookmarks">
                                 <span className="item-room-large_bookmark-count">{stack.get('bookmark_count')}</span><Icon type={bookmarkType} />
                             </div>

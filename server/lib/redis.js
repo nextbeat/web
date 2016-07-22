@@ -20,10 +20,10 @@ module.exports = {
             options.host = 'redis.dev.nextbeat.int';
         } else if (node_env === 'production') {
             options.host = 'redis.nextbeat.int';
-        } else if (node_env === 'mac') {
+        } else if (node_env === 'mac' || node_env === 'mac-dev') {
             options.host = 'localhost';
             options.port = 6380;
-        }
+        } 
 
         return redis.createClient(options);
 

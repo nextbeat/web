@@ -11,6 +11,13 @@ export const Status = {
 export const API_CALL = Symbol('API_CALL');
 export const API_CANCEL = Symbol('API_CANCEL');
 
+export const ANALYTICS = Symbol('ANALYTICS');
+export const AnalyticsTypes = {
+    IDENTIFY: 'IDENTIFY',
+    TRACK: 'TRACK',
+    PAGE: 'PAGE'
+}
+
 export default {
 
     /*****
@@ -19,6 +26,9 @@ export default {
 
     TAGS: 'TAGS',
     RESIZE: 'RESIZE',
+    PROMPT_MODAL: 'PROMPT_MODAL',
+    CLOSE_MODAL: 'CLOSE_MODAL',
+    ON_BEFORE_UNLOAD: 'ON_BEFORE_UNLOAD',
     CLEAR_APP: 'CLEAR_APP',
 
     /******
@@ -56,6 +66,7 @@ export default {
     BOOKMARK: 'BOOKMARK',
     UNBOOKMARK: 'UNBOOKMARK',
     SELECT_MEDIA_ITEM: 'SELECT_MEDIA_ITEM',
+    RECORD_VIEW: 'RECORD_VIEW',
     CLEAR_STACK: 'CLEAR_STACK',
 
     /*********
@@ -111,13 +122,15 @@ export default {
     VALIDATE_PASSWORD_RESET_TOKEN: 'VALIDATE_PASSWORD_RESET_TOKEN',
     RESET_PASSWORD: 'RESET_PASSWORD',
     SEND_PASSWORD_RESET_REQUEST: 'SEND_PASSWORD_RESET_REQUEST',
+    SEND_EMAIL_UNSUBSCRIBE_REQUEST: 'SEND_EMAIL_UNSUBSCRIBE_REQUEST',
 
     /*******
      * OTHER
      *******/
 
     ENTITY_UPDATE: 'ENTITY_UPDATE',
-    CLEAR_FETCH: 'CLEAR_FETCH'
+    CLEAR_FETCH: 'CLEAR_FETCH',
+    ANALYTICS: 'ANALYTICS'
 
 }
 

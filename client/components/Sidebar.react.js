@@ -5,6 +5,7 @@ import StackItem from './shared/StackItem.react'
 import Icon from './shared/Icon.react'
 import Spinner from './shared/Spinner.react'
 import Logo from './shared/Logo.react'
+import Badge from './shared/Badge.react'
 
 class Sidebar extends React.Component {
 
@@ -30,19 +31,7 @@ class Sidebar extends React.Component {
 
     componentWillUnmount() {
         $('.sidebar').off('click');
-    }
-
-    // Accessors
-
-    // toggleActive() {
-    //     if ($('.sidebar').hasClass('collapsed-side')) {
-    //         $('.sidebar_expanded').toggleClass('active-medium');
-    //     } else {
-    //         $('.sidebar_expanded').toggleClass('active-small');
-    //         $('.detail-bar').removeClass('active');
-    //     }
-    //     $(window).resize() // trigger resize event
-    // }   
+    } 
 
     // Render
 
@@ -85,7 +74,8 @@ class Sidebar extends React.Component {
         return (
             <Link key={`sub${sub.get('id')}`} to={`/u/${sub.get('username')}`} activeClassName="selected">
                 <div className="sidebar_icon">{ url ? <img src={url} /> : <Icon type="person" /> }</div>
-                {sub.get('username')}
+                { sub.get('username') }
+                { sub.get('open_stacks') > 0 && <Badge elementType="sidebar" type="open" /> }
             </Link>
         )
     }
@@ -103,7 +93,18 @@ class Sidebar extends React.Component {
         const { user, app } = this.props;
         return (
             <div className="sidebar">
-
+                <div className="sidebar_section sidebar_topnav">
+                    <Link to="/" activeClassName="selected">
+                        <div className="sidebar_icon"><Icon type="home" /></div>Home
+                    </Link>
+                    { user.isLoggedIn() && 
+                        <Link to={`/u/${user.get('username')}`} activeClassName="selected">
+                            <div className="sidebar_icon">{ user.profileThumbnailUrl() ? <img src={user.profileThumbnailUrl()} /> : <Icon type="person" /> }</div>
+                            My Profile
+                        </Link>
+                    }
+                    <div className="separator" />
+                </div>
                 { user.isLoggedIn() && user.isFetchingUserData() && <Spinner type="grey" /> }
                 { user.isLoggedIn() && !user.isFetchingUserData() &&
                     <div>

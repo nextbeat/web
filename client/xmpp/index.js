@@ -8,6 +8,7 @@ import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveSt
 import { CurrentUser, Stack } from '../models'
 
 function xmppHost() {
+    console.log(process.env.NODE_ENV);
     if (process.env.NODE_ENV === 'production') {
         return 'xmpp.nextbeat.co';
     } else if (process.env.NODE_ENV === 'development') {
@@ -16,8 +17,23 @@ function xmppHost() {
         return 'xmpp';
     } else if (process.env.NODE_ENV === 'mac') {
         return 'localhost';
+    } else if (process.env.NODE_ENV === 'mac-dev') {
+        return 'xmpp.dev.nextbeat.co';
     }
     return '';
+}
+
+function xmppScheme() {
+    switch(process.env.NODE_ENV) {
+        case 'production':
+        case 'development':
+        case 'mac-dev':
+            return 'wss://'
+        case 'local':
+        case 'mac':
+        default:
+            return 'ws://'
+    }
 }
 
 export function getClient(store) {
@@ -29,7 +45,7 @@ export function getClient(store) {
         let options = {
             transport: 'websocket',
             sasl: ['plain'],
-            wsURL: `ws://${xmppHost()}:5280/websocket`,
+            wsURL: `${xmppScheme()}${xmppHost()}:5280/websocket`,
             useStreamManagement: true
         }
 
@@ -78,27 +94,36 @@ export function getClient(store) {
 // group chat
 
 function normalizeMediaItem(data) {
-    const mediaItem = {
+    let mediaItem = {
         type: data[1],
         url: data[2],
         firstframe_url: data[3],
         id: parseInt(data[4]),
         created_at: moment().format()
     }
+    if (data[5].length > 0) {
+        // recreate decoration object
+        let decoration = JSON.parse(data.slice(5).join('#'))
+        mediaItem.decoration = decoration
+    }
     return normalize(mediaItem, Schemas.MEDIA_ITEM);
 }
 
 function formatNotificationItem(data, store) {
-    let count = data[0];
-    const stack = new Stack(store.getState());
-    const mostRecentRemoteComment = stack.comments().first()
-    if (mostRecentRemoteComment.get('type') === 'notification' && stack.liveComments().size === 0) {
-        count = count - mostRecentRemoteComment.get('notification_count');
+    const type = data[0] // "mediaitem" or "close"
+    let comment = { type }
+
+    if (type === "mediaitem") {
+        assign(comment, {
+            count: parseInt(data[1]),
+            url: data[2]
+        })
+        if (data.length >= 5) {
+            assign(comment, { id: parseInt(data[4]) })
+        }
     }
-    return {
-        count: parseInt(count),
-        url: data[1]
-    }
+
+    return comment
 }
 
 function stripNickname(resource) {
@@ -132,6 +157,7 @@ function handleGroupChat(s, store) {
                 return store.dispatch(receiveMediaItem(id, response));
             case 'NEW_NOTIFICATION_COMMENT':
                 const comment = formatNotificationItem(data, store);
+                // todo: update 
                 return store.dispatch(receiveNotificationComment(comment, username));
             case 'STACK_CLOSED':
                 return store.dispatch(receiveStackClosed());

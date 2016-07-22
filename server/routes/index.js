@@ -1,7 +1,12 @@
-var express     = require('express'),
-    _           = require('lodash'),
-    api         = require('../lib/api'),
-    passport    = require('../lib/passport');
+// TODO: finish transition to ES6
+var express         = require('express'),
+    _               = require('lodash'),
+
+    api             = require('../lib/api'),
+    passport        = require('../lib/passport'),
+    universalLinks  = require('../conf/universal-links');
+
+import { handleReactRender } from './react'
 
 module.exports = {
 
@@ -19,7 +24,14 @@ module.exports = {
         apiRouter.all('*', function(req, res) {
             var method = req.method.toLowerCase();
             var token = req.user ? req.user.token : undefined;
-            api[method](req.url, req.body, { auth: token }).then(function(_res) {
+            var options = {
+                auth: token,
+                headers: {
+                    'X-Forwarded-For': req.ip
+                }
+            };
+
+            api[method](req.url, req.body, options).then(function(_res) {
                 // we check for the header which is set if the current token
                 // has expired, and update the user's token
                 if (req.user && _.has(_res.headers, 'x-bbl-jwt-token')) {
@@ -49,6 +61,11 @@ module.exports = {
         router.get('/.well-known/acme-challenge/C4NnuJ1Egr1ntyVrehoMMqr2Ggxt-4M3M9Lm6J9yWK4', function(req, res) {
             res.send('C4NnuJ1Egr1ntyVrehoMMqr2Ggxt-4M3M9Lm6J9yWK4.L8Y9FjWqaSJsTNtFMJYAdaeE66OYJB-fOJ9juFmMIao');
         });
+
+        // Universal links
+        router.get('/apple-app-site-association', function(req, res) {
+            res.json(universalLinks);
+        })
 
         // Login/signup
 
@@ -96,14 +113,7 @@ module.exports = {
 
         // React
 
-        router.get('*', function(req, res) {
-            var state = _.assign({}, { user: req.user }, req.authInfo, { environment: process.env.NODE_ENV || "development" });
-            var bundle = process.env.NODE_ENV === 'mac' ? "/js/bundle.js" : "/js/bundle.min.js";
-            res.render('app', {
-                bundle: bundle,
-                state: JSON.stringify(state)
-            });
-        });
+        router.get('*', handleReactRender)
 
     }
 };

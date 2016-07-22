@@ -8,6 +8,7 @@ import LargeStackItem from './shared/LargeStackItem.react'
 import User from './shared/User.react'
 import Spinner from './shared/Spinner.react'
 import PageError from './shared/PageError.react'
+import AppBanner from './shared/AppBanner.react'
 
 import { loadBookmarkedStacks, clearClosedBookmarkedStacks } from '../actions'
 import { CurrentUser } from '../models'
@@ -32,7 +33,7 @@ class Bookmarks extends React.Component {
     renderBookmarks() {
         const { openStacks, closedStacks, closedFetching } = this.props;
         return (
-            <section>  
+            <section className="content_inner">  
                 <h1>BOOKMARKS</h1>
                 { openStacks.size > 0 && 
                 <div>
@@ -63,7 +64,13 @@ class Bookmarks extends React.Component {
         const { user } = this.props;
         return (
             <div className="bookmarks content" id="bookmarks">
-                <Helmet title="Bookmarks" />
+                <AppBanner url="nextbeat://bookmarks"/>
+                <Helmet 
+                    title="Bookmarks"
+                    meta={[
+                        {"property": "al:ios:url", "content": "nextbeat://bookmarks"}
+                    ]} 
+                />
                 { !user.isLoggedIn() && <PageError>Must be logged in.</PageError> }
                 { this.renderBookmarks() }
             </div>

@@ -1,6 +1,6 @@
 import ModelBase from './base'
 
-import { List } from 'immutable'
+import { List, Set } from 'immutable'
 import CurrentUser from './currentUser'
 
 const KEY_MAP = {
@@ -15,6 +15,7 @@ const KEY_MAP = {
     'liveComments': ['stack', 'live', 'comments'],
     // media items
     'selectedMediaItemId': ['stack', 'mediaItems', 'selected'],
+    'seenMediaItemIds': ['stack', 'mediaItems', 'seen'],
     'mediaItemIds': ['stack', 'pagination', 'mediaItems', 'ids'],
     'liveMediaItemIds': ['stack', 'live', 'mediaItems'],
     'mediaItemsFetching': ['stack', 'pagination', 'mediaItems', 'isFetching'],
@@ -91,22 +92,32 @@ export default class Stack extends ModelBase {
         return this.author().get('username') === currentUser.get('username');
     }
 
-    isLoaded() {
-        return this.get('id', 0) !== 0;
-    }
-
     indexOfSelectedMediaItem() {
         const selectedId = this.get('selectedMediaItemId', -1)
+        return this.indexOfMediaItem(selectedId)
+    }
+
+    indexOfMediaItem(id) {
         const paginatedIds = this.get('mediaItemIds', List())
         const liveIds = this.get('liveMediaItemIds', List())
         const ids = paginatedIds.concat(liveIds)
-        return ids.indexOf(selectedId)
+        return ids.indexOf(id)
     }
 
     mediaItemsSize() {
         const paginatedIds = this.get('mediaItemIds', List())
         const liveIds = this.get('liveMediaItemIds', List())
         return paginatedIds.size + liveIds.size
+    }
+
+    unseenLiveMediaItemsCount() {
+        const liveIds = Set(this.get('liveMediaItemIds', List()))
+        const seenIds = this.get('seenMediaItemIds', Set())
+        return liveIds.subtract(seenIds).count()
+    }
+
+    isUnseen(id) {
+        return !this.get('seenMediaItemIds', Set()).has(id)
     }
 
     mostRecentComment() {

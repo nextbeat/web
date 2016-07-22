@@ -1,5 +1,4 @@
 .tag {
-    padding: 15px;
     height: 100%;
     overflow: auto;
     position: relative;
@@ -11,6 +10,10 @@
     .spinner-tag-rooms {
         margin: 20px auto; 
     }
+}
+
+.tag_inner {
+    position: relative;
 }
 
 .tag_header {
