@@ -43,25 +43,6 @@
         display: block;
         z-index: 30;
     }
-
-    // hidden by default, expands to fill width of screen
-    @include media('<=medium') {
-
-        display: none;
-
-        &.active {
-            display: block;
-            position: absolute;
-            width: 100%;
-            border: none;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            z-index: 30;
-        }
-
-    } 
 }
 
 .sidebar_section {
@@ -263,4 +244,27 @@ a.sidebar_bookmarks-see-all {
     position: absolute;
     font-size: 10px;
     left: 150px;
+}
+
+// Responsiveness
+
+.sidebar {
+    // expands to fill width of screen
+    @include media('<=medium') {
+
+        // display: none;
+
+        &.collapsed.active {
+            display: block;
+            position: absolute;
+            width: 100%;
+            border: none;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            z-index: 30;
+        }
+
+    } 
 }

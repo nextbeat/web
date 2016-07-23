@@ -5,6 +5,8 @@ export {
     loadTags,
     resizeWindow,
     onBeforeUnload,
+    selectSidebar,
+    closeSidebar,
     promptModal,
     closeModal,
     clearApp
@@ -37,6 +39,8 @@ export {
     selectMediaItem,
     goForward,
     goBackward,
+    selectDetailSection,
+    closeDetailSection,
     recordView,
     clearStack
 } from './stack'

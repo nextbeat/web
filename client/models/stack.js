@@ -23,6 +23,8 @@ const KEY_MAP = {
     // comments
     'commentsFetching': ['stack', 'pagination', 'comments', 'isFetching'],
     'commentsError': ['stack', 'pagination', 'comments', 'error'],
+    // ui
+    'selectedDetailSection': ['stack', 'ui', 'detailSection'],
     // more
     'moreStackIds': ['stack', 'more', 'ids']
 }

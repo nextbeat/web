@@ -42,11 +42,22 @@ function more(state = Map(), action) {
     return state;
 }
 
+const initialUIState = Map({ detailSection: 'chat' })
+function ui(state = initialUIState, action) {
+    if (action.type === ActionTypes.SELECT_DETAIL_SECTION) {
+        return state.merge({
+            detailSection: action.section
+        })
+    }
+    return state
+}
+
 const reducers = {
     meta, 
     pagination,
     mediaItems,
     live,
+    ui,
     more
 }
 

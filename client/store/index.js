@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import { api, analytics, xmpp, cancel } from '../middleware'
+import { ActionTypes } from '../actions'
 import { Map, Iterable } from 'immutable'
 import reducer from '../reducers'
 
@@ -14,12 +15,15 @@ if (process.env.NODE_ENV !== "production") {
         else return state;
     }
 
+    const predicate = (getState, action) => action.type !== ActionTypes.RESIZE
+
     const logger = createLogger({
-        stateTransformer
+        stateTransformer,
+        predicate
     });
 
     if (typeof window !== 'undefined') { // in browser only
-        // middlewares.push(logger);
+        middlewares.push(logger);
     }
 }
 

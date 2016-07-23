@@ -1,5 +1,9 @@
 import React from 'react'
 import { Link, browserHistory } from 'react-router'
+import { connect } from 'react-redux'
+
+import { CurrentUser, App } from '../models'
+import { selectSidebar, closeSidebar } from '../actions'
 
 import StackItem from './shared/StackItem.react'
 import Icon from './shared/Icon.react'
@@ -21,10 +25,9 @@ class Sidebar extends React.Component {
         $('.sidebar').on('click', (e) => {
             const $section = $(e.target.closest('.sidebar_section'))
             if ($section.hasClass('sidebar_bookmarks') || $section.hasClass('sidebar_subscriptions') 
-                || $section.hasClass('sidebar_categories')) 
+                || $section.hasClass('sidebar_categories') || $section.hasClass('sidebar_topnav')) 
             {
-                $('.sidebar').removeClass('active');
-                $('.detail-bar').removeClass('active');
+                this.props.dispatch(closeSidebar())
             }  
         })
     }
@@ -91,8 +94,20 @@ class Sidebar extends React.Component {
 
     render() {
         const { user, app } = this.props;
+
+        // collapse sidebar by default if window width below threshold
+        const inRoom = this.props.routes[this.props.routes.length-1].path.substring(0, 3) === '/r/'
+        const collapsedClass = app.get('width') === 'small' 
+                                || app.get('width') === 'medium'
+                                || (app.get('width') === 'room-medium' && inRoom) 
+                                    ? 'collapsed' : ''
+
+        // display collapsed sidebar if selected
+        const activeClass = app.get('activeOverlay') === 'sidebar'
+                                ? 'active' : ''
+
         return (
-            <div className="sidebar">
+            <div className={`sidebar ${collapsedClass} ${activeClass}`}>
                 <div className="sidebar_section sidebar_topnav">
                     <Link to="/" activeClassName="selected">
                         <div className="sidebar_icon"><Icon type="home" /></div>Home
@@ -134,4 +149,11 @@ class Sidebar extends React.Component {
     }
 }
 
-export default Sidebar;
+function mapStateToProps(state) {
+    return {
+        user: new CurrentUser(state),
+        app: new App(state)
+    }
+}
+
+export default connect(mapStateToProps)(Sidebar);

@@ -7,8 +7,8 @@ import { isEmpty, assign } from 'lodash'
 import Player from './room/Player.react'
 import DetailBar from './room/DetailBar.react'
 
-import { loadStack, joinRoom, clearStack, bookmark, unbookmark, selectMediaItem, goForward, goBackward } from '../actions'
-import { Stack } from '../models'
+import { loadStack, joinRoom, clearStack, bookmark, unbookmark, selectMediaItem, goForward, goBackward, selectDetailSection, closeDetailSection } from '../actions'
+import { Stack, App } from '../models'
 import { baseUrl, storageAvailable } from '../utils'
 
 class Room extends React.Component {
@@ -32,17 +32,17 @@ class Room extends React.Component {
         const { params, dispatch } = this.props
         dispatch(loadStack(params.hid))
 
-        $(window).resize(this.resize)
-        this.resize();
+        // $(window).resize(this.resize)
+        // this.resize();
     }
 
     componentWillUnmount() {
         this.props.dispatch(clearStack());
 
-        $(window).off("resize", this.resize);
-        $('.sidebar').removeClass('collapsed');
-        $('.main').removeClass('expand-left');
-        $('.topbar_menu-icon').removeClass('active');
+        // $(window).off("resize", this.resize);
+        // $('.sidebar').removeClass('collapsed');
+        // $('.main').removeClass('expand-left');
+        // $('.topbar_menu-icon').removeClass('active');
     }
 
     componentDidUpdate(prevProps) {
@@ -73,15 +73,15 @@ class Room extends React.Component {
 
     resize() {
 
-        if ($('.app-container').width() < 1100 && !Modernizr.mq('(max-width:800px)')) {
-            $('.sidebar').addClass('collapsed');
-            $('.main').addClass('expand-left');
-            $('.topbar_menu-icon').addClass('active');
-        } else {
-            $('.sidebar').removeClass('collapsed');
-            $('.main').removeClass('expand-left');
-            $('.topbar_menu-icon').removeClass('active');
-        }
+        // if ($('.app-container').width() < 1100 && !Modernizr.mq('(max-width:800px)')) {
+        //     $('.sidebar').addClass('collapsed');
+        //     $('.main').addClass('expand-left');
+        //     $('.topbar_menu-icon').addClass('active');
+        // } else {
+        //     $('.sidebar').removeClass('collapsed');
+        //     $('.main').removeClass('expand-left');
+        //     $('.topbar_menu-icon').removeClass('active');
+        // }
 
     }
 
@@ -89,14 +89,14 @@ class Room extends React.Component {
 
     handleSelectMediaItem(id) {
         this.props.dispatch(selectMediaItem(id))
-        $('.detail-bar').removeClass('active');
+        this.props.dispatch(closeDetailSection())
     }
 
     handleSelectNewestLiveItem() {
         const newestLiveItem = this.props.stack.liveMediaItems().last();
         if (newestLiveItem) {
             this.props.dispatch(selectMediaItem(newestLiveItem.get('id')));
-            $('.detail-bar').removeClass('active');
+            this.props.dispatch(closeDetailSection())
         }
     }
 
@@ -162,9 +162,10 @@ class Room extends React.Component {
     }
 
     render() {
-        const { stack } = this.props;
+        const { stack, app } = this.props;
         const playerProps = { 
             stack, 
+            app,
             handleBookmark: this.handleBookmark, 
             handleUnbookmark: this.handleUnbookmark, 
             handleForward: this.handleForward, 
@@ -172,6 +173,7 @@ class Room extends React.Component {
         }
         const detailBarProps = { 
             stack, 
+            app,
             handleSelectMediaItem: this.handleSelectMediaItem,
             handleSelectNewestLiveItem: this.handleSelectNewestLiveItem
         }
@@ -187,7 +189,8 @@ class Room extends React.Component {
 
 function mapStateToProps(state, props) {
     return {
-        stack: new Stack(state)
+        stack: new Stack(state),
+        app: new App(state)
     }
 }
 

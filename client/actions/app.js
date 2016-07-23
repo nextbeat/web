@@ -60,6 +60,18 @@ export function closeModal() {
     }
 }
 
+export function selectSidebar() {
+    return {
+        type: ActionTypes.SELECT_SIDEBAR
+    }
+}
+
+export function closeSidebar() {
+    return {
+        type: ActionTypes.CLOSE_SIDEBAR
+    }
+}
+
 /********
  * EVENTS
  ********/

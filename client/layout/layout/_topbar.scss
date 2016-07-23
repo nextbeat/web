@@ -11,7 +11,7 @@
 .topbar_menu-icon {
     width: 30px;
     height: 30px;
-    display: none;
+    // display: none;
     position: absolute;
     z-index: 30;
     top: 10px;
@@ -162,9 +162,9 @@ a.topbar_dropdown-option {
 
 .topbar {
     @include media('<=medium') {
-        .topbar_menu-icon {
-            display: block;
-        }
+        // .topbar_menu-icon {
+        //     display: block;
+        // }
 
         .topbar_logo-container {
             margin-left: 55px;
@@ -222,13 +222,3 @@ a.topbar_dropdown-option {
         }
     }
 }
-
-// In-room responsiveness
-
-// .topbar.topbar-in-room {
-//     @include media('<=medium') {
-//         .topbar_user {
-//             display: none;
-//         }
-//     }
-// }

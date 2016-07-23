@@ -18,7 +18,9 @@ const KEY_MAP = {
     // facebook
     'facebookAppId': ['app', 'facebookAppId'],
     // state
-    'openModal': ['app', 'state', 'modal']
+    'activeModal': ['app', 'state', 'modal'],
+    'activeOverlay': ['app', 'state', 'overlay'],
+    'width': ['app', 'state', 'width']
 }
 
 export default class App extends ModelBase {

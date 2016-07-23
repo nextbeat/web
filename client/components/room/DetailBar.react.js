@@ -1,5 +1,8 @@
 import React from 'react'
 
+import { connect } from 'react-redux'
+import { selectDetailSection, closeDetailSection } from '../../actions'
+
 import Chat from './chat/Chat.react'
 import Activity from './activity/Activity.react'
 import Icon from '../shared/Icon.react'
@@ -9,19 +12,16 @@ class DetailBar extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            selected: "chat"
-        }
+
+        this.handleDetailOverlayClose = this.handleDetailOverlayClose.bind(this)
     }
 
     setSelected(selected) {
-        if (this.state.selected === selected) {
-            $('.detail-bar').toggleClass('active');
-        } else {
-            $('.detail-bar').addClass('active');
-        }
-        $('.sidebar').removeClass('active');
-        this.setState({ selected })
+        this.props.dispatch(selectDetailSection(selected))
+    }
+
+    handleDetailOverlayClose() {
+        this.props.dispatch(closeDetailSection())
     }
 
     renderBadge(stack) {
@@ -37,8 +37,16 @@ class DetailBar extends React.Component {
     }
 
     render() {
-        const selected = type => this.state.selected === type ? "selected" : "";
-        const { stack, handleSelectMediaItem, handleSelectNewestLiveItem  } = this.props;
+        const { stack, app, handleSelectMediaItem, handleSelectNewestLiveItem  } = this.props;
+        const selected = type => stack.get('selectedDetailSection', 'chat') === type ? "selected" : "";
+
+        // collapse detail bar if window width below threshold
+        const collapsedClass = app.get('width') === 'small' || app.get('width') === 'medium'
+                                    ? 'collapsed' : ''
+
+        const detailOverlayActive = app.get('activeOverlay') === 'chat' || app.get('activeOverlay') === 'activity'
+        const activeClass = detailOverlayActive ? 'active' : ''
+
         const activityProps = {
             stack,
             mediaItems: stack.mediaItems(),
@@ -47,23 +55,28 @@ class DetailBar extends React.Component {
             handleSelectMediaItem,
             handleSelectNewestLiveItem
         }
+
+
         return (
-            <div className="detail-bar">
-                <div className="detail-bar_expanded">
-                    <div className="detail-bar_header">
-                        <div className="detail-bar_tab-container">
-                            <span className={`detail-bar_tab ${selected("chat")}`} onClick={this.setSelected.bind(this, "chat")}>Chat</span>
-                            <span className={`detail-bar_tab ${selected("activity")}`} onClick={this.setSelected.bind(this, "activity")}>Activity{this.renderBadge(stack)}</span>
+            <div className={`detail-bar ${collapsedClass} ${activeClass}`}>
+                <div className="detail-bar_header">
+                    <div className="detail-bar_tab-container">
+                        <span className={`detail-bar_tab ${selected("chat")}`} onClick={this.setSelected.bind(this, "chat")}>Chat</span>
+                        <span className={`detail-bar_tab ${selected("activity")}`} onClick={this.setSelected.bind(this, "activity")}>Activity{this.renderBadge(stack)}</span>
+                    </div>
+                </div>
+                <div className="detail-bar_main">
+                    { detailOverlayActive && 
+                        <div className="detail-bar_close" onClick={this.handleDetailOverlayClose} >
+                            <Icon type="close" />
                         </div>
-                    </div>
-                    <div className="detail-bar_main">
-                        { !stack.get('isFetching') && !stack.get('error') && <Chat display={this.state.selected === "chat"} /> }
-                        { !stack.get('isFetching') && !stack.get('error') && <Activity display={this.state.selected === "activity"} {...activityProps} /> }
-                    </div>
+                    }
+                    { !stack.get('isFetching') && !stack.get('error') && <Chat display={stack.get('selectedDetailSection', 'chat') === "chat"} /> }
+                    { !stack.get('isFetching') && !stack.get('error') && <Activity display={stack.get('selectedDetailSection', 'chat') === "activity"} {...activityProps} /> }
                 </div>
             </div>
         );
     }
 }
 
-export default DetailBar;
+export default connect()(DetailBar);

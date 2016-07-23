@@ -268,6 +268,23 @@ export function goBackward() {
     return navigate(false);
 }
 
+/**************
+ * UI SELECTION
+ **************/
+
+export function selectDetailSection(section) {
+    return {
+        type: ActionTypes.SELECT_DETAIL_SECTION,
+        section
+    }
+}
+
+export function closeDetailSection() {
+    return {
+        type: ActionTypes.CLOSE_DETAIL_SECTION
+    }
+}
+
 /*******
  * VIEWS
  *******/

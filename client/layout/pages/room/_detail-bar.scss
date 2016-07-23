@@ -8,22 +8,19 @@
     background-color: #fff;
     border-left: 1px solid $border-color;
 
-    // collapse logic
-    @include media('<=medium') {
-        width: 100%;
-        overflow: visible;
-        height: 0px;
+    &.collapsed {
+        display: none;
 
         &.active {
-            height: auto;
-
-            .detail-bar_expanded {
-                display: block;
-            }
-
-            .selected .svg-icon {
-                fill: $light-primary-color;
-            }
+            display: block;
+            width: 100%;
+            position: absolute;
+            border: none;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            z-index: 30;
         }
 
         .detail-bar_header {
@@ -33,38 +30,6 @@
         .detail-bar_main {
             height: 100%;
         }
-
-        .detail-bar_expanded {
-            z-index: 30;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0; 
-            right: 0;
-            overflow: visible;
-            background: white;
-            display: none;
-
-            &.active {
-                display: block;
-            }
-        }
-    }
-}
-
-.detail-bar_expanded {
-    height: 100%;
-}
-
-.detail-bar_icon {
-    float: right;
-    margin-right: 15px;
-
-    .room_counter {
-        margin-top: 12px;
-        font-size: 18px;
-        color: $primary-color;
-        margin-right: 5px;
     }
 }
 
@@ -113,10 +78,34 @@
 
 .detail-bar_main {
     overflow: hidden;
+    position: relative;
     height: calc(100% - 40px);
 
     .spinner {
         margin: 10px auto;
+    }
+}
+
+.detail-bar_close {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    padding: 3px;
+    padding-bottom: 1px;
+    border: 1px solid $border-color;
+    background-color: rgba(white, 0.9);
+    z-index: 50;
+
+    .svg-icon-close {
+        width: 20px;
+        height: 20px;
+    }
+
+    &:hover {
+        cursor: pointer;
+        .svg-icon-close {
+            fill: $primary-color;
+        }
     }
 }
 

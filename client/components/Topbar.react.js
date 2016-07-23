@@ -1,6 +1,9 @@
 import React from 'react'
 import { findDOMNode } from 'react-dom'
 import { Link, browserHistory } from 'react-router'
+import { connect } from 'react-redux'
+
+import { selectSidebar, closeSidebar } from '../actions'
 
 import Icon from './shared/Icon.react'
 import Logo from './shared/Logo.react'
@@ -14,11 +17,17 @@ class Topbar extends React.Component {
         this.handleSearchKeyPress = this.handleSearchKeyPress.bind(this);
         this.renderLoggedIn = this.renderLoggedIn.bind(this);
         this.renderGuest = this.renderGuest.bind(this);
+
+        this.toggleSidebar = this.toggleSidebar.bind(this);
     }
 
     toggleSidebar() {
-        $('.sidebar').toggleClass('active');
-        $('.detail-bar').removeClass('active');
+        const { app, dispatch } = this.props
+        if (app.get('activeOverlay') === 'sidebar') {
+            dispatch(closeSidebar())
+        } else {
+            dispatch(selectSidebar())
+        }
     }
 
     toggleUserDropdown() {
@@ -91,10 +100,17 @@ class Topbar extends React.Component {
     }
 
     render() {
-        const { user } = this.props;
+        const { user, app } = this.props;
+
+        // show menu icon if medium width or in room
+        const inRoom = this.props.routes[this.props.routes.length-1].path.substring(0, 3) === '/r/'
+        const showTopbarMenuIcon = app.get('width') === 'small'
+                                || app.get('width') === 'medium'
+                                || (app.get('width') === 'room-medium' && inRoom) 
+
         return (
             <div className="topbar">
-                <div className="topbar_menu-icon" onClick={this.toggleSidebar}><Icon type="menu" /></div>
+                { showTopbarMenuIcon && <div className="topbar_menu-icon" onClick={this.toggleSidebar}><Icon type="menu" /></div> }
                 <div className="topbar_logo-container">
                     <span className="topbar_logo"><Link to="/"><Logo /></Link></span>
                     <span className="topbar_logo-small"><Link to="/"><SmallLogo /></Link></span>
@@ -109,4 +125,4 @@ class Topbar extends React.Component {
     }
 }
 
-export default Topbar;
+export default connect()(Topbar);

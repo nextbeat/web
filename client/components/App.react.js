@@ -176,7 +176,7 @@ class App extends React.Component {
 
     renderLogin() {
         const { user, app } = this.props;
-        const showLoginModal = app.get('openModal') === 'login'
+        const showLoginModal = app.get('activeModal') === 'login'
         return (
             <div id="login-container" className="modal-container" style={{ display: (showLoginModal ? 'block' : 'none') }}>
                 <div id="login" className="modal modal-auth">
@@ -202,7 +202,7 @@ class App extends React.Component {
 
     renderSignup() {
         const { user, app } = this.props;
-        const showSignupModal = app.get('openModal') === 'signup'
+        const showSignupModal = app.get('activeModal') === 'signup'
         return (
             <div id="signup-container" className="modal-container" style={{ display: (showSignupModal ? 'block' : 'none') }}>
                 <div id="signup" className="modal modal-auth">
@@ -230,14 +230,22 @@ class App extends React.Component {
     }
 
     render() {
-        const { user, app, connected, children } = this.props;
+        const { user, app, connected, children, routes } = this.props;
         const barProps = {
             user,
             app,
+            routes,
             handleLoginClick: this.handleLoginClick,
             handleLogoutClick: this.handleLogoutClick,
             handleSignupClick: this.handleSignupClick
         }
+
+        const inRoom = routes[routes.length-1].path.substring(0, 3) === '/r/'
+        const expandLeftClass = app.get('width') === 'small' 
+                                || app.get('width') === 'medium'
+                                || (app.get('width') === 'room-medium' && inRoom) 
+                                    ? 'expand-left' : ''
+
         return (
             <section className="app-container" id="app-container">
                 {this.setTitle()}
@@ -246,7 +254,7 @@ class App extends React.Component {
                 <Topbar {...barProps} />
                 <div className="main-container">
                     <Sidebar {...barProps} />
-                    <div className="main">
+                    <div className={`main ${expandLeftClass}`}>
                         {React.cloneElement(children, { user, connected })}
                     </div>
                 </div>

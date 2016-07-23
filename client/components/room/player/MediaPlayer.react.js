@@ -1,5 +1,8 @@
 import React from 'react'
 import { fromJS } from 'immutable'
+import { connect } from 'react-redux'
+
+import { selectDetailSection } from '../../../actions'
 
 import Video from './Video.react'
 import Photo from './Photo.react'
@@ -29,6 +32,8 @@ class MediaPlayer extends React.Component {
         super(props);
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.handleChat = this.handleChat.bind(this);
+        this.handleActivity = this.handleActivity.bind(this);
     }
 
     // Lifecycle
@@ -81,17 +86,30 @@ class MediaPlayer extends React.Component {
         }
     }
 
+    handleChat() {
+        this.props.dispatch(selectDetailSection('chat'))
+    }
+
+    handleActivity() {
+        this.props.dispatch(selectDetailSection('activity'))
+    }
+
     // Render
 
     render() {
-        const { stack, handleForward, handleBackward } = this.props;
+        const { stack, app, handleForward, handleBackward } = this.props;
+
         const item = stack.selectedMediaItem()
         const leftDisabledClass = stack.indexOfSelectedMediaItem() === 0 ? 'disabled' : '';
         const rightDisabledClass = stack.indexOfSelectedMediaItem() === stack.mediaItemsSize()-1 ? 'disabled' : ''; 
+
+        const activeDetailButtons = app.get('width') === 'small' || app.get('width') === 'medium'
+
+
         return (
         <div className="player_main">
-            <Counter stack={stack} />
-            <div className="player_hover-button player_chat-button" onClick={this.handleChat}>Chat</div>
+            <Counter stack={stack} active={activeDetailButtons} handleClick={this.handleActivity} />
+            { activeDetailButtons && <div className="player_hover-button player_chat-button" onClick={this.handleChat}>Chat</div> }
             <div className="player_media">
                 <div className="player_media-inner" id="player_media-inner">
                 { stack.mediaItems().size == 0 && !stack.get('mediaItemsError') && <Spinner type="large grey"/> }
@@ -110,4 +128,4 @@ class MediaPlayer extends React.Component {
     }
 }
 
-export default MediaPlayer;
+export default connect()(MediaPlayer);

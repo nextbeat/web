@@ -1,5 +1,5 @@
 import { Map, List } from 'immutable'
-import { inRange } from 'lodash'
+import { inRange, includes } from 'lodash'
 import { ActionTypes, Status } from '../../actions'
 import { combineReducers } from '../utils'
 
@@ -35,23 +35,37 @@ function authError(state = false, action) {
 
 const WIDTH_RANGES = [
     { range: [0, 500], type: 'small' },
-    { range: [501, 800], type: 'medium' },
-    { range: [801, 1100], type: 'room-medium' },
-    { range: [1101, Infinity], type: 'large' } 
+    { range: [500, 800], type: 'medium' },
+    { range: [800, 1100], type: 'room-medium' },
+    { range: [1100, Infinity], type: 'large' } 
 ]
 
 function state(state = Map(), action) {
     if (action.type === ActionTypes.PROMPT_MODAL) {
-        return state.merge({
-            modal: action.modalType
-        });
+        return state.set('modal', action.modalType)
     } else if (action.type === ActionTypes.CLOSE_MODAL) {
         return state.delete('modal')
+    } else if (action.type === ActionTypes.SELECT_SIDEBAR) {
+        return state.set('overlay', 'sidebar')
+    } else if (action.type === ActionTypes.CLOSE_SIDEBAR) {
+        return state.delete('overlay')
+    } else if (action.type === ActionTypes.SELECT_DETAIL_SECTION) {
+        // set as overlay if small or medium screen size
+        if (includes(['small', 'medium'], state.get('width'))) {
+            return state.set('overlay', action.section)
+        }
+    } else if (action.type === ActionTypes.CLOSE_DETAIL_SECTION) {
+        return state.delete('overlay')
     } else if (action.type === ActionTypes.RESIZE) {
-        const size = WIDTH_RANGES.find(r => inRange(Math.max(action.width, 0), ...r.range))['type'];
-        return state.merge({
-            width: size;
+        const width = Math.max(action.width, 0)
+        const size = WIDTH_RANGES.find(r => inRange(width, ...r.range))['type'];
+        state = state.merge({
+            width: size
         })
+        if (size === 'room-medium' || size === 'large') {
+            state = state.delete('overlay')
+        }
+        return state
     }
     return state
 }
@@ -59,7 +73,6 @@ function state(state = Map(), action) {
 const reducers = {
     tags,
     authError,
-    width
     state
 }
 
