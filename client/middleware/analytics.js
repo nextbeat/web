@@ -1,6 +1,28 @@
 import { AnalyticsTypes, ANALYTICS } from '../actions'
-import { assign } from 'lodash'
+import { assign, get } from 'lodash'
+import { parse } from 'querystring'
 import fetch from 'isomorphic-fetch'
+
+const CAMPAIGN_MAP = {
+    'e1': {
+        'campaignName': 'gen1',
+        'campaignSource': 'nextbeat',
+        'campaignMedium': 'email'
+    }
+}
+
+function parseQuery(queryString) {
+    // search query string for campaign-related parameters
+    const source = get(parse(queryString), 's', '')
+    if (source in CAMPAIGN_MAP) {
+        let fields = CAMPAIGN_MAP[source]
+        // set campaign-related parameters
+        for (let field in fields) {
+            ga('set', field, fields[field])
+        }
+    }
+    
+}
 
 function handleIdentify(data) {
     const user = data.user
@@ -9,6 +31,11 @@ function handleIdentify(data) {
 
 function handlePage(data) {
     ga('set', 'page', document.location.pathname)
+
+    if (document.location.search.length > 0) {
+        parseQuery(document.location.search.substring(1))
+    }
+
     ga('send', 'pageview')
 }
 
