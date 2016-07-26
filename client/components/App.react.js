@@ -223,6 +223,7 @@ class App extends React.Component {
                             <a className="btn btn-secondary modal_form_submit" onClick={this.handleSignupSubmit}>Sign Up</a>
                         </div>
                     </form>
+                    <div className="modal_extra">Already have an account? <a onClick={this.handleLoginClick}>Log in!</a></div>
                     { user.has('signupError') && <div className="modal-auth_error">{user.get('signupError')}</div> }
                 </div>
             </div>
