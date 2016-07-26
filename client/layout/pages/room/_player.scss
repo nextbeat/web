@@ -202,6 +202,8 @@
     background-color: white;
     padding: 10px 25px;
     margin: 30px 0;
+
+    @include clearfix;
     // overflow: auto;
 }
 

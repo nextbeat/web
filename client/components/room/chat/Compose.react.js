@@ -26,7 +26,12 @@ class Compose extends React.Component {
 
     handleSubmit(e) {
         this.props.sendComment(this.state.message);
-        this.setState({ message: '' })
+        if (this.props.user.isLoggedIn()) {
+            // If the user isn't logged in, they will be prompted to do so
+            // during the sendComment action. We don't want to clear the
+            // text box in this case.
+            this.setState({ message: '' })
+        }
     }
 
     handleKeyPress(e) {
@@ -51,10 +56,9 @@ class Compose extends React.Component {
     }
 
     render() {
-        const { user, closed } = this.props;
         return (
             <div className="chat_compose">
-            { user.isLoggedIn() ? this.renderChat() : <a className="chat_compose-notification" onClick={this.handleLoginClick}>Login to chat.</a> }
+            { this.renderChat() }
             </div>
         );
     }
