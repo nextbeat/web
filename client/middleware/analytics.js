@@ -5,7 +5,17 @@ import fetch from 'isomorphic-fetch'
 
 const CAMPAIGN_MAP = {
     'e1': {
-        'campaignName': 'gen1',
+        'campaignName': 'july16_followup',
+        'campaignSource': 'nextbeat',
+        'campaignMedium': 'email'
+    },
+    'e2': {
+        'campaignName': 'july16_forceful_outreach',
+        'campaignSource': 'nextbeat',
+        'campaignMedium': 'email'
+    },
+    'e3': {
+        'campaignName': 'july16_outreach',
         'campaignSource': 'nextbeat',
         'campaignMedium': 'email'
     }
