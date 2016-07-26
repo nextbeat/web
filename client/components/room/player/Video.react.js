@@ -81,7 +81,7 @@ class Video extends React.Component {
             currentTime: 0,
             loadedDuration: 0,
             duration: 0.5, // not zero to avoid divide by zero bugs
-            volume: 1,
+            // volume: 1,
             storedVolume: 1, // stores last set volume when volume = 0 due to muting
             isPlaying: true,
             displayControls: true,
@@ -264,6 +264,8 @@ class Video extends React.Component {
         const video = document.getElementById('video_player');
         video.load();
 
+        video.volume = this.props.volume;
+
         this.setState({
             currentTime: 0,
             duration: 0.5,
@@ -323,24 +325,25 @@ class Video extends React.Component {
             volume = 1;
         }
         video.volume = volume;
-        this.setState({ volume });
+        this.props.changeVolume(volume);
     }
 
     mute(e) {
         const video = document.getElementById('video_player');
-        const { volume, storedVolume } = this.state
+        const { storedVolume } = this.state
+        const { volume } = this.props
         if (volume > 0) {
             // mute and store previous volume
             video.volume = 0;
+            this.props.changeVolume(0);
             this.setState({
-                volume: 0,
                 storedVolume: volume
             })
         } else {
             // unmute and reset stored volume
             video.volume = storedVolume;
+            this.props.changeVolume(storedVolume);
             this.setState({
-                volume: storedVolume,
                 storedVolume: 1
             })
         }
@@ -509,8 +512,8 @@ class Video extends React.Component {
     }
 
     render() {
-        const { item } = this.props;
-        const { currentTime, duration, loadedDuration, volume, isPlaying, 
+        const { item, volume } = this.props;
+        const { currentTime, duration, loadedDuration, isPlaying, 
                 displayControls, isFullScreen, isIOSDevice, 
                 firstFrameImage, firstFrameHeight, firstFrameWidth, firstFrameUrl, 
                 orientation, processed } = this.state;

@@ -34,6 +34,12 @@ class MediaPlayer extends React.Component {
         this.handleKeyDown = this.handleKeyDown.bind(this);
         this.handleChat = this.handleChat.bind(this);
         this.handleActivity = this.handleActivity.bind(this);
+
+        this.changeVolume = this.changeVolume.bind(this);
+
+        this.state = {
+            volume: 1
+        }
     }
 
     // Lifecycle
@@ -94,6 +100,14 @@ class MediaPlayer extends React.Component {
         this.props.dispatch(selectDetailSection('activity'))
     }
 
+    // Video constants
+
+    changeVolume(volume) {
+        this.setState({
+            volume: volume
+        })
+    }
+
     // Render
 
     render() {
@@ -105,6 +119,12 @@ class MediaPlayer extends React.Component {
 
         const activeDetailButtons = app.get('width') === 'small' || app.get('width') === 'medium'
 
+        // we track video volume in this component so that
+        // it persists between video components
+        const videoVolumeProps = {
+            volume: this.state.volume,
+            changeVolume: this.changeVolume
+        }
 
         return (
         <div className="player_main">
@@ -114,7 +134,7 @@ class MediaPlayer extends React.Component {
                 <div className="player_media-inner" id="player_media-inner">
                 { stack.mediaItems().size == 0 && !stack.get('mediaItemsError') && <Spinner type="large grey"/> }
                 { !item.isEmpty() && (item.get('type') === "video" ? 
-                    <Video item={item} processed={item.get('processed', false)} /> : 
+                    <Video item={item} processed={item.get('processed', false)} {...videoVolumeProps} /> : 
                     <Photo item={item} processed={item.get('processed', false)} /> ) 
                 }
                 </div>
