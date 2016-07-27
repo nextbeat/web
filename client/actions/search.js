@@ -12,6 +12,10 @@ const SEARCH_TYPES = {
     'users': {
         endpoint: 'users',
         schema: Schemas.USERS
+    },
+    'stacks': {
+        endpoint: 'stacks',
+        schema: Schemas.STACKS
     }
 }
 

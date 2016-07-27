@@ -8,7 +8,9 @@ const KEY_MAP = {
     'usersFetching': ['search', 'pagination', 'users', 'isFetching'],
     'usersError': ['search', 'pagination', 'users', 'error'],
     'tagsFetching': ['search', 'pagination', 'tags', 'isFetching'],
-    'tagsError': ['search', 'pagination', 'tags', 'error']
+    'tagsError': ['search', 'pagination', 'tags', 'error'],
+    'stacksFetching': ['search', 'pagination', 'stacks', 'isFetching'],
+    'stacksError': ['search', 'pagination', 'stacks', 'error']
 }
 
 export default class Search extends ModelBase {
@@ -25,6 +27,10 @@ export default class Search extends ModelBase {
 
     users() {
         return this.__getPaginatedEntities('users')
+    }
+
+    stacks() {
+        return this.__getPaginatedEntities('stacks')
     }
 
 }

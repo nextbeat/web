@@ -8,13 +8,19 @@ import { loadSearchResults, clearSearch } from '../actions'
 import Spinner from './shared/Spinner.react'
 import Icon from './shared/Icon.react'
 import User from './shared/User.react'
+import LargeStackItem from './shared/LargeStackItem.react'
 import Badge from './shared/Badge.react'
 
 const SEARCH_FILTERS = [
+    {
+        name: 'Rooms',
+        searchType: 'stacks' 
+    },
     { 
         name: 'People',
         searchType: 'users',
-    },{
+    },
+    {
         name: 'Tags',
         searchType: 'tags'
     }
@@ -26,6 +32,8 @@ class SearchComponent extends React.Component {
         super(props)
 
         this.selectSearchType = this.selectSearchType.bind(this)
+
+        this.renderStacks = this.renderStacks.bind(this)
         this.renderUsers = this.renderUsers.bind(this)
         this.renderTags = this.renderTags.bind(this)
     }
@@ -33,7 +41,7 @@ class SearchComponent extends React.Component {
     componentDidMount() {
         const { dispatch, location } = this.props
         const query = location.query.q
-        dispatch(loadSearchResults(query, 'users'))
+        dispatch(loadSearchResults(query, 'stacks'))
     }
 
     componentWillUnmount() {
@@ -45,7 +53,7 @@ class SearchComponent extends React.Component {
         const query = location.query.q
         if (prevProps.search.get('query') !== query) {
             dispatch(clearSearch())
-            dispatch(loadSearchResults(query, 'users'))
+            dispatch(loadSearchResults(query, 'stacks'))
         }
     }
 
@@ -58,6 +66,19 @@ class SearchComponent extends React.Component {
     }
 
     // Render
+
+    renderStacks() {
+        const { search } = this.props
+        return (
+            <div className="search_results">
+                { search.get('stacksFetching') && <Spinner type="grey search-results" />}
+                { !search.get('stacksFetching') && search.stacks().size === 0 && <span className="search_no-content">No rooms found.</span>}
+                <div className="rooms-list_rooms">
+                    { search.stacks().map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
+                </div>
+            </div>
+        )
+    }
 
     renderUsers() {
         const { search } = this.props
@@ -102,6 +123,7 @@ class SearchComponent extends React.Component {
                         <span key={f.searchType} className={`filter ${selectedFilterClass(f)}`} onClick={this.selectSearchType.bind(this, f.searchType)}>{f.name}</span>
                     )}
                 </div>
+                { search.get('searchType') === 'stacks' && this.renderStacks() }
                 { search.get('searchType') === 'users' && this.renderUsers() }
                 { search.get('searchType') === 'tags' && this.renderTags() }
             </div>
