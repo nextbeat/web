@@ -204,7 +204,6 @@
     margin: 30px 0;
 
     @include clearfix;
-    // overflow: auto;
 }
 
 .player_info-top {
@@ -218,9 +217,10 @@
 }
 
 .player_description {
-    font-size: 15px;
-    min-height: 40px;
-    height: 40px; // Firefox fix
+    font-size: 18px;
+    font-weight: 300;
+    min-height: 20px;
+    height: 20px; // Firefox fix
     display: table;
 
     & > span {
@@ -236,15 +236,15 @@
 }
 
 .player_tags {
-    margin-top: 13px;
-    float: left;
+    margin: 3px 0 20px 0;
+    height: auto;
 }
 
 a.player_tag {
     color: white;
-    background: #999;
-    padding: 3px 5px;
-    font-size: 13px;
+    background: #ccc;
+    padding: 2px 5px;
+    font-size: 12px;
     font-weight: normal;
     margin-right: 5px;
 
@@ -253,9 +253,23 @@ a.player_tag {
     }
 }
 
+.player_info-data {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.player_info-views {
+    color: #666;
+    font-weight: 500;
+    margin-top: 5px;
+}
+
 .player_buttons {
     margin-top: 10px;
     float: right;
+    position: relative;
     @include clearfix;
 }
 

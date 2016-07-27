@@ -85,6 +85,36 @@
 
 }
 
+.user-small {
+
+    display: flex;
+    align-items: center;
+
+    * {
+        float: none;
+    }
+
+    .user_profpic {
+        width: 25px;
+        height: 25px;
+        border-radius: 5px;
+    }
+
+    .user_username {
+        font-weight: 500;
+    }
+
+    .user_subscribe {
+        float: left;
+        position: relative;
+        margin-left: 10px;
+
+        .btn {
+            font-weight: 300;
+        }
+    }
+}
+
 .user-right {
 
     float: right;

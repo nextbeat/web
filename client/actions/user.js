@@ -247,7 +247,7 @@ function postUnsubscribe(subscription_id) {
 }
 
 export function unsubscribe(user) {
-    return dispatch => {
+    return (dispatch, getState) => {
         if (Map.isMap(user)) {
             user = user.get('id')
         }

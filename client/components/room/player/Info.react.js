@@ -20,14 +20,17 @@ class Info extends React.Component {
         const closed = stack.get('closed');
         return (
             <section className="player_info">
-                <div className="player_info-top">
-                    <User user={stack.author()} style={"right"} />
-                    <div className="player_description"><span>{ stack.get('description') || "No description." } { !closed && <Badge elementType="player" type="open" /> } </span></div>
-                </div>
-                <div className="separator separator-player_info" />
+                <div className="player_description"><span>{ stack.get('description') || "No description." } { !closed && <Badge elementType="player" type="open" /> } </span></div>
                 <div className="player_tags">
                     {stack.get('tags', List()).map(tag => <Link to={`/t/${tag}`} key={`t-${tag}`} className="player_tag">{tag}</Link>)}
                 </div>
+                <div className="player_info-data">
+                    <User user={stack.author()} style="small" />
+                     <div className="player_info-views">
+                        <span className="player_info-view-count">{stack.get('views', 0)}</span> view{stack.get('views') !== 1 && 's'}
+                    </div>
+                </div>
+                <div className="separator separator-player_info" />
                 <div className="player_buttons">
                     <div className="player_button"><Bookmark {...this.props} /></div>
                     <div className="player_button"><Share stack={stack} /></div>

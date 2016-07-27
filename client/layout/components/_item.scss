@@ -248,10 +248,10 @@ a.item-room.selected {
 
 .item-room-large_bookmarks {
     position: absolute;
-    bottom: 5px;
-    right: 5px;
+    bottom: 7px;
+    right: 7px;
     z-index: 10;
-    color: white;
+    color: #eee;
 
     .svg-icon {
         position: absolute;
@@ -265,6 +265,20 @@ a.item-room.selected {
 
 .item-room-large_bookmark-count {
     margin-right: 19px;
+}
+
+.item-room-large_views {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    z-index: 10;
+    color: white;
+    font-size: 12px;
+    font-weight: 300;
+}
+
+.item-room-large_view-count {
+    font-weight: 400;
 }
 
 .item-room-large_description {

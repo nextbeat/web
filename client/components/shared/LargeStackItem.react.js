@@ -69,8 +69,8 @@ class LargeStackItem extends React.Component {
                     <div className="item_inner item-room-large_inner">
                         { !stack.get('closed') && <Badge elementType="item-room-large" type="open" /> }
                         <div className="item_thumb item-room-large_thumb" style={{backgroundImage: `url(${imageUrl})`}}>
-                            <div className="item-room-large_bookmarks">
-                                <span className="item-room-large_bookmark-count">{stack.get('bookmark_count')}</span><Icon type={bookmarkType} />
+                            <div className="item-room-large_views">
+                                <span className="item-room-large_view-count">{stack.get('views', 0)}</span> view{stack.get('views') !== 1 && 's'}
                             </div>
                         </div>
                     </div>
