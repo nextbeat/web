@@ -52,7 +52,10 @@ class StackItem extends React.Component {
         const node = $(this._node);
         const parent = node.parent();
         $(window).resize(this.resize.bind(this, node, parent));
-        this.resize(node, parent);
+    }
+
+    componentDidUpdate() {
+        this.resize($(this._node))
     }
 
     componentWillUnmount() {

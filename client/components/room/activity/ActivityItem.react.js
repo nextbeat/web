@@ -20,7 +20,10 @@ class ActivityItem extends React.Component {
     componentDidMount() {
         const node = $(this._node);
         $(window).resize(this.resize.bind(this, node, parent));
-        this.resize(node, parent);
+    }
+
+    componentDidUpdate() {
+        this.resize($(this._node))
     }
 
     componentWillUnmount() {
