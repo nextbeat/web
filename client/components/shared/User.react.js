@@ -13,7 +13,7 @@ class User extends React.Component {
         const styleClass = style ? `user-${style}` : "";
         return (
             <div className={`user ${styleClass}`}>
-            <Link to={`/u/${user.get('username')}`}><div className="user_profpic">{ profpic_url ? <img src={profpic_url} /> : <Icon type="person" /> }</div></Link>
+                <Link to={`/u/${user.get('username')}`}><div className="user_profpic">{ profpic_url ? <img src={profpic_url} /> : <Icon type="person" /> }</div></Link>
                 <Link to={`/u/${user.get('username')}`}><span className="user_username">{ user.get('username') }</span></Link>
                 <Subscribe user={user} />
             </div>

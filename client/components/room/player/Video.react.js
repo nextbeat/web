@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { assign } from 'lodash'
 import Promise from 'bluebird'
+import Hls from 'hls.js'
 import { toggleFullScreen, isIOSDevice, getOrientationFromFile } from '../../../utils'
 
 import Decoration from './Decoration.react'
@@ -81,7 +82,6 @@ class Video extends React.Component {
             currentTime: 0,
             loadedDuration: 0,
             duration: 0.5, // not zero to avoid divide by zero bugs
-            // volume: 1,
             storedVolume: 1, // stores last set volume when volume = 0 due to muting
             isPlaying: true,
             displayControls: true,
@@ -262,7 +262,20 @@ class Video extends React.Component {
         clearInterval(this.state.hoverTimeoutId);
 
         const video = document.getElementById('video_player');
-        video.load();
+
+        // video.load();
+
+        var hls = new Hls();
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+            console.log("video and hls.js are now bound together !");
+            hls.loadSource("https://media.dev.nextbeat.co/videos/052F2EE6-82AD-4988-978E-67B34F14CBF0/master.m3u8");
+            hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                console.log("manifest loaded, found " + data.levels.length + " quality levels");
+                video.play();
+            });
+        });
+
 
         video.volume = this.props.volume;
 
@@ -554,7 +567,7 @@ class Video extends React.Component {
                     <div ref={(c) => this._node = c} className="video_player-background" style={this.firstFrameStyle(this.state)}></div>
                     { isIOSDevice && 
                         <video id="video_player" className="video_player" autoload controls preload="auto">
-                            { !(this.shouldForceVideoRotation() && firstFrameUrl.length === 0) && <source src={item.get('url')} type="video/mp4" /> }
+                            { /* !(this.shouldForceVideoRotation() && firstFrameUrl.length === 0) && <source src={item.get('url')} type="video/mp4" /> */ }
                         </video>
                     }
                     { !isIOSDevice && 
