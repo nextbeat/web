@@ -19,6 +19,10 @@ export default class MediaItem {
         return this.state.getIn(attrs, defaultValue)
     }
 
+    isEmpty() {
+        return this.state.isEmpty()
+    }
+
     video(preferredType) {
         return this.__getResource('videos', preferredType)
     }   

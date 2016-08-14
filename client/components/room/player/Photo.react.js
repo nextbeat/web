@@ -1,26 +1,8 @@
 import React from 'react'
 import Promise from 'bluebird'
+import { Map } from 'immutable'
 
 import Decoration from './Decoration.react'
-import { getOrientationFromFile } from '../../../utils'
-
-function getImageOrientation(url) {
-    return new Promise((resolve, reject) => {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-        xhr.responseType = 'blob';
-        xhr.onload = function(e) {
-            if (this.status == 200) {
-                // get binary data as a response
-                var blob = this.response;
-                getOrientationFromFile(blob, o => { resolve(o) })
-            } else {
-                reject();
-            }
-        };
-        xhr.send();
-    })
-}
 
 class Photo extends React.Component {
 
@@ -32,25 +14,35 @@ class Photo extends React.Component {
 
         this.state = {
             url: '',
-            image: new Image(),
-            width: 0,
-            height: 0,
-            // unprocessed image display logic
-            orientation: -1,
-            scale: 1
+            image: Map(),
+            imageObject: new Image()
         }
     }
 
     // Component lifecycle
 
     componentDidMount() {
-        const { image } = this.state
+        const { imageObject } = this.state
+        const { item } = this.props
 
-        // for processed images
-        image.addEventListener('load', () => {
-            this.setState({ url: this.props.item.get('url') })
-            this.resize()
+        let image = item.image()
+        image = image.update({
+            width: parseFloat(image.get('width', 0)),
+            height: parseFloat(image.get('height', 0))
         })
+        this.setState({ image })
+
+        // if width/height undefined or 0, we need to load the image into a JS Image object
+        // (this is temporary!)
+        if (image.get('width') === 0) {
+            // for processed images
+            imageObject.addEventListener('load', () => {
+                this.setState({ url: this.props.item.get('url') })
+                this.resize()
+            })
+        } 
+
+
         window.addEventListener('resize', this.resize)
 
         this.loadImage(this.props)
@@ -70,19 +62,8 @@ class Photo extends React.Component {
 
     loadImage(props) {
         const { processed, item } = props
-        if (processed) {
-            // we are guaranteed a proper orientation, so we don't have to explicitly load the image blob to check
-            this.setState({ url: '' })
-            this.state.image.src = item.get('url')
-        } else {
-            getImageOrientation(item.get('url')).bind(this).then(function(o) {
-                this.setState({
-                    orientation: o
-                })
-                // load image once orientation is known
-                this.state.image.src = item.get('url')
-            })
-        }
+        this.setState({ url: '' })
+        this.state.image.src = item.get('url')
     }
 
     // Events
@@ -114,13 +95,13 @@ class Photo extends React.Component {
 
     // Render
 
-    imageStyle(state) {
-        const { orientation, scale, url } = state
+    imageStyle(image) {
+        const scale = image.get('height') > 0 ? image.get('width')/image.get('height') : 1
 
-        let style = { backgroundImage: `url(${url})` }
-        if (orientation === 8) {
+        let style = { backgroundImage: `url(${image.get('url')}` }
+        if (orientation === 90) {
             style.transform = `rotate(-90deg) scale(${scale})`
-        } else if (orientation === 6) {
+        } else if (orientation === 270) {
             style.transform = `rotate(90deg) scale(${scale})`
         }
         return style;
