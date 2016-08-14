@@ -1,4 +1,5 @@
 import ModelBase from './base'
+import MediaItem from './mediaItem'
 
 import { List, Set } from 'immutable'
 import CurrentUser from './currentUser'
@@ -45,15 +46,16 @@ export default class Stack extends ModelBase {
     }
 
     mediaItems() {
-        return this.__getPaginatedEntities('mediaItems')
+        return this.__getPaginatedEntities('mediaItems').map(state => MediaItem(state))
     }
 
     selectedMediaItem() {
-        return this.__getEntity(this.get('selectedMediaItemId', 0), 'mediaItems')
+        let mediaItemState = this.__getEntity(this.get('selectedMediaItemId', 0), 'mediaItems')
+        return MediaItem(mediaItemState)
     }
 
     liveMediaItems() {
-        return this.__getLiveEntities('mediaItems')
+        return this.__getLiveEntities('mediaItems').map(state => MediaItem(state))
     }
 
     comments() {
