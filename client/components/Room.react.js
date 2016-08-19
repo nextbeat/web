@@ -31,18 +31,10 @@ class Room extends React.Component {
     componentDidMount() {
         const { params, dispatch } = this.props
         dispatch(loadStack(params.hid))
-
-        // $(window).resize(this.resize)
-        // this.resize();
     }
 
     componentWillUnmount() {
         this.props.dispatch(clearStack());
-
-        // $(window).off("resize", this.resize);
-        // $('.sidebar').removeClass('collapsed');
-        // $('.main').removeClass('expand-left');
-        // $('.topbar_menu-icon').removeClass('active');
     }
 
     componentDidUpdate(prevProps) {
@@ -67,22 +59,6 @@ class Room extends React.Component {
 
             this.props.dispatch(selectMediaItem(id))
         }
-    }
-
-    // EVENTS
-
-    resize() {
-
-        // if ($('.app-container').width() < 1100 && !Modernizr.mq('(max-width:800px)')) {
-        //     $('.sidebar').addClass('collapsed');
-        //     $('.main').addClass('expand-left');
-        //     $('.topbar_menu-icon').addClass('active');
-        // } else {
-        //     $('.sidebar').removeClass('collapsed');
-        //     $('.main').removeClass('expand-left');
-        //     $('.topbar_menu-icon').removeClass('active');
-        // }
-
     }
 
     // SELECT MEDIA ITEM

@@ -15,8 +15,12 @@ export default class MediaItem {
     // accessors
 
     get(attr, defaultValue) {
-        attrs = attr.split('.')
+        let attrs = attr.split('.')
         return this.state.getIn(attrs, defaultValue)
+    }
+
+    isEmpty() {
+        return this.state.isEmpty()
     }
 
     video(preferredType) {
@@ -31,7 +35,7 @@ export default class MediaItem {
         // default to the largest thumbnail
         let defaultKeyFn = (thumbnails) => {
             let orderedThumbnails = thumbnails.sort((a, b) => a.get('width') > b.get('width') ? 1 : -1 )
-            return orderedThumbnails.keys().next()
+            return orderedThumbnails.keys().next().value
         }
         return this.__getResource('thumbnails', preferredType, defaultKeyFn)
     }
@@ -52,18 +56,18 @@ export default class MediaItem {
 
     __getResource(resourceType, preferredType, defaultKeyFn) {
         let resources = this.get(resourceType, Map())
-        if (resources.has(preferredType)) {
-            return resoucres.get(preferredType).set('type', preferredType)
+        if (preferredType && resources.has(preferredType)) {
+            return resources.get(preferredType).set('type', preferredType)
         }
 
         // else default to any resource
-        defaultKeyFn = defaultKeyFn || (resources) => resources.keys().next() 
+        defaultKeyFn = defaultKeyFn || (resources => resources.keys().next().value) 
         let key = defaultKeyFn(resources)
         if (key) {
             return resources.get(key).set('type', key)
         }
 
-        return null
+        return Map()
     }
 
 }

@@ -46,12 +46,12 @@ export default class Stack extends ModelBase {
     }
 
     mediaItems() {
-        return this.__getPaginatedEntities('mediaItems').map(state => MediaItem(state))
+        return this.__getPaginatedEntities('mediaItems').map(state => new MediaItem(state))
     }
 
     selectedMediaItem() {
         let mediaItemState = this.__getEntity(this.get('selectedMediaItemId', 0), 'mediaItems')
-        return MediaItem(mediaItemState)
+        return new MediaItem(mediaItemState)
     }
 
     liveMediaItems() {

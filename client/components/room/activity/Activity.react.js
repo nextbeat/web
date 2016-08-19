@@ -101,7 +101,7 @@ const scrollOptions = {
             return;
         }
         
-        if (prevProps.selectedItem !== this.props.selectedItem) {
+        if (prevProps.selectedItem.get('id') !== this.props.selectedItem.get('id')) {
             const [ selected, activity ] = [ $('.item-activity.selected'), $('#activity-inner') ];
 
             // adjust position to keep selected element at bottom of view
