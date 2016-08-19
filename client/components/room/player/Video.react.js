@@ -3,29 +3,11 @@ import { connect } from 'react-redux'
 import { assign } from 'lodash'
 import Promise from 'bluebird'
 import Hls from 'hls.js'
-import { toggleFullScreen, isIOSDevice, getOrientationFromFile } from '../../../utils'
+import { toggleFullScreen, isIOSDevice } from '../../../utils'
 
 import Decoration from './Decoration.react'
 import Icon from '../../shared/Icon.react'
 import { App } from '../../../models'
-
-function getImageOrientation(url) {
-    return new Promise((resolve, reject) => {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-        xhr.responseType = 'blob';
-        xhr.onload = function(e) {
-            if (this.status == 200) {
-                // get binary data as a response
-                var blob = this.response;
-                getOrientationFromFile(blob, o => { resolve(o) })
-            } else {
-                reject();
-            }
-        };
-        xhr.send();
-    })
-}
 
 function padNumber(num) {
     const str = num.toString();
