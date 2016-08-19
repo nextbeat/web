@@ -6,17 +6,9 @@ import Hls from 'hls.js'
 import { toggleFullScreen, isIOSDevice } from '../../../utils'
 
 import Decoration from './Decoration.react'
-import Icon from '../../shared/Icon.react'
+import VideoControls from './VideoControls.react'
 import { App } from '../../../models'
 
-function padNumber(num) {
-    const str = num.toString();
-    return ('00'+str).substring(str.length);
-}
-
-function timeStr(time) {
-    return `${padNumber(Math.floor(time/60.0))}:${padNumber(Math.floor(time % 60))}`
-}
 
 class Video extends React.Component {
 
@@ -24,7 +16,7 @@ class Video extends React.Component {
         super(props);
 
         this.shouldForceVideoRotation = this.shouldForceVideoRotation.bind(this);
-
+        this.shouldForceVideoResizing = this.shouldForceVideoResizing.bind(this);
         this.resize = this.resize.bind(this);
 
         this.didLoadMetadata = this.didLoadMetadata.bind(this);
@@ -40,17 +32,7 @@ class Video extends React.Component {
         this.handleOnMouseUp = this.handleOnMouseUp.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
 
-        this.handleProgressBarOnMouseOver = this.handleProgressBarOnMouseOver.bind(this);
-        this.handleProgressBarOnMouseOut = this.handleProgressBarOnMouseOut.bind(this);
-        this.handleProgressBarOnMouseDown = this.handleProgressBarOnMouseDown.bind(this);
-
-        this.handleVolumeOnMouseDown = this.handleVolumeOnMouseDown.bind(this);
-        this.handleVolumeOnMouseMove = this.handleVolumeOnMouseMove.bind(this);
-        this.handleVolumeOnMouseUp = this.handleVolumeOnMouseUp.bind(this);
-        this.handleVolumeOnMouseOut = this.handleVolumeOnMouseOut.bind(this);
-
         this.loadVideo = this.loadVideo.bind(this);
-        this.loadFirstFrame = this.loadFirstFrame.bind(this);
         this.playPause = this.playPause.bind(this);
         this.seek = this.seek.bind(this);
         this.adjustVolume = this.adjustVolume.bind(this);
@@ -66,19 +48,13 @@ class Video extends React.Component {
             duration: 0.5, // not zero to avoid divide by zero bugs
             storedVolume: 1, // stores last set volume when volume = 0 due to muting
             isPlaying: true,
-            displayControls: true,
-            isMouseOver: false,
-            isDraggingProgressBar: false,
-            isDraggingVolume: false,
+            shouldDisplayControls: true,
             isFullScreen: false,
             isIOSDevice: false,
             timeIntervalId: -1,
             hoverTimeoutId: -1,
-            firstFrameImage: new Image(),
-            firstFrameUrl: '',
-            firstFrameWidth: 0,
-            firstFrameHeight: 0,
-            orientation: -1,
+            width: 0,
+            height: 0,
             scale: 1
         };
     }
@@ -94,21 +70,9 @@ class Video extends React.Component {
         video.addEventListener('waiting', this.isWaiting);
         video.addEventListener('progress', this.didProgressDownload);
 
-        // if we need to force video rotation, we don't want to load
-        // the video until the orientation
-        if (!this.shouldForceVideoRotation()) {
-            this.loadVideo(this.props.item);
-        }
-
-        // display first frame image once fully loaded
-        this.state.firstFrameImage.addEventListener('load', () => {
-            this.setState({ firstFrameUrl: this.props.item.get('firstframe_url') })
-            this.resize()
-        })
+        this.loadVideo(this.props.video);
         window.addEventListener('resize', this.resize)
-
-        this.loadFirstFrame(this.props);
-
+        this.resize()
 
         // iOS does not do custom controls well
         this.setState({
@@ -132,45 +96,47 @@ class Video extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.item !== this.props.item) {
-            this.loadVideo(this.props.item);
-            this.loadFirstFrame(this.props);
+        if (prevProps.video !== this.props.video) {
+            this.loadVideo(this.props.video);
         }
     }
 
     // Queries
 
     shouldForceVideoRotation() {
-        const { app, processed } = this.props;
-        return !processed && (app.get('browser') === 'Firefox' || (app.get('browser') === 'IE' && parseInt(app.get('version')) === 10))
+        const { app } = this.props;
+        return app.get('browser') === 'Firefox' || (app.get('browser') === 'IE' && parseInt(app.get('version')) === 10)
+    }
+
+    shouldForceVideoResizing() {
+        const { app } = this.props;
+        return app.get('browser') === 'Chrome' && parseInt(app.get('version')) >= 52;
     }
 
     // Events 
 
     resize() {
-        const { processed } = this.props
+        const { video } = this.props
 
-        const { firstFrameImage } = this.state 
         const containerWidth = $('.player_media-inner').width()
         const containerHeight = $('.player_media-inner').height()
-        const imageRatio = firstFrameImage.width/firstFrameImage.height
+        const videoRatio = video.get('width')/video.get('height')
         const containerRatio = containerWidth/containerHeight
 
-        if (imageRatio > containerRatio) {
+        if (videoRatio > containerRatio) {
             this.setState({
-                firstFrameWidth: containerWidth,
-                firstFrameHeight: Math.floor(containerWidth/imageRatio)
+                width: containerWidth,
+                height: Math.floor(containerWidth/videoRatio)
             })
         } else {
             this.setState({
-                firstFrameWidth: Math.floor(containerHeight*imageRatio),
-                firstFrameHeight: containerHeight
+                width: Math.floor(containerHeight*videoRatio),
+                height: containerHeight
             })
         }
 
-        const node = $(this._node)
         this.setState({
-            scale: node.width()/node.height()
+            scale: containerRatio
         })
     }
 
@@ -203,7 +169,7 @@ class Video extends React.Component {
         if (video.currentTime === 0) {
             this.hideControlsAfterDelay();
             this.setState({
-                displayControls: true
+                shouldDisplayControls: true
             })
         } 
     }
@@ -215,7 +181,7 @@ class Video extends React.Component {
         this.setState({
             currentTime: video.currentTime,
             isPlaying: false,
-            displayControls: true
+            shouldDisplayControls: true
         });
     }
 
@@ -239,54 +205,36 @@ class Video extends React.Component {
 
     // Actions
 
-    loadVideo(item) {
+    loadVideo(video) {
         clearInterval(this.state.timeIntervalId);
         clearInterval(this.state.hoverTimeoutId);
 
-        const video = document.getElementById('video_player');
+        const videoPlayer = document.getElementById('video_player');
 
-        // video.load();
+        console.log(video.get('url'))
 
-        var hls = new Hls();
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-            console.log("video and hls.js are now bound together !");
-            hls.loadSource("https://media.dev.nextbeat.co/videos/052F2EE6-82AD-4988-978E-67B34F14CBF0/master.m3u8");
-            hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-                console.log("manifest loaded, found " + data.levels.length + " quality levels");
-                video.play();
+        if (video.get('type') === 'hls') {
+            var hls = new Hls();
+            hls.attachMedia(videoPlayer);
+            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+                console.log("video and hls.js are now bound together !");
+                hls.loadSource(video.get('url'));
+                hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                    console.log("manifest loaded, found " + data.levels.length + " quality levels");
+                    video.play();
+                });
             });
-        });
+        } else {
+            videoPlayer.src = video.get('url')
+        }
 
-
-        video.volume = this.props.volume;
+        videoPlayer.volume = this.props.volume;
 
         this.setState({
             currentTime: 0,
             duration: 0.5,
             loadedDuration: 0
         });
-    }
-
-    loadFirstFrame(props) {
-        const { processed, item } = props
-        if (processed) {
-            // we are guaranteed a proper orientation, so we don't have to explicitly load the image blob to check
-            this.setState({ firstFrameUrl: '' })
-            this.state.firstFrameImage.src = item.get('firstframe_url')
-        } else {
-            getImageOrientation(item.get('firstframe_url')).bind(this).then(function(o) {
-                this.setState({
-                    orientation: o
-                })
-                // load image once orientation is known
-                this.state.firstFrameImage.src = item.get('firstframe_url')
-                // once we have the orientation, we can load the video if we need to force the rotation
-                if (this.shouldForceVideoRotation()) {
-                    this.loadVideo(item)
-                }
-            })
-        }
     }
 
     playPause() {
@@ -298,21 +246,16 @@ class Video extends React.Component {
         }
     }
 
-    seek(e) {
+    seek(time) {
         const video = document.getElementById('video_player');
-        const offset = e.pageX - $('.video_progress-bar').offset().left;
-        const width = $('.video_progress-bar').width();
-        video.currentTime = offset/width * video.duration;
+        video.currentTime = time;
         this.setState({
             currentTime: video.currentTime
         });
     }
 
-    adjustVolume(e) {
+    adjustVolume(volume) {
         const video = document.getElementById('video_player');
-        const offset = e.pageX - $('.video_volume-slider-container').offset().left;
-        const width = $('.video_volume-slider-container').width();
-        let volume = offset/width;
         if (volume < 0.05) {
             volume = 0;
         }
@@ -323,7 +266,7 @@ class Video extends React.Component {
         this.props.changeVolume(volume);
     }
 
-    mute(e) {
+    mute() {
         const video = document.getElementById('video_player');
         const { storedVolume } = this.state
         const { volume } = this.props
@@ -355,7 +298,7 @@ class Video extends React.Component {
         const hoverTimeoutId = setTimeout(() => {
             if (this.state.isPlaying) {
                 this.setState({
-                    displayControls: false
+                    shouldDisplayControls: false
                 })
             }
         }, delay);
@@ -368,42 +311,33 @@ class Video extends React.Component {
 
     handleOnMouseOver() {
         this.setState({
-            displayControls: true,
-            isMouseOver: true
+            shouldDisplayControls: true
         })
         this.hideControlsAfterDelay()
+
     }
 
     handleOnMouseOut() {
-        this.setState({
-            isMouseOver: false
-        })
         if (this.state.isPlaying) {
             this.setState({
-                displayControls: false
+                shouldDisplayControls: false
             })
         }
     }
 
     handleOnMouseMove(e) {
-        if (this.state.isDraggingProgressBar) {
-            this.seek(e);
-        }
         this.setState({
-            displayControls: true
+            shouldDisplayControls: true,
         });
         this.hideControlsAfterDelay()
+
+        // call event handler on child component
+        this.refs.controls.handleOnMouseMove(e)
     }
 
     handleOnMouseUp(e) {
-        if (this.state.isDraggingProgressBar) {
-            this.seek(e);
-            this.setState({
-                isDraggingProgressBar: false
-            });
-            $('.video_progress-scrubber').removeClass('active');
-            $('.video_progress-bar').removeClass('active');
-        }
+        // call event handler on child component
+        this.refs.controls.handleOnMouseUp(e)
     }
 
     handleKeyPress(e) {
@@ -413,81 +347,28 @@ class Video extends React.Component {
         }
     }
 
-    // Progress bar events
-
-    handleProgressBarOnMouseOver() {
-        $('.video_progress-scrubber').addClass('active');
-        $('.video_progress-bar').addClass('active');
-    }
-
-    handleProgressBarOnMouseOut() {
-        if (!this.state.isDraggingProgressBar) {
-            $('.video_progress-scrubber').removeClass('active');
-            $('.video_progress-bar').removeClass('active');
-        }
-    }
-
-    handleProgressBarOnMouseDown(e) {
-        this.seek(e);
-        this.setState({
-            isDraggingProgressBar: true
-        });
-    }
-
-    // Volume events
-
-    handleVolumeOnMouseDown(e) {
-        this.adjustVolume(e);
-        this.setState({
-            isDraggingVolume: true
-        })
-    }
-
-    handleVolumeOnMouseMove(e) {
-        if (this.state.isDraggingVolume) {
-            this.adjustVolume(e);
-        }
-    }
-
-    handleVolumeOnMouseUp(e) {
-        this.adjustVolume(e);
-        this.setState({
-            isDraggingVolume: false
-        })
-    }
-
-    handleVolumeOnMouseOut(e) {
-        this.setState({
-            isDraggingVolume: false
-        })
-    }
-
     // Render
 
-    firstFrameStyle(state) {
-        const { orientation, scale, firstFrameUrl } = state
-
-        let style = { backgroundImage: `url(${firstFrameUrl})` }
-        if (orientation === 8) {
-            style.transform = `rotate(-90deg) scale(${scale})`
-        } else if (orientation === 6) {
-            style.transform = `rotate(90deg) scale(${scale})`
-        }
-        return style;
-    }
-
-    videoStyle(state) {
-        const { orientation, scale } = state
+    videoStyle(video, state) {
+        const { scale } = state
         
-        // need to manually rotate video if in Firefox or IE 10 and unprocessed
         let style = {}
         if (this.shouldForceVideoRotation()) {
-            if (orientation === 8) {
+            // need to manually rotate video if in Firefox or IE 10 
+            if (video.get('orientation') === 90) {
+                style.transform = `rotate(90deg) scale(${scale})`
+                style.left = 0
+                style.top = 0
+            } else if (video.get('orientation') === 270) {
                 style.transform = `rotate(-90deg) scale(${scale})`
                 style.left = 0
                 style.top = 0
-            } else if (orientation === 6) {
-                style.transform = `rotate(90deg) scale(${scale})`
+            }
+        } else if (this.shouldForceVideoResizing()) {
+            // need to manually rescale video if in Chrome 52
+            if (video.get('orientation') === 90 || video.get('orientation') === 270) {
+                const videoRatio = video.get('width')/video.get('height')
+                style.transform = `scaleX(${videoRatio*scale}) scaleY(${1/videoRatio*scale})`
                 style.left = 0
                 style.top = 0
             }
@@ -496,27 +377,18 @@ class Video extends React.Component {
     }
 
     captionStyle(state) {
-        const { orientation, firstFrameWidth, firstFrameHeight } = state 
-        if (orientation === 6 || orientation === 8) {
-            const containerWidth = $('.player_media-inner').width()
-            const containerHeight = $('.player_media-inner').height()
-            return {width: `${containerWidth}px`, height: `${containerHeight}px`}
-        } else {
-            return {width: `${firstFrameWidth}px`, height: `${firstFrameHeight}px`}
+        const { width, height } = state 
+        return {
+            width: `${width}px`, 
+            height: `${height}px`
         }
     }
 
     render() {
-        const { item, volume } = this.props;
-        const { currentTime, duration, loadedDuration, isPlaying, 
-                displayControls, isFullScreen, isIOSDevice, 
-                firstFrameImage, firstFrameHeight, firstFrameWidth, firstFrameUrl, 
-                orientation, processed } = this.state;
+        const { video, volume, decoration } = this.props;
+        const { isIOSDevice, shouldDisplayControls } = this.state;
 
-        const displayControlsClass = displayControls ? "display-controls" : "";
-        const displayControlsVideoStyle = displayControls ? { cursor: 'auto' } : { cursor: 'none' };
-        const volumeIcon = volume === 0 ? "volume-mute" : (volume < 0.4 ? "volume-down" : "volume-up");
-        const fullScreenIcon = isFullScreen ? "fullscreen-exit" : "fullscreen";
+        const displayControlsVideoStyle = shouldDisplayControls ? { cursor: 'auto' } : { cursor: 'none' };
 
         const videoContainerEvents = {
             onMouseOver: this.handleOnMouseOver,
@@ -525,80 +397,42 @@ class Video extends React.Component {
             onMouseUp: this.handleOnMouseUp,
             onKeyPress: this.handleKeyPress,
         }
-        const progressBarEvents = {
-            onMouseOver: this.handleProgressBarOnMouseOver,
-            onMouseOut: this.handleProgressBarOnMouseOut,
-            onMouseDown: this.handleProgressBarOnMouseDown,
-        }
-        const volumeEvents = {
-            onMouseDown: this.handleVolumeOnMouseDown,
-            onMouseMove: this.handleVolumeOnMouseMove,
-            onMouseUp: this.handleVolumeOnMouseUp,
-            onMouseOut: this.handleVolumeOnMouseOut
+
+        const videoControlsProps = {
+            currentTime: this.state.currentTime,
+            duration: this.state.duration,
+            loadedDuration: this.state.loadedDuration,
+            volume: volume,
+            shouldDisplayControls: this.state.shouldDisplayControls,
+            isPlaying: this.state.isPlaying,
+            isFullScreen: this.state.isFullScreen,
+            adjustVolume: this.adjustVolume,
+            mute: this.mute,
+            playPause: this.playPause,
+            seek: this.seek,
+            fullScreen: this.fullScreen
         }
 
-        let decoration = item.get('decoration')
-        if (!processed && decoration && orientation > 0) {
-            // WORK AROUND until we can include width and height in response to simplify things
-            decoration = decoration.set('caption_offset', 0.5)
+        let videoAttributes = {
+            preload: "auto",
+            autoload: true,
+            controls: isIOSDevice,
+            autoPlay: !isIOSDevice
         }
+
 
         return (
             <div className="video_container" id="video_container" tabIndex="-1" style={displayControlsVideoStyle} {...videoContainerEvents}>
                 <div className="video_player-container">
-                    <div ref={(c) => this._node = c} className="video_player-background" style={this.firstFrameStyle(this.state)}></div>
-                    { isIOSDevice && 
-                        <video id="video_player" className="video_player" autoload controls preload="auto">
-                            { /* !(this.shouldForceVideoRotation() && firstFrameUrl.length === 0) && <source src={item.get('url')} type="video/mp4" /> */ }
-                        </video>
-                    }
-                    { !isIOSDevice && 
-                        <video id="video_player" className="video_player" autoPlay autoload preload="auto" style={this.videoStyle(this.state, this.props)} >
-                            <source src={item.get('url')} type="video/mp4" />
-                        </video>
-                    }
-                    { firstFrameUrl.length > 0 && decoration && 
+                    <div className="video_player-background" style={{ backgroundImage: `url(${video.get('poster_url')})`}}></div>
+                    <video id="video_player" className="video_player" {...videoAttributes} style={this.videoStyle(video, this.state)}></video>
+                    { decoration && 
                         <div className="video_player-decoration" style={this.captionStyle(this.state)}>
                             <Decoration decoration={decoration} />
                         </div>
                     }
                 </div>
-                { !isIOSDevice &&
-                    <div className={`video_bottom ${displayControlsClass}`}>
-                        <div className="video_gradient-bottom"></div>
-                        <div className="video_progress-bar-container">
-                            <div className="video_progress-bar-padding" {...progressBarEvents}></div>
-                            <div className="video_progress-scrubber" style={{ left: `${ currentTime/duration*100 }%` }} ></div>
-                            <div className="video_progress-bar">
-                                <div className="video_progress-play" style={{ transform: `scaleX(${ currentTime/duration })` }}></div>
-                                <div className="video_progress-buffer" style={{ transform: `scaleX(${ loadedDuration/duration })` }}></div>
-                                <div className="video_progress-hover"></div>
-                            </div>
-                        </div>
-                        <div className="video_controls">
-                            <div className="video_controls-left">
-                                <a className="video_control video_control-play-pause" onClick={this.playPause}>
-                                    { isPlaying ? <Icon type="pause" /> : <Icon type="play" /> }
-                                </a>
-                                <div className="video_control video_control-time">
-                                    <span className="video_time-current">{timeStr(currentTime)}</span>
-                                    <span className="video_time-separator">/</span>
-                                    <span className="video_time-duration">{timeStr(duration)}</span>
-                                </div>
-                            </div>
-                            <div className="video_controls-right">
-                                <a className="video_control video_control-fullscreen" onClick={this.fullScreen}><Icon type={fullScreenIcon} /></a>
-                                <div className="video_control video_control-volume">
-                                    <span className="video_volume-icon" onClick={this.mute}><Icon type={volumeIcon} /></span>
-                                    <div className="video_volume-slider-container" {...volumeEvents} >
-                                        <div className="video_volume-slider" style={{ transform: `translateY(-50%) scaleX(${volume})`}}></div>
-                                        <div className="video_volume-slider-backdrop"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
+                { !isIOSDevice && <VideoControls ref="controls" {...videoControlsProps} /> }
             </div>
         );
     }

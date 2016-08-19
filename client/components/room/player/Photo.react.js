@@ -22,6 +22,7 @@ class Photo extends React.Component {
 
     componentDidMount() {
         window.addEventListener('resize', this.resize)
+        this.resize()
     }
 
     componentWillReceiveProps(nextProps) {
@@ -75,11 +76,11 @@ class Photo extends React.Component {
         // its proper orientation and scale it to fit into the container frame
         const orientation = parseInt(image.get('orientation', 0))
         if (orientation === 90) {
-            style.transform = `rotate(-90deg) scale(${scale})`
+            style.transform = `rotate(90deg) scale(${scale})`
         } else if (orientation === 180) {
             style.transform = `rotate(180deg)`
         } else if (orientation === 270) {
-            style.transform = `rotate(90deg) scale(${scale})`
+            style.transform = `rotate(-90deg) scale(${scale})`
         }
 
         return style;
