@@ -35,11 +35,19 @@ class AppBanner extends React.Component {
         e.preventDefault();
 
         const { app, user, url } = this.props
+
+        const isMobileSafari = app.get('browser') === 'Mobile Safari' && parseFloat(app.get('version', 0)) >= 9
+        // If the delay is too short in Mobile Safari, 
+        // it automatically redirects you to the app store
+        // because the "open in Nextbeat" prompt is non-blocking.
+        // Why after a certain threshold it behaves fine I have no idea.
+        const delay = isMobileSafari ? 1800 : 500
+
         window.location = url;
         // Fallback to App Store url if user does not have the app installed
         setTimeout(() => {
             window.top.location = STORE_URL;
-        }, 500);
+        }, delay);
     }
 
     handleClose(e) {

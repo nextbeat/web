@@ -55,7 +55,7 @@ export default class Stack extends ModelBase {
     }
 
     liveMediaItems() {
-        return this.__getLiveEntities('mediaItems').map(state => MediaItem(state))
+        return this.__getLiveEntities('mediaItems').map(state => new MediaItem(state))
     }
 
     comments() {

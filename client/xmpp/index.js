@@ -93,22 +93,6 @@ export function getClient(store) {
 
 // group chat
 
-function normalizeMediaItem(data) {
-    let mediaItem = {
-        type: data[1],
-        url: data[2],
-        firstframe_url: data[3],
-        id: parseInt(data[4]),
-        created_at: moment().format()
-    }
-    if (data[5].length > 0) {
-        // recreate decoration object
-        let decoration = JSON.parse(data.slice(5).join('#'))
-        mediaItem.decoration = decoration
-    }
-    return normalize(mediaItem, Schemas.MEDIA_ITEM);
-}
-
 function formatNotificationItem(data, store) {
     const type = data[0] // "mediaitem" or "close"
     let comment = { type }
@@ -151,10 +135,10 @@ function handleGroupChat(s, store) {
         const username = meta.length > 1 ? meta[1] : null;
         const identifier = meta[0];
         switch (identifier) {
-            case 'NEW_MEDIA_ITEM':
-                const id = parseInt(data[4]);
-                const response = normalizeMediaItem(data);
-                return store.dispatch(receiveMediaItem(id, response));
+            case 'NEW_MEDIA_ITEM_V2':
+                const mediaItem = JSON.parse(s.body)
+                const response = normalize(mediaItem, Schemas.MEDIA_ITEM)
+                return store.dispatch(receiveMediaItem(mediaItem.id, response));
             case 'NEW_NOTIFICATION_COMMENT':
                 const comment = formatNotificationItem(data, store);
                 // todo: update 

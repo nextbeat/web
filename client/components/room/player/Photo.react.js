@@ -22,12 +22,12 @@ class Photo extends React.Component {
 
     componentDidMount() {
         window.addEventListener('resize', this.resize)
-        this.resize()
+        this.resize(this.props.image)
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.image !== this.props.image) {
-            this.resize();
+            this.resize(nextProps.image);
         }
     }
 
@@ -37,8 +37,7 @@ class Photo extends React.Component {
 
     // Events
 
-    resize() {
-        const { image } = this.props
+    resize(image) {
         const containerWidth = $('.player_media-inner').width()
         const containerHeight = $('.player_media-inner').height()
         const imageRatio = image.get('width')/image.get('height')
