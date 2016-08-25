@@ -10,6 +10,7 @@ import Tag from '../client/components/Tag.react'
 import Home from '../client/components/Home.react'
 import Section from '../client/components/Section.react'
 import Search from '../client/components/Search.react'
+import Upload from '../client/components/Upload.react'
 import PasswordResetRequest from '../client/components/support/PasswordResetRequest.react'
 import PasswordReset from '../client/components/support/PasswordReset.react'
 import Unsubscribe from '../client/components/support/Unsubscribe.react'
@@ -42,6 +43,7 @@ export default store => {
             <AnalyticsRoute path="/t/:name" component={Tag} />
             <AnalyticsRoute path="/search" component={Search} />
             <AnalyticsRoute path="/bookmarks" component={Bookmarks} />
+            <AnalyticsRoute path="/upload" component={Upload} />
             <AnalyticsRoute path="*" component={NoMatch} />
         </Route>
     ]

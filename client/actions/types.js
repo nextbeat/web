@@ -105,6 +105,12 @@ export default {
     SEARCH: 'SEARCH',
     CLEAR_SEARCH: 'CLEAR_SEARCH',
 
+    /********
+     * UPLOAD
+     ********/
+
+    UPLOAD_FILE: 'UPLOAD_FILE',
+
     /******
      * XMPP
      ******/

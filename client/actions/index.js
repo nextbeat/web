@@ -74,6 +74,10 @@ export {
 } from './search'
 
 export {
+    uploadFile
+} from './upload'
+
+export {
     connectToXMPP,
     disconnectXMPP,
     joinRoom,

@@ -10,6 +10,7 @@ import profile from './profile'
 import support from './support'
 import tag from './tag'
 import search from './search'
+import upload from './upload'
 import { combineReducers } from './utils'
 import { Status, ActionTypes } from '../actions'
 
@@ -56,5 +57,6 @@ export default combineReducers({
     tag,
     user,
     search,
-    support
+    support,
+    upload
 })
