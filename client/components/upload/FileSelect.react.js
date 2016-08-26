@@ -102,14 +102,14 @@ class FileSelect extends React.Component {
     renderUploadProgress(upload) {
         return (
             <div className="upload_file-select">
-                <div className="upload_file-name-label">{ upload.get('fileName') }</div>
+                <div className="upload_file-name-label">{ `${upload.get('fileName')} (${upload.fileType()})` }</div>
             </div>
         );
     }
 
     render() {
         const { upload } = this.props 
-        return upload.isUploading() ? this.renderUploadProgress(upload) : this.renderUploadPrompt(upload)
+        return upload.hasFile() ? this.renderUploadProgress(upload) : this.renderUploadPrompt(upload)
     }
 }
 

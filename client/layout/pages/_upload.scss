@@ -31,8 +31,12 @@
         margin: 35px auto 0 auto;
     }
 
-    &.dragging .svg-icon-file-upload {
-        fill: $primary-color;
+    &.dragging {
+        background-color: mix($primary-color, white, 5%);
+
+        .svg-icon-file-upload {
+            fill: $primary-color;
+        }
     }
 }
 
@@ -69,6 +73,37 @@
     position: absolute;
     bottom: 0;
     margin-bottom: 10px;
+}
+
+
+// Progress bar
+
+.upload_progress-bar_data {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.upload_progress-bar_percent {
+    font-weight: 400;
+}
+
+.upload_progress-bar {
+    width: 100%;
+    height: 10px;
+    border: 1px solid $border-color;
+    position: relative;
+}
+
+.upload_progress-bar_progress {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: $primary-color;
+    transform-origin: left top;
+    transition: transform 0.3s;
 }
 
 

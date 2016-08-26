@@ -7,6 +7,7 @@ function uploadFile(state, action) {
     if (action.status === Status.REQUESTING) {
         return state.merge({
             fileName: action.file.name,
+            mimeType: action.file.type,
             progress: action.progress
         })
     } else if (action.status === Status.REQUESTING) {
@@ -23,5 +24,5 @@ export default function(state = Map(), action) {
     } else if (action.type === ActionTypes.UPLOAD_FILE) {
         return uploadFile(state, action)
     }
-    return state;
+    return state
 }

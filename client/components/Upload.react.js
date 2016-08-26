@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 
 import FileSelect from './upload/FileSelect.react'
+import UploadBar from './upload/UploadBar.react'
 import { Upload as UploadModel } from '../models'
 
 class Upload extends React.Component {
@@ -13,7 +14,7 @@ class Upload extends React.Component {
 
     render() {
         const { upload } = this.props 
-        
+
         const defaultDragFn = e => { e.preventDefault() }
         const dragEvents = {
             onDragEnter: defaultDragFn,
@@ -33,6 +34,7 @@ class Upload extends React.Component {
                     Upload file
                 </div>
                 <FileSelect upload={upload} />
+                { upload.hasFile() && <UploadBar upload={upload} /> }
             </div>
         );
     }
