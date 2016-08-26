@@ -1,5 +1,5 @@
 export { default as api } from './api'
 export { default as analytics } from './analytics'
 export { default as cancel } from './cancel'
-export { default as upload } from './support'
+export { default as upload } from './upload'
 export { default as xmpp } from './xmpp'

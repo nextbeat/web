@@ -110,6 +110,7 @@ export default {
      ********/
 
     UPLOAD_FILE: 'UPLOAD_FILE',
+    CLEAR_UPLOAD: 'CLEAR_UPLOAD',
 
     /******
      * XMPP

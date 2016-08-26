@@ -1,6 +1,8 @@
 import React from 'react'
+import { connect } from 'react-redux' 
 
 import Icon from '../shared/Icon.react'
+import { uploadFile } from '../../actions'
 
 class FileSelect extends React.Component {
 
@@ -15,9 +17,11 @@ class FileSelect extends React.Component {
         this.handleClick = this.handleClick.bind(this)
         this.handleInputChange = this.handleInputChange.bind(this)
 
+        this.renderUploadPrompt = this.renderUploadPrompt.bind(this)
+        this.renderUploadProgress = this.renderUploadProgress.bind(this)
+
         this.state = {
-            isDragging: false,
-            files: null
+            isDragging: false
         }
     }
 
@@ -46,9 +50,8 @@ class FileSelect extends React.Component {
     handleDrop(e) {
         this.handleDragLeave(e)
         if (e.nativeEvent.dataTransfer.files.length > 0) {
-            this.setState({
-                file: e.nativeEvent.dataTransfer.files[0]
-            })
+            const file = e.nativeEvent.dataTransfer.files[0]
+            this.props.dispatch(uploadFile(file))
         }
     }
 
@@ -61,9 +64,8 @@ class FileSelect extends React.Component {
 
     handleInputChange(e) {
         if (e.target.files.length > 0) {
-            this.setState({
-                file: e.target.files[0]
-            })
+            const file = e.target.files[0]
+            this.props.dispatch(uploadFile(file))
         }
         
     }
@@ -71,7 +73,7 @@ class FileSelect extends React.Component {
 
     // Render
 
-    render() {
+    renderUploadPrompt(upload) {
         const { isDragging } = this.state
 
         const dragEvents = {
@@ -96,6 +98,19 @@ class FileSelect extends React.Component {
             </div>
         );
     }
+
+    renderUploadProgress(upload) {
+        return (
+            <div className="upload_file-select">
+                <div className="upload_file-name-label">{ upload.get('fileName') }</div>
+            </div>
+        );
+    }
+
+    render() {
+        const { upload } = this.props 
+        return upload.isUploading() ? this.renderUploadProgress(upload) : this.renderUploadPrompt(upload)
+    }
 }
 
-export default FileSelect;
+export default connect()(FileSelect);

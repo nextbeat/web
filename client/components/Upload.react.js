@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 
 import FileSelect from './upload/FileSelect.react'
-import { Upload } from '../models'
+import { Upload as UploadModel } from '../models'
 
 class Upload extends React.Component {
 
@@ -12,7 +12,8 @@ class Upload extends React.Component {
     }
 
     render() {
-
+        const { upload } = this.props 
+        
         const defaultDragFn = e => { e.preventDefault() }
         const dragEvents = {
             onDragEnter: defaultDragFn,
@@ -39,7 +40,7 @@ class Upload extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        upload: new Upload(state)
+        upload: new UploadModel(state)
     }
 }
 
