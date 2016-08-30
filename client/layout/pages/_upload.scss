@@ -107,3 +107,269 @@
 }
 
 
+// Add to room
+
+.upload_add {
+    width: 100%;
+    margin-top: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid $border-color;
+}
+    
+.upload_subheader {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.upload_stacks {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    @include clearfix;
+}
+
+.upload_selectable-stack-item {
+    float: left;
+    width: 265px;
+    padding-right: 60px;
+    margin-right: 20px;
+    position: relative;
+
+    &.selected {
+        background: linear-gradient(to bottom, rgba($primary-color, 0.1) 0%, rgba(1,1,1,0) 100%); 
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.upload_selectable-stack-item_check-box-container {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 60px;
+
+    .svg-icon-check-box {
+        @include centerX;
+        width: 40px;
+        height: 40px;
+        margin-top: 35px;
+        fill: $primary-color;
+    }
+}
+
+.upload_selectable-stack-item_check-box-outline {
+    @include centerX;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    width: 30px;
+    height: 30px;
+    margin-top: 40px;
+}
+
+.item-room-large-new_thumb {
+    background: mix($primary-color, white, 10%);
+    border: 2px dashed mix($primary-color, white, 50%);
+    position: relative;
+
+    .svg-icon-add {
+        fill: mix($primary-color, white, 50%);
+        @include center;
+        width: 65px;
+        height: 65px;
+    }
+}
+
+.item-room-large-new_thumb:after {
+    background: none;
+}
+
+.item-room-large-new_description {
+    color: $detail-text-color;
+    font-style: italic;
+}
+
+
+// Create room
+
+.upload_create-room {
+    width: 100%;
+    margin-top: 25px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid $border-color; 
+
+    .upload_subheader {
+        display: flex;
+
+        .svg-icon-close {
+            margin: -2px 0 0 10px;
+            width: 25px;
+            height: 25px;
+            fill: #ccc;
+
+            &:hover {
+                cursor: pointer;
+                fill: #ddd;
+            }
+        }
+    }
+
+}
+
+.upload_create-room_form  {
+    width: 100%;
+}
+
+.upload_create-room_left {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 20px;
+}
+
+.upload_create-room_thumb {
+    width: 156px;
+    height: 108px;
+    background-color: $dark-background-color;
+    border: 1px solid $border-color;
+    position: relative;
+}
+
+.upload_create-room_thumb_prompt {
+    width: 100%;
+    padding: 10px 10px 10px 30px;
+    text-align: right;
+    font-size: 11px;
+    color: #aaa;
+}
+
+.upload_create-room_main {
+    display: inline-block;
+    vertical-align: top;
+    width: 360px;
+    margin-right: 20px;
+
+    input {
+        width: 100%;
+        font-size: 14px;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+}
+
+.upload_create-room_tags-container {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid $border-color;
+    display: flex;
+    flex-wrap: wrap;
+    overflow: hidden;
+}
+
+.upload_create-room_tag {
+    display: inline-block;
+    border: 1px solid $border-color;
+    background: $dark-background-color;
+    border-radius: 5px;
+    padding: 5px;
+    margin-right: 5px;
+    flex: 0 0;
+    font-size: 14px;
+
+    div {
+        display: inline-block;
+    }
+
+    .svg-icon-close {
+        margin: 0 0 0 5px;
+        width: 14px;
+        height: 14px;
+        fill: #ccc;
+
+        &:hover {
+            cursor: pointer;
+            fill: #ddd;
+        }
+    }
+}
+
+input.upload_create-room_tags-input {
+    width: auto;
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    padding: 5px;
+    flex: 1 0;
+    min-width: 50px;
+}
+
+.upload_create-room_right {
+    display: inline-block;
+    width: 170px;
+    vertical-align: top;
+}
+
+.upload_create-room_select {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+    background: $dark-background-color;
+    border: 1px solid $border-color;
+    vertical-align: top;
+    position: relative;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    select {
+        appearance: none;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    .svg-icon-arrow-drop-down {
+        @include centerY;
+        width: 25px;
+        height: 25px;
+        left: auto;
+        right: 0;
+        margin-right: 5px;
+    }
+}
+
+
+// Submit
+
+.upload_submit-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.upload_submit {
+    display: inline-block;
+    font-size: 24px;
+    padding: 10px 25px;
+}
+
+
+
+

@@ -7,7 +7,8 @@ const mediaItem = new Schema('mediaItems');
 const comment = new Schema('comments');
 
 stack.define({
-    author: user
+    author: user,
+    mediaItems: arrayOf(mediaItem)
 });
 
 comment.define({

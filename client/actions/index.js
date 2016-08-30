@@ -57,6 +57,7 @@ export {
     postLogin,
     logout,
     signup,
+    syncStacks,
     loadBookmarkedStacks,
     loadSubscriptions,
     subscribe,
@@ -74,7 +75,10 @@ export {
 } from './search'
 
 export {
-    uploadFile
+    uploadFile,
+    selectStackForUpload,
+    updateNewStack,
+    clearUpload
 } from './upload'
 
 export {

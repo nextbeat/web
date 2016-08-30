@@ -2,7 +2,7 @@ import fetch from 'isomorphic-fetch'
 import Promise from 'bluebird'
 import { assign, find } from 'lodash'
 
-import { ActionTypes, Status } from '../actions'
+import { ActionTypes, Status, syncStacks } from '../actions'
 import { App } from '../models'
 
 function bucketUrl(state) {
@@ -94,6 +94,9 @@ export default store => next => action => {
     function actionWith(data) {
         return assign({}, action, data)
     }
+
+    // Retrieve open stacks for display on upload page
+    store.dispatch(syncStacks('open', false))
 
     next(actionWith({
         status: Status.REQUESTING,

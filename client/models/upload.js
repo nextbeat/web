@@ -1,3 +1,5 @@
+import { fromJS } from 'immutable'
+
 import ModelBase from './base'
 import { Status } from '../actions'
 
@@ -5,7 +7,9 @@ const KEY_MAP = {
     'fileName': ['upload', 'fileName'],
     'mimeType': ['upload', 'mimeType'],
     'status': ['upload', 'status'],
-    'progress': ['upload', 'progress']
+    'progress': ['upload', 'progress'],
+    'selectedStackId': ['upload', 'selectedStackId'],
+    'newStack': ['upload', 'newStack']
 }
 
 const COMPATIBLE_MIME_TYPES = [
@@ -22,12 +26,47 @@ export default class Upload extends ModelBase {
         this.name = "upload";
     }
 
+    // Queries
+
     isUploading() {
         return this.get('status') === Status.REQUESTING
     }
 
     hasFile() {
         return this.has('fileName')
+    }
+
+    hasSelectedNewStack() {
+        return this.get('selectedStackId') === -1
+    }
+
+    isCompatible() {
+        return this.constructor.isCompatibleMimeType(this.get('mimeType'))
+    }
+
+    static isCompatibleMimeType(mimeType) {
+        return COMPATIBLE_MIME_TYPES.indexOf(mimeType) !== -1
+    }
+
+    isSubmittable() {
+        return this.get('selectedStackId') > 0 || (this.hasSelectedNewStack() && this.get('newStack').get('title').length > 0)
+    }
+
+    // Getters
+
+    mediaItem() {
+        let mediaItem = {
+            type: this.fileType() === 'video' ? 'video' : 'photo'
+        }
+
+        // TODO
+
+        return fromJS(mediaItem)
+    }
+
+    stackForSubmission() {
+        // TODO
+        return {}
     }
 
     fileType() {
@@ -39,14 +78,6 @@ export default class Upload extends ModelBase {
             return 'video'
         }
         return null
-    }
-
-    isCompatible() {
-        return this.constructor.isCompatibleMimeType(this.get('mimeType'))
-    }
-
-    static isCompatibleMimeType(mimeType) {
-        return COMPATIBLE_MIME_TYPES.indexOf(mimeType) !== -1
     }
 
 }

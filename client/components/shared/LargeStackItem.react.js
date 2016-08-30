@@ -56,7 +56,7 @@ class LargeStackItem extends React.Component {
     }
 
     render() {
-        const { stack, user, users, static: staticNum } = this.props;
+        const { stack, users, static: staticNum } = this.props;
         const author = users.get(stack.get('author_id').toString(), Map())
         const bookmarkType = stack.get('bookmarked') ? "bookmark" : "bookmark-outline";
         const itemWidth = isNumber(staticNum) ? staticNum + "px" : null

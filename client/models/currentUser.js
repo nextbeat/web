@@ -16,6 +16,10 @@ const KEY_MAP = {
     // notifications
     'unreadNotifications': ['user', 'notifications', 'unread'],
     'readNotifications': ['user', 'notifications', 'read'],
+    // user stacks
+    'stacksFetching': ['user', 'stacks', 'isFetching'],
+    'openStackIds': ['user', 'stacks', 'openStackIds'],
+    'closedStackIds': ['user', 'stacks', 'closedStackIds'],
     // bookmarked stacks
     'openBookmarkIds': ['user', 'bookmarks', 'open', 'ids'],
     'openBookmarksFetching': ['user', 'bookmarks', 'open', 'isFetching'],
@@ -52,6 +56,14 @@ export default class CurrentUser extends ModelBase {
 
     subscriptions() {
         return this.get('subscriptionIds', List()).map(id => this.__getEntity(id, 'users'));
+    }
+
+    openStacks() {
+        return this.get('openStackIds', List()).map(id => this.__getEntity(id, 'stacks'));
+    }
+
+    closedStacks() {
+        return this.get('closedStackIds', List()).map(id => this.__getEntity(id, 'stacks'));
     }
 
     // Queries
