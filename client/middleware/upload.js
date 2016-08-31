@@ -1,32 +1,31 @@
 import fetch from 'isomorphic-fetch'
 import Promise from 'bluebird'
 import { assign, find } from 'lodash'
+import { v4 as generateUuid } from 'node-uuid'
 
 import { ActionTypes, Status, syncStacks } from '../actions'
-import { App } from '../models'
+import { App, Upload } from '../models'
 
-function bucketUrl(state) {
-    var app = new App(state)
-    if (app.get('environment') === 'production') {
-        return 'http://nextbeat.media.s3.amazonaws.com/'
-    } else {
-        return 'http://nextbeat.dev.media.s3.amazonaws.com/'
-    }
+function keyName(file, type, uuid) {
+    var ext = file.name.split('.')[file.name.split('.').length-1]
+    var prefix = 'uploadtest' // TEMPORARY
+    return `${prefix}/${uuid}.${ext}`
 }
 
-function uploadFile(store, next, action, policy) {
+function uploadFile(store, next, action, policy, key) {
     let xhr = new XMLHttpRequest()
     let fd = new FormData()
     let file = action.file
 
-    function getCondition(key) {
-        let condition = find(policy.policy.conditions, c => key in c)
-        return condition[key]
+    function getCondition(cKey) {
+        let condition = find(policy.policy.conditions, c => cKey in c)
+        return condition[cKey]
     }
 
-    // construct FormData object (todo: content-type)
+    // construct FormData object
 
-    fd.append('key', `uploadtest/${file.name}`)
+    fd.append('key', key)
+    fd.append('Content-Type', file.type)
     fd.append('x-amz-algorithm', getCondition('x-amz-algorithm'))
     fd.append('x-amz-credential', getCondition('x-amz-credential'))
     fd.append('x-amz-date', getCondition('x-amz-date'))
@@ -38,21 +37,28 @@ function uploadFile(store, next, action, policy) {
 
     return new Promise((resolve, reject) => {
         xhr.upload.addEventListener("progress", e => {
-            next(assign({}, action, {
-                status: Status.REQUESTING,
-                progress: e.loaded / e.total
-            }))
+            // skip recording action for UPLOAD_POSTER_FILE type
+            if (action.type === ActionTypes.UPLOAD_FILE) {
+                next(assign({}, action, {
+                    status: Status.REQUESTING,
+                    progress: e.loaded / e.total
+                }))
+            }
         })
 
         xhr.addEventListener("load", e => {
-            resolve();
+            if (e.target.status >= 200 && e.target.status < 300) {
+                resolve();
+            } else {
+                reject(new Error(e.target.statusText))
+            }
         })
 
         xhr.addEventListener("error", e => {
             reject(new Error("Error during S3 upload."))
         })
 
-        xhr.open("POST", bucketUrl(store.getState()), true)
+        xhr.open("POST", Upload.bucketUrl(store.getState()), true)
         xhr.send(fd)
 
     })
@@ -87,36 +93,77 @@ function getPolicy() {
 // the upload process to S3
 export default store => next => action => {
 
-    if (action.type !== ActionTypes.UPLOAD_FILE) {
+    if (action.type !== ActionTypes.UPLOAD_FILE 
+        && action.type !== ActionTypes.UPLOAD_POSTER_FILE
+        && action.type !== ActionTypes.SUBMIT_STACK_REQUEST) 
+    {
         return next(action)
     }
 
-    function actionWith(data) {
-        return assign({}, action, data)
+    function callActionWith(data) {
+        next(assign({}, action, data))
     }
+
+    if (action.type === ActionTypes.SUBMIT_STACK_REQUEST) {
+        // We want to delay syncing the stack until the resource
+        // has been uploaded to S3, so we intercept this action
+        // here and wait until the resource has completed the
+        // upload process before we trigger the sync
+        let upload = new Upload(store.getState())
+        if (upload.isUploading()) {
+            return next(action)
+        } else {
+            return store.dispatch(syncStacks('open', true, upload.stackForSubmission()))
+        }
+    }
+
+    // Check mime type compatibility
+    if (!Upload.isCompatibleMimeType(action.file.type)) {
+        return callActionWith({
+            status: Status.FAILURE,
+            error: 'Incompatible file type.'
+        })
+    }
+
+    // Generate uuid and url for item if not provided
+    const fileType = Upload.fileTypeForMimeType(action.file.type)
+    const uuid = generateUuid()
+    const key = action.key || keyName(action.file, fileType, uuid)
+    const url = `${Upload.bucketUrl(store.getState())}${key}`
 
     // Retrieve open stacks for display on upload page
     store.dispatch(syncStacks('open', false))
 
-    next(actionWith({
+    callActionWith({
         status: Status.REQUESTING,
-        progress: 0
-    }))
+        progress: 0,
+        mediaItem: {
+            url,
+            uuid,
+            type: fileType === 'image' ? 'photo' : 'video' 
+        }
+    })
 
     // Retrieve S3 POST policy from server
     getPolicy()
+    // .delay(5000) // FOR DEBUG
     .then(policy => {
-        return uploadFile(store, next, action, policy)
+        return uploadFile(store, next, action, policy, key)
     })
     .then(() => {
-        next(actionWith({
+        callActionWith({
             status: Status.SUCCESS
-        }))
+        })
+        // Trigger sync stacks if requested
+        let upload = new Upload(store.getState())
+        if (upload.get('submitStackRequested')) {
+            store.dispatch(syncStacks('open', true, upload.stackForSubmission()))
+        }
     })
     .catch(error => {
-        next(actionWith({
+        callActionWith({
             status: Status.FAILURE,
             error: error
-        }))
+        })
     })
 }

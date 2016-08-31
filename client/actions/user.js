@@ -23,6 +23,7 @@ export function syncStacks(status='all', deep=true, newStack) {
 
     return {
         type: ActionTypes.SYNC_STACKS,
+        submitting: objectsToSync.length > 0,
         [API_CALL]: {
             schema: Schemas.STACKS,
             method: 'POST',

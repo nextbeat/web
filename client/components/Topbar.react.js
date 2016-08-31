@@ -74,6 +74,7 @@ class Topbar extends React.Component {
         const profpic_url = user.profileThumbnailUrl();
         return (
             <div className="topbar_user">
+                <Link to="/upload" className="btn topbar_upload">Upload</Link>
                 <span className="topbar_user-icon" onClick={this.toggleUserDropdown} >{ profpic_url ? <img src={profpic_url} /> : <Icon type="person" /> }</span>
             </div>
         )

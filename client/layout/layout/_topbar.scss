@@ -98,11 +98,17 @@ input.topbar_search-bar {
     top: 0;
     padding: 10px 10px;
     display: inline-block;
+    vertical-align: top;
 
     .btn {
         display: inline-block;
         margin-left: 10px;
+        vertical-align: top;
     }
+}
+
+.topbar_upload {
+    margin: 2px 10px 0 0;
 }
 
 .topbar_user-icon {
@@ -212,6 +218,10 @@ a.topbar_dropdown-option {
         }
 
         .topbar_signup {
+            display: none;
+        }
+
+        .topbar_upload {
             display: none;
         }
 

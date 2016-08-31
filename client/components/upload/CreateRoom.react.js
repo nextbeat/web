@@ -39,9 +39,9 @@ class CreateRoom extends React.Component {
         const { dispatch, upload } = this.props 
         const tags = upload.get('newStack').get('tags')
 
-        this.setState({
+        this.props.dispatch(updateNewStack({
             tags: tags.delete(idx)
-        })
+        }))
     }
 
     handleTitleChange(e) {
@@ -132,7 +132,7 @@ class CreateRoom extends React.Component {
 
     render() {
         const { currentTagString } = this.state 
-        const { upload } = this.props
+        const { upload, stacks } = this.props
 
         const newStack = upload.get('newStack')
 
@@ -140,7 +140,7 @@ class CreateRoom extends React.Component {
             <div className="upload_create-room">
                 <div className="upload_subheader">
                     Make new room
-                    <div onClick={this.handleClose}><Icon type="close" /></div>
+                    { stacks.size > 0 && <div onClick={this.handleClose}><Icon type="close" /></div> }
                 </div>
                 <div className="upload_create-room_form">
                     <div className="upload_create-room_left">

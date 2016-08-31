@@ -5,7 +5,7 @@ import { ActionTypes } from '../actions'
 import { Map, Iterable } from 'immutable'
 import reducer from '../reducers'
 
-const middlewares = [thunkMiddleware, api, analytics, cancel, upload, xmpp];
+const middlewares = [thunkMiddleware, upload, api, analytics, cancel, xmpp];
 
 if (process.env.NODE_ENV !== "production") {
     const createLogger = require('redux-logger');

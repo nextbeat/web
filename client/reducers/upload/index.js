@@ -5,17 +5,24 @@ import { combineReducers, entity, paginate } from '../utils'
 function uploadFile(state, action) {
     state = state.set('status', action.status)
     if (action.status === Status.REQUESTING) {
-        return state.merge({
-            fileName: action.file.name,
-            mimeType: action.file.type,
+
+        state = state.merge({
+            file: action.file,
             progress: action.progress
         })
-    } else if (action.status === Status.REQUESTING) {
+        if (action.mediaItem) {
+            state = state.set('mediaItem', Map(action.mediaItem))
+        }
+        return state
+
+    } else if (action.status === Status.SUCCESS) {
+
         return state.merge({
             progress: 1
         })
+
     }
-    return state;
+    return state
 }
 
 // id === -1 indicates that the user has selected to create a new stack
@@ -36,6 +43,44 @@ function updateNewStack(state, action) {
     })
 }
 
+function updateNewMediaItem(state, action) {
+    return state.merge({
+        mediaItem: state.get('mediaItem').merge(fromJS(action.mediaItem))
+    })
+}
+
+function submitStackRequest(state, action) {
+    return state.merge({
+        submitStackRequested: true
+    })
+}
+
+function syncStacks(state, action) {
+    if (action.submitting) {
+        if (action.status === Status.REQUESTING) {
+            return state.merge({
+                submitStackRequested: false,
+                isSubmittingStack: true,
+                stackSubmitted: false
+            })
+        } else if (action.status === Status.SUCCESS) {
+            return state.merge({
+                submitStackRequested: false,
+                isSubmittingStack: false,
+                stackSubmitted: true
+            })
+        } else if (action.status === Status.FAILURE) {
+            return state.merge({
+                submitStackRequested: false,
+                isSubmittingStack: false,
+                stackSubmitted: false,
+                submitStackError: 'Unable to submit room.'
+            })
+        }
+    }
+    return state
+}
+
 const initialState = fromJS({
     newStack: {
         title: '',
@@ -53,6 +98,12 @@ export default function(state=initialState, action) {
         return selectStackForUpload(state, action)
     } else if (action.type === ActionTypes.UPDATE_NEW_STACK) {
         return updateNewStack(state, action)
+    } else if (action.type === ActionTypes.UPDATE_NEW_MEDIA_ITEM) {
+        return updateNewMediaItem(state, action)
+    } else if (action.type === ActionTypes.SUBMIT_STACK_REQUEST) {
+        return submitStackRequest(state, action)
+    } else if (action.type === ActionTypes.SYNC_STACKS) {
+        return syncStacks(state, action)
     }
     return state
 }

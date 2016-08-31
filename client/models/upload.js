@@ -1,15 +1,22 @@
 import { fromJS } from 'immutable'
+import { assign } from 'lodash'
+import { v4 as generateUuid } from 'node-uuid'
 
 import ModelBase from './base'
+import App from './app'
 import { Status } from '../actions'
 
 const KEY_MAP = {
-    'fileName': ['upload', 'fileName'],
-    'mimeType': ['upload', 'mimeType'],
+    'file': ['upload', 'file'],
     'status': ['upload', 'status'],
     'progress': ['upload', 'progress'],
     'selectedStackId': ['upload', 'selectedStackId'],
-    'newStack': ['upload', 'newStack']
+    'newStack': ['upload', 'newStack'],
+    'mediaItem': ['upload', 'mediaItem'],
+    'submitStackRequested': ['upload', 'submitStackRequested'],
+    'isSubmittingStack': ['upload', 'isSubmittingStack'],
+    'stackSubmitted': ['upload', 'stackSubmitted'],
+    'submitStackError': ['upload', 'submitStackError']
 }
 
 const COMPATIBLE_MIME_TYPES = [
@@ -26,6 +33,7 @@ export default class Upload extends ModelBase {
         this.name = "upload";
     }
 
+
     // Queries
 
     isUploading() {
@@ -33,7 +41,7 @@ export default class Upload extends ModelBase {
     }
 
     hasFile() {
-        return this.has('fileName')
+        return this.has('file')
     }
 
     hasSelectedNewStack() {
@@ -41,7 +49,7 @@ export default class Upload extends ModelBase {
     }
 
     isCompatible() {
-        return this.constructor.isCompatibleMimeType(this.get('mimeType'))
+        return this.constructor.isCompatibleMimeType(this.mimeType())
     }
 
     static isCompatibleMimeType(mimeType) {
@@ -52,32 +60,91 @@ export default class Upload extends ModelBase {
         return this.get('selectedStackId') > 0 || (this.hasSelectedNewStack() && this.get('newStack').get('title').length > 0)
     }
 
-    // Getters
-
-    mediaItem() {
-        let mediaItem = {
-            type: this.fileType() === 'video' ? 'video' : 'photo'
-        }
-
-        // TODO
-
-        return fromJS(mediaItem)
+    isInSubmitProcess() {
+        return this.get('submitStackRequested') || this.get('isSubmittingStack') || this.get('stackSubmitted') || this.get('submitStackError')
     }
 
-    stackForSubmission() {
-        // TODO
-        return {}
+
+    // Getters
+
+    mimeType() {
+        return this.get('file') ? this.get('file').type : null
     }
 
     fileType() {
         // 'image' or 'video'
-        var mimeType = this.get('mimeType')
+        return this.constructor.fileTypeForMimeType(this.mimeType())
+    }
+
+    static fileTypeForMimeType(mimeType) {
+        // 'image' or 'video'
         if (/^image\//.test(mimeType)) {
             return 'image'
         } else if (/^video\//.test(mimeType)) {
             return 'video'
         }
         return null
+    }
+
+    bucketUrl() {
+        return this.constructor.bucketUrl(this.state)
+    }
+
+    static bucketUrl(state) {
+        var app = new App(state)
+        if (app.get('environment') === 'production') {
+            return 'http://nextbeat.media.s3.amazonaws.com/'
+        } else {
+            return 'http://nextbeat.dev.media.s3.amazonaws.com/'
+        }
+    }
+
+
+    // Submission
+
+    // Constructs a JSON object to send to the server for syncing
+    // with the stack and media item selected by the user
+    stackForSubmission() {
+
+        // Format stack object
+        let stack = {}
+        if (this.hasSelectedNewStack()) {
+            assign(stack, {
+                description: this.get('newStack').get('title'),
+                tags: this.get('newStack').get('tags').toJS(),
+                privacy_status: this.get('newStack').get('privacyStatus'),
+                uuid: generateUuid()
+            })
+        } else {
+            stack.uuid = this.__getEntity(this.get('selectedStackId'), 'stacks').get('uuid')
+        }
+
+        // Format media item object
+        const mediaItemState = this.get('mediaItem').toJS()
+        let mediaItem = {
+            type: mediaItemState.type,
+            uuid: mediaItemState.uuid,
+            stack_uuid: stack.uuid
+        }
+
+        if (mediaItem.type === 'photo') {
+            mediaItem.images = [{
+                url: mediaItemState.url,
+                width: mediaItemState.width || 0,
+                height: mediaItemState.height || 0
+            }]
+        } else if (mediaItem.type === 'video') {
+            mediaItem.videos = [{
+                url: mediaItemState.url,
+                poster_url: mediaItemState.posterUrl,
+                width: mediaItemState.width || 0,
+                height: mediaItemState.height || 0,
+                duration: mediaItemState.duration || 0
+            }]
+        }
+
+        stack.media_items = [mediaItem]
+        return stack
     }
 
 }

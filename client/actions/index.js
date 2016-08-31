@@ -76,8 +76,11 @@ export {
 
 export {
     uploadFile,
+    uploadPosterFile,
     selectStackForUpload,
     updateNewStack,
+    updateNewMediaItem,
+    submitStackRequest,
     clearUpload
 } from './upload'
 

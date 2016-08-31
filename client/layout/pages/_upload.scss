@@ -22,6 +22,7 @@
     border-radius: 5px;
     border: 2px dashed $border-color;
     position: relative;
+    overflow: hidden;
 
     .svg-icon-file-upload {
         width: 90px;
@@ -227,6 +228,7 @@
     display: inline-block;
     vertical-align: top;
     margin-right: 20px;
+    margin-bottom: 15px;
 }
 
 .upload_create-room_thumb {
@@ -250,6 +252,7 @@
     vertical-align: top;
     width: 360px;
     margin-right: 20px;
+    margin-bottom: 15px;
 
     input {
         width: 100%;
