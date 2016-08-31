@@ -9,6 +9,7 @@ export {
     closeSidebar,
     promptModal,
     closeModal,
+    triggerAuthError,
     clearApp
 } from './app'
 

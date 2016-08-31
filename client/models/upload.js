@@ -11,6 +11,7 @@ const KEY_MAP = {
     'status': ['upload', 'status'],
     'progress': ['upload', 'progress'],
     'xhr': ['upload', 'xhr'], // reference to XHR object which handles upload to S3
+    'error': ['upload', 'error'],
     'selectedStackId': ['upload', 'selectedStackId'],
     'newStack': ['upload', 'newStack'],
     'mediaItem': ['upload', 'mediaItem'],

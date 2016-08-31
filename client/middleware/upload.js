@@ -4,7 +4,7 @@ import { assign, find } from 'lodash'
 import { v4 as generateUuid } from 'node-uuid'
 
 import { ActionTypes, Status, syncStacks } from '../actions'
-import { App, Upload } from '../models'
+import { App, Upload, CurrentUser } from '../models'
 
 function keyName(file, type, uuid) {
     var ext = file.name.split('.')[file.name.split('.').length-1]
@@ -133,7 +133,23 @@ export default store => next => action => {
     if (!Upload.isCompatibleMimeType(action.file.type)) {
         return callActionWith({
             status: Status.FAILURE,
-            error: 'Incompatible file type.'
+            error: 'Incompatible file type. We currently accept mp4 videos and jpg or png images.'
+        })
+    }
+
+    // Check file size
+    if (action.file.size > 200*1024*1024) {
+        return callActionWith({
+            status: Status.FAILURE,
+            error: 'File exceeds size limit. Files cannot be greater than 200 MB.'
+        })
+    }
+
+    let currentUser = new CurrentUser(store.getState())
+    if (!currentUser.isLoggedIn()) {
+        return callActionWith({
+            status: Status.FAILURE,
+            error: "User is not logged in."
         })
     }
 
@@ -179,7 +195,7 @@ export default store => next => action => {
     .catch(error => {
         callActionWith({
             status: Status.FAILURE,
-            error: error
+            error: 'Unknown error uploading file. Please try again.'
         })
     })
 }

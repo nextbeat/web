@@ -1,6 +1,7 @@
 import { assign } from 'lodash'
 
 import ActionTypes from './types'
+import { Status } from './types'
 import Schemas from '../schemas'
 import { API_CALL, API_CANCEL } from './types'
 
@@ -34,6 +35,18 @@ export function resizeWindow(width) {
     return {
         type: ActionTypes.RESIZE,
         width
+    }
+}
+
+/*******
+ * CLEAR
+ *******/
+
+export function triggerAuthError() {
+    return {
+        type: ActionTypes.TRIGGER_AUTH_ERROR,
+        status: Status.FAILURE,
+        error: "User is not logged in."
     }
 }
 

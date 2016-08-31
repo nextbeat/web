@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { List } from 'immutable'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 import FileSelect from './upload/FileSelect.react'
 import UploadBar from './upload/UploadBar.react'
@@ -13,7 +14,7 @@ import PageError from './shared/PageError.react'
 import { Upload as UploadModel, CurrentUser, App } from '../models'
 import { baseUrl } from '../utils'
 
-import { submitStackRequest, clearUpload, selectStackForUpload } from '../actions'
+import { submitStackRequest, clearUpload, selectStackForUpload, triggerAuthError } from '../actions'
 
 class Upload extends React.Component {
 
@@ -37,6 +38,10 @@ class Upload extends React.Component {
             // user has no open stacks, so
             // we automatically trigger new stack selection
             this.props.dispatch(selectStackForUpload(-1))
+        }
+
+        if (!this.props.user.isLoggedIn() && !this.props.user.get('isLoggingIn') && !this.props.app.hasAuthError()) {
+            this.props.dispatch(triggerAuthError())
         }
     }
 
@@ -66,8 +71,10 @@ class Upload extends React.Component {
         return (
             <div className="upload_submit-forms">
                 { user.get('stacksFetching') && <Spinner type="grey upload-stacks" /> }
-                { user.openStacks().size > 0 && <AddToRoom upload={upload} stacks={user.openStacks()} /> }
-                { upload.hasSelectedNewStack() && <CreateRoom upload={upload} stacks={user.openStacks()} /> }
+                <ReactCSSTransitionGroup transitionName="upload" transitionEnterTimeout={300} transitionLeaveTimeout={150}>
+                    { user.openStacks().size > 0 && <AddToRoom key='add-to-room' upload={upload} stacks={user.openStacks()} /> }
+                    { upload.hasSelectedNewStack() && <CreateRoom key='create-room' upload={upload} stacks={user.openStacks()} /> }
+                </ReactCSSTransitionGroup>
                 <div className="upload_submit-container">
                     <a className={`btn ${upload.isSubmittable() ? '' : 'btn-inactive'} upload_submit`} onClick={this.handleSubmit}>Submit</a>
                 </div>
@@ -140,6 +147,11 @@ class Upload extends React.Component {
                     Upload file
                 </div>
                 <FileSelect upload={upload} />
+                { upload.has('error') && 
+                    <div className="upload_error">
+                        {upload.get('error')}
+                    </div>
+                }
                 { upload.hasFile() && 
                     <div className="upload_post-upload">
                         <UploadBar upload={upload} /> 

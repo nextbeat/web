@@ -9,13 +9,15 @@ function uploadFile(state, action) {
         state = state.merge({
             file: action.file,
             progress: action.progress
-        })
+        }).delete('error')
+
         if (action.mediaItem) {
             state = state.set('mediaItem', Map(action.mediaItem))
         }
         if (action.xhr) {
             state = state.set('xhr', action.xhr)
         }
+
         return state
 
     } else if (action.status === Status.SUCCESS) {
@@ -23,6 +25,13 @@ function uploadFile(state, action) {
         return state.merge({
             progress: 1
         })
+
+    } else if (action.status === Status.FAILURE) {
+
+        return state.merge({
+            progress: 0,
+            error: action.error
+        }).delete('file')
 
     }
     return state
