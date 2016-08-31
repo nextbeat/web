@@ -47,12 +47,15 @@ class SelectableStackItem extends React.Component {
     }
 
     render() {
-        const { stack, upload } = this.props
+        const { stack, upload, width } = this.props
 
         const isSelected = this.stackId() === upload.get('selectedStackId')
 
         return (
-            <div className={`upload_selectable-stack-item ${isSelected ? 'selected' : ''}`} onClickCapture={this.handleClick}>
+            <div 
+            className={`upload_selectable-stack-item ${isSelected ? 'selected' : ''}`}
+            style={{ width: `${width}px` }}
+            onClickCapture={this.handleClick}>
                 { stack ? <LargeStackItem stack={stack} static={true} /> : this.renderNewStack(upload) }
                 <div className="upload_selectable-stack-item_check-box-container">
                     { isSelected ? <Icon type="check-box"/> : <div className="upload_selectable-stack-item_check-box-outline" /> }

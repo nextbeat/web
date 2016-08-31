@@ -10,6 +10,7 @@ const KEY_MAP = {
     'file': ['upload', 'file'],
     'status': ['upload', 'status'],
     'progress': ['upload', 'progress'],
+    'xhr': ['upload', 'xhr'], // reference to XHR object which handles upload to S3
     'selectedStackId': ['upload', 'selectedStackId'],
     'newStack': ['upload', 'newStack'],
     'mediaItem': ['upload', 'mediaItem'],
@@ -99,6 +100,13 @@ export default class Upload extends ModelBase {
         }
     }
 
+    selectedStack() {
+        if (this.get('selectedStackId') > 0) {
+            return this.__getEntity(this.get('selectedStackId'), 'stacks')
+        }
+        return null;
+    }
+
 
     // Submission
 
@@ -113,10 +121,10 @@ export default class Upload extends ModelBase {
                 description: this.get('newStack').get('title'),
                 tags: this.get('newStack').get('tags').toJS(),
                 privacy_status: this.get('newStack').get('privacyStatus'),
-                uuid: generateUuid()
+                uuid: this.get('newStack').get('uuid')
             })
         } else {
-            stack.uuid = this.__getEntity(this.get('selectedStackId'), 'stacks').get('uuid')
+            stack.uuid = this.selectedStack().get('uuid')
         }
 
         // Format media item object

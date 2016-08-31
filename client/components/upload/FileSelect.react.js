@@ -70,7 +70,13 @@ class FileSelect extends React.Component {
             } else if (this.props.upload.fileType() === 'video') {
                 this.loadVideo(this.props.upload.get('file'))
             }
+        }
 
+        if (prevProps.upload.has('file') && !this.props.upload.has('file')) {
+            // has cleared upload
+            this.setState({
+                resourceLoaded: false
+            })
         }
 
     }
@@ -117,7 +123,7 @@ class FileSelect extends React.Component {
             canvas.height = height;
             var ctx = canvas.getContext('2d');
             ctx.drawImage(video, 0, 0);
-            var posterKey = `uploadtest/FF-${upload.get('mediaItem').get('uuid')}.png` // TEMPORARY 
+            var posterKey = `videos/FF-${upload.get('mediaItem').get('uuid')}.png`
 
             // Upload first frame 
             canvas.toBlob(blob => {

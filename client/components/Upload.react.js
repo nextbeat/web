@@ -8,7 +8,10 @@ import UploadBar from './upload/UploadBar.react'
 import AddToRoom from './upload/AddToRoom.react'
 import CreateRoom from './upload/CreateRoom.react'
 import Spinner from './shared/Spinner.react'
-import { Upload as UploadModel, CurrentUser } from '../models'
+import Icon from './shared/Icon.react'
+import PageError from './shared/PageError.react'
+import { Upload as UploadModel, CurrentUser, App } from '../models'
+import { baseUrl } from '../utils'
 
 import { submitStackRequest, clearUpload, selectStackForUpload } from '../actions'
 
@@ -18,6 +21,10 @@ class Upload extends React.Component {
         super(props)
 
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.handleRestart = this.handleRestart.bind(this)
+
+        this.renderSubmitForms = this.renderSubmitForms.bind(this)
+        this.renderSubmitRequested = this.renderSubmitRequested.bind(this)
     }
 
     // Component lifecycle
@@ -32,6 +39,7 @@ class Upload extends React.Component {
             this.props.dispatch(selectStackForUpload(-1))
         }
     }
+
     componentWillUnmount() {
         this.props.dispatch(clearUpload())
     }
@@ -46,6 +54,10 @@ class Upload extends React.Component {
         }
     }
 
+    handleRestart() {
+        this.props.dispatch(clearUpload())
+    }
+
 
     // Render
 
@@ -53,7 +65,7 @@ class Upload extends React.Component {
         const { upload, user } = this.props
         return (
             <div className="upload_submit-forms">
-                { user.get('stacksFetching') && <Spinner type="grey large" /> }
+                { user.get('stacksFetching') && <Spinner type="grey upload-stacks" /> }
                 { user.openStacks().size > 0 && <AddToRoom upload={upload} stacks={user.openStacks()} /> }
                 { upload.hasSelectedNewStack() && <CreateRoom upload={upload} stacks={user.openStacks()} /> }
                 <div className="upload_submit-container">
@@ -65,22 +77,49 @@ class Upload extends React.Component {
 
     renderSubmitRequested() {
         const { upload } = this.props
+
+        if (upload.get('selectedStackId') > 0) {
+            var stackUrl = `${baseUrl()}/r/${upload.selectedStack().get('hid')}`
+        }
+
         return (
             <div className="upload_submit-requested">
                 { upload.get('submitStackRequested') && 
                     <div>
-                        Your {upload.fileType()} is still processing. Please leave this page open until it finishes.
+                        Your {upload.fileType()} is still uploading. Please leave this page open until it finishes.
                     </div>
                 }
-                { upload.get('isSubmittingStack') && <Spinner type="grey large" /> }
-                { upload.get('stackSubmitted') && <div>Success!</div> }
-                { upload.get('submitStackError') && <div>There was an error :(</div> }
+                { upload.get('isSubmittingStack') && <Spinner type="grey large upload-submit" /> }
+                { upload.get('stackSubmitted') && 
+                    <div>
+                        <Icon type="check" />
+                        <div className="upload_success-message">
+                            Your {upload.fileType()} has been submitted! See it live at <a href={stackUrl}>{stackUrl}</a>
+                        </div>
+                        <div><a className="btn upload_restart" onClick={this.handleRestart}>Upload another file</a></div>
+                    </div> 
+                }
+                { upload.get('submitStackError') && 
+                    <div>
+                        There was an error submitting your {upload.fileType()}. Please try again.
+                        <div><a className="btn upload_restart" onClick={this.handleRestart}>Upload another file</a></div>
+                    </div> }
             </div>
         )
     }
 
+    renderIncompatibleBrowser() {
+        return (
+            <PageError>Your browser isn't modern enough for our high-tech, envelope-pushing upload process. Please consider upgrading.</PageError>
+        )
+    }
+
     render() {
-        const { upload } = this.props 
+        const { upload, app } = this.props 
+
+        if (app.get('browser') === 'IE' && parseInt(app.get('version')) < 10) {
+            return this.renderIncompatibleBrowser()
+        }
 
         const defaultDragFn = e => { e.preventDefault() }
         const dragEvents = {
@@ -115,7 +154,8 @@ class Upload extends React.Component {
 function mapStateToProps(state) {
     return {
         upload: new UploadModel(state),
-        user: new CurrentUser(state)
+        user: new CurrentUser(state),
+        app: new App(state)
     }
 }
 

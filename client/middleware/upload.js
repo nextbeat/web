@@ -8,12 +8,11 @@ import { App, Upload } from '../models'
 
 function keyName(file, type, uuid) {
     var ext = file.name.split('.')[file.name.split('.').length-1]
-    var prefix = 'uploadtest' // TEMPORARY
+    var prefix = type === 'video' ? 'videos' : 'images'
     return `${prefix}/${uuid}.${ext}`
 }
 
-function uploadFile(store, next, action, policy, key) {
-    let xhr = new XMLHttpRequest()
+function uploadFile(store, next, action, policy, key, xhr) {
     let fd = new FormData()
     let file = action.file
 
@@ -95,13 +94,26 @@ export default store => next => action => {
 
     if (action.type !== ActionTypes.UPLOAD_FILE 
         && action.type !== ActionTypes.UPLOAD_POSTER_FILE
-        && action.type !== ActionTypes.SUBMIT_STACK_REQUEST) 
+        && action.type !== ActionTypes.SUBMIT_STACK_REQUEST
+        && action.type !== ActionTypes.CLEAR_UPLOAD) 
     {
         return next(action)
     }
 
     function callActionWith(data) {
         next(assign({}, action, data))
+    }
+
+    if (action.type === ActionTypes.CLEAR_UPLOAD) {
+        // We want to abort the upload request if this
+        // action is called.
+        let upload = new Upload(store.getState())
+        let xhr = upload.get('xhr')
+        if (xhr) {
+            console.log('ABORTING REQUEST')
+            xhr.abort();
+        }
+        return next(action)
     }
 
     if (action.type === ActionTypes.SUBMIT_STACK_REQUEST) {
@@ -134,6 +146,9 @@ export default store => next => action => {
     // Retrieve open stacks for display on upload page
     store.dispatch(syncStacks('open', false))
 
+    // we keep a reference to the XHR object so we can abort if requested
+    let xhr = new XMLHttpRequest() 
+
     callActionWith({
         status: Status.REQUESTING,
         progress: 0,
@@ -141,14 +156,15 @@ export default store => next => action => {
             url,
             uuid,
             type: fileType === 'image' ? 'photo' : 'video' 
-        }
+        },
+        xhr
     })
 
     // Retrieve S3 POST policy from server
     getPolicy()
     // .delay(5000) // FOR DEBUG
     .then(policy => {
-        return uploadFile(store, next, action, policy, key)
+        return uploadFile(store, next, action, policy, key, xhr)
     })
     .then(() => {
         callActionWith({

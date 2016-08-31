@@ -1,9 +1,18 @@
 import React from 'react'
+import { connect } from 'react-redux'
+
+import { clearUpload } from '../../actions'
 
 class UploadBar extends React.Component {
 
     constructor(props) {
         super(props)
+
+        this.handleCancel = this.handleCancel.bind(this)
+    }
+
+    handleCancel() {
+        this.props.dispatch(clearUpload())
     }
 
     render() {
@@ -18,9 +27,14 @@ class UploadBar extends React.Component {
                 <div className="upload_progress-bar">
                     <div className="upload_progress-bar_progress" style={{ transform: `scaleX(${progress})` }}></div>
                 </div>
+                { !upload.isInSubmitProcess() &&
+                    <div className="upload_progress-bar_cancel">
+                        <a className="btn upload_progress-bar_cancel-btn" onClick={this.handleCancel}>Cancel upload</a>
+                    </div>
+                }
             </div>
         );
     }
 }
 
-export default UploadBar;
+export default connect()(UploadBar);

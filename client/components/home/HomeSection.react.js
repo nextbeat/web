@@ -58,31 +58,6 @@ class HomeSection extends React.Component {
             itemWidth,
             shouldAnimate: false
         })
-
-        // if (parent.width() > 1040) {
-        //     this.setState({ 
-        //         numAcross: 4,
-        //         leftIndex: Math.max(0, Math.min(stacks.size-4, oldLeftIndex)),
-        //         shouldAnimate: false 
-        //     })
-        // } else if (parent.width() > 820) {
-        //     this.setState({ 
-        //         numAcross: 3,
-        //         leftIndex: Math.max(0, Math.min(stacks.size-3, oldLeftIndex)),
-        //         shouldAnimate: false 
-        //     })
-        // } else {    
-        //     // If the viewport is small enough we also want to resize stack items
-        //     let itemWidth = DEFAULT_ITEM_WIDTH
-        //     if (parent.width() < 530) {
-        //         itemWidth = Math.floor((parent.width() - 80 - MARGIN_WIDTH) / 2) 
-        //     } 
-        //     this.setState({ 
-        //         numAcross: 2,
-        //         itemWidth: itemWidth,
-        //         shouldAnimate: false 
-        //     })
-        // }
     }
 
     // Actions

@@ -79,6 +79,10 @@
 
 // Progress bar
 
+.upload_progress-bar_container {
+    position: relative;
+}
+
 .upload_progress-bar_data {
     font-size: 12px;
     font-weight: 600;
@@ -107,8 +111,30 @@
     transition: transform 0.3s;
 }
 
+.upload_progress-bar_cancel {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin-top: 10px;
+}
+
+.upload_progress-bar_cancel-btn {
+    font-size: 12px;
+    font-weight: 300;
+    background: #ccc;
+    padding: 4px 8px;
+
+    &:hover {
+        background: #ddd;
+    }
+}
+
 
 // Add to room
+
+.spinner-upload-stacks {
+    margin: 40px auto;
+}
 
 .upload_add {
     width: 100%;
@@ -373,6 +399,38 @@ input.upload_create-room_tags-input {
     padding: 10px 25px;
 }
 
+
+// Post-submit
+
+.upload_submit-requested {
+    max-width: 330px;
+    margin: 25px auto;
+    font-weight: 300;
+    font-size: 16px;
+    text-align: center;
+
+    .svg-icon-check {
+        width: 80px;
+        height: 80px;
+        fill: #ccc;
+    }
+
+    .spinner-upload-submit {
+        margin: 25px auto;
+    }
+}
+
+.upload_success-message {
+    margin-top: 20px;
+}
+
+.upload_restart {
+    margin-top: 40px;
+    font-size: 14px;
+    font-weight: 300px;
+    padding: 5px 10px;
+    display: inline-block;
+}
 
 
 

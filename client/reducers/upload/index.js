@@ -13,6 +13,9 @@ function uploadFile(state, action) {
         if (action.mediaItem) {
             state = state.set('mediaItem', Map(action.mediaItem))
         }
+        if (action.xhr) {
+            state = state.set('xhr', action.xhr)
+        }
         return state
 
     } else if (action.status === Status.SUCCESS) {
@@ -31,6 +34,9 @@ function selectStackForUpload(state, action) {
     if (action.id === null) {
         return state.delete('selectedStackId')
     } else {
+        if (action.id === -1) {
+            state = state.setIn(['newStack', 'uuid'], action.uuid)
+        }
         return state.merge({
             selectedStackId: action.id
         })
@@ -64,6 +70,21 @@ function syncStacks(state, action) {
                 stackSubmitted: false
             })
         } else if (action.status === Status.SUCCESS) {
+            // if we're creating a new stack, we update the selected stack id
+            // with the id of the stack returned in the sync process
+            if (state.get('selectedStackId') === -1) {
+                let stacks = action.response.entities.stacks 
+                let selectedStackId = -1
+
+                for (let stackId in stacks) {
+                    if (stacks[stackId].uuid === state.getIn(['newStack', 'uuid'])) {
+                        selectedStackId = stackId;
+                        break;
+                    }
+                }
+
+                state = state.set('selectedStackId', selectedStackId)
+            }
             return state.merge({
                 submitStackRequested: false,
                 isSubmittingStack: false,

@@ -1,3 +1,4 @@
+import { v4 as generateUuid } from 'node-uuid'
 import ActionTypes from './types'
 
 /********
@@ -21,9 +22,15 @@ export function uploadPosterFile(blob, key) {
 }
 
 export function selectStackForUpload(stackId) {
+    let uuid;
+    if (stackId === -1) {
+        // creating new stack, so generate uuid
+        uuid = generateUuid()
+    }
     return {
         type: ActionTypes.SELECT_STACK_FOR_UPLOAD,
-        id: stackId
+        id: stackId,
+        uuid
     }
 }
 
