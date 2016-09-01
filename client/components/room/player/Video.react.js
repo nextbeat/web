@@ -211,8 +211,6 @@ class Video extends React.Component {
 
         const videoPlayer = document.getElementById('video_player');
 
-        console.log(video.get('url'))
-
         if (video.get('type') === 'hls') {
             var hls = new Hls();
             hls.attachMedia(videoPlayer);

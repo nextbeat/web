@@ -65,15 +65,18 @@
     text-align: center;
 }
 
-.upload_file-name-label {
-    font-size: 16px;
-    font-weight: 400;
-    color: #666;
-    width: 100%;
-    text-align: center;
+.upload_caption-btn {
     position: absolute;
-    bottom: 0;
-    margin-bottom: 10px;
+    bottom: 5px;
+    right: 5px;
+    font-size: 12px;
+    padding: 4px 5px;
+    color: #fff;
+    background: rgba(#000, 0.6);
+
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 
@@ -430,6 +433,24 @@ input.upload_create-room_tags-input {
     font-weight: 300px;
     padding: 5px 10px;
     display: inline-block;
+}
+
+
+// Add caption
+
+.upload_add-caption {
+    width: 660px;
+}
+
+.upload_add-caption_media-container {
+    padding: 20px;
+    width: 100%;
+    height: 340px;
+
+    .player_media-inner {
+        background: $dark-background-color;
+        border: 1px solid $border-color;
+    }
 }
 
 

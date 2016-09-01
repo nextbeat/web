@@ -2,8 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux' 
 import { assign } from 'lodash'
 
+import AddCaption from './AddCaption.react'
 import Icon from '../shared/Icon.react'
-import { uploadFile, uploadPosterFile, updateNewMediaItem } from '../../actions'
+import { uploadFile, uploadPosterFile, updateNewMediaItem, promptModal } from '../../actions'
 
 // Calculate size and offset of resource based on
 // its intrinsic width and height and the dimensions
@@ -46,6 +47,7 @@ class FileSelect extends React.Component {
 
         this.handleClick = this.handleClick.bind(this)
         this.handleInputChange = this.handleInputChange.bind(this)
+        this.handleAddCaptionClick = this.handleAddCaptionClick.bind(this)
 
         this.renderUploadPrompt = this.renderUploadPrompt.bind(this)
         this.renderUploadProgress = this.renderUploadProgress.bind(this)
@@ -53,6 +55,8 @@ class FileSelect extends React.Component {
         this.state = {
             isDragging: false,
             resourceLoaded: false,
+            resourceWidth: 0,
+            resourceHeight: 0,
             width: 0,
             height: 0,
             offsetX: 0,
@@ -100,7 +104,9 @@ class FileSelect extends React.Component {
 
             // calculate appropriate image dimensions for display
             this.setState(assign({}, resourceDimensions(width, height), {
-                resourceLoaded: true
+                resourceLoaded: true,
+                resourceWidth: width,
+                resourceHeight: height,
             }))
         })
 
@@ -138,12 +144,15 @@ class FileSelect extends React.Component {
             }))
 
             this.setState(assign({}, resourceDimensions(width, height), {
-                resourceLoaded: true
+                resourceLoaded: true,
+                resourceWidth: width,
+                resourceHeight: height
             }))
         })
 
         video.src = URL.createObjectURL(file)
     }
+
 
     // Drag events
 
@@ -188,6 +197,10 @@ class FileSelect extends React.Component {
         }
     }
 
+    handleAddCaptionClick() {
+        this.props.dispatch(promptModal('add-caption'))
+    }
+
 
     // Render
 
@@ -217,13 +230,14 @@ class FileSelect extends React.Component {
         );
     }
 
-    renderUploadProgress(upload) {
-        const { fileObjectURL, resourceLoaded, width, height, offsetX, offsetY } = this.state 
+    renderUploadProgress(upload, app) {
+        const { fileObjectURL, resourceLoaded, resourceWidth, resourceHeight, width, height, offsetX, offsetY } = this.state 
         const isImage = upload.fileType() === 'image'
         const isVideo = upload.fileType() === 'video'
 
         return (
             <div className="upload_file-select">
+                <AddCaption app={app} upload={upload} width={resourceWidth} height={resourceHeight} />
                 <img id="upload_file-select_image" 
                     className="upload_file-select_image" 
                     style={{ 
@@ -246,13 +260,14 @@ class FileSelect extends React.Component {
                         left: `${offsetX}px`
                     }}
                 />
+                <div className="upload_caption-btn" onClick={this.handleAddCaptionClick}>Add Caption</div>
             </div>
         );
     }
 
     render() {
-        const { upload } = this.props 
-        return upload.hasFile() ? this.renderUploadProgress(upload) : this.renderUploadPrompt(upload)
+        const { upload, app } = this.props 
+        return upload.hasFile() ? this.renderUploadProgress(upload, app) : this.renderUploadPrompt(upload)
     }
 }
 

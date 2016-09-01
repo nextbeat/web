@@ -146,7 +146,7 @@ class Upload extends React.Component {
                 <div className="upload_header">
                     Upload file
                 </div>
-                <FileSelect upload={upload} />
+                <FileSelect upload={upload} app={app} />
                 { upload.has('error') && 
                     <div className="upload_error">
                         {upload.get('error')}
