@@ -13,6 +13,7 @@ if (process.env.NODE_ENV !== "production") {
     const stateTransformer = state => {
         if (Iterable.isIterable(state)) return state.toJS();
         else return state;
+        
     }
 
     const predicate = (getState, action) => action.type !== ActionTypes.RESIZE
@@ -23,7 +24,7 @@ if (process.env.NODE_ENV !== "production") {
     });
 
     if (typeof window !== 'undefined') { // in browser only
-        middlewares.push(logger);
+        // middlewares.push(logger);
     }
 }
 

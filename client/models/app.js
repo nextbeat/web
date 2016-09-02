@@ -20,6 +20,7 @@ const KEY_MAP = {
     // state
     'activeModal': ['app', 'state', 'modal'],
     'activeOverlay': ['app', 'state', 'overlay'],
+    'volume': ['app', 'state', 'volume'],
     'width': ['app', 'state', 'width']
 }
 

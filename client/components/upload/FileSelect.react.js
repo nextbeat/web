@@ -140,7 +140,7 @@ class FileSelect extends React.Component {
                 width,
                 height,
                 duration,
-                posterUrl: `${upload.bucketUrl()}${posterKey}`
+                posterUrl: `${upload.cloudfrontUrl()}${posterKey}`
             }))
 
             this.setState(assign({}, resourceDimensions(width, height), {
@@ -204,8 +204,9 @@ class FileSelect extends React.Component {
 
     // Render
 
-    renderUploadPrompt(upload) {
+    renderUploadPrompt() {
         const { isDragging } = this.state
+        const { upload } = this.props
 
         const dragEvents = {
             onDragEnter: this.handleDragEnter,
@@ -230,10 +231,13 @@ class FileSelect extends React.Component {
         );
     }
 
-    renderUploadProgress(upload, app) {
+    renderUploadProgress() {
         const { fileObjectURL, resourceLoaded, resourceWidth, resourceHeight, width, height, offsetX, offsetY } = this.state 
+        const { upload, app } = this.props 
+
         const isImage = upload.fileType() === 'image'
         const isVideo = upload.fileType() === 'video'
+        const hasDecoration = upload.get('mediaItem').getIn(['decoration', 'caption_text'], '').length > 0
 
         return (
             <div className="upload_file-select">
@@ -260,14 +264,16 @@ class FileSelect extends React.Component {
                         left: `${offsetX}px`
                     }}
                 />
-                <div className="upload_caption-btn" onClick={this.handleAddCaptionClick}>Add Caption</div>
+                { !upload.isInSubmitProcess() && 
+                    <div className="upload_caption-btn" onClick={this.handleAddCaptionClick}>{hasDecoration ? 'Edit' : 'Add'} Caption</div>
+                }
             </div>
         );
     }
 
     render() {
         const { upload, app } = this.props 
-        return upload.hasFile() ? this.renderUploadProgress(upload, app) : this.renderUploadPrompt(upload)
+        return upload.hasFile() ? this.renderUploadProgress() : this.renderUploadPrompt()
     }
 }
 

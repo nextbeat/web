@@ -18,7 +18,7 @@ class Decoration extends React.Component {
     render() {
         const { decoration } = this.props 
         const offset = parseFloat(decoration.get('caption_offset', '0.5'))*100
-        return <div className="player_caption" style={{top: `${offset}%`}} dangerouslySetInnerHTML={markupCaption(decoration.get('caption_text'))} />
+        return <div className="player_caption" id="player_caption" style={{top: `${offset}%`}} dangerouslySetInnerHTML={markupCaption(decoration.get('caption_text'))} />
     }
 }
 

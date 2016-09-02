@@ -157,7 +157,7 @@ export default store => next => action => {
     const fileType = Upload.fileTypeForMimeType(action.file.type)
     const uuid = generateUuid()
     const key = action.key || keyName(action.file, fileType, uuid)
-    const url = `${Upload.bucketUrl(store.getState())}${key}`
+    const url = `${Upload.cloudfrontUrl(store.getState())}${key}`
 
     // Retrieve open stacks for display on upload page
     store.dispatch(syncStacks('open', false))

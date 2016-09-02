@@ -21,8 +21,15 @@ class Photo extends React.Component {
     // Component lifecycle
 
     componentDidMount() {
+        const { image } = this.props
         window.addEventListener('resize', this.resize)
-        this.resize(this.props.image)
+        this.resize(image)
+
+        if (image.get('type') === 'objectURL') {
+            document.getElementById('player_photo').addEventListener('load', () => {
+                URL.revokeObjectURL(image.get('url'))
+            })
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -98,7 +105,7 @@ class Photo extends React.Component {
 
         return (
             <div className="player_photo-container">
-                <img src={image.get('url')} className="player_photo" style={this.imageStyle(image, this.state)} />
+                <img src={image.get('url')} id="player_photo" className="player_photo" style={this.imageStyle(image, this.state)} />
                 { decoration && 
                     <div className="player_decoration-container" style={this.captionStyle(this.state)}>
                         <Decoration decoration={decoration} />

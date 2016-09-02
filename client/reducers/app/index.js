@@ -56,6 +56,8 @@ function state(state = Map(), action) {
         }
     } else if (action.type === ActionTypes.CLOSE_DETAIL_SECTION) {
         return state.delete('overlay')
+    } else if (action.type === ActionTypes.SET_VIDEO_VOLUME) {
+        return state.set('volume', action.volume)
     } else if (action.type === ActionTypes.RESIZE) {
         const width = Math.max(action.width, 0)
         const size = WIDTH_RANGES.find(r => inRange(width, ...r.range))['type'];

@@ -156,7 +156,7 @@ class VideoControls extends React.Component {
                         <div className="video_progress-hover"></div>
                     </div>
                 </div>
-                <div className="video_controls">
+                <div className="video_controls" id="video_controls">
                     <div className="video_controls-left">
                         <a className="video_control video_control-play-pause" onClick={playPause}>
                             { isPlaying ? <Icon type="pause" /> : <Icon type="play" /> }

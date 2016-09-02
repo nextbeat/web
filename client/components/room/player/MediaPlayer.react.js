@@ -34,12 +34,6 @@ class MediaPlayer extends React.Component {
         this.handleKeyDown = this.handleKeyDown.bind(this);
         this.handleChat = this.handleChat.bind(this);
         this.handleActivity = this.handleActivity.bind(this);
-
-        this.changeVolume = this.changeVolume.bind(this);
-
-        this.state = {
-            volume: 1
-        }
     }
 
     // Lifecycle
@@ -55,6 +49,7 @@ class MediaPlayer extends React.Component {
         $(document.body).off('keydown', this.handleKeyDown);
     }
 
+
     // Resize
 
     resize() {
@@ -62,6 +57,7 @@ class MediaPlayer extends React.Component {
         const mediaHeight = Math.min(500, roomHeight-150);
         $('.player_media').height(mediaHeight);
     }
+
 
     // Navigation
 
@@ -100,13 +96,6 @@ class MediaPlayer extends React.Component {
         this.props.dispatch(selectDetailSection('activity'))
     }
 
-    // Video constants
-
-    changeVolume(volume) {
-        this.setState({
-            volume: volume
-        })
-    }
 
     // Render
 
@@ -119,13 +108,6 @@ class MediaPlayer extends React.Component {
 
         const activeDetailButtons = app.get('width') === 'small' || app.get('width') === 'medium'
 
-        // we track video volume in this component so that
-        // it persists between video components
-        const videoVolumeProps = {
-            volume: this.state.volume,
-            changeVolume: this.changeVolume
-        }
-
         return (
         <div className="player_main">
             <Counter stack={stack} active={activeDetailButtons} handleClick={this.handleActivity} />
@@ -134,7 +116,7 @@ class MediaPlayer extends React.Component {
                 <div className="player_media-inner" id="player_media-inner">
                 { stack.mediaItems().size == 0 && !stack.get('mediaItemsError') && <Spinner type="large grey"/> }
                 { !item.isEmpty() && (item.isVideo() ? 
-                    <Video video={item.video('mp4')} decoration={item.get('decoration')} {...videoVolumeProps} /> : 
+                    <Video video={item.video('mp4')} decoration={item.get('decoration')} /> : 
                     <Photo image={item.image()} decoration={item.get('decoration')} /> ) 
                 }
                 </div>

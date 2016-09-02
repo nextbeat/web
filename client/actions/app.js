@@ -85,6 +85,13 @@ export function closeSidebar() {
     }
 }
 
+export function setVideoVolume(volume) {
+    return {
+        type: ActionTypes.SET_VIDEO_VOLUME,
+        volume
+    }
+}
+
 /********
  * EVENTS
  ********/

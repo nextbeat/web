@@ -101,6 +101,19 @@ export default class Upload extends ModelBase {
         }
     }
 
+    cloudfrontUrl() {
+        return this.constructor.cloudfrontUrl(this.state)
+    }
+
+    static cloudfrontUrl(state) {
+        var app = new App(state)
+        if (app.get('environment') === 'production') {
+            return 'https://media.nextbeat.co/'
+        } else {
+            return 'https://media.dev.nextbeat.co/'
+        }
+    }
+
     selectedStack() {
         if (this.get('selectedStackId') > 0) {
             return this.__getEntity(this.get('selectedStackId'), 'stacks')
@@ -134,6 +147,10 @@ export default class Upload extends ModelBase {
             type: mediaItemState.type,
             uuid: mediaItemState.uuid,
             stack_uuid: stack.uuid
+        }
+
+        if (this.get('mediaItem').getIn(['decoration', 'caption_text'], '').length > 0) {
+            mediaItem.decoration = mediaItemState.decoration
         }
 
         if (mediaItem.type === 'photo') {

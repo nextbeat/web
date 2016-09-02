@@ -9,6 +9,7 @@ export {
     closeSidebar,
     promptModal,
     closeModal,
+    setVideoVolume,
     triggerAuthError,
     clearApp
 } from './app'

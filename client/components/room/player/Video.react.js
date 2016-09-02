@@ -8,6 +8,7 @@ import { toggleFullScreen, isIOSDevice } from '../../../utils'
 import Decoration from './Decoration.react'
 import VideoControls from './VideoControls.react'
 import { App } from '../../../models'
+import { setVideoVolume } from '../../../actions'
 
 
 class Video extends React.Component {
@@ -76,7 +77,8 @@ class Video extends React.Component {
 
         // iOS does not do custom controls well
         this.setState({
-            isIOSDevice: isIOSDevice()
+            isIOSDevice: isIOSDevice(),
+            isPlaying: this.props.autoplay !== false
         })
     }
 
@@ -226,7 +228,14 @@ class Video extends React.Component {
             videoPlayer.src = video.get('url')
         }
 
-        videoPlayer.volume = this.props.volume;
+        if (video.get('type') === 'objectURL') {
+            videoPlayer.addEventListener('loadeddata', () => {
+                URL.revokeObjectURL(video.get('url'))
+            })
+        }
+
+        videoPlayer.volume = this.props.app.get('volume', 1)
+        this.resize()
 
         this.setState({
             currentTime: 0,
@@ -261,24 +270,23 @@ class Video extends React.Component {
             volume = 1;
         }
         video.volume = volume;
-        this.props.changeVolume(volume);
+        this.props.dispatch(setVideoVolume(volume))
     }
 
     mute() {
         const video = document.getElementById('video_player');
         const { storedVolume } = this.state
-        const { volume } = this.props
+        const volume = this.props.app.get('volume', 1)
+
         if (volume > 0) {
             // mute and store previous volume
-            video.volume = 0;
-            this.props.changeVolume(0);
+            this.adjustVolume(0)
             this.setState({
                 storedVolume: volume
             })
         } else {
             // unmute and reset stored volume
-            video.volume = storedVolume;
-            this.props.changeVolume(storedVolume);
+            this.adjustVolume(storedVolume)
             this.setState({
                 storedVolume: 1
             })
@@ -383,7 +391,7 @@ class Video extends React.Component {
     }
 
     render() {
-        const { video, volume, decoration } = this.props;
+        const { video, decoration, app, autoplay } = this.props;
         const { isIOSDevice, shouldDisplayControls } = this.state;
 
         const displayControlsVideoStyle = shouldDisplayControls ? { cursor: 'auto' } : { cursor: 'none' };
@@ -400,7 +408,7 @@ class Video extends React.Component {
             currentTime: this.state.currentTime,
             duration: this.state.duration,
             loadedDuration: this.state.loadedDuration,
-            volume: volume,
+            volume: app.get('volume', 1),
             shouldDisplayControls: this.state.shouldDisplayControls,
             isPlaying: this.state.isPlaying,
             isFullScreen: this.state.isFullScreen,
@@ -415,7 +423,7 @@ class Video extends React.Component {
             preload: "auto",
             autoload: true,
             controls: isIOSDevice,
-            autoPlay: !isIOSDevice
+            autoPlay: autoplay !== false && !isIOSDevice // by default, autoplay is undefined 
         }
 
 

@@ -450,7 +450,46 @@ input.upload_create-room_tags-input {
     .player_media-inner {
         background: $dark-background-color;
         border: 1px solid $border-color;
+        overflow: hidden;
     }
+
+    .video_player-decoration {
+        /* re-enable mouse events to allow for dragging */
+        pointer-events: auto;
+    }
+
+}
+
+.upload_add-caption_form {
+    margin: 10px 20px;
+    display: flex;
+    align-items: center;
+
+    .btn {
+        flex: 0 0;
+        margin-left: 10px;
+        font-size: 14px;
+    }
+}
+
+.upload_add-caption_cancel-btn {
+    background: #ccc;
+
+    &:hover {
+        background: #ddd;
+    }
+}
+
+input.upload_add-caption_input {
+    flex: 1 0;
+    padding: 7px;
+    font-size: 14px;
+}
+
+.upload_add-caption_info {
+    color: $detail-text-color;
+    font-size: 12px;
+    margin: 0 20px 20px 20px;
 }
 
 
