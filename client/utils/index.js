@@ -54,6 +54,9 @@ export function secureUrl(url) {
   if (!url) {
     return null
   }
+  if (!/^https?:\/\//.test(url)) {
+    return `https://${url}`
+  }
   return url.replace(/http:\/\//, 'https://')
 }
 
