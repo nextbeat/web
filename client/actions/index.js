@@ -60,6 +60,7 @@ export {
     logout,
     signup,
     syncStacks,
+    updateUser,
     loadBookmarkedStacks,
     loadSubscriptions,
     subscribe,
@@ -69,6 +70,7 @@ export {
     clearLogin,
     clearSignup,
     clearClosedBookmarkedStacks,
+    clearEditProfile
 } from './user'
 
 export {

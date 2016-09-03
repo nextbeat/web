@@ -1,7 +1,12 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { Link } from 'react-router'
+
+import { secureUrl } from '../../utils'
+import { CurrentUser, App } from '../../models'
+import { promptModal } from '../../actions'
 
 import Subscribe from '../shared/Subscribe.react'
-import { secureUrl } from '../../utils'
 
 class LargeUser extends React.Component {
 
@@ -9,10 +14,16 @@ class LargeUser extends React.Component {
         super(props)
     }
 
+    handleEdit() {
+        this.props.dispatch(promptModal('edit-profile'))
+    }
+
     render() {
-        const { user } = this.props 
+        const { user, currentUser } = this.props 
+
         let profpic_url = user.get('profpic_thumbnail_url') || user.get('profpic_url');
         let userHasInfo = user.get('website_url') || user.get('full_name') || user.get('description')
+        let isCurrentUser = currentUser.get('id') === user.get('id') && currentUser.get('id') > 0
         let secureWebsiteUrl = secureUrl(user.get('website_url'))
 
         return (
@@ -20,7 +31,7 @@ class LargeUser extends React.Component {
                 <div className="user_profpic user-large_profpic">{ profpic_url ? <img src={profpic_url} /> : <Icon type="person" /> }</div>
                 <div className="user-large_right">
                     <div className="user-large_username">
-                        { user.get('username') } <Subscribe user={user} />
+                        { user.get('username') } { isCurrentUser ? <Link className="btn btn-gray btn-edit-profile" to="/edit-profile">Edit Profile</Link> : <Subscribe user={user} /> }
                     </div>
                     { userHasInfo && 
                         <div className="user-large_info">
@@ -43,4 +54,11 @@ class LargeUser extends React.Component {
     }
 }
 
-export default LargeUser;
+function mapStateToProps(state) {
+    return {
+        currentUser: new CurrentUser(state),
+        app: new App(state)
+    }
+}
+
+export default connect(mapStateToProps)(LargeUser);

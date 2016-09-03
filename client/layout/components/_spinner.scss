@@ -2,6 +2,7 @@
  * Modified version of loading.io spinner
  */
 
+$spinner-size-small: 18px;
 $spinner-size: 25px;
 $spinner-size-large: 40px;
 
@@ -24,6 +25,18 @@ $spinner-size-large: 40px;
     width: $spinner-size-large;
     height: $spinner-size-large;
     font-size: $spinner-size-large;
+  }
+
+  &.spinner-small {
+    width: $spinner-size-small;
+    height: $spinner-size-small;
+    font-size: $spinner-size-small;
+
+    & > div {
+      width: 15%;
+      height: 15%;
+    }
+
   }
 }
 

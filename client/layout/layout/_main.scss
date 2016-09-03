@@ -7,11 +7,6 @@
     &.expand-left {
         margin-left: 0;
     }
-
-    // @include media('<=medium') {
-    //     margin-left: 0;
-    // }
-
 }
 
 .content {
@@ -19,5 +14,19 @@
 }
 
 .content_inner {
-    padding: 15px;
+    padding: 20px;
+}
+
+
+// Site-wide styles
+
+.content_header {
+    font-size: 24px;
+    font-weight: 400;
+    padding-bottom: 18px;
+    border-bottom: 1px solid $separator-color;
+}
+
+.content_main {
+    margin-top: 20px;
 }

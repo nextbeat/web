@@ -10,6 +10,7 @@ import { CurrentUser, Stack } from '../models'
 import Schemas from '../schemas'
 import { API_CALL, API_CANCEL } from './types'
 import { analyticsIdentify } from './analytics'
+import { isValidUrl } from '../utils'
 
 
 /******
@@ -34,6 +35,38 @@ export function syncStacks(status='all', deep=true, newStack) {
                 objectsToSync
             }
         }
+    }
+}
+
+/********
+ * UPDATE
+ ********/
+
+function postUpdateUser(uuid, userObject) {
+    return {
+        type: ActionTypes.UPDATE_USER,
+        [API_CALL]: {
+            Schema: Schemas.USER,
+            method: 'PUT',
+            endpoint: `users/${uuid}`,
+            body: userObject
+        }
+    }
+}
+
+export function updateUser(userObject) {
+    return (dispatch, getState) => {
+        const currentUser = new CurrentUser(getState())
+        if (!currentUser.isLoggedIn()) {
+            return null;
+        }
+
+        const uuid = currentUser.get('uuid')
+        if (!uuid) {
+            return null;
+        }
+
+        dispatch(postUpdateUser(uuid, assign(userObject, { uuid })))
     }
 }
 
@@ -376,6 +409,15 @@ export function clearLogin() {
 
 export function clearSignup() {
     return clearLoginSignup()
+}
+
+export function clearEditProfile() {
+    return {
+        type: ActionTypes.CLEAR_EDIT_PROFILE,
+        [API_CANCEL]: {
+            actionTypes: [ActionTypes.UPDATE_USER]
+        }
+    }
 }
 
 export function clearClosedBookmarkedStacks() {

@@ -8,9 +8,15 @@ class NoMatch extends React.Component {
 
     render() {
         return (
-        <div className="no-match">
-            <h1>404 Error</h1> 
-            <p>This page does not exist. :(</p>
+        <div className="no-match content">
+            <div className="content_inner">
+                <div className="content_header">
+                    Page Not Found
+                </div>
+                <div className="content_main">
+                    Something went wrong, and now you're here! We apologize for any undue stress this may have caused.
+                </div>
+            </div>
         </div>
         );
     }

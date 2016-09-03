@@ -1,0 +1,122 @@
+.edit-profile {
+    overflow: auto;
+    height: 100%;
+}
+
+.edit-profile_user {
+    display: flex;
+    align-items: center;
+    margin: 30px 0 20px 0;
+}
+
+.edit-profile_profpic {
+    width: 95px;
+    text-align: right;
+
+    @include media('<=small') {
+        width: 70px;
+    }
+}
+
+.edit-profile_profpic-inner {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    overflow: hidden;
+    border-radius: 30px;
+    position: relative;
+    margin-right: 12px;
+    background: #ddd;
+    z-index: 15; // fixes Webkit bug where border-radius clipping doesn't occur (http://stackoverflow.com/a/25206004/371747)
+
+    img {
+        @include center;
+    }
+
+    .svg-icon-person {
+        @include center;
+        width: 70%;
+        height: 70%;
+    }
+}
+
+.edit-profile_username {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.edit-profile_form-item {
+    margin-bottom: 20px;
+    font-size: 14px;
+
+    * {
+        display: inline-block;
+    }
+
+    label {
+        width: 95px;
+        text-align: right;
+        padding: 10px 12px 0 0;
+        font-weight: 500;
+        vertical-align: top;
+    }
+
+    input, textarea {
+        max-width: 270px;
+        width: 270px;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    textarea {
+        resize: vertical;
+    }
+
+    @include media('<=small') {
+        margin-bottom: 15px;
+
+        * {
+            display: block;
+        }
+
+        label {
+            text-align: left;
+            margin-bottom: 5px;
+        }
+
+        input, textarea {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+}
+
+.edit-profile_separator {
+    height: 1px;
+    width: 100%;
+    background: $border-color;
+}
+
+.edit-profile_submit {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.edit-profile_submit-btn {
+    width: 95px;
+
+    @include media('<=small') {
+        width: 70px;
+    }
+}
+
+.edit-profile_submit-result {
+    color: $detail-text-color;
+    font-size: 14px;
+    font-weight: 300;
+
+    .error {
+        color: $error-color;
+    }
+}

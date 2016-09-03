@@ -143,7 +143,7 @@ class Upload extends React.Component {
         return (
             <div className="upload content" {...dragEvents} >
                 <Helmet title="Upload"/>
-                <div className="upload_header">
+                <div className="content_header">
                     Upload file
                 </div>
                 <FileSelect upload={upload} app={app} />

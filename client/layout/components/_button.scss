@@ -45,6 +45,15 @@
     }
 }
 
+.btn-gray {
+    background-color: #ccc;
+
+    &:hover {
+        background-color: #ddd;
+        color: white;
+    }
+}
+
 .btn-inactive {
     background-color: $button-color;
 }

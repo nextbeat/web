@@ -10,6 +10,10 @@ const KEY_MAP = {
     'loginError': ['user', 'meta', 'loginError'],
     'isSigningUp': ['user', 'meta', 'isSigningUp'],
     'signupError': ['user', 'meta', 'signupError'],
+    'hasUpdatedEntity': ['user', 'meta', 'hasUpdatedEntity'],
+    'isUpdatingUser': ['user', 'meta', 'isUpdatingUser'],
+    'hasUpdatedUser': ['user', 'meta', 'hasUpdatedUser'],
+    'updateUserError': ['user', 'meta', 'updateUserError'],
     // live
     'connected': ['user', 'live', 'connected'],
     'client': ['user', 'live', 'client'],

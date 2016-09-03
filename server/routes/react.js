@@ -29,10 +29,15 @@ function getInitialState(req) {
     if (req.user && req.user.id) {
         assign(state, {
             user: {
-                meta: { id: req.user.id }
+                meta: { 
+                    id: req.user.id,
+                    hasUpdatedEntity: true 
+                }
             },
             entities: {
-                users: { [req.user.id.toString()]: req.user }
+                users: { 
+                    [req.user.id.toString()]: req.user 
+                }
             }
         })
     }
