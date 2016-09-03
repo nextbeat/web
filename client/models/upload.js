@@ -95,9 +95,9 @@ export default class Upload extends ModelBase {
     static bucketUrl(state) {
         var app = new App(state)
         if (app.get('environment') === 'production') {
-            return 'http://nextbeat.media.s3.amazonaws.com/'
+            return 'https://s3.amazonaws.com/nextbeat.media/'
         } else {
-            return 'http://nextbeat.dev.media.s3.amazonaws.com/'
+            return 'https://s3.amazonaws.com/nextbeat.dev.media/'
         }
     }
 
