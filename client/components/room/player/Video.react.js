@@ -356,7 +356,7 @@ class Video extends React.Component {
     // Render
 
     videoStyle(video, state) {
-        const { scale } = state
+        const { scale, width, height } = state
         
         let style = {}
         if (this.shouldForceVideoRotation()) {
@@ -374,9 +374,10 @@ class Video extends React.Component {
             // need to manually rescale video if in Chrome 52
             if (video.get('orientation') === 90 || video.get('orientation') === 270) {
                 const videoRatio = video.get('width')/video.get('height')
-                style.transform = `scaleX(${videoRatio*scale}) scaleY(${1/videoRatio*scale})`
-                style.left = 0
-                style.top = 0
+                style.transform = `translate(-50%, -50%) scaleX(${videoRatio*1/scale}) scaleY(${1/videoRatio*1/scale})`
+                // style.transformOrigin = 'left top'
+                // style.left = 0
+                // style.top = 0
             }
         }
         return style
