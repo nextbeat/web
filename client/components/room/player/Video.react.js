@@ -7,6 +7,7 @@ import { toggleFullScreen, isIOSDevice } from '../../../utils'
 
 import Decoration from './Decoration.react'
 import VideoControls from './VideoControls.react'
+import Spinner from '../../shared/Spinner.react'
 import { App } from '../../../models'
 import { setVideoVolume } from '../../../actions'
 
@@ -23,6 +24,7 @@ class Video extends React.Component {
         this.didLoadMetadata = this.didLoadMetadata.bind(this);
         this.didUpdateTime = this.didUpdateTime.bind(this);
         this.isPlaying = this.isPlaying.bind(this);
+        this.canPlay = this.canPlay.bind(this);
         this.didPause = this.didPause.bind(this);
         this.isWaiting = this.isWaiting.bind(this);
         this.didProgressDownload = this.didProgressDownload.bind(this);
@@ -49,6 +51,7 @@ class Video extends React.Component {
             duration: 0.5, // not zero to avoid divide by zero bugs
             storedVolume: 1, // stores last set volume when volume = 0 due to muting
             isPlaying: true,
+            isLoading: true,
             shouldDisplayControls: true,
             isFullScreen: false,
             isIOSDevice: false,
@@ -66,6 +69,7 @@ class Video extends React.Component {
         const video = document.getElementById('video_player');
 
         video.addEventListener('loadedmetadata', this.didLoadMetadata);
+        video.addEventListener('canplay', this.canPlay);
         video.addEventListener('playing', this.isPlaying);
         video.addEventListener('pause', this.didPause);
         video.addEventListener('waiting', this.isWaiting);
@@ -86,6 +90,7 @@ class Video extends React.Component {
         const video = document.getElementById('video_player');
 
         video.removeEventListener('loadedmetadata', this.didLoadMetadata);
+        video.removeEventListener('canplay', this.canPlay);
         video.removeEventListener('playing', this.isPlaying);
         video.removeEventListener('pause', this.didPause);
         video.removeEventListener('waiting', this.isWaiting);
@@ -156,6 +161,13 @@ class Video extends React.Component {
         });
     }
 
+    canPlay() {
+        console.log('can play')
+        this.setState({
+            isLoading: false
+        })
+    }
+
     isPlaying() {
         const video = document.getElementById('video_player');
 
@@ -165,7 +177,7 @@ class Video extends React.Component {
         this.setState({
             currentTime: video.currentTime,
             timeIntervalId,
-            isPlaying: true
+            isPlaying: true,
         });
 
         if (video.currentTime === 0) {
@@ -211,7 +223,7 @@ class Video extends React.Component {
         clearInterval(this.state.timeIntervalId);
         clearInterval(this.state.hoverTimeoutId);
 
-        const videoPlayer = document.getElementById('video_player');
+        let videoPlayer = document.getElementById('video_player');
 
         if (video.get('type') === 'hls') {
             var hls = new Hls();
@@ -242,6 +254,13 @@ class Video extends React.Component {
             duration: 0.5,
             loadedDuration: 0
         });
+
+        setTimeout(() => {
+            let videoPlayer = document.getElementById('video_player');
+            if (videoPlayer.readyState < 4) {
+                this.setState({ isLoading: true })
+            }
+        }, 100)
     }
 
     playPause() {
@@ -356,28 +375,21 @@ class Video extends React.Component {
     // Render
 
     videoStyle(video, state) {
-        const { scale, width, height } = state
+        const { scale, width, height, isLoading } = state
         
-        let style = {}
+        let style = { display: isLoading ? 'none' : 'block' }
         if (this.shouldForceVideoRotation()) {
             // need to manually rotate video if in Firefox or IE 10 
             if (video.get('orientation') === 90) {
-                style.transform = `rotate(90deg) scale(${scale})`
-                style.left = 0
-                style.top = 0
+                style.transform = `translate(-50%, -50%) rotate(90deg) scale(${1/scale}) `
             } else if (video.get('orientation') === 270) {
-                style.transform = `rotate(-90deg) scale(${scale})`
-                style.left = 0
-                style.top = 0
+                style.transform = `translate(-50%, -50%) rotate(-90deg) scale(${1/scale})`
             }
         } else if (this.shouldForceVideoResizing()) {
             // need to manually rescale video if in Chrome 52
             if (video.get('orientation') === 90 || video.get('orientation') === 270) {
                 const videoRatio = video.get('width')/video.get('height')
                 style.transform = `translate(-50%, -50%) scaleX(${videoRatio*1/scale}) scaleY(${1/videoRatio*1/scale})`
-                // style.transformOrigin = 'left top'
-                // style.left = 0
-                // style.top = 0
             }
         }
         return style
@@ -393,7 +405,7 @@ class Video extends React.Component {
 
     render() {
         const { video, decoration, app, autoplay } = this.props;
-        const { isIOSDevice, shouldDisplayControls } = this.state;
+        const { isIOSDevice, shouldDisplayControls, isLoading } = this.state;
 
         const displayControlsVideoStyle = shouldDisplayControls ? { cursor: 'auto' } : { cursor: 'none' };
 
@@ -438,6 +450,7 @@ class Video extends React.Component {
                             <Decoration decoration={decoration} />
                         </div>
                     }
+                    { isLoading && <Spinner type="white large faded" /> }
                 </div>
                 { !isIOSDevice && <VideoControls ref="controls" {...videoControlsProps} /> }
             </div>
