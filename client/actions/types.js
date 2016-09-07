@@ -8,10 +8,10 @@ export const Status = {
     FAILURE: 'FAILURE',
 }
 
-export const API_CALL = Symbol('API_CALL');
-export const API_CANCEL = Symbol('API_CANCEL');
+export const API_CALL = 'API_CALL';
+export const API_CANCEL = 'API_CANCEL';
 
-export const ANALYTICS = Symbol('ANALYTICS');
+export const ANALYTICS = 'ANALYTICS';
 export const AnalyticsTypes = {
     IDENTIFY: 'IDENTIFY',
     TRACK: 'TRACK',
