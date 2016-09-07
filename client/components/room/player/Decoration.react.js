@@ -6,6 +6,10 @@ import linkify from 'linkifyjs/html'
 function markupCaption(str) {
     const captionHtml = linkify(escape(str), {
         defaultProtocol: 'https',
+        target: '_blank',
+        attributes: {
+            rel: 'nofollow'
+        },
         validate: (value, type) => {
             return type !== 'hashtag'
         }
