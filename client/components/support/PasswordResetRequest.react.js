@@ -37,7 +37,7 @@ class PasswordResetRequest extends React.Component {
                 { support.get('resetRequestError') === "Invalid email." && <p className="has-error">Please enter a valid email address.</p>}
                 <form>
                     <input type="email" ref="email" name="email" placeholder="Email address" />
-                    <a className="btn" onClick={this.submitRequest}>Submit</a>
+                    <div className="support_submit"><a className="btn" onClick={this.submitRequest}>Submit</a></div>
                 </form>
             </div>
         );
@@ -46,9 +46,14 @@ class PasswordResetRequest extends React.Component {
     render() {
         const { support } = this.props;
         return (
-            <div className="support">
-                <h1>Reset Password Request</h1>
-                { support.get('resetRequestSent') ? this.renderRequestSent() : this.renderRequest() }
+            <div className="support content">
+                <div className="content_inner">
+                    <div className="content_header">
+                        Reset Password Request
+                    </div>
+                    { support.get('resetRequestSent') ? this.renderRequestSent() : this.renderRequest() }
+                </div>
+
             </div>
         );
     }

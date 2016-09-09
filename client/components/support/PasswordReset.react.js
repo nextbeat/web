@@ -43,7 +43,7 @@ class PasswordReset extends React.Component {
                 { support.has('tokenError') && 
                 <div>
                 <p className="has-error">This password reset link has expired. Each link may be used only once and expires after four hours.</p>
-                <p><Link to="/support/password-reset-request">Request a new password reset link.</Link></p>
+                <p><Link to="/support/password-reset-request" className="btn">Request a new password reset link.</Link></p>
                 </div>
                 }
             </div>
@@ -61,7 +61,7 @@ class PasswordReset extends React.Component {
                 <form>
                     <input type="password" ref="password" name="password" placeholder="Enter new password" />
                     <input type="password" ref="passwordConfirm" name="passwordConfirm" placeholder="Confirm new password" />
-                    <a className="btn" onClick={this.submitReset}>Submit</a>
+                    <div className="support_submit"><a className="btn" onClick={this.submitReset}>Submit</a></div>
                 </form>
             </div>
         );
@@ -74,11 +74,15 @@ class PasswordReset extends React.Component {
     render() {
         const { support } = this.props;
         return (
-            <div className="support">
-                <h1>Reset Your Password</h1>
-                { support.get('tokenValidated') ? 
-                    ( support.get('passwordReset') ? this.renderSuccess() : this.renderPasswordResetForm() )
-                    : this.renderInvalidToken() }
+            <div className="support content">
+                <div className="content_inner">
+                    <div className="content_header">
+                        Reset Your Password
+                    </div>
+                    { support.get('tokenValidated') ? 
+                        ( support.get('passwordReset') ? this.renderSuccess() : this.renderPasswordResetForm() )
+                        : this.renderInvalidToken() }
+                </div>
             </div> 
         );
     }

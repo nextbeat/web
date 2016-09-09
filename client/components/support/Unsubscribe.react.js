@@ -28,7 +28,7 @@ class PasswordResetRequest extends React.Component {
 
     // Render
 
-    renderRequestError() {
+    renderRequestError(error) {
         return <p className="has-error">There was an error processing your request. Please try again in a few minutes.</p>
     }
 
@@ -41,7 +41,7 @@ class PasswordResetRequest extends React.Component {
         return (
             <div>
                 <p>Click the button below to unsubscribe from all Nextbeat email notifications.</p>
-                <a className="btn" onClick={this.submitRequest}>Unsubscribe</a>
+                <div className="support_submit"><a className="btn" onClick={this.submitRequest}>Unsubscribe</a></div>
             </div>
         );
     }
@@ -49,11 +49,15 @@ class PasswordResetRequest extends React.Component {
     render() {
         const { support } = this.props;
         return (
-            <div className="support">
-                <h1>Unsubscribe</h1>
+            <div className="support content">
+                <div className="content_inner">
+                    <div className="content_header">
+                        Unsubscribe
+                    </div>
                 { support.get('unsubscribeRequestSent') ? this.renderRequestSent() : 
                     ( support.get('unsubscribeRequestError') ? this.renderRequestError() : this.renderRequest() ) 
                 }
+                </div>
             </div>
         );
     }

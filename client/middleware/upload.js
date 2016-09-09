@@ -110,7 +110,6 @@ export default store => next => action => {
         let upload = new Upload(store.getState())
         let xhr = upload.get('xhr')
         if (xhr) {
-            console.log('ABORTING REQUEST')
             xhr.abort();
         }
         return next(action)

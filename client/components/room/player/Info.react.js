@@ -20,7 +20,7 @@ class Info extends React.Component {
         const closed = stack.get('closed');
         return (
             <section className="player_info">
-                <div className="player_description"><span>{ stack.get('description') || "No description." } { !closed && <Badge elementType="player" type="open" /> } </span></div>
+            <div className="player_description"><span>{ stack.get('description') || "No description." } { !closed && <Badge elementType="player" type="open" /> } { stack.get('privacy_status') === 'unlisted' && <Badge elementType="player" type="unlisted" /> }</span></div>
                 <div className="player_tags">
                     {stack.get('tags', List()).map(tag => <Link to={`/t/${tag}`} key={`t-${tag}`} className="player_tag">{tag}</Link>)}
                 </div>
