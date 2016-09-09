@@ -67,7 +67,7 @@ export default class Upload extends ModelBase {
     }
 
     isSubmittable() {
-        return this.get('selectedStackId') > 0 || (this.hasSelectedNewStack() && this.get('newStack').get('title').length > 0)
+        return this.get('selectedStackId') > 0 || (this.hasSelectedNewStack() && this.get('newStack').get('title').length > 0) 
     }
 
     isInSubmitProcess() {
@@ -178,6 +178,15 @@ export default class Upload extends ModelBase {
         }
 
         stack.media_items = [mediaItem]
+
+        // Format thumbnail object
+        // TODO: include dimensions
+        if (this.get('hasCustomThumbnail')) {
+            stack.thumbnails = [{
+                url: this.get('thumbnailUrl')
+            }]
+        }
+
         return stack
     }
 

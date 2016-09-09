@@ -16,7 +16,7 @@ class EditThumbnail extends React.Component {
         this.handleDefaultClick = this.handleDefaultClick.bind(this)
     }
 
-    handleInputChange() {
+    handleInputChange(e) {
         if (e.target.files.length > 0) {
             const file = e.target.files[0]
             const ext = file.name.split('.')[file.name.split('.').length-1]
@@ -24,6 +24,7 @@ class EditThumbnail extends React.Component {
 
             if (['image/jpeg', 'image/png', 'image/gif'].indexOf(file.type) !== -1) {
                 // todo: show alert
+                console.log(file, key)
                 this.props.dispatch(uploadThumbnail(file, key))
                 this.props.dispatch(closeModal())
             }
@@ -42,7 +43,7 @@ class EditThumbnail extends React.Component {
     render() {
         return (
             <Modal name="edit-thumbnail" className="upload_edit-thumbnail">
-                <input type="file" id="upload_edit-thumbnail_file-select" className="upload_file-select" onChange={this.handleInputChange} accept="image/jpeg,image/png,image/gif" />
+                <input type="file" id="upload_edit-thumbnail_file-select" className="upload_file-input" onChange={this.handleInputChange} accept="image/jpeg,image/png,image/gif" />
                 <div className="modal_header">
                     Edit thumbnail
                 </div>

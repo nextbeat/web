@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { List } from 'immutable'
 
 import EditThumbnail from './EditThumbnail.react'
+import CreateRoomThumbnail from './CreateRoomThumbnail.react'
 import Icon from '../shared/Icon.react'
 import Spinner from '../shared/Spinner.react'
 import { selectStackForUpload, updateNewStack, promptModal } from '../../actions'
@@ -128,26 +129,6 @@ class CreateRoom extends React.Component {
 
     // Render
 
-    renderThumbnail(upload) {
-        const isCustom = upload.get('hasCustomThumbnail')
-        return (
-            <div className="upload_create-room_thumb-inner">
-                { !isCustom && 
-                    <img id="upload_create-room_thumb-img" />
-                }
-                { isCustom && upload.get('isUploadingThumbnail') &&
-                    <Spinner />
-                }
-                { isCustom && upload.get('hasUploadedThumbnail') &&
-                    <div 
-                        className="upload_create-room_thumb-custom-img"
-                        style={{ backgroundImage: `url(${upload.get('thumbnailUrl')})` }}
-                    ></div>
-                }
-            </div>
-        )
-    }
-
     renderTag(tag, index) {
         return (
             <div className="upload_create-room_tag" key={index}>
@@ -173,7 +154,7 @@ class CreateRoom extends React.Component {
                 <div className="upload_create-room_form">
                     <div className="upload_create-room_left">
                         <div className="upload_create-room_thumb">
-                            { this.renderThumbnail(upload) }
+                            <CreateRoomThumbnail upload={upload} file={upload.get('file')} />
                             <div className="upload_create-room_thumb_prompt" onClick={this.handleEditThumbnailClick}>
                                 Edit thumbnail
                             </div>

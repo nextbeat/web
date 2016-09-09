@@ -41,13 +41,13 @@ function uploadThumbnail(state, action) {
     if (action.status === Status.REQUESTING) {
         return state.merge({
             hasCustomThumbnail: true,
-            isUploadingThumbnail: true
+            isUploadingThumbnail: true,
+            thumbnailUrl: action.url
         }).delete('hasUploadedThumbnail').delete('thumbnailUploadError')
     } else if (action.status === Status.SUCCESS) {
         return state.merge({
             isUploadingThumbnail: false,
-            hasUploadedThumbnail: true,
-            thumbnailUrl: action.url
+            hasUploadedThumbnail: true
         })
     } else if (action.status === Status.FAILURE) {
         return state.merge({

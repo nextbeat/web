@@ -93,7 +93,7 @@ class Upload extends React.Component {
             <div className="upload_submit-requested">
                 { upload.get('submitStackRequested') && 
                     <div>
-                        Your {upload.fileType()} is still uploading. Please leave this page open until it finishes.
+                        Your { upload.get('isUploadingThumbnail') ? 'custom thumbnail' : upload.fileType() } is still uploading. Please leave this page open until it finishes.
                     </div>
                 }
                 { upload.get('isSubmittingStack') && <Spinner type="grey large upload-submit" /> }
@@ -146,7 +146,7 @@ class Upload extends React.Component {
                 <div className="content_header">
                     Upload file
                 </div>
-                <FileSelect upload={upload} app={app} />
+                <FileSelect upload={upload} app={app} file={upload.get('file')} />
                 { upload.has('error') && 
                     <div className="upload_error">
                         {upload.get('error')}

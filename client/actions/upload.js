@@ -24,6 +24,7 @@ export function uploadPosterFile(blob, key) {
 export function uploadThumbnail(file, key) {
     return {
         type: ActionTypes.UPLOAD_THUMBNAIL,
+        file,
         key
     }
 }

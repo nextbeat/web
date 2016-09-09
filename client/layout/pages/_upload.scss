@@ -260,6 +260,25 @@
     position: relative;
 }
 
+.upload_create-room_thumb-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+
+    .spinner {
+        margin: 20px auto;
+    }
+}
+
+.upload_create-room_thumb-custom-img {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
 .upload_create-room_thumb_prompt {
     position: absolute;
     bottom: 5px;
