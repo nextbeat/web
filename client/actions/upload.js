@@ -21,6 +21,13 @@ export function uploadPosterFile(blob, key) {
     }
 }
 
+export function uploadThumbnail(file, key) {
+    return {
+        type: ActionTypes.UPLOAD_THUMBNAIL,
+        key
+    }
+}
+
 export function selectStackForUpload(stackId) {
     let uuid;
     if (stackId === -1) {

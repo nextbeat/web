@@ -81,6 +81,7 @@ export {
 export {
     uploadFile,
     uploadPosterFile,
+    uploadThumbnail,
     selectStackForUpload,
     updateNewStack,
     updateNewMediaItem,

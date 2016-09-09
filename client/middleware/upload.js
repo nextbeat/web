@@ -94,6 +94,7 @@ export default store => next => action => {
 
     if (action.type !== ActionTypes.UPLOAD_FILE 
         && action.type !== ActionTypes.UPLOAD_POSTER_FILE
+        && action.type !== ActionTypes.UPLOAD_THUMBNAIL
         && action.type !== ActionTypes.SUBMIT_STACK_REQUEST
         && action.type !== ActionTypes.CLEAR_UPLOAD) 
     {
@@ -110,7 +111,6 @@ export default store => next => action => {
         let upload = new Upload(store.getState())
         let xhr = upload.get('xhr')
         if (xhr) {
-            console.log('ABORTING REQUEST')
             xhr.abort();
         }
         return next(action)
