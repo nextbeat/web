@@ -7,6 +7,7 @@ import { CurrentUser, App } from '../../models'
 import { promptModal } from '../../actions'
 
 import Subscribe from '../shared/Subscribe.react'
+import Icon from '../shared/Icon.react'
 
 class LargeUser extends React.Component {
 

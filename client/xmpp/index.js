@@ -75,6 +75,18 @@ export function getClient(store) {
             handleMessage(s, store);
         });
 
+        // client.on('stream:management:enabled', function(s) {
+        //     console.log('stream management enabled', s)
+        // })
+
+        // client.on('stream:management:resumed', function(s) {
+        //     console.log('stream management enabled', s)
+        // })
+
+        // client.on('stream:management:failed', function(s) {
+        //     console.log('stream management failed', s)
+        // })
+
         // client.on('raw:outgoing', function(s) {
         //     console.log('OUTGOING', s);
         // })

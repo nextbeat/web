@@ -31,11 +31,6 @@ export default store => {
     })
 
     return [
-        <Route path="/support">
-            <AnalyticsRoute path="password-reset-request" component={PasswordResetRequest} />
-            <AnalyticsRoute path="password-reset" component={PasswordReset} />
-            <AnalyticsRoute path="unsubscribe" component={Unsubscribe} />
-        </Route>,
         <Route component={App}>
             <AnalyticsRoute path="/" component={Home} /> 
             <AnalyticsRoute path="/s/:slug" component={Section} />
@@ -46,6 +41,11 @@ export default store => {
             <AnalyticsRoute path="/bookmarks" component={Bookmarks} />
             <AnalyticsRoute path="/upload" component={Upload} />
             <AnalyticsRoute path="/edit-profile" component={EditProfile} />
+            <Route path="/support">
+                <AnalyticsRoute path="password-reset-request" component={PasswordResetRequest} />
+                <AnalyticsRoute path="password-reset" component={PasswordReset} />
+                <AnalyticsRoute path="unsubscribe" component={Unsubscribe} />
+            </Route>
             <AnalyticsRoute path="*" component={NoMatch} />
         </Route>
     ]

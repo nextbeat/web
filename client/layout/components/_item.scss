@@ -274,20 +274,7 @@ a.item-room.selected {
     font-weight: 300;
 }
 
-.item-room-large_privacy-status {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    z-index: 10;
-    color: white;
-    font-size: 11px;
-    font-weight: 300;
-    background: rgba(#000, .4);
-    padding: 3px 5px;
-    border-color: 1px solid black;
-}
-
-.item-room-large_privacy-status_badge {
+.item-room-large_unlisted_badge {
     position: absolute;
     top: -3px;
     right: -2px;

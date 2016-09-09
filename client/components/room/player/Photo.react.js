@@ -22,7 +22,7 @@ class Photo extends React.Component {
 
     componentDidMount() {
         const { image } = this.props
-        window.addEventListener('resize', this.resize)
+        $(window).on('resize.photo', this.resize.bind(this, image))
         this.resize(image)
 
         if (image.get('type') === 'objectURL') {
@@ -39,7 +39,7 @@ class Photo extends React.Component {
     }
 
     componentWillUnmount() {
-        window.removeEventListener('resize', this.resize)
+        $(window).off('resize.photo')
     }
 
     // Events
