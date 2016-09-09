@@ -4,6 +4,7 @@ import { Map } from 'immutable'
 
 import Video from '../room/player/Video.react'
 import Photo from '../room/player/Photo.react'
+import Modal from '../shared/Modal.react'
 
 import { closeModal, updateNewMediaItem } from '../../actions'
 
@@ -155,40 +156,37 @@ class AddCaption extends React.Component {
     // Render
 
     render() {
-        const { app, upload } = this.props 
+        const { upload } = this.props 
         const { resource } = this.state
 
-        const shouldDisplay = app.get('activeModal') === 'add-caption'
         const isVideo = upload.fileType() === 'video'
         const isPhoto = upload.fileType() === 'image'
 
         const captionText = upload.get('mediaItem').getIn(['decoration', 'caption_text'], '')
 
         return (
-            <div className="modal-container" style={{ display: (shouldDisplay ? 'block' : 'none') }}>
-                <div className="modal upload_add-caption">
-                    <div id="upload_add-caption_media-container" className="upload_add-caption_media-container">
-                        <div className="player_media-inner">
-                            { isPhoto && <Photo image={resource} decoration={this.decorationObject()} /> }
-                            { isVideo && <Video video={resource} decoration={this.decorationObject()} autoplay={false} /> }
-                        </div>
-                    </div>
-                    <div className="upload_add-caption_form">
-                        <input 
-                            type="text" 
-                            placeholder="Enter caption" 
-                            className="upload_add-caption_input"
-                            value={captionText}
-                            onChange={this.handleInputChange}
-                        />
-                        <a className="btn upload_add-caption_cancel-btn" onClick={this.handleCancel}>Cancel</a>
-                        <a className="btn upload_add-caption_save-btn" onClick={this.handleSave}>Save</a>
-                    </div>
-                    <div className="upload_add-caption_info">
-                        Drag the caption to adjust its position on the {upload.fileType()}.
+            <Modal name="add-caption" className="upload_add-caption">
+                <div id="upload_add-caption_media-container" className="upload_add-caption_media-container">
+                    <div className="player_media-inner">
+                        { isPhoto && <Photo image={resource} decoration={this.decorationObject()} /> }
+                        { isVideo && <Video video={resource} decoration={this.decorationObject()} autoplay={false} /> }
                     </div>
                 </div>
-            </div>
+                <div className="upload_add-caption_form">
+                    <input 
+                        type="text" 
+                        placeholder="Enter caption" 
+                        className="upload_add-caption_input"
+                        value={captionText}
+                        onChange={this.handleInputChange}
+                    />
+                    <a className="btn upload_add-caption_cancel-btn" onClick={this.handleCancel}>Cancel</a>
+                    <a className="btn upload_add-caption_save-btn" onClick={this.handleSave}>Save</a>
+                </div>
+                <div className="upload_add-caption_info">
+                    Drag the caption to adjust its position on the {upload.fileType()}.
+                </div>
+            </Modal>
         );
     }
 }

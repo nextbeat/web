@@ -7,11 +7,19 @@ import App from './app'
 import { Status } from '../actions'
 
 const KEY_MAP = {
+    // Media upload
     'file': ['upload', 'file'],
     'status': ['upload', 'status'],
     'progress': ['upload', 'progress'],
     'xhr': ['upload', 'xhr'], // reference to XHR object which handles upload to S3
     'error': ['upload', 'error'],
+    // Thumbnail upload
+    'hasCustomThumbnail': ['upload', 'hasCustomThumbnail'],
+    'isUploadingThumbnail': ['upload', 'isUploadingThumbnail'],
+    'hasUploadedThumbnail': ['upload', 'hasUploadedThumbnail'],
+    'uploadThumbnailError': ['upload', 'uploadThumbnailError'],
+    'thumbnailUrl': ['upload', 'thumbnailUrl'],
+    // Stack and media item submission
     'selectedStackId': ['upload', 'selectedStackId'],
     'newStack': ['upload', 'newStack'],
     'mediaItem': ['upload', 'mediaItem'],
@@ -39,7 +47,7 @@ export default class Upload extends ModelBase {
     // Queries
 
     isUploading() {
-        return this.get('status') === Status.REQUESTING
+        return this.get('status') === Status.REQUESTING || this.get('isUploadingThumbnail')
     }
 
     hasFile() {

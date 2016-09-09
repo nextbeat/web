@@ -37,6 +37,34 @@ function uploadFile(state, action) {
     return state
 }
 
+function uploadThumbnail(state, action) {
+    if (action.status === Status.REQUESTING) {
+        return state.merge({
+            hasCustomThumbnail: true,
+            isUploadingThumbnail: true
+        }).delete('hasUploadedThumbnail').delete('thumbnailUploadError')
+    } else if (action.status === Status.SUCCESS) {
+        return state.merge({
+            isUploadingThumbnail: false,
+            hasUploadedThumbnail: true,
+            thumbnailUrl: action.url
+        })
+    } else if (action.status === Status.FAILURE) {
+        return state.merge({
+            isUploadingThumbnail: false,
+            hasUploadedThumbnail: false,
+            thumbnailUploadError: action.error
+        })
+    }
+    return state
+}
+
+function clearThumbnail(state, action) {
+    return state.merge({
+        hasCustomThumbnail: false
+    })
+}
+
 // id === -1 indicates that the user has selected to create a new stack
 // id === null indicates that the user has deselected all stacks
 function selectStackForUpload(state, action) {
@@ -124,6 +152,10 @@ export default function(state=initialState, action) {
         return initialState
     } else if (action.type === ActionTypes.UPLOAD_FILE) {
         return uploadFile(state, action)
+    } else if (action.type === ActionTypes.UPLOAD_THUMBNAIL) {
+        return uploadThumbnail(state, action)
+    } else if (action.type === ActionTypes.CLEAR_THUMBNAIL) {
+        return clearThumbnail(state, action)
     } else if (action.type === ActionTypes.SELECT_STACK_FOR_UPLOAD) {
         return selectStackForUpload(state, action)
     } else if (action.type === ActionTypes.UPDATE_NEW_STACK) {

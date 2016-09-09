@@ -2,8 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { List } from 'immutable'
 
+import EditThumbnail from './EditThumbnail.react'
 import Icon from '../shared/Icon.react'
-import { selectStackForUpload, updateNewStack } from '../../actions'
+import Spinner from '../shared/Spinner.react'
+import { selectStackForUpload, updateNewStack, promptModal } from '../../actions'
 
 const MAX_TAG_COUNT = 5;
 
@@ -19,6 +21,7 @@ class CreateRoom extends React.Component {
         this.handleTagKeyDown = this.handleTagKeyDown.bind(this)
         this.handleTagBlur = this.handleTagBlur.bind(this)
         this.handleStatusChange = this.handleStatusChange.bind(this)
+        this.handleEditThumbnailClick = this.handleEditThumbnailClick.bind(this)
 
         this.renderTag = this.renderTag.bind(this)
 
@@ -118,8 +121,32 @@ class CreateRoom extends React.Component {
         }))
     }
 
+    handleEditThumbnailClick(e) {
+        this.props.dispatch(promptModal('edit-thumbnail'))
+    }
+
 
     // Render
+
+    renderThumbnail(upload) {
+        const isCustom = upload.get('hasCustomThumbnail')
+        return (
+            <div className="upload_create-room_thumb-inner">
+                { !isCustom && 
+                    <img id="upload_create-room_thumb-img" />
+                }
+                { isCustom && upload.get('isUploadingThumbnail') &&
+                    <Spinner />
+                }
+                { isCustom && upload.get('hasUploadedThumbnail') &&
+                    <div 
+                        className="upload_create-room_thumb-custom-img"
+                        style={{ backgroundImage: `url(${upload.get('thumbnailUrl')})` }}
+                    ></div>
+                }
+            </div>
+        )
+    }
 
     renderTag(tag, index) {
         return (
@@ -138,6 +165,7 @@ class CreateRoom extends React.Component {
 
         return (
             <div className="upload_create-room">
+                <EditThumbnail />
                 <div className="upload_subheader">
                     Make new room
                     { stacks.size > 0 && <div onClick={this.handleClose}><Icon type="close" /></div> }
@@ -145,8 +173,9 @@ class CreateRoom extends React.Component {
                 <div className="upload_create-room_form">
                     <div className="upload_create-room_left">
                         <div className="upload_create-room_thumb">
-                            <div className="upload_create-room_thumb_prompt">
-                                Upload custom thumbnail
+                            { this.renderThumbnail(upload) }
+                            <div className="upload_create-room_thumb_prompt" onClick={this.handleEditThumbnailClick}>
+                                Edit thumbnail
                             </div>
                         </div>
                     </div>

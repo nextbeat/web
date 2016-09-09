@@ -261,11 +261,17 @@
 }
 
 .upload_create-room_thumb_prompt {
-    width: 100%;
-    padding: 10px 10px 10px 30px;
-    text-align: right;
-    font-size: 11px;
-    color: #aaa;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 12px;
+    padding: 4px 5px;
+    color: #fff;
+    background: rgba(#000, 0.6);
+
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 .upload_create-room_main {
@@ -432,6 +438,10 @@ input.upload_create-room_tags-input {
 
 .upload_add-caption {
     width: 660px;
+
+    .modal_close {
+        display: none;
+    }
 }
 
 .upload_add-caption_media-container {
@@ -482,6 +492,22 @@ input.upload_add-caption_input {
     color: $detail-text-color;
     font-size: 12px;
     margin: 0 20px 20px 20px;
+}
+
+
+// Edit thumbnail
+
+.modal.upload_edit-thumbnail {
+    margin: 0;
+    @include center;
+    width: 400px;
+}
+
+.upload_edit-thumbnail_btn {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 18px;
+    padding: 20px 0;
 }
 
 

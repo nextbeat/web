@@ -232,7 +232,7 @@ class FileSelect extends React.Component {
     }
 
     renderUploadProgress() {
-        const { fileObjectURL, resourceLoaded, resourceWidth, resourceHeight, width, height, offsetX, offsetY } = this.state 
+        const { resourceLoaded, resourceWidth, resourceHeight, width, height, offsetX, offsetY } = this.state 
         const { upload, app } = this.props 
 
         const isImage = upload.fileType() === 'image'

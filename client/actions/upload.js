@@ -28,6 +28,12 @@ export function uploadThumbnail(file, key) {
     }
 }
 
+export function clearThumbnail() {
+    return {
+        type: ActionTypes.CLEAR_THUMBNAIL
+    }
+}
+
 export function selectStackForUpload(stackId) {
     let uuid;
     if (stackId === -1) {

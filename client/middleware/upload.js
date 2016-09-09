@@ -165,16 +165,24 @@ export default store => next => action => {
     // we keep a reference to the XHR object so we can abort if requested
     let xhr = new XMLHttpRequest() 
 
-    callActionWith({
-        status: Status.REQUESTING,
-        progress: 0,
-        mediaItem: {
-            url,
-            uuid,
-            type: fileType === 'image' ? 'photo' : 'video' 
-        },
-        xhr
-    })
+    if (action.type === ActionTypes.UPLOAD_FILE) {
+        callActionWith({
+            status: Status.REQUESTING,
+            progress: 0,
+            mediaItem: {
+                url,
+                uuid,
+                type: fileType === 'image' ? 'photo' : 'video' 
+            },
+            xhr
+        })
+    } else if (action.type === ActionTypes.UPLOAD_THUMBNAIL) {
+        callActionWith({
+            status: Status.REQUESTING,
+            url
+        })
+    }
+
 
     // Retrieve S3 POST policy from server
     getPolicy()

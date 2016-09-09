@@ -47,10 +47,6 @@ export default function ScrollComponent(domId, scrollOptions={}) {
                 this.setScrollState()
             }
 
-            // shouldComponentUpdate(nextProps, nextState) {
-            //     return shallowCompare(this, nextProps, nextState)
-            // }
-
             componentDidUpdate(prevProps) {
                 if (typeof onComponentDidUpdate === 'function') {
                     onComponentDidUpdate.call(this.refs.child, this, prevProps)
