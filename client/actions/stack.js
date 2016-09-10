@@ -1,5 +1,6 @@
 import { List } from 'immutable'
 import { normalize } from 'normalizr'
+import { browserHistory } from 'react-router'
 
 import ActionTypes from './types'
 import Schemas from '../schemas'
@@ -226,6 +227,11 @@ export function selectMediaItem(id) {
         if (storageAvailable('sessionStorage')) {
             sessionStorage.setItem(stack.get('hid'), id)
         }
+
+        var index = stack.indexOfMediaItem(id)
+        console.log(id, index)
+        browserHistory.push(`/r/${stack.get('hid')}/${index+1}`)
+
         return dispatch(performSelectMediaItem(id))
     }
 }

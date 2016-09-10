@@ -1,5 +1,6 @@
 import React from 'react'
 import Promise from 'bluebird'
+import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { isEmpty, assign } from 'lodash'
@@ -57,13 +58,21 @@ class Room extends React.Component {
                 }
             }
 
-            this.props.dispatch(selectMediaItem(id))
+            // or if index is specified
+            const idx = parseInt(params.index)-1
+            if (idx > 0 && idx < stack.mediaItems().size) {
+                id = stack.mediaItems().get(idx).get('id')
+            }
+
+            this.handleSelectMediaItem(id)
         }
     }
 
     // SELECT MEDIA ITEM
 
     handleSelectMediaItem(id) {
+        const { params, dispatch, stack } = this.props
+
         this.props.dispatch(selectMediaItem(id))
         this.props.dispatch(closeDetailSection())
     }

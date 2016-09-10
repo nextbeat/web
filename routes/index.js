@@ -1,10 +1,11 @@
 import React from 'react'
-import { Route } from 'react-router'
+import { Route, Redirect } from 'react-router'
 import { assign } from 'lodash'
 
 import App from '../client/components/App.react'
 import Bookmarks from '../client/components/Bookmarks.react'
 import Room from '../client/components/Room.react'
+
 import Profile from '../client/components/Profile.react'
 import Tag from '../client/components/Tag.react'
 import Home from '../client/components/Home.react'
@@ -35,6 +36,7 @@ export default store => {
             <AnalyticsRoute path="/" component={Home} /> 
             <AnalyticsRoute path="/s/:slug" component={Section} />
             <AnalyticsRoute path="/r/:hid" component={Room} />
+            <AnalyticsRoute path="/r/:hid/:index" component={Room} />
             <AnalyticsRoute path="/u/:username" component={Profile} />
             <AnalyticsRoute path="/t/:name" component={Tag} />
             <AnalyticsRoute path="/search" component={Search} />

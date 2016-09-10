@@ -5,7 +5,6 @@ import { List } from 'immutable'
 import EditThumbnail from './EditThumbnail.react'
 import CreateRoomThumbnail from './CreateRoomThumbnail.react'
 import Icon from '../shared/Icon.react'
-import Spinner from '../shared/Spinner.react'
 import { selectStackForUpload, updateNewStack, promptModal } from '../../actions'
 
 const MAX_TAG_COUNT = 5;
