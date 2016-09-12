@@ -4,6 +4,7 @@ import ActionTypes from './types'
 import { Status } from './types'
 import Schemas from '../schemas'
 import { API_CALL, API_CANCEL } from './types'
+import { App } from '../models'
 
 /**********
  * FETCHING
@@ -70,6 +71,31 @@ export function promptModal(modalType) {
 export function closeModal() {
     return {
         type: ActionTypes.CLOSE_MODAL
+    }
+}
+
+export function promptDropdown(dropdownType) {
+    return {
+        type: ActionTypes.PROMPT_DROPDOWN,
+        dropdownType
+    }
+}
+
+export function closeDropdown(dropdownType) {
+    return {
+        type: ActionTypes.CLOSE_DROPDOWN,
+        dropdownType
+    }
+}
+
+export function toggleDropdown(dropdownType) {
+    return (dispatch, getState) => {
+        let app = new App(getState())
+        if (app.isActiveDropdown(dropdownType)) {
+            dispatch(closeDropdown(dropdownType))
+        } else {
+            dispatch(promptDropdown(dropdownType))
+        }
     }
 }
 

@@ -136,32 +136,10 @@ input.topbar_search-bar {
     }
 }
 
-.topbar_dropdown {
-    display: none;
-    z-index: 1000;
+.dropdown-topbar {
     position: absolute;
     top: 45px;
     right: 10px;
-    width: 80px;
-
-    padding: 6px 12px;
-    background: white;
-    border: 1px solid $border-color;
-    box-shadow: 0 0 13px rgba(0,0,0,.11);
-}
-
-a.topbar_dropdown-option {
-    display: block;
-    width: 100%;
-    padding: 8px 0;
-    color: $text-color;
-    font-size: 14px;
-    font-weight: 300;
-
-    &:hover {
-        color: $primary-color;
-        cursor: pointer;
-    }
 }
 
 // Responsiveness

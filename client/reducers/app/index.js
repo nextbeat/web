@@ -1,4 +1,4 @@
-import { Map, List } from 'immutable'
+import { Map, List, Set } from 'immutable'
 import { inRange, includes } from 'lodash'
 import { ActionTypes, Status } from '../../actions'
 import { combineReducers } from '../utils'
@@ -45,6 +45,11 @@ function state(state = Map(), action) {
         return state.set('modal', action.modalType)
     } else if (action.type === ActionTypes.CLOSE_MODAL) {
         return state.delete('modal')
+    } else if (action.type === ActionTypes.PROMPT_DROPDOWN) {
+        // dropdowns is a Set of active dropdowns (as opposed to modal, which tracks a single modal)
+        return state.update('dropdowns', Set(), d => d.add(action.dropdownType))
+    } else if (action.type === ActionTypes.CLOSE_DROPDOWN) {
+        return state.update('dropdowns', Set(), d => d.remove(action.dropdownType))
     } else if (action.type === ActionTypes.SELECT_SIDEBAR) {
         return state.set('overlay', 'sidebar')
     } else if (action.type === ActionTypes.CLOSE_SIDEBAR) {

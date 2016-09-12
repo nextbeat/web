@@ -10,21 +10,6 @@ import Counter from './Counter.react'
 import Icon from '../../shared/Icon.react'
 import Spinner from '../../shared/Spinner.react'
 
-const SAMPLE_PHOTO = fromJS({ 
-    url: 'http://localhost:3000/images/p9.jpg',
-    decoration: {
-        caption_text: 'Foobar',
-        caption_offset: 0
-    } 
-})
-const SAMPLE_VIDEO = fromJS({ 
-    url: 'http://localhost:3000/images/ot5.m4v', 
-    firstframe_url: 'http://localhost:3000/images/p9.jpg',
-    decoration: {
-        caption_text: 'Foobar',
-        caption_offset: 0
-    } 
-})
 
 class MediaPlayer extends React.Component {
 

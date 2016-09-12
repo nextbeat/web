@@ -9,6 +9,9 @@ export {
     closeSidebar,
     promptModal,
     closeModal,
+    promptDropdown,
+    closeDropdown,
+    toggleDropdown,
     setVideoVolume,
     triggerAuthError,
     clearApp
