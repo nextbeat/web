@@ -63,11 +63,15 @@ export default class CurrentUser extends ModelBase {
     }
 
     openStacks() {
-        return this.get('openStackIds', List()).map(id => this.__getEntity(id, 'stacks'));
+        return this.get('openStackIds', List())
+            .map(id => this.__getEntity(id, 'stacks'))
+            .filter(stack => !stack.get('deleted'))
     }
 
     closedStacks() {
-        return this.get('closedStackIds', List()).map(id => this.__getEntity(id, 'stacks'));
+        return this.get('closedStackIds', List())
+            .map(id => this.__getEntity(id, 'stacks'))
+            .filter(stack => !stack.get('deleted'))
     }
 
     // Queries
