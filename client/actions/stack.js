@@ -1,5 +1,6 @@
 import { List } from 'immutable'
 import { normalize } from 'normalizr'
+import { browserHistory } from 'react-router'
 
 import ActionTypes from './types'
 import Schemas from '../schemas'
@@ -206,6 +207,67 @@ export function unbookmark() {
 }
 
 
+/**************
+ * CRUD ACTIONS
+ **************/
+
+function postDeleteStack(id) {
+    return {
+        type: ActionTypes.DELETE_STACK,
+        [API_CALL]: {
+            method: 'DELETE',
+            endpoint: `stacks/${id}`,
+            authenticated: true
+        }
+    }
+}
+
+export function deleteStack() {
+    return (dispatch, getState) => {
+        const stack = new Stack(getState())
+        const id = stack.get('id')
+        if (!id || !stack.currentUserIsAuthor()) {
+            return null;
+        }
+        return dispatch(postDeleteStack(id))
+    }
+}
+
+function onCloseStackSuccess(store, next, action, response) {
+    const stack = new Stack(store.getState())
+    const newStack = {
+        id: stack.get('id'),
+        closed: true
+    }
+    store.dispatch({
+        type: ActionTypes.ENTITY_UPDATE,
+        response: normalize(newStack, Schemas.STACK)
+    })
+}
+
+function postCloseStack(id) {
+    return {
+        type: ActionTypes.CLOSE_STACK,
+        [API_CALL]: {
+            method: 'POST',
+            endpoint: `stacks/${id}/close`,
+            authenticated: true,
+            onSuccess: onCloseStackSuccess
+        }
+    }
+}
+
+export function closeStack(id) {
+    return (dispatch, getState) => {
+        const stack = new Stack(getState())
+        const id = stack.get('id')
+        if (!id || !stack.currentUserIsAuthor()) {
+            return null;
+        }
+        return dispatch(postCloseStack(id))
+    }
+}
+
 /**********************
  * MEDIA ITEM SELECTION
  **********************/
@@ -226,6 +288,11 @@ export function selectMediaItem(id) {
         if (storageAvailable('sessionStorage')) {
             sessionStorage.setItem(stack.get('hid'), id)
         }
+
+        var index = stack.indexOfMediaItem(id)
+        console.log(id, index)
+        browserHistory.push(`/r/${stack.get('hid')}/${index+1}`)
+
         return dispatch(performSelectMediaItem(id))
     }
 }

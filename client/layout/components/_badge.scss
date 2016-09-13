@@ -2,6 +2,8 @@
     padding: 3px 5px;
     font-size: 11px;
     display: inline-block;
+    background: #fff;
+    color: $text-color;
 
     box-shadow: 1px 1px 5px 1px rgba(0,0,0,0.12);
 }
@@ -14,5 +16,9 @@
 .badge-new {
     background: $secondary-color;
     color: #fff;
+}
+
+.badge-right {
+    box-shadow: -1px 1px 5px 1px rgba(0,0,0,0.12);
 }
 

@@ -5,7 +5,7 @@ import Helmet from 'react-helmet'
 import ScrollComponent from './utils/ScrollComponent.react'
 
 import LargeStackItem from './shared/LargeStackItem.react'
-import User from './shared/User.react'
+import LargeUser from './profile/LargeUser.react'
 import Spinner from './shared/Spinner.react'
 import PageError from './shared/PageError.react'
 import AppBanner from './shared/AppBanner.react'
@@ -48,7 +48,7 @@ class ProfileComponent extends React.Component {
                         {"property": "al:ios:url", "content": `nextbeat://users/${profile.get('username')}`}
                     ]}
                 />
-                <div className="profile_user-container"><User user={profile.entity()} style={"large"} /></div>
+                <div className="profile_user-container"><LargeUser user={profile.entity()} /></div>
 
                 { openStacks.size > 0 && 
                 <div>
@@ -80,9 +80,9 @@ class ProfileComponent extends React.Component {
         return (
             <div className="profile content" id="profile">
                 <AppBanner url={`nextbeat://users/${profile.get('username')}`} />
-                { isFetching && <Spinner type="grey large profile" /> }
                 { error && (error.length > 0) && <PageError>User not found.</PageError> }
                 { profile.get('id') !== 0 && this.renderProfile() }
+                { isFetching && <Spinner type="grey large profile" /> }
             </div>
         );
     }

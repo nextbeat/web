@@ -41,7 +41,10 @@ module.exports = {
             api.get(url).then(function(res) {
                 var userObj = _.assign({}, res.body, { token : user.token });
                 done(null, userObj);
-            })
+            }).catch(function(e) {
+                console.log(e);
+                done(null, null);
+            });
         })
 
         return passport;

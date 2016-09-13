@@ -14,6 +14,9 @@ class Badge extends React.Component {
             case 'open':
                 text = 'OPEN';
                 break;
+            case 'unlisted':
+                text = 'UNLISTED';
+                break;
             case 'new':
             default:
                 text = 'NEW';

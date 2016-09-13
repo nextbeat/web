@@ -27,7 +27,14 @@ const KEY_MAP = {
     // ui
     'selectedDetailSection': ['stack', 'ui', 'detailSection'],
     // more
-    'moreStackIds': ['stack', 'more', 'ids']
+    'moreStackIds': ['stack', 'more', 'ids'],
+    // actions
+    'isDeleting': ['stack', 'actions', 'isDeleting'],
+    'hasDeleted': ['stack', 'actions', 'hasDeleted'],
+    'deleteError': ['stack', 'actions', 'deleteError'],
+    'isClosing': ['stack', 'actions', 'isClosing'],
+    'hasClosed': ['stack', 'actions', 'hasClosed'],
+    'closeError': ['stack', 'actions', 'closeError']
 }
 
 export default class Stack extends ModelBase {

@@ -10,6 +10,7 @@ import profile from './profile'
 import support from './support'
 import tag from './tag'
 import search from './search'
+import upload from './upload'
 import { combineReducers } from './utils'
 import { Status, ActionTypes } from '../actions'
 
@@ -31,7 +32,7 @@ function entities(state = initialEntities, action) {
 // keep track of ongoing fetch requests, allowing
 // us to cancel them if need be
 function fetches(state = List(), action) {
-    if (action.status) {
+    if (action.status && action.fetchPromise) {
         if (action.status === Status.REQUESTING) {
             return state.push(Map({ type: action.type, fetchPromise: action.fetchPromise }))
         } else if (action.status === Status.SUCCESS || action.status === Status.FAILURE) {
@@ -56,5 +57,6 @@ export default combineReducers({
     tag,
     user,
     search,
-    support
+    support,
+    upload
 })

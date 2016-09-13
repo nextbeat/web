@@ -10,12 +10,20 @@ const KEY_MAP = {
     'loginError': ['user', 'meta', 'loginError'],
     'isSigningUp': ['user', 'meta', 'isSigningUp'],
     'signupError': ['user', 'meta', 'signupError'],
+    'hasUpdatedEntity': ['user', 'meta', 'hasUpdatedEntity'],
+    'isUpdatingUser': ['user', 'meta', 'isUpdatingUser'],
+    'hasUpdatedUser': ['user', 'meta', 'hasUpdatedUser'],
+    'updateUserError': ['user', 'meta', 'updateUserError'],
     // live
     'connected': ['user', 'live', 'connected'],
     'client': ['user', 'live', 'client'],
     // notifications
     'unreadNotifications': ['user', 'notifications', 'unread'],
     'readNotifications': ['user', 'notifications', 'read'],
+    // user stacks
+    'stacksFetching': ['user', 'stacks', 'isFetching'],
+    'openStackIds': ['user', 'stacks', 'openStackIds'],
+    'closedStackIds': ['user', 'stacks', 'closedStackIds'],
     // bookmarked stacks
     'openBookmarkIds': ['user', 'bookmarks', 'open', 'ids'],
     'openBookmarksFetching': ['user', 'bookmarks', 'open', 'isFetching'],
@@ -52,6 +60,18 @@ export default class CurrentUser extends ModelBase {
 
     subscriptions() {
         return this.get('subscriptionIds', List()).map(id => this.__getEntity(id, 'users'));
+    }
+
+    openStacks() {
+        return this.get('openStackIds', List())
+            .map(id => this.__getEntity(id, 'stacks'))
+            .filter(stack => !stack.get('deleted'))
+    }
+
+    closedStacks() {
+        return this.get('closedStackIds', List())
+            .map(id => this.__getEntity(id, 'stacks'))
+            .filter(stack => !stack.get('deleted'))
     }
 
     // Queries

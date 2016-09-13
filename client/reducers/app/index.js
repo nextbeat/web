@@ -1,5 +1,5 @@
-import { Map, List } from 'immutable'
-import { inRange, includes } from 'lodash'
+import { Map, List, Set } from 'immutable'
+import { inRange, includes, find } from 'lodash'
 import { ActionTypes, Status } from '../../actions'
 import { combineReducers } from '../utils'
 
@@ -45,6 +45,11 @@ function state(state = Map(), action) {
         return state.set('modal', action.modalType)
     } else if (action.type === ActionTypes.CLOSE_MODAL) {
         return state.delete('modal')
+    } else if (action.type === ActionTypes.PROMPT_DROPDOWN) {
+        // dropdowns is a Set of active dropdowns (as opposed to modal, which tracks a single modal)
+        return state.update('dropdowns', Set(), d => d.add(action.dropdownType))
+    } else if (action.type === ActionTypes.CLOSE_DROPDOWN) {
+        return state.update('dropdowns', Set(), d => d.remove(action.dropdownType))
     } else if (action.type === ActionTypes.SELECT_SIDEBAR) {
         return state.set('overlay', 'sidebar')
     } else if (action.type === ActionTypes.CLOSE_SIDEBAR) {
@@ -56,9 +61,11 @@ function state(state = Map(), action) {
         }
     } else if (action.type === ActionTypes.CLOSE_DETAIL_SECTION) {
         return state.delete('overlay')
+    } else if (action.type === ActionTypes.SET_VIDEO_VOLUME) {
+        return state.set('volume', action.volume)
     } else if (action.type === ActionTypes.RESIZE) {
         const width = Math.max(action.width, 0)
-        const size = WIDTH_RANGES.find(r => inRange(width, ...r.range))['type'];
+        const size = find(WIDTH_RANGES, r => inRange(width, ...r.range))['type'];
         state = state.merge({
             width: size
         })

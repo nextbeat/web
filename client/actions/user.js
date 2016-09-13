@@ -2,6 +2,7 @@ import { assign } from 'lodash'
 import { Map } from 'immutable'
 import fetch from 'isomorphic-fetch'
 import { normalize } from 'normalizr'
+import moment from 'moment'
 
 import { Status } from './types'
 import ActionTypes from './types'
@@ -9,6 +10,65 @@ import { CurrentUser, Stack } from '../models'
 import Schemas from '../schemas'
 import { API_CALL, API_CANCEL } from './types'
 import { analyticsIdentify } from './analytics'
+import { isValidUrl } from '../utils'
+
+
+/******
+ * SYNC
+ ******/
+
+export function syncStacks(status='all', deep=true, newStack) {
+    // to do: grab correct max last modified
+    let objectsToSync = newStack ? [newStack] : []
+    let maxLastModified = moment.unix(0).format()
+
+    return {
+        type: ActionTypes.SYNC_STACKS,
+        submitting: objectsToSync.length > 0,
+        [API_CALL]: {
+            schema: Schemas.STACKS,
+            method: 'POST',
+            endpoint: "stacks/v2/sync",
+            queries: { status, deep },
+            body: {
+                maxLastModified,
+                objectsToSync
+            }
+        }
+    }
+}
+
+/********
+ * UPDATE
+ ********/
+
+function postUpdateUser(uuid, userObject) {
+    return {
+        type: ActionTypes.UPDATE_USER,
+        [API_CALL]: {
+            Schema: Schemas.USER,
+            method: 'PUT',
+            endpoint: `users/${uuid}`,
+            body: userObject
+        }
+    }
+}
+
+export function updateUser(userObject) {
+    return (dispatch, getState) => {
+        const currentUser = new CurrentUser(getState())
+        if (!currentUser.isLoggedIn()) {
+            return null;
+        }
+
+        const uuid = currentUser.get('uuid')
+        if (!uuid) {
+            return null;
+        }
+
+        dispatch(postUpdateUser(uuid, assign(userObject, { uuid })))
+    }
+}
 
 /**********
  * FETCHING
@@ -349,6 +409,15 @@ export function clearLogin() {
 
 export function clearSignup() {
     return clearLoginSignup()
+}
+
+export function clearEditProfile() {
+    return {
+        type: ActionTypes.CLEAR_EDIT_PROFILE,
+        [API_CANCEL]: {
+            actionTypes: [ActionTypes.UPDATE_USER]
+        }
+    }
 }
 
 export function clearClosedBookmarkedStacks() {

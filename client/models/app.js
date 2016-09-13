@@ -1,4 +1,4 @@
-import { List } from 'immutable'
+import { List, Set } from 'immutable'
 import ModelBase from './base'
 
 const KEY_MAP = {
@@ -20,6 +20,8 @@ const KEY_MAP = {
     // state
     'activeModal': ['app', 'state', 'modal'],
     'activeOverlay': ['app', 'state', 'overlay'],
+    'activeDropdowns': ['app', 'state', 'dropdowns'],
+    'volume': ['app', 'state', 'volume'],
     'width': ['app', 'state', 'width']
 }
 
@@ -41,6 +43,10 @@ export default class App extends ModelBase {
 
     isIOS() {
         return this.get('os') === 'iOS'
+    }
+
+    isActiveDropdown(type) {
+        return this.get('activeDropdowns', Set()).includes(type)
     }
 
 }

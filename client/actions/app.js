@@ -1,8 +1,10 @@
 import { assign } from 'lodash'
 
 import ActionTypes from './types'
+import { Status } from './types'
 import Schemas from '../schemas'
 import { API_CALL, API_CANCEL } from './types'
+import { App } from '../models'
 
 /**********
  * FETCHING
@@ -37,6 +39,18 @@ export function resizeWindow(width) {
     }
 }
 
+/*******
+ * CLEAR
+ *******/
+
+export function triggerAuthError() {
+    return {
+        type: ActionTypes.TRIGGER_AUTH_ERROR,
+        status: Status.FAILURE,
+        error: "User is not logged in."
+    }
+}
+
 export function clearApp() {
     return {
         type: ActionTypes.CLEAR_APP
@@ -60,6 +74,31 @@ export function closeModal() {
     }
 }
 
+export function promptDropdown(dropdownType) {
+    return {
+        type: ActionTypes.PROMPT_DROPDOWN,
+        dropdownType
+    }
+}
+
+export function closeDropdown(dropdownType) {
+    return {
+        type: ActionTypes.CLOSE_DROPDOWN,
+        dropdownType
+    }
+}
+
+export function toggleDropdown(dropdownType) {
+    return (dispatch, getState) => {
+        let app = new App(getState())
+        if (app.isActiveDropdown(dropdownType)) {
+            dispatch(closeDropdown(dropdownType))
+        } else {
+            dispatch(promptDropdown(dropdownType))
+        }
+    }
+}
+
 export function selectSidebar() {
     return {
         type: ActionTypes.SELECT_SIDEBAR
@@ -69,6 +108,13 @@ export function selectSidebar() {
 export function closeSidebar() {
     return {
         type: ActionTypes.CLOSE_SIDEBAR
+    }
+}
+
+export function setVideoVolume(volume) {
+    return {
+        type: ActionTypes.SET_VIDEO_VOLUME,
+        volume
     }
 }
 

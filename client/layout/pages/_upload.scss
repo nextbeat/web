@@ -1,0 +1,562 @@
+.upload {
+    padding: 15px;
+    overflow: auto;
+    height: 100%;
+}
+
+// File Select
+
+.upload_file-select {
+    margin: 40px auto;
+    width: 270px;
+    height: 200px;
+    background-color: $dark-background-color;
+    border-radius: 5px;
+    border: 2px dashed $border-color;
+    position: relative;
+    overflow: hidden;
+
+    .svg-icon-file-upload {
+        width: 90px;
+        height: 90px;
+        display: block;
+        fill: #c6c6c6;
+        margin: 35px auto 0 auto;
+    }
+
+    &.dragging {
+        background-color: mix($primary-color, white, 5%);
+
+        .svg-icon-file-upload {
+            fill: $primary-color;
+        }
+    }
+}
+
+.upload_file-input {
+    display: none;
+}
+
+.upload_select-label {
+    font-size: 18px;
+    font-weight: 500;
+    width: 100%;
+    text-align: center;
+    margin: 5px 0;
+
+    &:hover {
+        color: $primary-color;
+        cursor: pointer;
+    }
+}
+
+.upload_drag-label {
+    font-size: 13px;
+    font-weight: 300;
+    width: 100%;
+    text-align: center;
+}
+
+.upload_caption-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 12px;
+    padding: 4px 5px;
+    color: #fff;
+    background: rgba(#000, 0.6);
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+
+// Progress bar
+
+.upload_progress-bar_container {
+    position: relative;
+}
+
+.upload_progress-bar_data {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.upload_progress-bar_percent {
+    font-weight: 400;
+}
+
+.upload_progress-bar {
+    width: 100%;
+    height: 10px;
+    border: 1px solid $border-color;
+    position: relative;
+}
+
+.upload_progress-bar_progress {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: $primary-color;
+    transform-origin: left top;
+    transition: transform 0.3s;
+}
+
+.upload_progress-bar_cancel {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin-top: 10px;
+}
+
+.upload_progress-bar_cancel-btn {
+    font-size: 12px;
+    font-weight: 300;
+    background: #ccc;
+    padding: 4px 8px;
+
+    &:hover {
+        background: #ddd;
+    }
+}
+
+
+// Add to room
+
+.spinner-upload-stacks {
+    margin: 40px auto;
+}
+
+.upload_add {
+    width: 100%;
+    margin-top: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid $border-color;
+}
+    
+.upload_subheader {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.upload_stacks {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    @include clearfix;
+}
+
+.upload_selectable-stack-item {
+    float: left;
+    width: 265px;
+    padding-right: 60px;
+    margin-right: 20px;
+    position: relative;
+
+    &.selected {
+        background: linear-gradient(to bottom, rgba($primary-color, 0.1) 0%, rgba(1,1,1,0) 100%); 
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.upload_selectable-stack-item_check-box-container {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 60px;
+
+    .svg-icon-check-box {
+        @include centerX;
+        width: 40px;
+        height: 40px;
+        margin-top: 35px;
+        fill: $primary-color;
+    }
+}
+
+.upload_selectable-stack-item_check-box-outline {
+    @include centerX;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    width: 30px;
+    height: 30px;
+    margin-top: 40px;
+}
+
+.item-room-large-new_thumb {
+    background: mix($primary-color, white, 10%);
+    border: 2px dashed mix($primary-color, white, 50%);
+    position: relative;
+
+    .svg-icon-add {
+        fill: mix($primary-color, white, 50%);
+        @include center;
+        width: 65px;
+        height: 65px;
+    }
+}
+
+.item-room-large-new_thumb:after {
+    background: none;
+}
+
+.item-room-large-new_description {
+    color: $detail-text-color;
+    font-style: italic;
+}
+
+
+// Create room
+
+.upload_create-room {
+    width: 100%;
+    margin-top: 25px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid $border-color; 
+
+    .upload_subheader {
+        display: flex;
+
+        .svg-icon-close {
+            margin: -2px 0 0 10px;
+            width: 25px;
+            height: 25px;
+            fill: #ccc;
+
+            &:hover {
+                cursor: pointer;
+                fill: #ddd;
+            }
+        }
+    }
+
+}
+
+.upload_create-room_form  {
+    width: 100%;
+}
+
+.upload_create-room_left {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 20px;
+    margin-bottom: 15px;
+}
+
+.upload_create-room_thumb {
+    width: 156px;
+    height: 108px;
+    background-color: $dark-background-color;
+    border: 1px solid $border-color;
+    position: relative;
+}
+
+.upload_create-room_thumb-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+
+    .spinner {
+        margin: 20px auto;
+    }
+}
+
+.upload_create-room_thumb-custom-img {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.upload_create-room_thumb_prompt {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 12px;
+    padding: 4px 5px;
+    color: #fff;
+    background: rgba(#000, 0.6);
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.upload_create-room_main {
+    display: inline-block;
+    vertical-align: top;
+    width: 360px;
+    margin-right: 20px;
+    margin-bottom: 15px;
+
+    input {
+        width: 100%;
+        font-size: 14px;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+}
+
+.upload_create-room_tags-container {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid $border-color;
+    display: flex;
+    flex-wrap: wrap;
+    overflow: hidden;
+}
+
+.upload_create-room_tag {
+    display: inline-block;
+    border: 1px solid $border-color;
+    background: $dark-background-color;
+    border-radius: 5px;
+    padding: 5px;
+    margin-right: 5px;
+    flex: 0 0;
+    font-size: 14px;
+
+    div {
+        display: inline-block;
+    }
+
+    .svg-icon-close {
+        margin: 0 0 0 5px;
+        width: 14px;
+        height: 14px;
+        fill: #ccc;
+
+        &:hover {
+            cursor: pointer;
+            fill: #ddd;
+        }
+    }
+}
+
+input.upload_create-room_tags-input {
+    width: auto;
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    padding: 5px;
+    flex: 1 0;
+    min-width: 50px;
+}
+
+.upload_create-room_right {
+    display: inline-block;
+    width: 170px;
+    vertical-align: top;
+}
+
+.upload_create-room_select {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+    background: $dark-background-color;
+    border: 1px solid $border-color;
+    vertical-align: top;
+    position: relative;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    select {
+        appearance: none;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    .svg-icon-arrow-drop-down {
+        @include centerY;
+        width: 25px;
+        height: 25px;
+        left: auto;
+        right: 0;
+        margin-right: 5px;
+    }
+}
+
+
+// Submit
+
+.upload_submit-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.upload_submit {
+    display: inline-block;
+    font-size: 24px;
+    padding: 10px 25px;
+}
+
+
+// Post-submit
+
+.upload_submit-requested {
+    max-width: 330px;
+    margin: 25px auto;
+    font-weight: 300;
+    font-size: 16px;
+    text-align: center;
+
+    .svg-icon-check {
+        width: 80px;
+        height: 80px;
+        fill: #ccc;
+    }
+
+    .spinner-upload-submit {
+        margin: 25px auto;
+    }
+}
+
+.upload_success-message {
+    margin-top: 20px;
+}
+
+.upload_restart {
+    margin-top: 40px;
+    font-size: 14px;
+    font-weight: 300px;
+    padding: 5px 10px;
+    display: inline-block;
+}
+
+
+// Add caption
+
+.upload_add-caption {
+    width: 660px;
+
+    .modal_close {
+        display: none;
+    }
+}
+
+.upload_add-caption_media-container {
+    padding: 20px;
+    width: 100%;
+    height: 340px;
+
+    .player_media-inner {
+        background: $dark-background-color;
+        border: 1px solid $border-color;
+        overflow: hidden;
+    }
+
+    .video_player-decoration {
+        /* re-enable mouse events to allow for dragging */
+        pointer-events: auto;
+    }
+
+}
+
+.upload_add-caption_form {
+    margin: 10px 20px;
+    display: flex;
+    align-items: center;
+
+    .btn {
+        flex: 0 0;
+        margin-left: 10px;
+        font-size: 14px;
+    }
+}
+
+.upload_add-caption_cancel-btn {
+    background: #ccc;
+
+    &:hover {
+        background: #ddd;
+    }
+}
+
+input.upload_add-caption_input {
+    flex: 1 0;
+    padding: 7px;
+    font-size: 14px;
+}
+
+.upload_add-caption_info {
+    color: $detail-text-color;
+    font-size: 12px;
+    margin: 0 20px 20px 20px;
+}
+
+
+// Edit thumbnail
+
+.modal.upload_edit-thumbnail {
+    margin: 0;
+    @include center;
+    width: 400px;
+}
+
+.upload_edit-thumbnail_btn {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 18px;
+    padding: 20px 0;
+}
+
+
+// Errors
+
+.upload_error {
+    max-width: 330px;
+    font-size: 13px;
+    color: $error-color;
+    text-align: center;
+    margin: 20px auto;
+}
+
+
+// Transitions
+
+.upload-enter {
+    opacity: 0.01;
+
+    &.upload-enter-active {
+        opacity: 1;
+        transition: opacity 300ms;
+    }
+}
+
+.upload-leave {
+    opacity: 1;
+
+    &.upload-leave-active {
+        opacity: 0.01;
+        transition: opacity 150ms;
+    }
+}

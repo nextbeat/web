@@ -7,6 +7,7 @@ import Helmet from 'react-helmet'
 import Sidebar from '../components/Sidebar.react'
 import Topbar from '../components/Topbar.react'
 import AppBanner from '../components/shared/AppBanner.react'
+import Modal from '../components/shared/Modal.react'
 
 import { connectToXMPP, disconnectXMPP, login, logout, signup, clearLogin, clearSignup, postLogin, loadTags, promptModal, closeModal, clearApp, resizeWindow, onBeforeUnload } from '../actions'
 import { CurrentUser, App as AppModel } from '../models'
@@ -175,58 +176,51 @@ class App extends React.Component {
     }
 
     renderLogin() {
-        const { user, app } = this.props;
-        const showLoginModal = app.get('activeModal') === 'login'
+        const { user } = this.props;
         return (
-            <div id="login-container" className="modal-container" style={{ display: (showLoginModal ? 'block' : 'none') }}>
-                <div id="login" className="modal modal-auth">
-                    <div className="modal_close" onClick={this.dismissLogin} />
-                    <form className="modal_form" id="login-form" onKeyPress={this.handleKeyPress.bind(this, this.handleLoginSubmit)}>
-                        <div className="modal_input-wrapper">
-                            <input type="text" ref="login_username" name="login_username" placeholder="Username" />
-                        </div>
-                        <div className="modal_input-wrapper">
-                            <input className="modal-login_password" type="password" ref="login_password" name="login_password" placeholder="Password" />
-                            <a href="/support/password-reset-request" className="modal-login_forgot">Forgot?</a>
-                        </div>
-                        <div className="modal_input-wrapper">
-                            <a className="btn modal_form_submit" onClick={this.handleLoginSubmit}>Log In</a>
-                        </div>
-                    </form>
-                    <div className="modal_extra">Don't have an account? <a onClick={this.handleSignupClick}>Sign up!</a></div>
-                    { user.has('loginError') && <div className="modal-auth_error">{user.get('loginError')}</div> }
-                </div>
-            </div>
+            <Modal name="login" className="modal-auth">
+                <div className="modal_close" onClick={this.dismissLogin} />
+                <form className="modal_form" id="login-form" onKeyPress={this.handleKeyPress.bind(this, this.handleLoginSubmit)}>
+                    <div className="modal_input-wrapper">
+                        <input type="text" ref="login_username" name="login_username" placeholder="Username" />
+                    </div>
+                    <div className="modal_input-wrapper">
+                        <input className="modal-login_password" type="password" ref="login_password" name="login_password" placeholder="Password" />
+                        <a href="/support/password-reset-request" className="modal-login_forgot">Forgot?</a>
+                    </div>
+                    <div className="modal_input-wrapper">
+                        <a className="btn modal_form_submit" onClick={this.handleLoginSubmit}>Log In</a>
+                    </div>
+                </form>
+                <div className="modal_extra">Don't have an account? <a onClick={this.handleSignupClick}>Sign up!</a></div>
+                { user.has('loginError') && <div className="modal-auth_error">{user.get('loginError')}</div> }
+            </Modal>
         )
     }
 
     renderSignup() {
-        const { user, app } = this.props;
-        const showSignupModal = app.get('activeModal') === 'signup'
+        const { user } = this.props;
         return (
-            <div id="signup-container" className="modal-container" style={{ display: (showSignupModal ? 'block' : 'none') }}>
-                <div id="signup" className="modal modal-auth">
-                    <div className="modal_close" onClick={this.dismissSignup} />
-                    <form className="modal_form" id="signup-form" onKeyPress={this.handleKeyPress.bind(this, this.handleSignupSubmit)} >
-                        <input style={{display: "none"}} type="text" name="somefakename" />
-                        <input style={{display: "none"}} type="password" name="anotherfakename" />
-                        <div className="modal_input-wrapper">
-                            <input type="text" ref="signup_email" name="signup_email" placeholder="Email" />
-                        </div>
-                        <div className="modal_input-wrapper">
-                            <input type="text" autoComplete="off" ref="signup_username" name="signup_username" placeholder="Username" />
-                        </div>
-                        <div className="modal_input-wrapper">
-                            <input type="password" autoComplete="new-password" ref="signup_password" name="signup_password" placeholder="Password" />
-                        </div>
-                        <div className="modal_input-wrapper">
-                            <a className="btn btn-secondary modal_form_submit" onClick={this.handleSignupSubmit}>Sign Up</a>
-                        </div>
-                    </form>
-                    <div className="modal_extra">Already have an account? <a onClick={this.handleLoginClick}>Log in!</a></div>
-                    { user.has('signupError') && <div className="modal-auth_error">{user.get('signupError')}</div> }
-                </div>
-            </div>
+            <Modal name="signup" className="modal-auth">
+                <form className="modal_form" id="signup-form" onKeyPress={this.handleKeyPress.bind(this, this.handleSignupSubmit)} >
+                    <input style={{display: "none"}} type="text" name="somefakename" />
+                    <input style={{display: "none"}} type="password" name="anotherfakename" />
+                    <div className="modal_input-wrapper">
+                        <input type="text" ref="signup_email" name="signup_email" placeholder="Email" />
+                    </div>
+                    <div className="modal_input-wrapper">
+                        <input type="text" autoComplete="off" ref="signup_username" name="signup_username" placeholder="Username" />
+                    </div>
+                    <div className="modal_input-wrapper">
+                        <input type="password" autoComplete="new-password" ref="signup_password" name="signup_password" placeholder="Password" />
+                    </div>
+                    <div className="modal_input-wrapper">
+                        <a className="btn btn-secondary modal_form_submit" onClick={this.handleSignupSubmit}>Sign Up</a>
+                    </div>
+                </form>
+                <div className="modal_extra">Already have an account? <a onClick={this.handleLoginClick}>Log in!</a></div>
+                { user.has('signupError') && <div className="modal-auth_error">{user.get('signupError')}</div> }
+            </Modal>
         )
     }
 

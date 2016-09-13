@@ -40,7 +40,35 @@
     height: 40px;
     border-bottom: 1px solid #eee;
     text-align: center;
+    position: relative;
 }
+
+.detail-bar_toggle-edit {
+    position: absolute;
+    right: 3px;
+    top: 6px;
+
+    .svg-icon-more-vert {
+        fill: #aaa;
+        width: 25px;
+        height: 25px;
+
+        &:hover {
+            fill: #bbb;
+            cursor: pointer;
+        }
+    }
+}
+
+
+.dropdown-detail-bar {
+    position: absolute;
+    right: 10px;
+    top: 35px;
+    width: 110px;
+    text-align: right;
+}
+
 
 .detail-bar_tab-container {
     margin: 0 auto;

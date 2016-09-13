@@ -351,7 +351,7 @@ a.player_tag {
     margin-top: 10px;
 
     label {
-        display: block;
+        display: inline-block;
         margin-bottom: 10px;
         font-size: 12px;
         font-weight: bold;
@@ -362,6 +362,19 @@ a.player_tag {
         padding: 10px;
         font-size: 14px;
         font-weight: 300;
+    }
+}
+
+.share_include-post {
+    margin-left: 10px;
+    display: inline-block;
+
+    * { 
+        display: inline-block;
+    }
+
+    label {
+        font-weight: normal;
     }
 }
 

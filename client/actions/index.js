@@ -9,6 +9,11 @@ export {
     closeSidebar,
     promptModal,
     closeModal,
+    promptDropdown,
+    closeDropdown,
+    toggleDropdown,
+    setVideoVolume,
+    triggerAuthError,
     clearApp
 } from './app'
 
@@ -36,6 +41,8 @@ export {
     sendComment,
     bookmark,
     unbookmark,
+    closeStack,
+    deleteStack,
     selectMediaItem,
     goForward,
     goBackward,
@@ -57,6 +64,8 @@ export {
     postLogin,
     logout,
     signup,
+    syncStacks,
+    updateUser,
     loadBookmarkedStacks,
     loadSubscriptions,
     subscribe,
@@ -66,12 +75,25 @@ export {
     clearLogin,
     clearSignup,
     clearClosedBookmarkedStacks,
+    clearEditProfile
 } from './user'
 
 export {
     loadSearchResults,
     clearSearch
 } from './search'
+
+export {
+    uploadFile,
+    uploadPosterFile,
+    uploadThumbnail,
+    clearThumbnail,
+    selectStackForUpload,
+    updateNewStack,
+    updateNewMediaItem,
+    submitStackRequest,
+    clearUpload
+} from './upload'
 
 export {
     connectToXMPP,
