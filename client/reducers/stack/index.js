@@ -52,13 +52,55 @@ function ui(state = initialUIState, action) {
     return state
 }
 
+function actions(state = Map(), action) {
+    if (action.type === ActionTypes.DELETE_STACK) {
+        if (action.status === Status.REQUESTING) {
+            return state.merge({
+                isDeleting: true,
+                hasDeleted: false
+            }).delete('deleteError')
+        } else if (action.status === Status.SUCCESS) {
+            return state.merge({
+                isDeleting: false,
+                hasDeleted: true
+            })
+        } else if (action.status === Status.FAILURE) {
+            return state.merge({
+                isDeleting: false,
+                hasDeleted: false,
+                deleteError: action.error
+            })
+        }
+    } else if (action.type === ActionTypes.CLOSE_STACK) {
+        if (action.status === Status.REQUESTING) {
+            return state.merge({
+                isClosing: true,
+                hasClosed: false
+            }).delete('closeError')
+        } else if (action.status === Status.SUCCESS) {
+            return state.merge({
+                isClosing: false,
+                hasClosed: true
+            })
+        } else if (action.status === Status.FAILURE) {
+            return state.merge({
+                isClosing: false,
+                hasClosed: false,
+                closeError: action.error
+            })
+        }
+    }
+    return state
+}
+
 const reducers = {
     meta, 
     pagination,
     mediaItems,
     live,
     ui,
-    more
+    more,
+    actions
 }
 
 export default function(state = Map(), action) {

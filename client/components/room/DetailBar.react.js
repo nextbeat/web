@@ -1,14 +1,14 @@
 import React from 'react'
 
 import { connect } from 'react-redux'
-import { selectDetailSection, closeDetailSection, toggleDropdown, promptModal, closeModal } from '../../actions'
+import { selectDetailSection, closeDetailSection, toggleDropdown, promptModal } from '../../actions'
 
 import Chat from './chat/Chat.react'
 import Activity from './activity/Activity.react'
 import Icon from '../shared/Icon.react'
 import Counter from './player/Counter.react'
+import StackActions from './StackActions.react'
 import Dropdown from '../shared/Dropdown.react'
-import Modal from '../shared/Modal.react'
 
 class DetailBar extends React.Component {
 
@@ -17,8 +17,6 @@ class DetailBar extends React.Component {
 
         this.handleDetailOverlayClose = this.handleDetailOverlayClose.bind(this)
         this.toggleDropdown = this.toggleDropdown.bind(this)
-
-        this.renderDeleteModal = this.renderDeleteModal.bind(this)
     }
 
 
@@ -39,32 +37,13 @@ class DetailBar extends React.Component {
 
     // Render
 
-    renderDeleteModal() {
-        return (
-            <Modal name="delete-room" className="modal-alert">
-                <div className="modal_header">
-                    Delete room
-                </div>
-                <div className="modal-alert_text">
-                    Are you sure you want to delete this room? This action cannot be reversed.
-                </div>
-                <a className="modal-alert_btn btn">
-                    Delete room
-                </a>
-                <a className="modal-alert_btn btn btn-gray" onClick={() => {this.props.dispatch(closeModal())}}>
-                    Cancel
-                </a>
-            </Modal>
-        )
-    }
-
     renderDropdown() {
         const { dispatch } = this.props
         return (
             <Dropdown type="detail-bar">
                 <a className="dropdown-option">Edit Posts</a>
                 <a className="dropdown-option">Edit Room</a>
-                <a className="dropdown-option">Close Room</a>
+                <a className="dropdown-option" onClick={() => {dispatch(promptModal('close-room'))}}>Close Room</a>
                 <a className="dropdown-option" onClick={() => {dispatch(promptModal('delete-room'))}}>Delete Room</a>
             </Dropdown>
         )
@@ -105,7 +84,7 @@ class DetailBar extends React.Component {
 
         return (
             <div className={`detail-bar ${collapsedClass} ${activeClass}`}>
-                { this.renderDeleteModal() }
+                <StackActions stack={stack} />
                 <div className="detail-bar_header">
                     { stack.currentUserIsAuthor() && 
                         <div className="detail-bar_toggle-edit" id="dropdown-detail-bar_toggle" onClick={this.toggleDropdown}><Icon type="more-vert" /></div> 

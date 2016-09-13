@@ -41,6 +41,8 @@ export {
     sendComment,
     bookmark,
     unbookmark,
+    closeStack,
+    deleteStack,
     selectMediaItem,
     goForward,
     goBackward,

@@ -85,7 +85,7 @@ module.exports = {
         return _request('PUT', url, body, options);
     },
 
-    del: function(url, body, options) {
+    delete: function(url, body, options) {
         return _request('DELETE', url, body, options);
     }
 

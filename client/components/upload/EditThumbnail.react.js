@@ -24,7 +24,6 @@ class EditThumbnail extends React.Component {
 
             if (['image/jpeg', 'image/png', 'image/gif'].indexOf(file.type) !== -1) {
                 // todo: show alert
-                console.log(file, key)
                 this.props.dispatch(uploadThumbnail(file, key))
                 this.props.dispatch(closeModal())
             }
