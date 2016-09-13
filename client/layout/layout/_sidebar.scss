@@ -36,12 +36,17 @@
     }
 
     &.collapsed {
-        display: none;
+        display: block;
+        transform: translateX(-100%);
+
+        transition: transform 0.25s;
     }
 
     &.collapsed.active {
-        display: block;
+        transform: none;
         z-index: 30;
+
+        transition: transform 0.2s;
     }
 }
 
@@ -252,7 +257,10 @@ a.sidebar_bookmarks-see-all {
     // expands to fill width of screen
     @include media('<=medium') {
 
-        // display: none;
+        &.collapsed {
+            display: none;
+            transition: none;
+        }
 
         &.collapsed.active {
             display: block;
@@ -264,6 +272,8 @@ a.sidebar_bookmarks-see-all {
             bottom: 0;
             right: 0;
             z-index: 30;
+
+            transition: none;
         }
 
     } 
