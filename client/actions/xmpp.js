@@ -17,6 +17,18 @@ export function disconnectXMPP() {
     }
 }
 
+export function lostXMPPConnection() {
+    return {
+        type: ActionTypes.LOST_XMPP_CONNECTION
+    }
+}
+
+export function reconnectXMPP() {
+    return {
+        type: ActionTypes.RECONNECT_XMPP
+    }
+}
+
 export function joinRoom() {
     return {
         type: ActionTypes.JOIN_ROOM

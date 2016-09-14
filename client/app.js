@@ -9,6 +9,7 @@ import configureStore from './store'
 import routes from '../routes'
 
 // configure bluebird
+global.Promise = Promise
 Promise.config({
     cancellation: true
 })

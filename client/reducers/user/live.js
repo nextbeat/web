@@ -11,6 +11,7 @@ function connectXmpp(state, action) {
             return state.merge({
                 isConnecting: false,
                 connected: true,
+                lostConnection: false,
                 client: action.client
             })
         case Status.FAILURE:
@@ -32,12 +33,21 @@ function disconnectXmpp(state, action) {
     return state;
 }
 
+function lostXmppConnection(state, action) {
+    return state.merge({
+        lostConnection: true,
+        connected: false
+    })
+}
+
 export default function(state = Map(), action) {
     switch (action.type) {
         case ActionTypes.CONNECT_XMPP:
             return connectXmpp(state, action)
         case ActionTypes.DISCONNECT_XMPP:
             return disconnectXmpp(state, action)
+        case ActionTypes.LOST_XMPP_CONNECTION:
+            return lostXmppConnection(state, action)
     }
     return state;
 }

@@ -98,6 +98,8 @@ export {
 export {
     connectToXMPP,
     disconnectXMPP,
+    reconnectXMPP,
+    lostXMPPConnection,
     joinRoom,
     leaveRoom,
     receiveComment,

@@ -16,6 +16,9 @@ const KEY_MAP = {
     'updateUserError': ['user', 'meta', 'updateUserError'],
     // live
     'connected': ['user', 'live', 'connected'],
+    'isConnecting': ['user', 'live', 'isConnecting'],
+    'requestedDisconnect': ['user', 'live', 'requestedDisconnect'],
+    'lostConnection': ['user', 'live', 'lostConnection'],
     'client': ['user', 'live', 'client'],
     // notifications
     'unreadNotifications': ['user', 'notifications', 'unread'],
