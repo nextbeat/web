@@ -15,7 +15,7 @@ function connectClient(store, next, action) {
 
     // exit early if client is already connected
     if (currentUser.isConnected()) {
-        return next(actionWith(Status.SUCCESS, { client }))
+        return
     }
 
     function actionWith(status, data) {
@@ -24,17 +24,35 @@ function connectClient(store, next, action) {
     
     next(actionWith(Status.REQUESTING));
 
+    // disconnection callback 
     function failureCb() {
         next(actionWith(Status.FAILURE));
     }
 
     client.once('disconnected', failureCb)
 
-    // configure client for connection
-    client.once('session:started', function() {
+    // resumed stream callback (triggered when reconnecting)
+    function resumedCb() {
         next(actionWith(Status.SUCCESS, { client }));
         client.off('disconnected', failureCb)
+    }
+
+    client.once('stream:management:resumed', resumedCb)
+
+    // configure client for connection
+    client.once('session:started', function() {
+
+        next(actionWith(Status.SUCCESS, { client }));
+
+        client.enableKeepAlive({
+            interval: 10,
+            timeout: 5,
+        });
+
+        client.off('disconnected', failureCb)
+        client.off('stream:management:resumed', resumedCb)
         client.sendPresence()
+
         process.nextTick(() => {
             stack = new Stack(store.getState());
             if (stack.isLoaded()) {
@@ -65,6 +83,7 @@ function connectClient(store, next, action) {
         client.off('auth:failed', authFailureCb);
     })
 
+    console.log('connecting...')
     client.connect();
 }
 
@@ -78,10 +97,35 @@ function disconnectClient(store, next, action) {
     next(actionWith(Status.REQUESTING));
 
     client.once('disconnected', function() {
-        next(actionWith(Status.SUCCESS));
+        process.nextTick(() => {
+            next(actionWith(Status.SUCCESS));
+        })
     })
 
     client.disconnect();
+}
+
+function reconnectClient(store, next, action) {
+    let maxBackoff = 5
+
+    function reconnect(timeout, count) {
+
+        let user = new CurrentUser(store.getState())
+        if (user.isConnected() || user.get('isConnecting')) {
+            return 
+        }
+
+        store.dispatch(actions.connectToXMPP());
+
+        setTimeout(() => {
+            timeout = count < maxBackoff ? timeout*2 : timeout
+            reconnect(timeout, count+1)
+        }, timeout)
+    }
+
+    reconnect(5000, 0)
+
+    return next(action)
 }
 
 function joinRoom(store, next, action) {
@@ -226,6 +270,8 @@ export default store => next => action => {
             return connectClient(store, next, action);
         case ActionTypes.DISCONNECT_XMPP:
             return disconnectClient(store, next, action);
+        case ActionTypes.RECONNECT_XMPP:
+            return reconnectClient(store, next, action);
         case ActionTypes.JOIN_ROOM:
             return joinRoom(store, next, action);
         case ActionTypes.LEAVE_ROOM:

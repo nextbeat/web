@@ -4,7 +4,7 @@ import { v4 as generateUuid }from 'node-uuid'
 import { assign } from 'lodash'
 import { normalize } from 'normalizr'
 import Schemas from '../schemas'
-import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveStackClosed, syncNotifications } from '../actions'
+import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveStackClosed, syncNotifications, lostXMPPConnection, reconnectXMPP } from '../actions'
 import { CurrentUser, Stack } from '../models'
 
 function xmppHost() {
@@ -80,7 +80,7 @@ export function getClient(store) {
         // })
 
         // client.on('stream:management:resumed', function(s) {
-        //     console.log('stream management enabled', s)
+        //     console.log('stream management resumed', s)
         // })
 
         // client.on('stream:management:failed', function(s) {
@@ -95,9 +95,23 @@ export function getClient(store) {
         //     console.log('INCOMING', s);
         // })
 
-        // client.on('disconnected', function() {
-        //     console.log('DISCONNECTED!!!');
+        // client.on('stream:error', function(e) {
+        //     console.log('stream error', e)
         // })
+
+        client.on('disconnected', function() {
+            let currentUser = new CurrentUser(store.getState())
+            if (!!currentUser.get('lostConnection')) {
+                store.dispatch(reconnectXMPP())
+            }
+        })
+
+        client.on('stream:error', function(e) {
+            if (e.condition === 'connection-timeout') {
+                store.dispatch(lostXMPPConnection())
+                client.disableKeepAlive();
+            }
+        })
 
         return client;
     }

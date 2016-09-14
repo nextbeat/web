@@ -375,9 +375,9 @@ class Video extends React.Component {
     // Render
 
     videoStyle(video, state) {
-        const { scale, width, height, isLoading } = state
+        const { scale, width, height, isLoading, isIOSDevice } = state
         
-        let style = { display: isLoading ? 'none' : 'block' }
+        let style = { display: isLoading && !isIOSDevice ? 'none' : 'block' }
         if (this.shouldForceVideoRotation()) {
             // need to manually rotate video if in Firefox or IE 10 
             if (video.get('orientation') === 90) {
@@ -454,7 +454,7 @@ class Video extends React.Component {
                             <Decoration decoration={decoration} />
                         </div>
                     }
-                    { isLoading && <Spinner type="white large faded" /> }
+                    { isLoading && !isIOSDevice && <Spinner type="white large faded" /> }
                 </div>
                 { !isIOSDevice && <VideoControls ref="controls" {...videoControlsProps} /> }
             </div>

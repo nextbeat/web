@@ -2,6 +2,7 @@
     width: 100%;
     background: #fff;
     height: 100%;
+    overflow: hidden;
 }
 
 .chat_history {
@@ -105,6 +106,9 @@ a.chat_mention {
     vertical-align: middle;
 }
 
+
+// Compose
+
 .chat_compose {
     height: 105px;
     width: 100%;
@@ -143,5 +147,38 @@ a.chat_compose-notification {
 
     &:hover {
         cursor: pointer;
+    }
+}
+
+
+// Lost connection
+
+.chat_lost-connection {
+    background: rgba(#ecd539, .95);
+    font-weight: 300;
+    font-size: 13px;
+    width: 100%;
+    padding: 8px 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: center;
+}
+
+.chat_lost-connection-enter {
+    transform: translateY(-30px);
+
+    &.chat_lost-connection-enter-active {
+        transform: translateY(0);
+        transition: transform 0.3s;
+    }
+}
+
+.chat_lost-connection-leave {
+    transform: translateY(0);
+
+    &.chat_lost-connection-leave-active {
+        transform: translateY(-30px);
+        transition: transform 0.2s;
     }
 }

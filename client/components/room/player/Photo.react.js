@@ -26,7 +26,7 @@ class Photo extends React.Component {
         this.resize(image)
 
         if (image.get('type') === 'objectURL') {
-            document.getElementById('player_photo').addEventListener('load', () => {
+            $('#player_photo').one('load', () => {
                 URL.revokeObjectURL(image.get('url'))
             })
         }
@@ -34,7 +34,9 @@ class Photo extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.image !== this.props.image) {
-            this.resize(nextProps.image);
+            $('#player_photo').one('load', () => {
+                this.resize(nextProps.image);
+            })
         }
     }
 

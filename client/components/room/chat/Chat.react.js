@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import ScrollComponent from '../../utils/ScrollComponent.react'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 import ChatItem from './ChatItem.react'
 import LiveChatItem from './LiveChatItem.react'
@@ -58,7 +59,15 @@ class Chat extends React.Component {
                     {comments.reverse().map(comment => this.renderComment(comment))}
                     {liveComments.map((comment, idx) => this.renderLiveComment(comment, idx))}
                 </ul>
-            </div><Compose user={user} closed={closed} sendComment={this.sendComment} />
+            </div>
+            <Compose user={user} closed={closed} sendComment={this.sendComment} />
+            <ReactCSSTransitionGroup transitionName="chat_lost-connection" transitionEnterTimeout={300} transitionLeaveTimeout={200}>
+                { !!user.get('lostConnection') && 
+                    <div key="lost-connection" className="chat_lost-connection">
+                        Lost connection. Reconnecting...
+                    </div>
+                }
+            </ReactCSSTransitionGroup>
         </div>
         );
     }

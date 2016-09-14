@@ -37,7 +37,7 @@
     "redux-thunk": "^1.0.3",
     "request-promise": "0.4.2",
     "serve-favicon": "2.1.6",
-    "stanza.io": "^8.0.0",
+    "stanza.io": "^8.0.2",
     "ua-parser-js": "0.7.10"
   },
   "devDependencies": {
