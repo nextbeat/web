@@ -29,14 +29,18 @@
     background: #ddd;
     z-index: 15; // fixes Webkit bug where border-radius clipping doesn't occur (http://stackoverflow.com/a/25206004/371747)
 
-    img {
-        @include center;
-    }
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 
     .svg-icon-person {
         @include center;
         width: 70%;
         height: 70%;
+    }
+
+    .spinner {
+        margin: 20px auto;
     }
 }
 

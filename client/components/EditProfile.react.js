@@ -1,10 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import EditProfilePicture from './edit/EditProfilePicture.react'
 import Icon from './shared/Icon.react'
 import Spinner from './shared/Spinner.react'
 import { CurrentUser, App } from '../models'
-import { triggerAuthError, updateUser, clearEditProfile } from '../actions'
+import { triggerAuthError, updateUser, clearEditProfile, promptModal } from '../actions'
 
 class EditProfile extends React.Component {
 
@@ -14,6 +15,7 @@ class EditProfile extends React.Component {
         this.updateState = this.updateState.bind(this)
         this.clearState = this.clearState.bind(this)
 
+        this.handleProfpicClick = this.handleProfpicClick.bind(this)
         this.handleFullNameChange = this.handleFullNameChange.bind(this)
         this.handleWebsiteChange = this.handleWebsiteChange.bind(this)
         this.handleBioChange = this.handleBioChange.bind(this)
@@ -70,6 +72,10 @@ class EditProfile extends React.Component {
 
     // Event handlers
 
+    handleProfpicClick(e) {
+        this.props.dispatch(promptModal('edit-profile-picture'))
+    }
+
     handleFullNameChange(e) {
         this.setState({ fullName: e.target.value.substring(0, 50) })
     }
@@ -83,11 +89,19 @@ class EditProfile extends React.Component {
     }
 
     handleSubmit() {
-        const userObj = {
+        const { dispatch, currentUser } = this.props 
+
+        let userObj = {
             full_name: this.state.fullName,
             website_url: this.state.website,
             description: this.state.bio
         }
+
+        // add profile picture if it's been updated
+        if (currentUser.get('updatedProfilePictureUrl') && currentUser.get('hasUpdatedProfilePicture')) {
+            userObj['profpic_url'] = currentUser.get('updatedProfilePictureUrl')
+        }
+
         this.props.dispatch(updateUser(userObj))
     }
 
@@ -97,17 +111,27 @@ class EditProfile extends React.Component {
         const { app, currentUser } = this.props 
         const { fullName, website, bio } = this.state
 
-        let profpic_url = currentUser.get('profpic_thumbnail_url') || currentUser.get('profpic_url');
+        let profpic_url = currentUser.get('updatedProfilePictureUrl') 
+                            || currentUser.get('profpic_thumbnail_url') 
+                            || currentUser.get('profpic_url');
+
+        let profpicStyle = {
+            backgroundImage: !currentUser.get('isUpdatingProfilePicture') ? `url(${profpic_url})` : ''
+        }
 
         return (
             <div className="edit-profile content">
+                <EditProfilePicture />
                 <div className="content_inner">
                     <div className="content_header">
                         Edit Profile
                     </div>
                     <div className="edit-profile_user">
-                        <div className="edit-profile_profpic">
-                            <div className="edit-profile_profpic-inner">{ profpic_url ? <img src={profpic_url} /> : <Icon type="person" /> }</div>
+                        <div className="edit-profile_profpic" onClick={this.handleProfpicClick} >
+                            <div className="edit-profile_profpic-inner" style={profpicStyle}>
+                                { currentUser.get('isUpdatingProfilePicture') &&  <Spinner type="grey small" /> }
+                                { !currentUser.get('isUpdatingProfilePicture') && !profpic_url && <Icon type="person" /> }
+                            </div>
                         </div>
                         <div className="edit-profile_username">{currentUser.get('username')}</div>
                     </div>

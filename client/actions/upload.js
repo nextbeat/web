@@ -35,6 +35,14 @@ export function clearThumbnail() {
     }
 }
 
+export function uploadProfilePicture(file, key) {
+    return {
+        type: ActionTypes.UPLOAD_PROFILE_PICTURE,
+        file,
+        key
+    }
+}
+
 export function selectStackForUpload(stackId) {
     let uuid;
     if (stackId === -1) {

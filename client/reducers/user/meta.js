@@ -102,13 +102,41 @@ function updateUser(state, action) {
                 updateUserError: error
             })
     }
+    return state
+}
+
+function uploadProfilePicture(state, action) {
+    switch (action.status) {
+        case Status.REQUESTING:
+            return state.merge({
+                isUpdatingProfilePicture: true,
+                updatedProfilePictureUrl: action.url,
+            }).delete('updateProfilePictureError', 'hasUpdatedProfilePicture')
+        case Status.SUCCESS:
+            return state.merge({
+                isUpdatingProfilePicture: false,
+                hasUpdatedProfilePicture: true
+            })
+        case Status.FAILURE:
+            return state.merge({
+                isUpdatingProfilePicture: false,
+                hasUpdatedProfilePicture: true,
+                updateProfilePictureError: action.error
+            })
+    }
+    return state
 }
 
 function clearEditProfile(state, action) {
+    // todo: clean up
     return state
         .delete('isUpdatingUser')
         .delete('hasUpdatedUser')
         .delete('updateUserError')
+        .delete('isUpdatingProfilePicture')
+        .delete('hasUpdatedProfilePicture')
+        .delete('updateProfilePictureError')
+        .delete('updatedProfilePictureUrl')
 }
 
 export default function meta(state=Map(), action) {
@@ -124,6 +152,8 @@ export default function meta(state=Map(), action) {
         return entityUpdate(state, action)
     } else if (action.type === ActionTypes.UPDATE_USER) {
         return updateUser(state, action)
+    } else if (action.type === ActionTypes.UPLOAD_PROFILE_PICTURE) {
+        return uploadProfilePicture(state, action)
     } else if (action.type === ActionTypes.CLEAR_EDIT_PROFILE) {
         return clearEditProfile(state, action)
     }
