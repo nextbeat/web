@@ -36,17 +36,18 @@
     display: inline-block;
     margin: 5px 5px;
     width: 100%;
+    padding-right: 40px;
     font-weight: bold;
     font-size: 13px;
 }
 
 .app-banner_close {
     position: absolute;
+    @include centerY;
+    left: auto;
     right: 10px;
-    top: 10px;
     height: 23px;
     width: 23px;
-    margin-top: 1px;
     margin-right: -3px;
     fill: #000;
     fill-opacity: 0.35;
@@ -59,6 +60,7 @@
 
     &:hover {
         cursor: pointer;
+        fill-opacity: 0.6;
     }
 }
 
@@ -69,15 +71,28 @@
     background: mix($secondary-color, white, 6%);
     border-bottom: 1px solid mix($secondary-color, white, 40%);
     color: $secondary-color;
-    padding: 5px 10px;
-    
+    padding: 8px 10px;
+
     .app-banner_prompt {
         font-weight: 400;
+        font-size: 14px;
     }
 
     .app-banner_close {
-        top: 5px;
         fill-opacity: 0.5;
+
+        &:hover {
+            cursor: pointer;
+            fill-opacity: 0.7;
+        }
+    }
+
+    a {
+        color: mix($secondary-color, black, 90%);
+        text-decoration: underline;
+        &:hover {
+            color: $secondary-color;
+        }
     }
 
 }

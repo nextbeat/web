@@ -143,7 +143,7 @@
 
     .sidebar_icon {
         float: left;
-        background: $primary-color;
+        background-color: $primary-color;
          
         svg {
             fill: white;
@@ -169,6 +169,10 @@
     position: relative;
     border-radius: 3px;
     background: #ddd;
+
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 
     img {
         @include center;

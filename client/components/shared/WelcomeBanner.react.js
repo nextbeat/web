@@ -11,7 +11,7 @@ class WelcomeBanner extends React.Component {
         this.handleClose = this.handleClose.bind(this)
 
         this.state = {
-            hideBanner: true
+            hideBanner: false
         }
     }
 

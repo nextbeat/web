@@ -106,6 +106,9 @@ class Sidebar extends React.Component {
         const activeClass = app.get('activeOverlay') === 'sidebar'
                                 ? 'active' : ''
 
+        // set style for displaying profile picture
+        const profileStyle = { backgroundImage: user.profileThumbnailUrl() ? `url(${user.profileThumbnailUrl()})` : ''}
+
         return (
             <div className={`sidebar ${collapsedClass} ${activeClass}`}>
                 <div className="sidebar_section sidebar_topnav">
@@ -114,7 +117,7 @@ class Sidebar extends React.Component {
                     </Link>
                     { user.isLoggedIn() && 
                         <Link to={`/u/${user.get('username')}`} activeClassName="selected">
-                            <div className="sidebar_icon">{ user.profileThumbnailUrl() ? <img src={user.profileThumbnailUrl()} /> : <Icon type="person" /> }</div>
+                            <div className="sidebar_icon" style={profileStyle}>{ !user.profileThumbnailUrl() && <Icon type="person" /> }</div>
                             My Profile
                         </Link>
                     }

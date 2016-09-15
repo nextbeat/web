@@ -60,10 +60,17 @@ class Room extends React.Component {
             }
 
             // or if index is specified
-            const idx = parseInt(params.index)-1
-            if (idx > 0 && idx < stack.mediaItems().size) {
-                id = stack.mediaItems().get(idx).get('id')
+            if (params.index) {
+                if (params.index === 'latest') {
+                    id = stack.mediaItems().get(stack.mediaItems().size-1).get('id')
+                } else {
+                    const idx = parseInt(params.index)-1
+                    if (idx > 0 && idx < stack.mediaItems().size) {
+                        id = stack.mediaItems().get(idx).get('id')
+                    }
+                }
             }
+
 
             this.handleSelectMediaItem(id)
         }
@@ -163,12 +170,17 @@ class Room extends React.Component {
             handleSelectMediaItem: this.handleSelectMediaItem,
             handleSelectNewestLiveItem: this.handleSelectNewestLiveItem
         }
+
+        const shouldDisplayBanner = app.get('width') !== 'small' && (stack.author().get('username') === 'safiya' || app.get('environment') === 'development')
+
         return (
         <section className="room">
             {this.renderDocumentHead(stack)}
-            {/* <WelcomeBanner>
-                Welcome to Nextbeat!
-            </WelcomeBanner> */}
+            { shouldDisplayBanner && 
+                <WelcomeBanner>
+                    Welcome to Safiya's room! Chat and follow along in real time. <a target="_black" rel="nofollow" href="https://medium.com/@TeamNextbeat/welcome-to-nextbeat-831d25524a4d">Learn more about Nextbeat.</a>
+                </WelcomeBanner>
+            }
             <div className="room_inner">
                 <Player {...playerProps} />
                 <DetailBar {...detailBarProps} />

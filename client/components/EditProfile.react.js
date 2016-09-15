@@ -111,6 +111,8 @@ class EditProfile extends React.Component {
         const { app, currentUser } = this.props 
         const { fullName, website, bio } = this.state
 
+        // TODO: yuck
+        
         let profpic_url = currentUser.get('updatedProfilePictureUrl') 
                             || currentUser.get('profpic_thumbnail_url') 
                             || currentUser.get('profpic_url');
