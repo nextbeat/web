@@ -5,6 +5,7 @@ import { List } from 'immutable'
 import { loadHome, clearHome } from '../actions'
 import { Home } from '../models'
 import HomeSection from './home/HomeSection.react'
+import HomeSplash from './home/HomeSplash.react'
 import Spinner from './shared/Spinner.react'
 import AppBanner from './shared/AppBanner.react'
 
@@ -27,6 +28,7 @@ class HomeComponent extends React.Component {
         return (
             <div className="home content">
                 <AppBanner />
+                <HomeSplash />
                 {home.get('sectionsFetching') && <Spinner type="grey large home" />}
                 <div className="home_sections">
                     {home.get('sections', List()).map((section, idx) => 
