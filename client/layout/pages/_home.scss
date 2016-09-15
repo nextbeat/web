@@ -145,6 +145,12 @@
     padding-top: 5px;
     color: #666;
 
+    // for some reason mobile Safari thinks
+    // this isn't large enough
+    @media screen and (max-device-width: 480px) {
+        -webkit-text-size-adjust: none;
+    }
+
     a {
         color: #666;
     }
@@ -183,6 +189,8 @@
     position: relative;
     width: 100%;
 }
+
+
 
 // Navigation
 

@@ -41,16 +41,26 @@ class HomeSection extends React.Component {
 
     resize(node, parent) {
         const { leftIndex: oldLeftIndex } = this.state 
-        const { stacks } = this.props 
+        const { stacks, app } = this.props 
+
+        const parentWidth = parent.width()
+        const appWidth = app.get('width')
+        let sectionWidth = parentWidth - 100;
+        if (appWidth === 'small' || appWidth === 'medium') {
+            sectionWidth = parentWidth - 70;
+        }
 
         /**
          * We use component state to dynamically resize the stacks list and shift
          * the left index appropriately.
          */
-        const parentWidth = parent.width()
-        let numAcross = Math.max(2, Math.floor((parentWidth - 100)/DEFAULT_ITEM_WIDTH))
+        let numAcross = Math.max(2, Math.floor(sectionWidth/DEFAULT_ITEM_WIDTH))
+        if (parentWidth <= 320) {
+            numAcross = 1
+        }
+        
         let leftIndex = Math.max(0, Math.min(stacks.size-numAcross, oldLeftIndex))
-        let itemWidth = Math.floor((parentWidth - 100 - MARGIN_WIDTH*(numAcross-1)) / numAcross)
+        let itemWidth = Math.floor((sectionWidth - MARGIN_WIDTH*(numAcross-1)) / numAcross)
 
         this.setState({
             numAcross,

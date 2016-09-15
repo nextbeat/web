@@ -257,6 +257,10 @@ a.sidebar_bookmarks-see-all {
     // expands to fill width of screen
     @include media('<=medium') {
 
+        // so sidebar is hidden when page initially loads
+        // before js is loaded
+        display: none;
+
         &.collapsed {
             display: none;
             transition: none;

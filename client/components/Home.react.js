@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { List } from 'immutable'
 
 import { loadHome, clearHome } from '../actions'
-import { Home } from '../models'
+import { Home, App } from '../models'
 import HomeSection from './home/HomeSection.react'
 import HomeSplash from './home/HomeSplash.react'
 import Spinner from './shared/Spinner.react'
@@ -24,7 +24,7 @@ class HomeComponent extends React.Component {
     }
 
     render() {
-        const { home } = this.props
+        const { home, app } = this.props
         return (
             <div className="home content">
                 <AppBanner />
@@ -32,7 +32,7 @@ class HomeComponent extends React.Component {
                 {home.get('sectionsFetching') && <Spinner type="grey large home" />}
                 <div className="home_sections">
                     {home.get('sections', List()).map((section, idx) => 
-                        <HomeSection key={`sec${idx}`} stacks={home.stacks(idx)} section={section} index={idx} />
+                        <HomeSection key={`sec${idx}`} stacks={home.stacks(idx)} section={section} app={app} index={idx} />
                     )}
                 </div>
             </div>
@@ -42,7 +42,8 @@ class HomeComponent extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        home: new Home(state) // 🌮 
+        home: new Home(state), // 🌮 
+        app: new App(state)
     }
 }
 

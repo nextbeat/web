@@ -77,7 +77,7 @@ class AppBanner extends React.Component {
     renderOpenInAppBanner() {
         return (
             <a className="app-banner">
-                <div className="app-banner_open" onClick={this.handleClick} >
+                <div className="app-banner_prompt" onClick={this.handleClick} >
                     <div>Open in app</div>
                 </div>
                 <div className="app-banner_close" onClick={this.handleClose} >

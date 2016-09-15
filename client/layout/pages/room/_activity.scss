@@ -19,6 +19,7 @@
     height: calc(100% - 35px);
     overflow: auto;
     position: relative;
+    -webkit-overflow-scrolling: touch;
 }
 
 .activity_new-media {

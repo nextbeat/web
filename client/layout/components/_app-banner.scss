@@ -1,5 +1,6 @@
 .app-banner {
     display: block;
+    position: relative;
     background: mix($primary-color, white, 6%);
     padding: 10px;
     text-align: left;
@@ -31,16 +32,18 @@
     @include clearfix;
 }
 
-.app-banner_open {
+.app-banner_prompt {
     display: inline-block;
     margin: 5px 5px;
-    width: 200px;
+    width: 100%;
     font-weight: bold;
     font-size: 13px;
 }
 
 .app-banner_close {
-    float: right;
+    position: absolute;
+    right: 10px;
+    top: 10px;
     height: 23px;
     width: 23px;
     margin-top: 1px;
