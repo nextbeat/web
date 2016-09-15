@@ -38,6 +38,7 @@ function lostXmppConnection(state, action) {
         lostConnection: true,
         connected: false
     })
+    return state;
 }
 
 export default function(state = Map(), action) {
