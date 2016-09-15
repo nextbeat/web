@@ -7,6 +7,7 @@ import { isEmpty, assign } from 'lodash'
 
 import Player from './room/Player.react'
 import DetailBar from './room/DetailBar.react'
+import WelcomeBanner from './shared/WelcomeBanner.react'
 
 import { loadStack, joinRoom, clearStack, bookmark, unbookmark, selectMediaItem, goForward, goBackward, selectDetailSection, closeDetailSection } from '../actions'
 import { Stack, App } from '../models'
@@ -165,8 +166,13 @@ class Room extends React.Component {
         return (
         <section className="room">
             {this.renderDocumentHead(stack)}
-            <Player {...playerProps} />
-            <DetailBar {...detailBarProps} />
+            {/* <WelcomeBanner>
+                Welcome to Nextbeat!
+            </WelcomeBanner> */}
+            <div className="room_inner">
+                <Player {...playerProps} />
+                <DetailBar {...detailBarProps} />
+            </div>
         </section>
         );
     }

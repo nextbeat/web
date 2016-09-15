@@ -56,4 +56,28 @@
         width: 100%;
         height: 100%;
     }
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+
+// Specific styles
+
+.welcome-banner {
+    background: mix($secondary-color, white, 6%);
+    border-bottom: 1px solid mix($secondary-color, white, 40%);
+    color: $secondary-color;
+    padding: 5px 10px;
+    
+    .app-banner_prompt {
+        font-weight: 400;
+    }
+
+    .app-banner_close {
+        top: 5px;
+        fill-opacity: 0.5;
+    }
+
 }
