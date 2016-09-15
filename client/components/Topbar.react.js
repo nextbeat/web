@@ -52,10 +52,15 @@ class Topbar extends React.Component {
     renderLoggedIn() {
         const { user } = this.props;
         const profpic_url = user.profileThumbnailUrl();
+
+        const profpicStyle = { backgroundImage: profpic_url ? `url(${profpic_url})` : '' }
+
         return (
             <div className="topbar_user">
                 <Link to="/upload" className="btn topbar_upload">Upload</Link>
-                <span id="dropdown-topbar_toggle" className="topbar_user-icon" onClick={this.toggleUserDropdown} >{ profpic_url ? <img src={profpic_url} /> : <Icon type="person" /> }</span>
+                <span id="dropdown-topbar_toggle" className="topbar_user-icon" onClick={this.toggleUserDropdown} style={profpicStyle}>
+                    { !profpic_url && <Icon type="person" /> }
+                </span>
             </div>
         )
     }

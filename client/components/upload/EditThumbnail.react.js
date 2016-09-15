@@ -41,15 +41,15 @@ class EditThumbnail extends React.Component {
 
     render() {
         return (
-            <Modal name="edit-thumbnail" className="upload_edit-thumbnail">
+            <Modal name="edit-thumbnail" className="modal-action">
                 <input type="file" id="upload_edit-thumbnail_file-select" className="upload_file-input" onChange={this.handleInputChange} accept="image/jpeg,image/png,image/gif" />
                 <div className="modal_header">
                     Edit thumbnail
                 </div>
-                <div className="upload_edit-thumbnail_btn btn" onClick={this.handleCustomClick}>
+                <div className="modal-action_btn btn" onClick={this.handleCustomClick}>
                     Upload custom thumbnail
                 </div>
-                <div className="upload_edit-thumbnail_btn btn btn-gray" onClick={this.handleDefaultClick}>
+                <div className="modal-action_btn btn btn-gray" onClick={this.handleDefaultClick}>
                     Use default thumbnail
                 </div>
             </Modal>

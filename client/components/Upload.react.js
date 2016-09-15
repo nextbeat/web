@@ -86,7 +86,7 @@ class Upload extends React.Component {
         const { upload } = this.props
 
         if (upload.get('selectedStackId') > 0) {
-            var stackUrl = `${baseUrl()}/r/${upload.selectedStack().get('hid')}`
+            var stackUrl = `${baseUrl()}/r/${upload.selectedStack().get('hid')}/latest`
         }
 
         return (

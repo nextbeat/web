@@ -3,7 +3,7 @@ import Promise from 'bluebird'
 import { assign, find } from 'lodash'
 import { v4 as generateUuid } from 'node-uuid'
 
-import { ActionTypes, Status, syncStacks } from '../actions'
+import { ActionTypes, Status, syncStacks, updateUser } from '../actions'
 import { App, Upload, CurrentUser } from '../models'
 
 function keyName(file, type, uuid) {
@@ -88,6 +88,16 @@ function getPolicy() {
     })
 }
 
+function handleSuccess(store, next, action, url) {
+    // Trigger sync stacks if requested
+    if (action.type === ActionTypes.UPLOAD_FILE) {
+        let upload = new Upload(store.getState())
+        if (upload.get('submitStackRequested')) {
+            store.dispatch(syncStacks('open', true, upload.stackForSubmission()))
+        }
+    }
+} 
+
 // Middleware function which handles 
 // the upload process to S3
 export default store => next => action => {
@@ -95,6 +105,7 @@ export default store => next => action => {
     if (action.type !== ActionTypes.UPLOAD_FILE 
         && action.type !== ActionTypes.UPLOAD_POSTER_FILE
         && action.type !== ActionTypes.UPLOAD_THUMBNAIL
+        && action.type !== ActionTypes.UPLOAD_PROFILE_PICTURE
         && action.type !== ActionTypes.SUBMIT_STACK_REQUEST
         && action.type !== ActionTypes.CLEAR_UPLOAD) 
     {
@@ -160,7 +171,9 @@ export default store => next => action => {
     const url = `${Upload.cloudfrontUrl(store.getState())}${key}`
 
     // Retrieve open stacks for display on upload page
-    store.dispatch(syncStacks('open', false))
+    if (action.type === ActionTypes.UPLOAD_FILE) {
+        store.dispatch(syncStacks('open', false))
+    }
 
     // we keep a reference to the XHR object so we can abort if requested
     let xhr = new XMLHttpRequest() 
@@ -176,12 +189,12 @@ export default store => next => action => {
             },
             xhr
         })
-    } else if (action.type === ActionTypes.UPLOAD_THUMBNAIL) {
+    } else if (action.type === ActionTypes.UPLOAD_THUMBNAIL || action.type === ActionTypes.UPLOAD_PROFILE_PICTURE) {
         callActionWith({
             status: Status.REQUESTING,
             url
         })
-    }
+    } 
 
 
     // Retrieve S3 POST policy from server
@@ -194,11 +207,7 @@ export default store => next => action => {
         callActionWith({
             status: Status.SUCCESS
         })
-        // Trigger sync stacks if requested
-        let upload = new Upload(store.getState())
-        if (upload.get('submitStackRequested')) {
-            store.dispatch(syncStacks('open', true, upload.stackForSubmission()))
-        }
+        handleSuccess(store, next, action, url)
     })
     .catch(error => {
         callActionWith({

@@ -514,22 +514,6 @@ input.upload_add-caption_input {
 }
 
 
-// Edit thumbnail
-
-.modal.upload_edit-thumbnail {
-    margin: 0;
-    @include center;
-    width: 400px;
-}
-
-.upload_edit-thumbnail_btn {
-    margin-top: 10px;
-    text-align: center;
-    font-size: 18px;
-    padding: 20px 0;
-}
-
-
 // Errors
 
 .upload_error {

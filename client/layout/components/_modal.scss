@@ -144,3 +144,16 @@
         margin: 0 auto;
     }
 }
+
+.modal-action {
+    margin: 0;
+    @include center;
+    width: 400px;
+}
+
+.modal-action_btn {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 18px;
+    padding: 20px 0;
+}

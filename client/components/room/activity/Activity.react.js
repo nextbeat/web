@@ -8,10 +8,10 @@ import Spinner from '../../shared/Spinner.react'
 function fromNow(date) {
     var hours = moment(date).diff(moment(), 'hours');
     if (hours >= 1) {
-        return `${hours} hour${hours > 1 && 's'} left`
+        return `${hours} hour${hours > 1 ? 's' : ''} left`
     } else {
         var minutes = Math.max(1, moment(date).diff(moment(), 'minutes'));
-        return `${minutes} minute${minutes > 1 && 's'} left` 
+        return `${minutes} minute${minutes > 1 ? 's' : ''} left` 
     }
 }
 

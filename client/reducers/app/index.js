@@ -27,7 +27,9 @@ function tags(state = Map(), action) {
 function authError(state = false, action) {
     if (action.status && action.status === Status.FAILURE && action.error === "User is not logged in.") {
         return true;
-    } else if (action.type === ActionTypes.CLEAR_LOGIN_SIGNUP || action.type === ActionTypes.LOGIN) {
+    } else if (action.type === ActionTypes.CLEAR_LOGIN_SIGNUP 
+                || action.type === ActionTypes.LOGIN
+                || action.type === ActionTypes.PROMPT_MODAL) {
         return false;
     }
     return state;
