@@ -25,3 +25,12 @@ export function analyticsPage() {
         }
     }
 }
+
+export function analyticsEvent(data) {
+    return {
+        type: ActionTypes.ANALYTICS,
+        [ANALYTICS]: assign({}, data, {
+            type: AnalyticsTypes.EVENT
+        })
+    }
+}

@@ -54,6 +54,14 @@ function handlePage(data) {
     ga('send', 'pageview')
 }
 
+function handleEvent(data) {
+    ga('send', 'event', {
+        eventCategory: data.category,
+        eventAction: data.action,
+        eventLabel: data.label
+    })
+}
+
 export default store => next => action => {
 
     const data = action[ANALYTICS]
@@ -72,5 +80,7 @@ export default store => next => action => {
             return handleIdentify(data)
         case AnalyticsTypes.PAGE:
             return handlePage(data)
+        case AnalyticsTypes.EVENT:
+            return handleEvent(data)
     }
 }

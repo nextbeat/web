@@ -43,6 +43,8 @@ class AppBanner extends React.Component {
         // Why after a certain threshold it behaves fine I have no idea.
         const delay = isMobileSafari ? 1800 : 500
 
+        // TODO: log analytics event
+
         window.location = url;
         // Fallback to App Store url if user does not have the app installed
         setTimeout(() => {

@@ -15,7 +15,8 @@ export const ANALYTICS = 'ANALYTICS';
 export const AnalyticsTypes = {
     IDENTIFY: 'IDENTIFY',
     TRACK: 'TRACK',
-    PAGE: 'PAGE'
+    PAGE: 'PAGE',
+    EVENT: 'EVENT'
 }
 
 export default {
