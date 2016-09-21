@@ -1,4 +1,5 @@
 import { AnalyticsTypes, ANALYTICS } from '../actions'
+import { createFunctionWithTimeout } from '../utils'
 import { assign, get } from 'lodash'
 import { parse } from 'querystring'
 import fetch from 'isomorphic-fetch'
@@ -54,6 +55,21 @@ function handlePage(data) {
     ga('send', 'pageview')
 }
 
+function handleEvent(data) {
+    let eventData = {
+        eventCategory: data.category,
+        eventAction: data.action,
+        eventLabel: data.label,
+        transport: 'beacon'
+    }
+
+    if (data.callback) {
+        eventData.hitCallback = createFunctionWithTimeout(data.callback);
+    }
+
+    ga('send', 'event', eventData)
+}
+
 export default store => next => action => {
 
     const data = action[ANALYTICS]
@@ -72,5 +88,7 @@ export default store => next => action => {
             return handleIdentify(data)
         case AnalyticsTypes.PAGE:
             return handlePage(data)
+        case AnalyticsTypes.EVENT:
+            return handleEvent(data)
     }
 }

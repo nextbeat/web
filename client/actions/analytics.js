@@ -25,3 +25,14 @@ export function analyticsPage() {
         }
     }
 }
+
+export function analyticsEvent(data, cb, timeout=1000) {
+    return {
+        type: ActionTypes.ANALYTICS,
+        [ANALYTICS]: assign({}, data, {
+            type: AnalyticsTypes.EVENT,
+            callback: cb,
+            timeout
+        })
+    }
+}

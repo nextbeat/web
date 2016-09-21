@@ -15,7 +15,8 @@ export const ANALYTICS = 'ANALYTICS';
 export const AnalyticsTypes = {
     IDENTIFY: 'IDENTIFY',
     TRACK: 'TRACK',
-    PAGE: 'PAGE'
+    PAGE: 'PAGE',
+    EVENT: 'EVENT'
 }
 
 export default {
@@ -161,6 +162,5 @@ export default {
     ENTITY_UPDATE: 'ENTITY_UPDATE',
     CLEAR_FETCH: 'CLEAR_FETCH',
     ANALYTICS: 'ANALYTICS'
-
 }
 

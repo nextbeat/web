@@ -7,7 +7,7 @@ import Schemas from '../schemas'
 import { markStackAsRead } from './user'
 import { loadPaginatedObjects } from './utils'
 import { Stack } from '../models'
-import { API_CALL, API_CANCEL } from './types'
+import { API_CALL, API_CANCEL, ANALYTICS, AnalyticsTypes } from './types'
 import { storageAvailable } from '../utils'
 
 
@@ -100,6 +100,12 @@ function postComment(stack_id, message) {
             endpoint: `stacks/${stack_id}/comments`,
             body: { message },
             authenticated: true
+        },
+        [ANALYTICS]: {
+            type: AnalyticsTypes.EVENT,
+            category: 'chat',
+            action: 'send',
+            label: stack_id
         }
     }
 }

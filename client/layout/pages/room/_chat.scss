@@ -7,6 +7,7 @@
 
 .chat_history {
     overflow: auto;
+    -webkit-overflow-scrolling: touch;
     height: calc(100% - 105px);
     width: 100%;
     padding: 3px;
