@@ -21,7 +21,7 @@ class HomeSplash extends React.Component {
                     </div>
                     <div className="home_splash_box">
                         <div className="home_splash_box-text">
-                            <span className="home_splash_box-title">Go where they go!</span>
+                            <span className="home_splash_box-title">Go where they go.</span>
                             <span className="home_splash_box-description">Be a part of the story.</span>
                         </div>
                     </div>
