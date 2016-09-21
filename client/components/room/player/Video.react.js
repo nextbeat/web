@@ -117,7 +117,7 @@ class Video extends React.Component {
 
     shouldForceVideoResizing() {
         const { app } = this.props;
-        return app.get('browser') === 'Chrome' && parseInt(app.get('version')) >= 52;
+        return app.get('browser') === 'Chrome' && parseInt(app.get('version')) === 52;
     }
 
     // Events 

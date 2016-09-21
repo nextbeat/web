@@ -18,6 +18,11 @@ const CAMPAIGN_MAP = {
         'campaignName': 'july16_outreach',
         'campaignSource': 'nextbeat',
         'campaignMedium': 'email'
+    },
+    'e4': {
+        'campaignName': 'aug16_vlogreachout',
+        'campaignSource': 'nextbeat',
+        'campaignMedium': 'email',
     }
 }
 

@@ -23,7 +23,7 @@ class LargeUser extends React.Component {
         const { user, currentUser } = this.props 
 
         let profpic_url = user.get('profpic_thumbnail_url') || user.get('profpic_url');
-        let profpicStyle = { backgroundImage: profpic_url ? `url(${profpic_url}` : ''}
+        let profpicStyle = { backgroundImage: profpic_url ? `url(${profpic_url})` : ''}
 
         let userHasInfo = user.get('website_url') || user.get('full_name') || user.get('description')
         let isCurrentUser = currentUser.get('id') === user.get('id') && currentUser.get('id') > 0

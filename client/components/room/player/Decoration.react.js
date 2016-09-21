@@ -17,6 +17,8 @@ function markupCaption(str) {
     return { __html: captionHtml }
 }
 
+
+
 class Decoration extends React.Component {
 
     render() {
