@@ -162,6 +162,5 @@ export default {
     ENTITY_UPDATE: 'ENTITY_UPDATE',
     CLEAR_FETCH: 'CLEAR_FETCH',
     ANALYTICS: 'ANALYTICS'
-
 }
 

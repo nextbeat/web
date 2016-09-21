@@ -124,3 +124,21 @@ export function getOrientationFromFile(file, callback) {
   };
   reader.readAsArrayBuffer(file.slice(0, 64 * 1024));
 }
+
+/*******
+ * OTHER
+ *******/
+
+export function createFunctionWithTimeout(fn, timeout=1000) {
+  let called = false
+
+  function callFn() {
+    if (!called) {
+      called = true;
+      fn();
+    }
+  }
+
+  setTimeout(callFn, timeout);
+  return callFn;
+}

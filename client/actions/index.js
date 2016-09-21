@@ -118,6 +118,7 @@ export {
 
 export {
     analyticsIdentify,
-    analyticsPage
+    analyticsPage,
+    analyticsEvent
 } from './analytics'
 

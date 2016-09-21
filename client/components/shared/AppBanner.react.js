@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import { App, CurrentUser } from '../../models'
 import { storageAvailable } from '../../utils'
+import { analyticsEvent } from '../../actions'
 import SmallLogo from './SmallLogo.react'
 import Icon from './Icon.react'
 
@@ -34,7 +35,7 @@ class AppBanner extends React.Component {
     handleClick(e) {
         e.preventDefault();
 
-        const { app, user, url } = this.props
+        const { app, user, url, dispatch } = this.props
 
         const isMobileSafari = app.get('browser') === 'Mobile Safari' && parseFloat(app.get('version', 0)) >= 9
         // If the delay is too short in Mobile Safari, 
@@ -43,13 +44,20 @@ class AppBanner extends React.Component {
         // Why after a certain threshold it behaves fine I have no idea.
         const delay = isMobileSafari ? 1800 : 500
 
-        // TODO: log analytics event
+        function goToApp() {
+             window.location = url;
+            // Fallback to App Store url if user does not have the app installed
+            setTimeout(() => {
+                window.top.location = STORE_URL;
+            }, delay);
+        }
 
-        window.location = url;
-        // Fallback to App Store url if user does not have the app installed
-        setTimeout(() => {
-            window.top.location = STORE_URL;
-        }, delay);
+        // Send analytics event first, navigating once request has gone through
+        dispatch(analyticsEvent({
+            category: 'app',
+            action: 'goToApp',
+        }, goToApp))
+
     }
 
     handleClose(e) {
