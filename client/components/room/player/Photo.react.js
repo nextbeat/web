@@ -1,8 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import Promise from 'bluebird'
 import { Map } from 'immutable'
 
 import Decoration from './Decoration.react'
+import { App } from '../../../models'
 
 class Photo extends React.Component {
 
@@ -10,6 +12,9 @@ class Photo extends React.Component {
         super(props)
 
         this.resize = this.resize.bind(this)
+        this.shouldForceRotation = this.shouldForceRotation.bind(this)
+
+        this.imageStyle = this.imageStyle.bind(this)
 
         this.state = {
             width: 0,
@@ -17,6 +22,7 @@ class Photo extends React.Component {
             scale: 1
         }
     }
+
 
     // Component lifecycle
 
@@ -42,6 +48,14 @@ class Photo extends React.Component {
 
     componentWillUnmount() {
         $(window).off('resize.photo')
+    }
+
+
+    // Queries
+
+    shouldForceRotation() {
+        const { app } = this.props;
+        return app.get('browser') === 'Chrome' && parseInt(app.get('version')) === 52;
     }
 
     // Events
@@ -72,8 +86,9 @@ class Photo extends React.Component {
 
     // Render
 
-    imageStyle(image, state) {
+    imageStyle() {
         const { scale, width, height } = this.state
+        const { image } = this.props 
 
         let style = {
             width: `${width}px`,
@@ -82,13 +97,15 @@ class Photo extends React.Component {
         
         // If the image has orientation metadata, we need to rotate the image back into 
         // its proper orientation and scale it to fit into the container frame
-        const orientation = parseInt(image.get('orientation', 0))
-        if (orientation === 90) {
-            style.transform = `rotate(90deg) scale(${scale})`
-        } else if (orientation === 180) {
-            style.transform = `rotate(180deg)`
-        } else if (orientation === 270) {
-            style.transform = `rotate(-90deg) scale(${scale})`
+        if (this.shouldForceRotation()) {
+            const orientation = parseInt(image.get('orientation', 0))
+            if (orientation === 90) {
+                style.transform = `rotate(90deg) scale(${scale})`
+            } else if (orientation === 180) {
+                style.transform = `rotate(180deg)`
+            } else if (orientation === 270) {
+                style.transform = `rotate(-90deg) scale(${scale})`
+            }
         }
 
         return style;
@@ -107,7 +124,7 @@ class Photo extends React.Component {
 
         return (
             <div className="player_photo-container">
-                <img src={image.get('url')} id="player_photo" className="player_photo" style={this.imageStyle(image, this.state)} />
+                <img src={image.get('url')} id="player_photo" className="player_photo" style={this.imageStyle()} />
                 { decoration && 
                     <div className="player_decoration-container" style={this.captionStyle(this.state)}>
                         <Decoration decoration={decoration} />
@@ -118,5 +135,11 @@ class Photo extends React.Component {
     }
 }
 
-export default Photo
+function mapStateToProps(state) {
+    return {
+        app: new App(state)
+    }
+}
+
+export default connect(mapStateToProps)(Photo)
 
