@@ -122,7 +122,7 @@ class Room extends React.Component {
         ]
         if (!stack.get('error')) {
             let creator = stack.author().get('full_name') || stack.author().get('username')
-            const description = `Hang out in this room and chat with ${creator}. Watch updates live and be there while it happens.`
+            const description = `Hang out in this room and chat with ${creator}. Watch updates live and be there while it happens!`
 
             meta.push.apply(meta, [
                 {"property": "og:title", "content": stack.get('description')},
