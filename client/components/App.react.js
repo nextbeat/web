@@ -160,17 +160,27 @@ class App extends React.Component {
             badge = `(${count}) `
         }
 
+        let description = "Open a door to your world and bring your audience with you. Open rooms to check into over the course of the day. Live chat with audiences on the go."
+        let meta = [
+            {"property": "og:site_name", "content": "Nextbeat"},
+            {"property": "og:description", "content": description},
+            {"property": "fb:app_id", "content": fbAppId},
+            {"property": "al:ios:url", "content": "nextbeat://"},
+            {"property": "al:ios:app_store_id", "content": "1101932727"},
+            {"property": "al:ios:app_name", "content": "Nextbeat"},
+            {"name": "description", "content": description}
+        ]
+
+        if (environment === 'development') {
+            // Prevent search crawlers from indexing
+            meta.push({"name": "robots", "content": "noindex"})
+        }
+
         return (
             <Helmet
                 defaultTitle = {`${badge}${envLabel}Nextbeat`}
                 titleTemplate = {`${badge}${envLabel}%s - Nextbeat`}
-                meta={[
-                    {"property": "og:site_name", "content": "Nextbeat"},
-                    {"property": "fb:app_id", "content": fbAppId},
-                    {"property": "al:ios:url", "content": "nextbeat://"},
-                    {"property": "al:ios:app_store_id", "content": "1101932727"},
-                    {"property": "al:ios:app_name", "content": "Nextbeat"}
-                ]}
+                meta={meta}
             />
         );
     }

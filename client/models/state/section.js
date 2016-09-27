@@ -1,5 +1,5 @@
 import { List, Map } from 'immutable'
-import ModelBase from './base'
+import StateModel from './base'
 
 const KEY_MAP = {
     // meta
@@ -14,7 +14,7 @@ const KEY_MAP = {
     'stackIds': ['section', 'pagination', 'stacks', 'ids']
 }
 
-export default class Section extends ModelBase {
+export default class Section extends StateModel {
 
     constructor(state) {
         super(state);

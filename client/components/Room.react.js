@@ -117,22 +117,24 @@ class Room extends React.Component {
         const url = `${baseUrl()}${this.props.location.pathname}`
         let meta = [
             {"property": "og:url", "content": url},
-            {"property": "twitter:site", "content": "@nextbeatTV"},
+            {"property": "twitter:site", "content": "@nextbeatblog"},
             {"property": "al:ios:url", "content": `nextbeat://rooms/${stack.get('hid')}`},
         ]
         if (!stack.get('error')) {
-            const description = `Check out this room created by ${stack.author().get('username')}!`
-            const thumb_url = stack.get('thumbnail_url') || ''
+            let creator = stack.author().get('full_name') || stack.author().get('username')
+            const description = `Hang out in this room and chat with ${creator}. Watch updates live and be there while it happens.`
+
             meta.push.apply(meta, [
                 {"property": "og:title", "content": stack.get('description')},
                 {"property": "og:description", "content": description},
-                {"property": "og:image", "content": thumb_url},
+                {"property": "og:image", "content": stack.thumbnail('large').get('url')},
                 {"property": "og:image:width", "content": 1200},
                 {"property": "og:image:height", "content": 900},
                 {"property": "twitter:card", "content": "summary_large_image"},
                 {"property": "twitter:title", "content": stack.get('description')},
                 {"property": "twitter:description", "content": description},
-                {"property": "twitter:image", "content": thumb_url}
+                {"property": "twitter:image", "content": stack.thumbnail('large').get('url')},
+                {"name": "description", "content": description}
             ])
         } else {
             const description = "This room does not exist or has been deleted by its owner."

@@ -2,9 +2,9 @@ import { fromJS } from 'immutable'
 import { assign } from 'lodash'
 import { v4 as generateUuid } from 'node-uuid'
 
-import ModelBase from './base'
+import StateModel from './base'
 import App from './app'
-import { Status } from '../actions'
+import { Status } from '../../actions'
 
 const KEY_MAP = {
     // Media upload
@@ -35,7 +35,7 @@ const COMPATIBLE_MIME_TYPES = [
     'video/mp4'
 ]
 
-export default class Upload extends ModelBase {
+export default class Upload extends StateModel {
 
     constructor(state) {
         super(state);

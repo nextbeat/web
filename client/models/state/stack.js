@@ -1,5 +1,6 @@
-import ModelBase from './base'
-import MediaItem from './mediaItem'
+import StateModel from './base'
+import MediaItemEntity from '../entities/mediaItem'
+import StackEntity from '../entities/stack'
 
 import { List, Set } from 'immutable'
 import CurrentUser from './currentUser'
@@ -37,7 +38,7 @@ const KEY_MAP = {
     'closeError': ['stack', 'actions', 'closeError']
 }
 
-export default class Stack extends ModelBase {
+export default class Stack extends StateModel {
 
     constructor(state) {
         super(state);
@@ -46,6 +47,11 @@ export default class Stack extends ModelBase {
         this.entityName = "stacks";
     }
 
+    entity() {
+        return new StackEntity(super.entity())
+    }
+
+
     // properties
 
     author() {
@@ -53,16 +59,16 @@ export default class Stack extends ModelBase {
     }
 
     mediaItems() {
-        return this.__getPaginatedEntities('mediaItems').map(state => new MediaItem(state))
+        return this.__getPaginatedEntities('mediaItems').map(state => new MediaItemEntity(state))
     }
 
     selectedMediaItem() {
         let mediaItemState = this.__getEntity(this.get('selectedMediaItemId', 0), 'mediaItems')
-        return new MediaItem(mediaItemState)
+        return new MediaItemEntity(mediaItemState)
     }
 
     liveMediaItems() {
-        return this.__getLiveEntities('mediaItems').map(state => new MediaItem(state))
+        return this.__getLiveEntities('mediaItems').map(state => new MediaItemEntity(state))
     }
 
     comments() {
@@ -79,6 +85,11 @@ export default class Stack extends ModelBase {
     moreStacks() {
         return this.get('moreStackIds', List()).map(id => this.__getEntity(id, 'stacks'))
     }
+
+    thumbnail(preferredType) {
+        return this.entity().thumbnail(preferredType)
+    }
+
 
     // queries
 
@@ -135,8 +146,8 @@ export default class Stack extends ModelBase {
         return this.liveComments().size > 0 ? this.liveComments().last() : this.comments().first()
     }
 
-    // returns true if fetching the stack OR its media items
     isFetchingDeep() {
+        // returns true if fetching the stack OR its media items
         return !this.get('error') && this.mediaItems().size === 0 && !this.get('mediaItemsError')
     }
 

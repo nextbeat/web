@@ -1,4 +1,4 @@
-import ModelBase from './base'
+import StateModel from './base'
 
 const KEY_MAP = {
     // meta
@@ -13,7 +13,7 @@ const KEY_MAP = {
     'stacksError': ['search', 'pagination', 'stacks', 'error']
 }
 
-export default class Search extends ModelBase {
+export default class Search extends StateModel {
 
     constructor(state) {
         super(state);

@@ -1,4 +1,4 @@
-import ModelBase from './base'
+import StateModel from './base'
 
 const KEY_MAP = {
     'isValidatingToken': ['support', 'isValidatingToken'],
@@ -16,7 +16,7 @@ const KEY_MAP = {
     'unsubscribeRequestError': ['support', 'unsubscribeRequestError']
 }
 
-export default class Support extends ModelBase {
+export default class Support extends StateModel {
 
     constructor(state) {
         super(state);

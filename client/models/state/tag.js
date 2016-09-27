@@ -1,4 +1,4 @@
-import ModelBase from './base'
+import StateModel from './base'
 
 const KEY_MAP = {
     // meta
@@ -15,7 +15,7 @@ const KEY_MAP = {
     'time': ['tag', 'filters', 'time']
 }
 
-export default class Tag extends ModelBase {
+export default class Tag extends StateModel {
 
     constructor(state) {
         super(state);

@@ -1,5 +1,5 @@
 import { List, Map } from 'immutable'
-import ModelBase from './base'
+import StateModel from './base'
 
 const KEY_MAP = {
     // sections
@@ -8,7 +8,7 @@ const KEY_MAP = {
     'sections': ['home', 'sections']
 }
 
-export default class Home extends ModelBase {
+export default class Home extends StateModel {
 
     constructor(state) {
         super(state);

@@ -1,4 +1,4 @@
-import ModelBase from './base'
+import StateModel from './base'
 
 import { Map, List, Set } from 'immutable'
 import Stack from './stack'
@@ -44,7 +44,7 @@ const KEY_MAP = {
     'subscriptionsError': ['user', 'subscriptions', 'error']
 }
 
-export default class CurrentUser extends ModelBase {
+export default class CurrentUser extends StateModel {
 
     constructor(state) {
         super(state);

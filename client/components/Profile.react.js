@@ -12,6 +12,7 @@ import AppBanner from './shared/AppBanner.react'
 
 import { loadProfile, clearProfile, loadClosedStacksForUser } from '../actions'
 import { Profile } from '../models'
+import { baseUrl } from '../utils'
 
 class ProfileComponent extends React.Component {
 
@@ -37,19 +38,43 @@ class ProfileComponent extends React.Component {
         }
     }
 
+    renderDocumentHead(profile) {
+        let description = ''
+        let creator = profile.get('full_name') ? `${profile.get('full_name')} (@${profile.get('username')})` : profile.get('username')
+
+        if (profile.get('description')) {
+            description = profile.get('description')
+        } else {
+            description = `See rooms made on Nextbeat by ${creator})`
+        }
+
+        let meta = [
+            {"property": "al:ios:url", "content": `nextbeat://users/${profile.get('username')}`},
+            {"property": "og:title", "content": `${creator} - Nextbeat`},
+            {"property": "og:description", "content": description},
+            {"property": "og:url", "content": `${baseUrl()}/u/${profile.get('username')}`},
+            {"name": "description", "content": description}
+        ]
+
+        if (profile.get('profpic_url')) {
+            meta.push({"property": "og:image", "content": profile.get('profpic_url')})
+        }
+
+        return  (
+            <Helmet 
+                title={creator} 
+                meta={meta}
+            />
+        );
+    }
+
     renderProfile() {
         const { profile, openStacks, closedStacks } = this.props;
         const profpic_url = profile.get('profpic_thumbnail_url') || profile.get('profpic_url');
         return (
             <section className="content_inner">  
-                <Helmet 
-                    title={profile.get('username')} 
-                    meta={[
-                        {"property": "al:ios:url", "content": `nextbeat://users/${profile.get('username')}`}
-                    ]}
-                />
+                { this.renderDocumentHead(profile) }
                 <div className="profile_user-container"><LargeUser user={profile.entity()} /></div>
-
                 { openStacks.size > 0 && 
                 <div>
                     <div className="rooms-list_header">OPEN</div>

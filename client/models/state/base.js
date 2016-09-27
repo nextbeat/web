@@ -4,7 +4,7 @@ import { Map, List } from 'immutable'
 // Base model class, used to access data in the state tree
 // so that the organization of the state tree is abstracted
 // away in other files
-export default class ModelBase {
+export default class StateModel {
 
     constructor(state) {
         this.state = state;

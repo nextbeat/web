@@ -1,4 +1,4 @@
-import ModelBase from './base'
+import StateModel from './base'
 
 const KEY_MAP = {
     // meta
@@ -12,7 +12,7 @@ const KEY_MAP = {
     'closedStacksError': ['profile', 'pagination', 'closedStacks', 'error']
 }
 
-export default class Profile extends ModelBase {
+export default class Profile extends StateModel {
 
     constructor(state) {
         super(state);
