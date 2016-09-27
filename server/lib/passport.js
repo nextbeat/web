@@ -39,7 +39,6 @@ module.exports = {
         passport.deserializeUser(function(user, done) {
             var url = 'users/' + user.username;
             api.get(url).then(function(res) {
-                console.log(res);
                 var userObj = _.assign({}, res.body, { token : user.token });
                 done(null, userObj);
                 return null;
