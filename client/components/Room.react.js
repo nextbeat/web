@@ -143,7 +143,8 @@ class Room extends React.Component {
                 {"property": "og:description", "content": description},
                 {"property": "twitter:card", "content": "summary"},
                 {"property": "twitter:title", "content": "Room Not Found"},
-                {"property": "twitter:description", "content": description}
+                {"property": "twitter:description", "content": description},
+                {"name": "description", "content": description}
             ])
         }
 
