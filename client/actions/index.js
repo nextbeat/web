@@ -111,6 +111,7 @@ export {
     leaveRoom,
     receiveComment,
     receiveNotificationComment,
+    receiveChatbotComment,
     receiveMediaItem,
     receiveStackClosed
 } from './xmpp'

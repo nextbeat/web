@@ -51,6 +51,7 @@ class ChatItem extends React.Component {
     render() {
         const { comment, username, isCreator, handleSelectUsername } = this.props;
         const creatorClass = isCreator ? "creator" : "";
+        
         return (
             <li className="chat_item">
                 <strong className={creatorClass}>

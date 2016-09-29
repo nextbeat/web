@@ -6,6 +6,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import ChatItem from './ChatItem.react'
 import LiveChatItem from './LiveChatItem.react'
 import NotificationChatItem from './NotificationChatItem.react'
+import ChatbotChatItem from './ChatbotChatItem.react'
 import Compose from './Compose.react'
 import UserActions from './UserActions.react'
 import Spinner from '../../shared/Spinner.react'
@@ -40,18 +41,52 @@ class Chat extends React.Component {
         const { users, stackAuthor } = this.props;
         const username = comment.get('author') && users.getIn([comment.get('author').toString(), 'username'], 'anon');
         const isCreator = (stackAuthor.get('username') === username);
-        return comment.get('type') === 'message' ? 
-            <ChatItem key={comment.get('id')} comment={comment} username={username} isCreator={isCreator} handleSelectUsername={this.handleSelectUsername} />
-            : <NotificationChatItem key={comment.get('id')} comment={comment} username={username} />
+
+        if (comment.get('type') === 'message') {
+            return <ChatItem 
+                        key={comment.get('id')} 
+                        comment={comment} 
+                        username={username} 
+                        isCreator={isCreator} 
+                        handleSelectUsername={this.handleSelectUsername}
+                    />
+        } else if (comment.get('type') === 'notification') {
+            return <NotificationChatItem 
+                        key={comment.get('id')} 
+                        comment={comment} 
+                        username={username} 
+                    />
+        } else {
+            return null;
+        }
     }
 
     renderLiveComment(comment, idx) {
         const { stackAuthor } = this.props;
         const key = `l${idx}`;
         const isCreator = (stackAuthor.get('username') === comment.get('username'));
-        return comment.get('type') === 'message' ? 
-            <LiveChatItem key={key} comment={comment} isCreator={isCreator} handleSelectUsername={this.handleSelectUsername} />
-            : <NotificationChatItem key={key} comment={comment} username={comment.get('username')} />
+
+        if (comment.get('type') === 'message') {
+            return <LiveChatItem 
+                        key={key} 
+                        comment={comment} 
+                        isCreator={isCreator} 
+                        handleSelectUsername={this.handleSelectUsername}
+                    />
+        } else if (comment.get('type') === 'notification') {
+            return <NotificationChatItem 
+                        key={key} 
+                        comment={comment} 
+                        username={comment.get('username')} 
+                    />
+        } else if (comment.get('type') === 'chatbot') {
+            return <ChatbotChatItem
+                        key={key}
+                        message={comment.get('message')}
+                    />
+        } else {
+            return null;
+        }
     }
 
     render() {

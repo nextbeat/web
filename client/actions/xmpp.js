@@ -71,9 +71,7 @@ export function receiveNotificationComment(data, username) {
                 username
             })
         }
-
     }
-    
 }   
 
 export function receiveMediaItem(id, response) {
@@ -81,6 +79,13 @@ export function receiveMediaItem(id, response) {
         type: ActionTypes.RECEIVE_MEDIA_ITEM,
         id,
         response
+    }
+}
+
+export function receiveChatbotComment(message) {
+    return {
+        type: ActionTypes.RECEIVE_CHATBOT_COMMENT,
+        message
     }
 }
 

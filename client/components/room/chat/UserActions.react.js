@@ -58,7 +58,7 @@ class UserActions extends React.Component {
                 <div className="modal-action_btn btn btn-gray" onClick={this.handleMention}>
                     Mention
                 </div>
-                { stack.currentUserIsAuthor() && 
+                { stack.currentUserIsAuthor() && currentUser.get('username') !== username && 
                     <div className="modal-action_btn btn" onClick={this.handleUpdateBanStatus}>
                     { stack.userIsBanned(username) ? "Unban" : "Ban" }
                     </div>

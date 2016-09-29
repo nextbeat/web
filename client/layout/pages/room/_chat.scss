@@ -48,6 +48,10 @@
     }
 }
 
+.chat_item-chatbot {
+    font-style: italic;
+}
+
 a.chat_mention {
     font-weight: normal;
     &:hover {

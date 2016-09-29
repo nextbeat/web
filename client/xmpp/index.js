@@ -4,7 +4,7 @@ import { v4 as generateUuid }from 'node-uuid'
 import { assign } from 'lodash'
 import { normalize } from 'normalizr'
 import Schemas from '../schemas'
-import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveStackClosed, syncNotifications, lostXMPPConnection, reconnectXMPP } from '../actions'
+import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveChatbotComment, receiveStackClosed, syncNotifications, lostXMPPConnection, reconnectXMPP } from '../actions'
 import { CurrentUser, Stack } from '../models'
 
 function xmppHost() {
@@ -178,10 +178,13 @@ function handleGroupChat(s, store) {
 // other messages
 
 function handleMessage(s, store) {
-    console.log(s);
-    if (s.type === "chat") {
-        if (s.thread && s.thread === 'NEW_NOTIFICATION') {
-            store.dispatch(syncNotifications())
+    if (s.type === "chat" && s.thread) {
+        switch(s.thread) {
+            case 'NEW_NOTIFICATION':
+                return store.dispatch(syncNotifications())
+            case 'PRIVATE_CHATBOT':
+                return store.dispatch(receiveChatbotComment(s.body))
         }
+        
     }
 }

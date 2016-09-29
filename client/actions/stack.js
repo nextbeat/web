@@ -148,7 +148,13 @@ function fetchCommentsMetadata(stack_uuid) {
 }
 
 export function loadCommentsMetadata(stack_uuid) {
-    return fetchCommentsMetadata(stack_uuid)
+    return (dispatch, getState) => {
+        const stack = new Stack(getState())
+        if (!stack.currentUserIsAuthor()) {
+            return null;
+        }
+        dispatch(fetchCommentsMetadata(stack_uuid))
+    }   
 }
 
 function promptChatActions(username) {

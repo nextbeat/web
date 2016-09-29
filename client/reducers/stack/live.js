@@ -56,21 +56,39 @@ function receiveNotificationComment(state, action) {
     }
 }
 
+function receiveChatbotComment(state, action) {
+    const comment = Map({
+        type: 'chatbot',
+        message: action.message
+    })
+    return state.update('comments', comments => comments.push(comment));
+}
+
 function receiveMediaItem(state, action) {
     const id = action.id;
     return state.update('mediaItems', mediaItems => mediaItems.push(id));
 }
 
 function sendComment(state, action) {
-    if (action.status !== Status.SUCCESS) {
-        return state;
+    if (action.status === Status.REQUESTING) {
+        const comment = Map({
+            type: 'message',
+            message: action.message,
+            username: state.get('nickname').split('#')[0]
+        })
+        return state.update('comments', comments => comments.push(comment));
+    } else if (action.status === Status.FAILURE) {
+        let message = 'Unable to submit message. Please try again.'
+        if (action.error === 'User is banned.') {
+            message = 'You have been banned from posting in this room.'
+        }
+        const chatbotComment = Map({
+            type: 'chatbot',
+            message
+        })
+        return state.update('comments', comments => comments.push(chatbotComment));
     }
-    const comment = Map({
-        type: 'message',
-        message: action.message,
-        username: state.get('nickname').split('#')[0]
-    })
-    return state.update('comments', comments => comments.push(comment));
+    return state
 }
 
 const initialState = Map({
@@ -88,6 +106,8 @@ export default function live(state = initialState, action) {
             return receiveComment(state, action);
         case ActionTypes.RECEIVE_NOTIFICATION_COMMENT:
             return receiveNotificationComment(state, action);
+        case ActionTypes.RECEIVE_CHATBOT_COMMENT:
+            return receiveChatbotComment(state, action)
         case ActionTypes.RECEIVE_MEDIA_ITEM:
             return receiveMediaItem(state, action);
         case ActionTypes.SEND_COMMENT:
