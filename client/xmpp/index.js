@@ -178,6 +178,7 @@ function handleGroupChat(s, store) {
 // other messages
 
 function handleMessage(s, store) {
+    console.log(s);
     if (s.type === "chat") {
         if (s.thread && s.thread === 'NEW_NOTIFICATION') {
             store.dispatch(syncNotifications())

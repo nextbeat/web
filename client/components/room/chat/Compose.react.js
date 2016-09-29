@@ -1,16 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { promptModal } from '../../../actions'
+import { promptModal, updateChatMessage, sendComment } from '../../../actions'
 
 class Compose extends React.Component {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            message: ''
-        };
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -21,16 +17,17 @@ class Compose extends React.Component {
     }
 
     handleChange(e) {
-        this.setState({ message: e.target.value });
+        this.props.dispatch(updateChatMessage(e.target.value))
     }
 
     handleSubmit(e) {
-        this.props.sendComment(this.state.message);
-        if (this.props.user.isLoggedIn()) {
+        const { user, stack, dispatch } = this.props
+        dispatch(sendComment(stack.get('chatMessage')))
+        if (user.isLoggedIn()) {
             // If the user isn't logged in, they will be prompted to do so
             // during the sendComment action. We don't want to clear the
             // text box in this case.
-            this.setState({ message: '' })
+            dispatch(updateChatMessage(''))
         }
     }
 
@@ -47,10 +44,11 @@ class Compose extends React.Component {
     }
 
     renderChat() {
+        const message = this.props.stack.get('chatMessage', '')
         return (
             <div className="chat_compose-inner">
-                <textarea onChange={this.handleChange} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={this.state.message}></textarea>
-                <input type="submit" className="btn" value="Send" disabled={this.state.message == 0} onClick={this.handleSubmit} />
+                <textarea onChange={this.handleChange} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={message}></textarea>
+                <input type="submit" className="btn" value="Send" disabled={message.length === 0} onClick={this.handleSubmit} />
             </div>
         )
     }

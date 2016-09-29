@@ -5,13 +5,17 @@ class ChatItem extends React.Component {
 
     constructor(props) {
         super(props)
+
+        this.renderMessage = this.renderMessage.bind(this)
     }
 
     shouldComponentUpdate(nextProps) {
         return this.props.comment !== nextProps.comment
     }
 
-    renderMessage(comment) {
+    renderMessage() {
+        const { comment, handleSelectUsername } = this.props 
+
         const id        = comment.get('id')
         const message   = comment.get('message')
         const mentions  = comment.get('user_mentions') || []
@@ -27,7 +31,11 @@ class ChatItem extends React.Component {
 
             const mentionKey = `@${id},${start},${end}`
             const url = `/u/${m.get('username')}`
-            elems.push(<Link key={mentionKey} to={url} className="chat_mention">{ message.substring(start, end) }</Link>)
+            elems.push(
+                <a key={mentionKey} className="chat_mention" onClick={ () => { handleSelectUsername(m.get('username')) } }>
+                    { message.substring(start, end) }
+                </a>
+            )
 
             idx = end
         })
@@ -41,9 +49,16 @@ class ChatItem extends React.Component {
     }
 
     render() {
-        const { comment, username, isCreator } = this.props;
+        const { comment, username, isCreator, handleSelectUsername } = this.props;
         const creatorClass = isCreator ? "creator" : "";
-        return <li className="chat_item"><strong className={creatorClass}><Link to={`/u/${username}`}>{username}</Link></strong> {this.renderMessage(comment)}</li>;
+        return (
+            <li className="chat_item">
+                <strong className={creatorClass}>
+                    <a onClick={ () => { handleSelectUsername(username) } }>{username}</a>
+                </strong>&nbsp;
+                {this.renderMessage()}
+            </li>
+        );
     }
 }
 

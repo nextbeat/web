@@ -25,6 +25,9 @@ const KEY_MAP = {
     // comments
     'commentsFetching': ['stack', 'pagination', 'comments', 'isFetching'],
     'commentsError': ['stack', 'pagination', 'comments', 'error'],
+    'bannedUserIds': ['stack', 'chat', 'bannedUserIds'],
+    'selectedChatUsername': ['stack', 'chat', 'selectedUsername'],
+    'chatMessage': ['stack', 'chat', 'message'],
     // ui
     'selectedDetailSection': ['stack', 'ui', 'detailSection'],
     // more
@@ -90,6 +93,9 @@ export default class Stack extends StateModel {
         return this.entity().thumbnail(preferredType)
     }
 
+    bannedUsers() {
+        return this.get('bannedUserIds', List()).map(id => this.__getEntity(id, 'users'))
+    }
 
     // queries
 
@@ -149,6 +155,11 @@ export default class Stack extends StateModel {
     isFetchingDeep() {
         // returns true if fetching the stack OR its media items
         return !this.get('error') && this.mediaItems().size === 0 && !this.get('mediaItemsError')
+    }
+
+    userIsBanned(username) {
+        // note that this takes username as param, NOT user id
+        return this.bannedUsers().filter(u => u.get('username') === username).size > 0
     }
 
 }

@@ -3,6 +3,7 @@ import { mapValues } from 'lodash'
 import { ActionTypes, Status } from '../../actions'
 
 import live from './live'
+import chat from './chat'
 import { combineReducers, entity, paginate } from '../utils'
 
 const meta = entity(ActionTypes.STACK);
@@ -98,6 +99,7 @@ const reducers = {
     pagination,
     mediaItems,
     live,
+    chat,
     ui,
     more,
     actions

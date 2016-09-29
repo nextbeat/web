@@ -7,9 +7,10 @@ import ChatItem from './ChatItem.react'
 import LiveChatItem from './LiveChatItem.react'
 import NotificationChatItem from './NotificationChatItem.react'
 import Compose from './Compose.react'
+import UserActions from './UserActions.react'
 import Spinner from '../../shared/Spinner.react'
 
-import { loadComments, sendComment } from '../../../actions'
+import { loadComments, sendComment, promptChatActionsForUser } from '../../../actions'
 import { Stack, CurrentUser } from '../../../models'
 
 class Chat extends React.Component {
@@ -18,6 +19,8 @@ class Chat extends React.Component {
         super(props);
 
         this.sendComment = this.sendComment.bind(this);
+        this.handleSelectUsername = this.handleSelectUsername.bind(this);
+
         this.renderComment = this.renderComment.bind(this);
     }
 
@@ -27,6 +30,10 @@ class Chat extends React.Component {
         this.props.dispatch(sendComment(message));
     }
 
+    handleSelectUsername(username) {
+        this.props.dispatch(promptChatActionsForUser(username));
+    }
+
     // Render
 
     renderComment(comment) {
@@ -34,7 +41,7 @@ class Chat extends React.Component {
         const username = comment.get('author') && users.getIn([comment.get('author').toString(), 'username'], 'anon');
         const isCreator = (stackAuthor.get('username') === username);
         return comment.get('type') === 'message' ? 
-            <ChatItem key={comment.get('id')} comment={comment} username={username} isCreator={isCreator} />
+            <ChatItem key={comment.get('id')} comment={comment} username={username} isCreator={isCreator} handleSelectUsername={this.handleSelectUsername} />
             : <NotificationChatItem key={comment.get('id')} comment={comment} username={username} />
     }
 
@@ -43,15 +50,16 @@ class Chat extends React.Component {
         const key = `l${idx}`;
         const isCreator = (stackAuthor.get('username') === comment.get('username'));
         return comment.get('type') === 'message' ? 
-            <LiveChatItem key={key} comment={comment} isCreator={isCreator} />
+            <LiveChatItem key={key} comment={comment} isCreator={isCreator} handleSelectUsername={this.handleSelectUsername} />
             : <NotificationChatItem key={key} comment={comment} username={comment.get('username')} />
     }
 
     render() {
-        const { comments, isFetching, error, liveComments, user, display } = this.props;
-        const closed = this.props.stack.get('closed');
+        const { comments, stack, isFetching, error, liveComments, user, display } = this.props;
+        const closed = stack.get('closed');
         return (
         <div className="chat" style={{ display: (display ? "block" : "none") }}>
+            <UserActions />
             <div id="history" className="chat_history">
                 { isFetching && <Spinner type="grey" />}
                 { error && error.length > 0 && <p>Could not load comments.</p>}
@@ -60,7 +68,7 @@ class Chat extends React.Component {
                     {liveComments.map((comment, idx) => this.renderLiveComment(comment, idx))}
                 </ul>
             </div>
-            <Compose user={user} closed={closed} sendComment={this.sendComment} />
+            <Compose user={user} stack={stack} />
             <ReactCSSTransitionGroup transitionName="chat_lost-connection" transitionEnterTimeout={300} transitionLeaveTimeout={200}>
                 { !!user.get('lostConnection') && 
                     <div key="lost-connection" className="chat_lost-connection">

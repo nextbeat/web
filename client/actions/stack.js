@@ -1,10 +1,12 @@
 import { List } from 'immutable'
+import { flatten } from 'lodash'
 import { normalize } from 'normalizr'
 import { browserHistory } from 'react-router'
 
 import ActionTypes from './types'
 import Schemas from '../schemas'
 import { markStackAsRead } from './user'
+import { promptModal } from './app'
 import { loadPaginatedObjects } from './utils'
 import { Stack } from '../models'
 import { API_CALL, API_CANCEL, ANALYTICS, AnalyticsTypes } from './types'
@@ -19,6 +21,7 @@ function onStackSuccess(store, next, action, response) {
     const stack = response.entities.stacks[response.result];
     store.dispatch(loadMediaItems(stack.uuid));
     store.dispatch(loadComments(stack.uuid));
+    store.dispatch(loadCommentsMetadata(stack.uuid))
     store.dispatch(loadMoreStacks(stack.id));
     store.dispatch(markStackAsRead(stack.id));
     store.dispatch(recordView(stack.id));
@@ -87,9 +90,9 @@ export function loadComments(stack_uuid) {
 }
 
 
-/******************
- * SENDING COMMENTS
- ******************/
+/******
+ * CHAT
+ ******/
 
 function postComment(stack_id, message) {
     return {
@@ -123,6 +126,113 @@ export function sendComment(message) {
         }
 
         return dispatch(postComment(id, message));
+    }
+}
+
+function onCommentsMetadataSuccess(store, next, action, response) {
+    store.dispatch({
+        type: ActionTypes.ENTITY_UPDATE,
+        response: normalize(response.banned_users, Schemas.USERS)
+    })
+}
+
+
+function fetchCommentsMetadata(stack_uuid) {
+    return {
+        type: ActionTypes.COMMENTS_METADATA,
+        [API_CALL]: {
+            endpoint: `stacks/${stack_uuid}/comments/meta`,
+            onSuccessImmediate: onCommentsMetadataSuccess
+        }
+    }
+}
+
+export function loadCommentsMetadata(stack_uuid) {
+    return fetchCommentsMetadata(stack_uuid)
+}
+
+function promptChatActions(username) {
+    return {
+        type: ActionTypes.PROMPT_CHAT_ACTIONS,
+        username
+    }
+}
+
+export function promptChatActionsForUser(username) {
+    return (dispatch, getState) => {
+        dispatch(promptChatActions(username))
+        dispatch(promptModal('chat-user-actions'))
+    }
+}
+
+export function mentionUser(username) {
+    return (dispatch, getState) => {
+        let message = (new Stack(getState())).get('chatMessage', '')
+        if (message.length === 0 || /\s$/.test(message)) {
+            // don't add whitespace
+            message = `${message}@${username}`
+        } else {
+            message = `${message} @${username}`
+        }
+        
+        dispatch(updateChatMessage(message))
+    }
+}
+
+export function updateChatMessage(message) {
+    return {
+        type: ActionTypes.UPDATE_CHAT_MESSAGE,
+        message
+    }
+}
+
+function postBanUser(stack_id, username) {
+    return {
+        type: ActionTypes.BAN_USER,
+        [API_CALL]: {
+            method: 'POST',
+            schema: Schemas.USER,
+            endpoint: `stacks/${stack_id}/comments/${username}/ban`,
+            authenticated: true
+        }
+    }
+}
+
+export function banUser(username) {
+    return (dispatch, getState) => {
+        const stack = new Stack(getState())
+        if (!stack.currentUserIsAuthor()) {
+            return null;
+        }
+        if (stack.userIsBanned(username)) {
+            return null;
+        }
+        dispatch(postBanUser(stack.get('id'), username))
+    }
+}
+
+function postUnbanUser(stack_id, username) {
+    return {
+        type: ActionTypes.UNBAN_USER,
+        [API_CALL]: {
+            method: 'POST',
+            schema: Schemas.USER,
+            endpoint: `stacks/${stack_id}/comments/${username}/unban`,
+            authenticated: true
+        }
+    }
+}
+
+export function unbanUser(username) {
+    return (dispatch, getState) => {
+        const stack = new Stack(getState())
+        if (!stack.currentUserIsAuthor()) {
+            return null;
+        }
+        if (!stack.userIsBanned(username)) {
+            return null;
+        }
+        dispatch(postUnbanUser(stack.get('id'), username))
     }
 }
 
@@ -296,7 +406,6 @@ export function selectMediaItem(id) {
         }
 
         var index = stack.indexOfMediaItem(id)
-        console.log(id, index)
         browserHistory.push(`/r/${stack.get('hid')}/${index+1}`)
 
         return dispatch(performSelectMediaItem(id))

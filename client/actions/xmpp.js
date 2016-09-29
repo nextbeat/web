@@ -59,7 +59,6 @@ export function receiveNotificationComment(data, username) {
                 id: mostRecentComment.get('id'),
                 notification_count: data.count
             }
-            console.log(newComment)
             return dispatch({
                 type: ActionTypes.ENTITY_UPDATE,
                 response: normalize(newComment, Schemas.COMMENT)
