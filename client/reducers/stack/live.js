@@ -70,14 +70,22 @@ function receiveMediaItem(state, action) {
 }
 
 function sendComment(state, action) {
-    if (action.status === Status.REQUESTING) {
+    if (action.status === Status.SUCCESS) {
         const comment = Map({
             type: 'message',
             message: action.message,
             username: state.get('nickname').split('#')[0]
         })
         return state.update('comments', comments => comments.push(comment));
-    } else if (action.status === Status.FAILURE) {
+    } else if (action.status === Status.FAILURE && action.error !== 'User is not logged in.') {
+        // display comment
+        const comment = Map({
+            type: 'message',
+            message: action.message,
+            username: state.get('nickname').split('#')[0]
+        })
+        state = state.update('comments', comments => comments.push(comment));
+        // display chatbot error message
         let message = 'Unable to submit message. Please try again.'
         if (action.error === 'User is banned.') {
             message = 'You have been banned from posting in this room.'
