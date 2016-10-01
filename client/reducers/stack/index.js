@@ -108,6 +108,8 @@ const reducers = {
 export default function(state = Map(), action) {
     if (action.type === ActionTypes.CLEAR_STACK) {
         return Map()
+    } else if (action.type === ActionTypes.CLEAR_COMMENTS) {
+        return state.deleteIn(['pagination', 'comments'])
     } else {
         return combineReducers(reducers)(state, action)
     }

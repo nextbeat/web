@@ -55,6 +55,7 @@ export {
     selectDetailSection,
     closeDetailSection,
     recordView,
+    resetComments,
     clearStack
 } from './stack'
 

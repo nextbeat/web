@@ -13,6 +13,7 @@ const KEY_MAP = {
     // user-agent
     'os': ['app', 'ua', 'os', 'name'],
     'device': ['app', 'ua', 'device', 'name'],
+    'deviceType': ['app', 'ua', 'device', 'type'],
     'browser': ['app', 'ua', 'browser', 'name'],
     'version': ['app', 'ua', 'browser', 'major'],
     // facebook

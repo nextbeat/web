@@ -11,8 +11,8 @@ import Compose from './Compose.react'
 import UserActions from './UserActions.react'
 import Spinner from '../../shared/Spinner.react'
 
-import { loadComments, sendComment, promptChatActionsForUser } from '../../../actions'
-import { Stack, CurrentUser } from '../../../models'
+import { loadComments, sendComment, promptChatActionsForUser, resetComments } from '../../../actions'
+import { Stack, CurrentUser, App } from '../../../models'
 
 class Chat extends React.Component {
 
@@ -23,6 +23,19 @@ class Chat extends React.Component {
         this.handleSelectUsername = this.handleSelectUsername.bind(this);
 
         this.renderComment = this.renderComment.bind(this);
+    }
+
+    componentDidMount() {
+        $(window).on('focus.chat', () => {
+            const { dispatch, app } = this.props
+            if (app.get('deviceType') === 'mobile') {
+                dispatch(resetComments())
+            }
+        })
+    }
+
+    componentWillUnmount() {
+        $(window).off('focus.chat')
     }
 
     // Sending comments
@@ -118,12 +131,14 @@ class Chat extends React.Component {
 
 function mapStateToProps(state) {
     const stack = new Stack(state)
+    const app = new App(state)
     const users = state.getIn(['entities', 'users']);
     const user = new CurrentUser(state)
 
     return {
         stack,
         user,
+        app,
         comments: stack.comments(),
         users,
         stackAuthor: stack.author(),
@@ -150,6 +165,10 @@ const scrollOptions = {
         }
         if (prevProps.liveComments.size !== this.props.liveComments.size) {
             scrollComponent.scrollToBottomIfPreviouslyAtBottom(this.props.liveComments.size)
+            scrollComponent.setScrollState()
+        }
+        if (prevProps.app.get('activeOverlay') !== this.props.app.get('activeOverlay') && this.props.app.get('activeOverlay') === 'chat') {
+            scrollComponent.scrollToBottom()
             scrollComponent.setScrollState()
         }
     }

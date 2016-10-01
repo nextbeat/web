@@ -86,7 +86,22 @@ function fetchComments(stack_uuid, pagination) {
 }
 
 export function loadComments(stack_uuid) {
+
     return loadPaginatedObjects('stack', 'comments', fetchComments.bind(this, stack_uuid), 60);
+}
+
+function clearComments() {
+    return {
+        type: ActionTypes.CLEAR_COMMENTS
+    }
+}
+
+export function resetComments() {
+    return (dispatch, getState) => {
+        const stack = new Stack(getState())
+        dispatch(clearComments())
+        dispatch(loadComments(stack.get('uuid')))
+    }
 }
 
 
