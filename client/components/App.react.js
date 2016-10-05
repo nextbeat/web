@@ -7,7 +7,8 @@ import Helmet from 'react-helmet'
 import Sidebar from '../components/Sidebar.react'
 import Topbar from '../components/Topbar.react'
 import AppBanner from '../components/shared/AppBanner.react'
-import Modal from '../components/shared/Modal.react'
+import Login from '../components/shared/Login.react'
+import Signup from '../components/shared/Signup.react'
 
 import { connectToXMPP, disconnectXMPP, login, logout, signup, clearLogin, clearSignup, postLogin, loadTags, promptModal, closeModal, clearApp, resizeWindow, onBeforeUnload } from '../actions'
 import { CurrentUser, App as AppModel } from '../models'
@@ -18,21 +19,9 @@ class App extends React.Component {
         super(props);
 
         this.handleBeforeUnload = this.handleBeforeUnload.bind(this);
-
-        this.handleLoginClick = this.handleLoginClick.bind(this);
-        this.handleSignupClick = this.handleSignupClick.bind(this);
-        this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
-        this.handleSignupSubmit = this.handleSignupSubmit.bind(this);
-        this.handleLogoutClick = this.handleLogoutClick.bind(this);
-
         this.resize = this.resize.bind(this);
 
         this.setTitle = this.setTitle.bind(this);
-
-        this.renderLogin = this.renderLogin.bind(this);
-        this.renderSignup = this.renderSignup.bind(this);
-        this.dismissLogin = this.dismissLogin.bind(this);
-        this.dismissSignup = this.dismissSignup.bind(this);
     }
 
     // Component lifecycle
@@ -68,6 +57,7 @@ class App extends React.Component {
         }
     }
 
+
     // Events
 
     resize(e) {
@@ -79,54 +69,7 @@ class App extends React.Component {
         this.props.dispatch(onBeforeUnload())
     }
 
-    // Login
 
-    handleLoginClick(e) {
-        e.preventDefault();
-        this.props.dispatch(promptModal('login'))
-    }
-
-    handleLogoutClick(e) {
-        e.preventDefault();
-        this.props.dispatch(logout());
-    }
-
-    handleSignupClick(e) {
-        this.props.dispatch(promptModal('signup'))
-    }
-
-    handleLoginSubmit(e) {
-        e.preventDefault();
-        const username = findDOMNode(this.refs.login_username).value;
-        const password = findDOMNode(this.refs.login_password).value;
-        this.props.dispatch(login(username, password));
-    }
-
-    handleSignupSubmit(e) {
-        e.preventDefault();
-        const email = findDOMNode(this.refs.signup_email).value;
-        const username = findDOMNode(this.refs.signup_username).value;
-        const password = findDOMNode(this.refs.signup_password).value;
-        this.props.dispatch(signup({ email, username, password }));
-    }   
-
-    dismissLogin(e) {
-        e.preventDefault();
-        this.props.dispatch(clearLogin());
-        this.props.dispatch(closeModal());
-    }
-
-    dismissSignup(e) {
-        e.preventDefault();
-        this.props.dispatch(clearSignup());
-        this.props.dispatch(closeModal());
-    }
-
-    handleKeyPress(fn, e) {
-        if (e.charCode === 13) { // enter
-            fn(e)
-        }
-    }
 
     // Render
 
@@ -185,64 +128,12 @@ class App extends React.Component {
         );
     }
 
-    renderLogin() {
-        const { user } = this.props;
-        return (
-            <Modal name="login" className="modal-auth">
-                <div className="modal_close" onClick={this.dismissLogin} />
-                <form className="modal_form" id="login-form" onKeyPress={this.handleKeyPress.bind(this, this.handleLoginSubmit)}>
-                    <div className="modal_input-wrapper">
-                        <input type="text" ref="login_username" name="login_username" placeholder="Username" />
-                    </div>
-                    <div className="modal_input-wrapper">
-                        <input className="modal-login_password" type="password" ref="login_password" name="login_password" placeholder="Password" />
-                        <a href="/support/password-reset-request" className="modal-login_forgot">Forgot?</a>
-                    </div>
-                    <div className="modal_input-wrapper">
-                        <a className="btn modal_form_submit" onClick={this.handleLoginSubmit}>Log In</a>
-                    </div>
-                </form>
-                <div className="modal_extra">Don't have an account? <a onClick={this.handleSignupClick}>Sign up!</a></div>
-                { user.has('loginError') && <div className="modal-auth_error">{user.get('loginError')}</div> }
-            </Modal>
-        )
-    }
-
-    renderSignup() {
-        const { user } = this.props;
-        return (
-            <Modal name="signup" className="modal-auth">
-                <form className="modal_form" id="signup-form" onKeyPress={this.handleKeyPress.bind(this, this.handleSignupSubmit)} >
-                    <input style={{display: "none"}} type="text" name="somefakename" />
-                    <input style={{display: "none"}} type="password" name="anotherfakename" />
-                    <div className="modal_input-wrapper">
-                        <input type="text" ref="signup_email" name="signup_email" placeholder="Email" />
-                    </div>
-                    <div className="modal_input-wrapper">
-                        <input type="text" autoComplete="off" ref="signup_username" name="signup_username" placeholder="Username" />
-                    </div>
-                    <div className="modal_input-wrapper">
-                        <input type="password" autoComplete="new-password" ref="signup_password" name="signup_password" placeholder="Password" />
-                    </div>
-                    <div className="modal_input-wrapper">
-                        <a className="btn btn-secondary modal_form_submit" onClick={this.handleSignupSubmit}>Sign Up</a>
-                    </div>
-                </form>
-                <div className="modal_extra">Already have an account? <a onClick={this.handleLoginClick}>Log in!</a></div>
-                { user.has('signupError') && <div className="modal-auth_error">{user.get('signupError')}</div> }
-            </Modal>
-        )
-    }
-
     render() {
         const { user, app, connected, children, routes } = this.props;
         const barProps = {
             user,
             app,
-            routes,
-            handleLoginClick: this.handleLoginClick,
-            handleLogoutClick: this.handleLogoutClick,
-            handleSignupClick: this.handleSignupClick
+            routes
         }
 
         const inRoom = routes[routes.length-1].path.substring(0, 3) === '/r/'
@@ -254,8 +145,8 @@ class App extends React.Component {
         return (
             <section className="app-container" id="app-container">
                 {this.setTitle()}
-                {this.renderLogin()}
-                {this.renderSignup()}
+                <Login />
+                <Signup />
                 <Topbar {...barProps} />
                 <div className="main-container">
                     <Sidebar {...barProps} />

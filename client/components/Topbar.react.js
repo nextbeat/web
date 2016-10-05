@@ -3,7 +3,7 @@ import { findDOMNode } from 'react-dom'
 import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 
-import { selectSidebar, closeSidebar, toggleDropdown } from '../actions'
+import { selectSidebar, closeSidebar, toggleDropdown, promptModal, logout } from '../actions'
 
 import Icon from './shared/Icon.react'
 import Logo from './shared/Logo.react'
@@ -15,13 +15,20 @@ class Topbar extends React.Component {
     constructor(props) {
         super(props);
 
-        this.handleSearchKeyPress = this.handleSearchKeyPress.bind(this);
-        this.renderLoggedIn = this.renderLoggedIn.bind(this);
-        this.renderGuest = this.renderGuest.bind(this);
-
         this.toggleSidebar = this.toggleSidebar.bind(this);
         this.toggleUserDropdown = this.toggleUserDropdown.bind(this);
+
+        this.handleSearchKeyPress = this.handleSearchKeyPress.bind(this);
+        this.handleLoginClick = this.handleLoginClick.bind(this);
+        this.handleSignupClick = this.handleSignupClick.bind(this);
+        this.handleLogoutClick = this.handleLogoutClick.bind(this);
+
+        this.renderLoggedIn = this.renderLoggedIn.bind(this);
+        this.renderGuest = this.renderGuest.bind(this);
     }
+
+
+    // Events
 
     toggleSidebar() {
         const { app, dispatch } = this.props
@@ -49,6 +56,24 @@ class Topbar extends React.Component {
         }
     }
 
+    handleLoginClick(e) {
+        e.preventDefault()
+        this.props.dispatch(promptModal('login'))
+    }
+
+    handleSignupClick(e) {
+        e.preventDefault()
+        this.props.dispatch(promptModal('signup'))
+    }           
+
+    handleLogoutClick(e) {
+        e.preventDefault()
+        this.props.dispatch(logout())
+    }
+
+
+    // Render
+
     renderLoggedIn() {
         const { user } = this.props;
         const profpic_url = user.profileThumbnailUrl();
@@ -66,21 +91,21 @@ class Topbar extends React.Component {
     }
 
     renderGuest() {
-        const { user, handleLoginClick, handleSignupClick } = this.props;
+        const { user } = this.props;
         return (
             <div className="topbar_user">
-                <a className="btn topbar_login" onClick={handleLoginClick}>Log In</a>
-                <a className="btn btn-secondary topbar_signup" onClick={handleSignupClick}>Sign Up</a>
+                <a className="btn topbar_login" onClick={this.handleLoginClick}>Log In</a>
+                <a className="btn btn-secondary topbar_signup" onClick={this.handleSignupClick}>Sign Up</a>
             </div>
         )
     }
 
     renderUserDropdown() {
-        const { user, handleLogoutClick } = this.props 
+        const { user } = this.props 
         return (
             <Dropdown type="topbar">
                 <Link to={`/u/${user.get('username')}`} className="dropdown-option">Profile</Link>
-                <a onClick={handleLogoutClick} className="dropdown-option">Log Out</a>
+                <a onClick={this.handleLogoutClick} className="dropdown-option">Log Out</a>
             </Dropdown>
         )   
     }

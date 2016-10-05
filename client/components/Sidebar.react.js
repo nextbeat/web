@@ -16,8 +16,6 @@ class Sidebar extends React.Component {
     constructor(props) {
         super(props);
 
-        this.renderLoggedIn = this.renderLoggedIn.bind(this);
-        this.renderGuest = this.renderGuest.bind(this);
         this.renderStackItem = this.renderStackItem.bind(this);
     }
 
@@ -37,33 +35,6 @@ class Sidebar extends React.Component {
     } 
 
     // Render
-
-    renderLoggedIn() {
-        const { user, handleLogoutClick } = this.props; 
-        const url = user.profileThumbnailUrl();
-        return (
-            <div className="sidebar_user-info">
-                <Link to={`/u/${user.get('username')}`}>
-                    <span className="sidebar_user">
-                        <div className="sidebar_icon">{ url ? <img src={url} /> : <Icon type="person" /> }</div> <span>{user.get('username')}</span>
-                    </span>
-                </Link>
-                <a className="sidebar_logout" onClick={handleLogoutClick}>Logout</a>
-            </div>
-        )
-    }
-
-    renderGuest() {
-        const { handleLoginClick, handleSignupClick } = this.props;
-        return (
-            <div className="sidebar_user-info">
-                <div className="sidebar_login-buttons">
-                    <a className="sidebar_login btn" onClick={handleLoginClick}>Login</a>
-                    <a className="sidebar_signup btn btn-secondary" onClick={handleSignupClick}>Signup</a>
-                </div>
-            </div>
-        )
-    }
 
     renderStackItem(stack) {
         const { user } = this.props;
