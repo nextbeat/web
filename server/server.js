@@ -15,6 +15,7 @@ var exphbs      = require('express-handlebars'),
 
 web.use(express.static(path.join(__dirname, '../client/public/html')));
 web.use(express.static(path.join(__dirname, '../client/public')));
+web.use(express.static(path.join(__dirname, '../client/workers')));
 
 web.set('trust proxy', true);
 

@@ -7,6 +7,7 @@ import ActionTypes from './types'
 import Schemas from '../schemas'
 import { markStackAsRead } from './user'
 import { promptModal } from './app'
+import { pushSubscribe } from './push'
 import { loadPaginatedObjects } from './utils'
 import { Stack } from '../models'
 import { API_CALL, API_CANCEL, ANALYTICS, AnalyticsTypes } from './types'
@@ -272,6 +273,8 @@ function onBookmarkSuccess(store, next, action, response) {
         type: ActionTypes.ENTITY_UPDATE,
         response: normalize(newStack, Schemas.STACK)
     })
+    // prompt user to subscribe for web notifications 
+    store.dispatch(pushSubscribe())
 }
 
 function postBookmark(stack_id, stackStatus) {

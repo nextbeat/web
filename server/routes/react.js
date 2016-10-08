@@ -22,7 +22,10 @@ function getInitialState(req) {
                 browser: ua.browser,
                 device: ua.device
             },
-            facebookAppId: process.env.FACEBOOK_APP_ID
+            facebookAppId: process.env.FACEBOOK_APP_ID,
+        },
+        push: {
+            vapidPublicKey: process.env.VAPID_PUBLIC_KEY
         }
     }
     // if user is logged in, requests include user info
@@ -66,7 +69,6 @@ function renderFullPage(html, head, initialState) {
             ${head.meta.toString()}
 
             <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
-            <script src="/js/modernizr.js"></script>
             <script>
                 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -77,6 +79,7 @@ function renderFullPage(html, head, initialState) {
             </script>
 
             <link rel="stylesheet" href="/css/main.css" />
+            <link rel="manifest" href="/manifest.json" />
         </head>
 
         <body> 

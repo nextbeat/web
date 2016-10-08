@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { assign } from 'lodash'
 import Promise from 'bluebird'
 import Hls from 'hls.js'
-import { toggleFullScreen, isIOSDevice } from '../../../utils'
+import { toggleFullScreen } from '../../../utils'
 
 import Decoration from './Decoration.react'
 import VideoControls from './VideoControls.react'
@@ -81,7 +81,7 @@ class Video extends React.Component {
 
         // iOS does not do custom controls well
         this.setState({
-            isIOSDevice: isIOSDevice(),
+            isIOSDevice: this.props.app.isIOS(),
             isPlaying: this.props.autoplay !== false
         })
     }

@@ -1,5 +1,4 @@
 import React from 'react'
-import { findDOMNode } from 'react-dom'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import Helmet from 'react-helmet'
@@ -10,7 +9,7 @@ import AppBanner from '../components/shared/AppBanner.react'
 import Login from '../components/shared/Login.react'
 import Signup from '../components/shared/Signup.react'
 
-import { connectToXMPP, disconnectXMPP, login, logout, signup, clearLogin, clearSignup, postLogin, loadTags, promptModal, closeModal, clearApp, resizeWindow, onBeforeUnload } from '../actions'
+import { connectToXMPP, postLogin, loadTags, promptModal, closeModal, clearApp, resizeWindow, onBeforeUnload, pushInitialize } from '../actions'
 import { CurrentUser, App as AppModel } from '../models'
 
 class App extends React.Component {
@@ -30,6 +29,7 @@ class App extends React.Component {
         const { user, dispatch } = this.props;
         dispatch(connectToXMPP());
         dispatch(loadTags());
+
         if (user.isLoggedIn()) {
             dispatch(postLogin());
         }
@@ -42,9 +42,8 @@ class App extends React.Component {
 
     componentWillUnmount() {
         $(window).off('beforeunload', this.handleBeforeUnload);
-        this.props.dispatch(clearApp());
-
         $(window).off('resize', this.resize);
+        this.props.dispatch(clearApp());
     }
 
     componentDidUpdate(prevProps) {

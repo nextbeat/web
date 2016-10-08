@@ -10,6 +10,7 @@ import { CurrentUser, Stack } from '../models'
 import Schemas from '../schemas'
 import { API_CALL, API_CANCEL } from './types'
 import { analyticsIdentify } from './analytics'
+import { pushInitialize, pushSubscribe } from './push'
 import { isValidUrl } from '../utils'
 
 
@@ -233,6 +234,7 @@ export function postLogin() {
         dispatch(syncNotifications())
         dispatch(loadBookmarkedStacks("open"))
         dispatch(loadSubscriptions())
+        dispatch(pushInitialize())
     }
 }
 
@@ -250,6 +252,8 @@ export function postLogin() {
         type: ActionTypes.ENTITY_UPDATE,
         response: normalize(newUser, Schemas.USER)
     })
+    // prompt user to subscribe for web notifications 
+    store.dispatch(pushSubscribe())
 }
 
 function postSubscribe(subscription_id) {

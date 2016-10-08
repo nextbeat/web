@@ -19,6 +19,14 @@ export const AnalyticsTypes = {
     EVENT: 'EVENT'
 }
 
+export const PushTypes = {
+    UNSUPPORTED: 'UNSUPPORTED',
+    DENIED: 'DENIED',
+    SUBSCRIBED: 'SUBSCRIBED',
+    UNSUBSCRIBED: 'UNSUBSCRIBED',
+    ERROR: 'ERROR'
+}
+
 export default {
 
     /*****
@@ -152,6 +160,15 @@ export default {
     RECEIVE_CHATBOT_COMMENT: 'RECEIVE_CHATBOT_COMMENT',
     RECEIVE_MEDIA_ITEM: 'RECEIVE_MEDIA_ITEM',
     RECEIVE_STACK_CLOSED: 'RECEIVE_STACK_CLOSED',
+
+    /******
+     * PUSH
+     ******/
+
+    PUSH_INITIALIZE: 'PUSH_INITIALIZE',
+    PUSH_SUBSCRIBE: 'PUSH_SUBSCRIBE',
+    PUSH_UNSUBSCRIBE: 'PUSH_UNSUBSCRIBE',
+    PUSH_SYNC_SUBSCRIPTION: 'PUSH_SYNC_SUBSCRIPTION',
 
     /*********
      * SUPPORT
