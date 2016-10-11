@@ -51,6 +51,23 @@ export function baseUrl(env, secure=true) {
     }
 }
 
+export function baseApiUrl(env, secure=true) {
+    env = env || process.env.NODE_ENV || 'development'
+    const scheme = secure ? 'https://' : 'http://'
+    switch(env) {
+        case 'production':
+            return `${scheme}api.nextbeat.co/v1`
+        case 'development':
+            return `${scheme}api.dev.nextbeat.co/v1`
+        case 'local':
+            return `http://localhost:8000/v1`
+        case 'mac':
+        case 'mac-dev':
+        default:
+            return 'http://api/v1/'
+    }
+}
+
 export function secureUrl(url) {
   if (!url) {
     return null

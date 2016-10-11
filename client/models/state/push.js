@@ -24,4 +24,8 @@ export default class Push extends StateModel {
         return this.get('pushStatus') === PushTypes.UNSUBSCRIBED
     }
 
+    isUnsupported() {
+        return this.get('pushStatus') === PushTypes.UNSUPPORTED
+    }
+
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 self.addEventListener('install', event => {
-    console.log('installed 2', self)
+    console.log('installed 3', self)
 });
 
 self.addEventListener('activate', event => {
@@ -9,7 +9,6 @@ self.addEventListener('activate', event => {
 })
 
 self.addEventListener('push', event => {
-    console.log('json', event.data.json())
     var data = event.data.json();
 
     event.waitUntil(self.registration.showNotification(data.message, {
@@ -21,8 +20,6 @@ self.addEventListener('push', event => {
 self.addEventListener('notificationclick', event => {
     event.notification.close();
     var url = event.notification.data.url;
-
-    console.log('clicked notification', url);
 
     event.waitUntil(clients.matchAll({
             includeUncontrolled: true,
