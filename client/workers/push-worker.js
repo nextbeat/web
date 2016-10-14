@@ -1,19 +1,20 @@
 'use strict';
 
 self.addEventListener('install', event => {
-    console.log('installed 3', self)
+    console.log('installed 7', self)
 });
 
 self.addEventListener('activate', event => {
-    console.log('activated')
+    console.log('activated 3')
 })
 
 self.addEventListener('push', event => {
     var data = event.data.json();
 
-    event.waitUntil(self.registration.showNotification(data.message, {
-        icon: '/images/favicon.png',
-        data: data.data
+    event.waitUntil(self.registration.showNotification(data.title, {
+        body: data.message,
+        icon: data.icon || '/images/favicon.png',
+        data: { url: data.url }
     }))
 });
 
