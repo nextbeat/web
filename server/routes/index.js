@@ -90,8 +90,18 @@ module.exports = {
         );
 
         router.post('/logout', function(req, res) {
-            req.logOut();
-            return res.status(200).end();
+            console.log(req.user.token);
+            var options = {
+                auth: req.user.token
+            }
+            api.post('logout', req.body, options)
+                .then(function() {
+                    req.logOut();
+                    return res.status(200).end(); 
+                })
+                .catch(function(e) {
+                    return res.status(400).json({ error: 'Error logging out.' });
+                });
         });
 
         router.post('/signup', function(req, res) {

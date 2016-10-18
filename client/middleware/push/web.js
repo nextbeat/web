@@ -36,10 +36,11 @@ function initializePostRegister(store, next, action) {
             }))
         } else {
             // Update subscription on server
-            store.dispatch(pushSyncSubscription(subscription))
+            store.dispatch(pushSyncSubscription('web', subscription))
 
             return next(assign({}, action, {
                 pushStatus: PushTypes.SUBSCRIBED,
+                pushType: 'web',
                 subscription
             }))
         }

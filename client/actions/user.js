@@ -6,7 +6,7 @@ import moment from 'moment'
 
 import { Status } from './types'
 import ActionTypes from './types'
-import { CurrentUser, Stack } from '../models'
+import { CurrentUser, Stack, Push } from '../models'
 import Schemas from '../schemas'
 import { API_CALL, API_CANCEL } from './types'
 import { analyticsIdentify } from './analytics'
@@ -181,9 +181,17 @@ export function logout() {
 
         dispatch(actionWith(Status.REQUESTING));
 
+        // Include subscription object if available
+        // so that it is disabled once user has logged out
+        const push = new Push(getState())
         fetch('/logout', {
             method: 'POST',
-            credentials: 'same-origin'
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(push.formattedPushObject())
         })
         .then(res => {
             if (!res.ok) {

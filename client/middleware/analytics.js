@@ -24,6 +24,21 @@ const CAMPAIGN_MAP = {
         'campaignName': 'aug16_vlogreachout',
         'campaignSource': 'nextbeat',
         'campaignMedium': 'email',
+    },
+    'es': {
+        'campaignName': 'email_subscription',
+        'campaignSource': 'nextbeat',
+        'campaignMedium': 'email'
+    },
+    'pw': {
+        'campaignName': 'web_push',
+        'campaignSource': 'nextbeat',
+        'campaignMedium': 'push'
+    },
+    'ps': {
+        'campaignName': 'safari_push',
+        'campaignSource': 'nextbeat',
+        'campaignMedium': 'push'
     }
 }
 

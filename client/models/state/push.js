@@ -5,7 +5,9 @@ import { PushTypes } from '../../actions'
 const KEY_MAP = {
     // constants
     'vapidPublicKey': ['push', 'vapidPublicKey'],
-    'pushStatus': ['push', 'pushStatus']
+    'pushStatus': ['push', 'pushStatus'],
+    'pushType': ['push', 'pushType'],
+    'subscription': ['push', 'subscription']
 }
 
 export default class Push extends StateModel {
@@ -26,6 +28,17 @@ export default class Push extends StateModel {
 
     isUnsupported() {
         return this.get('pushStatus') === PushTypes.UNSUPPORTED
+    }
+
+    formattedPushObject() {
+        if (!this.isSubscribed() || !this.has('pushType') || !this.has('subscription')) {
+            return {}
+        }
+
+        return {
+            type: this.get('pushType'),
+            subscription: this.get('subscription')
+        }
     }
 
 }

@@ -19,14 +19,17 @@ export function pushUnsubscribe() {
     }
 }
 
-export function pushSyncSubscription(subscription) {
+export function pushSyncSubscription(clientType, subscription) {
     return {
         type: ActionTypes.PUSH_SYNC_SUBSCRIPTION,
         [API_CALL]: {
             method: 'POST',
             authenticated: true,
-            endpoint: 'notifications/web/subscribe',
-            body: JSON.parse(JSON.stringify(subscription))
+            endpoint: 'notifications/subscribe',
+            body: {
+                type: clientType,
+                subscription: JSON.parse(JSON.stringify(subscription))
+            }
         }
     }
 }

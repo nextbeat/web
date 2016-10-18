@@ -31,7 +31,11 @@ web.use(session({
     store: new RedisStore({ client: redis.client() }),
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    rolling: true,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 30 * 3 // three months
+    }
 }));
 
 web.set('json spaces', 2);

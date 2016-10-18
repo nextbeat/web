@@ -1,6 +1,6 @@
 import { assign } from 'lodash'
 
-import { PushTypes, pushSyncSubscription, pushSubscribe } from '../../actions'
+import { PushTypes, pushSubscribe } from '../../actions'
 import { CurrentUser, App } from '../../models'
 import { baseApiUrl } from '../../utils'
 
@@ -21,7 +21,11 @@ function checkPermission(store, next, action, permissionData) {
     } else if (permissionData.permission === 'granted') {
         // User has granted push notifications
         return next(assign({}, action, {
-            pushStatus: PushTypes.SUBSCRIBED
+            pushStatus: PushTypes.SUBSCRIBED,
+            pushType: 'safari',
+            subscription: {
+                device_token: permissionData.deviceToken
+            }
         }))
     }
 }
@@ -42,7 +46,6 @@ export function subscribe(store, next, action) {
         }))
     }
 
-    console.log('requesting permission')
     window.safari.pushNotification.requestPermission(
         `${baseApiUrl(app.get('environment'))}/push-safari`,
         'web.co.nextbeat.nextbeat',
