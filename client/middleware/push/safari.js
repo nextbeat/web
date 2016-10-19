@@ -20,6 +20,8 @@ function checkPermission(store, next, action, permissionData) {
         }))
     } else if (permissionData.permission === 'granted') {
         // User has granted push notifications
+        // Update subscription on server
+        store.dispatch(pushSyncSubscription('safari', subscription))
         return next(assign({}, action, {
             pushStatus: PushTypes.SUBSCRIBED,
             pushType: 'safari',
