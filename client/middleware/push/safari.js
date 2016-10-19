@@ -1,6 +1,6 @@
 import { assign } from 'lodash'
 
-import { PushTypes, pushSubscribe } from '../../actions'
+import { PushTypes, pushSubscribe, pushSyncSubscription } from '../../actions'
 import { CurrentUser, App } from '../../models'
 import { baseApiUrl } from '../../utils'
 
