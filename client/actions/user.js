@@ -260,8 +260,6 @@ export function postLogin() {
         type: ActionTypes.ENTITY_UPDATE,
         response: normalize(newUser, Schemas.USER)
     })
-    // prompt user to subscribe for web notifications 
-    store.dispatch(pushSubscribe())
 }
 
 function postSubscribe(subscription_id) {

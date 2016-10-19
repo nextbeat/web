@@ -1,6 +1,6 @@
 import { assign } from 'lodash'
 
-import { PushTypes, pushSyncSubscription } from '../../actions'
+import { PushTypes, pushSyncSubscription, pushSubscribe } from '../../actions'
 import { urlBase64ToUint8Array } from '../../utils'
 import { Push } from '../../models'
 
@@ -30,6 +30,8 @@ function initializePostRegister(store, next, action) {
         return serviceWorkerRegistration.pushManager.getSubscription()
     }).then(subscription => {
         if (!subscription) {
+            // Prompt subscription request on initial load
+            store.dispatch(pushSubscribe())
             // Not subscribed yet
             return next(assign({}, action, {
                 pushStatus: PushTypes.UNSUBSCRIBED

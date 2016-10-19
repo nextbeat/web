@@ -273,8 +273,6 @@ function onBookmarkSuccess(store, next, action, response) {
         type: ActionTypes.ENTITY_UPDATE,
         response: normalize(newStack, Schemas.STACK)
     })
-    // prompt user to subscribe for web notifications 
-    store.dispatch(pushSubscribe())
 }
 
 function postBookmark(stack_id, stackStatus) {

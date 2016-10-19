@@ -6,7 +6,7 @@ import { baseApiUrl } from '../../utils'
 
 function checkPermission(store, next, action, permissionData) {
     if (permissionData.permission === 'default') {
-        // TEMPORARY
+        // Prompt subscription request on initial load
         store.dispatch(pushSubscribe())
         // User has not yet indicated if they want to receive notifications
         return next(assign({}, action, {

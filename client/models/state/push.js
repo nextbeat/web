@@ -34,7 +34,7 @@ export default class Push extends StateModel {
         if (!this.isSubscribed() || !this.has('pushType') || !this.has('subscription')) {
             return {}
         }
-
+        
         return {
             type: this.get('pushType'),
             subscription: this.get('subscription')
