@@ -132,7 +132,6 @@ function formatNotificationItem(data, store) {
             assign(comment, { id: parseInt(data[4]) })
         }
     }
-
     return comment
 }
 

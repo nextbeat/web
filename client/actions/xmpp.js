@@ -53,7 +53,8 @@ export function receiveNotificationComment(data, username) {
     return (dispatch, getState) => {
         const stack = new Stack(getState())
         const mostRecentComment = stack.comments().first() || Map()
-        if (mostRecentComment.get('type') === 'notification' && mostRecentComment.get('notification_type') === 'mediaitem') {
+        const hasLiveComments = stack.liveComments().size > 0
+        if (!hasLiveComments && mostRecentComment.get('type') === 'notification' && mostRecentComment.get('notification_type') === 'mediaitem') {
             // update the most recent notification item instead of posting a new one
             const newComment = {
                 id: mostRecentComment.get('id'),
