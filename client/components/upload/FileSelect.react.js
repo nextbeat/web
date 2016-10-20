@@ -82,7 +82,7 @@ class FileSelect extends React.Component {
 
     renderUploadPrompt() {
         const { isDragging } = this.state
-        const { upload } = this.props
+        const { upload, app } = this.props
 
         const dragEvents = {
             onDragEnter: this.handleDragEnter,
@@ -102,7 +102,7 @@ class FileSelect extends React.Component {
                 <input type="file" id="file-input" className="upload_file-input" onChange={this.handleInputChange} />
                 <Icon type="file-upload" />
                 <div className="upload_select-label" onClick={this.handleClick}>Select file to upload.</div>
-                <div className="upload_drag-label">Or drag it here.</div>
+                { !app.isMobile() && <div className="upload_drag-label">Or drag it here.</div> }
             </div>
         );
     }

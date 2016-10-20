@@ -46,6 +46,10 @@ export default class App extends StateModel {
         return this.get('os') === 'iOS'
     }
 
+    isMobile() {
+        return this.get('deviceType') === 'mobile'
+    }
+
     isActiveDropdown(type) {
         return this.get('activeDropdowns', Set()).includes(type)
     }
