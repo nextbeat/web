@@ -11,7 +11,7 @@ import { pushSubscribe } from './push'
 import { loadPaginatedObjects } from './utils'
 import { Stack } from '../models'
 import { API_CALL, API_CANCEL, ANALYTICS, AnalyticsTypes } from './types'
-import { storageAvailable } from '../utils'
+import { setStorageItem } from '../utils'
 
 
 /**********
@@ -419,13 +419,11 @@ function performSelectMediaItem(id) {
 
 export function selectMediaItem(id) {
     // We store the last selected media item from each stack
-    // in the session in sessionStorage, so that it persists
-    // through page refreshes
+    // in the session in localStorage, so that it persists
+    // through multiple sessions
     return (dispatch, getState) => {
         const stack = new Stack(getState())
-        if (storageAvailable('sessionStorage')) {
-            sessionStorage.setItem(stack.get('hid'), id)
-        }
+        setStorageItem(stack.get('hid'), id)
 
         var index = stack.indexOfMediaItem(id)
         browserHistory.push(`/r/${stack.get('hid')}/${index+1}`)

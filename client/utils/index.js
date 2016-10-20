@@ -1,3 +1,6 @@
+import { assign } from 'lodash'
+import moment from 'moment'
+
 /************
  * FULLSCREEN
  ************/
@@ -85,9 +88,9 @@ export function isValidUrl(url) {
 }
 
 
-/**************
- * AVAILABILITY
- **************/
+/*********
+ * STORAGE
+ *********/
 
 export function storageAvailable(storageType) {
   try {
@@ -102,6 +105,45 @@ export function storageAvailable(storageType) {
   }
 }
 
+const defaultStorageOptions = {
+  type: 'localStorage',
+  ttl: 60*60*36 // 36 hours
+}
+
+export function setStorageItem(key, value, options) {
+  options = assign({}, defaultStorageOptions, options)
+  var storage = window[options.type]
+  var storedValue = {
+    value: value,
+  }
+
+  if (options.ttl > 0) {
+    storedValue.expires = moment().add(options.ttl, 'seconds').format()
+  }
+
+  if (storageAvailable(options.type)) {
+    storage.setItem(key, JSON.stringify(storedValue))
+  }
+}
+
+export function getStorageItem(key, options) {
+  options = assign({}, defaultStorageOptions, options)
+  var value = null;
+  var storage = window[options.type];
+
+  if (storageAvailable(options.type)) {
+    var storedValueString = storage.getItem(key);
+    if (storedValueString !== null) {
+      var storedValue = JSON.parse(storage.getItem(key));
+      console.log(storedValue);
+      if (!('expires' in storedValue && moment(storedValue.expires).isBefore())) {
+        value = storedValue.value;
+      }
+    }
+
+  }
+  return value;
+}
 
 /*************
  * CONVERSIONS

@@ -11,7 +11,7 @@ import WelcomeBanner from './shared/WelcomeBanner.react'
 
 import { loadStack, joinRoom, clearStack, bookmark, unbookmark, selectMediaItem, goForward, goBackward, selectDetailSection, closeDetailSection } from '../actions'
 import { Stack, App } from '../models'
-import { baseUrl, storageAvailable } from '../utils'
+import { baseUrl, getStorageItem } from '../utils'
 
 class Room extends React.Component {
 
@@ -51,12 +51,10 @@ class Room extends React.Component {
             // first page of media items has loaded, select the first
             let id = stack.mediaItems().first().get('id')
 
-            // unless last seen media item id stored in sessionStorage
-            if (storageAvailable('sessionStorage')) {
-                const mediaItemId = parseInt(sessionStorage.getItem(stack.get('hid')), 10)
-                if (mediaItemId && stack.indexOfMediaItem(mediaItemId) >= 0) {
-                    id = mediaItemId
-                }
+            // unless last seen media item id stored in localStorage
+            const mediaItemId = parseInt(getStorageItem(stack.get('hid')), 10)
+            if (mediaItemId && stack.indexOfMediaItem(mediaItemId) >= 0) {
+                id = mediaItemId
             }
 
             // or if index is specified
