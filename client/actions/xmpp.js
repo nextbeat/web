@@ -83,10 +83,17 @@ export function receiveMediaItem(id, response) {
     }
 }
 
-export function receiveChatbotComment(message) {
-    return {
-        type: ActionTypes.RECEIVE_CHATBOT_COMMENT,
-        message
+export function receiveChatbotComment(stack_uuid, message) {
+    return (dispatch, getState) => {
+        const stack = new Stack(getState())
+        // only display comment if associated stack is currently loaded
+        if (stack.get('uuid') !== stack_uuid) {
+            return;
+        }
+        return dispatch({
+            type: ActionTypes.RECEIVE_CHATBOT_COMMENT,
+            message
+        })
     }
 }
 

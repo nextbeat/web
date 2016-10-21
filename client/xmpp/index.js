@@ -178,11 +178,16 @@ function handleGroupChat(s, store) {
 
 function handleMessage(s, store) {
     if (s.type === "chat" && s.thread) {
-        switch(s.thread) {
+        let meta        = s.thread.split('#'),
+            identifier  = meta[0];
+
+        switch(identifier) {
             case 'NEW_NOTIFICATION':
                 return store.dispatch(syncNotifications())
             case 'PRIVATE_CHATBOT':
-                return store.dispatch(receiveChatbotComment(s.body))
+                let stack_uuid = meta[1],
+                    message    = s.body;
+                return store.dispatch(receiveChatbotComment(stack_uuid, message))
         }
         
     }
