@@ -121,15 +121,12 @@ class Photo extends React.Component {
 
     render() {
         let { image, decoration } = this.props
+        let { width, height } = this.state
 
         return (
             <div className="player_photo-container">
                 <img src={image.get('url')} id="player_photo" className="player_photo" style={this.imageStyle()} />
-                { decoration && 
-                    <div className="player_decoration-container" style={this.captionStyle(this.state)}>
-                        <Decoration decoration={decoration} />
-                    </div>
-                }
+                { decoration && <Decoration decoration={decoration} width={width} height={height} /> }
             </div>
         )
     }

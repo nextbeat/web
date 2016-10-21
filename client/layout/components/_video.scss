@@ -29,13 +29,6 @@
     @include center;
 }
 
-.video_player-decoration {
-    @include center;
-    position: absolute;
-    /* allow passthrough on mouse events to enable video playback on mobile */
-    pointer-events: none;
-}
-
 .video_bottom {
     position: absolute;
     bottom: 0;

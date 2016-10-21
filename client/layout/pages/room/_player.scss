@@ -131,9 +131,10 @@
     }
 }
 
-.player_decoration-container {
+.player_decoration {
     @include center;
-    position: absolute;
+    /* allow passthrough on mouse events to enable video playback on mobile */
+    pointer-events: none;
 }
 
 // Navigation

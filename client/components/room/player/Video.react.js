@@ -399,17 +399,9 @@ class Video extends React.Component {
         return style
     }
 
-    captionStyle(state) {
-        const { width, height } = state 
-        return {
-            width: `${width}px`, 
-            height: `${height}px`
-        }
-    }
-
     render() {
         const { video, decoration, app, autoplay } = this.props;
-        const { isIOSDevice, shouldDisplayControls, isLoading } = this.state;
+        const { isIOSDevice, shouldDisplayControls, isLoading, width, height } = this.state;
 
         const displayControlsVideoStyle = shouldDisplayControls ? { cursor: 'auto' } : { cursor: 'none' };
 
@@ -443,17 +435,12 @@ class Video extends React.Component {
             autoPlay: autoplay !== false && !isIOSDevice // by default, autoplay is undefined 
         }
 
-
         return (
             <div className="video_container" id="video_container" tabIndex="-1" style={displayControlsVideoStyle} {...videoContainerEvents}>
                 <div className="video_player-container">
                     <div className="video_player-background" style={{ backgroundImage: `url(${video.get('poster_url')})`}}></div>
                     <video id="video_player" className="video_player" {...videoAttributes} style={this.videoStyle(video, this.state)}></video>
-                    { decoration && 
-                        <div className="video_player-decoration" style={this.captionStyle(this.state)}>
-                            <Decoration decoration={decoration} />
-                        </div>
-                    }
+                    { decoration && <Decoration decoration={decoration} width={width} height={height} barHeight={70} /> }
                     { isLoading && !isIOSDevice && <Spinner type="white large faded" /> }
                 </div>
                 { !isIOSDevice && <VideoControls ref="controls" {...videoControlsProps} /> }
