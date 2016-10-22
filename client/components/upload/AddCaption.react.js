@@ -79,6 +79,7 @@ class AddCaption extends React.Component {
 
     handleMouseDown(e) {
         var caption = document.getElementById('player_caption')
+        console.log(e.target, caption)
         if (!caption) {
             return;
         }
