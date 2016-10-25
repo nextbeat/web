@@ -28,7 +28,7 @@ function xmppScheme() {
         case 'production':
         case 'development':
         case 'mac-dev':
-            return 'ws://' // Disabling secure xmpp connection for now (Chrome bug in Sierra)
+            return 'wss://' 
         case 'local':
         case 'mac':
         default:
