@@ -53,7 +53,6 @@ class Decoration extends React.Component {
     resize(node) {
         const parent = node.parent()
         const caption = node.find('.player_caption')
-        console.log(caption[0].clientHeight)
 
         this.setState({
             parentHeight: parent.height(),
