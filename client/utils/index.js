@@ -134,15 +134,38 @@ export function getStorageItem(key, options) {
   if (storageAvailable(options.type)) {
     var storedValueString = storage.getItem(key);
     if (storedValueString !== null) {
-      var storedValue = JSON.parse(storage.getItem(key));
-      console.log(storedValue);
-      if (!('expires' in storedValue && moment(storedValue.expires).isBefore())) {
-        value = storedValue.value;
+      try {
+        var storedValue = JSON.parse(storage.getItem(key));      
+        if (!('expires' in storedValue && moment(storedValue.expires).isBefore())) {
+          value = storedValue.value;
+        }
+      } catch (e) {
+        value = null;
       }
     }
-
   }
   return value;
+}
+
+export function getStorageItemExpiration(key, options) {
+  options = assign({}, defaultStorageOptions, options)
+  var expires = null;
+  var storage = window[options.type];
+
+  if (storageAvailable(options.type)) {
+    var storedValueString = storage.getItem(key);
+    if (storedValueString !== null) {
+      try {
+        var storedValue = JSON.parse(storage.getItem(key));      
+        if ('expires' in storedValue) {
+          expires = storedValue.expires;
+        }
+      } catch (e) {
+        expires = null;
+      }
+    }
+  }
+  return expires;
 }
 
 /*************

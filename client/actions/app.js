@@ -57,6 +57,12 @@ export function clearApp() {
     }
 }
 
+export function cleanCache() {
+    return {
+        type: ActionTypes.CLEAN_CACHE
+    }
+}
+
 /**************
  * USER ACTIONS
  **************/

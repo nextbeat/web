@@ -55,6 +55,7 @@ export default {
     SET_VIDEO_VOLUME: 'SET_VIDEO_VOLUME',
     ON_BEFORE_UNLOAD: 'ON_BEFORE_UNLOAD',
     TRIGGER_AUTH_ERROR: 'TRIGGER_AUTH_ERROR',
+    CLEAN_CACHE: 'CLEAN_CACHE',
     CLEAR_APP: 'CLEAR_APP',
 
     /******
@@ -196,7 +197,7 @@ export default {
      ***********/
 
     START_NEW_SESSION: 'START_NEW_SESSION',
-    END_SESSION: 'END_SESSION',
+    SEND_PENDING_EVENTS: 'SEND_PENDING_EVENTS',
 
     /*******
      * OTHER

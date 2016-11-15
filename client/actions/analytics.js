@@ -6,3 +6,9 @@ export function startNewSession() {
         type: ActionTypes.START_NEW_SESSION
     }
 }
+
+export function sendPendingEvents() {
+    return {
+        type: ActionTypes.SEND_PENDING_EVENTS
+    }
+}

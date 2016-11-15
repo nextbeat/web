@@ -4,6 +4,7 @@ export { API_CALL, API_CANCEL, GA, Status, AnalyticsTypes, AnalyticsSessionTypes
 export {
     loadTags,
     resizeWindow,
+    cleanCache,
     onBeforeUnload,
     selectSidebar,
     closeSidebar,
@@ -132,7 +133,8 @@ export {
 } from './support'
 
 export {
-    startNewSession
+    startNewSession,
+    sendPendingEvents,
 } from './analytics'
 
 export {
