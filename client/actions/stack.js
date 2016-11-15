@@ -10,7 +10,7 @@ import { promptModal } from './app'
 import { pushSubscribe } from './push'
 import { loadPaginatedObjects } from './utils'
 import { Stack } from '../models'
-import { API_CALL, API_CANCEL, ANALYTICS, AnalyticsTypes } from './types'
+import { API_CALL, API_CANCEL, ANALYTICS, GA, AnalyticsTypes, GATypes } from './types'
 import { setStorageItem } from '../utils'
 
 
@@ -120,8 +120,8 @@ function postComment(stack_id, message) {
             body: { message },
             authenticated: true
         },
-        [ANALYTICS]: {
-            type: AnalyticsTypes.EVENT,
+        [GA]: {
+            type: GATypes.EVENT,
             category: 'chat',
             action: 'send',
             label: stack_id
@@ -511,6 +511,9 @@ export function clearStack() {
         type: ActionTypes.CLEAR_STACK,
         [API_CANCEL]: {
             actionTypes: [ActionTypes.COMMENTS, ActionTypes.MEDIA_ITEMS, ActionTypes.MORE_STACK, ActionTypes.STACK]
+        },
+        [ANALYTICS]: {
+            type: AnalyticsTypes.STACK_SESSION_END
         }
     }
 }

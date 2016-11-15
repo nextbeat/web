@@ -18,7 +18,7 @@ import PasswordReset from '../client/components/support/PasswordReset.react'
 import Unsubscribe from '../client/components/support/Unsubscribe.react'
 import NoMatch from '../client/components/NoMatch.react'
 
-import { analyticsPage } from '../client/actions'
+import { gaPage } from '../client/actions'
 
 export default store => {
 
@@ -26,7 +26,7 @@ export default store => {
     AnalyticsRoute.defaultProps = assign({}, AnalyticsRoute.defaultProps, {
         onEnter: function(nextState) {
             if (typeof window !== 'undefined') { // in browser only
-                store.dispatch(analyticsPage())
+                store.dispatch(gaPage())
             }
         }
     })

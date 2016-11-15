@@ -1,5 +1,5 @@
 export { default as ActionTypes } from './types'
-export { API_CALL, API_CANCEL, ANALYTICS, Status, AnalyticsTypes, PushTypes } from './types'
+export { API_CALL, API_CANCEL, ANALYTICS, GA, Status, AnalyticsTypes, GATypes, PushTypes } from './types'
 
 export {
     loadTags,
@@ -132,8 +132,13 @@ export {
 } from './support'
 
 export {
-    analyticsIdentify,
-    analyticsPage,
-    analyticsEvent
+    startNewSession,
+    endSession
 } from './analytics'
+
+export {
+    gaIdentify,
+    gaPage,
+    gaEvent
+} from './ga'
 

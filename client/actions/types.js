@@ -11,12 +11,16 @@ export const Status = {
 export const API_CALL = 'API_CALL';
 export const API_CANCEL = 'API_CANCEL';
 
-export const ANALYTICS = 'ANALYTICS';
-export const AnalyticsTypes = {
+export const GA = 'GA';
+export const GATypes = {
     IDENTIFY: 'IDENTIFY',
-    TRACK: 'TRACK',
     PAGE: 'PAGE',
     EVENT: 'EVENT'
+}
+
+export const AnalyticsTypes = {
+    APP_SESSION_START: 'APP_SESSION_START',
+    APP_SESSION_END: 'APP_SESSION_END',
 }
 
 export const PushTypes = {
@@ -179,12 +183,20 @@ export default {
     SEND_PASSWORD_RESET_REQUEST: 'SEND_PASSWORD_RESET_REQUEST',
     SEND_EMAIL_UNSUBSCRIBE_REQUEST: 'SEND_EMAIL_UNSUBSCRIBE_REQUEST',
 
+    /***********
+     * ANALYTICS
+     ***********/
+
+    START_NEW_SESSION: 'START_NEW_SESSION',
+    END_SESSION: 'END_SESSION',
+
     /*******
      * OTHER
      *******/
 
     ENTITY_UPDATE: 'ENTITY_UPDATE',
     CLEAR_FETCH: 'CLEAR_FETCH',
-    ANALYTICS: 'ANALYTICS'
+    ANALYTICS: 'ANALYTICS',
+    GA: 'GA'
 }
 

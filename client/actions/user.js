@@ -9,7 +9,8 @@ import ActionTypes from './types'
 import { CurrentUser, Stack, Push } from '../models'
 import Schemas from '../schemas'
 import { API_CALL, API_CANCEL } from './types'
-import { analyticsIdentify } from './analytics'
+import { gaIdentify } from './ga'
+import { analyticsInitialize } from './analytics'
 import { pushInitialize, pushSubscribe } from './push'
 import { isValidUrl } from '../utils'
 
@@ -238,11 +239,12 @@ export function signup(credentials) {
 export function postLogin() {
     return (dispatch, getState) => {
         const user = new CurrentUser(getState())
-        dispatch(analyticsIdentify(user))
+        dispatch(gaIdentify(user))
         dispatch(syncNotifications())
         dispatch(loadBookmarkedStacks("open"))
         dispatch(loadSubscriptions())
         dispatch(pushInitialize())
+        dispatch(analyticsInitialize())
     }
 }
 
