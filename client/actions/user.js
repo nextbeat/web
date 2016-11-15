@@ -10,8 +10,8 @@ import { CurrentUser, Stack, Push } from '../models'
 import Schemas from '../schemas'
 import { API_CALL, API_CANCEL } from './types'
 import { gaIdentify } from './ga'
-import { analyticsInitialize } from './analytics'
 import { pushInitialize, pushSubscribe } from './push'
+import { startNewSession } from './analytics'
 import { isValidUrl } from '../utils'
 
 
@@ -198,7 +198,11 @@ export function logout() {
             if (!res.ok) {
                 return dispatch(actionWith(Status.FAILURE));
             }
-            return dispatch(actionWith(Status.SUCCESS));
+            dispatch(actionWith(Status.SUCCESS));
+            // we wait until the next tick so the reducer updates state first
+            process.nextTick(() => {
+                dispatch(postLogout())
+            })
         });
     }
 }
@@ -244,7 +248,13 @@ export function postLogin() {
         dispatch(loadBookmarkedStacks("open"))
         dispatch(loadSubscriptions())
         dispatch(pushInitialize())
-        dispatch(analyticsInitialize())
+        dispatch(startNewSession())
+    }
+}
+
+function postLogout() {
+    return dispatch => {
+        dispatch(startNewSession())
     }
 }
 

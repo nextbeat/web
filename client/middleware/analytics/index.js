@@ -1,14 +1,17 @@
 import { v4 as generateUuid } from 'node-uuid'
+import moment from 'moment'
 
-import { ActionTypes, AnalyticsTypes } from '../../actions' 
+import { ActionTypes, AnalyticsTypes, AnalyticsSessionTypes } from '../../actions' 
 import { Stack, Analytics, CurrentUser } from '../../models'
 import { getStorageItem, setStorageItem } from '../../utils'
 
 import { submitEvent } from './submit'
 
-// Generators
+/************
+ * GENERATORS
+ ************/
 
-function generateSessionId(store, action) {
+function generateSessionId(store, type) {
     // TODO
     return 'foo'
 }
@@ -32,73 +35,122 @@ function generateUserId(store) {
     return userId;
 }
 
+function attributesForSessionStartType(store, type) {
+    var attributes = {};
 
-// Action handlers
+    attributes.sessionId = generateSessionId(store, type)
+    attributes.startTime = new Date()
 
-function appSessionStart(store, next, action) {
+    if ([AnalyticsSessionTypes.CHAT, AnalyticsSessionTypes.STACK].indexOf(type) !== -1) {
+        let stack = new Stack(store.getState())
+        if (stack.isLoaded()) {
+            attributes.stackId = stack.get('id')
+            attributes.stackCreatedAt = moment(stack.get('createdAt')).format()
+            attributes.stackAuthorId = stack.author().get('id')
+            attributes.stackAuthorUsername = stack.author().get('username')
+        }
+    }
 
-    // Only start new app session if there is no currently active one
+    return attributes
+}
+
+function attributesForSessionStopType(store, type) {
     let analytics = new Analytics(store.getState())
-    if (analytics.hasActiveSession('app')) {
+    let session = analytics.getActiveSession(type)
+    if (!session) {
+        return null;
+    }
+
+    let attributes = session.get('attributes').toJS()
+
+    attributes.stopTime = new Date()
+    attributes.duration = attributes.stopTime.getTime() - attributes.startTime.getTime()
+
+    return attributes
+}
+
+
+/*****************
+ * ACTION HANDLERS
+ *****************/
+
+function startSession(store, next, type) {
+
+    // Only start new session of said type if there is no currently active one
+    let analytics = new Analytics(store.getState())
+    if (analytics.hasActiveSession(type)) {
         return;
     }
 
-    let sessionId = generateSessionId(store, action)
-    let userId = generateUserId(store)
+    // generate or find user id
+    let userId;
+    if (type === AnalyticsSessionTypes.APP) {
+        userId = generateUserId(store)
+    } else {
+        userId = analytics.get('userId')
+    }
 
-    let startTime = new Date()
+    let attributes = attributesForSessionStartType(store, type)
 
     // send session information to reducer
     next({
         type: ActionTypes.ANALYTICS,
-        eventType: AnalyticsTypes.APP_SESSION_START,
+        eventType: AnalyticsTypes.SESSION_START,
+        sessionType: type,
         userId,
-        sessionId,
-        startTime
+        attributes
     })
 
-    // send to kinesis 
-    let eventData = {
-        eventType: 'event-session-app-start',
-        startTime,
-        sessionId
+    // submit to server
+    let submitOptions = {
+        sessionType: type,
+        userId,
+        attributes
     }
-
-    submitEvent(store, eventData)
+    submitEvent(store, AnalyticsTypes.SESSION_START, submitOptions)
 }
 
-function appSessionEnd(store, next, action) {
+/**
+ * Since we can't really measure when a user is in the chat on the desktop, we 
+ * estimate session type by prolonging a session every time the user interacts
+ * with the chat in some way (scrolls, types in the text box, etc)
+ */
+function prolongChatSession(store, next, type) {
 
-    // Only end app session if there is a currently active one
+}
+
+function stopSession(store, next, type) {
+
+    // Only end session of said type if there is a currently active one
     let analytics = new Analytics(store.getState())
-    if (!analytics.hasActiveSession('app')) {
+    if (!analytics.hasActiveSession(type)) {
         return;
     }
 
     let userId = analytics.get('userId')
-    let appSession = analytics.getActiveSession('app')
-
-    let startTime = appSession.get('startTime')
-    let stopTime = new Date()
-    let duration = stopTime.getTime() - startTime.getTime()
-    let sessionId = appSession.get('sessionId')
+    let attributes = attributesForSessionStopType(store, type)
 
     // send session info to reducer
     next({
         type: ActionTypes.ANALYTICS,
-        eventType: AnalyticsTypes.APP_SESSION_END
+        eventType: AnalyticsTypes.SESSION_STOP,
+        sessionType: type,
+        userId,
+        attributes
     })
 
-    // submit to kinesis
-    let eventData = {
-        eventType: 'event-session-app-stop',
-        startTime,
-        stopTime,
-        duration,
-        sessionId
+    // submit to server
+    let submitOptions = {
+        sessionType: type,
+        userId,
+        attributes
     }
 
-    submitEvent(store, eventData)
+    submitEvent(store, AnalyticsTypes.SESSION_STOP, submitOptions)
+}
+
+function stopAllSessions() {
+    // TODO
 }
 
 
@@ -107,10 +159,29 @@ export default store => next => action => {
     // todo: before unload event
     next(action)
 
-    switch (action.type) {
-        case ActionTypes.START_NEW_SESSION:
-            return appSessionStart(store, next, action)
-        case ActionTypes.BEFORE_UNLOAD:
-            return appSessionEnd(store, next, action)
+    if (action.type === ActionTypes.START_NEW_SESSION) 
+    {
+        // TODO: restart active chat and stack sessions
+        stopSession(store, next, AnalyticsSessionTypes.APP)
+        startSession(store, next, AnalyticsSessionTypes.APP)
+    } 
+    else if (action.type === ActionTypes.STACK)
+    {
+        startSession(store, next, AnalyticsSessionTypes.STACK)
     }
+    else if (action.type === ActionTypes.CLEAR_STACK)
+    {
+        stopSession(store, next, AnalyticsSessionTypes.STACK)
+        stopSession(store, next, AnalyticsSessionTypes.CHAT)
+    }
+    else if (action.type === ActionTypes.USE_CHAT) 
+    {
+        prolongChatSession(store, next)
+    }
+    else if (action.type === ActionTypes.BEFORE_UNLOAD)
+    {
+        stopAllSessions(store, next)
+    }
+
+
 }

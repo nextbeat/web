@@ -6,9 +6,3 @@ export function startNewSession() {
         type: ActionTypes.START_NEW_SESSION
     }
 }
-
-export function endSession() {
-    return {
-        type: ActionTypes.END_SESSION
-    }
-}

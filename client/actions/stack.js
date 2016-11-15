@@ -511,9 +511,6 @@ export function clearStack() {
         type: ActionTypes.CLEAR_STACK,
         [API_CANCEL]: {
             actionTypes: [ActionTypes.COMMENTS, ActionTypes.MEDIA_ITEMS, ActionTypes.MORE_STACK, ActionTypes.STACK]
-        },
-        [ANALYTICS]: {
-            type: AnalyticsTypes.STACK_SESSION_END
         }
     }
 }

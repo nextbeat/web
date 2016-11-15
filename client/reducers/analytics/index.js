@@ -1,30 +1,29 @@
-import { Map, List, } from 'immutable'
+import { Map, List, fromJS } from 'immutable'
 import { ActionTypes, AnalyticsTypes } from '../../actions'
 
-function appSessionStart(state, action) {
-    let appSession = Map({
-        type: 'app',
-        sessionId: action.sessionId,
-        startTime: action.startTime
-    })
+function sessionStart(state, action) {
+    let session = {
+        type: action.sessionType,
+        attributes: action.attributes
+    }
 
     return state
         .merge({
             userId: action.userId
         })
-        .update('activeSessions', List(), sessions => sessions.push(appSession))
+        .update('activeSessions', List(), sessions => sessions.push(fromJS(session)))
 }
 
-function appSessionEnd(state, action) {
-    return state.update('activeSessions', List(), sessions => sessions.filterNot(session => session.get('type') === 'app'))
+function sessionStop(state, action) {
+    return state.update('activeSessions', List(), sessions => sessions.filterNot(session => session.get('type') === action.sessionType))
 }
 
 export default function(state = Map(), action) {
     if (action.type === ActionTypes.ANALYTICS) {
-        if (action.eventType === AnalyticsTypes.APP_SESSION_START) {
-            return appSessionStart(state, action)
-        } else if (action.eventType === AnalyticsTypes.APP_SESSION_END) {
-            return appSessionEnd(state, action)
+        if (action.eventType === AnalyticsTypes.SESSION_START) {
+            return sessionStart(state, action)
+        } else if (action.eventType === AnalyticsTypes.SESSION_STOP) {
+            return sessionStop(state, action)
         }
     }
     return state

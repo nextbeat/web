@@ -29,10 +29,11 @@ class App extends React.Component {
         const { user, dispatch } = this.props;
         dispatch(connectToXMPP());
         dispatch(loadTags());
-        dispatch(startNewSession());
 
         if (user.isLoggedIn()) {
             dispatch(postLogin());
+        } else {
+            dispatch(startNewSession());
         }
 
         $(window).resize(this.resize);

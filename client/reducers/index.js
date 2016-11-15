@@ -11,6 +11,7 @@ import support from './support'
 import tag from './tag'
 import search from './search'
 import push from './push'
+import analytics from './analytics'
 import upload from './upload'
 import { combineReducers } from './utils'
 import { Status, ActionTypes } from '../actions'
@@ -59,6 +60,7 @@ export default combineReducers({
     user,
     search,
     push,
+    analytics,
     support,
     upload
 })

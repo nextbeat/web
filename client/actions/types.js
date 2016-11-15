@@ -19,8 +19,15 @@ export const GATypes = {
 }
 
 export const AnalyticsTypes = {
-    APP_SESSION_START: 'APP_SESSION_START',
-    APP_SESSION_END: 'APP_SESSION_END',
+    SESSION_START: 'SESSION_START',
+    SESSION_STOP: 'SESSION_STOP',
+    VIDEO_IMPRESSION: 'VIDEO_IMPRESSION'
+}
+
+export const AnalyticsSessionTypes = {
+    APP: 'APP',
+    CHAT: 'CHAT',
+    STACK: 'STACK'
 }
 
 export const PushTypes = {
@@ -87,6 +94,7 @@ export default {
     UNBAN_USER: 'UNBAN_USER',
     UPDATE_CHAT_MESSAGE: 'UPDATE_CHAT_MESSAGE',
     PROMPT_CHAT_ACTIONS: 'PROMPT_CHAT_ACTIONS',
+    USE_CHAT: 'USE_CHAT',
     BOOKMARK: 'BOOKMARK',
     UNBOOKMARK: 'UNBOOKMARK',
     CLOSE_STACK: 'CLOSE_STACK',

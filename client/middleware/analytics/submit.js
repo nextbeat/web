@@ -6,7 +6,13 @@ import Promise from 'bluebird'
 import { AnalyticsTypes, ActionTypes, Status } from '../../actions'
 import { storageAvailable, getStorageItem, setStorageItem } from '../../utils'
 
-export function submitEvent(store, eventData) {
+
+function formatEventData(eventType, options) {
+    // TODO
+    return assign({ type: eventType }, options)
+}
+
+export function submitEvent(store, eventType, options) {
     // send to api server to be routed to kinesis
     // store in localstorage
     // store pending 
@@ -17,6 +23,7 @@ export function submitEvent(store, eventData) {
     }
 
     let eventId = generateUuid();
+    let eventData = formatEventData(eventType, options)
 
     // store pending event in local storage
     let pendingEvents = getStorageItem('a_evts') || []
@@ -25,7 +32,7 @@ export function submitEvent(store, eventData) {
 
     // temporary server simulation (replace with sendBeacon/polyfill)
     Promise.delay(1000).then(function() {
-        var success = false // temporary
+        var success = true // temporary
         console.log('submit to server', success, eventData)
         if (success) {
             // remove pending event from local storage
