@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { assign } from 'lodash'
+import { assign, debounce } from 'lodash'
 import Promise from 'bluebird'
 import Hls from 'hls.js'
 import { toggleFullScreen } from '../../../utils'
@@ -9,8 +9,9 @@ import Decoration from './Decoration.react'
 import VideoControls from './VideoControls.react'
 import Spinner from '../../shared/Spinner.react'
 import { App } from '../../../models'
-import { setVideoVolume } from '../../../actions'
+import { setVideoVolume, logVideoImpression } from '../../../actions'
 
+const START_IMPRESSION_WAIT_TIME = 500;
 
 class Video extends React.Component {
 
@@ -43,6 +44,9 @@ class Video extends React.Component {
         this.fullScreen = this.fullScreen.bind(this);
         this.hideControlsAfterDelay = this.hideControlsAfterDelay.bind(this);
 
+        this.startNewImpression = debounce(this.startNewImpression.bind(this), START_IMPRESSION_WAIT_TIME);
+        this.logImpression = this.logImpression.bind(this);
+
         this.videoStyle = this.videoStyle.bind(this);
 
         this.state = {
@@ -57,6 +61,7 @@ class Video extends React.Component {
             isIOSDevice: false,
             timeIntervalId: -1,
             hoverTimeoutId: -1,
+            impressionStartTime: -1,
             width: 0,
             height: 0,
             scale: 1
@@ -86,7 +91,7 @@ class Video extends React.Component {
         })
     }
 
-    componentWillUnmount() {
+    componentWillUnmount() {        
         const video = document.getElementById('video_player');
 
         video.removeEventListener('loadedmetadata', this.didLoadMetadata);
@@ -99,11 +104,14 @@ class Video extends React.Component {
         clearInterval(this.state.timeIntervalId);
         clearInterval(this.state.hoverTimeoutId);
 
+        this.logImpression();
+
         window.removeEventListener('resize', this.resize);
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.video !== this.props.video) {
+            this.logImpression();
             this.loadVideo(this.props.video);
         }
     }
@@ -162,7 +170,6 @@ class Video extends React.Component {
     }
 
     canPlay() {
-        console.log('can play')
         this.setState({
             isLoading: false
         })
@@ -173,6 +180,8 @@ class Video extends React.Component {
 
         clearInterval(this.state.timeIntervalId);
         const timeIntervalId = setInterval(this.didUpdateTime, 500);
+
+        this.startNewImpression()
 
         this.setState({
             currentTime: video.currentTime,
@@ -191,6 +200,9 @@ class Video extends React.Component {
     didPause() {
         const video = document.getElementById('video_player');
         clearInterval(this.state.timeIntervalId);
+
+        // record video impression if one is active
+        this.logImpression();
 
         this.setState({
             currentTime: video.currentTime,
@@ -330,6 +342,34 @@ class Video extends React.Component {
         this.setState({
             hoverTimeoutId
         });
+    }
+
+
+    // Analytics
+
+    logImpression() {
+        const { impressionStartTime } = this.state
+        const { mediaItemId, dispatch } = this.props
+        // only log impression if one has began and video is associated with a media item
+        if (impressionStartTime < 0 || !mediaItemId) {
+            return;
+        }
+
+        const video = document.getElementById('video_player')
+        dispatch(logVideoImpression(mediaItemId, impressionStartTime, video.currentTime))
+
+        // reset start time
+        this.setState({
+            impressionStartTime: -1
+        })
+    }
+
+    startNewImpression() {
+        // debounced function, so called START_IMPRESSION_WAIT_TIME msecs after play begins
+        const video = document.getElementById('video_player')
+        this.setState({
+            impressionStartTime: Math.max(0, video.currentTime - START_IMPRESSION_WAIT_TIME/1000)
+        })
     }
 
     // Video container events

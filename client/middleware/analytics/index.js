@@ -2,7 +2,7 @@ import { v4 as generateUuid } from 'node-uuid'
 import moment from 'moment'
 
 import { ActionTypes, AnalyticsTypes, AnalyticsSessionTypes } from '../../actions' 
-import { Stack, Analytics, CurrentUser } from '../../models'
+import { Stack, Analytics, CurrentUser, MediaItemEntity } from '../../models'
 import { getStorageItem, setStorageItem } from '../../utils'
 
 import { submitEvent } from './submit'
@@ -67,6 +67,10 @@ function attributesForSessionStopType(store, type) {
     attributes.duration = attributes.stopTime.getTime() - attributes.startTime.getTime()
 
     return attributes
+}
+
+function attributesForVideoImpression(store, action) {
+
 }
 
 
@@ -149,6 +153,18 @@ function stopSession(store, next, type) {
     submitEvent(store, AnalyticsTypes.SESSION_STOP, submitOptions)
 }
 
+function logVideoImpression(store, next, action) {
+    let userId = analytics.get('userId')
+    let attributes = attributesForVideoImpression(store, action)
+
+    let submitOptions = {
+        userId,
+        attributes
+    }
+
+    submitEvent(store, AnalyticsTypes.VIDEO_IMPRESSION, submitOptions)
+}
+
 function stopAllSessions() {
     // TODO
 }
@@ -177,6 +193,10 @@ export default store => next => action => {
     else if (action.type === ActionTypes.USE_CHAT) 
     {
         prolongChatSession(store, next)
+    }
+    else if (action.type === ActionTypes.LOG_VIDEO_IMPRESSION)
+    {
+        logVideoImpression(store, next, action)
     }
     else if (action.type === ActionTypes.BEFORE_UNLOAD)
     {

@@ -12,3 +12,12 @@ export function sendPendingEvents() {
         type: ActionTypes.SEND_PENDING_EVENTS
     }
 }
+
+export function logVideoImpression(id, startTime, endTime) {
+    return {
+        type: ActionTypes.LOG_VIDEO_IMPRESSION,
+        id,
+        startTime,
+        endTime
+    }
+}

@@ -135,6 +135,7 @@ export {
 export {
     startNewSession,
     sendPendingEvents,
+    logVideoImpression
 } from './analytics'
 
 export {
