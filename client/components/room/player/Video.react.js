@@ -104,7 +104,6 @@ class Video extends React.Component {
         clearInterval(this.state.timeIntervalId);
         clearInterval(this.state.hoverTimeoutId);
 
-        // defining false here ensures setState isn't called in logImpression which would be disastrous
         this.logImpression(false); 
 
         window.removeEventListener('resize', this.resize);
@@ -182,6 +181,7 @@ class Video extends React.Component {
         clearInterval(this.state.timeIntervalId);
         const timeIntervalId = setInterval(this.didUpdateTime, 500);
 
+        console.log('is playing')
         this.startNewImpression()
 
         this.setState({
@@ -357,24 +357,21 @@ class Video extends React.Component {
         }
 
         const video = document.getElementById('video_player')
-        process.nextTick(() => {
-            dispatch(logVideoImpression(mediaItemId, impressionStartTime, video.currentTime))
-        })
+        dispatch(logVideoImpression(mediaItemId, impressionStartTime, video.currentTime))
 
-        // reset start time
-        if (reset) {
-            this.setState({
-                impressionStartTime: -1
-            })
-        }
+        this.setState({
+            impressionStartTime: -1
+        })
     }
 
     startNewImpression() {
         // debounced function, so called START_IMPRESSION_WAIT_TIME msecs after play begins
         const video = document.getElementById('video_player')
-        this.setState({
-            impressionStartTime: Math.max(0, video.currentTime - START_IMPRESSION_WAIT_TIME/1000)
-        })
+        if (video) {
+            this.setState({
+                impressionStartTime: Math.max(0, video.currentTime - START_IMPRESSION_WAIT_TIME/1000)
+            })
+        }
     }
 
     // Video container events

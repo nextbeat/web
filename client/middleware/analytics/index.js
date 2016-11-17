@@ -5,7 +5,7 @@ import { ActionTypes, AnalyticsTypes, AnalyticsSessionTypes } from '../../action
 import { Stack, Analytics, CurrentUser, MediaItemEntity } from '../../models'
 import { getStorageItem, setStorageItem } from '../../utils'
 
-import { submitEvent } from './submit'
+import { submitEvent, submitPendingEvents } from './submit'
 
 /************
  * GENERATORS
@@ -63,9 +63,10 @@ function attributesForSessionStopType(store, type) {
     let attributes = session.get('attributes').toJS()
 
     attributes.stopTime = new Date()
-    attributes.duration = attributes.stopTime.getTime() - attributes.startTime.getTime()
+    attributes.duration = (attributes.stopTime.getTime() - attributes.startTime.getTime())/1000
 
     return attributes
+    // return {}
 }
 
 function attributesForVideoImpression(store, action) {
@@ -166,8 +167,10 @@ function stopSession(store, next, type) {
     submitEvent(store, AnalyticsTypes.SESSION_STOP, submitOptions)
 }
 
-function stopAllSessions() {
-    // TODO
+function stopAllSessions(store, next) {
+    stopSession(store, next, AnalyticsSessionTypes.APP)
+    stopSession(store, next, AnalyticsSessionTypes.CHAT)
+    stopSession(store, next, AnalyticsSessionTypes.STACK)
 }
 
 function logVideoImpression(store, next, action) {
@@ -188,6 +191,11 @@ function logVideoImpression(store, next, action) {
 export default store => next => action => {
 
     next(action)
+
+    if (typeof window === 'undefined') {
+        // client only
+        return
+    }
 
     if (action.type === ActionTypes.START_NEW_SESSION) 
     {
@@ -212,9 +220,13 @@ export default store => next => action => {
     {
         logVideoImpression(store, next, action)
     }
-    else if (action.type === ActionTypes.BEFORE_UNLOAD)
+    else if (action.type === ActionTypes.ON_BEFORE_UNLOAD)
     {
         stopAllSessions(store, next)
+    }
+    else if (action.type === ActionTypes.SEND_PENDING_EVENTS) 
+    {
+        submitPendingEvents(store)
     }
 
 

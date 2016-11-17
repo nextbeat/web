@@ -25,17 +25,22 @@ class App extends React.Component {
 
     // Component lifecycle
 
+    componentWillMount() {
+        if (typeof window !== 'undefined') {
+            // client only
+            this.props.dispatch(sendPendingEvents());
+            this.props.dispatch(startNewSession())
+        }
+    }
+
     componentDidMount() {
         const { user, dispatch } = this.props;
         dispatch(connectToXMPP());
         dispatch(loadTags());
         dispatch(cleanCache());
-        dispatch(sendPendingEvents());
 
         if (user.isLoggedIn()) {
             dispatch(postLogin());
-        } else {
-            dispatch(startNewSession());
         }
 
         $(window).resize(this.resize);

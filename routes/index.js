@@ -28,6 +28,9 @@ export default store => {
             if (typeof window !== 'undefined') { // in browser only
                 store.dispatch(gaPage())
             }
+        },
+        onLeave: function(prevState) {
+            console.log(this)
         }
     })
 

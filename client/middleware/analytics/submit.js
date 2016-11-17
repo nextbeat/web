@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import moment from 'moment'
-import { assign, snakeCase, mapKeys, isArray } from 'lodash'
+import { assign, snakeCase, mapKeys, isArray, omit } from 'lodash'
 import { v4 as generateUuid } from 'node-uuid'
 import { List } from 'immutable'
 import Promise from 'bluebird'
@@ -78,26 +78,26 @@ export function submitEvent(store, eventType, options) {
     // TODO: rewrite to debounce and send multiple at once
     console.log('sending events to server...', eventData)
     sendEventsToServer(eventData).then(function(success) {
+        let pendingEvents = List(getStorageItem('a_evts') || [])
         if (success) {
             // remove pending event from local storage
-            let pendingEvents = List(getStorageItem('a_evts') || [])
-            let filteredEvents = pendingEvents.filterNot(e => e.eventId === eventId).toJS()
-
-            setStorageItem('a_evts', filteredEvents)
+            pendingEvents = pendingEvents.filterNot(e => e.eventId === eventId).toJS()
         }
+        setStorageItem('a_evts', filteredEvents)
     })
 }
 
 export function submitPendingEvents(store) {
-    let pendingEvents = getStorageItem('a_evts') || []
-    if (pendingEvents.length === 0) {
+    let pendingEvents = List(getStorageItem('a_evts') || [])
+    if (pendingEvents.size === 0) {
         return;
     }
 
-    pendingEvents = pendingEvents.map(event => event.omit('eventId'))
+    pendingEvents = pendingEvents.map(event => omit(event, 'eventId'))
 
     // send events to server
-    sendEventsToServer(eventData).then(function(success) {
+    console.log('sending pending events to server...', pendingEvents.toJS())
+    sendEventsToServer(pendingEvents).then(function(success) {
         if (success) {
             // clear events from local storage
             setStorageItem('a_evts', [])

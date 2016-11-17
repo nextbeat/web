@@ -248,13 +248,13 @@ export function postLogin() {
         dispatch(loadBookmarkedStacks("open"))
         dispatch(loadSubscriptions())
         dispatch(pushInitialize())
-        dispatch(startNewSession())
+        // dispatch(startNewSession())
     }
 }
 
 function postLogout() {
     return dispatch => {
-        dispatch(startNewSession())
+        // dispatch(startNewSession())
     }
 }
 
