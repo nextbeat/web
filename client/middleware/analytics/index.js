@@ -70,7 +70,21 @@ function attributesForSessionStopType(store, type) {
 }
 
 function attributesForVideoImpression(store, action) {
+    let mediaItem = new MediaItemEntity(action.id, store.getState().get('entities'))
+    let stack = mediaItem.stack()
+    let author = stack.author()
 
+    return {
+        startTime: action.startTime,
+        endTime: action.endTime,
+        duration: action.endTime - action.startTime,
+        stackId: stack.get('id'),
+        stackCreatedAt: moment(stack.get('created_at')).format(),
+        mediaItemId: action.id,
+        mediaItemAuthorId: author.get('id'),
+        mediaItemAuthorUsername: author.get('username'),
+        mediaItemDuration: mediaItem.video().get('duration')
+    }
 }
 
 
@@ -153,7 +167,13 @@ function stopSession(store, next, type) {
     submitEvent(store, AnalyticsTypes.SESSION_STOP, submitOptions)
 }
 
+function stopAllSessions() {
+    // TODO
+}
+
 function logVideoImpression(store, next, action) {
+
+    let analytics = new Analytics(store.getState())
     let userId = analytics.get('userId')
     let attributes = attributesForVideoImpression(store, action)
 
@@ -163,10 +183,6 @@ function logVideoImpression(store, next, action) {
     }
 
     submitEvent(store, AnalyticsTypes.VIDEO_IMPRESSION, submitOptions)
-}
-
-function stopAllSessions() {
-    // TODO
 }
 
 

@@ -31,6 +31,7 @@ module.exports = {
                 }
             };
 
+            console.log(method, req.url, req.body);
             api[method](req.url, req.body, options).then(function(_res) {
                 // we check for the header which is set if the current token
                 // has expired, and update the user's token

@@ -104,7 +104,8 @@ class Video extends React.Component {
         clearInterval(this.state.timeIntervalId);
         clearInterval(this.state.hoverTimeoutId);
 
-        this.logImpression();
+        // defining false here ensures setState isn't called in logImpression which would be disastrous
+        this.logImpression(false); 
 
         window.removeEventListener('resize', this.resize);
     }
@@ -347,7 +348,7 @@ class Video extends React.Component {
 
     // Analytics
 
-    logImpression() {
+    logImpression(reset=true) {
         const { impressionStartTime } = this.state
         const { mediaItemId, dispatch } = this.props
         // only log impression if one has began and video is associated with a media item
@@ -356,12 +357,16 @@ class Video extends React.Component {
         }
 
         const video = document.getElementById('video_player')
-        dispatch(logVideoImpression(mediaItemId, impressionStartTime, video.currentTime))
+        process.nextTick(() => {
+            dispatch(logVideoImpression(mediaItemId, impressionStartTime, video.currentTime))
+        })
 
         // reset start time
-        this.setState({
-            impressionStartTime: -1
-        })
+        if (reset) {
+            this.setState({
+                impressionStartTime: -1
+            })
+        }
     }
 
     startNewImpression() {

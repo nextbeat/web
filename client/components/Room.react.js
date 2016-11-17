@@ -36,6 +36,7 @@ class Room extends React.Component {
     }
 
     componentWillUnmount() {
+        console.log('will unmount')
         this.props.dispatch(clearStack());
     }
 

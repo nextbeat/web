@@ -51,7 +51,7 @@ export default class Stack extends StateModel {
     }
 
     entity() {
-        return new StackEntity(super.entity())
+        return new StackEntity(this.get('id'), this.state.get('entities'))
     }
 
 
@@ -62,16 +62,15 @@ export default class Stack extends StateModel {
     }
 
     mediaItems() {
-        return this.__getPaginatedEntities('mediaItems').map(state => new MediaItemEntity(state))
+        return this.__getPaginatedEntities('mediaItems').map(m => new MediaItemEntity(m.get('id'), this.state.get('entities')))
     }
 
     selectedMediaItem() {
-        let mediaItemState = this.__getEntity(this.get('selectedMediaItemId', 0), 'mediaItems')
-        return new MediaItemEntity(mediaItemState)
+        return new MediaItemEntity(this.get('selectedMediaItemId', 0), this.state.get('entities'))
     }
 
     liveMediaItems() {
-        return this.__getLiveEntities('mediaItems').map(state => new MediaItemEntity(state))
+        return this.__getLiveEntities('mediaItems').map(m => new MediaItemEntity(m.get('id'), this.state.get('entities')))
     }
 
     comments() {
