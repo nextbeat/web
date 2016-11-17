@@ -11,9 +11,8 @@ import { submitEvent } from './submit'
  * GENERATORS
  ************/
 
-function generateSessionId(store, type) {
-    // TODO
-    return 'foo'
+function generateSessionId(sessionType, userId) {
+    return `${userId}-${Analytics.sessionTypeString(sessionType)}-${moment().format('YYYYMMDD-HHmmssSSS')}`
 }
 
 function generateUserId(store) {
@@ -35,10 +34,10 @@ function generateUserId(store) {
     return userId;
 }
 
-function attributesForSessionStartType(store, type) {
+function attributesForSessionStartType(store, type, userId) {
     var attributes = {};
 
-    attributes.sessionId = generateSessionId(store, type)
+    attributes.sessionId = generateSessionId(type, userId)
     attributes.startTime = new Date()
 
     if ([AnalyticsSessionTypes.CHAT, AnalyticsSessionTypes.STACK].indexOf(type) !== -1) {
@@ -108,7 +107,7 @@ function startSession(store, next, type) {
         userId = analytics.get('userId')
     }
 
-    let attributes = attributesForSessionStartType(store, type)
+    let attributes = attributesForSessionStartType(store, type, userId)
 
     // send session information to reducer
     next({
@@ -188,7 +187,6 @@ function logVideoImpression(store, next, action) {
 
 export default store => next => action => {
 
-    // todo: before unload event
     next(action)
 
     if (action.type === ActionTypes.START_NEW_SESSION) 

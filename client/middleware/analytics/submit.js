@@ -7,6 +7,7 @@ import Promise from 'bluebird'
 
 import { AnalyticsTypes, AnalyticsSessionTypes, ActionTypes, Status } from '../../actions'
 import { storageAvailable, getStorageItem, setStorageItem } from '../../utils'
+import { Analytics } from '../../models'
 
 function isUuid(str) {
     return /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(str)
@@ -16,34 +17,10 @@ function snakeCaseObjectKeys(object) {
     return mapKeys(object, (val, key) => snakeCase(key))
 }
 
-function typeStringForType(eventType, options) {
-    switch (eventType) {
-        case AnalyticsTypes.SESSION_START:
-            switch (options.sessionType) {
-                case AnalyticsSessionTypes.APP:
-                    return 'event-session-app-start'
-                case AnalyticsSessionTypes.STACK:
-                    return 'event-session-stack-start'
-                case AnalyticsSessionTypes.CHAT:
-                    return 'event-session-chat-start'
-            }
-        case AnalyticsTypes.SESSION_STOP:
-            switch (options.sessionType) {
-                case AnalyticsSessionTypes.APP:
-                    return 'event-session-app-stop'
-                case AnalyticsSessionTypes.STACK:
-                    return 'event-session-stack-stop'
-                case AnalyticsSessionTypes.CHAT:
-                    return 'event-session-chat-stop'
-            }
-        case AnalyticsTypes.VIDEO_IMPRESSION:
-            return 'event-video-impression'
-    }
-}
 
 function formatEventData(eventType, options) {
     return assign({
-        event_type: typeStringForType(eventType, options),
+        event_type: Analytics.typeString(eventType, options.sessionType),
         user_id: options.userId,
         anonymous: isUuid(options.userId),
         timestamp: moment().format()
@@ -98,7 +75,8 @@ export function submitEvent(store, eventType, options) {
     setStorageItem('a_evts', pendingEvents)
 
     // send events to server to be sent to kinesis
-    console.log('sending events to server...')
+    // TODO: rewrite to debounce and send multiple at once
+    console.log('sending events to server...', eventData)
     sendEventsToServer(eventData).then(function(success) {
         if (success) {
             // remove pending event from local storage
