@@ -42,7 +42,7 @@ function typeStringForType(eventType, options) {
 
 function formatEventData(eventType, options) {
     return assign({
-        type: typeStringForType(eventType, options),
+        event_type: typeStringForType(eventType, options),
         user_id: options.userId,
         anonymous: isUuid(options.userId)
     }, snakeCaseObjectKeys(options.attributes))
