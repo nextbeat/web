@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch'
+import moment from 'moment'
 import { assign, snakeCase, mapKeys, isArray } from 'lodash'
 import { v4 as generateUuid } from 'node-uuid'
 import { List } from 'immutable'
@@ -44,7 +45,8 @@ function formatEventData(eventType, options) {
     return assign({
         event_type: typeStringForType(eventType, options),
         user_id: options.userId,
-        anonymous: isUuid(options.userId)
+        anonymous: isUuid(options.userId),
+        timestamp: moment().format()
     }, snakeCaseObjectKeys(options.attributes))
 }
 
