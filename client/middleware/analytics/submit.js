@@ -35,7 +35,7 @@ function sendEventsToServer(store, eventData) {
     // Add device data to event records here so we don't have to store it
     let app = new App(store.getState()) 
     eventData.forEach(event => {
-        assign(event, app.deviceData())
+        assign(event, { application_type: 'web'}, app.deviceData())
     })
 
     // console.log('sending events to server', eventData)
