@@ -84,11 +84,14 @@ class Video extends React.Component {
         window.addEventListener('resize', this.resize)
         this.resize()
 
+        const { app, autoplay } = this.props
+
         // iOS does not do custom controls well
         this.setState({
-            isIOSDevice: this.props.app.isIOS(),
-            isPlaying: this.props.autoplay !== false
+            isIOSDevice: app.isIOS(),
+            isPlaying: autoplay !== false && !(app.isAndroid() && app.get('browser') === 'Chrome')
         })
+        console.log(this.state.isPlaying, app.isAndroid(), app.get('browser'))
     }
 
     componentWillUnmount() {        
@@ -170,6 +173,7 @@ class Video extends React.Component {
     }
 
     canPlay() {
+        console.log('can play', this.state.isPlaying)
         this.setState({
             isLoading: false
         })
@@ -261,6 +265,8 @@ class Video extends React.Component {
 
         videoPlayer.volume = this.props.app.get('volume', 1)
         this.resize()
+
+        console.log(videoPlayer.autoplay, videoPlayer.autoPlay)
 
         this.setState({
             currentTime: 0,

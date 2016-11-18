@@ -38,7 +38,7 @@ function sendEventsToServer(store, eventData) {
         assign(event, { application_type: 'web'}, app.deviceData())
     })
 
-    // console.log('sending events to server', eventData)
+    console.log('sending events to server', eventData)
 
     const url = '/api/analytics/events'
 
