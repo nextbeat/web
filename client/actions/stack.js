@@ -258,6 +258,15 @@ export function unbanUser(username) {
     }
 }
 
+export function didUseChat() {
+    // Dispatch this action whenever the client interacts with
+    // the chat in some way (scrolls, focuses on text box, etc)
+    // which tells analytics tracker to prolong the chat session
+    return {
+        type: ActionTypes.USE_CHAT
+    }
+}
+
 /*************
  * BOOKMARKING
  *************/

@@ -7,7 +7,7 @@ import Promise from 'bluebird'
 
 import { AnalyticsTypes, AnalyticsSessionTypes, ActionTypes, Status } from '../../actions'
 import { storageAvailable, getStorageItem, setStorageItem } from '../../utils'
-import { Analytics } from '../../models'
+import { Analytics, App } from '../../models'
 
 function isUuid(str) {
     return /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(str)
@@ -17,20 +17,28 @@ function snakeCaseObjectKeys(object) {
     return mapKeys(object, (val, key) => snakeCase(key))
 }
 
-
-function formatEventData(eventType, options) {
+function formatEventData(store, eventType, options) {
     return assign({
         event_type: Analytics.typeString(eventType, options.sessionType),
         user_id: options.userId,
         anonymous: isUuid(options.userId),
         timestamp: moment().format()
-    }, snakeCaseObjectKeys(options.attributes))
+    }, 
+    snakeCaseObjectKeys(options.attributes))
 }
 
-function sendEventsToServer(eventData) {
+function sendEventsToServer(store, eventData) {
     if (!isArray(eventData)) {
         eventData = [eventData]
     }
+
+    // Add device data to event records here so we don't have to store it
+    let app = new App(store.getState()) 
+    eventData.forEach(event => {
+        assign(event, app.deviceData())
+    })
+
+    // console.log('sending events to server', eventData)
 
     const url = '/api/analytics/events'
 
@@ -65,7 +73,7 @@ export function submitEvent(store, eventType, options) {
     }
 
     let eventId = generateUuid();
-    let eventData = formatEventData(eventType, options)
+    let eventData = formatEventData(store, eventType, options)
 
     // store pending event in local storage
     let pendingEvents = getStorageItem('a_evts') || []
@@ -76,14 +84,13 @@ export function submitEvent(store, eventType, options) {
 
     // send events to server to be sent to kinesis
     // TODO: rewrite to debounce and send multiple at once
-    console.log('sending events to server...', eventData)
-    sendEventsToServer(eventData).then(function(success) {
+    sendEventsToServer(store, eventData).then(function(success) {
         let pendingEvents = List(getStorageItem('a_evts') || [])
         if (success) {
             // remove pending event from local storage
             pendingEvents = pendingEvents.filterNot(e => e.eventId === eventId).toJS()
         }
-        setStorageItem('a_evts', filteredEvents)
+        setStorageItem('a_evts', pendingEvents)
     })
 }
 
@@ -96,8 +103,7 @@ export function submitPendingEvents(store) {
     pendingEvents = pendingEvents.map(event => omit(event, 'eventId'))
 
     // send events to server
-    console.log('sending pending events to server...', pendingEvents.toJS())
-    sendEventsToServer(pendingEvents).then(function(success) {
+    sendEventsToServer(store, pendingEvents).then(function(success) {
         if (success) {
             // clear events from local storage
             setStorageItem('a_evts', [])

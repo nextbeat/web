@@ -4,7 +4,8 @@ import { AnalyticsTypes, AnalyticsSessionTypes } from '../../actions'
 
 const KEY_MAP = {
     'userId': ['analytics', 'userId'],
-    'activeSessions': ['analytics', 'activeSessions']
+    'activeSessions': ['analytics', 'activeSessions'],
+    'chatTimeoutId': ['analytics', 'chatTimeoutId']
 }
 
 export default class Analytics extends StateModel {

@@ -11,7 +11,7 @@ import Compose from './Compose.react'
 import UserActions from './UserActions.react'
 import Spinner from '../../shared/Spinner.react'
 
-import { loadComments, sendComment, promptChatActionsForUser, resetComments } from '../../../actions'
+import { loadComments, sendComment, promptChatActionsForUser, resetComments, didUseChat } from '../../../actions'
 import { Stack, CurrentUser, App } from '../../../models'
 
 class Chat extends React.Component {
@@ -21,6 +21,8 @@ class Chat extends React.Component {
 
         this.sendComment = this.sendComment.bind(this);
         this.handleSelectUsername = this.handleSelectUsername.bind(this);
+
+        this.handleOnWheel = this.handleOnWheel.bind(this);
 
         this.renderComment = this.renderComment.bind(this);
     }
@@ -38,6 +40,14 @@ class Chat extends React.Component {
         $(window).off('focus.chat')
     }
 
+
+    // Events
+
+    handleOnWheel() {
+        this.props.dispatch(didUseChat())
+    }
+
+
     // Sending comments
 
     sendComment(message) {
@@ -47,6 +57,7 @@ class Chat extends React.Component {
     handleSelectUsername(username) {
         this.props.dispatch(promptChatActionsForUser(username));
     }
+
 
     // Render
 
@@ -106,7 +117,7 @@ class Chat extends React.Component {
         const { comments, stack, isFetching, error, liveComments, user, display } = this.props;
         const closed = stack.get('closed');
         return (
-        <div className="chat" style={{ display: (display ? "block" : "none") }}>
+        <div className="chat" onWheel={this.handleOnWheel} style={{ display: (display ? "block" : "none") }}>
             <UserActions />
             <div id="history" className="chat_history">
                 { isFetching && <Spinner type="grey" />}

@@ -46,6 +46,7 @@ export {
     updateChatMessage,
     mentionUser,
     promptChatActionsForUser,
+    didUseChat,
     bookmark,
     unbookmark,
     closeStack,

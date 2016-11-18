@@ -1,11 +1,13 @@
 import { v4 as generateUuid } from 'node-uuid'
 import moment from 'moment'
 
-import { ActionTypes, AnalyticsTypes, AnalyticsSessionTypes } from '../../actions' 
+import { ActionTypes, AnalyticsTypes, AnalyticsSessionTypes, Status } from '../../actions' 
 import { Stack, Analytics, CurrentUser, MediaItemEntity } from '../../models'
 import { getStorageItem, setStorageItem } from '../../utils'
 
 import { submitEvent, submitPendingEvents } from './submit'
+
+const CHAT_SESSION_PROLONG_TIME_MSEC = 10000
 
 /************
  * GENERATORS
@@ -133,8 +135,24 @@ function startSession(store, next, type) {
  * estimate session type by prolonging a session every time the user interacts
  * with the chat in some way (scrolls, types in the text box, etc)
  */
-function prolongChatSession(store, next, type) {
+function prolongChatSession(store, next) {
+    let analytics = new Analytics(store.getState())
+    if (analytics.hasActiveSession(AnalyticsSessionTypes.CHAT)) {
+        let timeoutId = analytics.get('chatTimeoutId')
+        console.log(timeoutId)
+        clearTimeout(timeoutId)
+    } else {
+        startSession(store, next, AnalyticsSessionTypes.CHAT)
+    }
 
+    let timeoutId = setTimeout(() => {
+        stopSession(store, next, AnalyticsSessionTypes.CHAT)
+    }, CHAT_SESSION_PROLONG_TIME_MSEC)
+
+    next({
+        type: ActionTypes.PROLONG_CHAT_SESSION,
+        timeoutId
+    })
 }
 
 function stopSession(store, next, type) {
@@ -203,7 +221,7 @@ export default store => next => action => {
         stopSession(store, next, AnalyticsSessionTypes.APP)
         startSession(store, next, AnalyticsSessionTypes.APP)
     } 
-    else if (action.type === ActionTypes.STACK)
+    else if (action.type === ActionTypes.STACK && action.status === Status.SUCCESS)
     {
         startSession(store, next, AnalyticsSessionTypes.STACK)
     }
@@ -212,7 +230,9 @@ export default store => next => action => {
         stopSession(store, next, AnalyticsSessionTypes.STACK)
         stopSession(store, next, AnalyticsSessionTypes.CHAT)
     }
-    else if (action.type === ActionTypes.USE_CHAT) 
+    else if (action.type === ActionTypes.USE_CHAT
+            || action.type === ActionTypes.PROMPT_CHAT_ACTIONS
+            || action.type === ActionTypes.UPDATE_CHAT_MESSAGE) 
     {
         prolongChatSession(store, next)
     }
