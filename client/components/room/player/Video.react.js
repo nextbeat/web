@@ -91,7 +91,7 @@ class Video extends React.Component {
             isIOSDevice: app.isIOS(),
             isPlaying: autoplay !== false && !(app.isAndroid() && app.get('browser') === 'Chrome')
         })
-        console.log(this.state.isPlaying, (app.isAndroid() && app.get('browser') === 'Chrome'))
+        console.log(this.state.isPlaying, app.isAndroid(), app.get('browser'))
     }
 
     componentWillUnmount() {        

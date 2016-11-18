@@ -48,7 +48,7 @@ export default class App extends StateModel {
     }
 
     isAndroid() {
-        return this.get('device') === 'Android'
+        return this.get('os') === 'Android'
     }
 
     isMobile() {
