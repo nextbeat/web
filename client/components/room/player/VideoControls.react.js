@@ -87,7 +87,6 @@ class VideoControls extends React.Component {
         this.setState({
             isDraggingProgressBar: true
         });
-        console.log('hello')
     }
 
 

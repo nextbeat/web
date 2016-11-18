@@ -1,6 +1,8 @@
 export { default as api } from './api'
 export { default as analytics } from './analytics'
+export { default as cache } from './cache'
 export { default as cancel } from './cancel'
+export { default as ga } from './ga'
 export { default as push } from './push'
 export { default as upload } from './upload'
 export { default as xmpp } from './xmpp'

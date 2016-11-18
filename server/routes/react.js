@@ -109,7 +109,7 @@ function renderAndSend(res, renderProps, store) {
 }
 
 export function handleReactRender(req, res) {
-    const store =  configureStore(getInitialState(req))
+    const store = configureStore(getInitialState(req))
     match({ routes: routes(store), location: req.url }, ( error, redirectLocation, renderProps) => {
         if (error) {
             res.status(500).send(error.message)

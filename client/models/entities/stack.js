@@ -1,9 +1,15 @@
 import EntityModel from './base'
+import User from './user'
 
 export default class Stack extends EntityModel {
 
-    constructor(entity) {
-        super(entity);
+    constructor(id, entities) {
+        super(id, entities);
+        this.entityName = "stacks";
+    }
+
+    author() {
+        return new User(this.__entity().get('author', 0), this.entities)
     }
 
     thumbnail(preferredType) {

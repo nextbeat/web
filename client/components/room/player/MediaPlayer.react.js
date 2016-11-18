@@ -101,7 +101,7 @@ class MediaPlayer extends React.Component {
                 <div className="player_media-inner" id="player_media-inner">
                 { stack.mediaItems().size == 0 && !stack.get('mediaItemsError') && <Spinner type="large grey"/> }
                 { !item.isEmpty() && (item.isVideo() ? 
-                    <Video video={item.video('mp4')} decoration={item.get('decoration')} /> : 
+                    <Video video={item.video('mp4')} decoration={item.get('decoration')} mediaItemId={item.get('id')} /> : 
                     <Photo image={item.image()} decoration={item.get('decoration')} /> ) 
                 }
                 </div>

@@ -10,7 +10,7 @@ import { promptModal } from './app'
 import { pushSubscribe } from './push'
 import { loadPaginatedObjects } from './utils'
 import { Stack } from '../models'
-import { API_CALL, API_CANCEL, ANALYTICS, AnalyticsTypes } from './types'
+import { API_CALL, API_CANCEL, ANALYTICS, GA, AnalyticsTypes, GATypes } from './types'
 import { setStorageItem } from '../utils'
 
 
@@ -120,8 +120,8 @@ function postComment(stack_id, message) {
             body: { message },
             authenticated: true
         },
-        [ANALYTICS]: {
-            type: AnalyticsTypes.EVENT,
+        [GA]: {
+            type: GATypes.EVENT,
             category: 'chat',
             action: 'send',
             label: stack_id
@@ -255,6 +255,15 @@ export function unbanUser(username) {
             return null;
         }
         dispatch(postUnbanUser(stack.get('id'), username))
+    }
+}
+
+export function didUseChat() {
+    // Dispatch this action whenever the client interacts with
+    // the chat in some way (scrolls, focuses on text box, etc)
+    // which tells analytics tracker to prolong the chat session
+    return {
+        type: ActionTypes.USE_CHAT
     }
 }
 

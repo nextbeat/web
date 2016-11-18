@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { promptModal, updateChatMessage, sendComment } from '../../../actions'
+import { promptModal, updateChatMessage, sendComment, didUseChat } from '../../../actions'
 
 class Compose extends React.Component {
 
@@ -10,6 +10,7 @@ class Compose extends React.Component {
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleFocus = this.handleFocus.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleLoginClick = this.handleLoginClick.bind(this);
 
@@ -18,6 +19,10 @@ class Compose extends React.Component {
 
     handleChange(e) {
         this.props.dispatch(updateChatMessage(e.target.value))
+    }
+
+    handleFocus(e) {
+        this.props.dispatch(didUseChat())
     }
 
     handleSubmit(e) {
@@ -47,7 +52,7 @@ class Compose extends React.Component {
         const message = this.props.stack.get('chatMessage', '')
         return (
             <div className="chat_compose-inner">
-                <textarea onChange={this.handleChange} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={message}></textarea>
+                <textarea onChange={this.handleChange} onFocus={this.handleFocus} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={message}></textarea>
                 <input type="submit" className="btn" value="Send" disabled={message.length === 0} onClick={this.handleSubmit} />
             </div>
         )

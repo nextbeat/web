@@ -11,12 +11,23 @@ export const Status = {
 export const API_CALL = 'API_CALL';
 export const API_CANCEL = 'API_CANCEL';
 
-export const ANALYTICS = 'ANALYTICS';
-export const AnalyticsTypes = {
+export const GA = 'GA';
+export const GATypes = {
     IDENTIFY: 'IDENTIFY',
-    TRACK: 'TRACK',
     PAGE: 'PAGE',
     EVENT: 'EVENT'
+}
+
+export const AnalyticsTypes = {
+    SESSION_START: 'SESSION_START',
+    SESSION_STOP: 'SESSION_STOP',
+    VIDEO_IMPRESSION: 'VIDEO_IMPRESSION'
+}
+
+export const AnalyticsSessionTypes = {
+    APP: 'APP',
+    CHAT: 'CHAT',
+    STACK: 'STACK'
 }
 
 export const PushTypes = {
@@ -44,6 +55,7 @@ export default {
     SET_VIDEO_VOLUME: 'SET_VIDEO_VOLUME',
     ON_BEFORE_UNLOAD: 'ON_BEFORE_UNLOAD',
     TRIGGER_AUTH_ERROR: 'TRIGGER_AUTH_ERROR',
+    CLEAN_CACHE: 'CLEAN_CACHE',
     CLEAR_APP: 'CLEAR_APP',
 
     /******
@@ -83,6 +95,7 @@ export default {
     UNBAN_USER: 'UNBAN_USER',
     UPDATE_CHAT_MESSAGE: 'UPDATE_CHAT_MESSAGE',
     PROMPT_CHAT_ACTIONS: 'PROMPT_CHAT_ACTIONS',
+    USE_CHAT: 'USE_CHAT',
     BOOKMARK: 'BOOKMARK',
     UNBOOKMARK: 'UNBOOKMARK',
     CLOSE_STACK: 'CLOSE_STACK',
@@ -179,12 +192,22 @@ export default {
     SEND_PASSWORD_RESET_REQUEST: 'SEND_PASSWORD_RESET_REQUEST',
     SEND_EMAIL_UNSUBSCRIBE_REQUEST: 'SEND_EMAIL_UNSUBSCRIBE_REQUEST',
 
+    /***********
+     * ANALYTICS
+     ***********/
+
+    START_NEW_SESSION: 'START_NEW_SESSION',
+    SEND_PENDING_EVENTS: 'SEND_PENDING_EVENTS',
+    LOG_VIDEO_IMPRESSION: 'LOG_VIDEO_IMPRESSION',
+    PROLONG_CHAT_SESSION:'PROLONG_CHAT_SESSION',
+
     /*******
      * OTHER
      *******/
 
     ENTITY_UPDATE: 'ENTITY_UPDATE',
     CLEAR_FETCH: 'CLEAR_FETCH',
-    ANALYTICS: 'ANALYTICS'
+    ANALYTICS: 'ANALYTICS',
+    GA: 'GA'
 }
 

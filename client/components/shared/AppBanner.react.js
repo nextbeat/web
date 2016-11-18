@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import { App, CurrentUser } from '../../models'
 import { storageAvailable } from '../../utils'
-import { analyticsEvent } from '../../actions'
+import { gaEvent } from '../../actions'
 import SmallLogo from './SmallLogo.react'
 import Icon from './Icon.react'
 
@@ -53,7 +53,7 @@ class AppBanner extends React.Component {
         }
 
         // Send analytics event first, navigating once request has gone through
-        dispatch(analyticsEvent({
+        dispatch(gaEvent({
             category: 'app',
             action: 'goToApp',
         }, goToApp))

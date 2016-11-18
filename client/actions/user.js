@@ -9,8 +9,9 @@ import ActionTypes from './types'
 import { CurrentUser, Stack, Push } from '../models'
 import Schemas from '../schemas'
 import { API_CALL, API_CANCEL } from './types'
-import { analyticsIdentify } from './analytics'
+import { gaIdentify } from './ga'
 import { pushInitialize, pushSubscribe } from './push'
+import { startNewSession } from './analytics'
 import { isValidUrl } from '../utils'
 
 
@@ -197,7 +198,11 @@ export function logout() {
             if (!res.ok) {
                 return dispatch(actionWith(Status.FAILURE));
             }
-            return dispatch(actionWith(Status.SUCCESS));
+            dispatch(actionWith(Status.SUCCESS));
+            // we wait until the next tick so the reducer updates state first
+            process.nextTick(() => {
+                dispatch(postLogout())
+            })
         });
     }
 }
@@ -238,11 +243,18 @@ export function signup(credentials) {
 export function postLogin() {
     return (dispatch, getState) => {
         const user = new CurrentUser(getState())
-        dispatch(analyticsIdentify(user))
+        dispatch(gaIdentify(user))
         dispatch(syncNotifications())
         dispatch(loadBookmarkedStacks("open"))
         dispatch(loadSubscriptions())
         dispatch(pushInitialize())
+        // dispatch(startNewSession())
+    }
+}
+
+function postLogout() {
+    return dispatch => {
+        // dispatch(startNewSession())
     }
 }
 

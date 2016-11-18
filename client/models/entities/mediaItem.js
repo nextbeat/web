@@ -1,9 +1,11 @@
 import EntityModel from './base'
+import Stack from './stack'
 
 export default class MediaItem extends EntityModel {
 
-    constructor(entity) {
-        super(entity);
+    constructor(id, entities) {
+        super(id, entities);
+        this.entityName = "mediaItems"
     }
 
     // accessors
@@ -23,6 +25,10 @@ export default class MediaItem extends EntityModel {
             return orderedThumbnails.keys().next().value
         }
         return this.__getResource('thumbnails', preferredType, defaultKeyFn)
+    }
+
+    stack() {
+        return new Stack(this.__entity().get('stack_id', 0), this.entities)
     }
 
 

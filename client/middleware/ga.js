@@ -1,8 +1,14 @@
-import { AnalyticsTypes, ANALYTICS } from '../actions'
+import { GATypes, GA } from '../actions'
 import { createFunctionWithTimeout } from '../utils'
 import { assign, get } from 'lodash'
 import { parse } from 'querystring'
 import fetch from 'isomorphic-fetch'
+
+/**
+ * Middleware which handles Google Analytics session tracking.
+ * Custom first-party analytics is handled in a separate 
+ * function in analytics.js.
+ */
 
 const CAMPAIGN_MAP = {
     'e1': {
@@ -87,23 +93,23 @@ function handleEvent(data) {
 
 export default store => next => action => {
 
-    const data = action[ANALYTICS]
+    const data = action[GA]
     if (typeof data === 'undefined') {
         return next(action)
     }
 
-    // send the action without the ANALYTICS attribute
+    // send the action without the GA attribute
     let newAction = assign({}, action)
-    delete newAction[ANALYTICS];
+    delete newAction[GA];
     next(newAction);
 
     // trigger the analytics call based on the type
     switch (data.type) {
-        case AnalyticsTypes.IDENTIFY:
+        case GATypes.IDENTIFY:
             return handleIdentify(data)
-        case AnalyticsTypes.PAGE:
+        case GATypes.PAGE:
             return handlePage(data)
-        case AnalyticsTypes.EVENT:
+        case GATypes.EVENT:
             return handleEvent(data)
     }
 }

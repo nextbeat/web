@@ -1,38 +1,23 @@
-import { assign } from 'lodash'
-
 import ActionTypes from './types'
 import { ANALYTICS, AnalyticsTypes } from './types'
 
-/***********
- * ANALYTICS
- ***********/
-
-export function analyticsIdentify(user) {
+export function startNewSession() {
     return {
-        type: ActionTypes.ANALYTICS,
-        [ANALYTICS]: {
-            type: AnalyticsTypes.IDENTIFY,
-            user
-        }
+        type: ActionTypes.START_NEW_SESSION
     }
 }
 
-export function analyticsPage() {
+export function sendPendingEvents() {
     return {
-        type: ActionTypes.ANALYTICS,
-        [ANALYTICS]: {
-            type: AnalyticsTypes.PAGE
-        }
+        type: ActionTypes.SEND_PENDING_EVENTS
     }
 }
 
-export function analyticsEvent(data, cb, timeout=1000) {
+export function logVideoImpression(id, startTime, endTime) {
     return {
-        type: ActionTypes.ANALYTICS,
-        [ANALYTICS]: assign({}, data, {
-            type: AnalyticsTypes.EVENT,
-            callback: cb,
-            timeout
-        })
+        type: ActionTypes.LOG_VIDEO_IMPRESSION,
+        id,
+        startTime,
+        endTime
     }
 }

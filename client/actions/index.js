@@ -1,9 +1,10 @@
 export { default as ActionTypes } from './types'
-export { API_CALL, API_CANCEL, ANALYTICS, Status, AnalyticsTypes, PushTypes } from './types'
+export { API_CALL, API_CANCEL, GA, Status, AnalyticsTypes, AnalyticsSessionTypes, GATypes, PushTypes } from './types'
 
 export {
     loadTags,
     resizeWindow,
+    cleanCache,
     onBeforeUnload,
     selectSidebar,
     closeSidebar,
@@ -45,6 +46,7 @@ export {
     updateChatMessage,
     mentionUser,
     promptChatActionsForUser,
+    didUseChat,
     bookmark,
     unbookmark,
     closeStack,
@@ -132,8 +134,14 @@ export {
 } from './support'
 
 export {
-    analyticsIdentify,
-    analyticsPage,
-    analyticsEvent
+    startNewSession,
+    sendPendingEvents,
+    logVideoImpression
 } from './analytics'
+
+export {
+    gaIdentify,
+    gaPage,
+    gaEvent
+} from './ga'
 

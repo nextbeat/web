@@ -12,6 +12,7 @@ const KEY_MAP = {
     'environment': ['app', 'environment'],
     // user-agent
     'os': ['app', 'ua', 'os', 'name'],
+    'osVersion': ['app', 'ua', 'os', 'version'],
     'device': ['app', 'ua', 'device', 'name'],
     'deviceType': ['app', 'ua', 'device', 'type'],
     'browser': ['app', 'ua', 'browser', 'name'],
@@ -52,6 +53,16 @@ export default class App extends StateModel {
 
     isActiveDropdown(type) {
         return this.get('activeDropdowns', Set()).includes(type)
+    }
+
+    deviceData() {
+        var data = {};
+        if (this.get('os')) data.os = this.get('os');
+        if (this.get('osVersion')) data.os_version = this.get('osVersion');
+        if (this.get('device')) data.device = this.get('device');
+        if (this.get('browser')) data.browser_name = this.get('browser');
+        if (this.get('version')) data.browser_version = this.get('version');
+        return data
     }
 
 }

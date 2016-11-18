@@ -9,7 +9,7 @@ import AppBanner from '../components/shared/AppBanner.react'
 import Login from '../components/shared/Login.react'
 import Signup from '../components/shared/Signup.react'
 
-import { connectToXMPP, postLogin, loadTags, promptModal, closeModal, clearApp, resizeWindow, onBeforeUnload, pushInitialize } from '../actions'
+import { connectToXMPP, postLogin, loadTags, promptModal, closeModal, clearApp, resizeWindow, onBeforeUnload, pushInitialize, startNewSession, cleanCache, sendPendingEvents } from '../actions'
 import { CurrentUser, App as AppModel } from '../models'
 
 class App extends React.Component {
@@ -25,10 +25,19 @@ class App extends React.Component {
 
     // Component lifecycle
 
+    componentWillMount() {
+        if (typeof window !== 'undefined') {
+            // client only
+            this.props.dispatch(sendPendingEvents());
+            this.props.dispatch(startNewSession())
+        }
+    }
+
     componentDidMount() {
         const { user, dispatch } = this.props;
         dispatch(connectToXMPP());
         dispatch(loadTags());
+        dispatch(cleanCache());
 
         if (user.isLoggedIn()) {
             dispatch(postLogin());

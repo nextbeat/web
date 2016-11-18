@@ -7,29 +7,38 @@ import { Map } from 'immutable'
  */
 export default class EntityModel {
 
-    constructor(entity) {
-        this.entity = entity;
-    }
+    constructor(id, entities) {
+        if (typeof id === "number") {
+            id = id.toString()
+        }
 
+        this.id = id;
+        this.entities = entities;
+        this.entityName = "base";
+    }
 
     // accessors
 
     get(attr, defaultValue) {
         let attrs = attr.split('.')
-        return this.entity.getIn(attrs, defaultValue)
+        return this.__entity().getIn(attrs, defaultValue)
     }
 
     has(attr) {
         let attrs = attr.split('.')
-        return this.entity.hasIn(attrs)
+        return this.__entity().hasIn(attrs)
     }
 
     isEmpty() {
-        return this.entity.isEmpty()
+        return this.__entity().isEmpty()
     }
 
 
     // private
+
+    __entity() {
+        return this.entities.getIn([this.entityName, this.id], Map())
+    }
 
     /* Resources (images, videos, thumbnails, etc) are represented as objects, 
      * with keys corresponding to names of different representations of that 
