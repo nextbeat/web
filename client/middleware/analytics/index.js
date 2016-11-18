@@ -82,10 +82,10 @@ function attributesForVideoImpression(store, action) {
         duration: action.endTime - action.startTime,
         stackId: stack.get('id'),
         stackCreatedAt: moment(stack.get('created_at')).format(),
-        mediaItemId: action.id,
-        mediaItemAuthorId: author.get('id'),
-        mediaItemAuthorUsername: author.get('username'),
-        mediaItemDuration: mediaItem.video().get('duration')
+        mediaitemId: action.id,
+        mediaitemAuthorId: author.get('id'),
+        mediaitemAuthorUsername: author.get('username'),
+        mediaitemDuration: mediaItem.video().get('duration')
     }
 }
 
