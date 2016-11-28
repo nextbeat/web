@@ -39,13 +39,26 @@ class Dropdown extends React.Component {
     }
 
     render() {
-        const { type, children, app } = this.props
+        const { type, children, app, triangleMargin } = this.props
+
+        let triangleStyle = {}
+        if (typeof triangleMargin !== 'undefined') {
+            triangleStyle.right = `${triangleMargin}px`
+            if (triangleMargin < 0) {
+                triangleStyle.display = 'none'
+            }
+        }
+
         return (
             <div id={`dropdown-${type}`} 
                 className={`dropdown dropdown-${type}`} 
                 style={{ display: app.isActiveDropdown(type) ? 'block' : 'none' }}
             >
-                {children}
+                <div className="dropdown_triangle" style={triangleStyle} />
+                <div className="dropdown_filler" style={triangleStyle} />
+                <div className="dropdown_main">
+                    {children}
+                </div>
             </div>
         );
     }

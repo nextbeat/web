@@ -3,11 +3,41 @@
     z-index: 1000;
     position: absolute;
     width: 80px;
+}
 
+.dropdown_main {
     padding: 6px 12px;
+    background: white;
+    width: 100%;
+    border: 1px solid $border-color;
+    box-shadow: 0 0 13px rgba(0,0,0,.11);
+    z-index: 11;
+}
+
+.dropdown_triangle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
     background: white;
     border: 1px solid $border-color;
     box-shadow: 0 0 13px rgba(0,0,0,.11);
+    top: -6px;
+    right: 10px;
+    z-index: -1;
+    transform: rotate(45deg);
+    content: ' ';
+}
+
+.dropdown_filler {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: white;
+    top: -4px;
+    right: 10px;
+    z-index: 12;
+    transform: rotate(45deg);
+    content: ' ';
 }
 
 a.dropdown-option {

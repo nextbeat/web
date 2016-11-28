@@ -104,7 +104,7 @@ class Topbar extends React.Component {
         const { user, app } = this.props 
         const showUpload = app.get('width') === 'small'
         return (
-            <Dropdown type="topbar">
+            <Dropdown type="topbar" triangleMargin={12}>
                 <Link to={`/u/${user.get('username')}`} className="dropdown-option">Profile</Link>
                 { showUpload && <Link to="/upload" className="dropdown-option">Upload</Link> }
                 <a onClick={this.handleLogoutClick} className="dropdown-option">Log Out</a>
