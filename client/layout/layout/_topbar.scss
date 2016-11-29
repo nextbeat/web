@@ -4,58 +4,61 @@
     background: $dark-background-color;
     position: relative;
     overflow: visible;
+    display: flex;
+    align-items: center;
 
     border-bottom: 1px solid $border-color;
 }
 
-.topbar_menu-icon {
+.topbar_icon {
+    display: inline-block;
+}
+
+.topbar_icon-menu {
+    margin-left: 10px;
     width: 30px;
     height: 30px;
-    // display: none;
-    position: absolute;
     z-index: 30;
-    top: 10px;
-    left: 10px;
 
     &.active {
         display: block;
     }
 
     .svg-icon-menu {
-        fill: $primary-color;
+        fill: $button-color;
     }
 
-    &:hover .svg-icon-menu {
-        fill: $light-primary-color;
+    &:hover {
         cursor: pointer;
     }
 }
 
 .topbar_logo-container {
-    position: relative;
-    width: $sidebar-width;
     height: 100%;
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: $sidebar-width;
 }
 
 .topbar_logo {
-    @include center; 
-    width: 95px;
 
     svg {
         fill: $primary-color;
-        width: 100%;
+        width: 95px;
     }
 
-    &:hover svg {
-        fill: $light-primary-color;
+    &:hover {
+        cursor: pointer;
     }
 }
 
 .topbar_logo-small {
     display: none;
-    @include center;
-    width: 30px;
+
+    svg {
+        width: 30px;
+    }
 }
 
 .topbar_search {
@@ -93,17 +96,19 @@ input.topbar_search-bar {
 
 .topbar_user {
     position: absolute;
-    height: 100%;
     right: 0;
     top: 0;
-    padding: 10px 10px;
-    display: inline-block;
-    vertical-align: top;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 
-    .btn {
-        display: inline-block;
-        margin-left: 10px;
-        vertical-align: top;
+    .topbar_icon {
+        margin-right: 10px;
+
+        &:hover {
+            cursor: pointer;
+        }
     }
 }
 
@@ -111,15 +116,12 @@ input.topbar_search-bar {
     margin: 2px 10px 0 0;
 }
 
-.topbar_user-icon {
-    display: inline-block;
+.topbar_icon-user {
     width: 30px;
     height: 30px;
-    overflow: hidden;
-    position: relative;
     border-radius: 5px;
-    margin-right: 3px;
     background: #ddd;
+    position: relative;
 
     background-repeat: no-repeat;
     background-size: cover;
@@ -140,6 +142,10 @@ input.topbar_search-bar {
     }
 }
 
+.topbar_icon-notifications, .topbar_icon-upload {
+    padding-top: 3px;
+}
+
 .dropdown-topbar {
     position: absolute;
     top: 53px;
@@ -150,16 +156,15 @@ input.topbar_search-bar {
 
 .topbar {
     @include media('<=medium') {
-        
+
         .topbar_logo-container {
-            margin-left: 55px;
-            width: 120px;
+            margin-left: 10px;
+            width: auto;
+            justify-content: flex-start;
         }
 
-        .topbar_logo {
-            left: 0;
+        .topbar_logo svg {
             width: 80px;
-            transform: translateY(-50%);
         }
 
         .topbar_search {
@@ -174,9 +179,6 @@ input.topbar_search-bar {
     }
 
     @include media('<=small') {
-        .topbar_logo-container {
-            width: 40px;
-        }
 
         .topbar_logo {
             display: none;

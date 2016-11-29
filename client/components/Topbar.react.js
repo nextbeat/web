@@ -89,11 +89,11 @@ class Topbar extends React.Component {
 
         return (
             <div className="topbar_user">
-                <span id="dropdown-notifications_toggle" className="btn topbar_notifications" onClick={this.toggleNotificationsDropdown}>Notifications</span>
-                <Link to="/upload" className="btn topbar_upload">Upload</Link>
-                <span id="dropdown-topbar_toggle" className="topbar_user-icon" onClick={this.toggleUserDropdown} style={profpicStyle}>
+                <div id="dropdown-notifications_toggle" className="topbar_icon topbar_icon-notifications" onClick={this.toggleNotificationsDropdown}><Icon type="notifications" /></div>
+                <Link className="topbar_icon topbar_icon-upload" to="/upload"><Icon type="file-upload" /></Link> 
+                <div id="dropdown-topbar_toggle" className="topbar_icon topbar_icon-user" onClick={this.toggleUserDropdown} style={profpicStyle}>
                     { !profpic_url && <Icon type="person" /> }
-                </span>
+                </div>
             </div>
         )
     }
@@ -102,8 +102,8 @@ class Topbar extends React.Component {
         const { user } = this.props;
         return (
             <div className="topbar_user">
-                <a className="btn topbar_login" onClick={this.handleLoginClick}>Log In</a>
-                <a className="btn btn-secondary topbar_signup" onClick={this.handleSignupClick}>Sign Up</a>
+                <a className="topbar_icon btn topbar_login" onClick={this.handleLoginClick}>Log In</a>
+                <a className="topbar_icon btn btn-secondary topbar_signup" onClick={this.handleSignupClick}>Sign Up</a>
             </div>
         )
     }
@@ -144,7 +144,7 @@ class Topbar extends React.Component {
 
         return (
             <div className="topbar">
-                { showTopbarMenuIcon && <div className="topbar_menu-icon" onClick={this.toggleSidebar}><Icon type="menu" /></div> }
+                { showTopbarMenuIcon && <div className="topbar_icon topbar_icon-menu" onClick={this.toggleSidebar}><Icon type="menu" /></div> }
                 <div className="topbar_logo-container">
                     <span className="topbar_logo"><Link to="/"><Logo /></Link></span>
                     <span className="topbar_logo-small"><Link to="/"><SmallLogo /></Link></span>
