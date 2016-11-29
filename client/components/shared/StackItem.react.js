@@ -6,6 +6,7 @@ import { without } from 'lodash'
 import moment from 'moment'
 
 import Badge from './Badge.react'
+import { Notifications } from '../../models'
 
 class StackItem extends React.Component {
 
@@ -65,7 +66,7 @@ class StackItem extends React.Component {
     render() {
         const { stack, user, users } = this.props;
         const author = users.get(stack.get('author_id').toString(), Map())
-        const unreadNotificationCount = user && user.unreadNotificationCountForStack(stack.get('id'))
+        const unreadNotificationCount = user.isLoggedIn() && notifications.unreadCountForStack(stack.get('id'))
         const thumbnailUrl = stack.get('thumbnail_small_url') || stack.get('thumbnail_url', '')
         return (
             <div className="item_container" ref={(c) => this._node = c} >
@@ -89,7 +90,7 @@ class StackItem extends React.Component {
                         </div>
                     </div>
                     {!stack.get('closed') && <Badge elementType="item-room" type="open" />}
-                    {user && unreadNotificationCount > 0 && <Badge elementType="item-room" type="new">{unreadNotificationCount}</Badge>}
+                    {user.isLoggedIn() && unreadNotificationCount > 0 && <Badge elementType="item-room" type="new">{unreadNotificationCount}</Badge>}
                 </div>
             </Link>
             </div>
@@ -99,7 +100,8 @@ class StackItem extends React.Component {
 
 function mapStateToProps(state) {
     return { 
-        users: state.getIn(['entities', 'users'])
+        users: state.getIn(['entities', 'users']),
+        notifications: new Notifications(state)
     }
 }
 

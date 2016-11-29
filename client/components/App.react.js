@@ -10,7 +10,7 @@ import Login from '../components/shared/Login.react'
 import Signup from '../components/shared/Signup.react'
 
 import { connectToXMPP, postLogin, loadTags, promptModal, closeModal, clearApp, resizeWindow, onBeforeUnload, pushInitialize, startNewSession, cleanCache, sendPendingEvents } from '../actions'
-import { CurrentUser, App as AppModel } from '../models'
+import { CurrentUser, App as AppModel, Notifications } from '../models'
 
 class App extends React.Component {
 
@@ -82,7 +82,7 @@ class App extends React.Component {
     // Render
 
     setTitle() {
-        const { app, user } = this.props;
+        const { app, user, notifications } = this.props;
         const environment = app.get('environment', 'development');
         const fbAppId = app.get('facebookAppId');
 
@@ -106,7 +106,7 @@ class App extends React.Component {
         }
 
         let badge = '';
-        let count = user.totalUnreadNotificationCount(true);
+        let count = notifications.totalUnreadCount(true);
         if (count > 0) {
             badge = `(${count}) `
         }
@@ -169,10 +169,12 @@ class App extends React.Component {
 
 function mapStateToProps(state, props) {
     const user = new CurrentUser(state)
+    const notifications = new Notifications(state)
     const app = new AppModel(state)
 
     return {
         user,
+        notifications,
         app,
         connected: user.get('connected')
     }

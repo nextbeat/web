@@ -4,7 +4,7 @@ import { v4 as generateUuid }from 'node-uuid'
 import { assign } from 'lodash'
 import { normalize } from 'normalizr'
 import Schemas from '../schemas'
-import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveChatbotComment, receiveStackClosed, syncNotifications, lostXMPPConnection, reconnectXMPP } from '../actions'
+import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveChatbotComment, receiveStackClosed, syncUnreadNotifications, lostXMPPConnection, reconnectXMPP } from '../actions'
 import { CurrentUser, Stack } from '../models'
 
 function xmppHost() {
@@ -183,7 +183,7 @@ function handleMessage(s, store) {
 
         switch(identifier) {
             case 'NEW_NOTIFICATION':
-                return store.dispatch(syncNotifications())
+                return store.dispatch(syncUnreadNotifications())
             case 'PRIVATE_CHATBOT':
                 let stack_uuid = meta[1],
                     message    = s.body;

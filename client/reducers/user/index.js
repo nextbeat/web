@@ -20,7 +20,7 @@ const reducers = {
 
 export default function(state = Map(), action) {
     if (action.type === ActionTypes.LOGOUT && action.status === Status.SUCCESS) {
-        return state.delete('meta').delete('bookmarks').delete('subscriptions')
+        return state.delete('meta').delete('bookmarks').delete('subscriptions').delete('notifications')
     } else {
         return combineReducers(reducers)(state, action)
     }

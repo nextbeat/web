@@ -79,13 +79,18 @@ export {
     loadSubscriptions,
     subscribe,
     unsubscribe,
-    syncNotifications,
-    markStackAsRead,
     clearLogin,
     clearSignup,
     clearClosedBookmarkedStacks,
     clearEditProfile
 } from './user'
+
+export {
+    loadNotifications,
+    syncUnreadNotifications,
+    markStackAsRead,
+    clearNotifications
+} from './notifications'
 
 export {
     loadSearchResults,

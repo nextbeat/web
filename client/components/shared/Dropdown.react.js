@@ -32,9 +32,11 @@ class Dropdown extends React.Component {
         if (!($dropdown.is(e.target)
             || $toggle.is(e.target) 
             || $toggle.has(e.target).length > 0)) 
-        {
-            $(document).off(`mouseup.dropdown-${type}`);
-            dispatch(closeDropdown(type))
+        {   
+            process.nextTick(() => {
+                $(document).off(`mouseup.dropdown-${type}`);
+                dispatch(closeDropdown(type))
+            })
         }
     }
 

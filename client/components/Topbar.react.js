@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 
 import { selectSidebar, closeSidebar, toggleDropdown, promptModal, logout } from '../actions'
 
+import Notifications from './Notifications.react'
 import Icon from './shared/Icon.react'
 import Logo from './shared/Logo.react'
 import SmallLogo from './shared/SmallLogo.react'
@@ -17,12 +18,14 @@ class Topbar extends React.Component {
 
         this.toggleSidebar = this.toggleSidebar.bind(this);
         this.toggleUserDropdown = this.toggleUserDropdown.bind(this);
+        this.toggleNotificationsDropdown = this.toggleNotificationsDropdown.bind(this);
 
         this.handleSearchKeyPress = this.handleSearchKeyPress.bind(this);
         this.handleLoginClick = this.handleLoginClick.bind(this);
         this.handleSignupClick = this.handleSignupClick.bind(this);
         this.handleLogoutClick = this.handleLogoutClick.bind(this);
 
+        this.renderNotificationsDropdown = this.renderNotificationsDropdown.bind(this);
         this.renderLoggedIn = this.renderLoggedIn.bind(this);
         this.renderGuest = this.renderGuest.bind(this);
     }
@@ -41,6 +44,10 @@ class Topbar extends React.Component {
 
     toggleUserDropdown() {
         this.props.dispatch(toggleDropdown('topbar'))
+    }
+
+    toggleNotificationsDropdown() {
+        this.props.dispatch(toggleDropdown('notifications'))
     }
 
     handleSearchKeyPress(e) {
@@ -82,6 +89,7 @@ class Topbar extends React.Component {
 
         return (
             <div className="topbar_user">
+                <span id="dropdown-notifications_toggle" className="btn topbar_notifications" onClick={this.toggleNotificationsDropdown}>Notifications</span>
                 <Link to="/upload" className="btn topbar_upload">Upload</Link>
                 <span id="dropdown-topbar_toggle" className="topbar_user-icon" onClick={this.toggleUserDropdown} style={profpicStyle}>
                     { !profpic_url && <Icon type="person" /> }
@@ -112,6 +120,15 @@ class Topbar extends React.Component {
         )   
     }
 
+    renderNotificationsDropdown() {
+        const { app } = this.props;
+        return (
+            <Dropdown type="notifications">
+                { app.isActiveDropdown('notifications') && <Notifications /> }
+            </Dropdown>
+        )
+    }
+
     render() {
         const { user, app } = this.props;
 
@@ -133,6 +150,7 @@ class Topbar extends React.Component {
                 </div>
                 { user.isLoggedIn() ? this.renderLoggedIn() : this.renderGuest() }
                 { this.renderUserDropdown() }
+                { this.renderNotificationsDropdown() }
             </div>
         );
     }

@@ -189,6 +189,12 @@ export function urlBase64ToUint8Array(base64String) {
 }
 
 
+/*****************
+ * DATE FORMATTING
+ *****************/
+
+export { shortFromNow } from './date'
+
 /*******
  * OTHER
  *******/

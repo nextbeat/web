@@ -23,7 +23,7 @@ function transform(response) {
     return unread
 }
 
-function syncNotifications(state, action) {
+function syncUnreadNotifications(state, action) {
     if (action.status === Status.SUCCESS) {
         return state.merge({
             unread: transform(action.response),
@@ -47,12 +47,35 @@ function markAsRead(state, action) {
     return state;
 }
 
+function loadNotifications(state, action) {
+    if (action.status === Status.REQUESTING) {
+        return state.merge({
+            isFetching: true
+        }).delete('all').delete('error')
+    } else if (action.status === Status.SUCCESS) {
+        return state.merge({
+            isFetching: false,
+            all: action.response
+        })
+    } else if (action.status === Status.FAILURE) {
+        return state.merge({
+            isFetching: false,
+            error: action.error
+        })
+    }
+    return state;
+}
+
 export default function notifications(state=initialState, action) {
     switch (action.type) {
         case ActionTypes.SYNC_NOTIFICATIONS:
-            return syncNotifications(state, action);
+            return syncUnreadNotifications(state, action);
         case ActionTypes.MARK_AS_READ: 
             return markAsRead(state, action);
+        case ActionTypes.NOTIFICATIONS:
+            return loadNotifications(state, action)
+        case ActionTypes.CLEAR_NOTIFICATIONS:
+            return state.delete('all').delete('isFetching').delete('error')
     }
     return state;
 }
