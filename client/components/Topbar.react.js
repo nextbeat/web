@@ -124,7 +124,11 @@ class Topbar extends React.Component {
         const { app } = this.props;
         return (
             <Dropdown type="notifications">
-                { app.isActiveDropdown('notifications') && <Notifications /> }
+                { app.isActiveDropdown('notifications') && 
+                    <div className="topbar_notifications_container">
+                        <Notifications />
+                    </div> 
+                }
             </Dropdown>
         )
     }

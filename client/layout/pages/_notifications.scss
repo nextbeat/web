@@ -3,7 +3,39 @@
     top: 53px;
     right: 145px;
     width: 430px;
-    height: 300px;
+}
+
+.topbar_notifications_container {
+    min-height: 80px;
+    max-height: 300px;
+    width: 100%;
+    position: relative;
+    display: block;
+    overflow: auto;
+
+    // temporary, until can fix scrollbar bug
+    &::-webkit-scrollbar {
+        width: 0px;  /* remove scrollbar space */
+        background: transparent;  /* optional: just make scrollbar invisible */
+    }
+}
+
+.notifications {
+    overflow: auto;
+    height: 100%;
+
+    .spinner {
+        margin: 25px auto;
+    }
+}
+
+.notifications_not-found {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 13px;
+    width: 100%;
+    padding: 0 30px;
+    color: $detail-text-color;
 }
 
 .notification-item {

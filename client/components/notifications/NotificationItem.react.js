@@ -7,6 +7,21 @@ import Icon from '../shared/Icon.react'
 
 class NotificationItem extends React.Component {
 
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+            mountDate: null
+        }
+    }
+
+    componentDidMount() {
+        // Fix date at mount so that fromNow() doesn't recalculate when component re-renders
+        this.setState({
+            mountDate: moment()
+        });
+    }
+
     url(notification) {
         switch (notification.type) {
             case 'new_stack':
@@ -41,7 +56,7 @@ class NotificationItem extends React.Component {
                 </div>
                 <div className="notification-item_main">
                     <span className="notification-item_text">{this.renderMessage(notification)}</span>
-                    <span className="notification-item_timestamp">{shortFromNow(moment.unix(notification.timestamp))}</span>
+                    <span className="notification-item_timestamp">{shortFromNow(moment.unix(notification.timestamp), this.state.mountDate)}</span>
                 </div>
             </Link>
         );

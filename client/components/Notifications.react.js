@@ -23,15 +23,23 @@ class Notifications extends React.Component {
 
     render() {
         const { notifications } = this.props 
+        const notificationsList = notifications.get('allNotifications', List())
 
         return (
             <div className="notifications content" id="notifications">
                 { notifications.get('isFetching') && <Spinner type="grey" /> }
-                <div className="notifications_list">
-                    { notifications.get('allNotifications', List()).map(notification => 
-                        <NotificationItem notification={notification} />
-                    )}
-                </div>
+                { !notifications.get('isFetching') &&
+                    <div className="notifications_list">
+                        { notificationsList.map((notification, idx) => 
+                            <NotificationItem key={idx} notification={notification} />
+                        )}
+                        { notificationsList.size === 0 &&
+                            <div className="notifications_not-found">
+                                Check back later to see notifications about people you've subscribed to and rooms you've bookmarked.
+                            </div>
+                        }
+                    </div>
+                }
             </div>
         )
     }
