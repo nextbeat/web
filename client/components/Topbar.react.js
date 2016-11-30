@@ -3,7 +3,7 @@ import { findDOMNode } from 'react-dom'
 import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 
-import { selectSidebar, closeSidebar, toggleDropdown, promptModal, logout } from '../actions'
+import { selectSidebar, closeSidebar, toggleDropdown, promptModal, logout, markAllAsRead, loadNotifications } from '../actions'
 import { Notifications as NotificationsModel } from '../models'
 
 import Notifications from './Notifications.react'
@@ -55,10 +55,16 @@ class Topbar extends React.Component {
     }
 
     toggleNotificationsDropdown() {
-        const { app, dispatch } = this.props
+        const { app, dispatch, routes } = this.props
         if (app.get('width') === 'small') {
-            // navigate to page instead of showing dropdown
-            browserHistory.push({ pathname: '/notifications' })
+            if (routes[routes.length-1].path === '/notifications') {
+                // run componentDidMount operations of Notifications component to simulate reload
+                dispatch(markAllAsRead())
+                dispatch(loadNotifications())
+            } else {
+                // navigate to page instead of showing dropdown
+                browserHistory.push({ pathname: '/notifications' })
+            }
             this.hideSidebar()
         } else {
             dispatch(toggleDropdown('notifications'))
