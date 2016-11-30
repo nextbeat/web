@@ -18,6 +18,7 @@ class Topbar extends React.Component {
         super(props);
 
         this.toggleSidebar = this.toggleSidebar.bind(this);
+        this.hideSidebar = this.hideSidebar.bind(this);
         this.toggleUserDropdown = this.toggleUserDropdown.bind(this);
         this.toggleNotificationsDropdown = this.toggleNotificationsDropdown.bind(this);
 
@@ -45,6 +46,10 @@ class Topbar extends React.Component {
         }
     }
 
+    hideSidebar() {
+        this.props.dispatch(closeSidebar())
+    }
+
     toggleUserDropdown() {
         this.props.dispatch(toggleDropdown('topbar'))
     }
@@ -54,6 +59,7 @@ class Topbar extends React.Component {
         if (app.get('width') === 'small') {
             // navigate to page instead of showing dropdown
             browserHistory.push({ pathname: '/notifications' })
+            this.hideSidebar()
         } else {
             dispatch(toggleDropdown('notifications'))
         }
@@ -116,7 +122,7 @@ class Topbar extends React.Component {
                 <Icon type="notifications" />
                 { unreadCount > 0 && <div className="topbar_notifications-badge">{unreadCount}</div> }
             </div>,
-            <Link key='upload' className={`topbar_icon topbar_icon-upload ${smallClass}`} to="/upload"><Icon type="file-upload" /></Link>,
+            <Link key='upload' className={`topbar_icon topbar_icon-upload ${smallClass}`} to="/upload" onClick={this.hideSidebar}><Icon type="file-upload" /></Link>,
             <div key='user' id="dropdown-topbar_toggle" className={`topbar_icon topbar_icon-user ${smallClass}`} onClick={this.toggleUserDropdown} style={profpicStyle}>
                 { !profpic_url && <Icon type="person" /> }
             </div>
@@ -165,11 +171,11 @@ class Topbar extends React.Component {
                 { this.sidebarIsHidden() && <div className="topbar_icon topbar_icon-menu" onClick={this.toggleSidebar}><Icon type="menu" /></div> }
                 
                 <div className={`topbar_logo-container ${loggedInClass}`}>
-                    <span className="topbar_logo"><Link to="/"><Logo /></Link></span>
-                    <span className="topbar_logo-small"><Link to="/"><SmallLogo /></Link></span>
+                    <span className="topbar_logo" onClick={this.hideSidebar}><Link to="/"><Logo /></Link></span>
+                    <span className="topbar_logo-small" onClick={this.hideSidebar}><Link to="/"><SmallLogo /></Link></span>
                 </div>
 
-                <Link className={`topbar_icon topbar_icon-search ${loggedInClass}`} to="/search"><Icon type="search" /></Link>
+                <Link className={`topbar_icon topbar_icon-search ${loggedInClass}`} to="/search" onClick={this.hideSidebar}><Icon type="search" /></Link>
                 <div className={`topbar_search ${loggedInClass}`}>
                     <input className="topbar_search-bar" type="text" placeholder="Search" ref="search_bar" onKeyPress={this.handleSearchKeyPress} /><Icon type="search" />
                 </div>

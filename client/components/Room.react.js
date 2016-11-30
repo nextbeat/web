@@ -172,7 +172,7 @@ class Room extends React.Component {
             handleSelectNewestLiveItem: this.handleSelectNewestLiveItem
         }
 
-        const shouldDisplayBanner = app.get('width') !== 'small' && (stack.author().get('username') === 'safiya' || app.get('environment') === 'development')
+        const shouldDisplayBanner = app.get('width') !== 'small' && stack.author().get('username') === 'safiya'
 
         return (
         <section className="room">
