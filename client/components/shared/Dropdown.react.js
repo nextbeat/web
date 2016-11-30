@@ -10,14 +10,25 @@ class Dropdown extends React.Component {
         super(props)
         
         this.hideDropdown = this.hideDropdown.bind(this)
+        this.handleKeyUp = this.handleKeyUp.bind(this)
     }
 
     componentWillReceiveProps(nextProps) {
         const { type } = this.props
         if (!this.props.app.isActiveDropdown(type) && nextProps.app.isActiveDropdown(type)) {
             $(window).on(`mouseup.dropdown-${type}`, this.hideDropdown)
+            $(window).on(`keyup.dropdown-${type}`, this.handleKeyUp)
         } else if (this.props.app.isActiveDropdown(type) && !nextProps.app.isActiveDropdown(type)) {
             $(window).off(`mouseup.dropdown-${type}`)
+            $(window).off(`keyup.dropdown-${type}`)
+        }
+    }
+
+    handleKeyUp(e) {
+        const { type, dispatch } = this.props
+        console.log(e, e.charCode, e.which)
+        if (e.which === 27) { // esc
+            dispatch(closeDropdown(type))
         }
     }
 
