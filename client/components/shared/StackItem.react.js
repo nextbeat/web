@@ -64,7 +64,7 @@ class StackItem extends React.Component {
     }
 
     render() {
-        const { stack, user, users } = this.props;
+        const { stack, user, users, notifications } = this.props;
         const author = users.get(stack.get('author_id').toString(), Map())
         const unreadNotificationCount = user.isLoggedIn() && notifications.unreadMediaItemCount(stack.get('id'))
         const thumbnailUrl = stack.get('thumbnail_small_url') || stack.get('thumbnail_url', '')

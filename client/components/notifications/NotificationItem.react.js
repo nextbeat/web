@@ -40,8 +40,14 @@ class NotificationItem extends React.Component {
     renderMessage(notification) {
         if (notification.type === 'new_stack') {
             return <span><strong>{notification.user.username}</strong>{` opened a new room: ${notification.stack.description}`}</span>
+        } else if (notification.type === 'new_mediaitem') {
+            return <span><strong>{notification.user.username}</strong>{` added a new post to: ${notification.stack.description}`}</span>
         } else if (notification.type === 'mentions') {
             return <span><strong>{notification.user.username}</strong>{` mentioned you in a comment: ${notification.comment.message}`}</span>
+        } else if (notification.type === 'bookmarks') {
+            return <span><strong>{notification.user.username}</strong>{` bookmarked your room: ${notification.stack.description}`}</span>
+        } else if (notification.type === 'subscriptions') {
+            return <span><strong>{notification.user.username}</strong>{` subscribed to you.`}</span>
         }
         return null;
     }

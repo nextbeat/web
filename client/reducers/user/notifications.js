@@ -25,14 +25,11 @@ function markAllAsRead(state, action) {
 
 function markAsRead(state, action) {
     if (action.stack) {
-        // // only handles new_mediaitem key for now
-        // var id = parseInt(action.stack, 10)
-        // let note = state.getIn(['unread', 'new_mediaitem'], Set()).find(note => note.get('stack') === id)
-        // if (!!note) {
-        //     return state
-        //         .updateIn(['unread', 'new_mediaitem'], Set(), notes => notes.delete(note))
-        //         .updateIn(['read', 'new_mediaitem'], Set(), notes => notes.add(note))
-        // }
+        var id = parseInt(action.stack, 10)
+        return state.merge({
+            unread: state.get('unread').filterNot(note => note.get('stack_id') === id),
+            read: state.get('unread').filter(note => note.get('stack_id') === id)
+        });
     }
     return state;
 }

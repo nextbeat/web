@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import Helmet from 'react-helmet'
 
 import { Search } from '../models'
@@ -33,15 +33,26 @@ class SearchComponent extends React.Component {
 
         this.selectSearchType = this.selectSearchType.bind(this)
 
+        this.handleInputChange = this.handleInputChange.bind(this)
+        this.handleInputKeyPress = this.handleInputKeyPress.bind(this)
+
+        this.renderResults = this.renderResults.bind(this)
         this.renderStacks = this.renderStacks.bind(this)
         this.renderUsers = this.renderUsers.bind(this)
         this.renderTags = this.renderTags.bind(this)
+
+        this.state = {
+            query: '',
+        }
     }
 
     componentDidMount() {
         const { dispatch, location } = this.props
         const query = location.query.q
-        dispatch(loadSearchResults(query, 'stacks'))
+        if (query && query.length > 0) {
+            this.setState({ query })
+            dispatch(loadSearchResults(query, 'stacks'))
+        }
     }
 
     componentWillUnmount() {
@@ -53,6 +64,7 @@ class SearchComponent extends React.Component {
         const query = location.query.q
         if (prevProps.search.get('query') !== query) {
             dispatch(clearSearch())
+            this.setState({ query })
             dispatch(loadSearchResults(query, 'stacks'))
         }
     }
@@ -64,6 +76,21 @@ class SearchComponent extends React.Component {
         const query = location.query.q
         dispatch(loadSearchResults(query, searchType))
     }
+
+    // Events
+
+    handleInputChange(e) {
+        this.setState({ query: e.target.value })
+    }
+
+    handleInputKeyPress(e) {
+        if (e.charCode === 13) {
+            browserHistory.push({
+                pathname: '/search',
+                query: { q: this.state.query }
+            })
+        }
+    }   
 
     // Render
 
@@ -111,21 +138,32 @@ class SearchComponent extends React.Component {
         )
     }
 
+    renderResults() {
+        const { search } = this.props 
+        const selectedFilterClass = f => f.searchType === search.get('searchType') ? 'selected' : ''
+
+        return [
+            <div className="filters">
+                {SEARCH_FILTERS.map(f => 
+                    <span key={f.searchType} className={`filter ${selectedFilterClass(f)}`} onClick={this.selectSearchType.bind(this, f.searchType)}>{f.name}</span>
+                )}
+            </div>,
+            <div>{ search.get('searchType') === 'stacks' && this.renderStacks() }</div>,
+            <div>{ search.get('searchType') === 'users' && this.renderUsers() }</div>,
+            <div>{ search.get('searchType') === 'tags' && this.renderTags() }</div>
+        ]
+    }
+
     render() {
         const { search } = this.props
-        const selectedFilterClass = f => f.searchType === search.get('searchType') ? 'selected' : ''
         return (
             <div className="search content" id="search">
                 <Helmet title={search.get('query')} />
-                <div className="search_header"><Icon type="search" /> {search.get('query')}</div>
-                <div className="filters">
-                    {SEARCH_FILTERS.map(f => 
-                        <span key={f.searchType} className={`filter ${selectedFilterClass(f)}`} onClick={this.selectSearchType.bind(this, f.searchType)}>{f.name}</span>
-                    )}
+                <div className="search_header">
+                    <input type="text" placeholder="Search" value={this.state.query} onChange={this.handleInputChange} onKeyPress={this.handleInputKeyPress} className="search_header_input" />
+                    <Icon type="search" />
                 </div>
-                { search.get('searchType') === 'stacks' && this.renderStacks() }
-                { search.get('searchType') === 'users' && this.renderUsers() }
-                { search.get('searchType') === 'tags' && this.renderTags() }
+                { search.get('query', '').length > 0 && this.renderResults() }
             </div>
         );
     }

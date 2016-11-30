@@ -39,12 +39,14 @@ export default class Notifications extends StateModel {
         }
 
         return this.unreadNotifications().filter(note => 
-            note.type === 'new_mediaitem' && note.stack_id === stack_id
+            note.get('type') === 'new_mediaitem' && note.get('stack_id') === stack_id
         ).size
     }
 
     totalUnreadCount() {
-        return this.unreadNotifications().size
+        return this.unreadNotifications().filter(note =>
+            note.get('type') !== 'comments'
+        ).size
     }
 
 }

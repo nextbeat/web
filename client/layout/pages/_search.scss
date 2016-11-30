@@ -5,16 +5,16 @@
 }
 
 .search_header {
-    font-size: 30px;
-    font-weight: 300;
     margin-bottom: 18px;
+    position: relative;
 
     .svg-icon-search {
+        position: absolute;
+        bottom: 3px;
+        left: 0;
         width: 22px;
         height: 22px;
         fill: $detail-text-color;
-        margin-bottom: 3px;
-        margin-right: 3px;
 
         svg {
             vertical-align: top;
@@ -23,6 +23,20 @@
 
     span {
         vertical-align: bottom;
+    }
+}
+
+.search_header_input {
+    font-size: 30px;
+    font-weight: 300;
+    margin-left: 25px;
+    padding: 0;
+    border: none;
+
+    &:focus, &:hover {
+        outline: none;
+        box-shadow: none;
+        border: none;
     }
 }
 
