@@ -3,6 +3,11 @@
     top: 53px;
     right: 104px;
     width: 430px;
+    max-width: calc(100% - 114px);
+
+    .content_inner {
+        padding: 0;
+    }
 }
 
 .topbar_notifications_container {
@@ -23,6 +28,7 @@
 .notifications {
     overflow: auto;
     height: 100%;
+
 
     .spinner {
         margin: 25px auto;

@@ -146,9 +146,21 @@ input.topbar_search-bar {
 
 .topbar_icon-notifications, .topbar_icon-upload, .topbar_icon-search {
     padding-top: 3px;
+    position: relative;
     &:hover {
         cursor: pointer;
     }
+}
+
+.topbar_notifications-badge {
+    background: $primary-color;
+    color: white;
+    position: absolute;
+    font-size: 12px;
+    padding: 1px 4px;
+    border-radius: 4px;
+    top: 0;
+    left: 20px;
 }
 
 .dropdown-topbar {

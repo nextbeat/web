@@ -4,6 +4,7 @@ import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 
 import { selectSidebar, closeSidebar, toggleDropdown, promptModal, logout } from '../actions'
+import { Notifications as NotificationsModel } from '../models'
 
 import Notifications from './Notifications.react'
 import Icon from './shared/Icon.react'
@@ -49,7 +50,13 @@ class Topbar extends React.Component {
     }
 
     toggleNotificationsDropdown() {
-        this.props.dispatch(toggleDropdown('notifications'))
+        const { app, dispatch } = this.props
+        if (app.get('width') === 'small') {
+            // navigate to page instead of showing dropdown
+            browserHistory.push({ pathname: '/notifications' })
+        } else {
+            dispatch(toggleDropdown('notifications'))
+        }
     }
 
     handleSearchKeyPress(e) {
@@ -97,18 +104,20 @@ class Topbar extends React.Component {
     // Render
 
     renderLoggedIn(includeSmallClass) {
-        const { user } = this.props;
+        const { user, notifications } = this.props;
 
         const profpic_url = user.profileThumbnailUrl();
         const profpicStyle = { backgroundImage: profpic_url ? `url(${profpic_url})` : '' }
         const smallClass = includeSmallClass ? 'topbar_icon-small' : '';
+        const unreadCount = notifications.totalUnreadCount();
 
         return [
-            <div id="dropdown-notifications_toggle" className={`topbar_icon topbar_icon-notifications ${smallClass}`} onClick={this.toggleNotificationsDropdown}>
+            <div key='notifications' id="dropdown-notifications_toggle" className={`topbar_icon topbar_icon-notifications ${smallClass}`} onClick={this.toggleNotificationsDropdown}>
                 <Icon type="notifications" />
+                { unreadCount > 0 && <div className="topbar_notifications-badge">{unreadCount}</div> }
             </div>,
-            <Link className={`topbar_icon topbar_icon-upload ${smallClass}`} to="/upload"><Icon type="file-upload" /></Link>,
-            <div id="dropdown-topbar_toggle" className={`topbar_icon topbar_icon-user ${smallClass}`} onClick={this.toggleUserDropdown} style={profpicStyle}>
+            <Link key='upload' className={`topbar_icon topbar_icon-upload ${smallClass}`} to="/upload"><Icon type="file-upload" /></Link>,
+            <div key='user' id="dropdown-topbar_toggle" className={`topbar_icon topbar_icon-user ${smallClass}`} onClick={this.toggleUserDropdown} style={profpicStyle}>
                 { !profpic_url && <Icon type="person" /> }
             </div>
         ]
@@ -119,8 +128,8 @@ class Topbar extends React.Component {
         const smallClass = includeSmallClass ? 'topbar_icon-small' : '';
 
         return [
-            <a className={`topbar_icon btn topbar_login ${smallClass}`} onClick={this.handleLoginClick}>Log In</a>,
-            <a className={`topbar_icon btn btn-secondary topbar_signup ${smallClass}`} onClick={this.handleSignupClick}>Sign Up</a>
+            <a key='login' className={`topbar_icon btn topbar_login ${smallClass}`} onClick={this.handleLoginClick}>Log In</a>,
+            <a key='signup' className={`topbar_icon btn btn-secondary topbar_signup ${smallClass}`} onClick={this.handleSignupClick}>Sign Up</a>
         ]
     }
 
@@ -149,7 +158,6 @@ class Topbar extends React.Component {
 
     render() {
         const { user, app } = this.props;
-
         const loggedInClass = user.isLoggedIn() ? 'topbar-logged-in' : 'topbar-guest';
 
         return (
@@ -161,7 +169,7 @@ class Topbar extends React.Component {
                     <span className="topbar_logo-small"><Link to="/"><SmallLogo /></Link></span>
                 </div>
 
-                <Link className={`topbar_icon topbar_icon-search ${loggedInClass}`}><Icon type="search" /></Link>
+                <Link className={`topbar_icon topbar_icon-search ${loggedInClass}`} to="/search"><Icon type="search" /></Link>
                 <div className={`topbar_search ${loggedInClass}`}>
                     <input className="topbar_search-bar" type="text" placeholder="Search" ref="search_bar" onKeyPress={this.handleSearchKeyPress} /><Icon type="search" />
                 </div>
@@ -179,4 +187,10 @@ class Topbar extends React.Component {
     }
 }
 
-export default connect()(Topbar);
+function mapStateToProps(state) {
+    return {
+        notifications: new NotificationsModel(state)
+    }
+}
+
+export default connect(mapStateToProps)(Topbar);

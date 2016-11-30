@@ -89,6 +89,7 @@ export {
     loadNotifications,
     syncUnreadNotifications,
     markStackAsRead,
+    markAllAsRead,
     clearNotifications
 } from './notifications'
 

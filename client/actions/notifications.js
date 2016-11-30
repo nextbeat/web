@@ -55,7 +55,7 @@ export function syncUnreadNotifications() {
         }
 
         const notifications = new Notifications(getState())
-        const readNotifications = notifications.readNotificationsJSON()
+        const readNotifications = notifications.readNotifications().toJS()
         dispatch(postSyncUnreadNotifications(readNotifications))
     }
 }
@@ -64,6 +64,19 @@ export function syncUnreadNotifications() {
 /**************
  * MARKING READ
  **************/
+
+export function markAllAsRead() {
+    return (dispatch, getState) => {
+        const currentUser = new CurrentUser(getState())
+        if (!currentUser.isLoggedIn()) {
+            return null;
+        }
+
+        dispatch({ type: ActionTypes.MARK_ALL_AS_READ })
+        // sync notifications to update server
+        dispatch(syncUnreadNotifications())
+    }
+}
 
 function markAsRead(options) {
     return (dispatch, getState) => {
@@ -93,7 +106,7 @@ export function markStackAsRead(id) {
         }
 
         const notifications = new Notifications(getState())
-        if (notifications.unreadCountForStack(id) === 0) {
+        if (notifications.unreadMediaItemCount(id) === 0) {
             // if stack already marked as read, do nothing
             //
             // note that this method call might need to change 
