@@ -139,7 +139,6 @@ function prolongChatSession(store, next) {
     let analytics = new Analytics(store.getState())
     if (analytics.hasActiveSession(AnalyticsSessionTypes.CHAT)) {
         let timeoutId = analytics.get('chatTimeoutId')
-        console.log(timeoutId)
         clearTimeout(timeoutId)
     } else {
         startSession(store, next, AnalyticsSessionTypes.CHAT)

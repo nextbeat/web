@@ -12,6 +12,7 @@ import Home from '../client/components/Home.react'
 import Section from '../client/components/Section.react'
 import Search from '../client/components/Search.react'
 import Upload from '../client/components/Upload.react'
+import Notifications from '../client/components/Notifications.react'
 import EditProfile from '../client/components/EditProfile.react'
 import PasswordResetRequest from '../client/components/support/PasswordResetRequest.react'
 import PasswordReset from '../client/components/support/PasswordReset.react'
@@ -42,6 +43,7 @@ export default store => {
             <AnalyticsRoute path="/search" component={Search} />
             <AnalyticsRoute path="/bookmarks" component={Bookmarks} />
             <AnalyticsRoute path="/upload" component={Upload} />
+            <AnalyticsRoute path="/notifications" component={Notifications} />
             <AnalyticsRoute path="/edit-profile" component={EditProfile} />
             <Route path="/support">
                 <AnalyticsRoute path="password-reset-request" component={PasswordResetRequest} />

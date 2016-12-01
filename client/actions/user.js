@@ -11,6 +11,7 @@ import Schemas from '../schemas'
 import { API_CALL, API_CANCEL } from './types'
 import { gaIdentify } from './ga'
 import { pushInitialize, pushSubscribe } from './push'
+import { syncUnreadNotifications } from './notifications'
 import { startNewSession } from './analytics'
 import { isValidUrl } from '../utils'
 
@@ -244,7 +245,7 @@ export function postLogin() {
     return (dispatch, getState) => {
         const user = new CurrentUser(getState())
         dispatch(gaIdentify(user))
-        dispatch(syncNotifications())
+        dispatch(syncUnreadNotifications())
         dispatch(loadBookmarkedStacks("open"))
         dispatch(loadSubscriptions())
         dispatch(pushInitialize())
@@ -339,79 +340,6 @@ export function unsubscribe(user) {
             return;
         }
         dispatch(postUnsubscribe(user))
-    }
-}
-
-/***************
- * NOTIFICATIONS
- ***************/
-
-function onNotificationSyncSuccess(store, next, action, response) {
-    // if a stack is loaded on the app, mark as read immediately
-    store.dispatch(markStackAsRead())
-}
-
-function postSyncNotifications(readNotifications) {
-    return {
-        type: ActionTypes.SYNC_NOTIFICATIONS,
-        [API_CALL]: {
-            method: 'POST',
-            endpoint: 'notifications/sync',
-            authenticated: true,
-            body: readNotifications,
-            onSuccess: onNotificationSyncSuccess
-        }
-    }
-}
-
-export function syncNotifications() {
-    return (dispatch, getState) => {
-        const currentUser = new CurrentUser(getState())
-        if (!currentUser.isLoggedIn()) {
-            return null;
-        }
-
-        const readNotifications = currentUser.readNotificationsJSON()
-        dispatch(postSyncNotifications(readNotifications))
-    }
-}
-
-function markAsRead(options) {
-    return (dispatch, getState) => {
-        const currentUser = new CurrentUser(getState())
-        if (!currentUser.isLoggedIn()) {
-            return null;
-        }
-
-        dispatch(assign({}, { type: ActionTypes.MARK_AS_READ }, options))
-        // sync notifications to update server
-        dispatch(syncNotifications())
-    }
-}
-
-export function markStackAsRead(id) {
-    return (dispatch, getState) => {
-        const stack = new Stack(getState())
-        const currentUser = new CurrentUser(getState())
-        id = id || stack.get('id');
-        if (typeof id === "number") {
-            id = id.toString();
-        }
-
-        if (!id) {
-            // either did not specify stack id or no stack is loaded
-            return null;
-        }
-
-        if (currentUser.unreadNotificationCountForStack(id) === 0) {
-            // if stack already marked as read, do nothing
-            //
-            // note that this method call might need to change 
-            // when we have more than one notification type
-            return null;
-        }
-
-        dispatch(markAsRead({ stack: id }))
     }
 }
 

@@ -10,14 +10,24 @@ class Dropdown extends React.Component {
         super(props)
         
         this.hideDropdown = this.hideDropdown.bind(this)
+        this.handleKeyUp = this.handleKeyUp.bind(this)
     }
 
     componentWillReceiveProps(nextProps) {
         const { type } = this.props
         if (!this.props.app.isActiveDropdown(type) && nextProps.app.isActiveDropdown(type)) {
             $(window).on(`mouseup.dropdown-${type}`, this.hideDropdown)
+            $(window).on(`keyup.dropdown-${type}`, this.handleKeyUp)
         } else if (this.props.app.isActiveDropdown(type) && !nextProps.app.isActiveDropdown(type)) {
             $(window).off(`mouseup.dropdown-${type}`)
+            $(window).off(`keyup.dropdown-${type}`)
+        }
+    }
+
+    handleKeyUp(e) {
+        const { type, dispatch } = this.props
+        if (e.which === 27) { // esc
+            dispatch(closeDropdown(type))
         }
     }
 
@@ -32,20 +42,35 @@ class Dropdown extends React.Component {
         if (!($dropdown.is(e.target)
             || $toggle.is(e.target) 
             || $toggle.has(e.target).length > 0)) 
-        {
-            $(document).off(`mouseup.dropdown-${type}`);
-            dispatch(closeDropdown(type))
+        {   
+            process.nextTick(() => {
+                $(document).off(`mouseup.dropdown-${type}`);
+                dispatch(closeDropdown(type))
+            })
         }
     }
 
     render() {
-        const { type, children, app } = this.props
+        const { type, children, app, triangleMargin } = this.props
+
+        let triangleStyle = {}
+        if (typeof triangleMargin !== 'undefined') {
+            triangleStyle.right = `${triangleMargin}px`
+            if (triangleMargin < 0) {
+                triangleStyle.display = 'none'
+            }
+        }
+
         return (
             <div id={`dropdown-${type}`} 
                 className={`dropdown dropdown-${type}`} 
                 style={{ display: app.isActiveDropdown(type) ? 'block' : 'none' }}
             >
-                {children}
+                <div className="dropdown_triangle" style={triangleStyle} />
+                <div className="dropdown_filler" style={triangleStyle} />
+                <div className="dropdown_main">
+                    {children}
+                </div>
             </div>
         );
     }

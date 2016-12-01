@@ -3,8 +3,10 @@ import { findDOMNode } from 'react-dom'
 import { Link, browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 
-import { selectSidebar, closeSidebar, toggleDropdown, promptModal, logout } from '../actions'
+import { selectSidebar, closeSidebar, toggleDropdown, promptModal, logout, markAllAsRead, loadNotifications } from '../actions'
+import { Notifications as NotificationsModel } from '../models'
 
+import Notifications from './Notifications.react'
 import Icon from './shared/Icon.react'
 import Logo from './shared/Logo.react'
 import SmallLogo from './shared/SmallLogo.react'
@@ -16,13 +18,18 @@ class Topbar extends React.Component {
         super(props);
 
         this.toggleSidebar = this.toggleSidebar.bind(this);
+        this.hideSidebar = this.hideSidebar.bind(this);
         this.toggleUserDropdown = this.toggleUserDropdown.bind(this);
+        this.toggleNotificationsDropdown = this.toggleNotificationsDropdown.bind(this);
 
         this.handleSearchKeyPress = this.handleSearchKeyPress.bind(this);
         this.handleLoginClick = this.handleLoginClick.bind(this);
         this.handleSignupClick = this.handleSignupClick.bind(this);
         this.handleLogoutClick = this.handleLogoutClick.bind(this);
 
+        this.sidebarIsHidden = this.sidebarIsHidden.bind(this);
+
+        this.renderNotificationsDropdown = this.renderNotificationsDropdown.bind(this);
         this.renderLoggedIn = this.renderLoggedIn.bind(this);
         this.renderGuest = this.renderGuest.bind(this);
     }
@@ -39,8 +46,29 @@ class Topbar extends React.Component {
         }
     }
 
+    hideSidebar() {
+        this.props.dispatch(closeSidebar())
+    }
+
     toggleUserDropdown() {
         this.props.dispatch(toggleDropdown('topbar'))
+    }
+
+    toggleNotificationsDropdown() {
+        const { app, dispatch, routes } = this.props
+        if (app.get('width') === 'small') {
+            if (routes[routes.length-1].path === '/notifications') {
+                // run componentDidMount operations of Notifications component to simulate reload
+                dispatch(markAllAsRead())
+                dispatch(loadNotifications())
+            } else {
+                // navigate to page instead of showing dropdown
+                browserHistory.push({ pathname: '/notifications' })
+            }
+            this.hideSidebar()
+        } else {
+            dispatch(toggleDropdown('notifications'))
+        }
     }
 
     handleSearchKeyPress(e) {
@@ -72,70 +100,109 @@ class Topbar extends React.Component {
     }
 
 
-    // Render
+    // Queries
 
-    renderLoggedIn() {
-        const { user } = this.props;
-        const profpic_url = user.profileThumbnailUrl();
+    sidebarIsHidden() {
+        const { user, app, routes } = this.props;
 
-        const profpicStyle = { backgroundImage: profpic_url ? `url(${profpic_url})` : '' }
-
-        return (
-            <div className="topbar_user">
-                <Link to="/upload" className="btn topbar_upload">Upload</Link>
-                <span id="dropdown-topbar_toggle" className="topbar_user-icon" onClick={this.toggleUserDropdown} style={profpicStyle}>
-                    { !profpic_url && <Icon type="person" /> }
-                </span>
-            </div>
-        )
+        // show menu icon if medium width or in room
+        const inRoom = routes[routes.length-1].path.substring(0, 3) === '/r/'
+        return app.get('width') === 'small'
+            || app.get('width') === 'medium'
+            || (app.get('width') === 'room-medium' && inRoom) 
     }
 
-    renderGuest() {
-        const { user } = this.props;
-        return (
-            <div className="topbar_user">
-                <a className="btn topbar_login" onClick={this.handleLoginClick}>Log In</a>
-                <a className="btn btn-secondary topbar_signup" onClick={this.handleSignupClick}>Sign Up</a>
+
+    // Render
+
+    renderLoggedIn(includeSmallClass) {
+        const { user, notifications } = this.props;
+
+        const profpic_url = user.profileThumbnailUrl();
+        const profpicStyle = { backgroundImage: profpic_url ? `url(${profpic_url})` : '' }
+        const smallClass = includeSmallClass ? 'topbar_icon-small' : '';
+        const unreadCount = notifications.totalUnreadCount();
+
+        return [
+            <div key='notifications' id="dropdown-notifications_toggle" className={`topbar_icon topbar_icon-notifications ${smallClass}`} onClick={this.toggleNotificationsDropdown}>
+                <Icon type="notifications" />
+                { unreadCount > 0 && <div className="topbar_notifications-badge">{unreadCount}</div> }
+            </div>,
+            <Link key='upload' className={`topbar_icon topbar_icon-upload ${smallClass}`} to="/upload" onClick={this.hideSidebar}><Icon type="file-upload" /></Link>,
+            <div key='user' id="dropdown-topbar_toggle" className={`topbar_icon topbar_icon-user ${smallClass}`} onClick={this.toggleUserDropdown} style={profpicStyle}>
+                { !profpic_url && <Icon type="person" /> }
             </div>
-        )
+        ]
+    }
+
+    renderGuest(includeSmallClass) {
+        const { user } = this.props;
+        const smallClass = includeSmallClass ? 'topbar_icon-small' : '';
+
+        return [
+            <a key='login' className={`topbar_icon btn topbar_login ${smallClass}`} onClick={this.handleLoginClick}>Log In</a>,
+            <a key='signup' className={`topbar_icon btn btn-secondary topbar_signup ${smallClass}`} onClick={this.handleSignupClick}>Sign Up</a>
+        ]
     }
 
     renderUserDropdown() {
         const { user, app } = this.props 
-        const showUpload = app.get('width') === 'small'
         return (
-            <Dropdown type="topbar">
+            <Dropdown type="topbar" triangleMargin={12}>
                 <Link to={`/u/${user.get('username')}`} className="dropdown-option">Profile</Link>
-                { showUpload && <Link to="/upload" className="dropdown-option">Upload</Link> }
                 <a onClick={this.handleLogoutClick} className="dropdown-option">Log Out</a>
             </Dropdown>
         )   
     }
 
+    renderNotificationsDropdown() {
+        const { app } = this.props;
+        return (
+            <Dropdown type="notifications">
+                { app.isActiveDropdown('notifications') && 
+                    <div className="topbar_notifications_container">
+                        <Notifications />
+                    </div> 
+                }
+            </Dropdown>
+        )
+    }
+
     render() {
         const { user, app } = this.props;
-
-        // show menu icon if medium width or in room
-        const inRoom = this.props.routes[this.props.routes.length-1].path.substring(0, 3) === '/r/'
-        const showTopbarMenuIcon = app.get('width') === 'small'
-                                || app.get('width') === 'medium'
-                                || (app.get('width') === 'room-medium' && inRoom) 
+        const loggedInClass = user.isLoggedIn() ? 'topbar-logged-in' : 'topbar-guest';
 
         return (
             <div className="topbar">
-                { showTopbarMenuIcon && <div className="topbar_menu-icon" onClick={this.toggleSidebar}><Icon type="menu" /></div> }
-                <div className="topbar_logo-container">
-                    <span className="topbar_logo"><Link to="/"><Logo /></Link></span>
-                    <span className="topbar_logo-small"><Link to="/"><SmallLogo /></Link></span>
+                { this.sidebarIsHidden() && <div className="topbar_icon topbar_icon-menu" onClick={this.toggleSidebar}><Icon type="menu" /></div> }
+                
+                <div className={`topbar_logo-container ${loggedInClass}`}>
+                    <span className="topbar_logo" onClick={this.hideSidebar}><Link to="/"><Logo /></Link></span>
+                    <span className="topbar_logo-small" onClick={this.hideSidebar}><Link to="/"><SmallLogo /></Link></span>
                 </div>
-                <div className="topbar_search">
+
+                <Link className={`topbar_icon topbar_icon-search ${loggedInClass}`} to="/search" onClick={this.hideSidebar}><Icon type="search" /></Link>
+                <div className={`topbar_search ${loggedInClass}`}>
                     <input className="topbar_search-bar" type="text" placeholder="Search" ref="search_bar" onKeyPress={this.handleSearchKeyPress} /><Icon type="search" />
                 </div>
-                { user.isLoggedIn() ? this.renderLoggedIn() : this.renderGuest() }
+
+                <div className="topbar_right">
+                    { user.isLoggedIn() ? this.renderLoggedIn(false) : this.renderGuest(false) }
+                </div>
+                { user.isLoggedIn() ? this.renderLoggedIn(true) : this.renderGuest(true) }
+
                 { this.renderUserDropdown() }
+                { this.renderNotificationsDropdown() }
+
             </div>
         );
     }
 }
 
-export default connect()(Topbar);
+function mapStateToProps(state) {
+    return {
+        notifications: new NotificationsModel(state)
+    }
+}
+
+export default connect(mapStateToProps)(Topbar);

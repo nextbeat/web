@@ -1,0 +1,103 @@
+.dropdown-notifications {
+    position: absolute;
+    top: 53px;
+    right: 104px;
+    width: 430px;
+    max-width: calc(100% - 114px);
+
+    .content_inner {
+        padding: 0;
+    }
+}
+
+.topbar_notifications_container {
+    min-height: 60px;
+    max-height: 300px;
+    width: 100%;
+    position: relative;
+    display: block;
+    overflow: auto;
+
+    // temporary, until can fix scrollbar bug
+    &::-webkit-scrollbar {
+        width: 0px;  /* remove scrollbar space */
+        background: transparent;  /* optional: just make scrollbar invisible */
+    }
+}
+
+.notifications {
+    overflow: auto;
+    height: 100%;
+
+
+    .spinner {
+        margin: 25px auto;
+    }
+}
+
+.notifications_not-found {
+    margin: 25px 0;
+    text-align: center;
+    font-size: 13px;
+    width: 100%;
+    padding: 0 30px;
+    color: $detail-text-color;
+}
+
+.notification-item {
+    padding: 12px 0;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.notification-item_thumbnail {
+    display: inline-block;
+    position: relative;
+    flex-shrink: 0;
+    border-radius: 7px;
+    width: 35px;
+    height: 35px;
+    background: #ddd;
+
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+
+    .svg-icon-person {
+        @include center;
+        width: 70%;
+        height: 70%;
+    }
+}
+
+.notification-item_main {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.notification-item_text {
+    font-size: 14px;
+    font-weight: 400;
+    color: $text-color;
+
+    strong {
+        font-weight: 500;
+    }
+}
+
+.notification-item_timestamp {
+    font-size: 12px;
+    font-weight: 300;
+    margin-left: 5px;
+    color: $detail-text-color;
+}
+

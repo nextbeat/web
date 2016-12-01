@@ -3,7 +3,7 @@ import { ActionTypes, Status } from '../../actions'
 import { combineReducers, entity, paginate } from '../utils'
 
 const initialMetaState = Map({
-    searchType: 'users'
+    searchType: 'stacks'
 })
 
 function meta(state=initialMetaState, action) {

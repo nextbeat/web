@@ -40,7 +40,7 @@ class DetailBar extends React.Component {
     renderDropdown() {
         const { dispatch } = this.props
         return (
-            <Dropdown type="detail-bar">
+            <Dropdown type="detail-bar" triangleMargin={-1}>
                 {/* <a className="dropdown-option">Edit Posts</a>
                 <a className="dropdown-option">Edit Room</a> */}
                 <a className="dropdown-option" onClick={() => {dispatch(promptModal('close-room'))}}>Close Room</a>

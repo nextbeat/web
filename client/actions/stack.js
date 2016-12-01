@@ -5,7 +5,7 @@ import { browserHistory } from 'react-router'
 
 import ActionTypes from './types'
 import Schemas from '../schemas'
-import { markStackAsRead } from './user'
+import { markStackAsRead } from './notifications'
 import { promptModal } from './app'
 import { pushSubscribe } from './push'
 import { loadPaginatedObjects } from './utils'

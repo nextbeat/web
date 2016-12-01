@@ -1,58 +1,70 @@
-import { Map, Set, Iterable, fromJS } from 'immutable'
+import { Map, Set, List, Iterable, fromJS } from 'immutable'
 import { ActionTypes, Status } from '../../actions'
 
 const initialState = {
-    unread: Map(),
-    read: Map()
+    unread: List(),
+    read: List()
 }
 
-function transform(response) {
-    let unread = fromJS(response)
-    for (var key of unread.keys()) {
-        unread = unread.update(key, v => {
-            let notes = Set()
-            v.forEach( note => {
-                notes = notes.add(Map({
-                    stack: note.get(0),
-                    count: note.get(1, 1)
-                }))
-            })
-            return notes
-        })
-    }
-    return unread
-}
-
-function syncNotifications(state, action) {
+function syncUnreadNotifications(state, action) {
     if (action.status === Status.SUCCESS) {
         return state.merge({
-            unread: transform(action.response),
-            read: Map()
+            unread: fromJS(action.response),
+            read: List()
         });
     }
     return state;
 }
 
+function markAllAsRead(state, action) {
+    return state.merge({
+        unread: List(),
+        read: state.get('unread')
+    });
+}
+
 function markAsRead(state, action) {
     if (action.stack) {
-        // only handles new_mediaitem key for now
         var id = parseInt(action.stack, 10)
-        let note = state.getIn(['unread', 'new_mediaitem'], Set()).find(note => note.get('stack') === id)
-        if (!!note) {
-            return state
-                .updateIn(['unread', 'new_mediaitem'], Set(), notes => notes.delete(note))
-                .updateIn(['read', 'new_mediaitem'], Set(), notes => notes.add(note))
-        }
+        return state.merge({
+            unread: state.get('unread').filterNot(note => note.get('stack_id') === id),
+            read: state.get('unread').filter(note => note.get('stack_id') === id)
+        });
+    }
+    return state;
+}
+
+function loadNotifications(state, action) {
+    if (action.status === Status.REQUESTING) {
+        return state.merge({
+            isFetching: true
+        }).delete('all').delete('error')
+    } else if (action.status === Status.SUCCESS) {
+        return state.merge({
+            isFetching: false,
+            all: action.response
+        })
+    } else if (action.status === Status.FAILURE) {
+        return state.merge({
+            isFetching: false,
+            error: action.error
+        })
     }
     return state;
 }
 
 export default function notifications(state=initialState, action) {
     switch (action.type) {
-        case ActionTypes.SYNC_NOTIFICATIONS:
-            return syncNotifications(state, action);
+        case ActionTypes.SYNC_UNREAD_NOTIFICATIONS:
+            return syncUnreadNotifications(state, action);
         case ActionTypes.MARK_AS_READ: 
             return markAsRead(state, action);
+        case ActionTypes.MARK_ALL_AS_READ:
+            return markAllAsRead(state, action);
+        case ActionTypes.NOTIFICATIONS:
+            return loadNotifications(state, action)
+        case ActionTypes.CLEAR_NOTIFICATIONS:
+            return state.delete('all').delete('isFetching').delete('error')
     }
     return state;
 }
