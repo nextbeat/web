@@ -26,7 +26,6 @@ class Dropdown extends React.Component {
 
     handleKeyUp(e) {
         const { type, dispatch } = this.props
-        console.log(e, e.charCode, e.which)
         if (e.which === 27) { // esc
             dispatch(closeDropdown(type))
         }

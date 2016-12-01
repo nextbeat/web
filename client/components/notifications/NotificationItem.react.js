@@ -27,9 +27,8 @@ class NotificationItem extends React.Component {
             case 'new_stack':
             case 'mentions':
             case 'bookmarks':
-                return `/r/${notification.stack.hid}`
             case 'new_mediaitem':
-                return `/r/${notification.stack.hid}/${notification.mediaItem.index}`
+                return `/r/${notification.stack.hid}`
             case 'subscriptions':
                 return `/u/${notification.user.username}`
             default:
