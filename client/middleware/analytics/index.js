@@ -68,7 +68,6 @@ function attributesForSessionStopType(store, type) {
     attributes.duration = (attributes.stopTime.getTime() - attributes.startTime.getTime())/1000
 
     return attributes
-    // return {}
 }
 
 function attributesForVideoImpression(store, action) {

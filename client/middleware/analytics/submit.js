@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import moment from 'moment'
-import { assign, snakeCase, mapKeys, isArray, omit } from 'lodash'
+import { assign, snakeCase, mapKeys, isArray, omit, chain, contains, isDate, isEmpty } from 'lodash'
 import { v4 as generateUuid } from 'node-uuid'
 import { List } from 'immutable'
 import Promise from 'bluebird'
@@ -8,6 +8,34 @@ import Promise from 'bluebird'
 import { AnalyticsTypes, AnalyticsSessionTypes, ActionTypes, Status } from '../../actions'
 import { storageAvailable, getStorageItem, setStorageItem } from '../../utils'
 import { Analytics, App } from '../../models'
+
+
+// GA Proxy
+
+const GA_ATTRIBUTES_MAP = {
+    'duration': 'metric1',
+    'startTime': 'metric2',
+    'endTime': 'metric3',
+    'videoDuration': 'metric4',
+    'stackId': 'dimension1',
+    'mediaitemId': 'dimension2',
+    'stackAuthorId': 'dimension3',
+    'mediaitemAuthorId': 'dimension3',
+    'stackAuthorUsername': 'dimension4',
+    'mediaitemAuthorUsername': 'dimension4'
+}
+
+function gaAttributesMap(attributes) {
+    return chain(attributes)
+        .pick( (value, key) => (key in GA_ATTRIBUTES_MAP) )
+        .pick( (value, key) => !(contains(['startTime', 'endTime'], key) && isDate(value)) )
+        .mapKeys( (value, key) => GA_ATTRIBUTES_MAP[key] )
+        .value()
+}
+
+
+
+// Main
 
 function isUuid(str) {
     return /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(str)
@@ -38,8 +66,6 @@ function sendEventsToServer(store, eventData) {
         assign(event, { application_type: 'web'}, app.deviceData())
     })
 
-    console.log('sending events to server', eventData)
-
     const url = '/api/analytics/events'
 
     if ('sendBeacon' in navigator) {
@@ -65,6 +91,22 @@ function sendEventsToServer(store, eventData) {
     }
 }
 
+function sendEventToGA(eventType, options) {
+    const gaAttributes = gaAttributesMap(options.attributes)
+    if (isEmpty(gaAttributes)) {
+        return
+    }
+
+    const eventAction = Analytics.typeString(eventType, options.sessionType)
+    const gaOptions = assign({}, gaAttributes, {
+        eventCategory: 'session',
+        eventAction,
+        transport: 'beacon'
+    })
+
+    ga('send', 'event', gaOptions)
+}
+
 export function submitEvent(store, eventType, options) {
 
     if (!storageAvailable('localStorage')) {
@@ -82,7 +124,10 @@ export function submitEvent(store, eventType, options) {
 
     setStorageItem('a_evts', pendingEvents)
 
-    // send events to server to be sent to kinesis
+    // send event to Google Analytics
+    sendEventToGA(eventType, options)
+
+    // send event to server to be sent to kinesis
     // TODO: rewrite to debounce and send multiple at once
     sendEventsToServer(store, eventData).then(function(success) {
         let pendingEvents = List(getStorageItem('a_evts') || [])
