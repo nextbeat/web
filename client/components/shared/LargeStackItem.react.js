@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router' 
 import { connect } from 'react-redux'
 import { Map } from 'immutable'
-import { without, isNumber } from 'lodash'
+import { without, isNumber } from 'lodash-es'
 import moment from 'moment'
 
 import Icon from './Icon.react'

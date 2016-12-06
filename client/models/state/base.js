@@ -1,4 +1,4 @@
-import { has } from 'lodash'
+import { has } from 'lodash-es'
 import { Map, List } from 'immutable'
 
 // Base model class, used to access data in the state tree

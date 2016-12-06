@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import moment from 'moment'
-import { assign, snakeCase, mapKeys, isArray, omit, chain, contains, isDate, isEmpty } from 'lodash'
+import { assign, snakeCase, mapKeys, isArray, omit, chain, includes, isDate, isEmpty } from 'lodash-es'
 import { v4 as generateUuid } from 'node-uuid'
 import { List } from 'immutable'
 import Promise from 'bluebird'
@@ -28,7 +28,7 @@ const GA_ATTRIBUTES_MAP = {
 function gaAttributesMap(attributes) {
     return chain(attributes)
         .pick( (value, key) => (key in GA_ATTRIBUTES_MAP) )
-        .pick( (value, key) => !(contains(['startTime', 'endTime'], key) && isDate(value)) )
+        .pick( (value, key) => !(includes(['startTime', 'endTime'], key) && isDate(value)) )
         .mapKeys( (value, key) => GA_ATTRIBUTES_MAP[key] )
         .value()
 }

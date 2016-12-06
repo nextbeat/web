@@ -1,7 +1,7 @@
 import XMPP from 'stanza.io'
 import moment from 'moment'
 import { v4 as generateUuid }from 'node-uuid'
-import { assign } from 'lodash'
+import { assign } from 'lodash-es'
 import { normalize } from 'normalizr'
 import Schemas from '../schemas'
 import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveChatbotComment, receiveStackClosed, syncUnreadNotifications, lostXMPPConnection, reconnectXMPP } from '../actions'

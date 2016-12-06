@@ -1,4 +1,4 @@
-import { assign, includes } from 'lodash'
+import { assign, includes } from 'lodash-es'
 import { ActionTypes, API_CANCEL } from '../actions'
 
 // Redux middleware function which looks for actions with a API_CANCEL

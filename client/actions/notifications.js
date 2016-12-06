@@ -1,4 +1,4 @@
-import { assign } from 'lodash'
+import { assign } from 'lodash-es'
 
 import { Status } from './types'
 import ActionTypes from './types'

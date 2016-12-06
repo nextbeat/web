@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { assign, debounce } from 'lodash'
+import { assign, debounce } from 'lodash-es'
 import Promise from 'bluebird'
 import Hls from 'hls.js'
 import { toggleFullScreen } from '../../../utils'

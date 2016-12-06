@@ -1,5 +1,5 @@
 import { Map, List, Set } from 'immutable'
-import { mapValues } from 'lodash'
+import { mapValues } from 'lodash-es'
 import { ActionTypes, Status } from '../../actions'
 
 import live from './live'

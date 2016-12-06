@@ -37,6 +37,6 @@ function bookmarks(stackStatus, state=Map(), action) {
 }
 
 export default combineReducers({
-    open: bookmarks.bind(this, "open"),
-    closed: bookmarks.bind(this, "closed")
+    open: bookmarks.bind(null, "open"),
+    closed: bookmarks.bind(null, "closed")
 })

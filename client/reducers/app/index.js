@@ -1,5 +1,5 @@
 import { Map, List, Set } from 'immutable'
-import { inRange, includes, find } from 'lodash'
+import { inRange, includes, find } from 'lodash-es'
 import { ActionTypes, Status } from '../../actions'
 import { combineReducers } from '../utils'
 

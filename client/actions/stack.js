@@ -1,5 +1,5 @@
 import { List } from 'immutable'
-import { flatten } from 'lodash'
+import { flatten } from 'lodash-es'
 import { normalize } from 'normalizr'
 import { browserHistory } from 'react-router'
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import hoistStatics from 'hoist-non-react-statics'
-import { assign } from 'lodash'
+import { assign } from 'lodash-es'
 
 import { Upload } from '../../../models'
 

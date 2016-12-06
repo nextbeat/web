@@ -3,7 +3,7 @@ import Promise from 'bluebird'
 import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
-import { isEmpty, assign } from 'lodash'
+import { isEmpty, assign } from 'lodash-es'
 
 import Player from './room/Player.react'
 import DetailBar from './room/DetailBar.react'

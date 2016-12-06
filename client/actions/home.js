@@ -1,4 +1,4 @@
-import { assign, flatten } from 'lodash'
+import { assign, flatten } from 'lodash-es'
 import { normalize } from 'normalizr'
 
 import ActionTypes from './types'

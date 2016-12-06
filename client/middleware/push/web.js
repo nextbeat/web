@@ -1,4 +1,4 @@
-import { assign } from 'lodash'
+import { assign } from 'lodash-es'
 
 import { PushTypes, pushSyncSubscription, pushSubscribe } from '../../actions'
 import { urlBase64ToUint8Array } from '../../utils'

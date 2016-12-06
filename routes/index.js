@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Redirect } from 'react-router'
-import { assign } from 'lodash'
+import { assign } from 'lodash-es'
 
 import App from '../client/components/App.react'
 import Bookmarks from '../client/components/Bookmarks.react'

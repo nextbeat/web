@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux' 
-import { assign } from 'lodash'
+import { assign } from 'lodash-es'
 
 import FileComponent from './utils/FileComponent.react'
 import AddCaption from './AddCaption.react'

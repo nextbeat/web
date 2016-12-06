@@ -1,5 +1,5 @@
 import { fromJS } from 'immutable'
-import { assign } from 'lodash'
+import { assign } from 'lodash-es'
 import { v4 as generateUuid } from 'node-uuid'
 
 import StateModel from './base'

@@ -1,5 +1,4 @@
 node_modules
-**/bundle.js
-**/bundle.min.js
+**/bundle*.js
 client/public/css/main.css
 dist

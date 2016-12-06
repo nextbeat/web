@@ -1,4 +1,4 @@
-import { assign } from 'lodash'
+import { assign } from 'lodash-es'
 import { ActionTypes, PushTypes } from '../../actions'
 import { Push } from '../../models'
 

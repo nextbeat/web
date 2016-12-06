@@ -10,19 +10,11 @@ var _               = require('lodash'),
     watchify        = require('watchify'),
     babelify        = require('babelify'), // because this one's for browserify!!
     envify          = require('envify/custom'),
+    rollupify       = require('rollupify'),
     source          = require('vinyl-source-stream'),
     buffer          = require('vinyl-buffer'),
     gutil           = require('gulp-util'),
     livereload      = require('gulp-livereload');
-
-// const MAC_ENV = {
-//     NODE_ENV: 'mac-dev',
-//     CLIENT_NAME: 'api_client',
-//     CLIENT_SECRET: 'xxxxxxx',
-//     SESSION_SECRET: 'secret',
-//     GOOGLE_ANALYTICS_ID: 'UA-78319133-2',
-//     FACEBOOK_APP_ID: '1021249581291875'
-// }
 
 const MAC_ENV = {
     NODE_ENV: 'mac',
@@ -92,8 +84,8 @@ gulp.task('watch', ['styles'], function() {
     var opts = _.assign({}, watchify.args, { debug: true });
     var b = browserify('client/app.js', opts)
         .plugin(watchify, {ignoreWatch: ['**/node_modules/**', '**/bower_components/**']}) // Watchify to watch source file changes
-        .transform(babelify, { presets: ['es2015', 'react'], plugins: ['transform-object-rest-spread'] }) // Babel tranforms
-        .transform(envify(MAC_ENV));
+        .transform(envify(MAC_ENV))
+        .transform(rollupify({ config: 'rollup.config.js'}))
 
     function bundle() {
         b.bundle()

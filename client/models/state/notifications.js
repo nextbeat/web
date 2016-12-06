@@ -1,5 +1,5 @@
 import StateModel from './base'
-import { isNumber } from 'lodash'
+import { isNumber } from 'lodash-es'
 import { Map, Set, List } from 'immutable'
 
 const KEY_MAP = {

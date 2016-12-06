@@ -1,4 +1,4 @@
-import { assign } from 'lodash'
+import { assign } from 'lodash-es'
 import { Map } from 'immutable'
 import fetch from 'isomorphic-fetch'
 import { normalize } from 'normalizr'

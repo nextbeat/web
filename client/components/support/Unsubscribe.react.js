@@ -2,7 +2,7 @@ import React from 'react'
 import { findDOMNode } from 'react-dom'
 import { connect } from 'react-redux'
 import { parse } from 'querystring'
-import { get } from 'lodash'
+import { get } from 'lodash-es'
 
 import { Support } from '../../models'
 import { sendEmailUnsubscribeRequest } from '../../actions'
