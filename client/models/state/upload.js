@@ -1,9 +1,9 @@
 import { fromJS } from 'immutable'
 import assign from 'lodash/assign'
-import { v4 as generateUuid } from 'node-uuid'
 
 import StateModel from './base'
 import App from './app'
+import { generateUuid } from '../../utils'
 import { Status } from '../../actions'
 
 const KEY_MAP = {

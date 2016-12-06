@@ -2,10 +2,11 @@ import fetch from 'isomorphic-fetch'
 import Promise from 'bluebird'
 import assign from 'lodash/assign'
 import find from 'lodash/find'
-import { v4 as generateUuid } from 'node-uuid'
 
 import { ActionTypes, Status, syncStacks, updateUser } from '../actions'
 import { App, Upload, CurrentUser } from '../models'
+import { generateUuid } from '../utils'
+
 
 function keyName(file, type, uuid) {
     var ext = file.name.split('.')[file.name.split('.').length-1]

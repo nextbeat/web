@@ -1,9 +1,8 @@
-import { v4 as generateUuid } from 'node-uuid'
 import moment from 'moment'
 
 import { ActionTypes, AnalyticsTypes, AnalyticsSessionTypes, Status } from '../../actions' 
 import { Stack, Analytics, CurrentUser, MediaItemEntity } from '../../models'
-import { getStorageItem, setStorageItem } from '../../utils'
+import { getStorageItem, setStorageItem, generateUuid } from '../../utils'
 
 import { submitEvent, submitPendingEvents } from './submit'
 

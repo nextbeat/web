@@ -1,11 +1,11 @@
 import assign from 'lodash/assign'
 import get from 'lodash/get'
-import uuid from 'node-uuid'
 import { normalize } from 'normalizr'
 
 import * as xmpp from '../xmpp'
 import { Status, ActionTypes } from '../actions' 
 import * as actions from '../actions'
+import { generateUuid } from '../utils'
 import { Stack, CurrentUser } from '../models'
 import Schemas from '../schemas'
 

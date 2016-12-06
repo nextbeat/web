@@ -25,7 +25,7 @@ if (initialState.app.environment !== 'production') {
 render(
     <Provider store={store}>
         <Router history={browserHistory}>
-            {routes(store)}
+            { /* routes(store) */}
         </Router>
     </Provider>,
     document.getElementById('react')

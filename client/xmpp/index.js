@@ -1,13 +1,13 @@
 import moment from 'moment'
-import { v4 as generateUuid }from 'node-uuid'
 import assign from 'lodash/assign'
 import { normalize } from 'normalizr'
 
-import { Client } from 'stanza.io/lib/client'
+import Client from 'stanza.io/lib/client'
 import disco from 'stanza.io/lib/plugins/disco'
 import keepalive from 'stanza.io/lib/plugins/keepalive'
 import muc from 'stanza.io/lib/plugins/muc'
 
+import { generateUuid } from '../utils'
 import Schemas from '../schemas'
 import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveChatbotComment, receiveStackClosed, syncUnreadNotifications, lostXMPPConnection, reconnectXMPP } from '../actions'
 import { CurrentUser, Stack } from '../models'

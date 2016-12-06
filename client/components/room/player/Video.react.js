@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import assign from 'lodash/assign'
 import debounce from 'lodash/debounce' 
 import Promise from 'bluebird'
-import Hls from 'hls.js'
+// import Hls from 'hls.js'
 import { toggleFullScreen } from '../../../utils'
 
 import Decoration from './Decoration.react'
@@ -244,16 +244,16 @@ class Video extends React.Component {
         let videoPlayer = document.getElementById('video_player');
 
         if (video.get('type') === 'hls') {
-            var hls = new Hls();
-            hls.attachMedia(videoPlayer);
-            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-                console.log("video and hls.js are now bound together !");
-                hls.loadSource(video.get('url'));
-                hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-                    console.log("manifest loaded, found " + data.levels.length + " quality levels");
-                    video.play();
-                });
-            });
+            // var hls = new Hls();
+            // hls.attachMedia(videoPlayer);
+            // hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+            //     console.log("video and hls.js are now bound together !");
+            //     hls.loadSource(video.get('url'));
+            //     hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+            //         console.log("manifest loaded, found " + data.levels.length + " quality levels");
+            //         video.play();
+            //     });
+            // });
         } else {
             videoPlayer.src = video.get('url')
         }

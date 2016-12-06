@@ -42,9 +42,9 @@ gulp.task('build', ['styles', 'server-compile', 'routes-compile'], function() {
         })
         .transform(envify())
         .bundle()
-        .pipe(source('bundle.js'))
+        .pipe(source('bundle.min.js'))
         .pipe(buffer())
-        // .pipe(uglify())
+        .pipe(uglify())
         .pipe(gulp.dest('client/public/js'));
 });
 

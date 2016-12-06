@@ -1,8 +1,8 @@
 import React from 'react'
-import { v4 as generateUuid } from 'node-uuid'
 import { connect } from 'react-redux'
 
 import { uploadProfilePicture, closeModal } from '../../actions'
+import { generateUuid } from '../../utils'
 import Modal from '../shared/Modal.react'
 
 class EditProfilePicture extends React.Component {

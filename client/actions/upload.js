@@ -1,5 +1,5 @@
-import { v4 as generateUuid } from 'node-uuid'
 import ActionTypes from './types'
+import { generateUuid } from '../utils'
 
 /********
  * UPLOAD
