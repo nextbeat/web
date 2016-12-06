@@ -1,5 +1,6 @@
 import { join } from 'path'
-import { assign, isEmpty } from 'lodash-es'
+import assign from 'lodash/assign'
+import isEmpty from 'lodash/isEmpty'
 import fetch from 'isomorphic-fetch'
 import Promise from 'bluebird'
 import moment from 'moment'

@@ -1,4 +1,4 @@
-import { assign } from 'lodash-es'
+import assign from 'lodash/assign'
 
 import ActionTypes from './types'
 import { GA, GATypes } from './types'

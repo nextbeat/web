@@ -7,7 +7,8 @@ import uaParser from 'ua-parser-js'
 
 import configureStore from '../../client/store'
 import { Map, fromJS } from 'immutable'
-import { assign, last } from 'lodash'
+import assign from 'lodash/assign'
+import has from 'lodash/has'
 import Helmet from 'react-helmet'
 
 

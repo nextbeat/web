@@ -1,4 +1,4 @@
-import { assign } from 'lodash-es'
+import assign from 'lodash/assign'
 
 import { PushTypes, pushSubscribe, pushSyncSubscription } from '../../actions'
 import { CurrentUser, App } from '../../models'

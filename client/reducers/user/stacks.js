@@ -1,5 +1,7 @@
 import { Map, List } from 'immutable'
-import { filter, difference } from 'lodash-es'
+import filter from 'lodash/filter'
+import difference from 'lodash/difference'
+
 import { ActionTypes, Status } from '../../actions'
 
 const initialState = Map({

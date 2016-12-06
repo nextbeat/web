@@ -1,4 +1,4 @@
-import { assign } from 'lodash-es'
+import assign from 'lodash/assign'
 import { Map } from 'immutable'
 
 import ActionTypes from './types'

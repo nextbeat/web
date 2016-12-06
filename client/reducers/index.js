@@ -1,5 +1,5 @@
 import { Map, List } from 'immutable'
-import { includes } from 'lodash-es'
+import includes from 'lodash/includes'
 
 import app from './app'
 import home from './home'

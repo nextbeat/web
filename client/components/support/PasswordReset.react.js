@@ -3,7 +3,7 @@ import { findDOMNode } from 'react-dom'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { parse } from 'querystring'
-import { get } from 'lodash-es'
+import get from 'lodash/get'
 
 import { Support } from '../../models'
 import { validatePasswordResetToken, resetPassword } from '../../actions'

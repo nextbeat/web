@@ -2,3 +2,4 @@ node_modules
 **/bundle*.js
 client/public/css/main.css
 dist
+disc*.html

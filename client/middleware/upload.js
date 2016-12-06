@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-fetch'
 import Promise from 'bluebird'
-import { assign, find } from 'lodash-es'
+import assign from 'lodash/assign'
+import find from 'lodash/find'
 import { v4 as generateUuid } from 'node-uuid'
 
 import { ActionTypes, Status, syncStacks, updateUser } from '../actions'

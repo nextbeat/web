@@ -1,4 +1,5 @@
-import { assign, get } from 'lodash-es'
+import assign from 'lodash/assign'
+import get from 'lodash/get'
 import uuid from 'node-uuid'
 import { normalize } from 'normalizr'
 

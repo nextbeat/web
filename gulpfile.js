@@ -10,7 +10,6 @@ var _               = require('lodash'),
     watchify        = require('watchify'),
     babelify        = require('babelify'), // because this one's for browserify!!
     envify          = require('envify/custom'),
-    rollupify       = require('rollupify'),
     source          = require('vinyl-source-stream'),
     buffer          = require('vinyl-buffer'),
     gutil           = require('gulp-util'),
@@ -36,16 +35,16 @@ gulp.task('styles', function() {
 });
 
 gulp.task('build', ['styles', 'server-compile', 'routes-compile'], function() {
-    return browserify('client/app.js')
+    return browserify('client/app.js', { fullPaths: true })
         .transform(babelify, { 
             presets: ['react', 'es2015'], 
             plugins: ['transform-object-rest-spread']
         })
         .transform(envify())
         .bundle()
-        .pipe(source('bundle.min.js'))
+        .pipe(source('bundle.js'))
         .pipe(buffer())
-        .pipe(uglify())
+        // .pipe(uglify())
         .pipe(gulp.dest('client/public/js'));
 });
 
@@ -84,8 +83,8 @@ gulp.task('watch', ['styles'], function() {
     var opts = _.assign({}, watchify.args, { debug: true });
     var b = browserify('client/app.js', opts)
         .plugin(watchify, {ignoreWatch: ['**/node_modules/**', '**/bower_components/**']}) // Watchify to watch source file changes
+        .transform(babelify, { presets: ['es2015', 'react'], plugins: ['transform-object-rest-spread'] }) // Babel tranforms
         .transform(envify(MAC_ENV))
-        .transform(rollupify({ config: 'rollup.config.js'}))
 
     function bundle() {
         b.bundle()

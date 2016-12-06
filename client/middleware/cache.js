@@ -1,4 +1,4 @@
-import { keys } from 'lodash-es'
+import keys from 'lodash/keys'
 import moment from 'moment'
 
 import { storageAvailable, getStorageItemExpiration } from '../utils'

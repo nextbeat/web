@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { Map } from 'immutable'
-import { without } from 'lodash-es'
+import without from 'lodash/without'
 import moment from 'moment'
 
 import Badge from './Badge.react'

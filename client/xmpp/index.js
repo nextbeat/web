@@ -1,14 +1,18 @@
-import XMPP from 'stanza.io'
 import moment from 'moment'
 import { v4 as generateUuid }from 'node-uuid'
-import { assign } from 'lodash-es'
+import assign from 'lodash/assign'
 import { normalize } from 'normalizr'
+
+import { Client } from 'stanza.io/lib/client'
+import disco from 'stanza.io/lib/plugins/disco'
+import keepalive from 'stanza.io/lib/plugins/keepalive'
+import muc from 'stanza.io/lib/plugins/muc'
+
 import Schemas from '../schemas'
 import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveChatbotComment, receiveStackClosed, syncUnreadNotifications, lostXMPPConnection, reconnectXMPP } from '../actions'
 import { CurrentUser, Stack } from '../models'
 
 function xmppHost() {
-    console.log(process.env.NODE_ENV);
     if (process.env.NODE_ENV === 'production') {
         return 'xmpp.nextbeat.co';
     } else if (process.env.NODE_ENV === 'development') {
@@ -65,7 +69,8 @@ export function getClient(store) {
             }
         }
 
-        const client = XMPP.createClient(options)
+        const client = new Client(options);
+        client.use([disco, keepalive, muc]);
 
         client.on('groupchat', function(s) {
             handleGroupChat(s, store);

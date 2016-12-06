@@ -1,5 +1,4 @@
 import { List } from 'immutable'
-import { flatten } from 'lodash-es'
 import { normalize } from 'normalizr'
 import { browserHistory } from 'react-router'
 
@@ -10,7 +9,7 @@ import { promptModal } from './app'
 import { pushSubscribe } from './push'
 import { loadPaginatedObjects } from './utils'
 import { Stack } from '../models'
-import { API_CALL, API_CANCEL, ANALYTICS, GA, AnalyticsTypes, GATypes } from './types'
+import { API_CALL, API_CANCEL, GA, AnalyticsTypes, GATypes } from './types'
 import { setStorageItem } from '../utils'
 
 

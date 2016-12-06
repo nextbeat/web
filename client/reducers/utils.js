@@ -1,5 +1,5 @@
 import { Map, List } from 'immutable'
-import { mapValues } from 'lodash-es'
+import mapValues from 'lodash/mapValues'
 import { Status } from '../actions'
 
 export function combineReducers(reducers) {

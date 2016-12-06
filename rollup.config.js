@@ -14,6 +14,7 @@ export default {
         builtins(),
         babel({
             exclude: 'node_modules/**'
+            // exclude: '**/*.json'
         }),
         resolve({
             jsnext: true,
