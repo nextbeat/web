@@ -17,7 +17,10 @@ module.exports = {
         publicPath: 'http://localhost:9090/'
     },
     devServer: {
-        inline: true
+        inline: true,
+        // proxy: {
+        //     "*": "http://localhost:9090"
+        // }
     },
     module: {
         rules: [
