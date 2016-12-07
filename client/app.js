@@ -8,6 +8,8 @@ import configureStore from './store'
 
 import routes from '../routes'
 
+import './layout/main.scss'
+
 // configure bluebird
 global.Promise = Promise
 Promise.config({

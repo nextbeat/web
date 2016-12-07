@@ -1,5 +1,5 @@
 node_modules
 **/bundle*.js
-client/public/css/main.css
+client/public/css/main*.css
 dist
 disc*.html
