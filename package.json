@@ -67,6 +67,7 @@
     "loose-envify": "^1.1.0",
     "nodemon": "^1.2.1",
     "postcss-loader": "^1.2.0",
+    "react-hot-loader": "^3.0.0-beta.6",
     "rollup": "^0.36.4",
     "rollup-plugin-babel": "^2.6.1",
     "rollup-plugin-commonjs": "^5.0.5",
@@ -81,6 +82,7 @@
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.7.0",
-    "webpack": "2.1.0-beta.27"
+    "webpack": "2.1.0-beta.27",
+    "webpack-dev-server": "^2.1.0-beta.12"
   }
 }

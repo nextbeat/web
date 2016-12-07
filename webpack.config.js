@@ -4,26 +4,44 @@ const ExtractTextPlugin     = require('extract-text-webpack-plugin');
 
 module.exports = {
     entry: {
-        app: './client/app.js',
-        // style: './client/layout/main.scss'
+        app: [
+            // 'react-hot-loader/patch',
+            // 'webpack-dev-server/client?http://localhost:3000',
+            // 'webpack/hot/only-dev-server',
+            './client/app.js'
+        ]
     },
     output: {
         filename: 'bundle.webpack.js',
-        path: path.join(__dirname, 'client/public/js')
+        path: path.join(__dirname, 'client/public/js'),
+        publicPath: 'http://localhost:9090/'
+    },
+    devServer: {
+        inline: true
     },
     module: {
         rules: [
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader'
+                loader: 'babel-loader',
+                query: {
+                    babelrc: false,
+                    presets: [
+                        ['es2015', { modules: false }],
+                        'react'
+                    ],
+                    plugins: [
+                        'transform-object-rest-spread'
+                    ]
+                }
             },
             {
                 test: /\.scss$/,
                 exclude: /node_modules/,
                 loader: ExtractTextPlugin.extract({
                     loader: [
-                        'css-loader?modules&importLoaders=1', 
+                        'css-loader', 
                         'postcss-loader', 
                         'sass-loader'
                     ],
@@ -32,6 +50,24 @@ module.exports = {
         ]
     },
     plugins: [
-        new ExtractTextPlugin('../css/main.webpack.css')
+        new ExtractTextPlugin('main.webpack.css'),
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify('mac')
+        }),
+        // new webpack.HotModuleReplacementPlugin(),
+        // new webpack.optimize.UglifyJsPlugin({
+        //     compress: {
+        //         warnings: false,
+        //         'screw_ie8': true
+        //     },
+        //     output: {
+        //         comments: false
+        //     },
+        //     sourceMap: false
+        // }),
+        // new webpack.LoaderOptionsPlugin({
+        //     minimize: true,
+        //     debug: false
+        // }),
     ]
 }

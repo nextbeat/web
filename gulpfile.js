@@ -70,7 +70,6 @@ gulp.task('server', function() {
         script: 'server/server.js',
         ext: 'html js',
         watch: ['server/*', 'routes/*'],
-        // tasks: ['server-compile', 'routes-compile'],
         env: MAC_ENV
     });
 });

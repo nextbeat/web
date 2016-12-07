@@ -2,6 +2,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { Router, Route, browserHistory } from 'react-router'
+import { AppContainer } from 'react-hot-loader'
 import { Map, fromJS } from 'immutable'
 import Promise from 'bluebird'
 import configureStore from './store'
@@ -27,7 +28,7 @@ if (initialState.app.environment !== 'production') {
 render(
     <Provider store={store}>
         <Router history={browserHistory}>
-            { /* routes(store) */}
+            { routes(store) }
         </Router>
     </Provider>,
     document.getElementById('react')

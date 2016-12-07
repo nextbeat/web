@@ -70,7 +70,9 @@ export function getClient(store) {
         }
 
         const client = new Client(options);
-        client.use([disco, keepalive, muc]);
+        client.use(disco);
+        client.use(keepalive);
+        client.use(muc);
 
         client.on('groupchat', function(s) {
             handleGroupChat(s, store);

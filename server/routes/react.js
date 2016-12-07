@@ -9,6 +9,7 @@ import configureStore from '../../client/store'
 import { Map, fromJS } from 'immutable'
 import assign from 'lodash/assign'
 import has from 'lodash/has'
+import last from 'lodash/last'
 import Helmet from 'react-helmet'
 
 
@@ -58,7 +59,8 @@ function getInitialState(req) {
 
 // todo: use handlebars
 function renderFullPage(html, head, initialState) {
-    const jsPath = (process.env.NODE_ENV === "mac" || process.env.NODE_ENV === "mac-dev") ? "bundle.js" : "bundle.min.js"
+    const jsPath = (process.env.NODE_ENV === "mac" || process.env.NODE_ENV === "mac-dev") ? "http://localhost:9090/bundle.webpack.js" : "/js/bundle.min.js"
+    const cssPath = (process.env.NODE_ENV === "mac" || process.env.NODE_ENV === "mac-dev") ? "http://localhost:9090/main.webpack.css" : "/css/main.css"
     return `
         <!doctype html>
         <html lang="en">
@@ -79,7 +81,7 @@ function renderFullPage(html, head, initialState) {
                 ga('create', '${process.env.GOOGLE_ANALYTICS_ID}', 'auto');
             </script>
 
-            <link rel="stylesheet" href="/css/main.css" />
+            <link rel="stylesheet" href="${cssPath}" />
             <link rel="manifest" href="/manifest.json" />
         </head>
 
@@ -88,7 +90,7 @@ function renderFullPage(html, head, initialState) {
             <script>
                 window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
             </script>
-            <script src="/js/${jsPath}"></script>
+            <script src="${jsPath}"></script>
         </body>
         </html>
     `
