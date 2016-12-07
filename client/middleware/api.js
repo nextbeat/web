@@ -1,9 +1,9 @@
 import { join } from 'path'
 import assign from 'lodash/assign'
 import isEmpty from 'lodash/isEmpty'
+import format from 'date-fns/format'
 import fetch from 'isomorphic-fetch'
 import Promise from 'bluebird'
-import moment from 'moment'
 import { stringify } from 'querystring'
 import { normalize } from 'normalizr'
 import { Status, API_CALL } from '../actions'
@@ -20,7 +20,7 @@ function urlWithParams(endpoint, pagination, queries) {
         queries = assign({}, queries, { 
             page: pagination.page,
             limit: pagination.limit,
-            before: moment(pagination.before).format()
+            before: format(pagination.before)
         })
     }
 

@@ -1,4 +1,3 @@
-import moment from 'moment'
 import assign from 'lodash/assign'
 import { normalize } from 'normalizr'
 

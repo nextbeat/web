@@ -1,5 +1,5 @@
 import keys from 'lodash/keys'
-import moment from 'moment'
+import isBefore from 'date-fns/is_before'
 
 import { storageAvailable, getStorageItemExpiration } from '../utils'
 import { ActionTypes } from '../actions'
@@ -18,7 +18,7 @@ export default store => next => action => {
         let storageKeys = keys(localStorage)
         storageKeys.forEach(key => {
             var expires = getStorageItemExpiration(key)
-            if (expires && moment(expires).isBefore()) {
+            if (expires && isBefore(expires, new Date())) {
                 localStorage.removeItem(key)
             }
         })

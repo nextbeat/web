@@ -1,8 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router'
-import moment from 'moment'
 
-import { shortFromNow } from '../../utils'
+import { fromString } from '../../utils'
 import Icon from '../shared/Icon.react'
 
 class NotificationItem extends React.Component {
@@ -18,7 +17,7 @@ class NotificationItem extends React.Component {
     componentDidMount() {
         // Fix date at mount so that fromNow() doesn't recalculate when component re-renders
         this.setState({
-            mountDate: moment()
+            mountDate: new Date()
         });
     }
 
@@ -61,7 +60,7 @@ class NotificationItem extends React.Component {
                 </div>
                 <div className="notification-item_main">
                     <span className="notification-item_text">{this.renderMessage(notification)}</span>
-                    <span className="notification-item_timestamp">{shortFromNow(moment.unix(notification.timestamp), this.state.mountDate)}</span>
+                    <span className="notification-item_timestamp">{fromString(notification.timestamp*1000, this.state.mountDate, { format: 'short' })}</span>
                 </div>
             </Link>
         );

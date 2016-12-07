@@ -1,19 +1,10 @@
 import React from 'react'
-import moment from 'moment'
+import format from 'date-fns/format'
+import { timeLeftString } from '../../../utils'
 
 import ScrollComponent from '../../utils/ScrollComponent.react'
 import ActivityItem from './ActivityItem.react'
 import Spinner from '../../shared/Spinner.react'
-
-function fromNow(date) {
-    var hours = moment(date).diff(moment(), 'hours');
-    if (hours >= 1) {
-        return `${hours} hour${hours > 1 ? 's' : ''} left`
-    } else {
-        var minutes = Math.max(1, moment(date).diff(moment(), 'minutes'));
-        return `${minutes} minute${minutes > 1 ? 's' : ''} left` 
-    }
-}
 
 class Activity extends React.Component {
 
@@ -42,8 +33,8 @@ class Activity extends React.Component {
         return (
         <section className="activity" style={{ display: (display ? "block" : "none") }}>
             <div className="activity_time">
-                { stack.get('closed') && moment(stack.get('created_at')).format('MMMM D, YYYY') }
-                { !stack.get('closed') && fromNow(stack.get('expires')) }
+                { stack.get('closed') && format(stack.get('created_at'), 'MMMM D, YYYY') }
+                { !stack.get('closed') && timeLeftString(stack.get('expires')) }
             </div>
             <div className="activity_inner" id="activity-inner">
                 {stack.get('mediaItemsFetching') && <Spinner type="grey" />}

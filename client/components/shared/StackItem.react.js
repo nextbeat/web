@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { Map } from 'immutable'
 import without from 'lodash/without'
-import moment from 'moment'
 
 import Badge from './Badge.react'
 import { Notifications } from '../../models'
+import { fromNowString } from '../../utils'
 
 class StackItem extends React.Component {
 
@@ -80,7 +80,7 @@ class StackItem extends React.Component {
                             <div className="item-room_details">
                                 <span className="item-room_detail item-room_author">{ author.get('username') }</span>
                                 <span className="item-room_detail item-room_tag">{stack.getIn(['tag', 'name'])}</span>
-                                <span className="item-room_detail item-room_time">{moment(stack.get('most_recent_post_at')).fromNow()}</span>
+                                <span className="item-room_detail item-room_time">{fromNowString(stack.get('most_recent_post_at'))}</span>
                             </div>
                         </div>
                         <div className="item-room_right">

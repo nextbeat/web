@@ -1,5 +1,7 @@
 import assign from 'lodash/assign'
-import moment from 'moment'
+import addSeconds from 'date-fns/add_seconds'
+import isBefore from 'date-fns/is_before'
+import format from 'date-fns/format'
 
 /************
  * FULLSCREEN
@@ -148,7 +150,7 @@ export function setStorageItem(key, value, options) {
   }
 
   if (options.ttl > 0) {
-    storedValue.expires = moment().add(options.ttl, 'seconds').format()
+    storedValue.expires = format(addSeconds(new Date(), options.ttl))
   }
 
   if (storageAvailable(options.type)) {
@@ -166,7 +168,7 @@ export function getStorageItem(key, options) {
     if (storedValueString !== null) {
       try {
         var storedValue = JSON.parse(storage.getItem(key));      
-        if (!('expires' in storedValue && moment(storedValue.expires).isBefore())) {
+        if (!('expires' in storedValue && isBefore(storedValue.expires, new Date()))) {
           value = storedValue.value;
         }
       } catch (e) {
@@ -223,7 +225,7 @@ export function urlBase64ToUint8Array(base64String) {
  * DATE FORMATTING
  *****************/
 
-export { shortFromNow } from './date'
+export { fromString, fromNowString, timeLeftString } from './date'
 
 /*******
  * OTHER

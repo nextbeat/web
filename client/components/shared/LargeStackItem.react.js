@@ -4,8 +4,8 @@ import { connect } from 'react-redux'
 import { Map } from 'immutable'
 import without from 'lodash/without'
 import isNumber from 'lodash/isNumber'
-import moment from 'moment'
 
+import { fromNowString } from '../../utils'
 import Icon from './Icon.react'
 import Badge from './Badge.react'
 
@@ -83,7 +83,7 @@ class LargeStackItem extends React.Component {
                     <div className="item-room-large_description">{stack.get('description')}</div>
                     <div className="item-room-large_details">
                         <span className="item-room-large_author">{author.get('username')}</span>
-                        <span className="item-room-large_time">{moment(stack.get('most_recent_post_at')).fromNow()}</span>
+                        <span className="item-room-large_time">{fromNowString(stack.get('most_recent_post_at'))}</span>
                     </div>
                 </div>
                 </Link>

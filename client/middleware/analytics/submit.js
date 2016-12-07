@@ -1,8 +1,8 @@
 import fetch from 'isomorphic-fetch'
-import moment from 'moment'
 import { List } from 'immutable'
 import Promise from 'bluebird'
 
+import format from 'date-fns/format'
 import assign from 'lodash/assign'
 import snakeCase from 'lodash/snakeCase'
 import mapKeys from 'lodash/mapKeys'
@@ -56,7 +56,7 @@ function formatEventData(store, eventType, options) {
         event_type: Analytics.typeString(eventType, options.sessionType),
         user_id: options.userId,
         anonymous: isUuid(options.userId),
-        timestamp: moment().format()
+        timestamp: format(new Date())
     }, 
     snakeCaseObjectKeys(options.attributes))
 }
