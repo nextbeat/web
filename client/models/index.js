@@ -15,3 +15,6 @@ export { default as Analytics } from './state/analytics'
 export { default as StackEntity } from './entities/stack'
 export { default as MediaItemEntity } from './entities/mediaItem'
 export { default as UserEntity } from './entities/user'
+
+export { default as StateModel } from './state/base'
+export { default as EntityModel } from './entities/base'

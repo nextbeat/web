@@ -110,10 +110,10 @@
  ******/
 
 .item-room {
-    border: 1px solid #eee;
-
     color: $text-color;
     font-weight: normal;
+    display: flex;
+    align-items: flex-start;
 
     &:hover {
         cursor: pointer;
@@ -134,66 +134,33 @@ a.item-room.selected {
     background-color: rgba($primary-color, 0.1);
 }
 
-.item-room_info {
-    overflow: hidden;
-    float: left;
-    width: calc(100% - 50px);
-    padding-left: 10px;
-    height: 100%;
-    font-size: 14px;
+.item-room_thumb {
+    height: 55px;
+    flex-shrink: 0;
+    background-color: #ccc;
+
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.item-room_main {
+    margin-left: 10px;
 }
 
 .item-room_description {
-    height: 80%;
-    overflow: hidden;
+    font-size: 12px;
+    font-weight: 300;
 }
 
 .item-room_details {
-    height: 20%;
-    position: relative;
-}
-
-.item-room_detail {
-    position: absolute;
-    bottom: 0;
+    margin-top: 7px;
     font-size: 12px;
-    color: $detail-text-color;
+    color: $text-color;
 }
 
 .item-room_author {
-    left: 0;
-    font-weight: bold;
-    display: none;
-}
-
-.item-room_tag {
-    left: 0;
-    font-weight: bold;
-}
-
-.item-room_time {
-    right: 0;
-}
-
-.item-room_right {
-    float: left;
-    width: 50px;
-    height: 100%;
-    text-align: right;
-    position: relative;
-    @include clearfix;
-}
-
-.item-room_right-inner {
-    width: 100%;
-    @include centerY;
-}
-
-.item-room_bookmark {
-    width: 15px;
-    height: 15px;
-    margin-bottom: -2px;
-    margin-left: 2px;
+    font-weight: 500;
 }
 
 .item-room_badge {

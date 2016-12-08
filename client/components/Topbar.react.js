@@ -174,7 +174,7 @@ class Topbar extends React.Component {
 
         return (
             <div className="topbar">
-                { this.sidebarIsHidden() && <div className="topbar_icon topbar_icon-menu" onClick={this.toggleSidebar}><Icon type="menu" /></div> }
+                <div className="topbar_icon topbar_icon-menu" onClick={this.toggleSidebar}><Icon type="menu" /></div>
                 
                 <div className={`topbar_logo-container ${loggedInClass}`}>
                     <span className="topbar_logo" onClick={this.hideSidebar}><Link to="/"><Logo /></Link></span>

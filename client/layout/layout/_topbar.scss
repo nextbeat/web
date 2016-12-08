@@ -1,8 +1,8 @@
 .topbar {
     width: 100%;
     height: $topbar-height;
-    background: $dark-background-color;
-    padding: 0 10px;
+    background: white;
+    padding: 0 25px;
     position: relative;
     overflow: visible;
     display: flex;
@@ -41,8 +41,7 @@
     height: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: $sidebar-width;
+    margin-left: 25px;
 }
 
 .topbar_logo, .topbar_logo-small {
@@ -77,6 +76,7 @@
     height: 100%;
     position: relative;
     width: 300px;
+    margin-left: 25px;
 
     .svg-icon-search {
         z-index: 10;
@@ -165,7 +165,7 @@ input.topbar_search-bar {
 
 .dropdown-topbar {
     position: absolute;
-    top: 53px;
+    top: 58px;
     right: 10px;
 }
 

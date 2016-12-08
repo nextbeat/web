@@ -5,7 +5,7 @@ import { Map } from 'immutable'
 import without from 'lodash/without'
 
 import Badge from './Badge.react'
-import { Notifications } from '../../models'
+import { Notifications, CurrentUser, EntityModel } from '../../models'
 import { fromNowString } from '../../utils'
 
 class StackItem extends React.Component {
@@ -37,16 +37,8 @@ class StackItem extends React.Component {
         }
 
         // resize thumbnail
-        const thumb = node.find('.item_thumb');
-        thumb.width(thumb.height());
-
-        // resize text
-        const $description = node.find('.item-room_description');
-        const height = $description.height();
-        let fontSize =  parseInt($description.css('font-size'));
-        while ($description.prop('scrollHeight') > height) {
-            $description.css('font-size', --fontSize)
-        }
+        const thumb = node.find('.item-room_thumb');
+        thumb.width(thumb.height()*4/3);
     }
 
     componentDidMount() {
@@ -64,34 +56,24 @@ class StackItem extends React.Component {
     }
 
     render() {
-        const { stack, user, users, notifications } = this.props;
-        const author = users.get(stack.get('author_id').toString(), Map())
-        const unreadNotificationCount = user.isLoggedIn() && notifications.unreadMediaItemCount(stack.get('id'))
-        const thumbnailUrl = stack.get('thumbnail_small_url') || stack.get('thumbnail_url', '')
+        const { stack, currentUser, notifications } = this.props;
+
+        console.log(stack.thumbnail())
+        const author = stack.author()
+        const unreadNotificationCount = currentUser.isLoggedIn() && notifications.unreadMediaItemCount(stack.get('id'))
+
         return (
             <div className="item_container" ref={(c) => this._node = c} >
-            <Link to={`/r/${stack.get('hid')}`} className="item-room item" activeClassName="selected">
-                <div className="item_inner">
-                    <div className="item_thumb" style={{backgroundImage: `url(${thumbnailUrl})`}}>
-                    </div>
-                    <div className="item_main">
-                        <div className="item-room_info">
+            <Link to={`/r/${stack.get('hid')}`} className="item-room" activeClassName="selected">
+                    <div className="item-room_thumb" style={{backgroundImage: `url(${stack.thumbnail('small').get('url')})`}}></div>
+                    <div className="item-room_main">
                             <div className="item-room_description">{stack.get('description') || "No description."}</div>
                             <div className="item-room_details">
                                 <span className="item-room_detail item-room_author">{ author.get('username') }</span>
-                                <span className="item-room_detail item-room_tag">{stack.getIn(['tag', 'name'])}</span>
-                                <span className="item-room_detail item-room_time">{fromNowString(stack.get('most_recent_post_at'))}</span>
                             </div>
-                        </div>
-                        <div className="item-room_right">
-                            <div className="item-room_right-inner">
-                                {stack.get('bookmark_count')}<img className="item-room_bookmark" src="/images/bookmark.png"/>
-                            </div>
-                        </div>
                     </div>
                     {!stack.get('closed') && <Badge elementType="item-room" type="open" />}
-                    {user.isLoggedIn() && unreadNotificationCount > 0 && <Badge elementType="item-room" type="new">{unreadNotificationCount}</Badge>}
-                </div>
+                    {currentUser.isLoggedIn() && unreadNotificationCount > 0 && <Badge elementType="item-room" type="new">{unreadNotificationCount}</Badge>}
             </Link>
             </div>
         );
@@ -100,8 +82,16 @@ class StackItem extends React.Component {
 
 function mapStateToProps(state) {
     return { 
-        users: state.getIn(['entities', 'users']),
-        notifications: new Notifications(state)
+        notifications: new Notifications(state),
+        currentUser: new CurrentUser(state)
+    }
+}
+
+StackItem.propTypes = {
+    stack: (props, propName) => {
+        if (!(props[propName] instanceof EntityModel)) {
+            return new Error('Invalid stack prop supplied to StackCard.')   
+        }
     }
 }
 

@@ -4,35 +4,20 @@
     left: 0;
     bottom: 0;
     width: $sidebar-width;
-    border-right: 1px solid $border-color;
-    background: white;
+
+    padding: 20px 20px 0 30px;
+    background: $dark-background-color;
     padding: 15px;
     overflow: auto;
 
     h1 {
-        font-size: 12px;
+        font-size: 14px;
         color: $primary-color;
+        font-weight: 500;
     }
 
     .spinner {
         margin: 20px auto;
-    }
-
-    .separator {
-        width: calc(100% - 20px);
-        background: mix($separator-color, white, 50%);
-
-    }
-
-    .svg-icon-menu {
-        fill: $primary-color;
-        display: block;
-        width: 30px;
-        height: 30px;
-
-        &:hover {
-            fill: $light-primary-color;
-        }
     }
 
     &.collapsed {
@@ -51,90 +36,25 @@
 }
 
 .sidebar_section {
-    margin-bottom: 15px;
+    margin-bottom: 30px;
 }
 
-
-/********
- * HEADER
- ********/
-
-.sidebar_logo {
-    width: 100%;
-    display: block;
-    margin-bottom: 25px;
-
-    svg {
-        margin: 0 auto;
-        display: block;
-        width: 100px;
-        fill: $primary-color;
-    }
-}
-
-.sidebar_user-info {
-    margin-bottom: 15px;
-    height: 20px;
-}
-
-.sidebar_user {
-    float: left;
-    font-size: 14px;
-    color: $text-color;
-
-    div {
-        float: left;
-    }
-
-    span {
-        float: left;
-        @include clearfix;
-    }
-
-    &:hover {
-        color: $primary-color;
-    }
-}
-
-.sidebar_logout {
-    float: right;
-    font-size: 12px;
-    font-weight: normal;
-    @include clearfix;
-
-    &:hover {
-        cursor: pointer;
-    }
-}
-
-.sidebar_login-buttons {
-    width: 140px;
-    margin: 0 auto;
-}
-
-.sidebar_login {
-    float: left;
-}
-
-.sidebar_signup {
-    float: right;
-    @include clearfix;
-}
 
 /***************
  * CONTENT VIEWS
  ***************/
 
-.sidebar a {
-    font-weight: normal;
+a.sidebar_item {
+    font-weight: 300;
     color: $text-color;
-    display: block;
-    margin: 0 0 7px 5px;
+    display: flex;
+    margin-bottom: 12px;
     font-size: 14px;
-    @include clearfix;
+    align-items: center;
 
     &:hover {
         color: $primary-color;
+        cursor: pointer;
     }
 
     &.selected {
@@ -142,9 +62,7 @@
     }
 
     .sidebar_icon {
-        float: left;
         background-color: $primary-color;
-         
         svg {
             fill: white;
         }
@@ -162,12 +80,12 @@
 
 .sidebar_icon {
     display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
+    width: 29px;
+    height: 29px;
+    margin-right: 15px;
     overflow: hidden;
     position: relative;
-    border-radius: 3px;
+    border-radius: 5px;
     background: #ddd;
 
     background-repeat: no-repeat;
@@ -194,55 +112,13 @@
 // Bookmarks
 
 .sidebar_bookmarks {
-
-    margin: 0 -15px 0 -15px;
-
-    a {
-        margin: 0;
-    }
-
-    h1 {
-        margin-left: 15px;
-    }
-
     .item_container {
         float: none;
-        margin-bottom: 0;
+        margin-bottom: 12px;
+        &:last-child {
+            margin: 0;
+        }
     }
-
-    .item-room {
-        width: 100%;
-        height: 65px;
-        padding: 10px 15px;
-        border: none;
-    }
-
-    .item-room_info {
-        font-size: 13px;
-        width: 100%;
-    }
-
-    .item-room_right, .item-room_open, .item-room_tag, .item-room_time {
-        display: none;
-    }
-
-    .item-room_detail {
-        font-size: 10px;
-    }
-
-    .item-room_author {
-        display: block;
-    }
-
-}
-
-a.sidebar_bookmarks-see-all {
-    text-align: center;
-    font-weight: normal;
-    color: $primary-color;
-    font-size: 12px;
-    width: 100%;
-    display: block;
 }
 
 // Subscriptions
@@ -253,6 +129,7 @@ a.sidebar_bookmarks-see-all {
     position: absolute;
     font-size: 10px;
     left: 150px;
+    background: $dark-background-color;
 }
 
 // Responsiveness

@@ -2,6 +2,7 @@ import StateModel from './base'
 
 import { Map, List, Set } from 'immutable'
 import Stack from './stack'
+import StackEntity from '../entities/stack'
 
 const KEY_MAP = {
     // meta
@@ -55,11 +56,11 @@ export default class CurrentUser extends StateModel {
     }
 
     openBookmarkedStacks() {
-        return this.get('openBookmarkIds', List()).map(id => this.__getEntity(id, 'stacks'));
+        return this.get('openBookmarkIds', List()).map(id => new StackEntity(id, this.state.get('entities')));
     }
 
     closedBookmarkedStacks() {
-        return this.get('closedBookmarkIds', List()).map(id => this.__getEntity(id, 'stacks'));
+        return this.get('closedBookmarkIds', List()).map(id => new StackEntity(id, this.state.get('entities')));
     }
 
     subscriptions() {
