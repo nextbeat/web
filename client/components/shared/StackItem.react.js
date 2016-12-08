@@ -58,7 +58,6 @@ class StackItem extends React.Component {
     render() {
         const { stack, currentUser, notifications } = this.props;
 
-        console.log(stack.thumbnail())
         const author = stack.author()
         const unreadNotificationCount = currentUser.isLoggedIn() && notifications.unreadMediaItemCount(stack.get('id'))
 

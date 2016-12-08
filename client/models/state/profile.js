@@ -1,5 +1,7 @@
 import StateModel from './base'
 
+import UserEntity from '../entities/user'
+
 const KEY_MAP = {
     // meta
     'id': ['profile', 'meta', 'id'],
@@ -19,6 +21,10 @@ export default class Profile extends StateModel {
         this.keyMap = KEY_MAP;
         this.name = "profile";
         this.entityName = "users";
+    }
+
+    entity() {
+        return new UserEntity(this.get('id'), this.state.get('entities'))
     }
 
     openStacks() {

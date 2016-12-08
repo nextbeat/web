@@ -20,7 +20,7 @@ function urlWithParams(endpoint, pagination, queries) {
         queries = assign({}, queries, { 
             page: pagination.page,
             limit: pagination.limit,
-            before: format(pagination.before)
+            before: format(pagination.beforeDate)
         })
     }
 

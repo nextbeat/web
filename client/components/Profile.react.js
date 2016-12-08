@@ -5,7 +5,7 @@ import Helmet from 'react-helmet'
 import ScrollComponent from './utils/ScrollComponent.react'
 
 import LargeStackItem from './shared/LargeStackItem.react'
-import LargeUser from './profile/LargeUser.react'
+import ProfileHeader from './profile/ProfileHeader.react'
 import Spinner from './shared/Spinner.react'
 import PageError from './shared/PageError.react'
 import AppBanner from './shared/AppBanner.react'
@@ -72,30 +72,32 @@ class ProfileComponent extends React.Component {
         const { profile, openStacks, closedStacks } = this.props;
         const profpic_url = profile.get('profpic_thumbnail_url') || profile.get('profpic_url');
         return (
-            <section className="content_inner">  
+            <section>  
                 { this.renderDocumentHead(profile) }
-                <div className="profile_user-container"><LargeUser user={profile.entity()} /></div>
-                { openStacks.size > 0 && 
-                <div>
-                    <div className="rooms-list_header">OPEN</div>
-                    <div className="rooms-list_rooms">
-                        { openStacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
+                <ProfileHeader user={profile.entity()} />
+                <div className="content_inner">
+                    { openStacks.size > 0 && 
+                    <div>
+                        <div className="rooms-list_header">OPEN</div>
+                        <div className="rooms-list_rooms">
+                            { openStacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
+                        </div>
                     </div>
-                </div>
-                }
+                    }
 
-                { /* Show no-content history only if the user has no open stacks */ }
-                { (closedStacks.size > 0 || (openStacks.size === 0 && !profile.stacksFetching())) && 
-                <div>
-                    <div className="rooms-list_header">HISTORY</div>
-                    <div className="rooms-list_rooms">
-                        { closedStacks.size === 0 && !profile.stacksFetching() && <div className="rooms-list_no-content">{profile.get('username')} has not made any rooms!</div> }
-                        { closedStacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
+                    { /* Show no-content history only if the user has no open stacks */ }
+                    { (closedStacks.size > 0 || (openStacks.size === 0 && !profile.stacksFetching())) && 
+                    <div>
+                        <div className="rooms-list_header">HISTORY</div>
+                        <div className="rooms-list_rooms">
+                            { closedStacks.size === 0 && !profile.stacksFetching() && <div className="rooms-list_no-content">{profile.get('username')} has not made any rooms!</div> }
+                            { closedStacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
+                        </div>
                     </div>
-                </div>
-                }
+                    }
 
-                { profile.stacksFetching() && <Spinner type="grey rooms-list" /> }
+                    { profile.stacksFetching() && <Spinner type="grey rooms-list" /> }
+                </div>
             </section>
         )
     }

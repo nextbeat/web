@@ -85,6 +85,10 @@ export default class CurrentUser extends StateModel {
         return this.has('id');
     }
 
+    isUser(user) {
+        return this.isLoggedIn() && this.get('id') === user.get('id')
+    }
+
     isConnected() {
         return this.get('connected', false);
     }
