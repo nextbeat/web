@@ -21,4 +21,8 @@ export default class Home extends StateModel {
         return stackIds.map(id => this.__getEntity(id, "stacks"))
     }
 
+    isLoaded() {
+        return this.get('sections', List()).size > 0
+    }
+
 }

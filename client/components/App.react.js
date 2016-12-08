@@ -145,10 +145,7 @@ class App extends React.Component {
         }
 
         const inRoom = routes[routes.length-1].path.substring(0, 3) === '/r/'
-        const expandLeftClass = app.get('width') === 'small' 
-                                || app.get('width') === 'medium'
-                                || (app.get('width') === 'room-medium' && inRoom) 
-                                    ? 'expand-left' : ''
+        const inRoomClass = inRoom ? 'main-container-room' : ''
 
         return (
             <section className="app-container" id="app-container">
@@ -156,9 +153,9 @@ class App extends React.Component {
                 <Login />
                 <Signup />
                 <Topbar {...barProps} />
-                <div className="main-container">
+                <div className={`main-container ${inRoomClass}`}>
                     <Sidebar {...barProps} />
-                    <div className={`main ${expandLeftClass}`}>
+                    <div className="main">
                         {React.cloneElement(children, { user, connected })}
                     </div>
                 </div>

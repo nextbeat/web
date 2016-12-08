@@ -16,7 +16,10 @@ class HomeComponent extends React.Component {
     }
 
     componentDidMount() {
-        this.props.dispatch(loadHome())
+        const { home, dispatch } = this.props 
+        if (!home.isLoaded()) {
+            this.props.dispatch(loadHome())
+        }
     }
 
     componentWillUnmount() {
@@ -45,6 +48,24 @@ function mapStateToProps(state) {
         home: new Home(state), // 🌮 
         app: new App(state)
     }
+}
+
+HomeComponent.fetchData = (store, params) => {
+    return new Promise((resolve, reject) => {
+
+        const unsubscribe = store.subscribe(() => {
+            const home = new Home(store.getState())
+                if (home.isLoaded()) {
+                    unsubscribe()
+                    resolve(store)
+                }
+                if (home.get('sectionsError')) {
+                    unsubscribe()
+                    reject(new Error('Stack does not exist.'))
+                }
+            })
+        store.dispatch(loadHome())
+    })
 }
 
 export default connect(mapStateToProps)(HomeComponent)

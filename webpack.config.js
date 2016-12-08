@@ -3,6 +3,8 @@ const path                  = require('path');
 const ExtractTextPlugin     = require('extract-text-webpack-plugin');
 
 module.exports = {
+    cache: true,
+    devtool: 'eval',
     entry: {
         app: [
             // 'react-hot-loader/patch',
@@ -18,10 +20,7 @@ module.exports = {
         publicPath: 'http://localhost:9090/'
     },
     devServer: {
-        inline: true,
-        // proxy: {
-        //     "*": "http://localhost:9090"
-        // }
+        inline: true
     },
     module: {
         rules: [
@@ -53,7 +52,8 @@ module.exports = {
             },
             {
                 test: /\.(gif|png|jpe?g)$/,
-                loader: 'file-loader'
+                loader: 'file-loader',
+                exclude: /node_modules/
             }
         ]
     },
@@ -62,20 +62,20 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('mac')
         }),
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false,
-                'screw_ie8': true
-            },
-            output: {
-                comments: false
-            },
-            sourceMap: false
-        }),
-        new webpack.LoaderOptionsPlugin({
-            minimize: true,
-            debug: false
-        }),
+        // new webpack.HotModuleReplacementPlugin(),
+        // new webpack.optimize.UglifyJsPlugin({
+        //     compress: {
+        //         warnings: false,
+        //         'screw_ie8': true
+        //     },
+        //     output: {
+        //         comments: false
+        //     },
+        //     sourceMap: false
+        // }),
+        // new webpack.LoaderOptionsPlugin({
+        //     minimize: true,
+        //     debug: false
+        // }),
     ]
 }

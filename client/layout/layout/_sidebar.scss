@@ -20,19 +20,19 @@
         margin: 20px auto;
     }
 
-    &.collapsed {
-        display: block;
-        transform: translateX(-100%);
+    // &.collapsed {
+    //     display: block;
+    //     transform: translateX(-100%);
 
-        transition: transform 0.25s;
-    }
+    //     transition: transform 0.25s;
+    // }
 
-    &.collapsed.active {
-        transform: none;
-        z-index: 30;
+    // &.collapsed.active {
+    //     transform: none;
+    //     z-index: 30;
 
-        transition: transform 0.2s;
-    }
+    //     transition: transform 0.2s;
+    // }
 }
 
 .sidebar_section {
@@ -134,32 +134,48 @@ a.sidebar_item {
 
 // Responsiveness
 
+@mixin collapsed-sidebar {
+    display: block;
+    transform: translateX(-100%);
+    transition: transform 0.25s;
+}
+
 .sidebar {
-    // expands to fill width of screen
     @include media('<=medium') {
+       @include collapsed-sidebar;
 
         // so sidebar is hidden when page initially loads
         // before js is loaded
-        display: none;
+        // display: none;
 
-        &.collapsed {
-            display: none;
-            transition: none;
-        }
+        // &.collapsed {
+        //     display: none;
+        //     transition: none;
+        // }
 
-        &.collapsed.active {
-            display: block;
-            position: absolute;
-            width: 100%;
-            border: none;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            z-index: 30;
+        // &.collapsed.active {
+        //     display: block;
+        //     position: absolute;
+        //     width: 100%;
+        //     border: none;
+        //     top: 0;
+        //     left: 0;
+        //     bottom: 0;
+        //     right: 0;
+        //     z-index: 30;
 
-            transition: none;
-        }
+        //     transition: none;
+        // }
 
     } 
 }
+
+// For sidebar within room, we want to collapse when screen is < 1100px
+// which accounts for the detail bar
+.main-container-room .sidebar {
+    @include media('<=room-medium') {
+        @include collapsed-sidebar;
+    }
+}
+
+

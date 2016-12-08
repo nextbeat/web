@@ -4,10 +4,6 @@
     z-index: 2;
     margin-left: $sidebar-width;
     background: $dark-background-color;
-
-    &.expand-left {
-        margin-left: 0;
-    }
 }
 
 .content {
@@ -30,4 +26,19 @@
 
 .content_main {
     margin-top: 20px;
+}
+
+
+// Responsiveness
+
+.main {
+    @include media('<=medium') {
+        margin-left: 0;
+    }
+}
+
+.main-container-room .main {
+    @include media('<=room-medium') {
+        margin-left: 0;
+    }
 }

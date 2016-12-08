@@ -3,6 +3,7 @@ import StateModel from './base'
 import { Map, List, Set } from 'immutable'
 import Stack from './stack'
 import StackEntity from '../entities/stack'
+import UserEntity from '../entities/user'
 
 const KEY_MAP = {
     // meta
@@ -51,8 +52,12 @@ export default class CurrentUser extends StateModel {
         this.entityName = "users";
     }
 
+    entity() {
+        return new UserEntity(this.get('id'), this.state.get('entities'))
+    }
+
     profileThumbnailUrl() {
-        return this.get('profpic_thumbnail_url') || this.get('profpic_url');
+        return this.entity().thumbnail('medium').get('url')
     }
 
     openBookmarkedStacks() {
