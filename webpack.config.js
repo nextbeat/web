@@ -9,7 +9,8 @@ module.exports = {
             // 'webpack-dev-server/client?http://localhost:3000',
             // 'webpack/hot/only-dev-server',
             './client/app.js'
-        ]
+        ],
+
     },
     output: {
         filename: 'bundle.webpack.js',
@@ -49,6 +50,10 @@ module.exports = {
                         'sass-loader'
                     ],
                 })
+            },
+            {
+                test: /\.(gif|png|jpe?g)$/,
+                loader: 'file-loader'
             }
         ]
     },
