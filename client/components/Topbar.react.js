@@ -126,7 +126,7 @@ class Topbar extends React.Component {
 
         return [
             <a key='login' className={`topbar_icon btn topbar_login ${smallClass}`} onClick={this.handleLoginClick}>Log In</a>,
-            <a key='signup' className={`topbar_icon btn btn-secondary topbar_signup ${smallClass}`} onClick={this.handleSignupClick}>Sign Up</a>
+            <a key='signup' className={`topbar_icon btn topbar_signup ${smallClass}`} onClick={this.handleSignupClick}>Sign Up</a>
         ]
     }
 
@@ -167,8 +167,10 @@ class Topbar extends React.Component {
                 </div>
 
                 <Link className={`topbar_icon topbar_icon-search ${loggedInClass}`} to="/search" onClick={this.hideSidebar}><Icon type="search" /></Link>
-                <div className={`topbar_search ${loggedInClass}`}>
-                    <input className="topbar_search-bar" type="text" placeholder="Search" ref="search_bar" onKeyPress={this.handleSearchKeyPress} /><Icon type="search" />
+                <div className="topbar_search-container">
+                    <div className="topbar_search">
+                        <input className="topbar_search-bar" type="text" placeholder="Search" ref="search_bar" onKeyPress={this.handleSearchKeyPress} /><Icon type="search" />
+                    </div>
                 </div>
 
                 <div className="topbar_right">

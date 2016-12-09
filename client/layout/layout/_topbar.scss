@@ -70,13 +70,20 @@
     display: none;
 }
 
+.topbar_search-container {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0; right: 0; bottom: 0; left: 0;
+}
+
 .topbar_search {
-    display: inline-block;
-    vertical-align: top;
-    height: 100%;
+    display: flex;
     position: relative;
+    align-items: center;
+    height: 100%;
     width: 300px;
-    margin-left: 25px;
 
     .svg-icon-search {
         z-index: 10;
@@ -90,7 +97,7 @@
 }
 
 input.topbar_search-bar {
-    @include centerY;
+
     width: 100%;
     height: 33px;
     border-radius: 8px;
@@ -163,6 +170,23 @@ input.topbar_search-bar {
     left: 20px;
 }
 
+.btn.topbar_login {
+    font-size: 14px;
+    background: none;
+    color: $primary-color;
+    font-weight: 500;
+    &:hover {
+        background: none;
+        color: $light-primary-color;
+        cursor: pointer;
+    }
+}
+
+.btn.topbar_signup {
+    font-size: 14px;
+    font-weight: 500;
+}
+
 .dropdown-topbar {
     position: absolute;
     top: 58px;
@@ -188,14 +212,13 @@ input.topbar_search-bar {
             display: block;
         }
 
+        .topbar_search-container {
+            justify-content: flex-start;
+        }
+
         .topbar_search {
-            position: absolute;
-            display: block;
-            top: 0;
-            left: 0;
-            max-width: calc(100% - 260px);
-            margin-left: 100px;
-            margin-right: 160px;
+            max-width: calc(100% - 300px);
+            margin-left: 120px;
         }
     }
 
@@ -224,23 +247,7 @@ input.topbar_search-bar {
         }
 
         .topbar_search {
-            // position: absolute;
-            // display: block;
-            // top: 0;
-            // left: 0;
-            // max-width: calc(100% - 180px);
-            // margin-left: 110px;
-            // margin-right: 70px;
             display: none;
-        }
-
-        .topbar_search.topbar-guest {
-            // position: relative;
-            // top: auto;
-            // left: auto;
-            // margin: 0;
-            // width: calc(100% - 120px);
-            // max-width: calc(100% - 120px);
         }
 
         .topbar_signup {
@@ -252,9 +259,6 @@ input.topbar_search-bar {
         }
 
         .btn.topbar_login {
-            background: none;
-            color: $primary-color;
-            font-weight: 500;
             padding-right: 0;
         }
     }
