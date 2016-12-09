@@ -4,6 +4,10 @@
     z-index: 2;
     margin-left: $sidebar-width;
     background: $dark-background-color;
+
+    &.no-sidebar {
+        margin-left: 0px;
+    }
 }
 
 .content {

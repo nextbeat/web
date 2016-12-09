@@ -146,6 +146,7 @@ class App extends React.Component {
 
         const inRoom = routes[routes.length-1].path.substring(0, 3) === '/r/'
         const inRoomClass = inRoom ? 'main-container-room' : ''
+        const guestClass = user.isLoggedIn() ? '' : 'no-sidebar'
 
         return (
             <section className="app-container" id="app-container">
@@ -155,7 +156,7 @@ class App extends React.Component {
                 <Topbar {...barProps} />
                 <div className={`main-container ${inRoomClass}`}>
                     <Sidebar {...barProps} />
-                    <div className="main">
+                    <div className={`main ${guestClass}`}>
                         {React.cloneElement(children, { user, connected })}
                     </div>
                 </div>

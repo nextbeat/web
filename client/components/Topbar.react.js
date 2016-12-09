@@ -27,8 +27,6 @@ class Topbar extends React.Component {
         this.handleSignupClick = this.handleSignupClick.bind(this);
         this.handleLogoutClick = this.handleLogoutClick.bind(this);
 
-        this.sidebarIsHidden = this.sidebarIsHidden.bind(this);
-
         this.renderNotificationsDropdown = this.renderNotificationsDropdown.bind(this);
         this.renderLoggedIn = this.renderLoggedIn.bind(this);
         this.renderGuest = this.renderGuest.bind(this);
@@ -100,19 +98,6 @@ class Topbar extends React.Component {
     }
 
 
-    // Queries
-
-    sidebarIsHidden() {
-        const { user, app, routes } = this.props;
-
-        // show menu icon if medium width or in room
-        const inRoom = routes[routes.length-1].path.substring(0, 3) === '/r/'
-        return app.get('width') === 'small'
-            || app.get('width') === 'medium'
-            || (app.get('width') === 'room-medium' && inRoom) 
-    }
-
-
     // Render
 
     renderLoggedIn(includeSmallClass) {
@@ -174,7 +159,7 @@ class Topbar extends React.Component {
 
         return (
             <div className="topbar">
-                <div className="topbar_icon topbar_icon-menu" onClick={this.toggleSidebar}><Icon type="menu" /></div>
+                { user.isLoggedIn() && <div className="topbar_icon topbar_icon-menu" onClick={this.toggleSidebar}><Icon type="menu" /></div> }
                 
                 <div className={`topbar_logo-container ${loggedInClass}`}>
                     <span className="topbar_logo" onClick={this.hideSidebar}><Link to="/"><Logo /></Link></span>

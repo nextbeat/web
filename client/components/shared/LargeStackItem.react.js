@@ -57,7 +57,7 @@ class LargeStackItem extends React.Component {
         this.resize(node, parent);
 
         $(this._image).one('load', () => {
-            this.setState({ loaded: true })
+            this.setState({ imageLoaded: true })
         })
     }
 
@@ -72,7 +72,7 @@ class LargeStackItem extends React.Component {
         const bookmarkType = stack.get('bookmarked') ? "bookmark" : "bookmark-outline";
         const itemWidth = isNumber(staticNum) ? staticNum + "px" : null;
 
-        const imageLoadedClass = this.state.loaded ? 'loaded' : '';
+        const imageLoadedClass = this.state.imageLoaded ? 'loaded' : '';
         const imageUrl = stack.thumbnail('medium').get('url');
 
         return (

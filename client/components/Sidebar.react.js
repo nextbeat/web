@@ -57,8 +57,8 @@ class Sidebar extends React.Component {
     render() {
         const { user, app } = this.props;
 
-        // collapse sidebar by default if window width below threshold
-        const inRoom = this.props.routes[this.props.routes.length-1].path.substring(0, 3) === '/r/'
+        // hide sidebar if user is not logged in
+        const guestClass = user.isLoggedIn() ? '' : 'no-sidebar'
 
         // display sidebar if selected
         const activeClass = app.get('activeOverlay') === 'sidebar'
@@ -68,7 +68,7 @@ class Sidebar extends React.Component {
         const profileStyle = { backgroundImage: user.profileThumbnailUrl() ? `url(${user.profileThumbnailUrl()})` : ''}
 
         return (
-            <div className={`sidebar ${activeClass}`}>
+            <div className={`sidebar ${activeClass} ${guestClass}`}>
                 <div className="sidebar_section sidebar_topnav">
                     <Link to="/" activeClassName="selected" className="sidebar_item">
                         <div className="sidebar_icon"><Icon type="home" /></div>Home

@@ -201,6 +201,10 @@ a.item-room.selected {
     opacity: 0;
     transition: opacity 0.1s ease-in;
 
+    &.cached {
+        transition: none;
+    }
+
     &.loaded {
         opacity: 1;
     }

@@ -1,8 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
 import LargeStackItem from '../shared/LargeStackItem.react'
 import Icon from '../shared/Icon.react'
+import { App, CurrentUser } from '../../models'
 
 const DEFAULT_ITEM_WIDTH = 220;
 const MARGIN_WIDTH = 10;
@@ -31,6 +33,15 @@ class HomeSection extends React.Component {
         const content = node.parent().parent();
         $(window).on(`resize.section${this.props.index}`, this.resize.bind(this, node, content));
         this.resize(node, content);
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.currentUser.isLoggedIn() !== prevProps.currentUser.isLoggedIn()) {
+            // recalculate sizes to account for sidebar
+            const node = $(this._node);
+            const content = node.parent().parent();
+            this.resize(node, content);
+        }
     }
 
     componentWillUnmount() {
@@ -134,4 +145,11 @@ class HomeSection extends React.Component {
     }
 }
 
-export default HomeSection;
+function mapStateToProps(state) {
+    return {
+        app: new App(state),
+        currentUser: new CurrentUser(state)
+    }
+}
+
+export default connect(mapStateToProps)(HomeSection);
