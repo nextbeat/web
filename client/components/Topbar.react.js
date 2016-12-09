@@ -159,6 +159,12 @@ class Topbar extends React.Component {
 
         return (
             <div className="topbar">
+                <div className="topbar_search-container">
+                    <div className="topbar_search">
+                        <input className="topbar_search-bar" type="text" placeholder="Search" ref="search_bar" onKeyPress={this.handleSearchKeyPress} /><Icon type="search" />
+                    </div>
+                </div>
+
                 { user.isLoggedIn() && <div className="topbar_icon topbar_icon-menu" onClick={this.toggleSidebar}><Icon type="menu" /></div> }
                 
                 <div className={`topbar_logo-container ${loggedInClass}`}>
@@ -167,11 +173,6 @@ class Topbar extends React.Component {
                 </div>
 
                 <Link className={`topbar_icon topbar_icon-search ${loggedInClass}`} to="/search" onClick={this.hideSidebar}><Icon type="search" /></Link>
-                <div className="topbar_search-container">
-                    <div className="topbar_search">
-                        <input className="topbar_search-bar" type="text" placeholder="Search" ref="search_bar" onKeyPress={this.handleSearchKeyPress} /><Icon type="search" />
-                    </div>
-                </div>
 
                 <div className="topbar_right">
                     { user.isLoggedIn() ? this.renderLoggedIn(false) : this.renderGuest(false) }

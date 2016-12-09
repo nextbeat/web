@@ -151,7 +151,7 @@ function joinRoom(store, next, action) {
 
     const stack_uuid = stack.get('uuid');
     const jid = `${stack_uuid}@conference.xmpp.nextbeat.co`;
-    const nickname = currentUser.isLoggedIn() ? `${currentUser.get('username')}#${uuid.v4()}` : uuid.v4();
+    const nickname = currentUser.isLoggedIn() ? `${currentUser.get('username')}#${generateUuid()}` : generateUuid();
 
     function removeRoomListeners() {
         client.off('presence', roomJoinedCb)

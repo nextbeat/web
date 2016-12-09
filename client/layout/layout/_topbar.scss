@@ -71,6 +71,7 @@
 }
 
 .topbar_search-container {
+    pointer-events: none;
     position: absolute;
     display: flex;
     align-items: center;
@@ -79,6 +80,7 @@
 }
 
 .topbar_search {
+    pointer-events: auto;
     display: flex;
     position: relative;
     align-items: center;
@@ -219,6 +221,7 @@ input.topbar_search-bar {
         .topbar_search {
             max-width: calc(100% - 300px);
             margin-left: 120px;
+            z-index: 10;
         }
     }
 
