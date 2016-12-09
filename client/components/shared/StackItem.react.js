@@ -89,7 +89,7 @@ function mapStateToProps(state) {
 StackItem.propTypes = {
     stack: (props, propName) => {
         if (!(props[propName] instanceof EntityModel)) {
-            return new Error('Invalid stack prop supplied to StackCard.')   
+            return new Error('Invalid stack prop supplied to StackItem.')   
         }
     }
 }

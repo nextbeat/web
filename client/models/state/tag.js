@@ -1,4 +1,5 @@
 import StateModel from './base'
+import StackEntity from '../entities/stack'
 
 const KEY_MAP = {
     // meta
@@ -25,7 +26,7 @@ export default class Tag extends StateModel {
     }
 
     stacks() {
-        return this.__getPaginatedEntities('stacks')
+        return this.__getPaginatedEntities('stacks').map(stack => new StackEntity(stack.get('id'), this.state.get('entities')))
     }
 
 }

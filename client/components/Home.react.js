@@ -50,22 +50,22 @@ function mapStateToProps(state) {
     }
 }
 
-HomeComponent.fetchData = (store, params) => {
-    return new Promise((resolve, reject) => {
+// HomeComponent.fetchData = (store, params) => {
+//     return new Promise((resolve, reject) => {
 
-        const unsubscribe = store.subscribe(() => {
-            const home = new Home(store.getState())
-                if (home.isLoaded()) {
-                    unsubscribe()
-                    resolve(store)
-                }
-                if (home.get('sectionsError')) {
-                    unsubscribe()
-                    reject(new Error('Stack does not exist.'))
-                }
-            })
-        store.dispatch(loadHome())
-    })
-}
+//         const unsubscribe = store.subscribe(() => {
+//             const home = new Home(store.getState())
+//                 if (home.isLoaded()) {
+//                     unsubscribe()
+//                     resolve(store)
+//                 }
+//                 if (home.get('sectionsError')) {
+//                     unsubscribe()
+//                     reject(new Error('Stack does not exist.'))
+//                 }
+//             })
+//         store.dispatch(loadHome())
+//     })
+// }
 
 export default connect(mapStateToProps)(HomeComponent)

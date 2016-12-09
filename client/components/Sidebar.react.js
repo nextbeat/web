@@ -59,12 +59,8 @@ class Sidebar extends React.Component {
 
         // collapse sidebar by default if window width below threshold
         const inRoom = this.props.routes[this.props.routes.length-1].path.substring(0, 3) === '/r/'
-        const collapsedClass = app.get('width') === 'small' 
-                                || app.get('width') === 'medium'
-                                || (app.get('width') === 'room-medium' && inRoom) 
-                                    ? 'collapsed' : ''
 
-        // display collapsed sidebar if selected
+        // display sidebar if selected
         const activeClass = app.get('activeOverlay') === 'sidebar'
                                 ? 'active' : ''
 
@@ -72,7 +68,7 @@ class Sidebar extends React.Component {
         const profileStyle = { backgroundImage: user.profileThumbnailUrl() ? `url(${user.profileThumbnailUrl()})` : ''}
 
         return (
-            <div className={`sidebar ${collapsedClass} ${activeClass}`}>
+            <div className={`sidebar ${activeClass}`}>
                 <div className="sidebar_section sidebar_topnav">
                     <Link to="/" activeClassName="selected" className="sidebar_item">
                         <div className="sidebar_icon"><Icon type="home" /></div>Home

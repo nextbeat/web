@@ -74,13 +74,13 @@ export default class CurrentUser extends StateModel {
 
     openStacks() {
         return this.get('openStackIds', List())
-            .map(id => this.__getEntity(id, 'stacks'))
+            .map(id => new StackEntity(id, this.state.get('entities')))
             .filter(stack => !stack.get('deleted'))
     }
 
     closedStacks() {
         return this.get('closedStackIds', List())
-            .map(id => this.__getEntity(id, 'stacks'))
+            .map(id => new StackEntity(id, this.state.get('entities')))
             .filter(stack => !stack.get('deleted'))
     }
 

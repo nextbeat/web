@@ -190,18 +190,36 @@ a.item-room.selected {
 
 .item-room-large_thumb {
     width: 100%;
+    background-color: $dark-background-color;
 }
 
-.item-room-large_thumb:after {
-    content:'';
-    position:absolute;
-    left:0; 
-    top:0;
-    width:100%; 
-    height:100%;
-    display:inline-block;
-    background: linear-gradient(to bottom, rgba(0,0,0,0) 70%, rgba(0,0,0,0.9) 100%); 
+.item-room-large_thumb_image-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.1s ease-in;
+
+    &.loaded {
+        opacity: 1;
+    }
 }
+
+.item-room-large_thumb_image {
+    @include center;
+}
+
+// .item-room-large_thumb:after {
+//     content:'';
+//     position:absolute;
+//     left:0; 
+//     top:0;
+//     width:100%; 
+//     height:100%;
+//     display:inline-block;
+//     background: linear-gradient(to bottom, rgba(0,0,0,0) 70%, rgba(0,0,0,0.9) 100%); 
+// }
 
 .item-room-large_badge {
     position: absolute;
@@ -235,10 +253,13 @@ a.item-room.selected {
     position: absolute;
     bottom: 5px;
     right: 5px;
+    padding: 2px 4px;
+    border-radius: 2px;
     z-index: 10;
     color: white;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 300;
+    background-color: rgba(#000, .7);
 }
 
 .item-room-large_unlisted_badge {

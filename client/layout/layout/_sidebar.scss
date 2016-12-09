@@ -19,20 +19,6 @@
     .spinner {
         margin: 20px auto;
     }
-
-    // &.collapsed {
-    //     display: block;
-    //     transform: translateX(-100%);
-
-    //     transition: transform 0.25s;
-    // }
-
-    // &.collapsed.active {
-    //     transform: none;
-    //     z-index: 30;
-
-    //     transition: transform 0.2s;
-    // }
 }
 
 .sidebar_section {
@@ -138,35 +124,18 @@ a.sidebar_item {
     display: block;
     transform: translateX(-100%);
     transition: transform 0.25s;
+    z-index: 15;
+    border-right: 1px solid border-color;
+
+    &.active {
+        transform: translateX(0);
+        box-shadow: 4px 0px 10px -1px rgba(0,0,0,0.11);
+    }
 }
 
 .sidebar {
     @include media('<=medium') {
        @include collapsed-sidebar;
-
-        // so sidebar is hidden when page initially loads
-        // before js is loaded
-        // display: none;
-
-        // &.collapsed {
-        //     display: none;
-        //     transition: none;
-        // }
-
-        // &.collapsed.active {
-        //     display: block;
-        //     position: absolute;
-        //     width: 100%;
-        //     border: none;
-        //     top: 0;
-        //     left: 0;
-        //     bottom: 0;
-        //     right: 0;
-        //     z-index: 30;
-
-        //     transition: none;
-        // }
-
     } 
 }
 

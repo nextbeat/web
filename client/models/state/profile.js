@@ -1,6 +1,7 @@
 import StateModel from './base'
 
 import UserEntity from '../entities/user'
+import StackEntity from '../entities/stack'
 
 const KEY_MAP = {
     // meta
@@ -28,11 +29,11 @@ export default class Profile extends StateModel {
     }
 
     openStacks() {
-        return this.__getPaginatedEntities('openStacks', 'stacks')
+        return this.__getPaginatedEntities('openStacks', 'stacks').map(stack => new StackEntity(stack.get('id'), this.state.get('entities')))
     }
 
     closedStacks() {
-        return this.__getPaginatedEntities('closedStacks', 'stacks')
+        return this.__getPaginatedEntities('closedStacks', 'stacks').map(stack => new StackEntity(stack.get('id'), this.state.get('entities')))
     }
 
     // queries 

@@ -85,7 +85,7 @@ export default class Stack extends StateModel {
     }
 
     moreStacks() {
-        return this.get('moreStackIds', List()).map(id => this.__getEntity(id, 'stacks'))
+        return this.get('moreStackIds', List()).map(id => new StackEntity(id, this.state.get('entities')))
     }
 
     thumbnail(preferredType) {

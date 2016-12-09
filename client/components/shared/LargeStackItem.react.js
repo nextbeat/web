@@ -6,6 +6,7 @@ import without from 'lodash/without'
 import isNumber from 'lodash/isNumber'
 
 import { fromNowString } from '../../utils'
+import { EntityModel } from '../../models'
 import Icon from './Icon.react'
 import Badge from './Badge.react'
 
@@ -15,6 +16,10 @@ class LargeStackItem extends React.Component {
         super(props);
 
         this.resize = this.resize.bind(this);
+
+        this.state = {
+            imageLoaded: false
+        }
     }
 
     resize(node, parent) {
@@ -50,6 +55,10 @@ class LargeStackItem extends React.Component {
         const parent = node.parent();
         $(window).resize(this.resize.bind(this, node, parent));
         this.resize(node, parent);
+
+        $(this._image).one('load', () => {
+            this.setState({ loaded: true })
+        })
     }
 
     componentWillUnmount() {
@@ -57,11 +66,14 @@ class LargeStackItem extends React.Component {
     }
 
     render() {
-        const { stack, users, static: staticNum } = this.props;
-        const author = users.get(stack.get('author_id').toString(), Map())
+        const { stack, static: staticNum } = this.props;
+
+        const author = stack.author();
         const bookmarkType = stack.get('bookmarked') ? "bookmark" : "bookmark-outline";
-        const itemWidth = isNumber(staticNum) ? staticNum + "px" : null
-        const imageUrl = stack.get('thumbnail_medium_url') || stack.get('thumbnail_url');
+        const itemWidth = isNumber(staticNum) ? staticNum + "px" : null;
+
+        const imageLoadedClass = this.state.loaded ? 'loaded' : '';
+        const imageUrl = stack.thumbnail('medium').get('url');
 
         return (
             <div className="item_container item-room-large_container" ref={(c) => this._node = c} style={itemWidth && {width: itemWidth}}>
@@ -72,7 +84,10 @@ class LargeStackItem extends React.Component {
                         { stack.get('privacy_status') === 'unlisted' && 
                             <Badge elementType="item-room-large_unlisted" type="unlisted right">UNLISTED</Badge>
                         }
-                        <div className="item_thumb item-room-large_thumb" style={{backgroundImage: `url(${imageUrl})`}}>
+                        <div className="item_thumb item-room-large_thumb">
+                            <div className={`item-room-large_thumb_image-container ${imageLoadedClass}`}>
+                                <img className="item-room-large_thumb_image" ref={(c) => this._image = c } src={imageUrl} />
+                            </div>
                             <div className="item-room-large_views">
                                 <span className="item-room-large_view-count">{stack.get('views', 0)}</span> view{stack.get('views') !== 1 && 's'}
                             </div>
@@ -92,10 +107,12 @@ class LargeStackItem extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
-    return { 
-        users: state.getIn(['entities', 'users'])
+LargeStackItem.propTypes = {
+    stack: (props, propName) => {
+        if (!(props[propName] instanceof EntityModel)) {
+            return new Error('Invalid stack prop supplied to LargeStackItem.')   
+        }
     }
 }
 
-export default connect(mapStateToProps)(LargeStackItem);
+export default LargeStackItem;

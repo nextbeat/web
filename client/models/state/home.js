@@ -1,4 +1,6 @@
 import { List, Map } from 'immutable'
+
+import StackEntity from '../entities/stack'
 import StateModel from './base'
 
 const KEY_MAP = {
@@ -18,7 +20,7 @@ export default class Home extends StateModel {
 
     stacks(idx) {
         const stackIds = this.get('sections', List()).get(idx, Map()).get('stacks', List());
-        return stackIds.map(id => this.__getEntity(id, "stacks"))
+        return stackIds.map(id => new StackEntity(id, this.state.get('entities')))
     }
 
     isLoaded() {
