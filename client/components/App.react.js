@@ -144,7 +144,7 @@ class App extends React.Component {
             routes
         }
 
-        const inRoom = routes[routes.length-1].path.substring(0, 3) === '/r/'
+        const inRoom = routes[routes.length-1].path.substring(0, 2) === 'r/'
         const inRoomClass = inRoom ? 'main-container-room' : ''
         const guestClass = user.isLoggedIn() ? '' : 'no-sidebar'
 
