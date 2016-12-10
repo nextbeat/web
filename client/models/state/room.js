@@ -1,68 +1,56 @@
-import StateModel from './base'
-import MediaItemEntity from '../entities/mediaItem'
-import StackEntity from '../entities/stack'
+import { List, Map } from 'immutable'
 
-import { List, Set } from 'immutable'
+import StateModel from './base'
 import CurrentUser from './currentUser'
 
+import StackEntity from '../entities/room'
+import MediaItemEntity from '../entities/mediaItem'
+
 const KEY_MAP = {
-    // meta
-    'id': ['stack', 'meta', 'id'],
-    'isFetching': ['stack', 'meta', 'isFetching'],
-    'error': ['stack', 'meta', 'error'],
+    // meta 
+    'id': ['meta', 'id'],
+    'isFetching': ['meta', 'isFetching'],
+    'error': ['meta', 'error'],
     // live
-    'isJoiningRoom': ['stack', 'live', 'isJoiningRoom'],
-    'room': ['stack', 'live', 'room'],
-    'nickname': ['stack', 'live', 'nickname'],
-    'liveComments': ['stack', 'live', 'comments'],
+    'isJoiningRoom': ['live', 'isJoiningRoom'],
+    'room': ['live', 'room'],
+    'nickname': ['live', 'nickname'],
     // media items
-    'selectedMediaItemId': ['stack', 'mediaItems', 'selected'],
-    'seenMediaItemIds': ['stack', 'mediaItems', 'seen'],
-    'mediaItemIds': ['stack', 'pagination', 'mediaItems', 'ids'],
-    'liveMediaItemIds': ['stack', 'live', 'mediaItems'],
-    'mediaItemsFetching': ['stack', 'pagination', 'mediaItems', 'isFetching'],
-    'mediaItemError': ['stack', 'pagination', 'mediaItems', 'error'],
+    'selectedMediaItemId': ['navigation', 'selected'],
+    'seenMediaItemIds': ['navigation', 'seen'],
+    'mediaItemIds': ['pagination', 'mediaItems', 'ids'],
+    'liveMediaItemIds': ['live', 'mediaItems'],
+    'mediaItemsFetching': ['pagination', 'mediaItems', 'isFetching'],
+    'mediaItemError': ['pagination', 'mediaItems', 'error'],
     // comments
-    'commentsFetching': ['stack', 'pagination', 'comments', 'isFetching'],
-    'commentsError': ['stack', 'pagination', 'comments', 'error'],
-    'bannedUserIds': ['stack', 'chat', 'bannedUserIds'],
-    'selectedChatUsername': ['stack', 'chat', 'selectedUsername'],
-    'chatMessage': ['stack', 'chat', 'message'],
-    // ui
-    'selectedDetailSection': ['stack', 'ui', 'detailSection'],
-    // more
-    'moreStackIds': ['stack', 'more', 'ids'],
-    // actions
-    'isDeleting': ['stack', 'actions', 'isDeleting'],
-    'hasDeleted': ['stack', 'actions', 'hasDeleted'],
-    'deleteError': ['stack', 'actions', 'deleteError'],
-    'isClosing': ['stack', 'actions', 'isClosing'],
-    'hasClosed': ['stack', 'actions', 'hasClosed'],
-    'closeError': ['stack', 'actions', 'closeError']
-}
+    'commentsFetching': ['pagination', 'comments', 'isFetching'],
+    'commentsError': ['pagination', 'comments', 'error'],
+    'liveComments': ['live', 'comments']
 
-export default class Stack extends StateModel {
+export default class Room extends StateModel {
 
-    constructor(state) {
+    constructor(id, state) {
         super(state);
+
+        this.id = id;
         this.keyMap = KEY_MAP;
-        this.name = "stack";
-        this.entityName = "stacks";
+        this.keyMapPrefix = ['rooms', this.id];
     }
 
     entity() {
-        return new StackEntity(this.get('id'), this.state.get('entities'))
+        return new StackEntity(this.id, this.state.get('entities'))
     }
 
-
-    // properties
+    /**
+     * Properties
+     */
 
     author() {
-        return this.__getEntity(this.get('author', 0), 'users')
+        return this.entity().author()
     }
 
     mediaItems() {
-        return this.__getPaginatedEntities('mediaItems').map(m => new MediaItemEntity(m.get('id'), this.state.get('entities')))
+        return this.__getPaginatedEntities('mediaItems', { entityClass: MediaItemEntity })
     }
 
     selectedMediaItem() {
@@ -70,7 +58,7 @@ export default class Stack extends StateModel {
     }
 
     liveMediaItems() {
-        return this.__getLiveEntities('mediaItems').map(m => new MediaItemEntity(m.get('id'), this.state.get('entities')))
+        return this.get('liveMediaItemIds').map(id => new MediaItemEntity(id, this.state.get('entities')))
     }
 
     comments() {
@@ -84,19 +72,13 @@ export default class Stack extends StateModel {
         return this.get('liveComments', List())
     }
 
-    moreStacks() {
-        return this.get('moreStackIds', List()).map(id => new StackEntity(id, this.state.get('entities')))
-    }
-
     thumbnail(preferredType) {
         return this.entity().thumbnail(preferredType)
     }
 
-    bannedUsers() {
-        return this.get('bannedUserIds', List()).map(id => this.__getEntity(id, 'users'))
-    }
-
-    // queries
+    /**
+     * Queries
+     */
 
     status() {
         return this.get('closed') ? "closed" : "open"
@@ -156,9 +138,5 @@ export default class Stack extends StateModel {
         return !this.get('error') && this.mediaItems().size === 0 && !this.get('mediaItemsError')
     }
 
-    userIsBanned(username) {
-        // note that this takes username as param, NOT user id
-        return this.bannedUsers().filter(u => u.get('username') === username).size > 0
-    }
 
 }

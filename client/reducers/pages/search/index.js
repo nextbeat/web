@@ -1,6 +1,6 @@
 import { Map } from 'immutable'
-import { ActionTypes, Status } from '../../actions'
-import { combineReducers, entity, paginate } from '../utils'
+import { ActionTypes, Status } from '../../../actions'
+import { combineReducers, entity, paginate } from '../../utils'
 
 const initialMetaState = Map({
     searchType: 'stacks'

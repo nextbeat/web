@@ -8,7 +8,7 @@ export function combineReducers(reducers) {
     }
 }
 
-export function paginate(type) {
+export function paginate(type, clearType) {
 
     return function(state = Map(), action) {
         if (action.type === type) {
@@ -32,6 +32,8 @@ export function paginate(type) {
                         error: 'Failed to load.'
                     });
             }
+        } else if (clearType && action.type === clearType) {
+            return Map()
         }
         return state;
     }

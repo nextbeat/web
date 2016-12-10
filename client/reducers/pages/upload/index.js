@@ -1,6 +1,6 @@
 import { Map, fromJS } from 'immutable'
-import { ActionTypes, Status } from '../../actions'
-import { combineReducers, entity, paginate } from '../utils'
+import { ActionTypes, Status } from '../../../actions'
+import { combineReducers, entity, paginate } from '../../utils'
 
 function uploadFile(state, action) {
     state = state.set('status', action.status)

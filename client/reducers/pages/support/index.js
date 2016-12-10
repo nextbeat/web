@@ -1,5 +1,5 @@
 import { Map } from 'immutable'
-import { ActionTypes, Status } from '../../actions'
+import { ActionTypes, Status } from '../../../actions'
 
 function validatePasswordResetToken(state, action) {
     switch (action.status) {

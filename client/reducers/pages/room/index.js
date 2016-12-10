@@ -1,26 +1,11 @@
 import { Map, List, Set } from 'immutable'
 import mapValues from 'lodash/mapValues'
-import { ActionTypes, Status } from '../../actions'
+import { ActionTypes, Status } from '../../../actions'
 
-import live from './live'
 import chat from './chat'
-import { combineReducers, entity, paginate } from '../utils'
+import { combineReducers, entity, paginate } from '../../utils'
 
-const meta = entity(ActionTypes.STACK);
-
-const pagination = combineReducers({
-    mediaItems: paginate(ActionTypes.MEDIA_ITEMS),
-    comments: paginate(ActionTypes.COMMENTS)
-});
-
-function mediaItems(state = Map(), action) {
-    if (action.type === ActionTypes.SELECT_MEDIA_ITEM) {
-        return state
-            .set('selected', action.id)
-            .update('seen', Set(), v => v.add(action.id))
-    }
-    return state;
-}
+const meta = entity(ActionTypes.ROOM_PAGE);
 
 function more(state = Map(), action) {
     if (action.type === ActionTypes.MORE_STACKS) {
@@ -96,9 +81,6 @@ function actions(state = Map(), action) {
 
 const reducers = {
     meta, 
-    pagination,
-    mediaItems,
-    live,
     chat,
     ui,
     more,
@@ -106,7 +88,7 @@ const reducers = {
 }
 
 export default function(state = Map(), action) {
-    if (action.type === ActionTypes.CLEAR_STACK) {
+    if (action.type === ActionTypes.CLEAR_ROOM_PAGE) {
         return Map()
     } else if (action.type === ActionTypes.CLEAR_COMMENTS) {
         return state

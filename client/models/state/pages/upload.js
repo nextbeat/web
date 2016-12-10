@@ -1,32 +1,32 @@
 import { fromJS } from 'immutable'
 import assign from 'lodash/assign'
 
-import StateModel from './base'
-import App from './app'
-import { generateUuid } from '../../utils'
-import { Status } from '../../actions'
+import StateModel from '../base'
+import App from '../app'
+import { generateUuid } from '../../../utils'
+import { Status } from '../../../actions'
 
 const KEY_MAP = {
     // Media upload
-    'file': ['upload', 'file'],
-    'status': ['upload', 'status'],
-    'progress': ['upload', 'progress'],
-    'xhr': ['upload', 'xhr'], // reference to XHR object which handles upload to S3
-    'error': ['upload', 'error'],
+    'file': ['file'],
+    'status': ['status'],
+    'progress': ['progress'],
+    'xhr': ['xhr'], // reference to XHR object which handles upload to S3
+    'error': ['error'],
     // Thumbnail upload
-    'hasCustomThumbnail': ['upload', 'hasCustomThumbnail'],
-    'isUploadingThumbnail': ['upload', 'isUploadingThumbnail'],
-    'hasUploadedThumbnail': ['upload', 'hasUploadedThumbnail'],
-    'uploadThumbnailError': ['upload', 'uploadThumbnailError'],
-    'thumbnailUrl': ['upload', 'thumbnailUrl'],
+    'hasCustomThumbnail': ['hasCustomThumbnail'],
+    'isUploadingThumbnail': ['isUploadingThumbnail'],
+    'hasUploadedThumbnail': ['hasUploadedThumbnail'],
+    'uploadThumbnailError': ['uploadThumbnailError'],
+    'thumbnailUrl': ['thumbnailUrl'],
     // Stack and media item submission
-    'selectedStackId': ['upload', 'selectedStackId'],
-    'newStack': ['upload', 'newStack'],
-    'mediaItem': ['upload', 'mediaItem'],
-    'submitStackRequested': ['upload', 'submitStackRequested'],
-    'isSubmittingStack': ['upload', 'isSubmittingStack'],
-    'stackSubmitted': ['upload', 'stackSubmitted'],
-    'submitStackError': ['upload', 'submitStackError']
+    'selectedStackId': ['selectedStackId'],
+    'newStack': ['newStack'],
+    'mediaItem': ['mediaItem'],
+    'submitStackRequested': ['submitStackRequested'],
+    'isSubmittingStack': ['isSubmittingStack'],
+    'stackSubmitted': ['stackSubmitted'],
+    'submitStackError': ['submitStackError']
 }
 
 const COMPATIBLE_MIME_TYPES = [
@@ -40,7 +40,7 @@ export default class Upload extends StateModel {
     constructor(state) {
         super(state);
         this.keyMap = KEY_MAP;
-        this.name = "upload";
+        this.keyMapPrefix = ['pages', 'upload'];
     }
 
 

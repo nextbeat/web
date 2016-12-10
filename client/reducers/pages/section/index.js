@@ -1,6 +1,6 @@
 import { Map } from 'immutable'
-import { ActionTypes, Status } from '../../actions'
-import { combineReducers, entity, paginate } from '../utils'
+import { ActionTypes, Status } from '../../../actions'
+import { combineReducers, entity, paginate } from '../../utils'
 
 function meta(state, action) {
     state = entity(ActionTypes.SECTION)(state, action).delete('id')

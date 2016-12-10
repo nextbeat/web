@@ -99,6 +99,10 @@ function sendComment(state, action) {
     return state
 }
 
+function clearComments(state, action) {
+    return state.delete('comments')
+}
+
 const initialState = Map({
     comments: List(),
     mediaItems: List()
@@ -106,9 +110,9 @@ const initialState = Map({
 
 export default function live(state = initialState, action) {
     switch (action.type) {
-        case ActionTypes.JOIN_ROOM:
+        case ActionTypes.JOIN_CHATROOM:
             return joinRoom(state, action);
-        case ActionTypes.LEAVE_ROOM:
+        case ActionTypes.LEAVE_CHATROOM:
             return leaveRoom(state, action);
         case ActionTypes.RECEIVE_COMMENT:
             return receiveComment(state, action);
@@ -120,6 +124,8 @@ export default function live(state = initialState, action) {
             return receiveMediaItem(state, action);
         case ActionTypes.SEND_COMMENT:
             return sendComment(state, action);
+        case ActionTypes.CLEAR_COMMENTS:
+            return clearComments(state, action);
     }
     return state;
 }

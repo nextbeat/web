@@ -1,13 +1,13 @@
 import { List, Map } from 'immutable'
 
-import StackEntity from '../entities/stack'
-import StateModel from './base'
+import StackEntity from '../../entities/stack'
+import StateModel from '../base'
 
 const KEY_MAP = {
     // sections
-    'sectionsFetching': ['home', 'isFetching'],
-    'sectionsError': ['home', 'error'],
-    'sections': ['home', 'sections']
+    'sectionsFetching': ['isFetching'],
+    'sectionsError': ['error'],
+    'sections': ['sections']
 }
 
 export default class Home extends StateModel {
@@ -15,7 +15,7 @@ export default class Home extends StateModel {
     constructor(state) {
         super(state);
         this.keyMap = KEY_MAP;
-        this.name = "home";
+        this.keyMapPrefix = ['pages', 'home'];
     }
 
     stacks(idx) {

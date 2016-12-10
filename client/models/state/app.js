@@ -3,28 +3,28 @@ import StateModel from './base'
 
 const KEY_MAP = {
     // tags
-    'tagsFetching': ['app', 'tags', 'isFetching'],
-    'tagsError': ['app', 'tags', 'error'],
-    'tagsIds': ['app', 'tags', 'ids'],
+    'tagsFetching': ['tags', 'isFetching'],
+    'tagsError': ['tags', 'error'],
+    'tagsIds': ['tags', 'ids'],
     // authError
-    'authError': ['app', 'authError'],
+    'authError': ['authError'],
     // environment
-    'environment': ['app', 'environment'],
+    'environment': ['environment'],
     // user-agent
-    'os': ['app', 'ua', 'os', 'name'],
-    'osVersion': ['app', 'ua', 'os', 'version'],
-    'device': ['app', 'ua', 'device', 'name'],
-    'deviceType': ['app', 'ua', 'device', 'type'],
-    'browser': ['app', 'ua', 'browser', 'name'],
-    'version': ['app', 'ua', 'browser', 'major'],
+    'os': ['ua', 'os', 'name'],
+    'osVersion': ['ua', 'os', 'version'],
+    'device': ['ua', 'device', 'name'],
+    'deviceType': ['ua', 'device', 'type'],
+    'browser': ['ua', 'browser', 'name'],
+    'version': ['ua', 'browser', 'major'],
     // facebook
-    'facebookAppId': ['app', 'facebookAppId'],
+    'facebookAppId': ['facebookAppId'],
     // state
-    'activeModal': ['app', 'state', 'modal'],
-    'activeOverlay': ['app', 'state', 'overlay'],
-    'activeDropdowns': ['app', 'state', 'dropdowns'],
-    'volume': ['app', 'state', 'volume'],
-    'width': ['app', 'state', 'width']
+    'activeModal': ['state', 'modal'],
+    'activeOverlay': ['state', 'overlay'],
+    'activeDropdowns': ['state', 'dropdowns'],
+    'volume': ['state', 'volume'],
+    'width': ['state', 'width']
 }
 
 export default class App extends StateModel {
@@ -32,7 +32,7 @@ export default class App extends StateModel {
     constructor(state) {
         super(state);
         this.keyMap = KEY_MAP;
-        this.name = "app";
+        this.keyMapPrefix = ['app'];
     }
 
     tags() {

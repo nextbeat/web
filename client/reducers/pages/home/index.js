@@ -1,6 +1,6 @@
 import { Map, List, fromJS } from 'immutable'
-import { ActionTypes, Status } from '../../actions'
-import { combineReducers } from '../utils'
+import { ActionTypes, Status } from '../../../actions'
+import { combineReducers } from '../../utils'
 
 function normalizedSections(sections) {
     return fromJS(sections).map(section => section.update('stacks', stacks => stacks.map(stack => stack.get('id'))))

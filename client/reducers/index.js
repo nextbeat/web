@@ -2,17 +2,11 @@ import { Map, List } from 'immutable'
 import includes from 'lodash/includes'
 
 import app from './app'
-import home from './home'
-import section from './section'
 import user from './user'
-import stack from './stack'
-import profile from './profile'
-import support from './support'
-import tag from './tag'
-import search from './search'
+import rooms from './rooms'
 import push from './push'
 import analytics from './analytics'
-import upload from './upload'
+
 import { combineReducers } from './utils'
 import { Status, ActionTypes } from '../actions'
 
@@ -51,16 +45,10 @@ function fetches(state = List(), action) {
 export default combineReducers({
     entities,
     fetches,
+    pages,
+    rooms,
     app,
-    home,
-    section,
-    stack,
-    profile,
-    tag,
     user,
-    search,
     push,
-    analytics,
-    support,
-    upload
+    analytics
 })
