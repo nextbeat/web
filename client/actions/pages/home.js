@@ -2,10 +2,10 @@ import assign from 'lodash/assign'
 import flatten from 'lodash/flatten'
 import { normalize } from 'normalizr'
 
-import ActionTypes from './types'
-import Schemas from '../schemas'
-import { loadPaginatedObjects } from './utils'
-import { API_CALL, API_CANCEL } from './types'
+import ActionTypes from '../types'
+import Schemas from '../../schemas'
+import { loadPaginatedObjects } from '../utils'
+import { API_CALL, API_CANCEL } from '../types'
 
 /**********
  * FETCHING

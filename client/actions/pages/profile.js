@@ -1,8 +1,8 @@
 import ActionTypes from './types'
-import Schemas from '../schemas'
-import { loadPaginatedObjects } from './utils'
-import { API_CALL, API_CANCEL } from './types'
-import { Profile } from '../models'
+import Schemas from '../../schemas'
+import { loadPaginatedObjects } from '../utils'
+import { API_CALL, API_CANCEL } from '../types'
+import { Profile } from '../../models'
 
 /**********
  * FETCHING

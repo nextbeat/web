@@ -180,7 +180,7 @@ class Room extends React.Component {
             {this.renderDocumentHead(stack)}
             { shouldDisplayBanner && 
                 <WelcomeBanner>
-                    Welcome to Safiya's room! Chat and follow along in real time. <a target="_black" rel="nofollow" href="https://medium.com/@TeamNextbeat/welcome-to-nextbeat-831d25524a4d">Learn more about Nextbeat.</a>
+                    Welcome to Safiya's room! Chat and follow along in real time. <a target="_blank" rel="nofollow" href="https://medium.com/@TeamNextbeat/welcome-to-nextbeat-831d25524a4d">Learn more about Nextbeat.</a>
                 </WelcomeBanner>
             }
             <div className="room_inner">

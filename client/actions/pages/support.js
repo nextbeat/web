@@ -1,5 +1,5 @@
-import ActionTypes from './types'
-import { API_CALL } from './types'
+import ActionTypes from '../types'
+import { API_CALL } from '../types'
 
 export function validatePasswordResetToken(token) {
     return {

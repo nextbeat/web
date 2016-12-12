@@ -1,11 +1,11 @@
 import assign from 'lodash/assign'
 import { Map } from 'immutable'
 
-import ActionTypes from './types'
-import Schemas from '../schemas'
-import { Tag } from '../models'
-import { loadPaginatedObjects } from './utils'
-import { API_CALL, API_CANCEL } from './types'
+import ActionTypes from '../types'
+import Schemas from '../../schemas'
+import { Tag } from '../../models'
+import { loadPaginatedObjects } from '../utils'
+import { API_CALL, API_CANCEL } from '../types'
 
 /**********
  * FETCHING

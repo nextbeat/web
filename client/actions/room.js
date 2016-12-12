@@ -17,46 +17,26 @@ import { setStorageItem } from '../utils'
  * FETCHING
  **********/
 
-function onStackSuccess(store, next, action, response) {
+function onRoomSuccess(store, next, action, response) {
     const stack = response.entities.stacks[response.result];
     store.dispatch(loadMediaItems(stack.uuid));
     store.dispatch(loadComments(stack.uuid));
-    store.dispatch(loadCommentsMetadata(stack.uuid))
-    store.dispatch(loadMoreStacks(stack.id));
-    store.dispatch(markStackAsRead(stack.id));
-    store.dispatch(recordView(stack.id));
+    store.dispatch(loadCommentsMetadata(stack.uuid));
 }
 
-function fetchStack(hid) {
+function fetchRoom(id) {
     return {
-        type: ActionTypes.STACK,
+        type: ActionTypes.ROOM,
         [API_CALL]: {
             schema: Schemas.STACK,
-            endpoint: `stacks/${hid}`,
-            queries: { 'idAttribute': 'hid' },
-            onSuccess: onStackSuccess
+            endpoint: `stacks/${id}`,
+            onSuccess: onRoomSuccess
         }
     }
 }
 
-export function loadStack(hid) {
-    return fetchStack(hid)
-}
-
-function fetchMoreStacks(stack_id) {
-    return {
-        type: ActionTypes.MORE_STACKS,
-        stack_id,
-        [API_CALL]: {
-            schema: Schemas.STACKS,
-            endpoint: `stacks/${stack_id}/more`,
-            pagination: { limit: 6, page: 1 }
-        }
-    }
-}
-
-export function loadMoreStacks(stack_id, tags) {
-    return fetchMoreStacks(stack_id, tags)
+export function loadRoom(hid, { loadAsPage }) {
+    return fetchRoom(hid, loadAsPage)
 }
 
 function fetchMediaItems(stack_uuid, pagination) {
@@ -172,91 +152,6 @@ export function loadCommentsMetadata(stack_uuid) {
     }   
 }
 
-function promptChatActions(username) {
-    return {
-        type: ActionTypes.PROMPT_CHAT_ACTIONS,
-        username
-    }
-}
-
-export function promptChatActionsForUser(username) {
-    return (dispatch, getState) => {
-        dispatch(promptChatActions(username))
-        dispatch(promptModal('chat-user-actions'))
-    }
-}
-
-export function mentionUser(username) {
-    return (dispatch, getState) => {
-        let message = (new Stack(getState())).get('chatMessage', '')
-        if (message.length === 0 || /\s$/.test(message)) {
-            // don't add whitespace
-            message = `${message}@${username}`
-        } else {
-            message = `${message} @${username}`
-        }
-        
-        dispatch(updateChatMessage(message))
-    }
-}
-
-export function updateChatMessage(message) {
-    return {
-        type: ActionTypes.UPDATE_CHAT_MESSAGE,
-        message
-    }
-}
-
-function postBanUser(stack_id, username) {
-    return {
-        type: ActionTypes.BAN_USER,
-        [API_CALL]: {
-            method: 'POST',
-            schema: Schemas.USER,
-            endpoint: `stacks/${stack_id}/comments/${username}/ban`,
-            authenticated: true
-        }
-    }
-}
-
-export function banUser(username) {
-    return (dispatch, getState) => {
-        const stack = new Stack(getState())
-        if (!stack.currentUserIsAuthor()) {
-            return null;
-        }
-        if (stack.userIsBanned(username)) {
-            return null;
-        }
-        dispatch(postBanUser(stack.get('id'), username))
-    }
-}
-
-function postUnbanUser(stack_id, username) {
-    return {
-        type: ActionTypes.UNBAN_USER,
-        [API_CALL]: {
-            method: 'POST',
-            schema: Schemas.USER,
-            endpoint: `stacks/${stack_id}/comments/${username}/unban`,
-            authenticated: true
-        }
-    }
-}
-
-export function unbanUser(username) {
-    return (dispatch, getState) => {
-        const stack = new Stack(getState())
-        if (!stack.currentUserIsAuthor()) {
-            return null;
-        }
-        if (!stack.userIsBanned(username)) {
-            return null;
-        }
-        dispatch(postUnbanUser(stack.get('id'), username))
-    }
-}
-
 export function didUseChat() {
     // Dispatch this action whenever the client interacts with
     // the chat in some way (scrolls, focuses on text box, etc)
@@ -353,67 +248,6 @@ export function unbookmark() {
 }
 
 
-/**************
- * CRUD ACTIONS
- **************/
-
-function postDeleteStack(id) {
-    return {
-        type: ActionTypes.DELETE_STACK,
-        [API_CALL]: {
-            method: 'DELETE',
-            endpoint: `stacks/${id}`,
-            authenticated: true
-        }
-    }
-}
-
-export function deleteStack() {
-    return (dispatch, getState) => {
-        const stack = new Stack(getState())
-        const id = stack.get('id')
-        if (!id || !stack.currentUserIsAuthor()) {
-            return null;
-        }
-        return dispatch(postDeleteStack(id))
-    }
-}
-
-function onCloseStackSuccess(store, next, action, response) {
-    const stack = new Stack(store.getState())
-    const newStack = {
-        id: stack.get('id'),
-        closed: true
-    }
-    store.dispatch({
-        type: ActionTypes.ENTITY_UPDATE,
-        response: normalize(newStack, Schemas.STACK)
-    })
-}
-
-function postCloseStack(id) {
-    return {
-        type: ActionTypes.CLOSE_STACK,
-        [API_CALL]: {
-            method: 'POST',
-            endpoint: `stacks/${id}/close`,
-            authenticated: true,
-            onSuccess: onCloseStackSuccess
-        }
-    }
-}
-
-export function closeStack(id) {
-    return (dispatch, getState) => {
-        const stack = new Stack(getState())
-        const id = stack.get('id')
-        if (!id || !stack.currentUserIsAuthor()) {
-            return null;
-        }
-        return dispatch(postCloseStack(id))
-    }
-}
-
 /**********************
  * MEDIA ITEM SELECTION
  **********************/
@@ -478,23 +312,6 @@ export function goBackward() {
     return navigate(false);
 }
 
-/**************
- * UI SELECTION
- **************/
-
-export function selectDetailSection(section) {
-    return {
-        type: ActionTypes.SELECT_DETAIL_SECTION,
-        section
-    }
-}
-
-export function closeDetailSection() {
-    return {
-        type: ActionTypes.CLOSE_DETAIL_SECTION
-    }
-}
-
 /*******
  * VIEWS
  *******/
@@ -514,11 +331,11 @@ export function recordView(stack_id) {
  * RESET
  *******/
 
-export function clearStack() {
+export function clearRoom() {
     return {
-        type: ActionTypes.CLEAR_STACK,
+        type: ActionTypes.CLEAR_ROOM,
         [API_CANCEL]: {
-            actionTypes: [ActionTypes.COMMENTS, ActionTypes.MEDIA_ITEMS, ActionTypes.MORE_STACK, ActionTypes.STACK]
+            actionTypes: [ActionTypes.COMMENTS, ActionTypes.MEDIA_ITEMS, ActionTypes.ROOM]
         }
     }
 }

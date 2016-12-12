@@ -1,5 +1,5 @@
-import ActionTypes from './types'
-import { generateUuid } from '../utils'
+import ActionTypes from '../types'
+import { generateUuid } from '../../utils'
 
 /********
  * UPLOAD
