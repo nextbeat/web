@@ -2,10 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { List } from 'immutable'
 
-import { Notifications as NotificationsModel } from '../models'
-import { loadNotifications, clearNotifications, markAllAsRead } from '../actions'
-import Spinner from './shared/Spinner.react' 
-import NotificationItem from './notifications/NotificationItem.react'
+import { Notifications as NotificationsModel } from '../../models'
+import { loadNotifications, clearNotifications, markAllAsRead } from '../../actions'
+import Spinner from '../shared/Spinner.react' 
+import NotificationItem from '../notifications/NotificationItem.react'
 
 class Notifications extends React.Component {
 

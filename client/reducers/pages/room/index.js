@@ -90,10 +90,6 @@ const reducers = {
 export default function(state = Map(), action) {
     if (action.type === ActionTypes.CLEAR_ROOM_PAGE) {
         return Map()
-    } else if (action.type === ActionTypes.CLEAR_COMMENTS) {
-        return state
-            .setIn(['pagination', 'comments'], Map())
-            .setIn(['live', 'comments'], List())
     } else {
         return combineReducers(reducers)(state, action)
     }

@@ -1,13 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
-import ScrollComponent from './utils/ScrollComponent.react'
+import ScrollComponent from '../utils/ScrollComponent.react'
 
-import { loadSection, clearSection } from '../actions'
-import { Section } from '../models'
-import LargeStackItem from './shared/LargeStackItem.react'
-import Spinner from './shared/Spinner.react'
-import AppBanner from './shared/AppBanner.react'
+import { loadSection, clearSection } from '../../actions'
+import { Section } from '../../models'
+import LargeStackItem from '../shared/LargeStackItem.react'
+import Spinner from '../shared/Spinner.react'
+import AppBanner from '../shared/AppBanner.react'
 
 class SectionComponent extends React.Component {
 

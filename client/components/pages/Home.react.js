@@ -2,12 +2,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { List } from 'immutable'
 
-import { loadHome, clearHome } from '../actions'
-import { Home } from '../models'
-import HomeSection from './home/HomeSection.react'
-import HomeSplash from './home/HomeSplash.react'
-import Spinner from './shared/Spinner.react'
-import AppBanner from './shared/AppBanner.react'
+import { loadHome, clearHome } from '../../actions'
+import { Home } from '../../models'
+import HomeSection from '../home/HomeSection.react'
+import HomeSplash from '../home/HomeSplash.react'
+import Spinner from '../shared/Spinner.react'
+import AppBanner from '../shared/AppBanner.react'
 
 class HomeComponent extends React.Component {
 

@@ -8,13 +8,13 @@ import isEmpty from 'lodash/isEmpty'
 
 import Player from './room/Player.react'
 import DetailBar from './room/DetailBar.react'
-import WelcomeBanner from './shared/WelcomeBanner.react'
+import WelcomeBanner from '.,/shared/WelcomeBanner.react'
 
-import { loadStack, joinRoom, clearStack, bookmark, unbookmark, selectMediaItem, goForward, goBackward, selectDetailSection, closeDetailSection } from '../actions'
-import { Stack, App } from '../models'
-import { baseUrl, getStorageItem } from '../utils'
+import { loadStack, joinRoom, clearStack, bookmark, unbookmark, selectMediaItem, goForward, goBackward, selectDetailSection, closeDetailSection } from '../../actions'
+import { Stack, App } from '../../models'
+import { baseUrl, getStorageItem } from '../../utils'
 
-class Room extends React.Component {
+class RoomPage extends React.Component {
 
     constructor(props) {
         super(props);
@@ -199,7 +199,7 @@ function mapStateToProps(state, props) {
     }
 }
 
-Room.fetchData = (store, params) => {
+RoomPage.fetchData = (store, params) => {
     return new Promise((resolve, reject) => {
 
         const unsubscribe = store.subscribe(() => {
@@ -217,4 +217,4 @@ Room.fetchData = (store, params) => {
     })
 }
 
-export default connect(mapStateToProps)(Room);
+export default connect(mapStateToProps)(RoomPage);

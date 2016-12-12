@@ -2,17 +2,17 @@ import React from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
-import ScrollComponent from './utils/ScrollComponent.react'
+import ScrollComponent from '../utils/ScrollComponent.react'
 
-import LargeStackItem from './shared/LargeStackItem.react'
+import LargeStackItem from '../shared/LargeStackItem.react'
 import ProfileHeader from './profile/ProfileHeader.react'
-import Spinner from './shared/Spinner.react'
-import PageError from './shared/PageError.react'
-import AppBanner from './shared/AppBanner.react'
+import Spinner from '../shared/Spinner.react'
+import PageError from '../shared/PageError.react'
+import AppBanner from '../shared/AppBanner.react'
 
-import { loadProfile, clearProfile, loadClosedStacksForUser } from '../actions'
-import { Profile } from '../models'
-import { baseUrl } from '../utils'
+import { loadProfile, clearProfile, loadClosedStacksForUser } from '../../actions'
+import { Profile } from '../../models'
+import { baseUrl } from '../../utils'
 
 class ProfileComponent extends React.Component {
 

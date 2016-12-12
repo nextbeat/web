@@ -1,15 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
-import ScrollComponent from './utils/ScrollComponent.react'
 import { Map } from 'immutable'
 
-import { Tag } from '../models'
-import { loadTag, clearTag, loadStacksForTag } from '../actions'
-import LargeStackItem from './shared/LargeStackItem.react'
-import Spinner from './shared/Spinner.react'
-import Icon from './shared/Icon.react'
-import AppBanner from './shared/AppBanner.react'
+import ScrollComponent from '../utils/ScrollComponent.react'
+import { Tag } from '../../models'
+import { loadTag, clearTag, loadStacksForTag } from '../../actions'
+import LargeStackItem from '../shared/LargeStackItem.react'
+import Spinner from '../shared/Spinner.react'
+import Icon from '../shared/Icon.react'
+import AppBanner from '../shared/AppBanner.react'
 
 const SORT_TYPES = [
     { name: "hot", display: "Hot" },

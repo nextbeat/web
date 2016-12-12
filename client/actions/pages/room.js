@@ -6,7 +6,7 @@ import Schemas from '../../schemas'
 import { markStackAsRead } from '../notifications'
 import { promptModal } from '../app'
 import { loadPaginatedObjects } from '../utils'
-import { loadRoom } from '../room'
+import { loadRoom, loadComments, clearComments } from '../room'
 import { Stack } from '../../models'
 import { API_CALL, API_CANCEL, GA, AnalyticsTypes, GATypes } from '../types'
 
@@ -204,6 +204,30 @@ export function unbanUser(username) {
             return null;
         }
         dispatch(postUnbanUser(stack.get('id'), username))
+    }
+}
+
+export function resetChat() {
+    return (dispatch, getState) => {
+        const stack = new Stack(getState())
+        dispatch(clearComments(stack.get('id')))
+        dispatch(loadComments(stack.get('id')))
+    }
+}
+
+
+/*******
+ * VIEWS
+ *******/
+
+export function recordView(stack_id) {
+    return {
+        type: ActionTypes.RECORD_VIEW,
+        [API_CALL]: {
+            method: 'PUT',
+            endpoint: `stacks/views/${stack_id}`,
+            clientOnly: true
+        }
     }
 }
 

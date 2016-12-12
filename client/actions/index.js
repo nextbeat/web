@@ -30,7 +30,7 @@ export {
     selectMediaItem,
     goForward,
     goBackward,
-    resetComments,
+    clearComments,
     clearRoom
 } from './room'
 
@@ -63,7 +63,8 @@ export {
     selectDetailSection,
     closeDetailSection,
     recordView,
-    clearRoom
+    resetChat,
+    clearRoomPage
 } from './pages/room'
 
 export {

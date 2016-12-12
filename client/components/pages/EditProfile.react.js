@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import EditProfilePicture from './edit/EditProfilePicture.react'
-import Icon from './shared/Icon.react'
-import Spinner from './shared/Spinner.react'
-import { CurrentUser, App } from '../models'
-import { triggerAuthError, updateUser, clearEditProfile, promptModal } from '../actions'
+import EditProfilePicture from '../edit/EditProfilePicture.react'
+import Icon from '../shared/Icon.react'
+import Spinner from '../shared/Spinner.react'
+import { CurrentUser, App } from '../../models'
+import { triggerAuthError, updateUser, clearEditProfile, promptModal } from '../../actions'
 
 class EditProfile extends React.Component {
 

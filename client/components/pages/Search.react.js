@@ -3,13 +3,13 @@ import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 import Helmet from 'react-helmet'
 
-import { Search } from '../models'
-import { loadSearchResults, clearSearch } from '../actions'
-import Spinner from './shared/Spinner.react'
-import Icon from './shared/Icon.react'
-import User from './shared/User.react'
-import LargeStackItem from './shared/LargeStackItem.react'
-import Badge from './shared/Badge.react'
+import { Search } from '../../models'
+import { loadSearchResults, clearSearch } from '../../actions'
+import Spinner from '../shared/Spinner.react'
+import Icon from '../shared/Icon.react'
+import User from '../shared/User.react'
+import LargeStackItem from '../shared/LargeStackItem.react'
+import Badge from '../shared/Badge.react'
 
 const SEARCH_FILTERS = [
     {

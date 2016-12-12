@@ -8,7 +8,7 @@ import { markStackAsRead } from './notifications'
 import { promptModal } from './app'
 import { pushSubscribe } from './push'
 import { loadPaginatedObjects } from './utils'
-import { Stack } from '../models'
+import { Room } from '../models'
 import { API_CALL, API_CANCEL, GA, AnalyticsTypes, GATypes } from './types'
 import { setStorageItem } from '../utils'
 
@@ -19,14 +19,15 @@ import { setStorageItem } from '../utils'
 
 function onRoomSuccess(store, next, action, response) {
     const stack = response.entities.stacks[response.result];
-    store.dispatch(loadMediaItems(stack.uuid));
-    store.dispatch(loadComments(stack.uuid));
-    store.dispatch(loadCommentsMetadata(stack.uuid));
+    store.dispatch(loadMediaItems(stack.id));
+    store.dispatch(loadComments(stack.id));
+    store.dispatch(loadCommentsMetadata(stack.id));
 }
 
 function fetchRoom(id) {
     return {
         type: ActionTypes.ROOM,
+        roomId: id,
         [API_CALL]: {
             schema: Schemas.STACK,
             endpoint: `stacks/${id}`,
@@ -35,67 +36,55 @@ function fetchRoom(id) {
     }
 }
 
-export function loadRoom(hid, { loadAsPage }) {
-    return fetchRoom(hid, loadAsPage)
+export function loadRoom(id) {
+    // TODO: call all fetches at once?
+    return fetchRoom(id)
 }
 
-function fetchMediaItems(stack_uuid, pagination) {
+function fetchMediaItems(roomId, pagination) {
     return {
         type: ActionTypes.MEDIA_ITEMS,
+        roomId,
         [API_CALL]: {
             schema: Schemas.MEDIA_ITEMS,
-            endpoint: `stacks/${stack_uuid}/mediaitems`,
+            endpoint: `stacks/${roomId}/mediaitems`,
             pagination
         }
     }
 }
 
-export function loadMediaItems(stack_uuid) {
-    return loadPaginatedObjects('stack', 'mediaItems', fetchMediaItems.bind(this, stack_uuid), "all");
+export function loadMediaItems(roomId) {
+    return loadPaginatedObjects('stack', 'mediaItems', fetchMediaItems.bind(this, roomId), "all");
 }
 
-function fetchComments(stack_uuid, pagination) {
+function fetchComments(roomId, pagination) {
     return {
         type: ActionTypes.COMMENTS,
         [API_CALL]: {
             schema: Schemas.COMMENTS,
-            endpoint: `stacks/${stack_uuid}/comments`,
+            endpoint: `stacks/${roomId}/comments`,
             pagination
         }
     }
 }
 
-export function loadComments(stack_uuid) {
+export function loadComments(roomId) {
 
-    return loadPaginatedObjects('stack', 'comments', fetchComments.bind(this, stack_uuid), 60);
+    return loadPaginatedObjects('stack', 'comments', fetchComments.bind(this, roomId), 60);
 }
-
-function clearComments() {
-    return {
-        type: ActionTypes.CLEAR_COMMENTS
-    }
-}
-
-export function resetComments() {
-    return (dispatch, getState) => {
-        const stack = new Stack(getState())
-        dispatch(clearComments())
-        dispatch(loadComments(stack.get('uuid')))
-    }
-}
-
 
 /******
  * CHAT
  ******/
 
-function postComment(stack_id, message) {
+function postComment(roomId, message) {
     return {
         type: ActionTypes.SEND_COMMENT,
+        roomId,
         message,
         [API_CALL]: {
             method: 'POST',
-            endpoint: `stacks/${stack_id}/comments`,
+            endpoint: `stacks/${roomId}/comments`,
             body: { message },
             authenticated: true
         },
@@ -108,19 +97,14 @@ function postComment(stack_id, message) {
     }
 }
 
-export function sendComment(message) {
+export function sendComment(roomId, message) {
     return (dispatch, getState) => {
 
-        const stack = new Stack(getState())
-        const id = stack.get('id', 0)
-        if (id === 0) {
-            return null;
-        }
         if (!message || message.trim().length === 0) {
             return null;
         }
 
-        return dispatch(postComment(id, message));
+        return dispatch(postComment(roomId, message));
     }
 }
 
@@ -132,23 +116,24 @@ function onCommentsMetadataSuccess(store, next, action, response) {
 }
 
 
-function fetchCommentsMetadata(stack_uuid) {
+function fetchCommentsMetadata(roomId) {
     return {
         type: ActionTypes.COMMENTS_METADATA,
+        roomId,
         [API_CALL]: {
-            endpoint: `stacks/${stack_uuid}/comments/meta`,
+            endpoint: `stacks/${roomId}/comments/meta`,
             onSuccessImmediate: onCommentsMetadataSuccess
         }
     }
 }
 
-export function loadCommentsMetadata(stack_uuid) {
+export function loadCommentsMetadata(roomId) {
     return (dispatch, getState) => {
-        const stack = new Stack(getState())
+        const stack = new Room(roomId, getState())
         if (!stack.currentUserIsAuthor()) {
             return null;
         }
-        dispatch(fetchCommentsMetadata(stack_uuid))
+        dispatch(fetchCommentsMetadata(roomId))
     }   
 }
 
@@ -252,38 +237,39 @@ export function unbookmark() {
  * MEDIA ITEM SELECTION
  **********************/
 
-function performSelectMediaItem(id) {
+function performSelectMediaItem(roomId, id) {
     return {
         type: ActionTypes.SELECT_MEDIA_ITEM,
+        roomId,
         id 
     }
 }
 
-export function selectMediaItem(id) {
+export function selectMediaItem(roomId, id) {
     // We store the last selected media item from each stack
     // in the session in localStorage, so that it persists
     // through multiple sessions
     return (dispatch, getState) => {
-        const stack = new Stack(getState())
-        setStorageItem(stack.get('hid'), id)
+        const room = new Room(roomId, getState())
+        setStorageItem(room.get('hid'), id)
 
-        var index = stack.indexOfMediaItem(id)
-        browserHistory.push(`/r/${stack.get('hid')}/${index+1}`)
+        var index = room.indexOfMediaItem(id)
+        browserHistory.push(`/r/${room.get('hid')}/${index+1}`)
 
-        return dispatch(performSelectMediaItem(id))
+        return dispatch(performSelectMediaItem(roomId, id))
     }
 }
 
-function navigate(isForward) {
+function navigate(roomId, isForward) {
     return (dispatch, getState) => {
-        const stack = new Stack(getState())
-        let selectedId = stack.get('selectedMediaItemId', -1)
+        const room = new Room(roomId, getState())
+        let selectedId = room.get('selectedMediaItemId', -1)
         if (selectedId === -1) {
             return null;
         }
 
-        const paginatedIds = stack.get('mediaItemIds', List())
-        const liveIds = stack.get('liveMediaItemIds', List())
+        const paginatedIds = room.get('mediaItemIds', List())
+        const liveIds = room.get('liveMediaItemIds', List())
         const ids = paginatedIds.concat(liveIds);
         const selectedIndex = ids.indexOf(selectedId);
 
@@ -300,40 +286,36 @@ function navigate(isForward) {
         const nextIndex = isForward ? selectedIndex+1 : selectedIndex-1;
         selectedId = ids.get(nextIndex);
 
-        return dispatch(selectMediaItem(selectedId));
+        return dispatch(selectMediaItem(roomId, selectedId));
     }
 }
 
-export function goForward() {
-    return navigate(true);
+export function goForward(roomId) {
+    return navigate(roomId, true);
 }
 
-export function goBackward() {
-    return navigate(false);
+export function goBackward(roomId) {
+    return navigate(roomId, false);
 }
 
-/*******
- * VIEWS
- *******/
-
-export function recordView(stack_id) {
-    return {
-        type: ActionTypes.RECORD_VIEW,
-        [API_CALL]: {
-            method: 'PUT',
-            endpoint: `stacks/views/${stack_id}`,
-            clientOnly: true
-        }
-    }
-}
 
 /*******
  * RESET
  *******/
 
-export function clearRoom() {
+// TODO: expand into clearRoom(?), clearMediaItems, clearComments
+
+export function clearComments(roomId) {
+    return {
+        type: ActionTypes.CLEAR_COMMENTS,
+        roomId
+    }
+}
+
+export function clearRoom(roomId) {
     return {
         type: ActionTypes.CLEAR_ROOM,
+        roomId,
         [API_CANCEL]: {
             actionTypes: [ActionTypes.COMMENTS, ActionTypes.MEDIA_ITEMS, ActionTypes.ROOM]
         }

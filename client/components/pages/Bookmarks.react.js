@@ -2,16 +2,16 @@ import React from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
-import ScrollComponent from './utils/ScrollComponent.react'
+import ScrollComponent from '../utils/ScrollComponent.react'
 
-import LargeStackItem from './shared/LargeStackItem.react'
-import User from './shared/User.react'
-import Spinner from './shared/Spinner.react'
-import PageError from './shared/PageError.react'
-import AppBanner from './shared/AppBanner.react'
+import LargeStackItem from '../shared/LargeStackItem.react'
+import User from '../shared/User.react'
+import Spinner from '../shared/Spinner.react'
+import PageError from '../shared/PageError.react'
+import AppBanner from '../shared/AppBanner.react'
 
-import { loadBookmarkedStacks, clearClosedBookmarkedStacks } from '../actions'
-import { CurrentUser } from '../models'
+import { loadBookmarkedStacks, clearClosedBookmarkedStacks } from '../../actions'
+import { CurrentUser } from '../../models'
 
 class Bookmarks extends React.Component {
 

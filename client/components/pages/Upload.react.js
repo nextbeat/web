@@ -8,13 +8,13 @@ import FileSelect from './upload/FileSelect.react'
 import UploadBar from './upload/UploadBar.react'
 import AddToRoom from './upload/AddToRoom.react'
 import CreateRoom from './upload/CreateRoom.react'
-import Spinner from './shared/Spinner.react'
-import Icon from './shared/Icon.react'
-import PageError from './shared/PageError.react'
-import { Upload as UploadModel, CurrentUser, App } from '../models'
-import { baseUrl } from '../utils'
+import Spinner from '../shared/Spinner.react'
+import Icon from '../shared/Icon.react'
+import PageError from '../shared/PageError.react'
+import { Upload as UploadModel, CurrentUser, App } from '../../models'
+import { baseUrl } from '../../utils'
 
-import { submitStackRequest, clearUpload, selectStackForUpload, triggerAuthError } from '../actions'
+import { submitStackRequest, clearUpload, selectStackForUpload, triggerAuthError } from '../../actions'
 
 class Upload extends React.Component {
 
