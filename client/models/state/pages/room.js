@@ -2,7 +2,7 @@ import { List, Set } from 'immutable'
 import StateModel from '../base'
 
 import MediaItemEntity from '../../entities/mediaItem'
-import StackEntity from '../../entities/room'
+import StackEntity from '../../entities/stack'
 
 import Room from '../room'
 
@@ -40,7 +40,7 @@ export default class RoomPage extends StateModel {
         super(state);
 
         this.keyMap = KEY_MAP;
-        this.name = "stack";
+        this.keyMapPrefix = ['pages', 'room'];
         this.entityName = "stacks";
     }
 
@@ -52,10 +52,10 @@ export default class RoomPage extends StateModel {
         return new Room(this.get('id'), this.state)
     }
 
-    get(key) {
+    get(key, defaultValue) {
         let value = super.get(key)
         // try Room model if unsuccessful
-        if (!value) {
+        if (typeof value === 'undefined') {
             value = this.room().get(key)
         }
         return value

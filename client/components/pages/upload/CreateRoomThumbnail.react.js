@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Spinner from '../shared/Spinner.react'
+import Spinner from '../../shared/Spinner.react'
 import FileComponent from './utils/FileComponent.react'
 
 class CreateRoomThumbnail extends React.Component {

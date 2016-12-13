@@ -1,6 +1,6 @@
 import { Map } from 'immutable'
 import { isNumber } from 'lodash'
-import { ActionTypes } from '../actions'
+import { ActionTypes } from '../../actions'
 
 import live from './live'
 import navigation from './navigation'
@@ -15,7 +15,7 @@ let pagination = combineReducers({
 
 let roomReducer = combineReducers({
     meta,
-    pagination
+    pagination,
     live,
     navigation
 })

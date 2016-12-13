@@ -6,12 +6,12 @@ import * as xmpp from '../xmpp'
 import { Status, ActionTypes } from '../actions' 
 import * as actions from '../actions'
 import { generateUuid } from '../utils'
-import { Stack, CurrentUser } from '../models'
+import { RoomPage, CurrentUser } from '../models'
 import Schemas from '../schemas'
 
 function connectClient(store, next, action) {
     const client = xmpp.getClient(store);
-    let stack = new Stack(store.getState());
+    let stack = new RoomPage(store.getState());
     let currentUser = new CurrentUser(store.getState());
 
     // exit early if client is already connected
@@ -55,8 +55,8 @@ function connectClient(store, next, action) {
         client.sendPresence()
 
         process.nextTick(() => {
-            stack = new Stack(store.getState());
-            if (stack.isLoaded()) {
+            room = new RoomPage(store.getState());
+            if (roomPage.isLoaded()) {
                 store.dispatch(actions.joinRoom())
             }
         })
@@ -132,7 +132,7 @@ function reconnectClient(store, next, action) {
 function joinRoom(store, next, action) {
     const client = xmpp.getClient(store);
     const currentUser = new CurrentUser(store.getState());
-    const stack = new Stack(store.getState());
+    const stack = new RoomPage(store.getState());
 
     function actionWith(status, data) {
         return assign({}, action, { status }, data);
@@ -181,7 +181,7 @@ function joinRoom(store, next, action) {
 
 function leaveRoom(store, next, action) {
     const client = xmpp.getClient(store);
-    const stack = new Stack(store.getState());
+    const stack = new RoomPage(store.getState());
     const currentUser = new CurrentUser(store.getState());
 
     if (!currentUser.hasJoinedRoom() || !stack.isLoaded()) {
@@ -196,7 +196,7 @@ function leaveRoom(store, next, action) {
 }
 
 function handleReceiveStackClosed(store, next, action) {
-    const stack = new Stack(store.getState())
+    const stack = new RoomPage(store.getState())
     let updatedStack = {
         id: stack.get('id'),
         closed: true
@@ -252,7 +252,7 @@ function sendComment(store, next, action) {
     // the comment has successfully been submitted
     if (action.status === Status.SUCCESS) {
         const client = xmpp.getClient(store);
-        const stack = new Stack(store.getState());
+        const stack = new RoomPage(store.getState());
         const room = stack.get('room');
 
         client.sendMessage({

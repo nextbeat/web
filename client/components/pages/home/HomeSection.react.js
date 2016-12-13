@@ -2,9 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import LargeStackItem from '../shared/LargeStackItem.react'
-import Icon from '../shared/Icon.react'
-import { App, CurrentUser } from '../../models'
+import LargeStackItem from '../../shared/LargeStackItem.react'
+import Icon from '../../shared/Icon.react'
+import { App, CurrentUser } from '../../../models'
 
 const DEFAULT_ITEM_WIDTH = 220;
 const MARGIN_WIDTH = 10;

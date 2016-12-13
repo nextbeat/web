@@ -1,7 +1,7 @@
 import StateModel from './base'
 
 import { Map, List, Set } from 'immutable'
-import Stack from './stack'
+import Room from './room'
 import StackEntity from '../entities/stack'
 import UserEntity from '../entities/user'
 
@@ -98,14 +98,14 @@ export default class CurrentUser extends StateModel {
         return this.get('connected', false);
     }
 
-    isJoiningRoom() {
-        const stack = new Stack(this.state);
-        return stack.get('isJoiningRoom', false);
+    isJoiningRoom(id) {
+        const room = new Room(id, this.state);
+        return room.get('isJoiningRoom', false);
     }
 
-    hasJoinedRoom() {
-        const stack = new Stack(this.state);
-        return stack.has('room');
+    hasJoinedRoom(id) {
+        const room = new Room(id, this.state);
+        return room.has('room');
     }
 
     isSubscribed(id) {

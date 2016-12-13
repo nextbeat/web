@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { selectSidebar, closeSidebar, toggleDropdown, promptModal, logout, markAllAsRead, loadNotifications } from '../actions'
 import { Notifications as NotificationsModel } from '../models'
 
-import Notifications from './Notifications.react'
+import Notifications from './pages/Notifications.react'
 import Icon from './shared/Icon.react'
 import Logo from './shared/Logo.react'
 import SmallLogo from './shared/SmallLogo.react'

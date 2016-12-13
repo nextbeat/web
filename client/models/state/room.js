@@ -3,8 +3,9 @@ import { List, Map } from 'immutable'
 import StateModel from './base'
 import CurrentUser from './currentUser'
 
-import StackEntity from '../entities/room'
+import StackEntity from '../entities/stack'
 import MediaItemEntity from '../entities/mediaItem'
+import CommentEntity from '../entities/comment'
 
 const KEY_MAP = {
     // meta 
@@ -26,6 +27,7 @@ const KEY_MAP = {
     'commentsFetching': ['pagination', 'comments', 'isFetching'],
     'commentsError': ['pagination', 'comments', 'error'],
     'liveComments': ['live', 'comments']
+}
 
 export default class Room extends StateModel {
 
@@ -62,7 +64,7 @@ export default class Room extends StateModel {
     }
 
     comments() {
-        return this.__getPaginatedEntities('comments')
+        return this.__getPaginatedEntities('comments', { entityClass: CommentEntity })
     }
 
     liveComments() {

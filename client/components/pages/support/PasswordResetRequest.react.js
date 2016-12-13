@@ -2,8 +2,8 @@ import React from 'react'
 import { findDOMNode } from 'react-dom'
 import { connect } from 'react-redux'
 
-import { Support } from '../../models'
-import { sendPasswordResetRequest } from '../../actions'
+import { Support } from '../../../models'
+import { sendPasswordResetRequest } from '../../../actions'
 
 class PasswordResetRequest extends React.Component {
 

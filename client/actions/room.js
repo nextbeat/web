@@ -8,7 +8,7 @@ import { markStackAsRead } from './notifications'
 import { promptModal } from './app'
 import { pushSubscribe } from './push'
 import { loadPaginatedObjects } from './utils'
-import { Room } from '../models'
+import { Room, RoomPage } from '../models'
 import { API_CALL, API_CANCEL, GA, AnalyticsTypes, GATypes } from './types'
 import { setStorageItem } from '../utils'
 
@@ -60,6 +60,7 @@ export function loadMediaItems(roomId) {
 function fetchComments(roomId, pagination) {
     return {
         type: ActionTypes.COMMENTS,
+        roomId,
         [API_CALL]: {
             schema: Schemas.COMMENTS,
             endpoint: `stacks/${roomId}/comments`,
@@ -250,11 +251,14 @@ export function selectMediaItem(roomId, id) {
     // in the session in localStorage, so that it persists
     // through multiple sessions
     return (dispatch, getState) => {
-        const room = new Room(roomId, getState())
-        setStorageItem(room.get('hid'), id)
 
-        var index = room.indexOfMediaItem(id)
-        browserHistory.push(`/r/${room.get('hid')}/${index+1}`)
+        const roomPage = new RoomPage(getState())
+        if (roomPage.isLoaded()) {
+            setStorageItem(roomPage.get('hid'), id)
+            var index = roomPage.indexOfMediaItem(id)
+            browserHistory.push(`/r/${roomPage.get('hid')}/${index+1}`)
+        }
+
 
         return dispatch(performSelectMediaItem(roomId, id))
     }

@@ -86,17 +86,17 @@ export default store => {
                 childRoutes: [
                     analyticsRoute('password-reset-request', cb => {
                         require.ensure([], (require) => {
-                            cb(null, require('../client/components/support/pages/PasswordResetRequest.react').default)
+                            cb(null, require('../client/components/pages/support/PasswordResetRequest.react').default)
                         })
                     }),
                     analyticsRoute('password-reset', cb => {
                         require.ensure([], (require) => {
-                            cb(null, require('../client/components/support/pages/PasswordReset.react').default)
+                            cb(null, require('../client/components/pages/support/PasswordReset.react').default)
                         })
                     }),
                     analyticsRoute('unsubscribe', cb => {
                         require.ensure([], (require) => {
-                            cb(null, require('../client/components/support/pages/Unsubscribe.react').default)
+                            cb(null, require('../client/components/pages/support/Unsubscribe.react').default)
                         })
                     }),
                 ]

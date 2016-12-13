@@ -2,11 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Map } from 'immutable'
 
-import Video from '../room/player/Video.react'
-import Photo from '../room/player/Photo.react'
-import Modal from '../shared/Modal.react'
+import Video from '../../room/player/Video.react'
+import Photo from '../../room/player/Photo.react'
+import Modal from '../../shared/Modal.react'
 
-import { closeModal, updateNewMediaItem } from '../../actions'
+import { closeModal, updateNewMediaItem } from '../../../actions'
 
 class AddCaption extends React.Component {
 

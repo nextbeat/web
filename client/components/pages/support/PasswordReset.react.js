@@ -5,8 +5,8 @@ import { Link } from 'react-router'
 import { parse } from 'querystring'
 import get from 'lodash/get'
 
-import { Support } from '../../models'
-import { validatePasswordResetToken, resetPassword } from '../../actions'
+import { Support } from '../../../models'
+import { validatePasswordResetToken, resetPassword } from '../../../actions'
 
 class PasswordReset extends React.Component {
 

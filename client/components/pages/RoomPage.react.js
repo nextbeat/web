@@ -6,11 +6,11 @@ import Helmet from 'react-helmet'
 import assign from 'lodash/assign'
 import isEmpty from 'lodash/isEmpty'
 
-import Player from './room/Player.react'
-import DetailBar from './room/DetailBar.react'
-import WelcomeBanner from '.,/shared/WelcomeBanner.react'
+// import Player from '../room/page/Player.react'
+// import DetailBar from '../room/page/DetailBar.react'
+// import WelcomeBanner from '../shared/WelcomeBanner.react'
 
-import { loadStack, joinRoom, clearStack, bookmark, unbookmark, selectMediaItem, goForward, goBackward, selectDetailSection, closeDetailSection } from '../../actions'
+import { loadROom, joinRoom, clearRoom, bookmark, unbookmark, selectMediaItem, goForward, goBackward, selectDetailSection, closeDetailSection } from '../../actions'
 import { Stack, App } from '../../models'
 import { baseUrl, getStorageItem } from '../../utils'
 

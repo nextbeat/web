@@ -4,8 +4,8 @@ import { connect } from 'react-redux'
 import { parse } from 'querystring'
 import get from 'lodash/get'
 
-import { Support } from '../../models'
-import { sendEmailUnsubscribeRequest } from '../../actions'
+import { Support } from '../../../models'
+import { sendEmailUnsubscribeRequest } from '../../../actions'
 
 class PasswordResetRequest extends React.Component {
 

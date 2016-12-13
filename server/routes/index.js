@@ -91,7 +91,6 @@ module.exports = {
         );
 
         router.post('/logout', function(req, res) {
-            console.log(req.user.token);
             var options = {
                 auth: req.user.token
             }

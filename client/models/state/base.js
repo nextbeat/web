@@ -33,7 +33,7 @@ export default class StateModel {
                 return this.entity().get(key, defaultValue);
             }
         }
-        return this.state.getIn(keyPath(key), defaultValue);
+        return this.state.getIn(this.keyPath(key), defaultValue);
     }
 
     has(key) {

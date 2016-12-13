@@ -4,7 +4,7 @@ const ExtractTextPlugin     = require('extract-text-webpack-plugin');
 
 module.exports = {
     cache: true,
-    devtool: 'eval',
+    devtool: 'source-map',
     entry: {
         app: [
             // 'react-hot-loader/patch',

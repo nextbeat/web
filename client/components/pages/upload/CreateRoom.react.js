@@ -4,8 +4,8 @@ import { List } from 'immutable'
 
 import EditThumbnail from './EditThumbnail.react'
 import CreateRoomThumbnail from './CreateRoomThumbnail.react'
-import Icon from '../shared/Icon.react'
-import { selectStackForUpload, updateNewStack, promptModal } from '../../actions'
+import Icon from '../../shared/Icon.react'
+import { selectStackForUpload, updateNewStack, promptModal } from '../../../actions'
 
 const MAX_TAG_COUNT = 5;
 

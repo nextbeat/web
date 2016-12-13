@@ -1,5 +1,5 @@
 import { Map, List } from 'immutable'
-import { ActionTypes, Status } from '../../actions'
+import { ActionTypes, Status } from '../../../actions'
 
 function promptChatActions(state, action) {
     return state.merge({

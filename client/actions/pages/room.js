@@ -7,7 +7,7 @@ import { markStackAsRead } from '../notifications'
 import { promptModal } from '../app'
 import { loadPaginatedObjects } from '../utils'
 import { loadRoom, loadComments, clearComments } from '../room'
-import { Stack } from '../../models'
+import { RoomPage } from '../../models'
 import { API_CALL, API_CANCEL, GA, AnalyticsTypes, GATypes } from '../types'
 
 
@@ -73,9 +73,9 @@ function postDeleteStack(id) {
 
 export function deleteStack() {
     return (dispatch, getState) => {
-        const stack = new Stack(getState())
-        const id = stack.get('id')
-        if (!id || !stack.currentUserIsAuthor()) {
+        const room = new RoomPage(getState())
+        const id = room.get('id')
+        if (!id || !room.currentUserIsAuthor()) {
             return null;
         }
         return dispatch(postDeleteStack(id))
@@ -83,9 +83,9 @@ export function deleteStack() {
 }
 
 function onCloseStackSuccess(store, next, action, response) {
-    const stack = new Stack(store.getState())
-    const newStack = {
-        id: stack.get('id'),
+    const room = new Room(store.getState())
+    const newRoom = {
+        id: room.get('id'),
         closed: true
     }
     store.dispatch({
@@ -106,11 +106,11 @@ function postCloseStack(id) {
     }
 }
 
-export function closeStack(id) {
+export function closeStack() {
     return (dispatch, getState) => {
-        const stack = new Stack(getState())
-        const id = stack.get('id')
-        if (!id || !stack.currentUserIsAuthor()) {
+        const room = new Room(getState())
+        const id = room.get('id')
+        if (!id || !room.currentUserIsAuthor()) {
             return null;
         }
         return dispatch(postCloseStack(id))
@@ -138,7 +138,7 @@ export function promptChatActionsForUser(username) {
 
 export function mentionUser(username) {
     return (dispatch, getState) => {
-        let message = (new Stack(getState())).get('chatMessage', '')
+        let message = (new Room(getState())).get('chatMessage', '')
         if (message.length === 0 || /\s$/.test(message)) {
             // don't add whitespace
             message = `${message}@${username}`
@@ -171,14 +171,14 @@ function postBanUser(stack_id, username) {
 
 export function banUser(username) {
     return (dispatch, getState) => {
-        const stack = new Stack(getState())
-        if (!stack.currentUserIsAuthor()) {
+        const room = new Room(getState())
+        if (!room.currentUserIsAuthor()) {
             return null;
         }
-        if (stack.userIsBanned(username)) {
+        if (room.userIsBanned(username)) {
             return null;
         }
-        dispatch(postBanUser(stack.get('id'), username))
+        dispatch(postBanUser(room.get('id'), username))
     }
 }
 
@@ -196,22 +196,22 @@ function postUnbanUser(stack_id, username) {
 
 export function unbanUser(username) {
     return (dispatch, getState) => {
-        const stack = new Stack(getState())
-        if (!stack.currentUserIsAuthor()) {
+        const room = new Room(getState())
+        if (!room.currentUserIsAuthor()) {
             return null;
         }
-        if (!stack.userIsBanned(username)) {
+        if (!room.userIsBanned(username)) {
             return null;
         }
-        dispatch(postUnbanUser(stack.get('id'), username))
+        dispatch(postUnbanUser(room.get('id'), username))
     }
 }
 
 export function resetChat() {
     return (dispatch, getState) => {
-        const stack = new Stack(getState())
-        dispatch(clearComments(stack.get('id')))
-        dispatch(loadComments(stack.get('id')))
+        const room = new Room(getState())
+        dispatch(clearComments(room.get('id')))
+        dispatch(loadComments(room.get('id')))
     }
 }
 

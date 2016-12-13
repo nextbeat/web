@@ -2,11 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import { secureUrl } from '../../utils'
-import { CurrentUser, App } from '../../models'
+import { secureUrl } from '../../../utils'
+import { CurrentUser, App } from '../../../models'
 
-import Subscribe from '../shared/Subscribe.react'
-import Icon from '../shared/Icon.react'
+import Subscribe from '../../shared/Subscribe.react'
+import Icon from '../../shared/Icon.react'
 
 class ProfileHeader extends React.Component {
 

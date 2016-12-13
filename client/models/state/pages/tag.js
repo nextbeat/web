@@ -26,7 +26,7 @@ export default class Tag extends StateModel {
     }
 
     stacks() {
-        return this.__getPaginatedEntities('stacks', { entityClass: StackEntity }))
+        return this.__getPaginatedEntities('stacks', { entityClass: StackEntity })
     }
 
 }

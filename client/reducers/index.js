@@ -6,6 +6,7 @@ import user from './user'
 import rooms from './rooms'
 import push from './push'
 import analytics from './analytics'
+import pages from './pages'
 
 import { combineReducers } from './utils'
 import { Status, ActionTypes } from '../actions'

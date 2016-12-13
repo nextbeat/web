@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { selectStackForUpload } from '../../actions'
-import LargeStackItem from '../shared/LargeStackItem.react'
-import Icon from '../shared/Icon.react'
+import { selectStackForUpload } from '../../../actions'
+import LargeStackItem from '../../shared/LargeStackItem.react'
+import Icon from '../../shared/Icon.react'
 
 class SelectableStackItem extends React.Component {
 

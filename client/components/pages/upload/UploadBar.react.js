@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { clearUpload } from '../../actions'
+import { clearUpload } from '../../../actions'
 
 class UploadBar extends React.Component {
 

@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import Modal from '../shared/Modal.react'
-import { uploadThumbnail, clearThumbnail, closeModal } from '../../actions'
-import { generateUuid } from '../../utils'
+import Modal from '../../shared/Modal.react'
+import { uploadThumbnail, clearThumbnail, closeModal } from '../../../actions'
+import { generateUuid } from '../../../utils'
 
 
 class EditThumbnail extends React.Component {

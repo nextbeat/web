@@ -2,7 +2,7 @@ import assign from 'lodash/assign'
 
 import { Status } from './types'
 import ActionTypes from './types'
-import { CurrentUser, Notifications, Stack } from '../models'
+import { CurrentUser, Notifications, RoomPage } from '../models'
 import Schemas from '../schemas'
 import { API_CALL, API_CANCEL } from './types'
 
@@ -93,9 +93,9 @@ function markAsRead(options) {
 
 export function markStackAsRead(id) {
     return (dispatch, getState) => {
-        const stack = new Stack(getState())
+        const roomPage = new RoomPage(getState())
         const currentUser = new CurrentUser(getState())
-        id = id || stack.get('id');
+        id = id || roomPage.get('id');
         if (typeof id === "number") {
             id = id.toString();
         }

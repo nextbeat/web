@@ -1,8 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router'
 
-import { fromString } from '../../utils'
-import Icon from '../shared/Icon.react'
+import { fromString } from '../../../utils'
+import Icon from '../../shared/Icon.react'
 
 class NotificationItem extends React.Component {
 

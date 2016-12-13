@@ -4,8 +4,8 @@ import assign from 'lodash/assign'
 
 import FileComponent from './utils/FileComponent.react'
 import AddCaption from './AddCaption.react'
-import Icon from '../shared/Icon.react'
-import { uploadFile, uploadPosterFile, updateNewMediaItem, promptModal } from '../../actions'
+import Icon from '../../shared/Icon.react'
+import { uploadFile, uploadPosterFile, updateNewMediaItem, promptModal } from '../../../actions'
 
 class FileSelect extends React.Component {
 

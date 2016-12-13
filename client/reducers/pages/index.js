@@ -6,7 +6,7 @@ import section from './section'
 import support from './support'
 import tag from './tag'
 import upload from './upload'
-import { combineReducers } from './utils'
+import { combineReducers } from '../utils'
 
 export default combineReducers({
     home,

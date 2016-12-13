@@ -2,7 +2,7 @@ import React from 'react'
 import hoistStatics from 'hoist-non-react-statics'
 import assign from 'lodash/assign'
 
-import { Upload } from '../../../models'
+import { Upload } from '../../../../models'
 
 export default function FileComponent(parentId, options={}) {
 

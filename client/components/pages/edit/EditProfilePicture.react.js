@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { uploadProfilePicture, closeModal } from '../../actions'
-import { generateUuid } from '../../utils'
-import Modal from '../shared/Modal.react'
+import { uploadProfilePicture, closeModal } from '../../../actions'
+import { generateUuid } from '../../../utils'
+import Modal from '../../shared/Modal.react'
 
 class EditProfilePicture extends React.Component {
 
