@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { goBackward, goForward } from '../../../actions'
 import Video from './Video.react'
 import Photo from './Photo.react'
-import Counter from './Counter.react'
 import Icon from '../../shared/Icon.react'
 import Spinner from '../../shared/Spinner.react'
 
@@ -58,7 +57,7 @@ class RoomPlayer extends React.Component {
     // Render
 
     render() {
-        const { room } = this.props;
+        const { room, children } = this.props;
 
         const item = room.selectedMediaItem()
         const leftDisabledClass = room.indexOfSelectedMediaItem() === 0 ? 'disabled' : '';
@@ -66,7 +65,7 @@ class RoomPlayer extends React.Component {
 
         return (
             <div className="player_main">
-                { /* <Counter stack={stack} active={activeDetailButtons} handleClick={this.handleActivity} /> */ }
+                { children }
                 <div className="player_media">
                     <div className="player_media-inner" id="player_media-inner">
                     { room.mediaItems().size == 0 && !room.get('mediaItemsError') && <Spinner type="large grey"/> }

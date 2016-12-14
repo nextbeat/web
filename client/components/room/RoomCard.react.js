@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import RoomPlayer from './player/RoomPlayer.react'
 import ChatHistory from './chat/ChatHistory.react'
+import Counter from './counter/Counter.react'
 import RoomCardHeader from './card/RoomCardHeader.react'
 
 import { loadRoom, clearRoom, selectMediaItem } from '../../actions'
@@ -42,7 +43,9 @@ class RoomCard extends React.Component {
             <div className="room-card">
                 <RoomCardHeader room={room} />
                 <div className="room-card_main">
-                    <RoomPlayer room={room} />
+                    <RoomPlayer room={room}>
+                        <Counter room={room} />
+                    </RoomPlayer>
                     <ChatHistory room={room} />
                 </div>
                 <Link to={`/r/${room.get('hid')}`} className="room-card_prompt">
