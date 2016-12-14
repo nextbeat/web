@@ -152,7 +152,7 @@ export function didUseChat() {
  *************/
 
 function onBookmarkSuccess(store, next, action, response) {
-    const stack = new Stack(store.getState())
+    const stack = (new RoomPage(store.getState())).entity()
     const newStack = {
         id: stack.get('id'),
         bookmark_count: stack.get('bookmark_count', 0) + 1,
@@ -179,7 +179,7 @@ function postBookmark(stack_id, stackStatus) {
 }
 
 function onUnbookmarkSuccess(store, next, action, response) {
-    const stack = new Stack(store.getState())
+    const stack = (new RoomPage(store.getState())).entity()
     const newStack = {
         id: stack.get('id'),
         bookmark_count: stack.get('bookmark_count', 1) - 1,

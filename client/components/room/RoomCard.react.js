@@ -7,6 +7,7 @@ import RoomCardHeader from './card/RoomCardHeader.react'
 
 import { loadRoom, clearRoom, selectMediaItem } from '../../actions'
 import { Room } from '../../models'
+import { Link } from 'react-router'
 
 class RoomCard extends React.Component {
 
@@ -44,6 +45,9 @@ class RoomCard extends React.Component {
                     <RoomPlayer room={room} />
                     <ChatHistory room={room} />
                 </div>
+                <Link to={`/r/${room.get('hid')}`} className="room-card_prompt">
+                    Enter Room
+                </Link>
             </div>
         )
     }

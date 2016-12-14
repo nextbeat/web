@@ -9,6 +9,9 @@
 
     @include media('<=medium') {
         text-align: center; // centers the .home_sections element
+        .room-card {
+            text-align: left;
+        }
     }
 }
 

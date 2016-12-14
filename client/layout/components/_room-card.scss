@@ -1,10 +1,20 @@
 .room-card {
     width: 700px;
     margin: 20px auto;
+    position: relative;
 }
 
-.room-card_header {
+a.room-card_header {
     margin-bottom: 13px;
+    display: block;
+    color: $text-color;
+
+    &:hover {
+        color: $text-color;
+        .room-card_title {
+            color: $primary-color;
+        }
+    }
 }
 
 .room-card_info-top {
@@ -143,4 +153,37 @@
         }
     }
 
+}
+
+a.room-card_prompt {
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    display: inline-block;
+    background-color: $primary-color;
+    color: white;
+    font-weight: 300;
+    font-size: 13px;
+    padding: 5px 10px 5px 15px;
+    box-shadow: -4px 4px 6px -1px rgba(0,0,0,0.12);
+
+    &:hover {
+        background-color: $light-primary-color;
+        &:after {
+            border-color: transparent transparent transparent $light-primary-color;
+        }
+    }
+
+    &:after {
+        content: '';
+        position: absolute;
+        left: 100%;
+        top: 0;
+        bottom: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 13px 0 13px 10px;
+        border-color: transparent transparent transparent $primary-color;
+    }
 }

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router'
 
 import Icon from '../../shared/Icon.react'
 import { fromNowString } from '../../../utils'
@@ -11,7 +12,7 @@ class RoomCardHeader extends React.Component {
         let thumbStyle = { backgroundImage: thumbUrl ? `url(${thumbUrl})` : '' }
 
         return (
-            <div className="room-card_header">
+            <Link to={`/r/${room.get('hid')}`} className="room-card_header">
                 <div className="room-card_info-top">
                     <div className="room-card_user">
                         <div className="room-card_profpic" style={thumbStyle}>{ !thumbUrl && <Icon type="person" /> }</div>
@@ -25,7 +26,7 @@ class RoomCardHeader extends React.Component {
                     </div>
                 </div>
                 <div className="room-card_title">{ room.get('description') }</div>
-            </div>
+            </Link>
         )
     }
 }
