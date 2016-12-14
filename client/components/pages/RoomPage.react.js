@@ -25,8 +25,10 @@ class RoomPage extends React.Component {
     // LIFECYCLE
 
     componentDidMount() {
-        const { params, dispatch } = this.props
-        dispatch(loadRoomPage(params.hid))
+        const { params, dispatch, roomPage } = this.props
+        if (!roomPage.isLoaded()) {
+            dispatch(loadRoomPage(params.hid))
+        }
     }
 
     componentWillUnmount() {

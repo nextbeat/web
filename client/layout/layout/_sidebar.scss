@@ -127,9 +127,12 @@ a.sidebar_item {
 @mixin collapsed-sidebar {
     display: block;
     transform: translateX(-100%);
-    transition: transform 0.25s;
     z-index: 15;
     border-right: 1px solid border-color;
+
+    &.animating {
+        transition: transform 0.25s;
+    }
 
     &.active {
         transform: translateX(0);

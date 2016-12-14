@@ -23,6 +23,7 @@ const KEY_MAP = {
     'activeModal': ['state', 'modal'],
     'activeOverlay': ['state', 'overlay'],
     'activeDropdowns': ['state', 'dropdowns'],
+    'sidebarAnimating': ['state', 'sidebarAnimating'],
     'volume': ['state', 'volume'],
     'width': ['state', 'width']
 }

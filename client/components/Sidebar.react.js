@@ -61,14 +61,14 @@ class Sidebar extends React.Component {
         const guestClass = user.isLoggedIn() ? '' : 'no-sidebar'
 
         // display sidebar if selected
-        const activeClass = app.get('activeOverlay') === 'sidebar'
-                                ? 'active' : ''
+        const activeClass = app.get('activeOverlay') === 'sidebar' ? 'active' : ''
+        const animatingClass = app.get('sidebarAnimating') ? 'animating' : ''
 
         // set style for displaying profile picture
         const profileStyle = { backgroundImage: user.profileThumbnailUrl() ? `url(${user.profileThumbnailUrl()})` : ''}
 
         return (
-            <div className={`sidebar ${activeClass} ${guestClass}`}>
+            <div className={`sidebar ${activeClass} ${guestClass} ${animatingClass}`}>
                 <div className="sidebar_section sidebar_topnav">
                     <Link to="/" activeClassName="selected" className="sidebar_item">
                         <div className="sidebar_icon"><Icon type="home" /></div>Home

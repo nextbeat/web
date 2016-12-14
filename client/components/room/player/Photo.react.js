@@ -29,7 +29,9 @@ class Photo extends React.Component {
     componentDidMount() {
         const { image } = this.props
         $(window).on('resize.photo', this.resize.bind(this, image))
-        this.resize(image)
+        setTimeout(() => {
+            this.resize(image)
+        })
 
         if (image.get('type') === 'objectURL') {
             $('#player_photo').one('load', () => {
