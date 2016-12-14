@@ -27,12 +27,12 @@ class Photo extends React.Component {
     // Component lifecycle
 
     componentDidMount() {
-        const { image } = this.props
-        $(window).on('resize.photo', this.resize.bind(this, image))
+        $(window).on('resize.photo', this.resize)
         setTimeout(() => {
-            this.resize(image)
+            this.resize()
         })
 
+        const { image } = this.props
         if (image.get('type') === 'objectURL') {
             $('#player_photo').one('load', () => {
                 URL.revokeObjectURL(image.get('url'))
@@ -43,7 +43,7 @@ class Photo extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.image !== this.props.image) {
             $('#player_photo').one('load', () => {
-                this.resize(nextProps.image);
+                this.resize(nextProps);
             })
         }
     }
@@ -62,7 +62,8 @@ class Photo extends React.Component {
 
     // Events
 
-    resize(image) {
+    resize() {
+        const { image } = this.props
         const containerWidth = $('.player_media-inner').width()
         const containerHeight = $('.player_media-inner').height()
         const imageRatio = image.get('width')/image.get('height')

@@ -197,3 +197,18 @@ a.room-card_prompt {
         border-color: transparent transparent transparent $primary-color;
     }
 }
+
+// Responsiveness
+
+.room-card {
+    @include media('<=small') {
+        display: none;
+    }
+
+    @include media('<=medium') {
+        width: 496px;
+        .chat_history {
+            display: none;
+        }
+    }
+}
