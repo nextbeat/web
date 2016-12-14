@@ -1,4 +1,4 @@
-import { List, Map } from 'immutable'
+import { List, Map, Set } from 'immutable'
 
 import StateModel from './base'
 import CurrentUser from './currentUser'
@@ -60,7 +60,7 @@ export default class Room extends StateModel {
     }
 
     liveMediaItems() {
-        return this.get('liveMediaItemIds').map(id => new MediaItemEntity(id, this.state.get('entities')))
+        return this.get('liveMediaItemIds', List()).map(id => new MediaItemEntity(id, this.state.get('entities')))
     }
 
     comments() {
@@ -140,5 +140,19 @@ export default class Room extends StateModel {
         return !this.get('error') && this.mediaItems().size === 0 && !this.get('mediaItemsError')
     }
 
+    isJoining() {
+        return this.get('isJoiningRoom', false)
+    }
 
+    hasJoined() {
+        return this.has('room')
+    }
+
+    static loadedRooms(state) {
+        let rooms = state.get('rooms')
+        return rooms.reduce((res, _, id) => {
+            let room = new Room(id, state)
+            return room.isLoaded() ? res.push(room) : res;
+        }, List())
+    }
 }

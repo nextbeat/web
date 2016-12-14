@@ -8,7 +8,7 @@ import muc from 'stanza.io/lib/plugins/muc'
 
 import { generateUuid } from '../utils'
 import Schemas from '../schemas'
-import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveChatbotComment, receiveStackClosed, syncUnreadNotifications, lostXMPPConnection, reconnectXMPP } from '../actions'
+import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveChatbotComment, receiveRoomClosed, syncUnreadNotifications, lostXMPPConnection, reconnectXMPP } from '../actions'
 import { CurrentUser, Room } from '../models'
 
 function xmppHost() {
@@ -149,6 +149,7 @@ function stripNickname(resource) {
 }
 
 function handleGroupChat(s, store) {
+    console.log(s);
     const stack = new Room(store.getState());
     if (s.chatState === "active") {
         // received comment

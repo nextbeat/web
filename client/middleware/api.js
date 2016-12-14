@@ -124,6 +124,7 @@ export default store => next => action => {
 
         })
         .catch(error => {
+            console.log(error)
             return next(actionWith({
                 status: Status.FAILURE,
                 error: error.message

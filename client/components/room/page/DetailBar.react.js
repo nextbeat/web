@@ -1,14 +1,14 @@
 import React from 'react'
 
 import { connect } from 'react-redux'
-import { selectDetailSection, closeDetailSection, toggleDropdown, promptModal } from '../../actions'
+import { RoomPage, App } from '../../../models'
+import { selectDetailSection, closeDetailSection, toggleDropdown, promptModal } from '../../../actions'
 
 import Chat from './chat/Chat.react'
 import Activity from './activity/Activity.react'
-import Icon from '../shared/Icon.react'
-import Counter from './player/Counter.react'
+import Icon from '../../shared/Icon.react'
 import StackActions from './StackActions.react'
-import Dropdown from '../shared/Dropdown.react'
+import Dropdown from '../../shared/Dropdown.react'
 
 class DetailBar extends React.Component {
 
@@ -49,8 +49,8 @@ class DetailBar extends React.Component {
         )
     }
 
-    renderBadge(stack) {
-        const count = stack.unseenLiveMediaItemsCount()
+    renderBadge(roomPage) {
+        const count = roomPage.unseenLiveMediaItemsCount()
         if (count === 0) {
             return null;
         }
@@ -62,8 +62,8 @@ class DetailBar extends React.Component {
     }
 
     render() {
-        const { stack, app, handleSelectMediaItem, handleSelectNewestLiveItem  } = this.props;
-        const selected = type => stack.get('selectedDetailSection', 'chat') === type ? "selected" : "";
+        const { roomPage, app } = this.props;
+        const selected = type => roomPage.get('selectedDetailSection', 'chat') === type ? "selected" : "";
 
         // collapse detail bar if window width below threshold
         const collapsedClass = app.get('width') === 'small' || app.get('width') === 'medium'
@@ -72,27 +72,17 @@ class DetailBar extends React.Component {
         const detailOverlayActive = app.get('activeOverlay') === 'chat' || app.get('activeOverlay') === 'activity'
         const activeClass = detailOverlayActive ? 'active' : ''
 
-        const activityProps = {
-            stack,
-            mediaItems: stack.mediaItems(),
-            liveMediaItems: stack.liveMediaItems(),
-            selectedItem: stack.selectedMediaItem(),
-            handleSelectMediaItem,
-            handleSelectNewestLiveItem
-        }
-
-
         return (
             <div className={`detail-bar ${collapsedClass} ${activeClass}`}>
-                <StackActions stack={stack} />
+                <StackActions />
                 <div className="detail-bar_header">
-                    { stack.currentUserIsAuthor() && 
+                    { roomPage.currentUserIsAuthor() && 
                         <div className="detail-bar_toggle-edit" id="dropdown-detail-bar_toggle" onClick={this.toggleDropdown}><Icon type="more-vert" /></div> 
                     }
                     { this.renderDropdown() }
                     <div className="detail-bar_tab-container">
                         <span className={`detail-bar_tab ${selected("chat")}`} onClick={this.setSelected.bind(this, "chat")}>Chat</span>
-                        <span className={`detail-bar_tab ${selected("activity")}`} onClick={this.setSelected.bind(this, "activity")}>Activity{this.renderBadge(stack)}</span>
+                        <span className={`detail-bar_tab ${selected("activity")}`} onClick={this.setSelected.bind(this, "activity")}>Activity{this.renderBadge(roomPage)}</span>
                     </div>
                 </div>
                 <div className="detail-bar_main">
@@ -101,12 +91,19 @@ class DetailBar extends React.Component {
                             <Icon type="close" />
                         </div>
                     }
-                    { !stack.get('isFetching') && !stack.get('error') && <Chat display={stack.get('selectedDetailSection', 'chat') === "chat"} /> }
-                    { !stack.get('isFetching') && !stack.get('error') && <Activity display={stack.get('selectedDetailSection', 'chat') === "activity"} {...activityProps} /> }
+                    { !roomPage.get('isFetching') && !roomPage.get('error') && <Chat display={roomPage.get('selectedDetailSection', 'chat') === "chat"} /> }
+                    { !roomPage.get('isFetching') && !roomPage.get('error') && <Activity display={roomPage.get('selectedDetailSection', 'chat') === "activity"} /> }
                 </div>
             </div>
         );
     }
 }
 
-export default connect()(DetailBar);
+function mapStateToProps(state) {
+    return {
+        roomPage: new RoomPage(state),
+        app: new App(state)
+    }
+}
+
+export default connect(mapStateToProps)(DetailBar);

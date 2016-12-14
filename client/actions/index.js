@@ -104,13 +104,13 @@ export {
     disconnectXMPP,
     reconnectXMPP,
     lostXMPPConnection,
-    joinRoom,
-    leaveRoom,
+    joinXMPPRoom,
+    leaveXMPPRoom,
     receiveComment,
     receiveNotificationComment,
     receiveChatbotComment,
     receiveMediaItem,
-    receiveStackClosed
+    receiveRoomClosed
 } from './xmpp'
 
 export {

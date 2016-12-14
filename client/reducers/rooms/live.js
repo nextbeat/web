@@ -110,9 +110,9 @@ const initialState = Map({
 
 export default function live(state = initialState, action) {
     switch (action.type) {
-        case ActionTypes.JOIN_CHATROOM:
+        case ActionTypes.JOIN_XMPP_ROOM:
             return joinRoom(state, action);
-        case ActionTypes.LEAVE_CHATROOM:
+        case ActionTypes.LEAVE_XMPP_ROOM:
             return leaveRoom(state, action);
         case ActionTypes.RECEIVE_COMMENT:
             return receiveComment(state, action);

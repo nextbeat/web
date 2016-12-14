@@ -2,9 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 
-import Modal from '../../shared/Modal.react'
-import { CurrentUser, Stack } from '../../../models'
-import { closeModal, mentionUser, banUser, unbanUser } from '../../../actions'
+import Modal from '../../../shared/Modal.react'
+import { CurrentUser, Stack, RoomPage } from '../../../../models'
+import { closeModal, mentionUser, banUser, unbanUser } from '../../../../actions'
 
 class UserActions extends React.Component {
 
@@ -32,9 +32,9 @@ class UserActions extends React.Component {
     }
 
     handleUpdateBanStatus() {
-        const { dispatch, username, stack } = this.props 
+        const { dispatch, username, roomPage } = this.props 
         dispatch(closeModal())
-        if (stack.userIsBanned(username)) {
+        if (roomPage.userIsBanned(username)) {
             dispatch(unbanUser(username))
         } else {
             dispatch(banUser(username))
@@ -45,7 +45,7 @@ class UserActions extends React.Component {
     // Render
 
     render() {
-        const { currentUser, username, stack } = this.props
+        const { currentUser, username, roomPage } = this.props
 
         return (
             <Modal name="chat-user-actions" className="modal-action">
@@ -58,9 +58,9 @@ class UserActions extends React.Component {
                 <div className="modal-action_btn btn btn-gray" onClick={this.handleMention}>
                     Mention
                 </div>
-                { stack.currentUserIsAuthor() && currentUser.get('username') !== username && 
+                { roomPage.currentUserIsAuthor() && currentUser.get('username') !== username && 
                     <div className="modal-action_btn btn" onClick={this.handleUpdateBanStatus}>
-                    { stack.userIsBanned(username) ? "Unban" : "Ban" }
+                    { roomPage.userIsBanned(username) ? "Unban" : "Ban" }
                     </div>
                 }
             </Modal>
@@ -69,11 +69,11 @@ class UserActions extends React.Component {
 }
 
 function mapStateToProps(state) {
-    let stack = new Stack(state)
+    let roomPage = new RoomPage(state)
     return {
         currentUser: new CurrentUser(state),
-        stack,
-        username: stack.get('selectedChatUsername')
+        roomPage,
+        username: roomPage.get('selectedChatUsername')
     }
 }
 

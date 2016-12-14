@@ -1,7 +1,7 @@
 import format from 'date-fns/format'
 
 import { ActionTypes, AnalyticsTypes, AnalyticsSessionTypes, Status } from '../../actions' 
-import { Stack, Analytics, CurrentUser, MediaItemEntity } from '../../models'
+import { RoomPage, Analytics, CurrentUser, MediaItemEntity } from '../../models'
 import { getStorageItem, setStorageItem, generateUuid } from '../../utils'
 
 import { submitEvent, submitPendingEvents } from './submit'
@@ -42,8 +42,9 @@ function attributesForSessionStartType(store, type, userId) {
     attributes.startTime = new Date()
 
     if ([AnalyticsSessionTypes.CHAT, AnalyticsSessionTypes.STACK].indexOf(type) !== -1) {
-        let stack = new Stack(store.getState())
-        if (stack.isLoaded()) {
+        let roomPage = new RoomPage(store.getState())
+        if (roomPage.isLoaded()) {
+            let stack = roomPage.entity()
             attributes.stackId = stack.get('id')
             attributes.stackCreatedAt = format(stack.get('createdAt'))
             attributes.stackAuthorId = stack.author().get('id')

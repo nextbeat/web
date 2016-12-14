@@ -205,31 +205,29 @@ function postUnbookmark(stack_id, stackStatus) {
     }
 }
 
-export function bookmark() {
+export function bookmark(roomId) {
     return (dispatch, getState) => {
 
-        const stack = new Stack(getState())
-        const id = stack.get('id')
-        const status = stack.status()
-        if (!id || stack.isBookmarked() || stack.currentUserIsAuthor()) {
+        const room = new Room(roomId, getState())
+        const status = room.status()
+        if (room.isBookmarked() || room.currentUserIsAuthor()) {
             return null;
         }
 
-        return dispatch(postBookmark(id, status));
+        return dispatch(postBookmark(roomId, status));
     }
 }
 
-export function unbookmark() {
+export function unbookmark(roomId) {
     return (dispatch, getState) => {
 
-        const stack = new Stack(getState())
-        const id = stack.get('id')
-        const status = stack.status()
-        if (!id || !stack.isBookmarked() || stack.currentUserIsAuthor()) {
+        const room = new Room(roomId, getState())
+        const status = room.status()
+        if (!room.isBookmarked() || room.currentUserIsAuthor()) {
             return null;
         }
         
-        return dispatch(postUnbookmark(id, status));
+        return dispatch(postUnbookmark(roomId, status));
     }
 }
 

@@ -3,7 +3,7 @@ import { normalize } from 'normalizr'
 
 import ActionTypes from './types'
 import Schemas from '../schemas'
-import { Stack } from '../models'
+import { Room } from '../models'
 
 export function connectToXMPP() {
     return {
@@ -29,15 +29,17 @@ export function reconnectXMPP() {
     }
 }
 
-export function joinRoom() {
+export function joinXMPPRoom(roomId) {
     return {
-        type: ActionTypes.JOIN_ROOM
+        type: ActionTypes.JOIN_XMPP_ROOM,
+        roomId
     }
 }
 
-export function leaveRoom() {
+export function leaveXMPPRoom(roomId) {
     return {
-        type: ActionTypes.LEAVE_ROOM
+        type: ActionTypes.LEAVE_XMPP_ROOM,
+        roomId
     }
 }
 
@@ -51,7 +53,7 @@ export function receiveComment(message, username) {
 
 export function receiveNotificationComment(data, username) {
     return (dispatch, getState) => {
-        const stack = new Stack(getState())
+        const stack = new Room(getState())
         const mostRecentComment = stack.comments().first() || Map()
         const hasLiveComments = stack.liveComments().size > 0
         if (!hasLiveComments && mostRecentComment.get('type') === 'notification' && mostRecentComment.get('notification_type') === 'mediaitem') {
@@ -97,8 +99,8 @@ export function receiveChatbotComment(stack_uuid, message) {
     }
 }
 
-export function receiveStackClosed() {
+export function receiveRoomClosed() {
     return {
-        type: ActionTypes.RECEIVE_STACK_CLOSED
+        type: ActionTypes.RECEIVE_ROOM_CLOSED
     }
 }

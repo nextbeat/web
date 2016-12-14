@@ -98,16 +98,6 @@ export default class CurrentUser extends StateModel {
         return this.get('connected', false);
     }
 
-    isJoiningRoom(id) {
-        const room = new Room(id, this.state);
-        return room.get('isJoiningRoom', false);
-    }
-
-    hasJoinedRoom(id) {
-        const room = new Room(id, this.state);
-        return room.has('room');
-    }
-
     isSubscribed(id) {
         return this.get('subscriptionIds', List()).includes(id);
     }

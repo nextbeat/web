@@ -6,7 +6,7 @@ import Schemas from '../../schemas'
 import { markStackAsRead } from '../notifications'
 import { promptModal } from '../app'
 import { loadPaginatedObjects } from '../utils'
-import { loadRoom, loadComments, clearComments } from '../room'
+import { loadRoom, loadComments, clearComments, clearRoom } from '../room'
 import { RoomPage } from '../../models'
 import { API_CALL, API_CANCEL, GA, AnalyticsTypes, GATypes } from '../types'
 
@@ -35,7 +35,7 @@ function fetchRoomPage(hid) {
     }
 }
 
-function loadRoomPage(hid) {
+export function loadRoomPage(hid) {
     return fetchRoomPage(hid)
 }
 
@@ -254,11 +254,19 @@ export function closeDetailSection() {
  * RESET
  *******/
 
-export function clearRoomPage() {
+function performClearRoomPage() {
     return {
         type: ActionTypes.CLEAR_ROOM_PAGE,
         [API_CANCEL]: {
             actionTypes: [ActionTypes.MORE_STACKS]
         }
+    }
+}
+
+export function clearRoomPage() {
+    return (dispatch, getState) => {
+        let roomPage = new RoomPage(getState())
+        dispatch(clearRoom(roomPage.get('id')))
+        dispatch(performClearRoomPage())
     }
 }

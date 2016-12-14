@@ -1,56 +1,79 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import format from 'date-fns/format'
-import { timeLeftString } from '../../../utils'
+import { timeLeftString } from '../../../../utils'
 
-import ScrollComponent from '../../utils/ScrollComponent.react'
+import { RoomPage } from '../../../../models'
+import { selectMediaItem, closeDetailSection } from '../../../../actions'
+import ScrollComponent from '../../../utils/ScrollComponent.react'
 import ActivityItem from './ActivityItem.react'
-import Spinner from '../../shared/Spinner.react'
+import Spinner from '../../../shared/Spinner.react'
 
 class Activity extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.handleNewMediaClick = this.handleNewMediaClick.bind(this);
+        this.handleSelectMediaItem = this.handleSelectMediaItem.bind(this);
+
         this.state = {
             displayNewItem: false
         }
-        this.handleNewMediaClick = this.handleNewMediaClick.bind(this);
     }
 
     // Button handlers
+
     handleNewMediaClick() {
-        this.props.handleSelectNewestLiveItem();
+        const { roomPage, dispatch } = this.props;
+
+        const newestLiveItem = roomPage.liveMediaItems().last();
+        if (newestLiveItem) {
+            dispatch(selectMediaItem(newestLiveItem.get('id')));
+            dispatch(closeDetailSection())
+        }
+
         this.setState({
             displayNewItem: false
         });
-
     }
+
+    handleSelectMediaItem(id) {
+        const { dispatch, roomPage } = this.props
+
+        this.props.dispatch(selectMediaItem(roomPage.get('id'), id))
+        this.props.dispatch(closeDetailSection())
+    }
+
 
     // Render
 
     render() {
-        const { mediaItems, liveMediaItems, selectedItem, handleSelectMediaItem, stack, display } = this.props;
+        const { roomPage, display } = this.props;
         const { displayNewItem } = this.state;
+        let selectedItem = roomPage.selectedMediaItem();
+
         return (
         <section className="activity" style={{ display: (display ? "block" : "none") }}>
             <div className="activity_time">
-                { stack.get('closed') && format(stack.get('created_at'), 'MMMM D, YYYY') }
-                { !stack.get('closed') && timeLeftString(stack.get('expires')) }
+                { roomPage.get('closed') && format(roomPage.get('created_at'), 'MMMM D, YYYY') }
+                { !roomPage.get('closed') && timeLeftString(roomPage.get('expires')) }
             </div>
             <div className="activity_inner" id="activity-inner">
-                {stack.get('mediaItemsFetching') && <Spinner type="grey" />}
-                {mediaItems.map((mediaItem, idx) => {
+                {roomPage.get('mediaItemsFetching') && <Spinner type="grey" />}
+                {roomPage.mediaItems().map((mediaItem, idx) => {
                     var selected = (mediaItem.get('id') === selectedItem.get('id'));
                     return <ActivityItem 
                         key={mediaItem.get('id')} 
                         mediaItem={mediaItem} 
                         selected={selected} 
                         index={idx} 
-                        handleClick={handleSelectMediaItem}
+                        handleClick={this.handleSelectMediaItem}
                     />
                 })}
-                {liveMediaItems.map((mediaItem, idx) => {
+                {roomPage.liveMediaItems().map((mediaItem, idx) => {
                     var selected = (mediaItem.get('id') === selectedItem.get('id'));
-                    var unseen = stack.isUnseen(mediaItem.get('id'));
+                    var unseen = roomPage.isUnseen(mediaItem.get('id'));
                     return <ActivityItem 
                         key={mediaItem.get('id')} 
                         mediaItem={mediaItem} 
@@ -58,7 +81,7 @@ class Activity extends React.Component {
                         live={true} 
                         unseen={unseen}
                         index={idx+mediaItems.size} 
-                        handleClick={handleSelectMediaItem}
+                        handleClick={this.handleSelectMediaItem}
                     />
                 })}
             </div>
@@ -77,7 +100,7 @@ const scrollOptions = {
     },
 
     onComponentWillReceiveProps: function(scrollComponent, nextProps) {
-        if (nextProps.liveMediaItems.size !== this.props.liveMediaItems.size) {
+        if (nextProps.roomPage.liveMediaItems().size !== this.props.roomPage.liveMediaItems().size) {
             if (!scrollComponent.isScrolledToBottom()) {
                 this.setState({
                     displayNewItem: true
@@ -87,12 +110,12 @@ const scrollOptions = {
     },
 
     onComponentDidUpdate: function(scrollComponent, prevProps) {
-        if (prevProps.stack.get('id') !== this.props.stack.get('id')) {
-            // changed stack selection, this does not apply
+        if (prevProps.roomPage.get('id') !== this.props.roomPage.get('id')) {
+            // changed roomPage selection, this does not apply
             return;
         }
         
-        if (prevProps.selectedItem.get('id') !== this.props.selectedItem.get('id')) {
+        if (prevProps.roomPage.selectedMediaItem().get('id') !== this.props.roomPage.selectedMediaItem().get('id')) {
             const [ selected, activity ] = [ $('.item-activity.selected'), $('#activity-inner') ];
 
             // adjust position to keep selected element at bottom of view
@@ -110,11 +133,17 @@ const scrollOptions = {
             scrollComponent.setScrollState();
         }
 
-        if (prevProps.liveMediaItems.size !== this.props.liveMediaItems.size) {
+        if (prevProps.roomPage.liveMediaItems().size !== this.props.roomPage.liveMediaItems().size) {
             scrollComponent.scrollToBottomIfPreviouslyAtBottom();
             scrollComponent.setScrollState();
         }
     }
 }
 
-export default ScrollComponent('activity-inner', scrollOptions)(Activity);
+function mapStateToProps(state) {
+    return {
+        roomPage: new RoomPage(state)
+    }
+}
+
+export default connect(mapStateToProps)(ScrollComponent('activity-inner', scrollOptions)(Activity));

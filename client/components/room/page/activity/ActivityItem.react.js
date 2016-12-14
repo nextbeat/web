@@ -1,7 +1,7 @@
 import React from 'react'
 import format from 'date-fns/format'
 
-import { secureUrl } from '../../../utils'
+import { secureUrl } from '../../../../utils'
 
 class ActivityItem extends React.Component {
 

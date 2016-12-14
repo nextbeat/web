@@ -53,10 +53,10 @@ export default class RoomPage extends StateModel {
     }
 
     get(key, defaultValue) {
-        let value = super.get(key)
+        let value = super.get(key, defaultValue)
         // try Room model if unsuccessful
         if (typeof value === 'undefined') {
-            value = this.room().get(key)
+            value = this.room().get(key, defaultValue)
         }
         return value
     } 
@@ -102,6 +102,10 @@ export default class RoomPage extends StateModel {
 
 
     // Queries
+
+    isLoaded() {
+        return this.room().isLoaded()
+    }
 
     status() {
         return this.room().status()

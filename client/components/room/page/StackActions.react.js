@@ -2,10 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 
-import Modal from '../shared/Modal.react'
-import Spinner from '../shared/Spinner.react'
-import { closeModal, closeStack, deleteStack } from '../../actions'
-import { CurrentUser } from '../../models'
+import Modal from '../../shared/Modal.react'
+import Spinner from '../../shared/Spinner.react'
+import { closeModal, closeStack, deleteStack } from '../../../actions'
+import { CurrentUser, RoomPage } from '../../../models'
 
 class StackActions extends React.Component {
 
@@ -17,19 +17,19 @@ class StackActions extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (!this.props.stack.get('hasDeleted') && nextProps.stack.get('hasDeleted')) {
+        if (!this.props.roomPage.get('hasDeleted') && nextProps.roomPage.get('hasDeleted')) {
             // successfully deleted; navigate to profile
             this.props.dispatch(closeModal())
             browserHistory.push(`/u/${this.props.user.get('username')}`)
         }
 
-        if (!this.props.stack.get('hasClosed') && nextProps.stack.get('hasClosed')) {
+        if (!this.props.roomPage.get('hasClosed') && nextProps.roomPage.get('hasClosed')) {
             this.props.dispatch(closeModal())
         }
     }
 
     renderCloseModal() {
-        const { stack, dispatch } = this.props
+        const { roomPage, dispatch } = this.props
         return (
             <Modal name="close-room" className="modal-alert">
                 <div className="modal_header">
@@ -38,11 +38,11 @@ class StackActions extends React.Component {
                 <div className="modal-alert_text">
                     Are you sure you want to close this room? <b>This action cannot be reversed.</b>
                 </div>
-                { stack.get('closeError') && 
+                { roomPage.get('closeError') && 
                     <div className="modal-alert_error">There was an error processing your request. Please try again.</div>
                 }
                 <a className="modal-alert_btn btn" onClick={() => {dispatch(closeStack())}}>
-                    { stack.get('isClosing') ? <Spinner type="white" /> : 'Close room' }
+                    { roomPage.get('isClosing') ? <Spinner type="white" /> : 'Close room' }
                 </a>
                 <a className="modal-alert_btn btn btn-gray" onClick={() => {dispatch(closeModal())}}>
                     Cancel
@@ -52,7 +52,7 @@ class StackActions extends React.Component {
     }
 
     renderDeleteModal() {
-        const { stack, dispatch } = this.props
+        const { roomPage, dispatch } = this.props
         return (
             <Modal name="delete-room" className="modal-alert">
                 <div className="modal_header">
@@ -61,11 +61,11 @@ class StackActions extends React.Component {
                 <div className="modal-alert_text">
                     Are you sure you want to delete this room? <b>This action cannot be reversed.</b>
                 </div>
-                { stack.get('deleteError') && 
+                { roomPage.get('deleteError') && 
                     <div className="modal-alert_error">There was an error processing your request. Please try again.</div>
                 }
                 <a className="modal-alert_btn btn" onClick={() => {dispatch(deleteStack())}}>
-                    { stack.get('isDeleting') ? <Spinner type="white" /> : 'Delete room' }
+                    { roomPage.get('isDeleting') ? <Spinner type="white" /> : 'Delete room' }
                 </a>
                 <a className="modal-alert_btn btn btn-gray" onClick={() => {dispatch(closeModal())}}>
                     Cancel
@@ -86,7 +86,8 @@ class StackActions extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        user: new CurrentUser(state)
+        user: new CurrentUser(state),
+        roomPage: new RoomPage(state)
     }
 }
 

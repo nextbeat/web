@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux' 
 
-import { App } from '../../../models'
-import Icon from '../../shared/Icon.react'
-import { baseUrl } from '../../../utils'
+import { App } from '../../../../models'
+import Icon from '../../../shared/Icon.react'
+import { baseUrl } from '../../../../utils'
 
 
 class Share extends React.Component {
@@ -27,11 +27,11 @@ class Share extends React.Component {
 
 
     shareUrl(showIndex=true) {
-        const { stack } = this.props
+        const { roomPage } = this.props
         const { includeIndex } = this.state
-        const indexPath = (includeIndex && showIndex) ? '/'+(stack.indexOfSelectedMediaItem()+1) : ''
+        const indexPath = (includeIndex && showIndex) ? '/'+(roomPage.indexOfSelectedMediaItem()+1) : ''
 
-        return `${baseUrl()}/r/${stack.get('hid')}${indexPath}`
+        return `${baseUrl()}/r/${roomPage.get('hid')}${indexPath}`
     }
 
     // Component lifecycle
@@ -82,9 +82,9 @@ class Share extends React.Component {
     }
 
     renderTwitter() {
-        const { stack } = this.props
+        const { roomPage } = this.props
 
-        const text = encodeURIComponent(stack.status() === "closed" ? 'Check out my room on Nextbeat!' : 'Posting updates to my room on Nextbeat. Check it out!')
+        const text = encodeURIComponent(roomPage.status() === "closed" ? 'Check out my room on Nextbeat!' : 'Posting updates to my room on Nextbeat. Check it out!')
         const url = encodeURIComponent(this.shareUrl(false))
         return <iframe className="share_social-button share_twitter-button" src={`https://platform.twitter.com/widgets/tweet_button.html?url=${url}&text=${text}&via=nextbeatTv`} width="130" height="20" scrolling="no" title="Twitter Tweet Button" style={{border: "none", overflow: "hidden"}}></iframe>
     }

@@ -4,9 +4,9 @@ import { normalize } from 'normalizr'
 
 import * as xmpp from '../xmpp'
 import { Status, ActionTypes } from '../actions' 
-import * as actions from '../actions'
+import { connectToXMPP, disconnectXMPP, joinXMPPRoom, leaveXMPPRoom } from '../actions'
 import { generateUuid } from '../utils'
-import { RoomPage, CurrentUser } from '../models'
+import { Room, RoomPage, CurrentUser } from '../models'
 import Schemas from '../schemas'
 
 function connectClient(store, next, action) {
@@ -55,10 +55,10 @@ function connectClient(store, next, action) {
         client.sendPresence()
 
         process.nextTick(() => {
-            room = new RoomPage(store.getState());
-            if (roomPage.isLoaded()) {
-                store.dispatch(actions.joinRoom())
-            }
+            let rooms = Room.loadedRooms(store.getState())
+            rooms.forEach(room => {
+                store.dispatch(joinXMPPRoom(room.get('id')))
+            })
         })
     })
 
@@ -75,7 +75,7 @@ function connectClient(store, next, action) {
                 password: currentUser.get('uuid')
             }
         })
-        store.dispatch(actions.connectToXMPP());
+        store.dispatch(connectToXMPP());
     }
 
     client.once('auth:failed', authFailureCb);
@@ -84,7 +84,6 @@ function connectClient(store, next, action) {
         client.off('auth:failed', authFailureCb);
     })
 
-    console.log('connecting...')
     client.connect();
 }
 
@@ -116,7 +115,7 @@ function reconnectClient(store, next, action) {
             return 
         }
 
-        store.dispatch(actions.connectToXMPP());
+        store.dispatch(connectToXMPP());
 
         setTimeout(() => {
             timeout = count < maxBackoff ? timeout*2 : timeout
@@ -132,7 +131,7 @@ function reconnectClient(store, next, action) {
 function joinRoom(store, next, action) {
     const client = xmpp.getClient(store);
     const currentUser = new CurrentUser(store.getState());
-    const stack = new RoomPage(store.getState());
+    const room = new Room(action.roomId, store.getState());
 
     function actionWith(status, data) {
         return assign({}, action, { status }, data);
@@ -141,15 +140,15 @@ function joinRoom(store, next, action) {
     // return early if not connected or if already in room
     if (!currentUser.isConnected()) {
         return next(actionWith(Status.FAILURE));
-    } else if (currentUser.isJoiningRoom() || currentUser.hasJoinedRoom()) {
+    } else if (room.isJoining() || room.hasJoined()) {
         return null;
-    } else if (!stack.has('id')) {
+    } else if (!room.has('id')) {
         return null;
     }
 
     next(actionWith(Status.REQUESTING));
 
-    const stack_uuid = stack.get('uuid');
+    const stack_uuid = room.get('uuid');
     const jid = `${stack_uuid}@conference.xmpp.nextbeat.co`;
     const nickname = currentUser.isLoggedIn() ? `${currentUser.get('username')}#${generateUuid()}` : generateUuid();
 
@@ -181,21 +180,20 @@ function joinRoom(store, next, action) {
 
 function leaveRoom(store, next, action) {
     const client = xmpp.getClient(store);
-    const stack = new RoomPage(store.getState());
-    const currentUser = new CurrentUser(store.getState());
+    const room = new Room(action.roomId, store.getState());
 
-    if (!currentUser.hasJoinedRoom() || !stack.isLoaded()) {
+    if (!room.hasJoined() || !room.isLoaded()) {
         return null;
     }
 
-    const room = stack.get('room');
-    const nickname = stack.get('nickname');
-    client.leaveRoom(room, nickname);
+    const xmppRoom = room.get('room');
+    const nickname = room.get('nickname');
+    client.leaveRoom(xmppRoom, nickname);
 
     return next(assign({}, action, { status: Status.SUCCESS }))
 }
 
-function handleReceiveStackClosed(store, next, action) {
+function handleReceiveRoomClosed(store, next, action) {
     const stack = new RoomPage(store.getState())
     let updatedStack = {
         id: stack.get('id'),
@@ -211,11 +209,16 @@ function handleLoginOrLogout(store, next, action) {
     // authenticated user or an anonymous user, respectively
     if (action.status === Status.SUCCESS) {
         const client = xmpp.getClient(store);
-        store.dispatch(actions.leaveRoom())    
-        store.dispatch(actions.disconnectXMPP())
+
+        let rooms = Room.loadedRooms(store.getState())
+        rooms.forEach(room => {
+            store.dispatch(leaveXMPPRoom(room.get('id')))
+        })
+
+        store.dispatch(disconnectXMPP())
         client.once('disconnected', function() {
             process.nextTick(() => {
-                store.dispatch(actions.connectToXMPP())
+                store.dispatch(connectToXMPP())
             })
         })
     }
@@ -223,26 +226,30 @@ function handleLoginOrLogout(store, next, action) {
     return next(action);
 }
 
-function handleLoadStack(store, next, action) {
+function handleLoadRoom(store, next, action) {
     const currentUser = new CurrentUser(store.getState());
     if (action.status === Status.SUCCESS && currentUser.isConnected()) {
         process.nextTick(() => {
-            store.dispatch(actions.joinRoom())
+            store.dispatch(joinXMPPRoom(action.roomId))
         })
     }
 
     return next(action);
 }
 
-function handleClearStack(store, next, action) {
-    store.dispatch(actions.leaveRoom())
+function handleClearRoom(store, next, action) {
+    store.dispatch(leaveXMPPRoom(action.roomId))
     return next(action);
 }
 
 function handleBeforeUnload(store, next, action) {
-    // leave room and disconnect before unloading window
-    store.dispatch(actions.leaveRoom())
-    store.dispatch(actions.disconnectXMPP())
+    // leave rooms and disconnect before unloading window
+    let rooms = Room.loadedRooms(store.getState())
+    rooms.forEach(room => {
+        store.dispatch(leaveXMPPRoom(room.get('id')))
+    })
+
+    store.dispatch(disconnectXMPP())
     return next(action);
 }
 
@@ -252,11 +259,10 @@ function sendComment(store, next, action) {
     // the comment has successfully been submitted
     if (action.status === Status.SUCCESS) {
         const client = xmpp.getClient(store);
-        const stack = new RoomPage(store.getState());
-        const room = stack.get('room');
+        const room = new Room(action.roomId, store.getState())
 
         client.sendMessage({
-            to: room,
+            to: room.get('room'),
             type: 'groupchat',
             body: action.message,
             chatState: 'active'
@@ -273,21 +279,21 @@ export default store => next => action => {
             return disconnectClient(store, next, action);
         case ActionTypes.RECONNECT_XMPP:
             return reconnectClient(store, next, action);
-        case ActionTypes.JOIN_ROOM:
+        case ActionTypes.JOIN_XMPP_ROOM:
             return joinRoom(store, next, action);
-        case ActionTypes.LEAVE_ROOM:
+        case ActionTypes.LEAVE_XMPP_ROOM:
             return leaveRoom(store, next, action);
         case ActionTypes.SEND_COMMENT:
             return sendComment(store, next, action);
-        case ActionTypes.RECEIVE_STACK_CLOSED:
+        case ActionTypes.RECEIVE_ROOM_CLOSED:
             return handleReceiveStackClosed(store, next, action);
         case ActionTypes.LOGIN:
         case ActionTypes.LOGOUT:
             return handleLoginOrLogout(store, next, action);
-        case ActionTypes.STACK:
-            return handleLoadStack(store, next, action);
-        case ActionTypes.CLEAR_STACK:
-            return handleClearStack(store, next, action);
+        case ActionTypes.ROOM:
+            return handleLoadRoom(store, next, action);
+        case ActionTypes.CLEAR_ROOM:
+            return handleClearRoom(store, next, action);
         case ActionTypes.ON_BEFORE_UNLOAD:
             return handleBeforeUnload(store, next, action);
         default:
