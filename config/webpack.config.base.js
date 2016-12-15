@@ -3,24 +3,13 @@ const path                  = require('path');
 const ExtractTextPlugin     = require('extract-text-webpack-plugin');
 
 module.exports = {
-    cache: true,
-    devtool: 'source-map',
     entry: {
-        app: [
-            // 'react-hot-loader/patch',
-            // 'webpack-dev-server/client?http://localhost:3000',
-            // 'webpack/hot/only-dev-server',
-            './client/app.js'
-        ],
-
+        app: './client/app.js'
     },
     output: {
-        filename: 'bundle.webpack.js',
-        path: path.join(__dirname, 'client/public/js'),
-        publicPath: 'http://localhost:9090/'
-    },
-    devServer: {
-        inline: true
+        filename: 'js/bundle.js',
+        chunkFilename: 'js/[id].bundle.js',
+        path: path.join(__dirname, '../client/public/')
     },
     module: {
         rules: [
@@ -52,30 +41,12 @@ module.exports = {
             },
             {
                 test: /\.(gif|png|jpe?g)$/,
-                loader: 'file-loader',
+                loader: 'file-loader?name=./images/[hash:16].[ext]',
                 exclude: /node_modules/
             }
         ]
     },
     plugins: [
-        new ExtractTextPlugin('main.webpack.css'),
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('mac')
-        }),
-        // new webpack.HotModuleReplacementPlugin(),
-        // new webpack.optimize.UglifyJsPlugin({
-        //     compress: {
-        //         warnings: false,
-        //         'screw_ie8': true
-        //     },
-        //     output: {
-        //         comments: false
-        //     },
-        //     sourceMap: false
-        // }),
-        // new webpack.LoaderOptionsPlugin({
-        //     minimize: true,
-        //     debug: false
-        // }),
+        new ExtractTextPlugin('css/main.css')
     ]
 }

@@ -1,5 +1,5 @@
 #! /bin/bash
 
 cd /home/app/web
-gulp build
+npm run build
 node server/server.js

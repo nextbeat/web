@@ -1,5 +1,5 @@
 import { Map } from 'immutable'
-import { isNumber } from 'lodash'
+import isNumber from 'lodash/isNumber'
 import { ActionTypes } from '../../actions'
 
 import live from './live'

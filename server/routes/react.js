@@ -59,8 +59,8 @@ function getInitialState(req) {
 
 // todo: use handlebars
 function renderFullPage(html, head, initialState) {
-    const jsPath = (process.env.NODE_ENV === "mac" || process.env.NODE_ENV === "mac-dev") ? "http://localhost:9090/bundle.webpack.js" : "/js/bundle.min.js"
-    const cssPath = (process.env.NODE_ENV === "mac" || process.env.NODE_ENV === "mac-dev") ? "http://localhost:9090/main.webpack.css" : "/css/main.css"
+    const jsPath = (process.env.NODE_ENV === "mac" || process.env.NODE_ENV === "mac-dev") ? "http://localhost:9090/js/bundle.js" : "/js/bundle.js"
+    const cssPath = (process.env.NODE_ENV === "mac" || process.env.NODE_ENV === "mac-dev") ? "http://localhost:9090/css/main.css" : "/css/main.css"
     return `
         <!doctype html>
         <html lang="en">
