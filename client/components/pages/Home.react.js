@@ -33,7 +33,7 @@ class HomeComponent extends React.Component {
         return (
             <div className="home content">
                 <AppBanner />
-                <RoomCard id={1} />
+                <RoomCard id={622} />
                 {home.get('sectionsFetching') && <Spinner type="grey large home" />}
                 <div className="home_sections">
                     {home.get('sections', List()).map((section, idx) => 
