@@ -1,11 +1,12 @@
 // TODO: finish transition to ES6
 var express         = require('express'),
-    _               = require('lodash'),
 
     api             = require('../lib/api'),
     passport        = require('../lib/passport'),
     universalLinks  = require('../conf/universal-links');
 
+import has from 'lodash/has'
+import assign from 'lodash/assign'
 import { handleReactRender } from './react'
 
 module.exports = {
@@ -34,8 +35,8 @@ module.exports = {
             api[method](req.url, req.body, options).then(function(_res) {
                 // we check for the header which is set if the current token
                 // has expired, and update the user's token
-                if (req.user && _.has(_res.headers, 'x-bbl-jwt-token')) {
-                    var newUser = _.assign({}, req.user, { token: _res.headers['x-bbl-jwt-token'] })
+                if (req.user && has(_res.headers, 'x-bbl-jwt-token')) {
+                    var newUser = assign({}, req.user, { token: _res.headers['x-bbl-jwt-token'] })
                     req.logIn(newUser, function(err) {
                         res.send(_res.body);
                     })
@@ -90,7 +91,6 @@ module.exports = {
         );
 
         router.post('/logout', function(req, res) {
-            console.log(req.user.token);
             var options = {
                 auth: req.user.token
             }

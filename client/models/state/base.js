@@ -1,4 +1,4 @@
-import { has } from 'lodash'
+import has from 'lodash/has'
 import { Map, List } from 'immutable'
 
 // Base model class, used to access data in the state tree
@@ -9,12 +9,23 @@ export default class StateModel {
     constructor(state) {
         this.state = state;
         this.keyMap = {};
-        this.name = "base";
+        this.keyMapPrefix = [];
         this.entityName = "base";
     }
 
-    get(key, defaultValue) {
+    keyPath(key) {
         if (!has(this.keyMap, key)) {
+            return null
+        }
+        let path = this.keyMap[key]
+        if (this.keyMapPrefix.length > 0) {
+            path = this.keyMapPrefix.concat(path)
+        }
+        return path
+    }
+
+    get(key, defaultValue) {
+        if (!this.keyPath(key)) {
             // if not defined in the key map, check the entity
             if (!this.entity().has(key)) {
                 return defaultValue;
@@ -22,14 +33,14 @@ export default class StateModel {
                 return this.entity().get(key, defaultValue);
             }
         }
-        return this.state.getIn(this.keyMap[key], defaultValue);
+        return this.state.getIn(this.keyPath(key), defaultValue);
     }
 
     has(key) {
-        if (!has(this.keyMap, key)) {
+        if (!this.keyPath(key)) {
             return this.entity().has(key);
         }
-        return this.state.hasIn(this.keyMap[key]);
+        return this.state.hasIn(this.keyPath(key));
     }
 
     entity() {
@@ -48,18 +59,20 @@ export default class StateModel {
         return this.state.getIn(['entities', entityName, id], Map());
     }
 
-    __getPaginatedEntities(key, paginatedEntityKey, name) {
-        paginatedEntityKey = paginatedEntityKey || key;
-        name = name || this.name;
-        return this.state.getIn([name, 'pagination', key, 'ids'], List())
-            .map(id => this.__getEntity(id, paginatedEntityKey));
-    }
-
-    __getLiveEntities(key, paginatedEntityKey, name) {
-        paginatedEntityKey = paginatedEntityKey || key;
-        name = name || this.name;
-        return this.state.getIn([name, 'live', key], List())
-            .map(id => this.__getEntity(id, paginatedEntityKey));
+    __getPaginatedEntities(key, { paginatedEntityKey, entityClass }) {
+        let keyPath = this.keyMapPrefix.concat(['pagination', key, 'ids'])
+        return this.state.getIn(keyPath, List())
+            .map(id => {
+                if (entityClass) {
+                    // Same as calling new <entityClass>()
+                    let entity = Object.create(entityClass.prototype);
+                    entityClass.call(entity, id, this.state.get('entities'))
+                    return entity
+                } else {
+                    paginatedEntityKey = paginatedEntityKey || key;
+                    return this.__getEntity(id, paginatedEntityKey)
+                }
+            });
     }
 
     static getEntity(state, id) {

@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { selectSidebar, closeSidebar, toggleDropdown, promptModal, logout, markAllAsRead, loadNotifications } from '../actions'
 import { Notifications as NotificationsModel } from '../models'
 
-import Notifications from './Notifications.react'
+import Notifications from './pages/Notifications.react'
 import Icon from './shared/Icon.react'
 import Logo from './shared/Logo.react'
 import SmallLogo from './shared/SmallLogo.react'
@@ -26,8 +26,6 @@ class Topbar extends React.Component {
         this.handleLoginClick = this.handleLoginClick.bind(this);
         this.handleSignupClick = this.handleSignupClick.bind(this);
         this.handleLogoutClick = this.handleLogoutClick.bind(this);
-
-        this.sidebarIsHidden = this.sidebarIsHidden.bind(this);
 
         this.renderNotificationsDropdown = this.renderNotificationsDropdown.bind(this);
         this.renderLoggedIn = this.renderLoggedIn.bind(this);
@@ -100,19 +98,6 @@ class Topbar extends React.Component {
     }
 
 
-    // Queries
-
-    sidebarIsHidden() {
-        const { user, app, routes } = this.props;
-
-        // show menu icon if medium width or in room
-        const inRoom = routes[routes.length-1].path.substring(0, 3) === '/r/'
-        return app.get('width') === 'small'
-            || app.get('width') === 'medium'
-            || (app.get('width') === 'room-medium' && inRoom) 
-    }
-
-
     // Render
 
     renderLoggedIn(includeSmallClass) {
@@ -141,7 +126,7 @@ class Topbar extends React.Component {
 
         return [
             <a key='login' className={`topbar_icon btn topbar_login ${smallClass}`} onClick={this.handleLoginClick}>Log In</a>,
-            <a key='signup' className={`topbar_icon btn btn-secondary topbar_signup ${smallClass}`} onClick={this.handleSignupClick}>Sign Up</a>
+            <a key='signup' className={`topbar_icon btn topbar_signup ${smallClass}`} onClick={this.handleSignupClick}>Sign Up</a>
         ]
     }
 
@@ -174,7 +159,13 @@ class Topbar extends React.Component {
 
         return (
             <div className="topbar">
-                { this.sidebarIsHidden() && <div className="topbar_icon topbar_icon-menu" onClick={this.toggleSidebar}><Icon type="menu" /></div> }
+                <div className="topbar_search-container">
+                    <div className="topbar_search">
+                        <input className="topbar_search-bar" type="text" placeholder="Search" ref="search_bar" onKeyPress={this.handleSearchKeyPress} /><Icon type="search" />
+                    </div>
+                </div>
+
+                { user.isLoggedIn() && <div className="topbar_icon topbar_icon-menu" onClick={this.toggleSidebar}><Icon type="menu" /></div> }
                 
                 <div className={`topbar_logo-container ${loggedInClass}`}>
                     <span className="topbar_logo" onClick={this.hideSidebar}><Link to="/"><Logo /></Link></span>
@@ -182,9 +173,6 @@ class Topbar extends React.Component {
                 </div>
 
                 <Link className={`topbar_icon topbar_icon-search ${loggedInClass}`} to="/search" onClick={this.hideSidebar}><Icon type="search" /></Link>
-                <div className={`topbar_search ${loggedInClass}`}>
-                    <input className="topbar_search-bar" type="text" placeholder="Search" ref="search_bar" onKeyPress={this.handleSearchKeyPress} /><Icon type="search" />
-                </div>
 
                 <div className="topbar_right">
                     { user.isLoggedIn() ? this.renderLoggedIn(false) : this.renderGuest(false) }

@@ -15,15 +15,6 @@ var _               = require('lodash'),
     gutil           = require('gulp-util'),
     livereload      = require('gulp-livereload');
 
-// const MAC_ENV = {
-//     NODE_ENV: 'mac-dev',
-//     CLIENT_NAME: 'api_client',
-//     CLIENT_SECRET: 'xxxxxxx',
-//     SESSION_SECRET: 'secret',
-//     GOOGLE_ANALYTICS_ID: 'UA-78319133-2',
-//     FACEBOOK_APP_ID: '1021249581291875'
-// }
-
 const MAC_ENV = {
     NODE_ENV: 'mac',
     CLIENT_NAME: 'web',
@@ -44,7 +35,7 @@ gulp.task('styles', function() {
 });
 
 gulp.task('build', ['styles', 'server-compile', 'routes-compile'], function() {
-    return browserify('client/app.js')
+    return browserify('client/app.js', { fullPaths: true })
         .transform(babelify, { 
             presets: ['react', 'es2015'], 
             plugins: ['transform-object-rest-spread']
@@ -79,7 +70,6 @@ gulp.task('server', function() {
         script: 'server/server.js',
         ext: 'html js',
         watch: ['server/*', 'routes/*'],
-        // tasks: ['server-compile', 'routes-compile'],
         env: MAC_ENV
     });
 });
@@ -93,7 +83,7 @@ gulp.task('watch', ['styles'], function() {
     var b = browserify('client/app.js', opts)
         .plugin(watchify, {ignoreWatch: ['**/node_modules/**', '**/bower_components/**']}) // Watchify to watch source file changes
         .transform(babelify, { presets: ['es2015', 'react'], plugins: ['transform-object-rest-spread'] }) // Babel tranforms
-        .transform(envify(MAC_ENV));
+        .transform(envify(MAC_ENV))
 
     function bundle() {
         b.bundle()

@@ -1,5 +1,7 @@
-import { assign } from 'lodash'
-import moment from 'moment'
+import assign from 'lodash/assign'
+import addSeconds from 'date-fns/add_seconds'
+import isBefore from 'date-fns/is_before'
+import format from 'date-fns/format'
 
 /************
  * FULLSCREEN
@@ -29,6 +31,36 @@ export function toggleFullScreen(element, callback) {
       else if (element.msRequestFullscreen) element.msRequestFullscreen();
       if (callback) callback(true);
    }
+}
+
+
+/******
+ * UUID
+ ******/
+
+/* We're using a less cryptographically secure
+ * UUID generator because running node-uuid in
+ * the browser requires shimming Node's crypto
+ * module, which adds ~800KB to the bundle (before
+ * minification). The date addition means that 
+ * even if two clients have the same seed for
+ * Math.random(), they will only generate the same
+ * UUID if they run at the same millisecond (if 
+ * the browser has performance, likelihood of
+ * collision is even less). Sourced from 
+ * http://stackoverflow.com/a/8809472
+ */
+export function generateUuid() {
+    var d = new Date().getTime();
+    if (window && window.performance && typeof window.performance.now === "function") {
+        d += performance.now(); //use high-precision timer if available
+    }
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = (d + Math.random()*16)%16 | 0;
+        d = Math.floor(d/16);
+        return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+    });
+    return uuid;
 }
 
 
@@ -118,7 +150,7 @@ export function setStorageItem(key, value, options) {
   }
 
   if (options.ttl > 0) {
-    storedValue.expires = moment().add(options.ttl, 'seconds').format()
+    storedValue.expires = format(addSeconds(new Date(), options.ttl))
   }
 
   if (storageAvailable(options.type)) {
@@ -136,7 +168,7 @@ export function getStorageItem(key, options) {
     if (storedValueString !== null) {
       try {
         var storedValue = JSON.parse(storage.getItem(key));      
-        if (!('expires' in storedValue && moment(storedValue.expires).isBefore())) {
+        if (!('expires' in storedValue && isBefore(storedValue.expires, new Date()))) {
           value = storedValue.value;
         }
       } catch (e) {
@@ -193,7 +225,7 @@ export function urlBase64ToUint8Array(base64String) {
  * DATE FORMATTING
  *****************/
 
-export { shortFromNow } from './date'
+export { fromString, fromNowString, timeLeftString } from './date'
 
 /*******
  * OTHER

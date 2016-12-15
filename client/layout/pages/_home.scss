@@ -9,6 +9,9 @@
 
     @include media('<=medium') {
         text-align: center; // centers the .home_sections element
+        .room-card {
+            text-align: left;
+        }
     }
 }
 
@@ -21,7 +24,7 @@
 
 .home_splash_top {
     height: 106px;
-    background: $secondary-color url(/images/splash_bg.png) center center no-repeat;
+    background: $secondary-color url(../public/images/splash_bg.png) center center no-repeat;
     background-size: auto 100%;
     text-align: center;
 }
@@ -83,6 +86,7 @@
     display: inline-block;
     margin: 30px 0 0 30px;
 
+
     @include media('<=medium') {
         text-align: left;
         margin: 15px 0 0 0;
@@ -95,10 +99,7 @@
     height: auto;
     margin-bottom: 20px;
     position: relative;
-
-    background-color: white;
     padding: 0 20px;
-    border-bottom: 1px solid #e6e6e6;
 
     &:last-child {
         border-bottom: none;
@@ -137,14 +138,17 @@
 }
 
 .home_section_header {
-    margin-bottom: 15px;
+    margin-bottom: 13px;
+    padding-bottom: 7px;
+    border-bottom: 1px solid $border-color;
 }
 
 .home_section_name {
-    font-size: 15px;
-    font-weight: bold;
+    font-size: 16px;
+    font-weight: 500;
     padding-top: 5px;
-    color: #666;
+    text-transform: uppercase;
+    color: $primary-color;
 
     // for some reason mobile Safari thinks
     // this isn't large enough
@@ -153,7 +157,8 @@
     }
 
     a {
-        color: #666;
+        color: $primary-color;
+        font-weight: 500;
     }
 
     a:hover {

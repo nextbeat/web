@@ -1,12 +1,20 @@
 import fetch from 'isomorphic-fetch'
-import moment from 'moment'
-import { assign, snakeCase, mapKeys, isArray, omit, chain, contains, isDate, isEmpty } from 'lodash'
-import { v4 as generateUuid } from 'node-uuid'
 import { List } from 'immutable'
 import Promise from 'bluebird'
 
+import format from 'date-fns/format'
+import assign from 'lodash/assign'
+import snakeCase from 'lodash/snakeCase'
+import mapKeys from 'lodash/mapKeys'
+import isArray from 'lodash/isArray'
+import omit from 'lodash/omit'
+import pick from 'lodash/pick'
+import includes from 'lodash/includes'
+import isDate from 'lodash/isDate'
+import isEmpty from 'lodash/isEmpty'
+
 import { AnalyticsTypes, AnalyticsSessionTypes, ActionTypes, Status } from '../../actions'
-import { storageAvailable, getStorageItem, setStorageItem } from '../../utils'
+import { storageAvailable, getStorageItem, setStorageItem, generateUuid } from '../../utils'
 import { Analytics, App } from '../../models'
 
 
@@ -26,13 +34,11 @@ const GA_ATTRIBUTES_MAP = {
 }
 
 function gaAttributesMap(attributes) {
-    return chain(attributes)
-        .pick( (value, key) => (key in GA_ATTRIBUTES_MAP) )
-        .pick( (value, key) => !(contains(['startTime', 'endTime'], key) && isDate(value)) )
-        .mapKeys( (value, key) => GA_ATTRIBUTES_MAP[key] )
-        .value()
+    attributes = pick(attributes, (value, key) => (key in GA_ATTRIBUTES_MAP) )
+    attributes = pick(attributes, (value, key) => !(includes(['startTime', 'endTime'], key) && isDate(value)) )
+    attributes = mapKeys(attributes, (value, key) => GA_ATTRIBUTES_MAP[key] )
+    return attributes
 }
-
 
 
 // Main
@@ -50,7 +56,7 @@ function formatEventData(store, eventType, options) {
         event_type: Analytics.typeString(eventType, options.sessionType),
         user_id: options.userId,
         anonymous: isUuid(options.userId),
-        timestamp: moment().format()
+        timestamp: format(new Date())
     }, 
     snakeCaseObjectKeys(options.attributes))
 }

@@ -1,9 +1,8 @@
-import { v4 as generateUuid } from 'node-uuid'
-import moment from 'moment'
+import format from 'date-fns/format'
 
 import { ActionTypes, AnalyticsTypes, AnalyticsSessionTypes, Status } from '../../actions' 
-import { Stack, Analytics, CurrentUser, MediaItemEntity } from '../../models'
-import { getStorageItem, setStorageItem } from '../../utils'
+import { RoomPage, Analytics, CurrentUser, MediaItemEntity } from '../../models'
+import { getStorageItem, setStorageItem, generateUuid } from '../../utils'
 
 import { submitEvent, submitPendingEvents } from './submit'
 
@@ -14,7 +13,7 @@ const CHAT_SESSION_PROLONG_TIME_MSEC = 10000
  ************/
 
 function generateSessionId(sessionType, userId) {
-    return `${userId}-${Analytics.sessionTypeString(sessionType)}-${moment().format('YYYYMMDD-HHmmssSSS')}`
+    return `${userId}-${Analytics.sessionTypeString(sessionType)}-${format(new Date(), 'YYYYMMDD-HHmmssSSS')}`
 }
 
 function generateUserId(store) {
@@ -43,10 +42,11 @@ function attributesForSessionStartType(store, type, userId) {
     attributes.startTime = new Date()
 
     if ([AnalyticsSessionTypes.CHAT, AnalyticsSessionTypes.STACK].indexOf(type) !== -1) {
-        let stack = new Stack(store.getState())
-        if (stack.isLoaded()) {
+        let roomPage = new RoomPage(store.getState())
+        if (roomPage.isLoaded()) {
+            let stack = roomPage.entity()
             attributes.stackId = stack.get('id')
-            attributes.stackCreatedAt = moment(stack.get('createdAt')).format()
+            attributes.stackCreatedAt = format(stack.get('createdAt'))
             attributes.stackAuthorId = stack.author().get('id')
             attributes.stackAuthorUsername = stack.author().get('username')
         }
@@ -80,7 +80,7 @@ function attributesForVideoImpression(store, action) {
         endTime: action.endTime,
         duration: action.endTime - action.startTime,
         stackId: stack.get('id'),
-        stackCreatedAt: moment(stack.get('created_at')).format(),
+        stackCreatedAt: format(stack.get('created_at')),
         mediaitemId: action.id,
         mediaitemAuthorId: author.get('id'),
         mediaitemAuthorUsername: author.get('username'),

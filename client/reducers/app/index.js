@@ -1,5 +1,8 @@
 import { Map, List, Set } from 'immutable'
-import { inRange, includes, find } from 'lodash'
+import inRange from 'lodash/inRange'
+import includes from 'lodash/includes'
+import find from 'lodash/find'
+
 import { ActionTypes, Status } from '../../actions'
 import { combineReducers } from '../utils'
 
@@ -56,6 +59,10 @@ function state(state = Map(), action) {
         return state.set('overlay', 'sidebar')
     } else if (action.type === ActionTypes.CLOSE_SIDEBAR) {
         return state.delete('overlay')
+    } else if (action.type === ActionTypes.ADD_SIDEBAR_ANIMATION) {
+        return state.set('sidebarAnimating', true)
+    } else if (action.type === ActionTypes.REMOVE_SIDEBAR_ANIMATION) {
+        return state.set('sidebarAnimating', false)
     } else if (action.type === ActionTypes.SELECT_DETAIL_SECTION) {
         // set as overlay if small or medium screen size
         if (includes(['small', 'medium'], state.get('width'))) {

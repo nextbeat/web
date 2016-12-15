@@ -4,10 +4,10 @@ import { PushTypes } from '../../actions'
 
 const KEY_MAP = {
     // constants
-    'vapidPublicKey': ['push', 'vapidPublicKey'],
-    'pushStatus': ['push', 'pushStatus'],
-    'pushType': ['push', 'pushType'],
-    'subscription': ['push', 'subscription']
+    'vapidPublicKey': ['vapidPublicKey'],
+    'pushStatus': ['pushStatus'],
+    'pushType': ['pushType'],
+    'subscription': ['subscription']
 }
 
 export default class Push extends StateModel {
@@ -15,7 +15,7 @@ export default class Push extends StateModel {
     constructor(state) {
         super(state);
         this.keyMap = KEY_MAP;
-        this.name = "push";
+        this.keyMapPrefix = ['push'];
     }
 
     isSubscribed() {

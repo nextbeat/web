@@ -1,15 +1,15 @@
 import StateModel from './base'
-import { isNumber } from 'lodash'
+import isNumber from 'lodash/isNumber'
 import { Map, Set, List } from 'immutable'
 
 const KEY_MAP = {
     // notifications
-    'unreadNotifications': ['user', 'notifications', 'unread'],
-    'readNotifications': ['user', 'notifications', 'read'],
-    'allNotifications': ['user', 'notifications', 'all'],
-    'isFetching': ['user', 'notifications', 'isFetching'],
-    'error': ['user', 'notifications', 'error'],
-    'isSyncingUnread': ['user', 'notifications', 'isSyncingUnread']
+    'unreadNotifications': ['unread'],
+    'readNotifications': ['read'],
+    'allNotifications': ['all'],
+    'isFetching': ['isFetching'],
+    'error': ['error'],
+    'isSyncingUnread': ['isSyncingUnread']
 }
 
 export default class Notifications extends StateModel {
@@ -17,6 +17,7 @@ export default class Notifications extends StateModel {
     constructor(state) {
         super(state);
         this.keyMap = KEY_MAP;
+        this.keyMapPrefix = ['user', 'notifications'];
     }
 
     unreadNotifications() {

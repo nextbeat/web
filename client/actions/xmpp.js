@@ -3,7 +3,7 @@ import { normalize } from 'normalizr'
 
 import ActionTypes from './types'
 import Schemas from '../schemas'
-import { Stack } from '../models'
+import { Room } from '../models'
 
 export function connectToXMPP() {
     return {
@@ -29,31 +29,34 @@ export function reconnectXMPP() {
     }
 }
 
-export function joinRoom() {
+export function joinXMPPRoom(roomId) {
     return {
-        type: ActionTypes.JOIN_ROOM
+        type: ActionTypes.JOIN_XMPP_ROOM,
+        roomId
     }
 }
 
-export function leaveRoom() {
+export function leaveXMPPRoom(roomId) {
     return {
-        type: ActionTypes.LEAVE_ROOM
+        type: ActionTypes.LEAVE_XMPP_ROOM,
+        roomId
     }
 }
 
-export function receiveComment(message, username) {
+export function receiveComment(roomId, message, username) {
     return {
         type: ActionTypes.RECEIVE_COMMENT,
+        roomId,
         message,
         username
     }
 }
 
-export function receiveNotificationComment(data, username) {
+export function receiveNotificationComment(roomId, data, username) {
     return (dispatch, getState) => {
-        const stack = new Stack(getState())
-        const mostRecentComment = stack.comments().first() || Map()
-        const hasLiveComments = stack.liveComments().size > 0
+        const room = new Room(roomId, getState())
+        const mostRecentComment = room.comments().first() || Map()
+        const hasLiveComments = room.liveComments().size > 0
         if (!hasLiveComments && mostRecentComment.get('type') === 'notification' && mostRecentComment.get('notification_type') === 'mediaitem') {
             // update the most recent notification item instead of posting a new one
             const newComment = {
@@ -68,6 +71,7 @@ export function receiveNotificationComment(data, username) {
             // post as new notification comment in live section
             return dispatch({
                 type: ActionTypes.RECEIVE_NOTIFICATION_COMMENT,
+                roomId,
                 data,
                 username
             })
@@ -75,30 +79,26 @@ export function receiveNotificationComment(data, username) {
     }
 }   
 
-export function receiveMediaItem(id, response) {
+export function receiveMediaItem(roomId, id, response) {
     return {
         type: ActionTypes.RECEIVE_MEDIA_ITEM,
+        roomId,
         id,
         response
     }
 }
 
-export function receiveChatbotComment(stack_uuid, message) {
-    return (dispatch, getState) => {
-        const stack = new Stack(getState())
-        // only display comment if associated stack is currently loaded
-        if (stack.get('uuid') !== stack_uuid) {
-            return;
-        }
-        return dispatch({
-            type: ActionTypes.RECEIVE_CHATBOT_COMMENT,
-            message
-        })
+export function receiveChatbotComment(roomId, message) {
+    return {
+        type: ActionTypes.RECEIVE_CHATBOT_COMMENT,
+        roomId,
+        message
     }
 }
 
-export function receiveStackClosed() {
+export function receiveRoomClosed(roomId) {
     return {
-        type: ActionTypes.RECEIVE_STACK_CLOSED
+        type: ActionTypes.RECEIVE_ROOM_CLOSED,
+        roomId
     }
 }

@@ -1,5 +1,5 @@
 import ActionTypes from './types'
-import { ANALYTICS, AnalyticsTypes } from './types'
+import { AnalyticsTypes } from './types'
 
 export function startNewSession() {
     return {

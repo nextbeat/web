@@ -1,8 +1,8 @@
-import { assign } from 'lodash'
+import assign from 'lodash/assign'
 import { Map } from 'immutable'
 import fetch from 'isomorphic-fetch'
 import { normalize } from 'normalizr'
-import moment from 'moment'
+import format from 'date-fns/format'
 
 import { Status } from './types'
 import ActionTypes from './types'
@@ -23,7 +23,8 @@ import { isValidUrl } from '../utils'
 export function syncStacks(status='all', deep=true, newStack) {
     // to do: grab correct max last modified
     let objectsToSync = newStack ? [newStack] : []
-    let maxLastModified = moment.unix(0).format()
+    let maxLastModified = format(0)
+    console.log(maxLastModified)
 
     return {
         type: ActionTypes.SYNC_STACKS,

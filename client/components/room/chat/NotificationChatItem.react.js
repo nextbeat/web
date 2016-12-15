@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import moment from 'moment'
 
 import { selectMediaItem, closeDetailSection } from '../../../actions'
 
@@ -14,8 +13,9 @@ class NotificationChatItem extends React.Component {
     }
 
     handleSelectMediaItem(mediaitem_id) {
-        this.props.dispatch(selectMediaItem(mediaitem_id));
-        this.props.dispatch(closeDetailSection())
+        const { room, dispatch } = this.props
+        dispatch(selectMediaItem(room.get('id'), mediaitem_id));
+        dispatch(closeDetailSection())
     }
 
     renderNewMediaItemNotification() {

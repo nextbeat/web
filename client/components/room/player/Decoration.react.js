@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { escape } from 'lodash'
+import escape from 'lodash/escape'
 import linkify from 'linkifyjs/html'
 
 function markupCaption(str) {

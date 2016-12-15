@@ -19,54 +19,99 @@ export {
 } from './app'
 
 export {
-    loadHome,
-    clearHome
-} from './home'
-
-export {
-    loadSection,
-    clearSection
-} from './section'
-
-export {
-    loadTag,
-    loadStacksForTag,
-    clearTag
-} from './tag'
-
-export {
-    loadStack,
+    loadRoom,
     loadMediaItems,
     loadComments,
     loadMoreStacks,
     loadCommentsMetadata,
     sendComment,
+    didUseChat,
+    bookmark,
+    unbookmark,
+    selectMediaItem,
+    goForward,
+    goBackward,
+    clearComments,
+    clearRoom
+} from './room'
+
+export {
+    loadHome,
+    clearHome
+} from './pages/home'
+
+export {
+    loadSection,
+    clearSection
+} from './pages/section'
+
+export {
+    loadTag,
+    loadStacksForTag,
+    clearTag
+} from './pages/tag'
+
+export {
+    loadRoomPage,
     banUser,
     unbanUser,
     updateChatMessage,
     mentionUser,
     promptChatActionsForUser,
-    didUseChat,
-    bookmark,
-    unbookmark,
     closeStack,
     deleteStack,
-    selectMediaItem,
-    goForward,
-    goBackward,
     selectDetailSection,
     closeDetailSection,
     recordView,
-    resetComments,
-    clearStack
-} from './stack'
+    resetChat,
+    clearRoomPage
+} from './pages/room'
 
 export {
     loadProfile,
     loadOpenStacksForUser,
     loadClosedStacksForUser,
     clearProfile
-} from './profile'
+} from './pages/profile'
+
+export {
+    loadSearchResults,
+    clearSearch
+} from './pages/search'
+
+export {
+    validatePasswordResetToken,
+    resetPassword,
+    sendPasswordResetRequest,
+    sendEmailUnsubscribeRequest
+} from './pages/support'
+
+export {
+    uploadFile,
+    uploadPosterFile,
+    uploadThumbnail,
+    clearThumbnail,
+    uploadProfilePicture,
+    selectStackForUpload,
+    updateNewStack,
+    updateNewMediaItem,
+    submitStackRequest,
+    clearUpload
+} from './pages/upload'
+
+export {
+    connectToXMPP,
+    disconnectXMPP,
+    reconnectXMPP,
+    lostXMPPConnection,
+    joinXMPPRoom,
+    leaveXMPPRoom,
+    receiveComment,
+    receiveNotificationComment,
+    receiveChatbotComment,
+    receiveMediaItem,
+    receiveRoomClosed
+} from './xmpp'
 
 export {
     login,
@@ -94,50 +139,11 @@ export {
 } from './notifications'
 
 export {
-    loadSearchResults,
-    clearSearch
-} from './search'
-
-export {
-    uploadFile,
-    uploadPosterFile,
-    uploadThumbnail,
-    clearThumbnail,
-    uploadProfilePicture,
-    selectStackForUpload,
-    updateNewStack,
-    updateNewMediaItem,
-    submitStackRequest,
-    clearUpload
-} from './upload'
-
-export {
-    connectToXMPP,
-    disconnectXMPP,
-    reconnectXMPP,
-    lostXMPPConnection,
-    joinRoom,
-    leaveRoom,
-    receiveComment,
-    receiveNotificationComment,
-    receiveChatbotComment,
-    receiveMediaItem,
-    receiveStackClosed
-} from './xmpp'
-
-export {
     pushInitialize,
     pushSubscribe,
     pushUnsubscribe,
     pushSyncSubscription
 } from './push'
-
-export {
-    validatePasswordResetToken,
-    resetPassword,
-    sendPasswordResetRequest,
-    sendEmailUnsubscribeRequest
-} from './support'
 
 export {
     startNewSession,

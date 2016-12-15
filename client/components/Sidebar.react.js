@@ -46,7 +46,7 @@ class Sidebar extends React.Component {
     renderSubscription(sub) {
         const url = sub.get('profpic_thumbnail_url') || sub.get('profpic_url');
         return (
-            <Link key={`sub${sub.get('id')}`} to={`/u/${sub.get('username')}`} activeClassName="selected">
+            <Link key={`sub${sub.get('id')}`} to={`/u/${sub.get('username')}`} activeClassName="selected" className="sidebar_item">
                 <div className="sidebar_icon">{ url ? <img src={url} /> : <Icon type="person" /> }</div>
                 { sub.get('username') }
                 { sub.get('open_stacks') > 0 && <Badge elementType="sidebar" type="open" /> }
@@ -54,45 +54,31 @@ class Sidebar extends React.Component {
         )
     }
 
-    renderTag(tag) {
-        return (
-             <Link key={`c${tag.get('id')}`} to={`/t/${tag.get('name')}`} activeClassName="selected" >
-                <div className="sidebar_icon"><img src={tag.get('thumbnail_url')} /></div>
-                {tag.get('name')}
-             </Link>
-        )
-    }
-
     render() {
         const { user, app } = this.props;
 
-        // collapse sidebar by default if window width below threshold
-        const inRoom = this.props.routes[this.props.routes.length-1].path.substring(0, 3) === '/r/'
-        const collapsedClass = app.get('width') === 'small' 
-                                || app.get('width') === 'medium'
-                                || (app.get('width') === 'room-medium' && inRoom) 
-                                    ? 'collapsed' : ''
+        // hide sidebar if user is not logged in
+        const guestClass = user.isLoggedIn() ? '' : 'no-sidebar'
 
-        // display collapsed sidebar if selected
-        const activeClass = app.get('activeOverlay') === 'sidebar'
-                                ? 'active' : ''
+        // display sidebar if selected
+        const activeClass = app.get('activeOverlay') === 'sidebar' ? 'active' : ''
+        const animatingClass = app.get('sidebarAnimating') ? 'animating' : ''
 
         // set style for displaying profile picture
         const profileStyle = { backgroundImage: user.profileThumbnailUrl() ? `url(${user.profileThumbnailUrl()})` : ''}
 
         return (
-            <div className={`sidebar ${collapsedClass} ${activeClass}`}>
+            <div className={`sidebar ${activeClass} ${guestClass} ${animatingClass}`}>
                 <div className="sidebar_section sidebar_topnav">
-                    <Link to="/" activeClassName="selected">
+                    <Link to="/" activeClassName="selected" className="sidebar_item">
                         <div className="sidebar_icon"><Icon type="home" /></div>Home
                     </Link>
                     { user.isLoggedIn() && 
-                        <Link to={`/u/${user.get('username')}`} activeClassName="selected">
+                        <Link to={`/u/${user.get('username')}`} activeClassName="selected" className="sidebar_item">
                             <div className="sidebar_icon" style={profileStyle}>{ !user.profileThumbnailUrl() && <Icon type="person" /> }</div>
                             My Profile
                         </Link>
                     }
-                    <div className="separator" />
                 </div>
                 { user.isLoggedIn() && user.isFetchingUserData() && <Spinner type="grey" /> }
                 { user.isLoggedIn() && !user.isFetchingUserData() &&
@@ -101,23 +87,14 @@ class Sidebar extends React.Component {
                             <h1>BOOKMARKS</h1>
                             {user.openBookmarkedStacks().size === 0 && <div className="sidebar_no-content">You have no open bookmarks.</div>}
                             {user.openBookmarkedStacks().map(stack => this.renderStackItem(stack))}
-                            <Link to="/bookmarks" className="sidebar_bookmarks-see-all">See All</Link>
                         </div>
-                        <div className="separator" />
                         <div className="sidebar_subscriptions sidebar_section">
                             <h1>SUBSCRIPTIONS</h1>
                             {user.subscriptions().size === 0 && <div className="sidebar_no-content">You have no subscriptions.</div>}
                             {user.subscriptions().map(sub => this.renderSubscription(sub))}
                         </div>
-                        <div className="separator" />
                     </div>
                 }
-                <div className="sidebar_categories sidebar_section">
-                    <h1>POPULAR TAGS</h1>
-                    { app.get('tagsFetching') && <Spinner type="grey" />}
-                    { app.tags().map(tag => this.renderTag(tag)) }
-                </div>
-
             </div>
         );
     }

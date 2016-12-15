@@ -28,16 +28,26 @@ export default function ScrollComponent(domId, scrollOptions={}) {
                     scrollHeight: 0
                 }
 
+                this.domElement = this.domElement.bind(this)
+
                 this.handleScroll = this.handleScroll.bind(this)
                 this.scrollToBottomIfPreviouslyAtBottom = this.scrollToBottomIfPreviouslyAtBottom.bind(this)
                 this.scrollToTopIfPreviouslyAtTop = this.scrollToTopIfPreviouslyAtTop.bind(this)
                 this.keepScrollPosition = this.keepScrollPosition.bind(this)
             }
 
+            domElement() {
+                if (typeof domId === 'function') {
+                    return document.getElementById(domId(this.props))
+                } else {
+                    return document.getElementById(domId)
+                }
+            }
+
             // Component lifecycle methods
 
             componentDidMount() {
-                $(document.getElementById(domId)).on('scroll', this.handleScroll)
+                $(this.domElement()).on('scroll', this.handleScroll)
             }
 
             componentWillReceiveProps(nextProps) {
@@ -54,18 +64,18 @@ export default function ScrollComponent(domId, scrollOptions={}) {
             }
 
             componentWillUnmount() {
-                $(document.getElementById(domId)).off('scroll', this.handleScroll)
+                $(this.domElement()).off('scroll', this.handleScroll)
             }
 
             // Scroll UI logic
 
             isScrolledToTop() {
-                const elem = document.getElementById(domId);
+                const elem = this.domElement();
                 return elem.scrollTop === 0;
             }
 
             isScrolledToBottom() {
-                const elem = document.getElementById(domId);
+                const elem = this.domElement();
                 return elem.scrollHeight - elem.clientHeight <= elem.scrollTop + 1;
             }
 
@@ -74,12 +84,12 @@ export default function ScrollComponent(domId, scrollOptions={}) {
             }
 
             isStateScrolledToBottom() {
-                const elem = document.getElementById(domId);
+                const elem = this.domElement();
                 return this.state.scrollHeight - elem.clientHeight <= this.state.scrollTop + 1;
             }
 
             setScrollState() {
-                const elem = document.getElementById(domId)
+                const elem = this.domElement();
                 this.setState({
                     scrollTop: elem.scrollTop,
                     scrollHeight: elem.scrollHeight
@@ -98,12 +108,12 @@ export default function ScrollComponent(domId, scrollOptions={}) {
             // Actions
 
             scrollToBottom() {
-                const elem = document.getElementById(domId)
+                const elem = this.domElement();
                 elem.scrollTop = elem.scrollHeight - elem.clientHeight;
             }
 
             scrollToTop() {
-                const elem = document.getElementById(domId)
+                const elem = this.domElement();
                 elem.scrollTop = 0;
             }
 
@@ -120,7 +130,7 @@ export default function ScrollComponent(domId, scrollOptions={}) {
             }
 
             keepScrollPosition() {
-                const elem = document.getElementById(domId)
+                const elem = this.domElement();
                 let heightDiff = elem.scrollHeight - this.state.scrollHeight;
                 elem.scrollTop = elem.scrollTop + heightDiff;
             }

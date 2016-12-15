@@ -1,0 +1,166 @@
+import React from 'react'
+import Promise from 'bluebird'
+import { browserHistory } from 'react-router'
+import { connect } from 'react-redux'
+import Helmet from 'react-helmet'
+import assign from 'lodash/assign'
+import isEmpty from 'lodash/isEmpty'
+
+import RoomMain from '../room/page/RoomMain.react'
+import DetailBar from '../room/page/DetailBar.react'
+import WelcomeBanner from '../shared/WelcomeBanner.react'
+
+import { loadRoomPage, clearRoomPage, closeDetailSection, selectMediaItem } from '../../actions'
+import { RoomPage as RoomPageModel, App } from '../../models'
+import { baseUrl, getStorageItem } from '../../utils'
+
+class RoomPage extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.renderDocumentHead = this.renderDocumentHead.bind(this);
+    }
+
+    // LIFECYCLE
+
+    componentDidMount() {
+        const { params, dispatch, roomPage } = this.props
+        if (!roomPage.isLoaded()) {
+            dispatch(loadRoomPage(params.hid))
+        }
+    }
+
+    componentWillUnmount() {
+        this.props.dispatch(clearRoomPage());
+    }
+
+    componentDidUpdate(prevProps) {
+        const { params, dispatch, roomPage } = this.props
+        if (prevProps.params.hid !== params.hid) {
+            // new room, reload
+            dispatch(clearRoomPage())
+            dispatch(loadRoomPage(params.hid))
+        }
+
+        if (prevProps.roomPage.mediaItems().size === 0 && roomPage.mediaItems().size > 0) {
+            // first page of media items has loaded, select the first
+            let id = roomPage.mediaItems().first().get('id')
+
+            // unless last seen media item id stored in localStorage
+            const mediaItemId = parseInt(getStorageItem(roomPage.get('hid')), 10)
+            if (mediaItemId && roomPage.indexOfMediaItem(mediaItemId) >= 0) {
+                id = mediaItemId
+            }
+
+            // or if index is specified
+            if (params.index) {
+                if (params.index === 'latest') {
+                    id = roomPage.mediaItems().get(roomPage.mediaItems().size-1).get('id')
+                } else {
+                    const idx = parseInt(params.index) - 1
+                    if (idx > 0 && idx < roomPage.mediaItems().size) {
+                        id = roomPage.mediaItems().get(idx).get('id')
+                    }
+                }
+            }
+
+
+            dispatch(selectMediaItem(roomPage.get('id'), id))
+            dispatch(closeDetailSection())
+        }
+    }
+
+    // RENDER
+
+    renderDocumentHead(roomPage) {
+        const url = `${baseUrl()}${this.props.location.pathname}`
+        let meta = [
+            {"property": "og:url", "content": url},
+            {"property": "twitter:site", "content": "@nextbeatblog"},
+            {"property": "al:ios:url", "content": `nextbeat://rooms/${roomPage.get('hid')}`},
+        ]
+        if (!roomPage.get('error')) {
+            let creator = roomPage.author().get('full_name') || roomPage.author().get('username')
+            const description = `Hang out in this room and chat with ${creator}. Watch updates live and be there while it happens!`
+
+            meta.push.apply(meta, [
+                {"property": "og:title", "content": roomPage.get('description')},
+                {"property": "og:description", "content": description},
+                {"property": "og:image", "content": roomPage.thumbnail('large').get('url')},
+                {"property": "og:image:width", "content": 1200},
+                {"property": "og:image:height", "content": 900},
+                {"property": "twitter:card", "content": "summary_large_image"},
+                {"property": "twitter:title", "content": roomPage.get('description')},
+                {"property": "twitter:description", "content": description},
+                {"property": "twitter:image", "content": roomPage.thumbnail('large').get('url')},
+                {"name": "description", "content": description}
+            ])
+        } else {
+            const description = "This room does not exist or has been deleted by its owner."
+            meta.push.apply(meta, [
+                {"property": "og:title", "content": "Room Not Found"},
+                {"property": "og:description", "content": description},
+                {"property": "twitter:card", "content": "summary"},
+                {"property": "twitter:title", "content": "Room Not Found"},
+                {"property": "twitter:description", "content": description},
+                {"name": "description", "content": description}
+            ])
+        }
+
+        return (
+            <Helmet 
+                title={roomPage.get('description')}
+                meta={meta}
+            />
+        )
+
+    }
+
+    render() {
+        const { roomPage, app } = this.props;
+        const shouldDisplayBanner = app.get('width') !== 'small' && roomPage.author().get('username') === 'safiya'
+
+        return (
+        <section className="room">
+            {this.renderDocumentHead(roomPage)}
+            { shouldDisplayBanner && 
+                <WelcomeBanner>
+                    Welcome to Safiya's room! Chat and follow along in real time. <a target="_blank" rel="nofollow" href="https://medium.com/@TeamNextbeat/welcome-to-nextbeat-831d25524a4d">Learn more about Nextbeat.</a>
+                </WelcomeBanner>
+            }
+            <div className="room_inner"> 
+                <RoomMain />
+                <DetailBar />
+            </div>
+        </section>
+        );
+    }
+}
+
+function mapStateToProps(state, props) {
+    return {
+        roomPage: new RoomPageModel(state),
+        app: new App(state)
+    }
+}
+
+RoomPage.fetchData = (store, params) => {
+    return new Promise((resolve, reject) => {
+
+        const unsubscribe = store.subscribe(() => {
+            const roomPage = new RoomPageModel(store.getState())
+            if (roomPage.isLoaded()) {
+                unsubscribe()
+                resolve(store)
+            }
+            if (roomPage.get('error')) {
+                unsubscribe()
+                reject(new Error('Room does not exist.'))
+            }
+        })
+        store.dispatch(loadRoomPage(params.hid))
+    })
+}
+
+export default connect(mapStateToProps)(RoomPage);

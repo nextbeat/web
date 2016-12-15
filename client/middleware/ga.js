@@ -1,6 +1,7 @@
 import { GATypes, GA } from '../actions'
 import { createFunctionWithTimeout } from '../utils'
-import { assign, get } from 'lodash'
+import assign from 'lodash/assign'
+import get from 'lodash/get'
 import { parse } from 'querystring'
 import fetch from 'isomorphic-fetch'
 

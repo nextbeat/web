@@ -1,14 +1,17 @@
-import XMPP from 'stanza.io'
-import moment from 'moment'
-import { v4 as generateUuid }from 'node-uuid'
-import { assign } from 'lodash'
+import assign from 'lodash/assign'
 import { normalize } from 'normalizr'
+
+import Client from 'stanza.io/lib/client'
+import disco from 'stanza.io/lib/plugins/disco'
+import keepalive from 'stanza.io/lib/plugins/keepalive'
+import muc from 'stanza.io/lib/plugins/muc'
+
+import { generateUuid } from '../utils'
 import Schemas from '../schemas'
-import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveChatbotComment, receiveStackClosed, syncUnreadNotifications, lostXMPPConnection, reconnectXMPP } from '../actions'
-import { CurrentUser, Stack } from '../models'
+import { receiveComment, receiveNotificationComment, receiveMediaItem, receiveChatbotComment, receiveRoomClosed, syncUnreadNotifications, lostXMPPConnection, reconnectXMPP } from '../actions'
+import { CurrentUser, Room } from '../models'
 
 function xmppHost() {
-    console.log(process.env.NODE_ENV);
     if (process.env.NODE_ENV === 'production') {
         return 'xmpp.nextbeat.co';
     } else if (process.env.NODE_ENV === 'development') {
@@ -65,7 +68,10 @@ export function getClient(store) {
             }
         }
 
-        const client = XMPP.createClient(options)
+        const client = new Client(options);
+        client.use(disco);
+        client.use(keepalive);
+        client.use(muc);
 
         client.on('groupchat', function(s) {
             handleGroupChat(s, store);
@@ -143,14 +149,14 @@ function stripNickname(resource) {
 }
 
 function handleGroupChat(s, store) {
-    const stack = new Stack(store.getState());
+    const room = Room.roomWithUuid(s.from.local, store.getState());
     if (s.chatState === "active") {
         // received comment
         const message = s.body;
         const nickname = s.from.resource;
-
-        if (nickname !== stack.get('nickname')) {
-            return store.dispatch(receiveComment(message, stripNickname(nickname)));
+        
+        if (nickname !== room.get('nickname')) {
+            return store.dispatch(receiveComment(room.get('id'), message, stripNickname(nickname)));
         }
     } else if (s.thread) {
         // xmpp message contains a whole host of relevant data
@@ -163,13 +169,13 @@ function handleGroupChat(s, store) {
             case 'NEW_MEDIA_ITEM_V2':
                 const mediaItem = JSON.parse(s.body)
                 const response = normalize(mediaItem, Schemas.MEDIA_ITEM)
-                return store.dispatch(receiveMediaItem(mediaItem.id, response));
+                return store.dispatch(receiveMediaItem(room.get('id'), mediaItem.id, response));
             case 'NEW_NOTIFICATION_COMMENT':
                 const comment = formatNotificationItem(data, store);
                 // todo: update 
-                return store.dispatch(receiveNotificationComment(comment, username));
+                return store.dispatch(receiveNotificationComment(room.get('id'), comment, username));
             case 'STACK_CLOSED':
-                return store.dispatch(receiveStackClosed());
+                return store.dispatch(receiveRoomClosed(room.get('id')));
         }
     }
 }
@@ -185,9 +191,13 @@ function handleMessage(s, store) {
             case 'NEW_NOTIFICATION':
                 return store.dispatch(syncUnreadNotifications())
             case 'PRIVATE_CHATBOT':
-                let stack_uuid = meta[1],
-                    message    = s.body;
-                return store.dispatch(receiveChatbotComment(stack_uuid, message))
+                let uuid        = meta[1],
+                    message     = s.body;
+                    room        = Room.roomWithUuid(uuid);
+
+                if (room) {
+                    return store.dispatch(receiveChatbotComment(room.get('id'), uuid, message))
+                }
         }
         
     }
