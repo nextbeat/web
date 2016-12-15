@@ -26,14 +26,14 @@ class ChatHistory extends React.Component {
     componentDidMount() {
         // Prevents document from scrolling when inside chat history element
         // Sourced from http://stackoverflow.com/a/20520619
-        // $(`#${scrollComponentId(this.props)}`).on('mousewheel DOMMouseScroll', function(e) {
-        //     var direction = e.originalEvent.wheelDelta || -e.originalEvent.detail;
-        //     if (direction > 0 && this.scrollTop === 0
-        //         || direction <= 0 && this.scrollTop == this.scrollHeight-this.offsetHeight) 
-        //     {
-        //         e.preventDefault();
-        //     }
-        // })
+        $(`#${scrollComponentId(this.props)}`).on('mousewheel DOMMouseScroll', function(e) {
+            var direction = e.originalEvent.wheelDelta || -e.originalEvent.detail;
+            if (direction > 0 && this.scrollTop === 0
+                || direction <= 0 && this.scrollTop == this.scrollHeight-this.offsetHeight) 
+            {
+                e.preventDefault();
+            }
+        })
     }
 
     componentWillUnmount() {

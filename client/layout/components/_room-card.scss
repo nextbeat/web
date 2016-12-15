@@ -113,7 +113,7 @@ a.room-card_header {
     .chat_history {
         display: inline-block;
         height: 100%;
-        // width: 30%;
+        padding-bottom: 30px;
     }
 
     .chat_item {
@@ -150,6 +150,12 @@ a.room-card_header {
         .chat_item-notification_text {
             float: none;
             width: 100%;
+            padding: 0;
+        }
+
+        &.chat_item-notification-close {
+            background: none;
+            border: none;
             padding: 0;
         }
 

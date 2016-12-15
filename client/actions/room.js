@@ -54,7 +54,7 @@ function fetchMediaItems(roomId, pagination) {
 }
 
 export function loadMediaItems(roomId) {
-    return loadPaginatedObjects('stack', 'mediaItems', fetchMediaItems.bind(this, roomId), "all");
+    return loadPaginatedObjects(['rooms', roomId, 'pagination', 'mediaItems'], fetchMediaItems.bind(this, roomId), "all");
 }
 
 function fetchComments(roomId, pagination) {
@@ -70,8 +70,7 @@ function fetchComments(roomId, pagination) {
 }
 
 export function loadComments(roomId) {
-
-    return loadPaginatedObjects('stack', 'comments', fetchComments.bind(this, roomId), 60);
+    return loadPaginatedObjects(['rooms', roomId, 'pagination', 'comments'], fetchComments.bind(this, roomId), 60);
 }
 
 /******
@@ -93,7 +92,7 @@ function postComment(roomId, message) {
             type: GATypes.EVENT,
             category: 'chat',
             action: 'send',
-            label: stack_id
+            label: roomId
         }
     }
 }

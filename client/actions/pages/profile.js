@@ -42,7 +42,7 @@ function fetchStacksForUser(username, type, status, pagination) {
 }
 
 export function loadOpenStacksForUser(username) {
-    return loadPaginatedObjects('profile', 'openStacks', fetchStacksForUser.bind(this, username, ActionTypes.USER_OPEN_STACKS, "open"), "all");
+    return loadPaginatedObjects(['pages', 'profile', 'pagination', 'openStacks'], fetchStacksForUser.bind(this, username, ActionTypes.USER_OPEN_STACKS, "open"), "all");
 }
 
 export function loadClosedStacksForUser(username) {
@@ -52,7 +52,7 @@ export function loadClosedStacksForUser(username) {
             username = profile.get('username')
         }
         const fetchFn = fetchStacksForUser.bind(this, username, ActionTypes.USER_CLOSED_STACKS, "closed")
-        loadPaginatedObjects('profile', 'closedStacks', fetchFn, 24)(dispatch, getState);
+        loadPaginatedObjects(['pages', 'profile', 'pagination', 'closedStacks'], fetchFn, 24)(dispatch, getState);
     }
 }
 

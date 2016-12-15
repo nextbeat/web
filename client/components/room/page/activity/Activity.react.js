@@ -80,7 +80,7 @@ class Activity extends React.Component {
                         selected={selected} 
                         live={true} 
                         unseen={unseen}
-                        index={idx+mediaItems.size} 
+                        index={idx+roomPage.mediaItems().size} 
                         handleClick={this.handleSelectMediaItem}
                     />
                 })}

@@ -149,15 +149,14 @@ function stripNickname(resource) {
 }
 
 function handleGroupChat(s, store) {
-    console.log(s);
-    const stack = new Room(store.getState());
+    const room = Room.roomWithUuid(s.from.local, store.getState());
     if (s.chatState === "active") {
         // received comment
         const message = s.body;
         const nickname = s.from.resource;
-
-        if (nickname !== stack.get('nickname')) {
-            return store.dispatch(receiveComment(message, stripNickname(nickname)));
+        
+        if (nickname !== room.get('nickname')) {
+            return store.dispatch(receiveComment(room.get('id'), message, stripNickname(nickname)));
         }
     } else if (s.thread) {
         // xmpp message contains a whole host of relevant data
@@ -170,13 +169,13 @@ function handleGroupChat(s, store) {
             case 'NEW_MEDIA_ITEM_V2':
                 const mediaItem = JSON.parse(s.body)
                 const response = normalize(mediaItem, Schemas.MEDIA_ITEM)
-                return store.dispatch(receiveMediaItem(mediaItem.id, response));
+                return store.dispatch(receiveMediaItem(room.get('id'), mediaItem.id, response));
             case 'NEW_NOTIFICATION_COMMENT':
                 const comment = formatNotificationItem(data, store);
                 // todo: update 
-                return store.dispatch(receiveNotificationComment(comment, username));
+                return store.dispatch(receiveNotificationComment(room.get('id'), comment, username));
             case 'STACK_CLOSED':
-                return store.dispatch(receiveRoomClosed());
+                return store.dispatch(receiveRoomClosed(room.get('id')));
         }
     }
 }
@@ -192,9 +191,13 @@ function handleMessage(s, store) {
             case 'NEW_NOTIFICATION':
                 return store.dispatch(syncUnreadNotifications())
             case 'PRIVATE_CHATBOT':
-                let stack_uuid = meta[1],
-                    message    = s.body;
-                return store.dispatch(receiveChatbotComment(stack_uuid, message))
+                let uuid        = meta[1],
+                    message     = s.body;
+                    room        = Room.roomWithUuid(uuid);
+
+                if (room) {
+                    return store.dispatch(receiveChatbotComment(room.get('id'), uuid, message))
+                }
         }
         
     }

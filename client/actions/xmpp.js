@@ -43,19 +43,20 @@ export function leaveXMPPRoom(roomId) {
     }
 }
 
-export function receiveComment(message, username) {
+export function receiveComment(roomId, message, username) {
     return {
         type: ActionTypes.RECEIVE_COMMENT,
+        roomId,
         message,
         username
     }
 }
 
-export function receiveNotificationComment(data, username) {
+export function receiveNotificationComment(roomId, data, username) {
     return (dispatch, getState) => {
-        const stack = new Room(getState())
-        const mostRecentComment = stack.comments().first() || Map()
-        const hasLiveComments = stack.liveComments().size > 0
+        const room = new Room(roomId, getState())
+        const mostRecentComment = room.comments().first() || Map()
+        const hasLiveComments = room.liveComments().size > 0
         if (!hasLiveComments && mostRecentComment.get('type') === 'notification' && mostRecentComment.get('notification_type') === 'mediaitem') {
             // update the most recent notification item instead of posting a new one
             const newComment = {
@@ -70,6 +71,7 @@ export function receiveNotificationComment(data, username) {
             // post as new notification comment in live section
             return dispatch({
                 type: ActionTypes.RECEIVE_NOTIFICATION_COMMENT,
+                roomId,
                 data,
                 username
             })
@@ -77,30 +79,26 @@ export function receiveNotificationComment(data, username) {
     }
 }   
 
-export function receiveMediaItem(id, response) {
+export function receiveMediaItem(roomId, id, response) {
     return {
         type: ActionTypes.RECEIVE_MEDIA_ITEM,
+        roomId,
         id,
         response
     }
 }
 
-export function receiveChatbotComment(stack_uuid, message) {
-    return (dispatch, getState) => {
-        const stack = new Stack(getState())
-        // only display comment if associated stack is currently loaded
-        if (stack.get('uuid') !== stack_uuid) {
-            return;
-        }
-        return dispatch({
-            type: ActionTypes.RECEIVE_CHATBOT_COMMENT,
-            message
-        })
+export function receiveChatbotComment(roomId, message) {
+    return {
+        type: ActionTypes.RECEIVE_CHATBOT_COMMENT,
+        roomId,
+        message
     }
 }
 
-export function receiveRoomClosed() {
+export function receiveRoomClosed(roomId) {
     return {
-        type: ActionTypes.RECEIVE_ROOM_CLOSED
+        type: ActionTypes.RECEIVE_ROOM_CLOSED,
+        roomId
     }
 }

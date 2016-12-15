@@ -24,6 +24,7 @@ export {
     loadComments,
     loadMoreStacks,
     loadCommentsMetadata,
+    sendComment,
     didUseChat,
     bookmark,
     unbookmark,
@@ -52,7 +53,6 @@ export {
 
 export {
     loadRoomPage,
-    sendComment,
     banUser,
     unbanUser,
     updateChatMessage,

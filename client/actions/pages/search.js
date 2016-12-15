@@ -44,7 +44,7 @@ export function loadSearchResults(query, searchType) {
         if (searchType !== search.get('searchType')) {
             dispatch(clearSearch())
         }
-        loadPaginatedObjects('search', searchType, fetchSearchResults.bind(this, query, searchType), 15)(dispatch, getState)
+        loadPaginatedObjects(['pages', 'search', 'pagination', searchType], fetchSearchResults.bind(this, query, searchType), 15)(dispatch, getState)
     }
 }
 

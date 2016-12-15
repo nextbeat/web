@@ -37,6 +37,7 @@ export default class Room extends StateModel {
         this.id = id;
         this.keyMap = KEY_MAP;
         this.keyMapPrefix = ['rooms', this.id];
+        this.entityName = 'stacks';
     }
 
     entity() {
@@ -154,5 +155,10 @@ export default class Room extends StateModel {
             let room = new Room(id, state)
             return room.isLoaded() ? res.push(room) : res;
         }, List())
+    }
+
+    static roomWithUuid(uuid, state) {
+        let stack = state.getIn(['entities', 'stacks']).find(stack => stack.get('uuid') === uuid)
+        return new Room(stack.get('id'), state)
     }
 }

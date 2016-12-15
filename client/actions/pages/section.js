@@ -30,7 +30,7 @@ export function loadSection(slug) {
             const section = new Section(getState())
             slug = section.get('slug')
         }
-        loadPaginatedObjects('section', 'stacks', fetchSection.bind(this, slug))(dispatch, getState)
+        loadPaginatedObjects(['pages', 'section', 'pagination', 'stacks'], fetchSection.bind(this, slug))(dispatch, getState)
     }
 }
 
