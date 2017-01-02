@@ -6,7 +6,7 @@ import format from 'date-fns/format'
 
 import { Status } from './types'
 import ActionTypes from './types'
-import { CurrentUser, Stack, Push } from '../models'
+import { CurrentUser, Stack, Push, UserEntity } from '../models'
 import Schemas from '../schemas'
 import { API_CALL, API_CANCEL } from './types'
 import { gaIdentify } from './ga'
@@ -291,7 +291,7 @@ function postSubscribe(subscription_id) {
 
 export function subscribe(user) {
     return (dispatch, getState) => {
-        if (Map.isMap(user)) {
+        if (Map.isMap(user) || user instanceof UserEntity) {
             user = user.get('id')
         }
 
@@ -332,7 +332,7 @@ function postUnsubscribe(subscription_id) {
 
 export function unsubscribe(user) {
     return (dispatch, getState) => {
-        if (Map.isMap(user)) {
+        if (Map.isMap(user) || user instanceof UserEntity) {
             user = user.get('id')
         }
         const currentUser = new CurrentUser(getState())

@@ -9,15 +9,15 @@
         display: none;
     }
 
-    padding: 20px 20px 0 30px;
+    padding-top: 15px;
     background: $dark-background-color;
-    padding: 15px;
     overflow: auto;
 
     h1 {
         font-size: 14px;
         color: $primary-color;
         font-weight: 500;
+        margin: 10px 0 20px 0;
     }
 
     .spinner {
@@ -26,7 +26,9 @@
 }
 
 .sidebar_section {
-    margin-bottom: 30px;
+    margin-bottom: 15px;
+    padding: 0 15px 10px 15px;
+    border-bottom: 1px solid #e6e6e6;
 }
 
 
