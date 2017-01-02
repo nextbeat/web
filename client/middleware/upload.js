@@ -63,7 +63,6 @@ function uploadFile(store, next, action, policy, key, xhr) {
         xhr.send(fd)
 
     })
-
     
 }
 

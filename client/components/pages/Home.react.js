@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { List } from 'immutable'
 
 import { loadHome, clearHome } from '../../actions'
-import { Home } from '../../models'
+import { Home, App } from '../../models'
 
 import HomeSection from './home/HomeSection.react'
 import HomeSplash from './home/HomeSplash.react'
@@ -29,11 +29,13 @@ class HomeComponent extends React.Component {
     }
 
     render() {
-        const { home } = this.props
+        const { home, app } = this.props
+        let roomId = app.get('environment') === 'mac' ? 1 : 622;
+
         return (
             <div className="home content">
                 <AppBanner />
-                <RoomCard id={1} />
+                <RoomCard id={roomId} />
                 {home.get('sectionsFetching') && <Spinner type="grey large home" />}
                 <div className="home_sections">
                     {home.get('sections', List()).map((section, idx) => 
@@ -47,7 +49,8 @@ class HomeComponent extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        home: new Home(state) // 🌮 
+        home: new Home(state), // 🌮
+        app: new App(state)
     }
 }
 
