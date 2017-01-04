@@ -88,6 +88,8 @@ export {
 
 export {
     uploadFile,
+    // processUploadedFile,
+    updateProcessingProgress,
     uploadPosterFile,
     uploadThumbnail,
     clearThumbnail,

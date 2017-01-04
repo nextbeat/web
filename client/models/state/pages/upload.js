@@ -1,4 +1,4 @@
-import { fromJS } from 'immutable'
+import { fromJS, Map } from 'immutable'
 import assign from 'lodash/assign'
 
 import StateModel from '../base'
@@ -163,17 +163,11 @@ export default class Upload extends StateModel {
 
         if (mediaItem.type === 'photo') {
             mediaItem.images = [{
-                url: mediaItemState.url,
-                width: mediaItemState.width || 0,
-                height: mediaItemState.height || 0
+                original_id: mediaItemState.resource_id
             }]
         } else if (mediaItem.type === 'video') {
             mediaItem.videos = [{
-                url: mediaItemState.url,
-                poster_url: mediaItemState.posterUrl,
-                width: mediaItemState.width || 0,
-                height: mediaItemState.height || 0,
-                duration: mediaItemState.duration || 0
+                original_id: mediaItemState.resource_id
             }]
         }
 

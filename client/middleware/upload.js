@@ -3,10 +3,33 @@ import Promise from 'bluebird'
 import assign from 'lodash/assign'
 import find from 'lodash/find'
 
-import { ActionTypes, Status, syncStacks, updateUser } from '../actions'
+import { ActionTypes, Status, syncStacks, updateUser, updateNewMediaItem, updateProcessingProgress } from '../actions'
 import { App, Upload, CurrentUser } from '../models'
 import { generateUuid } from '../utils'
 
+function fetchApi(url, { method = 'GET', body } = {}) {
+     const fetchOptions = {
+        method,
+        body : body ? JSON.stringify(body) : undefined,
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'   
+    }
+
+    return Promise.resolve()
+    .then(() => {
+        return fetch(url, fetchOptions)
+    })
+    .then(response => response.json().then(json => ({ response, json })))
+    .then(({ response, json }) => {
+        if (!response.ok) {
+            return Promise.reject(new Error(`Could not fetch ${url}.`))
+        }
+        return json;
+    })   
+}
 
 function keyName(file, type, uuid) {
     var ext = file.name.split('.')[file.name.split('.').length-1]
@@ -38,7 +61,6 @@ function uploadFile(store, next, action, policy, key, xhr) {
 
     return new Promise((resolve, reject) => {
         xhr.upload.addEventListener("progress", e => {
-            // skip recording action for UPLOAD_POSTER_FILE type
             if (action.type === ActionTypes.UPLOAD_FILE) {
                 next(assign({}, action, {
                     status: Status.REQUESTING,
@@ -62,49 +84,96 @@ function uploadFile(store, next, action, policy, key, xhr) {
         xhr.open("POST", Upload.bucketUrl(store.getState()), true)
         xhr.send(fd)
 
-    })
-    
+    })  
 }
 
 function getPolicy() {
-    const fetchOptions = {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        credentials: 'same-origin'   
-    }
+    return fetchApi('/api/upload/policy')
+}
 
-    return Promise.resolve()
-    .then(() => {
-        return fetch('/api/mediaitems/policy', fetchOptions)
-    })
-    .then(response => response.json().then(json => ({ response, json })))
-    .then(({ response, json }) => {
-        if (!response.ok) {
-            return Promise.reject(new Error('Could not fetch policy from server.'))
+function initiateProcessingStage(store) {
+    let upload      = new Upload(store.getState())
+    let mediaItem   = upload.get('mediaItem')
+
+    return fetchApi('/api/upload/process', {
+        method: 'POST',
+        body: {
+            url: mediaItem.get('url'),
+            type: mediaItem.get('type')
         }
-        return json;
+    }).then(res => { 
+        store.dispatch(updateNewMediaItem({
+            resource_id: res.id
+        }))
+        return res.job
     })
 }
 
-function handleSuccess(store, next, action, url) {
-    // Trigger sync stacks if requested
-    if (action.type === ActionTypes.UPLOAD_FILE) {
-        let upload = new Upload(store.getState())
-        if (upload.get('submitStackRequested')) {
-            store.dispatch(syncStacks('open', true, upload.stackForSubmission()))
+function checkProcessingProgress(store, job_id) {
+    let upload      = new Upload(store.getState())
+    let mediaItem   = upload.get('mediaItem')
+
+    return new Promise((resolve, reject) => {
+
+        let checkProgress = function() {
+            fetchApi('/api/upload/feedback', {
+                method: 'POST',
+                body: {
+                    job: job_id,
+                    type: mediaItem.get('type')
+                }
+            }).then(res => {
+                store.dispatch(updateProcessingProgress({
+                    progress: res.processingProgress.progress,
+                    timeLeft: res.processingProgress.timeLeftInSecs,
+                    completed: res.initialProcessCompleted
+                }))
+
+                if (res.initialProcessCompleted) {
+                    console.log(intervalId)
+                    clearInterval(intervalId)
+                    resolve()
+                }
+
+            }).catch(e => {
+                reject(e)
+                clearInterval(intervalId)
+            })
         }
+
+        let intervalId = setInterval(checkProgress, 2000)
+    })
+}
+
+function handleProcessingSuccess(store, next, action) {
+    // Trigger sync stacks if requested
+    let upload = new Upload(store.getState())
+    if (upload.get('submitStackRequested')) {
+        store.dispatch(syncStacks('open', true, upload.stackForSubmission()))
+    }
+}
+
+function handleUploadSuccess(store, next, action) {
+    if (action.type === ActionTypes.UPLOAD_FILE) {
+
+        return Promise.resolve()
+        .then(() => {
+            return initiateProcessingStage(store)
+        }).then((job_id) => {
+            return checkProcessingProgress(store, job_id)
+        }).then(() => {
+            return handleProcessingSuccess(store)
+        })
     }
 } 
+
+
 
 // Middleware function which handles 
 // the upload process to S3
 export default store => next => action => {
 
     if (action.type !== ActionTypes.UPLOAD_FILE 
-        && action.type !== ActionTypes.UPLOAD_POSTER_FILE
         && action.type !== ActionTypes.UPLOAD_THUMBNAIL
         && action.type !== ActionTypes.UPLOAD_PROFILE_PICTURE
         && action.type !== ActionTypes.SUBMIT_STACK_REQUEST
@@ -140,6 +209,8 @@ export default store => next => action => {
             return store.dispatch(syncStacks('open', true, upload.stackForSubmission()))
         }
     }
+
+    // For all other action types, upload file
 
     // Check mime type compatibility
     if (!Upload.isCompatibleMimeType(action.file.type)) {
@@ -208,7 +279,7 @@ export default store => next => action => {
         callActionWith({
             status: Status.SUCCESS
         })
-        handleSuccess(store, next, action, url)
+        handleUploadSuccess(store, next, action, url)
     })
     .catch(error => {
         callActionWith({

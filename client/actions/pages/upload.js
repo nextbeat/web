@@ -1,4 +1,5 @@
 import ActionTypes from '../types'
+import { API_CALL, API_CANCEL } from '../types'
 import { generateUuid } from '../../utils'
 
 /********
@@ -9,6 +10,30 @@ export function uploadFile(file) {
     return {
         type: ActionTypes.UPLOAD_FILE,
         file
+    }
+}
+
+// export function processUploadedFile(url, type) {
+//     return {
+//         type: ActionTypes.PROCESS_UPLOADED_FILE,
+//         [API_CALL]: {
+//             method: 'POST',
+//             authenticated: true,
+//             endpoint: 'upload/process',
+//             body: {
+//                 url,
+//                 type
+//             }
+//         }
+//     }
+// }
+
+export function updateProcessingProgress({ progress, timeLeft, completed }) {
+    return {
+        type: ActionTypes.UPDATE_PROCESSING_PROGRESS,
+        progress,
+        timeLeft,
+        completed
     }
 }
 
