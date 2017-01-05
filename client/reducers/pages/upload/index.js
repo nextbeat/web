@@ -48,7 +48,7 @@ function updateProcessingProgress(state, action) {
     return state.merge({
         processingProgress: action.progress,
         processingTimeLeft: action.timeLeft,
-        processingComplete: action.complete
+        processingComplete: action.completed
     })
 }
 
