@@ -101,9 +101,16 @@
     position: absolute;
     left: 0;
     top: 0;
-    background-color: $primary-color;
     transform-origin: left top;
     transition: transform 0.3s;
+}
+
+.upload_progress-bar_progress-upload {
+    background-color: mix(white, $primary-color, 50%);
+}
+
+.upload_progress-bar_progress-process {
+    background-color: $primary-color;
 }
 
 .upload_progress-bar_cancel {

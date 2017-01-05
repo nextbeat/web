@@ -17,15 +17,23 @@ class UploadBar extends React.Component {
 
     render() {
         const { upload } = this.props 
-        const progress = upload.get('progress', 0)
+        const uploadProgress = upload.get('uploadProgress', 0)
+        const processingProgress = upload.get('processingProgress', 0)
+        const stage = upload.get('stage')
 
         return (
             <div className="upload_progress-bar_container">
                 <div className="upload_progress-bar_data">
-                    UPLOADING <span className="upload_progress-bar_percent">{`${Math.floor(progress*100)}%`}</span>
+                    { stage !== 'upload' && 
+                        <span>PROCESSING <span className="upload_progress-bar_percent">{`${Math.floor(processingProgress*100)}%`}</span></span> 
+                    }
+                    { stage === 'upload' && 
+                        <span>UPLOADING <span className="upload_progress-bar_percent">{`${Math.floor(uploadProgress*100)}%`}</span></span> 
+                    }
                 </div>
                 <div className="upload_progress-bar">
-                    <div className="upload_progress-bar_progress" style={{ transform: `scaleX(${progress})` }}></div>
+                    <div className="upload_progress-bar_progress upload_progress-bar_progress-upload" style={{ transform: `scaleX(${uploadProgress})` }}></div>
+                    <div className="upload_progress-bar_progress upload_progress-bar_progress-process" style={{ transform: `scaleX(${processingProgress})` }}></div>
                 </div>
                 { !upload.isInSubmitProcess() &&
                     <div className="upload_progress-bar_cancel">

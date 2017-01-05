@@ -3,7 +3,7 @@ import Promise from 'bluebird'
 import assign from 'lodash/assign'
 import find from 'lodash/find'
 
-import { ActionTypes, Status, syncStacks, updateUser, updateNewMediaItem, updateProcessingProgress } from '../actions'
+import { ActionTypes, Status, syncStacks, updateUser, updateNewMediaItem, updateProcessingProgress, initiateProcessingStage as _initiateProcessingStage } from '../actions'
 import { App, Upload, CurrentUser } from '../models'
 import { generateUuid } from '../utils'
 
@@ -99,12 +99,13 @@ function initiateProcessingStage(store) {
         method: 'POST',
         body: {
             url: mediaItem.get('url'),
-            type: mediaItem.get('type')
+            type: mediaItem.get('type') === 'video' ? 'video' : 'image' // TODO: standardize 'image' over 'photo' across the app
         }
     }).then(res => { 
         store.dispatch(updateNewMediaItem({
             resource_id: res.id
         }))
+        store.dispatch(_initiateProcessingStage())
         return res.job
     })
 }
@@ -120,7 +121,7 @@ function checkProcessingProgress(store, job_id) {
                 method: 'POST',
                 body: {
                     job: job_id,
-                    type: mediaItem.get('type')
+                    type: mediaItem.get('type') === 'video' ? 'video' : 'image'
                 }
             }).then(res => {
                 store.dispatch(updateProcessingProgress({
@@ -130,7 +131,6 @@ function checkProcessingProgress(store, job_id) {
                 }))
 
                 if (res.initialProcessCompleted) {
-                    console.log(intervalId)
                     clearInterval(intervalId)
                     resolve()
                 }
@@ -141,6 +141,7 @@ function checkProcessingProgress(store, job_id) {
             })
         }
 
+        checkProgress()
         let intervalId = setInterval(checkProgress, 2000)
     })
 }
@@ -203,7 +204,7 @@ export default store => next => action => {
         // here and wait until the resource has completed the
         // upload process before we trigger the sync
         let upload = new Upload(store.getState())
-        if (upload.isUploading()) {
+        if (!upload.isDoneProcessing()) {
             return next(action)
         } else {
             return store.dispatch(syncStacks('open', true, upload.stackForSubmission()))

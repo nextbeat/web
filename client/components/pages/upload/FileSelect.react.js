@@ -170,25 +170,10 @@ const fileOptions = {
     onVideoLoad: function(src, video) {
         const { dispatch, resourceWidth, resourceHeight, resourceDuration, upload } = this.props  
 
-        // // Grab first frame using canvas element
-        // var canvas = document.createElement('canvas');
-        // canvas.width = resourceWidth;
-        // canvas.height = resourceHeight;
-        // var ctx = canvas.getContext('2d');
-        // ctx.drawImage(video, 0, 0);
-        // var posterKey = `videos/FF-${upload.get('mediaItem').get('uuid')}.png`
-
-        // // Upload first frame 
-        // // TODO: no safari/IE compatibility!
-        // canvas.toBlob(blob => {
-        //     dispatch(uploadPosterFile(blob, posterKey))
-        // });
-
         dispatch(updateNewMediaItem({
             width: resourceWidth,
             height: resourceHeight,
             duration: resourceDuration,
-            // posterUrl: `${upload.cloudfrontUrl()}${posterKey}`
         }))
 
         document.getElementById('upload_file-select_video').src = src

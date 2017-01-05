@@ -10,9 +10,14 @@ const KEY_MAP = {
     // Media upload
     'file': ['file'],
     'status': ['status'],
-    'progress': ['progress'],
+    'uploadProgress': ['uploadProgress'],
     'xhr': ['xhr'], // reference to XHR object which handles upload to S3
     'error': ['error'],
+    'stage': ['stage'],
+    // Media upload processing
+    'processingProgress': ['processingProgress'],
+    'processingTimeLeft': ['processingTimeLeft'],
+    'processingComplete': ['processingComplete'],
     // Thumbnail upload
     'hasCustomThumbnail': ['hasCustomThumbnail'],
     'isUploadingThumbnail': ['isUploadingThumbnail'],
@@ -46,8 +51,8 @@ export default class Upload extends StateModel {
 
     // Queries
 
-    isUploading() {
-        return this.get('status') === Status.REQUESTING || this.get('isUploadingThumbnail')
+    isDoneProcessing() {
+        return !!this.get('processingComplete', false)
     }
 
     hasFile() {

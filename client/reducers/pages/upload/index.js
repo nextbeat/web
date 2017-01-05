@@ -8,7 +8,8 @@ function uploadFile(state, action) {
 
         state = state.merge({
             file: action.file,
-            progress: action.progress
+            stage: 'upload',
+            uploadProgress: action.progress
         }).delete('error')
 
         if (action.mediaItem) {
@@ -23,18 +24,32 @@ function uploadFile(state, action) {
     } else if (action.status === Status.SUCCESS) {
 
         return state.merge({
-            progress: 1
+            uploadProgress: 1
         })
 
     } else if (action.status === Status.FAILURE) {
 
         return state.merge({
-            progress: 0,
+            uploadProgress: 0,
             error: action.error
         }).delete('file')
 
     }
     return state
+}
+
+function initiateProcessingStage(state, action) {
+    return state.merge({
+        stage: 'process'
+    })
+}
+
+function updateProcessingProgress(state, action) {
+    return state.merge({
+        processingProgress: action.progress,
+        processingTimeLeft: action.timeLeft,
+        processingComplete: action.complete
+    })
 }
 
 function uploadThumbnail(state, action) {
@@ -104,6 +119,7 @@ function syncStacks(state, action) {
             return state.merge({
                 submitStackRequested: false,
                 isSubmittingStack: true,
+                stage: 'submission',
                 stackSubmitted: false
             })
         } else if (action.status === Status.SUCCESS) {
@@ -152,6 +168,10 @@ export default function(state=initialState, action) {
         return initialState
     } else if (action.type === ActionTypes.UPLOAD_FILE) {
         return uploadFile(state, action)
+    } else if (action.type === ActionTypes.INITIATE_PROCESSING_STAGE) {
+        return initiateProcessingStage(state, action)
+    } else if (action.type === ActionTypes.UPDATE_PROCESSING_PROGRESS) {
+        return updateProcessingProgress(state, action)
     } else if (action.type === ActionTypes.UPLOAD_THUMBNAIL) {
         return uploadThumbnail(state, action)
     } else if (action.type === ActionTypes.CLEAR_THUMBNAIL) {

@@ -13,20 +13,11 @@ export function uploadFile(file) {
     }
 }
 
-// export function processUploadedFile(url, type) {
-//     return {
-//         type: ActionTypes.PROCESS_UPLOADED_FILE,
-//         [API_CALL]: {
-//             method: 'POST',
-//             authenticated: true,
-//             endpoint: 'upload/process',
-//             body: {
-//                 url,
-//                 type
-//             }
-//         }
-//     }
-// }
+export function initiateProcessingStage() {
+    return {
+        type: ActionTypes.INITIATE_PROCESSING_STAGE
+    }
+}
 
 export function updateProcessingProgress({ progress, timeLeft, completed }) {
     return {
