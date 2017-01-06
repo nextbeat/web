@@ -50,14 +50,16 @@ class Login extends React.Component {
                     </div>
                     <div className="modal_input-wrapper">
                         <input className="modal-login_password" type="password" ref="login_password" name="login_password" placeholder="Password" />
-                        <a href="/support/password-reset-request" className="modal-login_forgot">Forgot?</a>
                     </div>
-                    <div className="modal_input-wrapper">
+                    <div className="modal_input-description">
+                        <a href="/support/password-reset-request">Forgot your password?</a>
+                    </div>
+                    <div className="modal_input-wrapper modal_input-wrapper-submit">
                         <a className="btn modal_form_submit" onClick={this.handleLoginSubmit}>Log In</a>
                     </div>
+                    { currentUser.has('loginError') && <div className="modal-auth_error">{currentUser.get('loginError')}</div> }
                 </form>
                 <div className="modal_extra">Don't have an account? <a onClick={this.handleSignupClick}>Sign up!</a></div>
-                { currentUser.has('loginError') && <div className="modal-auth_error">{currentUser.get('loginError')}</div> }
             </Modal>
         )
     }

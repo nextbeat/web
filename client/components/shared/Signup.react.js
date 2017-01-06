@@ -57,12 +57,15 @@ class Signup extends React.Component {
                     <div className="modal_input-wrapper">
                         <input type="password" autoComplete="new-password" ref="signup_password" name="signup_password" placeholder="Password" />
                     </div>
-                    <div className="modal_input-wrapper">
-                        <a className="btn btn-secondary modal_form_submit" onClick={this.handleSignupSubmit}>Sign Up</a>
+                    <div className="modal_input-description">
+                        By signing up, you indicate that you agree with our <a>Terms of Service</a> and <a>Privacy Policy</a>.
                     </div>
+                    <div className="modal_input-wrapper modal_input-wrapper-submit">
+                        <a className="btn modal_form_submit" onClick={this.handleSignupSubmit}>Sign Up</a>
+                    </div>
+                    { currentUser.has('signupError') && <div className="modal-auth_error">{currentUser.get('signupError')}</div> }
                 </form>
                 <div className="modal_extra">Already have an account? <a onClick={this.handleLoginClick}>Log in!</a></div>
-                { currentUser.has('signupError') && <div className="modal-auth_error">{currentUser.get('signupError')}</div> }
             </Modal>
         )
     }
