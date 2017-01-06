@@ -9,7 +9,7 @@ import NotificationChatItem from './NotificationChatItem.react'
 import ChatbotChatItem from './ChatbotChatItem.react'
 import Spinner from '../../shared/Spinner.react'
 
-import { loadComments } from '../../../actions'
+import { loadComments, promptChatActionsForUser } from '../../../actions'
 import { Stack, CurrentUser, App } from '../../../models'
 
 function scrollComponentId(props) {
@@ -20,6 +20,8 @@ class ChatHistory extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.handleSelectUsername = this.handleSelectUsername.bind(this)
         this.renderComment = this.renderComment.bind(this);
     }
 
@@ -40,6 +42,12 @@ class ChatHistory extends React.Component {
          $(`#${scrollComponentId(this.props)}`).off('mousewheel DOMMouseScroll')
     }
 
+    // Events
+
+    handleSelectUsername(username) {
+        this.props.dispatch(promptChatActionsForUser(username))
+    }
+
     // Render
 
     renderComment(comment) {
@@ -53,6 +61,7 @@ class ChatHistory extends React.Component {
                         comment={comment} 
                         username={username} 
                         isCreator={isCreator} 
+                        handleSelectUsername={this.handleSelectUsername}
                     />
         } else if (comment.get('type') === 'notification') {
             return <NotificationChatItem 
@@ -67,7 +76,7 @@ class ChatHistory extends React.Component {
     }
 
     renderLiveComment(comment, idx) {
-        const {room } = this.props;
+        const { room } = this.props;
         const key = `l${idx}`;
         const isCreator = (room.author().get('username') === comment.get('username'));
 
@@ -76,6 +85,7 @@ class ChatHistory extends React.Component {
                         key={key} 
                         comment={comment} 
                         isCreator={isCreator} 
+                        handleSelectUsername={this.handleSelectUsername}
                     />
         } else if (comment.get('type') === 'notification') {
             return <NotificationChatItem 

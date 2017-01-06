@@ -1,7 +1,7 @@
 .modal-container {
     height: 100%;
     width: 100%;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0,0,0,0.6);
     display: none;
     position: fixed;
     top: 0;
@@ -184,7 +184,7 @@
 // Responsiveness
 
 .modal_close {
-    @include media('<400px') {
+    @include media('<=small') {
         left: auto;
         top: auto;
         right: -4px;
