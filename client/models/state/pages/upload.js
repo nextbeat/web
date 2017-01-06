@@ -6,6 +6,10 @@ import App from '../app'
 import { generateUuid } from '../../../utils'
 import { Status } from '../../../actions'
 
+function fileExtension(fileName) {
+    return fileName.split('.').slice(-1)[0].toLowerCase()
+}
+
 const KEY_MAP = {
     // Media upload
     'file': ['file'],
@@ -34,11 +38,30 @@ const KEY_MAP = {
     'submitStackError': ['submitStackError']
 }
 
-const COMPATIBLE_MIME_TYPES = [
-    'image/jpeg',
-    'image/png',
-    'video/mp4'
+const COMPATIBLE_IMAGE_FORMATS = [
+    'jpeg',
+    'jpg',
+    'png',
+    'gif',
+    'tif',
+    'tiff'
 ]
+
+const COMPATIBLE_VIDEO_FORMATS = [
+    'mp4',
+    'm4v',
+    'mkv',
+    'mov',
+    'mpeg4',
+    'avi',
+    'wmv',
+    'flv',
+    '3gp',
+    '3g2',
+    'webm'
+]
+
+const COMPATIBLE_FILE_FORMATS = COMPATIBLE_IMAGE_FORMATS.concat(COMPATIBLE_VIDEO_FORMATS)
 
 export default class Upload extends StateModel {
 
@@ -50,6 +73,10 @@ export default class Upload extends StateModel {
 
 
     // Queries
+
+    isUploading() {
+        return this.get('stage') === 'upload' && this.get('status') === Status.REQUESTING
+    }
 
     isDoneProcessing() {
         return !!this.get('processingComplete', false)
@@ -64,11 +91,14 @@ export default class Upload extends StateModel {
     }
 
     isCompatible() {
-        return this.constructor.isCompatibleMimeType(this.mimeType())
+        return this.constructor.isCompatibleFile(this.fileName(), this.mimeType())
     }
 
-    static isCompatibleMimeType(mimeType) {
-        return COMPATIBLE_MIME_TYPES.indexOf(mimeType) !== -1
+    static isCompatibleFile(fileName, mimeType) {
+        const ext = fileExtension(fileName)
+        const fileType = this.fileTypeForMimeType(mimeType)
+
+        return (!mimeType || ['image', 'video'].indexOf(fileType) !== -1) && COMPATIBLE_FILE_FORMATS.indexOf(ext) !== -1
     }
 
     isSubmittable() {
@@ -82,13 +112,17 @@ export default class Upload extends StateModel {
 
     // Getters
 
+    fileName() {
+        return this.get('file') ? this.get('file').name : null
+    }
+
     mimeType() {
         return this.get('file') ? this.get('file').type : null
     }
 
     fileType() {
         // 'image' or 'video'
-        return this.constructor.fileTypeForMimeType(this.mimeType())
+        return this.constructor.fileTypeForMimeType(this.mimeType()) || this.constructor.fileTypeForFileName(this.fileName())
     }
 
     static fileTypeForMimeType(mimeType) {
@@ -96,6 +130,16 @@ export default class Upload extends StateModel {
         if (/^image\//.test(mimeType)) {
             return 'image'
         } else if (/^video\//.test(mimeType)) {
+            return 'video'
+        }
+        return null
+    }
+
+    static fileTypeForFileName(name) {
+        let ext = fileExtension(name)
+        if (COMPATIBLE_IMAGE_FORMATS.indexOf(ext) !== -1) {
+            return 'image'
+        } else if (COMPATIBLE_VIDEO_FORMATS.indexOf(ext) !== -1) {
             return 'video'
         }
         return null

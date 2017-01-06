@@ -98,6 +98,7 @@ export {
     updateNewStack,
     updateNewMediaItem,
     submitStackRequest,
+    stopFileUpload,
     clearUpload
 } from './pages/upload'
 

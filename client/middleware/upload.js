@@ -3,7 +3,8 @@ import Promise from 'bluebird'
 import assign from 'lodash/assign'
 import find from 'lodash/find'
 
-import { ActionTypes, Status, syncStacks, updateUser, updateNewMediaItem, updateProcessingProgress, initiateProcessingStage as _initiateProcessingStage } from '../actions'
+import { ActionTypes, Status } from '../actions'
+import { syncStacks, updateUser, updateNewMediaItem, updateProcessingProgress, initiateProcessingStage as _initiateProcessingStage, stopFileUpload } from '../actions'
 import { App, Upload, CurrentUser } from '../models'
 import { generateUuid } from '../utils'
 
@@ -168,6 +169,12 @@ function handleUploadSuccess(store, next, action) {
     }
 } 
 
+function checkVideoDuration(store, next, action) {
+    let duration = action.mediaItem.duration
+    if (duration > 60*15) {
+        store.dispatch(stopFileUpload('Video cannot be longer than 15 minutes.'))
+    }
+}
 
 
 // Middleware function which handles 
@@ -178,6 +185,8 @@ export default store => next => action => {
         && action.type !== ActionTypes.UPLOAD_THUMBNAIL
         && action.type !== ActionTypes.UPLOAD_PROFILE_PICTURE
         && action.type !== ActionTypes.SUBMIT_STACK_REQUEST
+        && action.type !== ActionTypes.UPDATE_NEW_MEDIA_ITEM
+        && action.type !== ActionTypes.STOP_FILE_UPLOAD
         && action.type !== ActionTypes.CLEAR_UPLOAD) 
     {
         return next(action)
@@ -187,12 +196,13 @@ export default store => next => action => {
         next(assign({}, action, data))
     }
 
-    if (action.type === ActionTypes.CLEAR_UPLOAD) {
+    if (action.type === ActionTypes.CLEAR_UPLOAD || action.type === ActionTypes.STOP_FILE_UPLOAD) {
         // We want to abort the upload request if this
         // action is called.
         let upload = new Upload(store.getState())
         let xhr = upload.get('xhr')
         if (xhr) {
+            console.log('ABORTING XHR')
             xhr.abort();
         }
         return next(action)
@@ -211,21 +221,29 @@ export default store => next => action => {
         }
     }
 
+    if (action.type === ActionTypes.UPDATE_NEW_MEDIA_ITEM) {
+        let upload = new Upload(store.getState())
+        if (upload.isUploading() && upload.fileType() === 'video') {
+            checkVideoDuration(store, next, action)
+        }
+        return next(action)
+    }
+
     // For all other action types, upload file
 
     // Check mime type compatibility
-    if (!Upload.isCompatibleMimeType(action.file.type)) {
+    if (!Upload.isCompatibleFile(action.file.name, action.file.type)) {
         return callActionWith({
             status: Status.FAILURE,
-            error: 'Incompatible file type. We currently accept mp4 videos and jpg or png images.'
+            error: 'Incompatible file type. We currently accept most video and image formats.'
         })
     }
 
     // Check file size
-    if (action.file.size > 200*1024*1024) {
+    if (action.file.size > 500*1024*1024) {
         return callActionWith({
             status: Status.FAILURE,
-            error: 'File exceeds size limit. Files cannot be greater than 200 MB.'
+            error: 'File exceeds size limit. Files cannot be greater than 500 MB.'
         })
     }
 

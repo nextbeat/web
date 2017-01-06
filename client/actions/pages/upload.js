@@ -97,6 +97,13 @@ export function submitStackRequest() {
  * RESET
  *******/
 
+export function stopFileUpload(error) {
+    return {
+        type: ActionTypes.STOP_FILE_UPLOAD,
+        error
+    }
+}
+
 export function clearUpload() {
     return {
         type: ActionTypes.CLEAR_UPLOAD

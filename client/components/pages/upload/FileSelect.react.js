@@ -158,25 +158,25 @@ const fileOptions = {
     onImageLoad: function(src) {
         const { dispatch, resourceWidth, resourceHeight } = this.props
 
+        document.getElementById('upload_file-select_image').src = src
+
         // update image data for the media item to be submitted
         dispatch(updateNewMediaItem({
             width: resourceWidth,
             height: resourceHeight
         }))
-
-        document.getElementById('upload_file-select_image').src = src
     },
 
     onVideoLoad: function(src, video) {
         const { dispatch, resourceWidth, resourceHeight, resourceDuration, upload } = this.props  
+
+        document.getElementById('upload_file-select_video').src = src
 
         dispatch(updateNewMediaItem({
             width: resourceWidth,
             height: resourceHeight,
             duration: resourceDuration,
         }))
-
-        document.getElementById('upload_file-select_video').src = src
     }
 }
 

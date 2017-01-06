@@ -38,6 +38,13 @@ function uploadFile(state, action) {
     return state
 }
 
+function stopFileUpload(state, action) {
+    return state.merge({
+        uploadProgress: 0,
+        error: action.error
+    }).delete('file')
+}
+
 function initiateProcessingStage(state, action) {
     return state.merge({
         stage: 'process'
@@ -186,6 +193,8 @@ export default function(state=initialState, action) {
         return submitStackRequest(state, action)
     } else if (action.type === ActionTypes.SYNC_STACKS) {
         return syncStacks(state, action)
+    } else if (action.type === ActionTypes.STOP_FILE_UPLOAD) {
+        return stopFileUpload(state, action)
     }
     return state
 }

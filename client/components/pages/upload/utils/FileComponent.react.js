@@ -89,7 +89,15 @@ export default function FileComponent(parentId, options={}) {
             // Load
 
             loadResource(file) {
-                const fileType = Upload.fileTypeForMimeType(file.type)
+                if (!file) {
+                    return
+                }
+                
+                let fileType = Upload.fileTypeForMimeType(file.type)
+                if (!fileType) {
+                    fileType = Upload.fileTypeForFileName(file.name)
+                }
+                
                 if (fileType === 'image') {
                     this.loadImage(file)
                 } else if (fileType === 'video') {
@@ -124,7 +132,10 @@ export default function FileComponent(parentId, options={}) {
             loadVideo(file) {
                 const video = document.createElement('video')
 
+                console.log('loading video...')
+
                 video.addEventListener('loadeddata', e => {
+                    console.log('loaded video')
                     const width = e.target.videoWidth 
                     const height = e.target.videoHeight 
                     const duration = e.target.duration
