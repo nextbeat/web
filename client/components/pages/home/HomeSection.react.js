@@ -30,7 +30,7 @@ class HomeSection extends React.Component {
 
     componentDidMount() {
         const node = $(this._node);
-        const content = node.parent().parent();
+        const content = node.parent();
         $(window).on(`resize.section${this.props.index}`, this.resize.bind(this, node, content));
         this.resize(node, content);
     }
@@ -39,7 +39,7 @@ class HomeSection extends React.Component {
         if (this.props.currentUser.isLoggedIn() !== prevProps.currentUser.isLoggedIn()) {
             // recalculate sizes to account for sidebar
             const node = $(this._node);
-            const content = node.parent().parent();
+            const content = node.parent();
             this.resize(node, content);
         }
     }
@@ -56,10 +56,7 @@ class HomeSection extends React.Component {
 
         const parentWidth = parent.width()
         const appWidth = app.get('width')
-        let sectionWidth = parentWidth - 100;
-        if (appWidth === 'small' || appWidth === 'medium') {
-            sectionWidth = parentWidth - 70;
-        }
+        let sectionWidth = parentWidth - 40;
 
         /**
          * We use component state to dynamically resize the stacks list and shift

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { List } from 'immutable'
 
 import { loadHome, clearHome } from '../../actions'
-import { Home, App } from '../../models'
+import { Home, App, CurrentUser } from '../../models'
 
 import HomeSection from './home/HomeSection.react'
 import HomeSplash from './home/HomeSplash.react'
@@ -29,14 +29,14 @@ class HomeComponent extends React.Component {
     }
 
     render() {
-        const { home } = this.props
+        const { home, currentUser } = this.props
 
         return (
             <div className="home content">
                 <AppBanner />
                 {home.isLoaded() && 
                     <div>
-                        <RoomCard id={home.get('mainCardId')} />
+                        { !currentUser.isLoggedIn() && <RoomCard stack={home.mainCardStack()} /> }
                         <div className="home_sections">
                             {home.get('sections', List()).map((section, idx) => 
                                 <HomeSection key={`sec${idx}`} stacks={home.stacks(idx)} section={section} index={idx} />
@@ -52,7 +52,8 @@ class HomeComponent extends React.Component {
 function mapStateToProps(state) {
     return {
         home: new Home(state), // 🌮
-        app: new App(state)
+        app: new App(state),
+        currentUser: new CurrentUser(state),
     }
 }
 

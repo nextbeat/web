@@ -2,16 +2,14 @@
     overflow-y: auto;
     overflow-x: hidden; 
     height: 100%;
+    text-align: center; // centers the .home_sections element
 
     .spinner-home {
         margin: 50px auto;
     }
 
-    @include media('<=medium') {
-        text-align: center; // centers the .home_sections element
-        .room-card {
-            text-align: left;
-        }
+    .room-card {
+        text-align: left;
     }
 }
 
@@ -84,12 +82,14 @@
 
 .home_sections {
     display: inline-block;
-    margin: 30px 0 0 30px;
-
+    max-width: 950px;
+    width: calc(100% - 60px);
+    margin: 30px 30px 0 30px;
+    text-align: left;
 
     @include media('<=medium') {
-        text-align: left;
-        margin: 15px 0 0 0;
+        margin: 15px 15px 0 15px;
+        width: calc(100% - 30px);
     }
 }
 
@@ -103,24 +103,6 @@
 
     &:last-child {
         border-bottom: none;
-    }
-    
-    &.highlighted {
-        color: $background-color;
-        background: #333;
-        word-spacing: 110%;
-
-        .item-room-large_description {
-            color: $background-color;
-        }
-
-        .home_section_description, .item-room-large_details {
-            color: #bbb;
-        }
-
-        .svg-icon-chevron-left, .svg-icon-chevron-right {
-            fill: $background-color;
-        }
     }
 
     @include media('<=medium') {
