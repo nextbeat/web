@@ -7,7 +7,9 @@ const KEY_MAP = {
     // sections
     'sectionsFetching': ['isFetching'],
     'sectionsError': ['error'],
-    'sections': ['sections']
+    'sections': ['sections'],
+    // main card
+    'mainCardId': ['mainCardId']
 }
 
 export default class Home extends StateModel {
@@ -21,6 +23,10 @@ export default class Home extends StateModel {
     stacks(idx) {
         const stackIds = this.get('sections', List()).get(idx, Map()).get('stacks', List());
         return stackIds.map(id => new StackEntity(id, this.state.get('entities')))
+    }
+
+    mainCardStack() {
+        return new StackEntity(this.get('mainCardId'), this.state.get('entities'))
     }
 
     isLoaded() {

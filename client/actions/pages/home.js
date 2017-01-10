@@ -11,10 +11,14 @@ import { API_CALL, API_CANCEL } from '../types'
  **********/
 
 function onHomeSuccess(store, next, action, response) {
-    const stacks = response.map(s => s.stacks)
+    const stacks = response.sections.map(s => s.stacks)
     next({
         type: ActionTypes.ENTITY_UPDATE,
         response: normalize(flatten(stacks), Schemas.STACKS)
+    })
+    next({
+        type: ActionTypes.ENTITY_UPDATE,
+        response: normalize(response.main_card, Schemas.STACK)
     })
 }
 
@@ -22,7 +26,7 @@ function fetchHome() {
     return {
         type: ActionTypes.HOME,
         [API_CALL]: {
-            endpoint: "home",
+            endpoint: "home/v2",
             onSuccessImmediate: onHomeSuccess
         }
     }

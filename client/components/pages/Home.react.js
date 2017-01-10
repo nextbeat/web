@@ -29,19 +29,22 @@ class HomeComponent extends React.Component {
     }
 
     render() {
-        const { home, app } = this.props
-        let roomId = app.get('environment') === 'mac' ? 1 : 622;
+        const { home } = this.props
 
         return (
             <div className="home content">
                 <AppBanner />
-                <RoomCard id={roomId} />
                 {home.get('sectionsFetching') && <Spinner type="grey large home" />}
-                <div className="home_sections">
-                    {home.get('sections', List()).map((section, idx) => 
-                        <HomeSection key={`sec${idx}`} stacks={home.stacks(idx)} section={section} index={idx} />
-                    )}
-                </div>
+                {home.isLoaded() && 
+                    <div>
+                        <RoomCard id={home.get('mainCardId')} />
+                        <div className="home_sections">
+                            {home.get('sections', List()).map((section, idx) => 
+                                <HomeSection key={`sec${idx}`} stacks={home.stacks(idx)} section={section} index={idx} />
+                            )}
+                        </div>
+                    </div>
+                }
             </div>
         )
     }
@@ -54,22 +57,22 @@ function mapStateToProps(state) {
     }
 }
 
-// HomeComponent.fetchData = (store, params) => {
-//     return new Promise((resolve, reject) => {
+HomeComponent.fetchData = (store, params) => {
+    return new Promise((resolve, reject) => {
 
-//         const unsubscribe = store.subscribe(() => {
-//             const home = new Home(store.getState())
-//                 if (home.isLoaded()) {
-//                     unsubscribe()
-//                     resolve(store)
-//                 }
-//                 if (home.get('sectionsError')) {
-//                     unsubscribe()
-//                     reject(new Error('Stack does not exist.'))
-//                 }
-//             })
-//         store.dispatch(loadHome())
-//     })
-// }
+        const unsubscribe = store.subscribe(() => {
+            const home = new Home(store.getState())
+                if (home.isLoaded()) {
+                    unsubscribe()
+                    resolve(store)
+                }
+                if (home.get('sectionsError')) {
+                    unsubscribe()
+                    reject(new Error('Unable to fetch home page.'))
+                }
+            })
+        store.dispatch(loadHome())
+    })
+}
 
 export default connect(mapStateToProps)(HomeComponent)
