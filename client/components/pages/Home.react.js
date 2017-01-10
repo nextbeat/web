@@ -34,7 +34,6 @@ class HomeComponent extends React.Component {
         return (
             <div className="home content">
                 <AppBanner />
-                {home.get('sectionsFetching') && <Spinner type="grey large home" />}
                 {home.isLoaded() && 
                     <div>
                         <RoomCard id={home.get('mainCardId')} />
@@ -57,22 +56,22 @@ function mapStateToProps(state) {
     }
 }
 
-HomeComponent.fetchData = (store, params) => {
-    return new Promise((resolve, reject) => {
+// HomeComponent.fetchData = (store, params) => {
+//     return new Promise((resolve, reject) => {
 
-        const unsubscribe = store.subscribe(() => {
-            const home = new Home(store.getState())
-                if (home.isLoaded()) {
-                    unsubscribe()
-                    resolve(store)
-                }
-                if (home.get('sectionsError')) {
-                    unsubscribe()
-                    reject(new Error('Unable to fetch home page.'))
-                }
-            })
-        store.dispatch(loadHome())
-    })
-}
+//         const unsubscribe = store.subscribe(() => {
+//             const home = new Home(store.getState())
+//                 if (home.isLoaded()) {
+//                     unsubscribe()
+//                     resolve(store)
+//                 }
+//                 if (home.get('sectionsError')) {
+//                     unsubscribe()
+//                     reject(new Error('Unable to fetch home page.'))
+//                 }
+//             })
+//         store.dispatch(loadHome())
+//     })
+// }
 
 export default connect(mapStateToProps)(HomeComponent)

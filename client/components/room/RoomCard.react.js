@@ -22,12 +22,12 @@ class RoomCard extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { dispatch, room } = this.props
+        const { dispatch, room, id: roomId } = this.props
 
         if (prevProps.room.mediaItems().size === 0 && room.mediaItems().size > 0) {
             // Always select the first media item
             let id = room.mediaItems().first().get('id')
-            dispatch(selectMediaItem(room.get('id'), id))
+            dispatch(selectMediaItem(roomId, id))
         }
 
     }

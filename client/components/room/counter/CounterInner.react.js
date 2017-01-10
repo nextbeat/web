@@ -5,14 +5,19 @@ class CounterInner extends React.Component {
     render() {
         const { room } = this.props;
         if (room.mediaItemsSize() > 0) {
-            return (
-                <div>
-                    <span className="selected">{ room.indexOfSelectedMediaItem() + 1 }</span><span className="player_counter-separator">/</span>{ room.mediaItemsSize() } 
-                </div>
-            )
+            var index = room.indexOfSelectedMediaItem() + 1;
+            var total = room.mediaItemsSize()
         } else {
-            return null;
+            var index = 1
+            var total = room.get('mediaitem_count')
+            console.log(index, total)
         }
+
+        return (
+            <div>
+                <span className="selected">{index}</span><span className="player_counter-separator">/</span>{total} 
+            </div>
+        )
     }
 }
 

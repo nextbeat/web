@@ -17,28 +17,24 @@ import { setStorageItem } from '../utils'
  * FETCHING
  **********/
 
-function onRoomSuccess(store, next, action, response) {
-    const stack = response.entities.stacks[response.result];
-    store.dispatch(loadMediaItems(stack.id));
-    store.dispatch(loadComments(stack.id));
-    store.dispatch(loadCommentsMetadata(stack.id));
-}
-
 function fetchRoom(id) {
     return {
         type: ActionTypes.ROOM,
         roomId: id,
         [API_CALL]: {
             schema: Schemas.STACK,
-            endpoint: `stacks/${id}`,
-            onSuccess: onRoomSuccess
+            endpoint: `stacks/${id}`
         }
     }
 }
 
 export function loadRoom(id) {
-    // TODO: call all fetches at once?
-    return fetchRoom(id)
+    return dispatch => {
+        dispatch(fetchRoom(id))
+        dispatch(loadMediaItems(id));
+        dispatch(loadComments(id));
+        dispatch(loadCommentsMetadata(id));
+    }
 }
 
 function fetchMediaItems(roomId, pagination) {

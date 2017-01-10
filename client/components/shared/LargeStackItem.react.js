@@ -59,6 +59,10 @@ class LargeStackItem extends React.Component {
         $(this._image).one('load', () => {
             this.setState({ imageLoaded: true })
         })
+
+        if (this._image.complete) {
+            this.setState({ imageLoaded: true })
+        }
     }
 
     componentWillUnmount() {
