@@ -26,7 +26,9 @@ const KEY_MAP = {
     // comments
     'commentsFetching': ['pagination', 'comments', 'isFetching'],
     'commentsError': ['pagination', 'comments', 'error'],
-    'liveComments': ['live', 'comments']
+    'liveComments': ['live', 'comments'],
+    // playback
+    'videoDidPlay': ['navigation', 'videoDidPlay']
 }
 
 export default class Room extends StateModel {

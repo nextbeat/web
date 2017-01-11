@@ -6,6 +6,8 @@ export default function(state = Map(), action) {
         return state
             .set('selected', action.id)
             .update('seen', Set(), v => v.add(action.id))
+    } else if (action.type === ActionTypes.DID_PLAY_VIDEO) {
+        return state.set('videoDidPlay', true)
     }
     return state
 }

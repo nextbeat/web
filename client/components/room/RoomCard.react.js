@@ -18,6 +18,12 @@ class RoomCard extends React.Component {
 
         this.handleKeyDown = this.handleKeyDown.bind(this)
         this.handleFullScreenChange = this.handleFullScreenChange.bind(this)
+
+        // When first loading the room card, we want to prevent the 
+        // video from autoplaying, so as to not disturb the user.
+        this.state = {
+            shouldAutoplayVideo: false
+        }
     }
 
     componentDidMount() {
@@ -36,6 +42,12 @@ class RoomCard extends React.Component {
             dispatch(selectMediaItem(roomId, id))
         }
 
+        if (!prevProps.room.get('videoDidPlay') && !!room.get('videoDidPlay')) {
+            // If the user has already played a video, we want to enable autoplay
+            this.setState({
+                shouldAutoplayVideo: true
+            })
+        }
     }
 
     componentWillUnmount() {
@@ -77,11 +89,13 @@ class RoomCard extends React.Component {
 
     render() {
         const { room } = this.props 
+        const { shouldAutoplayVideo } = this.state 
+
         return (
             <div className="room-card">
                 <RoomCardHeader room={room} />
                 <div className="room-card_main">
-                    <RoomPlayer room={room}>
+                    <RoomPlayer room={room} shouldAutoplayVideo={shouldAutoplayVideo}>
                         <Counter room={room} />
                     </RoomPlayer>
                     <ChatHistory room={room} />

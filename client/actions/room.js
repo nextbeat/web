@@ -227,6 +227,22 @@ export function unbookmark(roomId) {
 }
 
 
+/**********
+ * PLAYBACK
+ **********/
+
+export function didPlayVideo(roomId) {
+    // Dispatch this function when user plays
+    // a video in the room. Used in the room card
+    // to mark when a video has already been played
+    // so we can set the autoplay flag.
+    return {
+        type: ActionTypes.DID_PLAY_VIDEO,
+        roomId
+    }
+}
+
+
 /**********************
  * MEDIA ITEM SELECTION
  **********************/

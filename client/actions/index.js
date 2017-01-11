@@ -26,6 +26,7 @@ export {
     loadCommentsMetadata,
     sendComment,
     didUseChat,
+    didPlayVideo,
     bookmark,
     unbookmark,
     selectMediaItem,

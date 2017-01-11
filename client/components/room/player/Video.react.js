@@ -10,7 +10,7 @@ import Decoration from './Decoration.react'
 import VideoControls from './VideoControls.react'
 import Spinner from '../../shared/Spinner.react'
 import { App } from '../../../models'
-import { setVideoVolume, logVideoImpression } from '../../../actions'
+import { setVideoVolume, logVideoImpression, didPlayVideo } from '../../../actions'
 
 const START_IMPRESSION_WAIT_TIME = 500;
 
@@ -84,7 +84,9 @@ class Video extends React.Component {
 
         this.loadVideo(this.props.video);
         window.addEventListener('resize', this.resize)
-        this.resize()
+        setTimeout(() => {
+            this.resize()
+        })
 
         $(window).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
 
@@ -208,6 +210,12 @@ class Video extends React.Component {
                 shouldDisplayControls: true
             })
         } 
+
+        // record that video has been played if in room
+        const { room, dispatch } = this.props
+        if (room) {
+            dispatch(didPlayVideo(room.get('id')))
+        }
     }
 
     didPause() {
@@ -360,13 +368,14 @@ class Video extends React.Component {
 
     logImpression(reset=true) {
         const { impressionStartTime } = this.state
-        const { mediaItemId, dispatch } = this.props
+        const { room, dispatch } = this.props
         // only log impression if one has began and video is associated with a media item
-        if (impressionStartTime < 0 || !mediaItemId) {
+        if (impressionStartTime < 0 || !room) {
             return;
         }
 
         const video = document.getElementById('video_player')
+        const mediaItemId = room.get('selectedMediaItemId')
         dispatch(logVideoImpression(mediaItemId, impressionStartTime, video.currentTime))
 
         this.setState({
@@ -382,6 +391,7 @@ class Video extends React.Component {
                 impressionStartTime: Math.max(0, video.currentTime - START_IMPRESSION_WAIT_TIME/1000)
             })
         }
+
     }
 
     // Video container events

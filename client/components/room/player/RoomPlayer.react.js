@@ -56,7 +56,7 @@ class RoomPlayer extends React.Component {
     // Render
 
     render() {
-        const { room, children } = this.props;
+        const { room, children, shouldAutoplayVideo } = this.props;
 
         const item = room.selectedMediaItem()
         const leftDisabledClass = room.indexOfSelectedMediaItem() === 0 ? 'disabled' : '';
@@ -69,7 +69,7 @@ class RoomPlayer extends React.Component {
                     <div className="player_media-inner" id="player_media-inner">
                     { room.mediaItems().size == 0 && !room.get('mediaItemsError') && <Spinner type="large grey"/> }
                     { !item.isEmpty() && (item.isVideo() ? 
-                        <Video video={item.video('mp4')} decoration={item.get('decoration')} mediaItemId={item.get('id')} /> : 
+                        <Video video={item.video('mp4')} decoration={item.get('decoration')} room={room} autoplay={shouldAutoplayVideo} /> : 
                         <Image image={item.image()} decoration={item.get('decoration')} /> ) 
                     }
                     </div>
@@ -84,7 +84,12 @@ class RoomPlayer extends React.Component {
 }
 
 RoomPlayer.propTypes = {
-    room: React.PropTypes.object.isRequired
+    room: React.PropTypes.object.isRequired,
+    shouldAutoplayVideo: React.PropTypes.bool.isRequired
+}
+
+RoomPlayer.defaultProps = {
+    shouldAutoplayVideo: true
 }
 
 export default connect()(RoomPlayer);
