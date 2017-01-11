@@ -37,10 +37,12 @@ const KEY_MAP = {
     'closedBookmarkIds': ['bookmarks', 'closed', 'ids'],
     'closedBookmarksFetching': ['bookmarks', 'closed', 'isFetching'],
     'closedBookmarksError': ['bookmarks', 'closed', 'error'],
+    'openBookmarksLoaded': ['meta', 'loadedBookmarkedStacks'],
     // subscriptions
     'subscriptionIds': ['subscriptions', 'ids'],
     'subscriptionsFetching': ['subscriptions', 'isFetching'],
-    'subscriptionsError': ['subscriptions', 'error']
+    'subscriptionsError': ['subscriptions', 'error'],
+    'subscriptionsLoaded': ['meta', 'loadedSubscriptions']
 }
 
 export default class CurrentUser extends StateModel {
@@ -102,8 +104,8 @@ export default class CurrentUser extends StateModel {
         return this.get('subscriptionIds', List()).includes(id);
     }
 
-    isFetchingUserData() {
-        return this.get('openBookmarksFetching') || this.get('subscriptionsFetching');
+    sidebarDataIsLoaded() {
+        return this.get('subscriptionsLoaded') && this.get('subscriptionsLoaded');
     }
 
 }

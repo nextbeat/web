@@ -69,31 +69,28 @@ class Sidebar extends React.Component {
 
         return (
             <div className={`sidebar ${activeClass} ${guestClass} ${animatingClass}`}>
-                <div className="sidebar_section sidebar_topnav">
-                    <Link to="/" activeClassName="selected" className="sidebar_item">
-                        <div className="sidebar_icon"><Icon type="home" /></div>Home
-                    </Link>
-                    { user.isLoggedIn() && 
+                { user.sidebarDataIsLoaded() &&
+                <div>
+                    <div className="sidebar_section sidebar_topnav">
+                        <Link to="/" activeClassName="selected" className="sidebar_item">
+                            <div className="sidebar_icon"><Icon type="home" /></div>Home
+                        </Link>
                         <Link to={`/u/${user.get('username')}`} activeClassName="selected" className="sidebar_item">
                             <div className="sidebar_icon" style={profileStyle}>{ !user.profileThumbnailUrl() && <Icon type="person" /> }</div>
                             My Profile
                         </Link>
-                    }
-                </div>
-                { user.isLoggedIn() && user.isFetchingUserData() && <Spinner type="grey" /> }
-                { user.isLoggedIn() && !user.isFetchingUserData() &&
-                    <div>
-                        <div className="sidebar_bookmarks sidebar_section">
-                            <h1>BOOKMARKS</h1>
-                            {user.openBookmarkedStacks().size === 0 && <div className="sidebar_no-content">You have no open bookmarks.</div>}
-                            {user.openBookmarkedStacks().map(stack => this.renderStackItem(stack))}
-                        </div>
-                        <div className="sidebar_subscriptions sidebar_section">
-                            <h1>SUBSCRIPTIONS</h1>
-                            {user.subscriptions().size === 0 && <div className="sidebar_no-content">You have no subscriptions.</div>}
-                            {user.subscriptions().map(sub => this.renderSubscription(sub))}
-                        </div>
                     </div>
+                    <div className="sidebar_bookmarks sidebar_section">
+                        <h1>BOOKMARKS</h1>
+                        {user.openBookmarkedStacks().size === 0 && <div className="sidebar_no-content">You have no open bookmarks.</div>}
+                        {user.openBookmarkedStacks().map(stack => this.renderStackItem(stack))}
+                    </div>
+                    <div className="sidebar_subscriptions sidebar_section">
+                        <h1>SUBSCRIPTIONS</h1>
+                        {user.subscriptions().size === 0 && <div className="sidebar_no-content">You have no subscriptions.</div>}
+                        {user.subscriptions().map(sub => this.renderSubscription(sub))}
+                    </div>
+                </div>
                 }
             </div>
         );

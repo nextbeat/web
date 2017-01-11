@@ -36,7 +36,7 @@ class HomeComponent extends React.Component {
                 <AppBanner />
                 {home.isLoaded() && 
                     <div>
-                        { !currentUser.isLoggedIn() && <RoomCard stack={home.mainCardStack()} /> }
+                        { !currentUser.isLoggedIn() && <RoomCard id={home.get('mainCardId')} /> }
                         <div className="home_sections">
                             {home.get('sections', List()).map((section, idx) => 
                                 <HomeSection key={`sec${idx}`} stacks={home.stacks(idx)} section={section} index={idx} />

@@ -24,7 +24,6 @@ export function syncStacks(status='all', deep=true, newStack) {
     // to do: grab correct max last modified
     let objectsToSync = newStack ? [newStack] : []
     let maxLastModified = format(0)
-    console.log(maxLastModified)
 
     return {
         type: ActionTypes.SYNC_STACKS,

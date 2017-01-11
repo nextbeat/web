@@ -127,6 +127,20 @@ function uploadProfilePicture(state, action) {
     return state
 }
 
+function bookmarkedStacks(state, action) {
+    if (action.status === Status.SUCCESS) {
+        return state.set('loadedBookmarkedStacks', true)
+    }
+    return state
+}
+
+function subscriptions(state, action) {
+    if (action.status === Status.SUCCESS) {
+        return state.set('loadedSubscriptions', true)
+    }
+    return state
+}
+
 function clearEditProfile(state, action) {
     // todo: clean up
     return state
@@ -156,6 +170,10 @@ export default function meta(state=Map(), action) {
         return uploadProfilePicture(state, action)
     } else if (action.type === ActionTypes.CLEAR_EDIT_PROFILE) {
         return clearEditProfile(state, action)
+    } else if (action.type === ActionTypes.BOOKMARKED_STACKS) {
+        return bookmarkedStacks(state, action)
+    } else if (action.type === ActionTypes.SUBSCRIPTIONS) {
+        return subscriptions(state, action)
     }
     return state;
 }

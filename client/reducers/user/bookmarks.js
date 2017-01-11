@@ -4,7 +4,7 @@ import { paginate, combineReducers } from '../utils'
 
 function bookmarks(stackStatus, state=Map(), action) {
     if (action.stackStatus === stackStatus) {
-            if (action.type === ActionTypes.BOOKMARKED_STACKS) {
+        if (action.type === ActionTypes.BOOKMARKED_STACKS) {
 
             state = paginate(ActionTypes.BOOKMARKED_STACKS)(state, action)
             if (action.stackStatus === 'open') {

@@ -10,7 +10,6 @@ class CounterInner extends React.Component {
         } else {
             var index = 1
             var total = room.get('mediaitem_count')
-            console.log(index, total)
         }
 
         return (
