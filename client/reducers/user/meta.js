@@ -128,7 +128,7 @@ function uploadProfilePicture(state, action) {
 }
 
 function bookmarkedStacks(state, action) {
-    if (action.status === Status.SUCCESS) {
+    if (action.status === Status.SUCCESS && action.stackStatus === 'open') {
         return state.set('loadedBookmarkedStacks', true)
     }
     return state

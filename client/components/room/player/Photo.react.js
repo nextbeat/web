@@ -27,12 +27,13 @@ class Photo extends React.Component {
     // Component lifecycle
 
     componentDidMount() {
+        const { image } = this.props
+
         $(window).on('resize.photo', this.resize)
         setTimeout(() => {
-            this.resize()
+            this.resize(image)
         })
 
-        const { image } = this.props
         if (image.get('type') === 'objectURL') {
             $('#player_photo').one('load', () => {
                 URL.revokeObjectURL(image.get('url'))
@@ -42,9 +43,7 @@ class Photo extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.image !== this.props.image) {
-            $('#player_photo').one('load', () => {
-                this.resize(nextProps);
-            })
+            this.resize(nextProps.image);
         }
     }
 
@@ -62,8 +61,11 @@ class Photo extends React.Component {
 
     // Events
 
-    resize() {
-        const { image } = this.props
+    resize(image) {
+        if (!image || !Map.isMap(image)) {
+            image = this.props.image
+        }
+
         const containerWidth = $('.player_media-inner').width()
         const containerHeight = $('.player_media-inner').height()
         const imageRatio = image.get('width')/image.get('height')
@@ -126,9 +128,16 @@ class Photo extends React.Component {
         let { image, decoration } = this.props
         let { width, height } = this.state
 
+        /* The img element has a key attribute so that React
+         * is forced to re-render the element when the image
+         * is changed. Without it, only the src attribute
+         * is updated, and some browsers will display the original
+         * image until the new one is loaded, which can appear
+         * sluggish for the end user.
+         */
         return (
             <div className="player_photo-container">
-                <img src={image.get('url')} id="player_photo" className="player_photo" style={this.imageStyle()} />
+                <img key={image.get('url')} src={image.get('url')} id="player_photo" className="player_photo" style={this.imageStyle()} />
                 { decoration && <Decoration decoration={decoration} width={width} height={height} /> }
             </div>
         )
