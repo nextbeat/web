@@ -4,7 +4,7 @@ import assign from 'lodash/assign'
 import debounce from 'lodash/debounce' 
 import Promise from 'bluebird'
 // import Hls from 'hls.js'
-import { toggleFullScreen } from '../../../utils'
+import { toggleFullScreen, isFullScreen } from '../../../utils'
 
 import Decoration from './Decoration.react'
 import VideoControls from './VideoControls.react'
@@ -36,6 +36,7 @@ class Video extends React.Component {
         this.handleOnMouseMove = this.handleOnMouseMove.bind(this);
         this.handleOnMouseUp = this.handleOnMouseUp.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.handleFullScreenChange = this.handleFullScreenChange.bind(this);
 
         this.loadVideo = this.loadVideo.bind(this);
         this.playPause = this.playPause.bind(this);
@@ -85,6 +86,8 @@ class Video extends React.Component {
         window.addEventListener('resize', this.resize)
         this.resize()
 
+        $(window).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
+
         const { app, autoplay } = this.props
 
         // iOS does not do custom controls well
@@ -92,7 +95,6 @@ class Video extends React.Component {
             isIOSDevice: app.isIOS(),
             isPlaying: autoplay !== false && !(app.isAndroid() && app.get('browser') === 'Chrome')
         })
-        console.log(this.state.isPlaying, app.isAndroid(), app.get('browser'))
     }
 
     componentWillUnmount() {        
@@ -111,6 +113,7 @@ class Video extends React.Component {
         this.logImpression(false); 
 
         window.removeEventListener('resize', this.resize);
+        $(window).off('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
     }
 
     componentDidUpdate(prevProps) {
@@ -133,6 +136,12 @@ class Video extends React.Component {
     }
 
     // Events 
+
+    handleFullScreenChange() {
+        this.setState({
+            isFullScreen: isFullScreen()
+        })
+    }
 
     resize() {
         const { video } = this.props
@@ -174,7 +183,6 @@ class Video extends React.Component {
     }
 
     canPlay() {
-        console.log('can play', this.state.isPlaying)
         this.setState({
             isLoading: false
         })
@@ -186,7 +194,6 @@ class Video extends React.Component {
         clearInterval(this.state.timeIntervalId);
         const timeIntervalId = setInterval(this.didUpdateTime, 500);
 
-        console.log('is playing')
         this.startNewImpression()
 
         this.setState({
@@ -267,8 +274,6 @@ class Video extends React.Component {
         videoPlayer.volume = this.props.app.get('volume', 1)
         this.resize()
 
-        console.log(videoPlayer.autoplay, videoPlayer.autoPlay)
-
         this.setState({
             currentTime: 0,
             duration: 0.5,
@@ -333,9 +338,7 @@ class Video extends React.Component {
     }
 
     fullScreen() {
-        toggleFullScreen(document.getElementById('player_media-inner'), (isFullScreen) => {
-            this.setState({ isFullScreen })
-        });
+        toggleFullScreen(document.getElementById('player_media-inner'));
     }
 
     hideControlsAfterDelay(delay=2500) {

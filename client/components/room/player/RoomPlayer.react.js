@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import { goBackward, goForward } from '../../../actions'
 import Video from './Video.react'
-import Photo from './Photo.react'
+import Image from './Image.react'
 import Icon from '../../shared/Icon.react'
 import Spinner from '../../shared/Spinner.react'
 
@@ -20,7 +20,7 @@ class RoomPlayer extends React.Component {
     // Lifecycle
 
     componentDidMount() {
-        $(document.body).on('resize', this.resize);
+        $(window).on('resize', this.resize);
         this.resize();
     }
 
@@ -38,7 +38,6 @@ class RoomPlayer extends React.Component {
             const mediaHeight = Math.min(500, roomHeight-150);
             $('.player_media').height(mediaHeight);
         }
-
     }
 
 
@@ -71,7 +70,7 @@ class RoomPlayer extends React.Component {
                     { room.mediaItems().size == 0 && !room.get('mediaItemsError') && <Spinner type="large grey"/> }
                     { !item.isEmpty() && (item.isVideo() ? 
                         <Video video={item.video('mp4')} decoration={item.get('decoration')} mediaItemId={item.get('id')} /> : 
-                        <Photo image={item.image()} decoration={item.get('decoration')} /> ) 
+                        <Image image={item.image()} decoration={item.get('decoration')} /> ) 
                     }
                     </div>
                 </div>

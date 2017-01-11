@@ -6,19 +6,25 @@ import ChatHistory from './chat/ChatHistory.react'
 import Counter from './counter/Counter.react'
 import RoomCardHeader from './card/RoomCardHeader.react'
 
-import { loadRoom, clearRoom, selectMediaItem } from '../../actions'
+import { loadRoom, clearRoom, selectMediaItem, goForward, goBackward } from '../../actions'
 import { Room } from '../../models'
+import { isFullScreen } from '../../utils'
 import { Link } from 'react-router'
 
 class RoomCard extends React.Component {
 
     constructor(props) {
         super(props)
+
+        this.handleKeyDown = this.handleKeyDown.bind(this)
+        this.handleFullScreenChange = this.handleFullScreenChange.bind(this)
     }
 
     componentDidMount() {
         const { dispatch, id } = this.props 
         dispatch(loadRoom(id))
+
+        $(window).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
     }
 
     componentDidUpdate(prevProps) {
@@ -35,6 +41,38 @@ class RoomCard extends React.Component {
     componentWillUnmount() {
         const { dispatch, id } = this.props 
         dispatch(clearRoom(id))
+
+        $(window).off('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
+    }
+
+    handleFullScreenChange(e) {
+        if (isFullScreen()) {
+            $(document).on('keydown', this.handleKeyDown)
+        } else {
+            $(document).off('keydown', this.handleKeyDown)
+        }
+    }
+
+    handleKeyDown(e) {
+        const { room, dispatch } = this.props 
+
+        if (e.keyCode === 37) { // left arrow
+            if (room.indexOfSelectedMediaItem() !== 0) {
+                $('.player_nav-backward').removeClass('player_nav-button-flash');
+                process.nextTick(() => {
+                    $('.player_nav-backward').addClass('player_nav-button-flash');
+                })
+            }
+            dispatch(goBackward(room.get('id')));  
+        } else if (e.keyCode === 39) { // right arrow
+            if (room.indexOfSelectedMediaItem() !== room.mediaItemsSize()-1) {
+                $('.player_nav-forward').removeClass('player_nav-button-flash');
+                process.nextTick(() => {
+                    $('.player_nav-forward').addClass('player_nav-button-flash');
+                })
+            }
+            dispatch(goForward(room.get('id')));
+        }
     }
 
     render() {

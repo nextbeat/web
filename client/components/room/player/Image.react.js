@@ -4,22 +4,32 @@ import Promise from 'bluebird'
 import { Map } from 'immutable'
 
 import Decoration from './Decoration.react'
+import ImageControls from './ImageControls.react'
 import { App } from '../../../models'
+import { toggleFullScreen, isFullScreen } from '../../../utils'
 
-class Photo extends React.Component {
+class Image extends React.Component {
 
     constructor(props) {
         super(props)
 
-        this.resize = this.resize.bind(this)
         this.shouldForceRotation = this.shouldForceRotation.bind(this)
+
+        this.fullScreen = this.fullScreen.bind(this)
+
+        this.resize = this.resize.bind(this)
+        this.handleFullScreenChange = this.handleFullScreenChange.bind(this)
+        this.handleOnMouseOver = this.handleOnMouseOver.bind(this)
+        this.handleOnMouseOut = this.handleOnMouseOut.bind(this)
 
         this.imageStyle = this.imageStyle.bind(this)
 
         this.state = {
             width: 0,
             height: 0,
-            scale: 1
+            scale: 1,
+            shouldDisplayControls: false,
+            isFullScreen: false
         }
     }
 
@@ -39,6 +49,8 @@ class Photo extends React.Component {
                 URL.revokeObjectURL(image.get('url'))
             })
         }
+
+        $(window).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -49,6 +61,7 @@ class Photo extends React.Component {
 
     componentWillUnmount() {
         $(window).off('resize.photo')
+        $(window).off('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
     }
 
 
@@ -59,7 +72,31 @@ class Photo extends React.Component {
         return app.get('browser') === 'Chrome' && parseInt(app.get('version')) === 52;
     }
 
+    // Actions
+
+    fullScreen() {
+        toggleFullScreen(document.getElementById('player_media-inner'))
+    }
+
     // Events
+
+    handleOnMouseOver() {
+        this.setState({
+            shouldDisplayControls: true
+        })
+    }
+
+    handleOnMouseOut() {
+        this.setState({
+            shouldDisplayControls: false
+        })
+    }
+
+    handleFullScreenChange() {
+        this.setState({
+            isFullScreen: isFullScreen()
+        })
+    }
 
     resize(image) {
         if (!image || !Map.isMap(image)) {
@@ -126,7 +163,18 @@ class Photo extends React.Component {
 
     render() {
         let { image, decoration } = this.props
-        let { width, height } = this.state
+        let { width, height, shouldDisplayControls, isFullScreen } = this.state
+
+        const photoContainerEvents = {
+            onMouseOver: this.handleOnMouseOver,
+            onMouseOut: this.handleOnMouseOut
+        }
+
+        const imageControlsProps = {
+            fullScreen: this.fullScreen,
+            isFullScreen,
+            shouldDisplayControls
+        }
 
         /* The img element has a key attribute so that React
          * is forced to re-render the element when the image
@@ -136,9 +184,10 @@ class Photo extends React.Component {
          * sluggish for the end user.
          */
         return (
-            <div className="player_photo-container">
+            <div className="player_photo-container" {...photoContainerEvents}>
                 <img key={image.get('url')} src={image.get('url')} id="player_photo" className="player_photo" style={this.imageStyle()} />
                 { decoration && <Decoration decoration={decoration} width={width} height={height} /> }
+                <ImageControls {...imageControlsProps} />
             </div>
         )
     }
@@ -150,5 +199,5 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(Photo)
+export default connect(mapStateToProps)(Image)
 

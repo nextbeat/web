@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { RoomPage, App } from '../../../models'
-import { selectDetailSection } from '../../../actions'
+import { selectDetailSection, goBackward, goForward } from '../../../actions'
 
 import RoomPlayer from '../player/RoomPlayer.react'
 import Counter from '../counter/Counter.react'
@@ -20,6 +20,44 @@ class RoomMain extends React.Component {
         super(props);
         
         this.handleChat = this.handleChat.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+    }
+
+    componentDidMount() {
+        $(document).on('keydown', this.handleKeyDown);
+    }
+
+    componentWillUnmount() {
+        $(document).off('keydown', this.handleKeyDown);
+    }
+
+    handleKeyDown(e) {
+        const { roomPage, dispatch } = this.props 
+        const room = roomPage.room()
+
+        if (['textarea', 'input'].indexOf(e.target.tagName.toLowerCase()) !== -1) {
+            // don't navigate if inside text field
+            return;
+        }
+
+        if (e.keyCode === 37) { // left arrow
+            if (room.indexOfSelectedMediaItem() !== 0) {
+                $('.player_nav-backward').removeClass('player_nav-button-flash');
+                process.nextTick(() => {
+                    $('.player_nav-backward').addClass('player_nav-button-flash');
+                })
+            }
+            dispatch(goBackward(room.get('id')));  
+        } else if (e.keyCode === 39) { // right arrow
+            if (room.indexOfSelectedMediaItem() !== room.mediaItemsSize()-1) {
+                $('.player_nav-forward').removeClass('player_nav-button-flash');
+                process.nextTick(() => {
+                    $('.player_nav-forward').addClass('player_nav-button-flash');
+                })
+            }
+            dispatch(goForward(room.get('id')));
+        }
+
     }
 
     handleChat() {

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Map } from 'immutable'
 
 import Video from '../../room/player/Video.react'
-import Photo from '../../room/player/Photo.react'
+import Image from '../../room/player/Image.react'
 import Modal from '../../shared/Modal.react'
 
 import { closeModal, updateNewMediaItem } from '../../../actions'
@@ -160,7 +160,7 @@ class AddCaption extends React.Component {
         const { resource } = this.state
 
         const isVideo = upload.fileType() === 'video'
-        const isPhoto = upload.fileType() === 'image'
+        const isImage = upload.fileType() === 'image'
 
         const captionText = upload.get('mediaItem').getIn(['decoration', 'caption_text'], '')
 
@@ -168,7 +168,7 @@ class AddCaption extends React.Component {
             <Modal name="add-caption" className="upload_add-caption">
                 <div id="upload_add-caption_media-container" className="upload_add-caption_media-container">
                     <div className="player_media-inner">
-                        { isPhoto && <Photo image={resource} decoration={this.decorationObject()} /> }
+                        { isImage && <Image image={resource} decoration={this.decorationObject()} /> }
                         { isVideo && <Video video={resource} decoration={this.decorationObject()} autoplay={false} /> }
                     </div>
                 </div>
