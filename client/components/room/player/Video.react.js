@@ -95,7 +95,7 @@ class Video extends React.Component {
         // iOS does not do custom controls well
         this.setState({
             isIOSDevice: app.isIOS(),
-            isPlaying: autoplay !== false && !(app.isAndroid() && app.get('browser') === 'Chrome')
+            isPlaying: autoplay && !(app.isAndroid() && app.get('browser') === 'Chrome'),
         })
     }
 
@@ -515,6 +515,18 @@ function mapStateToProps(state) {
     return {
         app: new App(state)
     }
+}
+
+Video.propTypes = {
+    item: React.PropTypes.object.required,
+    autoplay: React.PropTypes.bool.required,
+
+    decoration: React.PropTypes.object,
+    room: React.PropTypes.object
+}
+
+Video.defaultProps = {
+    autoplay: true
 }
 
 export default connect(mapStateToProps)(Video)
