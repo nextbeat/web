@@ -2,10 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import EditProfilePicture from './edit/EditProfilePicture.react'
+import EditProfilePictureModal from './edit/EditProfilePictureModal.react'
 import Icon from '../shared/Icon.react'
 import Spinner from '../shared/Spinner.react'
-import { CurrentUser, App } from '../../models'
-import { triggerAuthError, updateUser, clearEditProfile, promptModal } from '../../actions'
+import { CurrentUser, App, Upload } from '../../models'
+import { UploadTypes, triggerAuthError, updateUser, clearEditProfile, clearFileUpload } from '../../actions'
 
 class EditProfile extends React.Component {
 
@@ -15,7 +16,6 @@ class EditProfile extends React.Component {
         this.updateState = this.updateState.bind(this)
         this.clearState = this.clearState.bind(this)
 
-        this.handleProfpicClick = this.handleProfpicClick.bind(this)
         this.handleFullNameChange = this.handleFullNameChange.bind(this)
         this.handleWebsiteChange = this.handleWebsiteChange.bind(this)
         this.handleBioChange = this.handleBioChange.bind(this)
@@ -50,6 +50,7 @@ class EditProfile extends React.Component {
 
     componentWillUnmount() {
         this.props.dispatch(clearEditProfile())
+        this.props.dispatch(clearFileUpload(UploadTypes.PROFILE_PICTURE))
     }
 
     updateState(props) {
@@ -72,9 +73,6 @@ class EditProfile extends React.Component {
 
     // Event handlers
 
-    handleProfpicClick(e) {
-        this.props.dispatch(promptModal('edit-profile-picture'))
-    }
 
     handleFullNameChange(e) {
         this.setState({ fullName: e.target.value.substring(0, 50) })
@@ -89,7 +87,7 @@ class EditProfile extends React.Component {
     }
 
     handleSubmit() {
-        const { dispatch, currentUser } = this.props 
+        const { dispatch, upload } = this.props 
 
         let userObj = {
             full_name: this.state.fullName,
@@ -98,8 +96,9 @@ class EditProfile extends React.Component {
         }
 
         // add profile picture if it's been updated
-        if (currentUser.get('updatedProfilePictureUrl') && currentUser.get('hasUpdatedProfilePicture')) {
-            userObj['profpic_url'] = currentUser.get('updatedProfilePictureUrl')
+        if (upload.isDoneUploading('PROFILE_PICTURE')) {
+            // TODO: make profile picture object
+            userObj['profpic_url'] = upload.get(UploadTypes.PROFILE_PICTURE, 'url')
         }
 
         this.props.dispatch(updateUser(userObj))
@@ -111,30 +110,15 @@ class EditProfile extends React.Component {
         const { app, currentUser } = this.props 
         const { fullName, website, bio } = this.state
 
-        // TODO: yuck
-        
-        let profpic_url = currentUser.get('updatedProfilePictureUrl') 
-                            || currentUser.get('profpic_thumbnail_url') 
-                            || currentUser.get('profpic_url');
-
-        let profpicStyle = {
-            backgroundImage: !currentUser.get('isUpdatingProfilePicture') ? `url(${profpic_url})` : ''
-        }
-
         return (
             <div className="edit-profile content">
-                <EditProfilePicture />
+                <EditProfilePictureModal />
                 <div className="content_inner">
                     <div className="content_header">
                         Edit Profile
                     </div>
                     <div className="edit-profile_user">
-                        <div className="edit-profile_profpic" onClick={this.handleProfpicClick} >
-                            <div className="edit-profile_profpic-inner" style={profpicStyle}>
-                                { currentUser.get('isUpdatingProfilePicture') &&  <Spinner type="grey small" /> }
-                                { !currentUser.get('isUpdatingProfilePicture') && !profpic_url && <Icon type="person" /> }
-                            </div>
-                        </div>
+                        <EditProfilePicture />
                         <div className="edit-profile_username">{currentUser.get('username')}</div>
                     </div>
                     <div className="edit-profile_form">
@@ -167,7 +151,8 @@ class EditProfile extends React.Component {
 function mapStateToProps(state) {
     return {
         app: new App(state),
-        currentUser: new CurrentUser(state)
+        currentUser: new CurrentUser(state),
+        upload: new Upload(state)
     }
 }
 

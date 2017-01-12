@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import Modal from '../../shared/Modal.react'
-import { uploadThumbnail, clearThumbnail, closeModal } from '../../../actions'
+import { uploadThumbnail, clearFileUpload, closeModal, UploadTypes } from '../../../actions'
 import { generateUuid } from '../../../utils'
 
 
@@ -19,12 +19,9 @@ class EditThumbnail extends React.Component {
     handleInputChange(e) {
         if (e.target.files.length > 0) {
             const file = e.target.files[0]
-            const ext = file.name.split('.')[file.name.split('.').length-1]
-            const key = `thumbnails/${generateUuid()}.${ext}`
-
             if (['image/jpeg', 'image/png', 'image/gif'].indexOf(file.type) !== -1) {
                 // todo: show alert
-                this.props.dispatch(uploadThumbnail(file, key))
+                this.props.dispatch(uploadThumbnail(file))
                 this.props.dispatch(closeModal())
             }
         }
@@ -35,7 +32,7 @@ class EditThumbnail extends React.Component {
     }
 
     handleDefaultClick() {
-        this.props.dispatch(clearThumbnail())
+        this.props.dispatch(clearFileUpload(UploadTypes.THUMBNAIL))
         this.props.dispatch(closeModal())
     }
 

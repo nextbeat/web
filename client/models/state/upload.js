@@ -1,34 +1,12 @@
 import { fromJS, Map } from 'immutable'
 import assign from 'lodash/assign'
 
-import StateModel from '../base'
-import App from '../app'
-import { generateUuid } from '../../../utils'
-import { Status } from '../../../actions'
-
-function fileExtension(fileName) {
-    return fileName.split('.').slice(-1)[0].toLowerCase()
-}
+import StateModel from './base'
+import App from './app'
+import { generateUuid } from '../../utils'
+import { Status, UploadTypes } from '../../actions'
 
 const KEY_MAP = {
-    // Media upload
-    'file': ['file'],
-    'status': ['status'],
-    'uploadProgress': ['uploadProgress'],
-    'xhr': ['xhr'], // reference to XHR object which handles upload to S3
-    'error': ['error'],
-    'stage': ['stage'],
-    // Media upload processing
-    'processingProgress': ['processingProgress'],
-    'processingTimeLeft': ['processingTimeLeft'],
-    'processingComplete': ['processingComplete'],
-    // Thumbnail upload
-    'hasCustomThumbnail': ['hasCustomThumbnail'],
-    'isUploadingThumbnail': ['isUploadingThumbnail'],
-    'hasUploadedThumbnail': ['hasUploadedThumbnail'],
-    'uploadThumbnailError': ['uploadThumbnailError'],
-    'thumbnailUrl': ['thumbnailUrl'],
-    // Stack and media item submission
     'selectedStackId': ['selectedStackId'],
     'newStack': ['newStack'],
     'mediaItem': ['mediaItem'],
@@ -36,6 +14,10 @@ const KEY_MAP = {
     'isSubmittingStack': ['isSubmittingStack'],
     'stackSubmitted': ['stackSubmitted'],
     'submitStackError': ['submitStackError']
+}
+
+function fileExtension(fileName) {
+    return fileName.split('.').slice(-1)[0].toLowerCase()
 }
 
 const COMPATIBLE_IMAGE_FORMATS = [
@@ -67,62 +49,90 @@ export default class Upload extends StateModel {
 
     constructor(state) {
         super(state);
+        // Note: Key map only used to access submission part of the state
         this.keyMap = KEY_MAP;
-        this.keyMapPrefix = ['pages', 'upload'];
+        this.keyMapPrefix = ['upload', 'submission'];
+    }
+
+    fileState(type=UploadTypes.MEDIA_ITEM) {
+        return this.state.getIn(['upload', 'uploads', type], Map())
+    }
+
+    /*********
+     * QUERIES
+     *********/
+
+    isUploading(type) {
+        return this.fileState(type).get('status') === Status.REQUESTING
+    }
+
+    isDoneUploading(type) {
+        return !!(this.fileState(type).get('uploadComplete', false))
+    }
+
+    isDoneProcessing(type) {
+        return !!(this.fileState(type).get('processingComplete', false))
+    }
+
+    hasFile(type) {
+        return this.fileState(type).has('file')
+    }
+
+    static checkFileCompatibility(type, file) {
+        const ext = fileExtension(file.name)
+        const fileType = this.fileType(file)
+
+        if (type === UploadTypes.MEDIA_ITEM) {
+            // Uploading media item resource
+            if (['image', 'video'].indexOf(fileType) < 0 || COMPATIBLE_FILE_FORMATS.indexOf(ext) < 0) {
+                throw new Error('Incompatible file type. We currently accept most video and image formats.')
+            }
+            if (file.size > 500*1024*1024) {
+                throw new Error('File exceeds size limit. Files cannot be greater than 500 MB.')
+            }
+        } else {
+            // Uploading an image; should not exceed 3MB
+            if (['jpg', 'jpeg', 'png', 'gif'].indexOf(ext) < 0) {
+                throw new Error('Incompatible file type. We accept jpeg, png, and gif images.')
+            }
+            if (file.size > 3*1024*1024) {
+                throw new Error('File exceeds size limit. Files cannot be greater than 3 MB.')
+            }
+        }
+
+        return true;
     }
 
 
-    // Queries
+    /*********
+     * GETTERS
+     *********/
 
-    isUploading() {
-        return this.get('stage') === 'upload' && this.get('status') === Status.REQUESTING
+    get(...args) {
+        if (Object.keys(UploadTypes).indexOf(args[0]) !== -1) {
+            // overload super
+            return this.fileState(args[0]).get(...args.slice(1))
+        } else {
+            return super.get(...args)
+        }
     }
 
-    isDoneProcessing() {
-        return !!this.get('processingComplete', false)
+    stage(type) {
+        if (this.fileState(type).get('uploadComplete')) {
+            return 'process'
+        } else {
+            return 'upload'
+        }
     }
 
-    hasFile() {
-        return this.has('file')
-    }
-
-    hasSelectedNewStack() {
-        return this.get('selectedStackId') === -1
-    }
-
-    isCompatible() {
-        return this.constructor.isCompatibleFile(this.fileName(), this.mimeType())
-    }
-
-    static isCompatibleFile(fileName, mimeType) {
-        const ext = fileExtension(fileName)
-        const fileType = this.fileTypeForMimeType(mimeType)
-
-        return (!mimeType || ['image', 'video'].indexOf(fileType) !== -1) && COMPATIBLE_FILE_FORMATS.indexOf(ext) !== -1
-    }
-
-    isSubmittable() {
-        return this.get('selectedStackId') > 0 || (this.hasSelectedNewStack() && this.get('newStack').get('title').length > 0) 
-    }
-
-    isInSubmitProcess() {
-        return this.get('submitStackRequested') || this.get('isSubmittingStack') || this.get('stackSubmitted') || this.get('submitStackError')
-    }
-
-
-    // Getters
-
-    fileName() {
-        return this.get('file') ? this.get('file').name : null
-    }
-
-    mimeType() {
-        return this.get('file') ? this.get('file').type : null
-    }
-
-    fileType() {
+    fileType(uploadType) {
         // 'image' or 'video'
-        return this.constructor.fileTypeForMimeType(this.mimeType()) || this.constructor.fileTypeForFileName(this.fileName())
+        let file = this.fileState(uploadType).get('file')
+        if (!file) {
+            return null
+        }
+
+        return this.constructor.fileType(file)
     }
 
     static fileTypeForMimeType(mimeType) {
@@ -145,8 +155,8 @@ export default class Upload extends StateModel {
         return null
     }
 
-    bucketUrl() {
-        return this.constructor.bucketUrl(this.state)
+    static fileType(file) {
+        return this.fileTypeForMimeType(file.type) || this.fileTypeForFileName(file.name)
     }
 
     static bucketUrl(state) {
@@ -158,10 +168,6 @@ export default class Upload extends StateModel {
         }
     }
 
-    cloudfrontUrl() {
-        return this.constructor.cloudfrontUrl(this.state)
-    }
-
     static cloudfrontUrl(state) {
         var app = new App(state)
         if (app.get('environment') === 'production') {
@@ -171,6 +177,23 @@ export default class Upload extends StateModel {
         }
     }
 
+
+    /************
+     * SUBMISSION
+     ************/
+
+    hasSelectedNewStack() {
+        return this.get('selectedStackId') === -1
+    }
+
+    isSubmittable() {
+        return this.get('selectedStackId') > 0 || (this.hasSelectedNewStack() && this.get('newStack', Map()).get('title', '').length > 0) 
+    }
+
+    isInSubmitProcess() {
+        return this.get('submitStackRequested') || this.get('isSubmittingStack') || this.get('stackSubmitted') || this.get('submitStackError')
+    }
+
     selectedStack() {
         if (this.get('selectedStackId') > 0) {
             return this.__getEntity(this.get('selectedStackId'), 'stacks')
@@ -178,15 +201,13 @@ export default class Upload extends StateModel {
         return null;
     }
 
-
-    // Submission
-
     // Constructs a JSON object to send to the server for syncing
     // with the stack and media item selected by the user
     stackForSubmission() {
 
         // Format stack object
         let stack = {}
+
         if (this.hasSelectedNewStack()) {
             assign(stack, {
                 description: this.get('newStack').get('title'),
@@ -224,9 +245,10 @@ export default class Upload extends StateModel {
 
         // Format thumbnail object
         // TODO: include dimensions
-        if (this.get('hasCustomThumbnail')) {
+
+        if (this.hasFile(UploadTypes.THUMBNAIL)) {
             stack.thumbnails = [{
-                url: this.get('thumbnailUrl')
+                url: this.get(UploadTypes.THUMBNAIL, 'url')
             }]
         }
 

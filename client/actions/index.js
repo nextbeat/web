@@ -1,5 +1,5 @@
 export { default as ActionTypes } from './types'
-export { API_CALL, API_CANCEL, GA, Status, AnalyticsTypes, AnalyticsSessionTypes, GATypes, PushTypes } from './types'
+export { API_CALL, API_CANCEL, GA, Status, AnalyticsTypes, AnalyticsSessionTypes, GATypes, PushTypes, UploadTypes } from './types'
 
 export {
     loadTags,
@@ -88,20 +88,19 @@ export {
 } from './pages/support'
 
 export {
-    uploadFile,
-    initiateProcessingStage,
-    updateProcessingProgress,
-    uploadPosterFile,
+    uploadMediaItemFile,
     uploadThumbnail,
-    clearThumbnail,
     uploadProfilePicture,
+    uploadCoverImage,
+    updateProcessingProgress,
     selectStackForUpload,
     updateNewStack,
     updateNewMediaItem,
     submitStackRequest,
     stopFileUpload,
+    clearFileUpload,
     clearUpload
-} from './pages/upload'
+} from './upload'
 
 export {
     connectToXMPP,

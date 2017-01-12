@@ -5,7 +5,6 @@ import search from './search'
 import section from './section'
 import support from './support'
 import tag from './tag'
-import upload from './upload'
 import { combineReducers } from '../utils'
 
 export default combineReducers({
@@ -15,6 +14,5 @@ export default combineReducers({
     search,
     section,
     support,
-    tag,
-    upload
+    tag
 })

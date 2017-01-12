@@ -5,7 +5,7 @@ import assign from 'lodash/assign'
 import FileComponent from './utils/FileComponent.react'
 import AddCaption from './AddCaption.react'
 import Icon from '../../shared/Icon.react'
-import { uploadFile, uploadPosterFile, updateNewMediaItem, promptModal } from '../../../actions'
+import { uploadMediaItemFile, updateNewMediaItem, promptModal } from '../../../actions'
 
 class FileSelect extends React.Component {
 
@@ -55,7 +55,7 @@ class FileSelect extends React.Component {
         this.handleDragLeave(e)
         if (e.nativeEvent.dataTransfer.files.length > 0) {
             const file = e.nativeEvent.dataTransfer.files[0]
-            this.props.dispatch(uploadFile(file))
+            this.props.dispatch(uploadMediaItemFile(file))
         }
     }
 
@@ -69,7 +69,7 @@ class FileSelect extends React.Component {
     handleInputChange(e) {
         if (e.target.files.length > 0) {
             const file = e.target.files[0]
-            this.props.dispatch(uploadFile(file))
+            this.props.dispatch(uploadMediaItemFile(file))
         }
     }
 

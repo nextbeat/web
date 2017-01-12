@@ -14,7 +14,7 @@ import PageError from '../shared/PageError.react'
 import { Upload as UploadModel, CurrentUser, App } from '../../models'
 import { baseUrl } from '../../utils'
 
-import { submitStackRequest, clearUpload, selectStackForUpload, triggerAuthError } from '../../actions'
+import { UploadTypes, submitStackRequest, clearUpload, selectStackForUpload, triggerAuthError } from '../../actions'
 
 class Upload extends React.Component {
 
@@ -93,7 +93,7 @@ class Upload extends React.Component {
             <div className="upload_submit-requested">
                 { upload.get('submitStackRequested') && 
                     <div>
-                        Your { upload.get('isUploadingThumbnail') ? 'custom thumbnail' : upload.fileType() } is still uploading. Please leave this page open until it finishes.
+                        Your { upload.fileType() } is still uploading. Please leave this page open until it finishes.
                     </div>
                 }
                 { upload.get('isSubmittingStack') && <Spinner type="grey large upload-submit" /> }
@@ -146,13 +146,13 @@ class Upload extends React.Component {
                 <div className="content_header">
                     Upload file
                 </div>
-                <FileSelect upload={upload} app={app} file={upload.get('file')} />
+                <FileSelect upload={upload} app={app} file={upload.get(UploadTypes.MEDIA_ITEM, 'file')} />
                 { upload.has('error') && 
                     <div className="upload_error">
                         {upload.get('error')}
                     </div>
                 }
-                { upload.hasFile() && 
+                { upload.hasFile(UploadTypes.MEDIA_ITEM) && 
                     <div className="upload_post-upload">
                         <UploadBar upload={upload} /> 
                         { upload.isInSubmitProcess() ? this.renderSubmitRequested() : this.renderSubmitForms() }

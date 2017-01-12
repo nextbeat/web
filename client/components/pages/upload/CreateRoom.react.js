@@ -5,7 +5,7 @@ import { List } from 'immutable'
 import EditThumbnail from './EditThumbnail.react'
 import CreateRoomThumbnail from './CreateRoomThumbnail.react'
 import Icon from '../../shared/Icon.react'
-import { selectStackForUpload, updateNewStack, promptModal } from '../../../actions'
+import { selectStackForUpload, updateNewStack, promptModal, UploadTypes } from '../../../actions'
 
 const MAX_TAG_COUNT = 5;
 
@@ -142,6 +142,7 @@ class CreateRoom extends React.Component {
         const { upload, stacks } = this.props
 
         const newStack = upload.get('newStack')
+        console.log(upload.get(UploadTypes.MEDIA_ITEM, 'file'))
 
         return (
             <div className="upload_create-room">
@@ -153,7 +154,7 @@ class CreateRoom extends React.Component {
                 <div className="upload_create-room_form">
                     <div className="upload_create-room_left">
                         <div className="upload_create-room_thumb">
-                            <CreateRoomThumbnail upload={upload} file={upload.get('file')} />
+                            <CreateRoomThumbnail upload={upload} file={upload.get(UploadTypes.MEDIA_ITEM, 'file')} />
                             <div className="upload_create-room_thumb_prompt" onClick={this.handleEditThumbnailClick}>
                                 Edit thumbnail
                             </div>

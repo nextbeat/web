@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { clearUpload } from '../../../actions'
+import { clearUpload, UploadTypes } from '../../../actions'
 
 class UploadBar extends React.Component {
 
@@ -17,9 +17,9 @@ class UploadBar extends React.Component {
 
     render() {
         const { upload } = this.props 
-        const uploadProgress = upload.get('uploadProgress', 0)
-        const processingProgress = upload.get('processingProgress', 0)
-        const stage = upload.get('stage')
+        const uploadProgress = upload.get(UploadTypes.MEDIA_ITEM, 'uploadProgress', 0)
+        const processingProgress = upload.get(UploadTypes.MEDIA_ITEM, 'processingProgress', 0)
+        const stage = upload.stage(UploadTypes.MEDIA_ITEM)
 
         return (
             <div className="upload_progress-bar_container">

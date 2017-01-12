@@ -6,6 +6,7 @@ import user from './user'
 import rooms from './rooms'
 import push from './push'
 import analytics from './analytics'
+import upload from './upload'
 import pages from './pages'
 
 import { combineReducers } from './utils'
@@ -48,6 +49,7 @@ export default combineReducers({
     fetches,
     pages,
     rooms,
+    upload,
     app,
     user,
     push,

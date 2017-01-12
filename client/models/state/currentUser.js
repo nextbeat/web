@@ -16,10 +16,6 @@ const KEY_MAP = {
     'isUpdatingUser': ['meta', 'isUpdatingUser'],
     'hasUpdatedUser': ['meta', 'hasUpdatedUser'],
     'updateUserError': ['meta', 'updateUserError'],
-    'isUpdatingProfilePicture': ['meta', 'isUpdatingProfilePicture'], // todo: move to upload model?
-    'hasUpdatedProfilePicture': ['meta', 'hasUpdatedProfilePicture'],
-    'updateProfilePictureError': ['meta', 'updateProfilePictureError'],
-    'updatedProfilePictureUrl': ['meta', 'updatedProfilePictureUrl'],
     // live
     'connected': ['live', 'connected'],
     'isConnecting': ['live', 'isConnecting'],

@@ -2,6 +2,7 @@ import React from 'react'
 
 import Spinner from '../../shared/Spinner.react'
 import FileComponent from './utils/FileComponent.react'
+import { UploadTypes } from '../../../actions'
 
 class CreateRoomThumbnail extends React.Component {
 
@@ -12,9 +13,9 @@ class CreateRoomThumbnail extends React.Component {
     render() {
         const { upload, width, height, offsetX, offsetY, resourceLoaded } = this.props
 
-        const isCustom = upload.get('hasCustomThumbnail')
-        const isDefaultImage = upload.fileType() === 'image'
-        const isDefaultVideo = upload.fileType() === 'video'
+        const isCustom = upload.hasFile(UploadTypes.THUMBNAIL)
+        const isDefaultImage = upload.fileType(UploadTypes.MEDIA_ITEM) === 'image'
+        const isDefaultVideo = upload.fileType(UploadTypes.MEDIA_ITEM) === 'video'
 
         return (
             <div className="upload_create-room_thumb-inner" id="upload_create-room_thumb-inner">
@@ -42,13 +43,13 @@ class CreateRoomThumbnail extends React.Component {
                         />
                     </div>
                 }
-                { isCustom && upload.get('isUploadingThumbnail') &&
+                { isCustom && upload.isUploading(UploadTypes.THUMBNAIL) &&
                     <Spinner type="grey" />
                 }
-                { isCustom && upload.get('hasUploadedThumbnail') &&
+                { isCustom && upload.isDoneUploading(UploadTypes.THUMBNAIL) &&
                     <div 
                         className="upload_create-room_thumb-custom-img"
-                        style={{ backgroundImage: `url(${upload.get('thumbnailUrl')})` }}
+                        style={{ backgroundImage: `url(${upload.get(UploadTypes.THUMBNAIL, 'url')})` }}
                     ></div>
                 }
             </div>
