@@ -13,6 +13,9 @@ class RoomCardHeader extends React.Component {
 
         return (
             <Link to={`/r/${room.get('hid')}`} className="room-card_header">
+                <div className="room-card_visits">
+                    { `${room.get('views')} view${room.get('views') !== 1 ? 's' : ''}` }
+                </div>
                 <div className="room-card_info-top">
                     <div className="room-card_user">
                         <div className="room-card_profpic" style={thumbStyle}>{ !thumbUrl && <Icon type="person" /> }</div>
@@ -20,9 +23,6 @@ class RoomCardHeader extends React.Component {
                             <div className="room-card_username">{ room.author().get('username') }</div>
                             <div className="room-card_time">{ `${fromNowString(room.get('most_recent_post_at'))} ago` }</div>
                         </div>
-                    </div>
-                    <div className="room-card_visits">
-                        { `${room.get('views')} view${room.get('views') !== 1 ? 's' : ''}` }
                     </div>
                 </div>
                 <div className="room-card_title">{ room.get('description') }</div>

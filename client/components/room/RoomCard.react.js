@@ -88,11 +88,13 @@ class RoomCard extends React.Component {
     }
 
     render() {
-        const { room } = this.props 
+        const { room, showAuthor } = this.props 
         const { shouldAutoplayVideo } = this.state 
 
+        let hideAuthorClass = showAuthor ? '' : 'room-card-hide-author'
+
         return (
-            <div className="room-card">
+            <div className={`room-card ${hideAuthorClass}`}>
                 <RoomCardHeader room={room} />
                 <div className="room-card_main">
                     <RoomPlayer room={room} shouldAutoplayVideo={shouldAutoplayVideo}>
@@ -109,7 +111,12 @@ class RoomCard extends React.Component {
 }
 
 RoomCard.propTypes = {
-    id: React.PropTypes.number.isRequired
+    id: React.PropTypes.number.isRequired,
+    showAuthor: React.PropTypes.bool
+}
+
+RoomCard.defaultProps = {
+    showAuthor: true
 }
 
 function mapStateToProps(state, props) {

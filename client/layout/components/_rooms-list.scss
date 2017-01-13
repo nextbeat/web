@@ -10,9 +10,11 @@
 
 .rooms-list_rooms {
     width: 100%;
+    // max-width: 950px;
     @include clearfix;
     display: flex;
     flex-wrap: wrap;
+    // margin: 0 auto;
 }
 
 .rooms-list_no-content {

@@ -70,8 +70,7 @@ export {
 
 export {
     loadProfile,
-    loadOpenStacksForUser,
-    loadClosedStacksForUser,
+    loadStacksForUser,
     clearProfile
 } from './pages/profile'
 

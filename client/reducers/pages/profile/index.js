@@ -5,8 +5,7 @@ import { combineReducers, entity, paginate } from '../../utils'
 const meta = entity(ActionTypes.USER);
 
 const pagination = combineReducers({
-    openStacks: paginate(ActionTypes.USER_OPEN_STACKS),
-    closedStacks: paginate(ActionTypes.USER_CLOSED_STACKS)
+    stacks: paginate(ActionTypes.USER_STACKS)
 })
 
 const reducers = {

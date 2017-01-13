@@ -9,10 +9,8 @@ const KEY_MAP = {
     'isFetching': ['meta', 'isFetching'],
     'error': ['meta', 'error'],
     // pagination
-    'openStacksFetching': ['pagination', 'openStacks', 'isFetching'],
-    'openStacksError': ['pagination', 'openStacks', 'error'],
-    'closedStacksFetching': ['pagination', 'closedStacks', 'isFetching'],
-    'closedStacksError': ['pagination', 'closedStacks', 'error']
+    'stacksFetching': ['pagination', 'stacks', 'isFetching'],
+    'stacksError': ['pagination', 'stacks', 'error']
 }
 
 export default class Profile extends StateModel {
@@ -28,18 +26,12 @@ export default class Profile extends StateModel {
         return new UserEntity(this.get('id'), this.state.get('entities'))
     }
 
-    openStacks() {
-        return this.__getPaginatedEntities('openStacks', { entityClass: StackEntity })
+    thumbnail() {
+        return this.entity().thumbnail('medium')
     }
 
-    closedStacks() {
-        return this.__getPaginatedEntities('closedStacks', { entityClass: StackEntity })
-    }
-
-    // queries 
-
-    stacksFetching() {
-        return this.get('openStacksFetching') || this.get('closedStacksFetching')
+    stacks() {
+        return this.__getPaginatedEntities('stacks', { entityClass: StackEntity })
     }
 
 }

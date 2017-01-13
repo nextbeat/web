@@ -5,6 +5,10 @@
     .spinner-profile {
         margin: 50px auto;
     }
+
+    .room-card {
+        margin-top: 0px;
+    }
 }
 
 .profile_user-container {
@@ -99,6 +103,12 @@
 
 .profile_description {
     margin-right: 4px;
+}
+
+.profile_stacks {
+    @include clearfix;
+    width: 100%;
+    padding-top: 30px;
 }
 
 

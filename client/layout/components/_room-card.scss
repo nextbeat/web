@@ -7,6 +7,7 @@
 a.room-card_header {
     margin-bottom: 13px;
     display: block;
+    position: relative;
     color: $text-color;
 
     &:hover {
@@ -64,7 +65,9 @@ a.room-card_header {
 }
 
 .room-card_visits {
-    float: right;
+    position: absolute;
+    top: 0;
+    right: 0;
     font-size: 12px;
     color: $detail-text-color;
     font-weight: 300;
@@ -232,5 +235,17 @@ a.room-card_prompt {
         display: none;
     }
 
+}
 
+// Other styles
+
+.room-card.room-card-hide-author {
+
+    .room-card_user {
+        display: none;
+    }
+
+    .room-card_visits {
+        margin-top: 15px;
+    }
 }

@@ -6,11 +6,12 @@ import ScrollComponent from '../utils/ScrollComponent.react'
 
 import LargeStackItem from '../shared/LargeStackItem.react'
 import ProfileHeader from './profile/ProfileHeader.react'
+import RoomCard from '../room/RoomCard.react'
 import Spinner from '../shared/Spinner.react'
 import PageError from '../shared/PageError.react'
 import AppBanner from '../shared/AppBanner.react'
 
-import { loadProfile, clearProfile, loadClosedStacksForUser } from '../../actions'
+import { loadProfile, clearProfile, loadStacksForUser } from '../../actions'
 import { Profile } from '../../models'
 import { baseUrl } from '../../utils'
 
@@ -56,8 +57,8 @@ class ProfileComponent extends React.Component {
             {"name": "description", "content": description}
         ]
 
-        if (profile.get('profpic_url')) {
-            meta.push({"property": "og:image", "content": profile.get('profpic_url')})
+        if (profile.thumbnail().get('url')) {
+            meta.push({"property": "og:image", "content": profile.thumbnail().get('url')})
         }
 
         return  (
@@ -69,70 +70,59 @@ class ProfileComponent extends React.Component {
     }
 
     renderProfile() {
-        const { profile, openStacks, closedStacks } = this.props;
-        const profpic_url = profile.get('profpic_thumbnail_url') || profile.get('profpic_url');
+        const { profile } = this.props
+        let stacks = profile.stacks()
+
+        let newestStack = stacks.first()
+        let shouldDisplayRoomCard = false
+        if (newestStack && !newestStack.get('closed')) {
+            stacks = stacks.shift()
+            shouldDisplayRoomCard = true
+        }
+
         return (
             <section>  
                 { this.renderDocumentHead(profile) }
                 <ProfileHeader user={profile.entity()} />
                 <div className="content_inner">
-                    { openStacks.size > 0 && 
-                    <div>
-                        <div className="rooms-list_header">OPEN</div>
+                    { shouldDisplayRoomCard && <RoomCard id={newestStack.get('id')} showAuthor={false} /> }
+                    { stacks.size > 0 && 
+                    <div className="profile_stacks">
                         <div className="rooms-list_rooms">
-                            { openStacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
+                            { stacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
                         </div>
                     </div>
                     }
-
-                    { /* Show no-content history only if the user has no open stacks */ }
-                    { (closedStacks.size > 0 || (openStacks.size === 0 && !profile.stacksFetching())) && 
-                    <div>
-                        <div className="rooms-list_header">HISTORY</div>
-                        <div className="rooms-list_rooms">
-                            { closedStacks.size === 0 && !profile.stacksFetching() && <div className="rooms-list_no-content">{profile.get('username')} has not made any rooms!</div> }
-                            { closedStacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
-                        </div>
-                    </div>
-                    }
-
-                    { profile.stacksFetching() && <Spinner type="grey rooms-list" /> }
+                    { profile.get('stacksFetching') && <Spinner type="grey rooms-list" /> }
                 </div>
             </section>
         )
     }
 
     render() {
-        const { isFetching, error, profile } = this.props;
+        const {  profile } = this.props;
         return (
             <div className="profile content" id="profile">
                 <AppBanner url={`nextbeat://users/${profile.get('username')}`} />
-                { error && (error.length > 0) && <PageError>User not found.</PageError> }
+                { profile.get('error') && (profile.get('error').length > 0) && <PageError>User not found.</PageError> }
                 { profile.get('id') !== 0 && this.renderProfile() }
-                { isFetching && <Spinner type="grey large profile" /> }
             </div>
         );
     }
 }
 
 function mapStateToProps(state, props) {
-    const profile = new Profile(state)
-
     return {
-        isFetching: profile.get('isFetching'),
-        error: profile.get('error'),
-        profile: profile,
-        openStacks: profile.openStacks(),
-        closedStacks: profile.closedStacks()
+        profile: new Profile(state)
     }
 }
 
 const scrollOptions = {
 
      onScrollToBottom: function() {
-        const { profile, dispatch, closedStacks } = this.props 
-        if (!profile.stacksFetching() && closedStacks.size > 0) {
-            dispatch(loadClosedStacksForUser())
+        const { profile, dispatch } = this.props 
+        if (!profile.get('stacksFetching') && profile.stacks().size > 0) {
+            dispatch(loadStacksForUser())
         }
      }  
 }
