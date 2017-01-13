@@ -21,6 +21,7 @@ export function paginate(type, clearType) {
                 case Status.SUCCESS:
                     return state.merge({
                         isFetching: false,
+                        hasFetched: true,
                         ids: state.get('ids', List()).concat(action.response.result),
                         total: action.response.total,
                         page: action.response.page,

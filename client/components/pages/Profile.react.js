@@ -12,7 +12,7 @@ import PageError from '../shared/PageError.react'
 import AppBanner from '../shared/AppBanner.react'
 
 import { loadProfile, clearProfile, loadStacksForUser } from '../../actions'
-import { Profile } from '../../models'
+import { Profile, App } from '../../models'
 import { baseUrl } from '../../utils'
 
 class ProfileComponent extends React.Component {
@@ -70,12 +70,14 @@ class ProfileComponent extends React.Component {
     }
 
     renderProfile() {
-        const { profile } = this.props
+        const { profile, app } = this.props
         let stacks = profile.stacks()
+
+        let shouldDisplayNoContent = stacks.size === 0 && profile.get('stacksHasFetched', false)
 
         let newestStack = stacks.first()
         let shouldDisplayRoomCard = false
-        if (newestStack && !newestStack.get('closed')) {
+        if (newestStack && !newestStack.get('closed') && app.get('width') !== 'small') {
             stacks = stacks.shift()
             shouldDisplayRoomCard = true
         }
@@ -94,6 +96,9 @@ class ProfileComponent extends React.Component {
                     </div>
                     }
                     { profile.get('stacksFetching') && <Spinner type="grey rooms-list" /> }
+                    { shouldDisplayNoContent && 
+                        <div className="profile_no-content">There's nothing here.</div>
+                    }
                 </div>
             </section>
         )
@@ -113,7 +118,8 @@ class ProfileComponent extends React.Component {
 
 function mapStateToProps(state, props) {
     return {
-        profile: new Profile(state)
+        profile: new Profile(state),
+        app: new App(state)
     }
 }
 

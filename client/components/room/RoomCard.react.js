@@ -7,7 +7,7 @@ import Counter from './counter/Counter.react'
 import RoomCardHeader from './card/RoomCardHeader.react'
 
 import { loadRoom, clearRoom, selectMediaItem, goForward, goBackward } from '../../actions'
-import { Room } from '../../models'
+import { Room, CurrentUser } from '../../models'
 import { isFullScreen } from '../../utils'
 import { Link } from 'react-router'
 
@@ -18,11 +18,13 @@ class RoomCard extends React.Component {
 
         this.handleKeyDown = this.handleKeyDown.bind(this)
         this.handleFullScreenChange = this.handleFullScreenChange.bind(this)
+        this.handleResize = this.handleResize.bind(this)
 
         // When first loading the room card, we want to prevent the 
         // video from autoplaying, so as to not disturb the user.
         this.state = {
-            shouldAutoplayVideo: false
+            shouldAutoplayVideo: false,
+            collapsed: false
         }
     }
 
@@ -31,6 +33,9 @@ class RoomCard extends React.Component {
         dispatch(loadRoom(id))
 
         $(window).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
+        $(window).on(`resize.room-card-${id}`, this.handleResize)
+
+        this.handleResize()
     }
 
     componentDidUpdate(prevProps) {
@@ -48,6 +53,11 @@ class RoomCard extends React.Component {
                 shouldAutoplayVideo: true
             })
         }
+
+        if (this.props.currentUser.isLoggedIn() !== prevProps.currentUser.isLoggedIn()) {
+            // recalculate sizes to account for sidebar
+            this.handleResize();
+        }
     }
 
     componentWillUnmount() {
@@ -55,6 +65,7 @@ class RoomCard extends React.Component {
         dispatch(clearRoom(id))
 
         $(window).off('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
+        $(window).off(`resize.room-card-${id}`, this.handleResize)
     }
 
     handleFullScreenChange(e) {
@@ -87,14 +98,24 @@ class RoomCard extends React.Component {
         }
     }
 
+    handleResize() {
+        let parent = $(this._node).parent()
+        let parentWidth = parent.width()
+
+        this.setState({
+            collapsed: parentWidth <= 800
+        })
+    }
+
     render() {
         const { room, showAuthor } = this.props 
-        const { shouldAutoplayVideo } = this.state 
+        const { shouldAutoplayVideo, collapsed } = this.state 
 
         let hideAuthorClass = showAuthor ? '' : 'room-card-hide-author'
+        let collapsedClass = collapsed ? 'room-card-collapsed' : ''
 
         return (
-            <div className={`room-card ${hideAuthorClass}`}>
+            <div className={`room-card ${hideAuthorClass} ${collapsedClass}`} ref={c => this._node = c}>
                 <RoomCardHeader room={room} />
                 <div className="room-card_main">
                     <RoomPlayer room={room} shouldAutoplayVideo={shouldAutoplayVideo}>
@@ -121,7 +142,8 @@ RoomCard.defaultProps = {
 
 function mapStateToProps(state, props) {
     return {
-        room: new Room(props.id, state)
+        room: new Room(props.id, state),
+        currentUser: new CurrentUser(state)
     }
 }
 

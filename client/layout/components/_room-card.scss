@@ -211,13 +211,6 @@ a.room-card_prompt {
 
 .room-card {
 
-    @include media('<=medium') {
-        width: 496px;
-        .chat_history {
-            display: none;
-        }
-    }
-
     @include media('<=560px') {
         width: 450px;
         .room-card_main {
@@ -235,6 +228,13 @@ a.room-card_prompt {
         display: none;
     }
 
+}
+
+.room-card.room-card-collapsed {
+    width: 496px;
+    .chat_history {
+        display: none;
+    }
 }
 
 // Other styles

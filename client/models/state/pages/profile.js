@@ -10,6 +10,7 @@ const KEY_MAP = {
     'error': ['meta', 'error'],
     // pagination
     'stacksFetching': ['pagination', 'stacks', 'isFetching'],
+    'stacksHasFetched': ['pagination', 'stacks', 'hasFetched'],
     'stacksError': ['pagination', 'stacks', 'error']
 }
 
