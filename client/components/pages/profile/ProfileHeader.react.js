@@ -37,9 +37,19 @@ class ProfileHeader extends React.Component {
         let profpicUrl = user.thumbnail('large').get('url')
         let profpicStyle = { backgroundImage: profpicUrl ? `url(${profpicUrl})` : ''}
 
+        let coverUrl = user.coverImage('large').get('url')
+        if (coverUrl) {
+            var coverStyle = {
+                background: `url(${coverUrl})`,
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+            }
+        }
+
         return (
             <div className="profile_header">
-                <div className="profile_cover">
+                <div className="profile_cover" style={coverStyle}>
                 </div>
                 <div className="profile_user">
                     <div className="profile_profpic" style={profpicStyle}>

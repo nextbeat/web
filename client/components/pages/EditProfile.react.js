@@ -1,10 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import EditCoverImage from './edit/EditCoverImage.react'
+import EditCoverImageModal from './edit/EditCoverImageModal.react'
 import EditProfilePicture from './edit/EditProfilePicture.react'
 import EditProfilePictureModal from './edit/EditProfilePictureModal.react'
-import Icon from '../shared/Icon.react'
 import Spinner from '../shared/Spinner.react'
+
 import { CurrentUser, App, Upload } from '../../models'
 import { UploadTypes, triggerAuthError, updateUser, clearEditProfile, clearFileUpload } from '../../actions'
 
@@ -51,6 +53,7 @@ class EditProfile extends React.Component {
     componentWillUnmount() {
         this.props.dispatch(clearEditProfile())
         this.props.dispatch(clearFileUpload(UploadTypes.PROFILE_PICTURE))
+        this.props.dispatch(clearFileUpload(UploadTypes.COVER_IMAGE))
     }
 
     updateState(props) {
@@ -96,9 +99,17 @@ class EditProfile extends React.Component {
         }
 
         // add profile picture if it's been updated
-        if (upload.isDoneUploading('PROFILE_PICTURE')) {
-            // TODO: make profile picture object
-            userObj['profpic_url'] = upload.get(UploadTypes.PROFILE_PICTURE, 'url')
+        if (upload.isDoneUploading(UploadTypes.PROFILE_PICTURE)) {
+            userObj['profile_picture'] = {
+                url: upload.get(UploadTypes.PROFILE_PICTURE, 'url')
+            }
+        }
+
+        // add cover image under similar conditions
+        if (upload.isDoneUploading(UploadTypes.COVER_IMAGE)) {
+            userObj['cover_image'] = {
+                url: upload.get(UploadTypes.COVER_IMAGE, 'url')
+            }
         }
 
         this.props.dispatch(updateUser(userObj))
@@ -113,10 +124,12 @@ class EditProfile extends React.Component {
         return (
             <div className="edit-profile content">
                 <EditProfilePictureModal />
+                <EditCoverImageModal />
                 <div className="content_inner">
                     <div className="content_header">
                         Edit Profile
                     </div>
+                    <EditCoverImage />
                     <div className="edit-profile_user">
                         <EditProfilePicture />
                         <div className="edit-profile_username">{currentUser.get('username')}</div>

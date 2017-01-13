@@ -132,10 +132,7 @@ export default function FileComponent(parentId, options={}) {
             loadVideo(file) {
                 const video = document.createElement('video')
 
-                console.log('loading video...')
-
                 video.addEventListener('loadeddata', e => {
-                    console.log('loaded video')
                     const width = e.target.videoWidth 
                     const height = e.target.videoHeight 
                     const duration = e.target.duration

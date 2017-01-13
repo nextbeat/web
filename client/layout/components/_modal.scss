@@ -140,6 +140,10 @@
 
 .modal-alert {
     width: 400px;
+
+    @include media('<=450px') {
+        width: 300px;
+    }
 }
 
 .modal-alert_text {
@@ -172,6 +176,10 @@
     margin: 0;
     @include center;
     width: 400px;
+
+    @include media('<=450px') {
+        width: 300px;
+    }
 }
 
 .modal-action_btn {
@@ -179,6 +187,11 @@
     text-align: center;
     font-size: 14px;
     padding: 15px 0;
+}
+
+.modal-action_extra {
+    margin-top: 5px;
+    font-size: 12px;
 }
 
 // Responsiveness

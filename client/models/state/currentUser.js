@@ -58,6 +58,10 @@ export default class CurrentUser extends StateModel {
         return this.entity().thumbnail('medium').get('url')
     }
 
+    coverImageUrl(preferredType="large") {
+        return this.entity().coverImage(preferredType).get('url')
+    }
+
     openBookmarkedStacks() {
         return this.get('openBookmarkIds', List()).map(id => new StackEntity(id, this.state.get('entities')));
     }

@@ -3,10 +3,57 @@
     height: 100%;
 }
 
+.edit-profile_cover-image {
+    margin: 35px 0 0 95px;
+    width: 400px;
+    max-width: calc(100% - 95px);
+
+    @include media('<=small') {
+        margin-left: 0;
+        max-width: 100%;
+    }
+}
+
+.edit-profile_cover-image_inner {
+    position: relative;
+    width: 100%;
+    padding-bottom: 20%;
+    background: 
+        /* we use this linear-gradient hack because
+         * colors cannot be placed above images
+         */
+        linear-gradient(
+            rgba(255, 255, 255, 0.6),
+            rgba(255, 255, 255, 0.6)
+        ),
+        url(../public/images/profile_cover_background.png);
+    background-size: 73px 45px;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    .spinner {
+        @include center;
+        width: 25px;
+        height: 25px;
+    }
+}
+
+.edit-profile_cover-image_prompt {
+    background-color: rgba(#000, 0.35);
+    padding: 5px 10px;
+    color: #fff;
+    font-size: 12px;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+
 .edit-profile_user {
     display: flex;
     align-items: center;
-    margin: 30px 0 20px 0;
+    margin: 20px 0;
 }
 
 .edit-profile_profpic {

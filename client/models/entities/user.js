@@ -18,4 +18,9 @@ export default class User extends EntityModel {
         return !thumbnail.isEmpty() ? thumbnail : Map({ url: this.get('profpic_url')})
     }
 
+    coverImage(preferredType) {
+        let coverImage = this.__getResource('cover_images', preferredType)
+        return !coverImage.isEmpty() ? coverImage : Map({ url: this.get('cover_image_url') })
+    }
+
 }
