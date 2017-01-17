@@ -160,7 +160,12 @@ export default class Room extends StateModel {
     }
 
     static roomWithUuid(uuid, state) {
-        let stack = state.getIn(['entities', 'stacks']).find(stack => stack.get('uuid') === uuid)
+        let stack = state.getIn(['entities', 'stacks'], Map()).find(stack => stack.get('uuid') === uuid)
         return new Room(stack.get('id'), state)
+    }
+
+    static roomWithHid(hid, state) {
+        let stack = state.getIn(['entities', 'stacks'], Map()).find(stack => stack.get('hid') === hid)
+        return !!stack ? new Room(stack.get('id'), state) : null
     }
 }

@@ -33,6 +33,10 @@ export default class EntityModel {
         return this.__entity().isEmpty()
     }
 
+    entityState() {
+        return this.__entity()
+    }
+
 
     // private
 

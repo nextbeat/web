@@ -1,0 +1,90 @@
+.edit {
+    overflow: auto;
+    height: 100%;
+}
+
+.edit_form-item {
+    margin-bottom: 20px;
+    font-size: 14px;
+
+    label {
+        width: 95px;
+        text-align: right;
+        padding: 10px 12px 0 0;
+        font-weight: 500;
+        vertical-align: top;
+        display: inline-block;
+    }
+
+    input, textarea {
+        max-width: 270px;
+        width: 270px;
+        padding: 10px;
+        font-size: 14px;
+        display: inline-block;
+    }
+
+    textarea {
+        resize: vertical;
+    }
+
+    @include media('<=small') {
+        margin-bottom: 20px;
+
+        label {
+            text-align: left;
+            margin-bottom: 5px;
+            padding: 0 12px 0 0;
+            display: block;
+        }
+
+        input, textarea {
+            width: 100%;
+            max-width: 100%;
+            display: block;
+        }
+    }
+}
+
+.edit_select {
+    width: 200px;
+    display: inline-block;
+
+    @include media('<=small') {
+        display: block;
+        margin-left: 0;
+    }
+}
+
+.edit_separator {
+    height: 1px;
+    width: 100%;
+    background: $border-color;
+}
+
+.edit_submit {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.edit_submit-btn {
+    width: 95px;
+
+    @include media('<=small') {
+        width: 70px;
+    }
+}
+
+.edit_submit-result {
+    color: $detail-text-color;
+    font-size: 14px;
+    font-weight: 300;
+
+    .error {
+        color: $error-color;
+    }
+}
+
+@import 'edit/profile';
+@import 'edit/room';

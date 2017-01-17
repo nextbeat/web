@@ -53,6 +53,11 @@ export default store => {
                     return cb(null, require('../client/components/pages/RoomPage.react').default)
                 })
             }),
+            analyticsRoute('r/:hid/edit', cb => {
+                require.ensure([], (require) => {
+                    return cb(null, require('../client/components/pages/EditRoom.react').default)
+                })
+            }),
             analyticsRoute('r/:hid/:index', cb => {
                 require.ensure([], (require) => {
                     return cb(null, require('../client/components/pages/RoomPage.react').default)

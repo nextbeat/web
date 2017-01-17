@@ -1,0 +1,120 @@
+.edit-room {
+    .edit_form-item {
+        input, textarea {
+            max-width: 360px;
+            width: 360px;
+
+            @include media('<=small') {
+                width: 100%;
+            }
+        }
+    }
+}
+
+.edit-room_thumbnail {
+    margin: 35px 0 20px 95px;
+    width: 156px;
+    height: 108px;
+    border: 1px solid $border-color;
+    position: relative;
+
+    @include media('<=small') {
+        margin-left: 0;
+    }
+}
+
+.edit-room_thumbnail-inner {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    .spinner {
+        @include center;
+        width: 25px;
+        height: 25px;
+    }
+}
+
+.edit-room_thumbnail-prompt {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 12px;
+    padding: 4px 5px;
+    color: #fff;
+    background: rgba(#000, 0.6);
+}
+
+.edit-room_tags-container {
+    width: 360px;
+    display: inline-block;
+
+    @include media('<=small') {
+        width: 100%;
+    }
+}
+
+.edit-room_tags {
+    width: 100%;
+    padding: 5px;
+    // margin-bottom: 10px;
+    border: 1px solid $border-color;
+    display: flex;
+    flex-wrap: wrap;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.edit-room_tag {
+    display: inline-block;
+    border: 1px solid $border-color;
+    background: $dark-background-color;
+    border-radius: 5px;
+    padding: 5px;
+    margin-right: 5px;
+    flex: 0 0;
+    font-size: 14px;
+
+    div {
+        display: inline-block;
+    }
+
+    .svg-icon-close {
+        margin: 0 0 0 5px;
+        width: 14px;
+        height: 14px;
+        fill: #ccc;
+
+        &:hover {
+            cursor: pointer;
+            fill: #ddd;
+        }
+    }
+}
+
+input.edit-room_tags-input {
+    width: auto;
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    padding: 5px;
+    flex: 1 0;
+    min-width: 50px;
+    font-size: 14px;
+}
+
+.edit-room_error {
+    color: $detail-text-color;
+    margin: 20px 0 0 10px;
+    font-style: italic;
+    font-size: 14px;
+}

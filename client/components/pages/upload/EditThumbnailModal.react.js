@@ -6,7 +6,7 @@ import { uploadThumbnail, clearFileUpload, closeModal, UploadTypes } from '../..
 import { generateUuid } from '../../../utils'
 
 
-class EditThumbnail extends React.Component {
+class EditThumbnailModal extends React.Component {
 
     constructor(props) {
         super(props)
@@ -32,8 +32,13 @@ class EditThumbnail extends React.Component {
     }
 
     handleDefaultClick() {
-        this.props.dispatch(clearFileUpload(UploadTypes.THUMBNAIL))
-        this.props.dispatch(closeModal())
+        const { dispatch, defaultFn } = this.props
+        dispatch(clearFileUpload(UploadTypes.THUMBNAIL))
+        dispatch(closeModal())
+        
+        if (typeof defaultFn === "function") {
+            defaultFn();
+        }
     }
 
     render() {
@@ -54,4 +59,8 @@ class EditThumbnail extends React.Component {
     }
 }
 
-export default connect()(EditThumbnail);
+EditThumbnailModal.propTypes = {
+    defaultFn: React.PropTypes.func // function called when selecting 'use default thumbnail'
+}
+
+export default connect()(EditThumbnailModal);

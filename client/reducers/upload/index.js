@@ -79,34 +79,6 @@ function updateProcessingProgress(state, action) {
     })
 }
 
-// function uploadThumbnail(state, action) {
-//     if (action.status === Status.REQUESTING) {
-//         return state.merge({
-//             hasCustomThumbnail: true,
-//             isUploadingThumbnail: true,
-//             thumbnailUrl: action.url
-//         }).delete('hasUploadedThumbnail').delete('thumbnailUploadError')
-//     } else if (action.status === Status.SUCCESS) {
-//         return state.merge({
-//             isUploadingThumbnail: false,
-//             hasUploadedThumbnail: true
-//         })
-//     } else if (action.status === Status.FAILURE) {
-//         return state.merge({
-//             isUploadingThumbnail: false,
-//             hasUploadedThumbnail: false,
-//             thumbnailUploadError: action.error
-//         })
-//     }
-//     return state
-// }
-
-// function clearThumbnail(state, action) {
-//     return state.merge({
-//         hasCustomThumbnail: false
-//     })
-// }
-
 /******************
  * STACK SUBMISSION
  ******************/
@@ -212,6 +184,8 @@ export default function(state=initialState, action) {
         return syncStacks(state, action)
     } else if (action.type === ActionTypes.STOP_FILE_UPLOAD) {
         return stopFileUpload(state, action)
+    } else if (action.type === ActionTypes.CLEAR_FILE_UPLOAD) {
+        return clearFileUpload(state, action)
     }
     return state
 }

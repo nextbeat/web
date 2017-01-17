@@ -68,6 +68,14 @@ export {
     clearRoomPage
 } from './pages/room'
 
+export { 
+    loadEditRoom,
+    updateEditRoom,
+    submitEditRoom,
+    useDefaultThumbnail,
+    clearEditRoom
+} from './pages/editRoom'
+
 export {
     loadProfile,
     loadStacksForUser,

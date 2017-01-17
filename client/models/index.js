@@ -6,6 +6,7 @@ export { default as Push } from './state/push'
 export { default as Room } from './state/room'
 export { default as Upload } from './state/upload'
 
+export { default as EditRoom } from './state/pages/editRoom'
 export { default as Home } from './state/pages/home'
 export { default as Profile } from './state/pages/profile'
 export { default as RoomPage } from './state/pages/room'

@@ -53,6 +53,7 @@ export default function FileComponent(parentId, options={}) {
 
                 this.state = {
                     resourceLoaded: false,
+                    resourceType: '',
                     resourceWidth: 0,
                     resourceHeight: 0,
                     resourceDuration: 0,
@@ -67,9 +68,7 @@ export default function FileComponent(parentId, options={}) {
             // Component lifecycle
 
             componentDidMount() {
-                if (this.props.file) {
-                    this.loadResource(this.props.file)
-                }
+                this.loadResource(this.props.file)
             }
 
             componentWillReceiveProps(nextProps) {
@@ -93,14 +92,13 @@ export default function FileComponent(parentId, options={}) {
                     return
                 }
                 
-                let fileType = Upload.fileTypeForMimeType(file.type)
-                if (!fileType) {
-                    fileType = Upload.fileTypeForFileName(file.name)
-                }
+                let fileType = Upload.fileType(file)
                 
                 if (fileType === 'image') {
+                    this.setState({ resourceType: 'image' })
                     this.loadImage(file)
                 } else if (fileType === 'video') {
+                    this.setState({ resourceType: 'video' })
                     this.loadVideo(file)
                 }
             }

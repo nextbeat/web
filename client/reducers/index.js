@@ -1,5 +1,6 @@
 import { Map, List } from 'immutable'
 import includes from 'lodash/includes'
+import keys from 'lodash/keys'
 
 import app from './app'
 import user from './user'
@@ -22,7 +23,9 @@ const initialEntities = Map({
 
 function entities(state = initialEntities, action) {
     if (action.response && action.response.entities) {
-        return state.mergeDeep(action.response.entities)
+        keys(action.response.entities).forEach(key => {
+            state = state.update(key, Map(), v => v.merge(action.response.entities[key]))
+        })
     }
     return state
 }

@@ -11,11 +11,9 @@ class CreateRoomThumbnail extends React.Component {
     }
 
     render() {
-        const { upload, width, height, offsetX, offsetY, resourceLoaded } = this.props
+        const { upload, width, height, offsetX, offsetY, resourceLoaded, resourceType } = this.props
 
         const isCustom = upload.hasFile(UploadTypes.THUMBNAIL)
-        const isDefaultImage = upload.fileType(UploadTypes.MEDIA_ITEM) === 'image'
-        const isDefaultVideo = upload.fileType(UploadTypes.MEDIA_ITEM) === 'video'
 
         return (
             <div className="upload_create-room_thumb-inner" id="upload_create-room_thumb-inner">
@@ -23,7 +21,7 @@ class CreateRoomThumbnail extends React.Component {
                     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
                         <img id="upload_create-room_thumb-image" 
                             style={{
-                                display: `${resourceLoaded && isDefaultImage ? 'block' : 'none'}`,
+                                display: `${resourceLoaded && resourceType === 'image' ? 'block' : 'none'}`,
                                 position: 'absolute', 
                                 width: `${width}px`,
                                 height: `${height}px`,
@@ -33,7 +31,7 @@ class CreateRoomThumbnail extends React.Component {
                         />
                         <video id="upload_create-room_thumb-video"
                             style={{
-                                display: `${resourceLoaded && isDefaultVideo ? 'block' : 'none'}`,
+                                display: `${resourceLoaded && resourceType === 'video' ? 'block' : 'none'}`,
                                 position: 'absolute', 
                                 width: `${width}px`,
                                 height: `${height}px`,

@@ -1,11 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { browserHistory } from 'react-router'
 
 import EditCoverImage from './edit/EditCoverImage.react'
 import EditCoverImageModal from './edit/EditCoverImageModal.react'
 import EditProfilePicture from './edit/EditProfilePicture.react'
 import EditProfilePictureModal from './edit/EditProfilePictureModal.react'
 import Spinner from '../shared/Spinner.react'
+import Icon from '../shared/Icon.react'
 
 import { CurrentUser, App, Upload } from '../../models'
 import { UploadTypes, triggerAuthError, updateUser, clearEditProfile, clearFileUpload } from '../../actions'
@@ -18,6 +20,7 @@ class EditProfile extends React.Component {
         this.updateState = this.updateState.bind(this)
         this.clearState = this.clearState.bind(this)
 
+        this.handleBackClick = this.handleBackClick.bind(this)
         this.handleFullNameChange = this.handleFullNameChange.bind(this)
         this.handleWebsiteChange = this.handleWebsiteChange.bind(this)
         this.handleBioChange = this.handleBioChange.bind(this)
@@ -76,6 +79,10 @@ class EditProfile extends React.Component {
 
     // Event handlers
 
+    handleBackClick() {
+        const { currentUser } = this.props
+        browserHistory.push(`/u/${currentUser.get('username')}`)
+    }   
 
     handleFullNameChange(e) {
         this.setState({ fullName: e.target.value.substring(0, 50) })
@@ -122,32 +129,32 @@ class EditProfile extends React.Component {
         const { fullName, website, bio } = this.state
 
         return (
-            <div className="edit-profile content">
+            <div className="edit edit-profile content">
                 <EditProfilePictureModal />
                 <EditCoverImageModal />
                 <div className="content_inner">
                     <div className="content_header">
-                        Edit Profile
+                        <div className="content_back" onClick={this.handleBackClick}><Icon type="arrow-back" /></div> Edit Profile
                     </div>
                     <EditCoverImage />
                     <div className="edit-profile_user">
                         <EditProfilePicture />
                         <div className="edit-profile_username">{currentUser.get('username')}</div>
                     </div>
-                    <div className="edit-profile_form">
-                        <div className="edit-profile_form-item">
+                    <div className="edit_form">
+                        <div className="edit_form-item">
                             <label>Full Name</label><input type="text" onChange={this.handleFullNameChange} value={fullName} />
                         </div>
-                        <div className="edit-profile_form-item">
+                        <div className="edit_form-item">
                             <label>Website</label><input type="text" onChange={this.handleWebsiteChange} value={website} />
                         </div>
-                        <div className="edit-profile_form-item">
+                        <div className="edit_form-item">
                             <label>Bio</label><textarea onChange={this.handleBioChange} value={bio} />
                         </div>
-                        <div className="edit-profile_separator"></div>
-                        <div className="edit-profile_submit">
-                            <div className="edit-profile_submit-btn"><a className="btn" onClick={this.handleSubmit}>Submit</a></div>
-                            <div className="edit-profile_submit-result">
+                        <div className="edit_separator"></div>
+                        <div className="edit_submit">
+                            <div className="edit_submit-btn"><a className="btn" onClick={this.handleSubmit}>Submit</a></div>
+                            <div className="edit_submit-result">
                                 { currentUser.get('isUpdatingUser') && <Spinner type="grey small" /> } 
                                 { currentUser.get('hasUpdatedUser') && "Changes saved." }
                                 { currentUser.get('updateUserError') && <div className="error">{currentUser.get('updateUserError')}</div> }

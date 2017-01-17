@@ -1,5 +1,5 @@
 import React from 'react'
-import { connect } from 'react-router'
+import { connect } from 'react-redux'
 
 import CounterInner from './CounterInner.react'
 
@@ -27,4 +27,4 @@ class ActivityCounter extends React.Component {
     }
 }
 
-export default ActivityCounter;
+export default connect()(ActivityCounter);

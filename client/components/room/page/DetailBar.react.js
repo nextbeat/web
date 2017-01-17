@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
 import { RoomPage, App } from '../../../models'
 import { selectDetailSection, closeDetailSection, toggleDropdown, promptModal } from '../../../actions'
 
@@ -38,11 +39,11 @@ class DetailBar extends React.Component {
     // Render
 
     renderDropdown() {
-        const { dispatch } = this.props
+        const { dispatch, roomPage } = this.props
         return (
             <Dropdown type="detail-bar" triangleMargin={-1}>
-                {/* <a className="dropdown-option">Edit Posts</a>
-                <a className="dropdown-option">Edit Room</a> */}
+                {/* <a className="dropdown-option">Edit Posts</a> */}
+                <Link to={`/r/${roomPage.get('hid')}/edit`} className="dropdown-option">Edit Room</Link>
                 <a className="dropdown-option" onClick={() => {dispatch(promptModal('close-room'))}}>Close Room</a>
                 <a className="dropdown-option" onClick={() => {dispatch(promptModal('delete-room'))}}>Delete Room</a>
             </Dropdown>
