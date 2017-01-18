@@ -103,6 +103,10 @@ function clearComments(state, action) {
     return state.delete('comments')
 }
 
+function deleteMediaItem(state, action) {
+    return state.update('mediaItems', mediaItems => mediaItems.filter(mId => mId !== action.id))
+}
+
 const initialState = Map({
     comments: List(),
     mediaItems: List()
@@ -126,6 +130,8 @@ export default function live(state = initialState, action) {
             return sendComment(state, action);
         case ActionTypes.CLEAR_COMMENTS:
             return clearComments(state, action);
+        case ActionTypes.DELETE_MEDIA_ITEM:
+            return deleteMediaItem(state, action);
     }
     return state;
 }

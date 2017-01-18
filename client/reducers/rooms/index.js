@@ -8,8 +8,21 @@ import { combineReducers, entity, paginate } from '../utils'
 
 let meta = entity(ActionTypes.ROOM)
 
+function mediaItems(state, action) {
+    if (action.type === ActionTypes.DELETE_MEDIA_ITEM) {
+        if (state.get('ids').includes(action.id)) {
+            state = state
+                .update('total', total => total-1)
+                .update('ids', ids => ids.filter(id => id !== action.id))
+        }
+        return state
+    } else {
+        return paginate(ActionTypes.MEDIA_ITEMS)(state, action)
+    }
+}
+
 let pagination = combineReducers({
-    mediaItems: paginate(ActionTypes.MEDIA_ITEMS),
+    mediaItems,
     comments: paginate(ActionTypes.COMMENTS, ActionTypes.CLEAR_COMMENTS)
 });
 

@@ -25,7 +25,11 @@ const KEY_MAP = {
     'deleteError': ['actions', 'deleteError'],
     'isClosing': ['actions', 'isClosing'],
     'hasClosed': ['actions', 'hasClosed'],
-    'closeError': ['actions', 'closeError']
+    'closeError': ['actions', 'closeError'],
+    'isDeletingMediaItem': ['actions', 'isDeletingMediaItem'],
+    'deletedMediaItemId': ['actions', 'deletedMediaItemId'],
+    'hasDeletedMediaItem': ['actions', 'hasDeletedMediaItem'],
+    'deleteMediaItemError': ['actions', 'deleteMediaItemError']
 }
 
 /**

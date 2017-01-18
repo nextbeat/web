@@ -42,9 +42,8 @@ class DetailBar extends React.Component {
         const { dispatch, roomPage } = this.props
         return (
             <Dropdown type="detail-bar" triangleMargin={-1}>
-                {/* <a className="dropdown-option">Edit Posts</a> */}
                 <Link to={`/r/${roomPage.get('hid')}/edit`} className="dropdown-option">Edit Room</Link>
-                <a className="dropdown-option" onClick={() => {dispatch(promptModal('close-room'))}}>Close Room</a>
+                { !roomPage.get('closed') && <a className="dropdown-option" onClick={() => {dispatch(promptModal('close-room'))}}>Close Room</a> }
                 <a className="dropdown-option" onClick={() => {dispatch(promptModal('delete-room'))}}>Delete Room</a>
             </Dropdown>
         )

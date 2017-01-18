@@ -75,6 +75,25 @@ function actions(state = Map(), action) {
                 closeError: action.error
             })
         }
+    } else if (action.type === ActionTypes.DELETE_MEDIA_ITEM) {
+        if (action.status === Status.REQUESTING) {
+            return state.merge({
+                isDeletingMediaItem: true,
+                hasDeletedMediaItem: false,
+                deletedMediaItemId: action.id
+            }).delete('deleteMediaItemError')
+        } else if (action.status === Status.SUCCESS) {
+            return state.merge({
+                isDeletingMediaItem: false,
+                hasDeletedMediaItem: true
+            })
+        } else if (action.status === Status.FAILURE) {
+            return state.merge({
+                isDeletingMediaItem: false,
+                hasDeletedMediaItem: false,
+                deleteMediaItemError: action.error
+            })
+        }
     }
     return state
 }

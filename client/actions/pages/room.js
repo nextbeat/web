@@ -107,12 +107,36 @@ function postCloseStack(id) {
 
 export function closeStack() {
     return (dispatch, getState) => {
-        const room = new Room(getState())
+        const room = new RoomPage(getState())
         const id = room.get('id')
         if (!id || !room.currentUserIsAuthor()) {
             return null;
         }
         return dispatch(postCloseStack(id))
+    }
+}
+
+function postDeleteMediaItem(roomId, id) {
+    return {
+        type: ActionTypes.DELETE_MEDIA_ITEM,
+        roomId,
+        id,
+        [API_CALL]: {
+            method: 'DELETE',
+            endpoint: `mediaitems/${id}`,
+            authenticated: true
+        }
+    }
+}
+
+export function deleteMediaItem(id) {
+    return (dispatch, getState) => {
+        const room = new RoomPage(getState())
+        const roomId = room.get('id')
+        if (!roomId || !room.currentUserIsAuthor()) {
+            return null;
+        }
+        return dispatch(postDeleteMediaItem(roomId, id))
     }
 }
 

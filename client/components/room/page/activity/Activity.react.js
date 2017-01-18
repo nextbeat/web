@@ -15,7 +15,6 @@ class Activity extends React.Component {
         super(props);
 
         this.handleNewMediaClick = this.handleNewMediaClick.bind(this);
-        this.handleSelectMediaItem = this.handleSelectMediaItem.bind(this);
 
         this.state = {
             displayNewItem: false
@@ -36,13 +35,6 @@ class Activity extends React.Component {
         this.setState({
             displayNewItem: false
         });
-    }
-
-    handleSelectMediaItem(id) {
-        const { dispatch, roomPage } = this.props
-
-        this.props.dispatch(selectMediaItem(roomPage.get('id'), id))
-        this.props.dispatch(closeDetailSection())
     }
 
 
@@ -66,9 +58,7 @@ class Activity extends React.Component {
                     return <ActivityItem 
                         key={mediaItem.get('id')} 
                         mediaItem={mediaItem} 
-                        selected={selected} 
                         index={idx} 
-                        handleClick={this.handleSelectMediaItem}
                     />
                 })}
                 {roomPage.liveMediaItems().map((mediaItem, idx) => {
@@ -77,11 +67,8 @@ class Activity extends React.Component {
                     return <ActivityItem 
                         key={mediaItem.get('id')} 
                         mediaItem={mediaItem} 
-                        selected={selected} 
                         live={true} 
-                        unseen={unseen}
                         index={idx+roomPage.mediaItems().size} 
-                        handleClick={this.handleSelectMediaItem}
                     />
                 })}
             </div>

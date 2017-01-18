@@ -61,6 +61,7 @@ export {
     promptChatActionsForUser,
     closeStack,
     deleteStack,
+    deleteMediaItem,
     selectDetailSection,
     closeDetailSection,
     recordView,
