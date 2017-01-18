@@ -23,8 +23,15 @@ const initialEntities = Map({
 
 function entities(state = initialEntities, action) {
     if (action.response && action.response.entities) {
-        keys(action.response.entities).forEach(key => {
-            state = state.update(key, Map(), v => v.merge(action.response.entities[key]))
+        let entities = action.response.entities
+        // we want merge individual entities, but we don't want to recursively merge their object properties
+        keys(entities).forEach(entityTypeKey => {
+            state = state.update(entityTypeKey, Map(), entityTypeMap => {
+                keys(entities[entityTypeKey]).forEach(entityIdKey => {
+                    entityTypeMap = entityTypeMap.update(entityIdKey, Map(), entity => entity.merge(entities[entityTypeKey][entityIdKey]))
+                })
+                return entityTypeMap
+            })
         })
     }
     return state
