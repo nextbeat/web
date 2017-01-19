@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
+import { List } from 'immutable'
 
 import Icon from '../shared/Icon.react'
 import Spinner from '../shared/Spinner.react'
@@ -87,7 +88,7 @@ class EditRoom extends React.Component {
                         <div className="edit_form-item">
                             <label>Tags</label>
                             <div className="edit-room_tags-container">
-                                <TagsInput tags={room.get('tags')} onChange={this.handleTagsChange} />
+                                <TagsInput tags={room.get('tags', List())} onChange={this.handleTagsChange} />
                             </div>
                         </div>
                         <div className="edit_form-item">

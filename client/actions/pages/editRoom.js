@@ -94,7 +94,6 @@ function postUpdateTags(roomId, tags) {
 }
 
 function postUpdateThumbnail(roomId, thumbnail) {
-    console.log(roomId, thumbnail)
     return {
         type: ActionTypes.UPDATE_THUMBNAIL,
         [API_CALL]: {
