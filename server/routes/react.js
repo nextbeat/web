@@ -59,8 +59,14 @@ function getInitialState(req) {
 
 // todo: use handlebars
 function renderFullPage(html, head, initialState) {
-    const jsPath = (process.env.NODE_ENV === "mac" || process.env.NODE_ENV === "mac-dev") ? "http://localhost:9090/js/bundle.js" : "/js/bundle.js"
-    const cssPath = (process.env.NODE_ENV === "mac" || process.env.NODE_ENV === "mac-dev") ? "http://localhost:9090/css/main.css" : "/css/main.css"
+    function envPath(path, devPath="http://localhost:9090") {
+        let fullPath = path;
+        if (process.env.NODE_ENV === "mac" || process.env.NODE_ENV === "mac-dev") {
+            fullPath = `${devPath}${fullPath}`
+        }
+        return fullPath
+    }
+
     return `
         <!doctype html>
         <html lang="en">
@@ -71,7 +77,7 @@ function renderFullPage(html, head, initialState) {
             ${head.title.toString()}
             ${head.meta.toString()}
 
-            <link rel="stylesheet" href="${cssPath}" />
+            <link rel="stylesheet" href="${envPath('/css/main.css')}" />
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
             <script>
@@ -91,7 +97,8 @@ function renderFullPage(html, head, initialState) {
             <script>
                 window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
             </script>
-            <script src="${jsPath}"></script>
+            <script src="${envPath('/js/vendors.dll.js', 'http://localhost:3000')}"></script>
+            <script src="${envPath('/js/bundle.js')}"></script>
         </body>
         </html>
     `

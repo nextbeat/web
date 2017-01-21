@@ -1,6 +1,8 @@
 const webpack               = require('webpack');
 const path                  = require('path');
 const ExtractTextPlugin     = require('extract-text-webpack-plugin');
+const CommonsChunkPlugin    = webpack.optimize.CommonsChunkPlugin;
+const DllReferencePlugin    = webpack.DllReferencePlugin;
 
 module.exports = {
     entry: {
@@ -47,6 +49,16 @@ module.exports = {
         ]
     },
     plugins: [
-        new ExtractTextPlugin('css/main.css')
+        new DllReferencePlugin({
+            context: process.cwd(),
+            manifest: require(path.join(__dirname, '../client/public/js', 'vendors.manifest.json'))
+        }),
+        new ExtractTextPlugin('css/main.css'),
+        new CommonsChunkPlugin({
+            name: 'app',
+            children: true,
+            async: true,
+            minChunks: 3
+        })
     ]
 }
