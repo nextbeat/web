@@ -218,13 +218,10 @@
 .player_description {
     font-size: 18px;
     font-weight: 300;
-    min-height: 20px;
-    height: 20px; // Firefox fix
-    display: table;
+    width: 100%;
 
     & > span {
-        vertical-align: middle; 
-        display: table-cell;
+        overflow-wrap: break-word;
     }
 }
 

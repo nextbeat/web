@@ -36,7 +36,7 @@ class CreateRoom extends React.Component {
 
     handleTitleChange(e) {
         this.props.dispatch(updateNewStack({ 
-            title: e.target.value 
+            title: e.target.value.substring(0, 60)
         }))
     }
 

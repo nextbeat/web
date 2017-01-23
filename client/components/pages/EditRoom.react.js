@@ -58,7 +58,7 @@ class EditRoom extends React.Component {
 
     handleSubmit() {
         const { dispatch, editRoom } = this.props
-        if (!!editRoom.get('roomChanged')) {
+        if (editRoom.canSubmit()) {
             this.props.dispatch(submitEditRoom())
         }
     }
@@ -73,7 +73,6 @@ class EditRoom extends React.Component {
     render() {
         const { editRoom } = this.props 
         let room = editRoom.get('roomFields')
-        let shouldDisableSubmit = !editRoom.get('roomChanged')
 
         // todo: error message if not authorized
         return (
@@ -106,7 +105,7 @@ class EditRoom extends React.Component {
                         </div>
                         <div className="edit_separator"></div>
                         <div className="edit_submit">
-                            <div className="edit_submit-btn"><a className={`btn ${shouldDisableSubmit ? 'btn-gray btn-disabled' : ''}`} onClick={this.handleSubmit}>Submit</a></div>
+                            <div className="edit_submit-btn"><a className={`btn ${!editRoom.canSubmit() ? 'btn-gray btn-disabled' : ''}`} onClick={this.handleSubmit}>Submit</a></div>
                             <div className="edit_submit-result">
                                 { editRoom.isSubmitting() && <Spinner type="grey small" /> } 
                                 { editRoom.hasSubmitted() && "Changes saved." }

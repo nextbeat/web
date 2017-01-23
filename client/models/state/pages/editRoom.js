@@ -64,6 +64,10 @@ export default class EditRoom extends StateModel {
         return this.get('fetchingDefaultThumbnail') || upload.isUploading(UploadTypes.THUMBNAIL)
     }
 
+    canSubmit() {
+        return !!this.get('roomChanged') && this.get('roomFields').get('description').length > 0
+    }
+
     isSubmitting() {
         return this.get('isSubmittingThumbnail') || this.get('isSubmittingTags') || this.get('isSubmittingFields')
     }

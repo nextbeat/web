@@ -63,7 +63,6 @@ function postSubmitEditProfile(userObject) {
 export function submitEditProfile() {
     return (dispatch, getState) => {
         let editProfile = new EditProfile(getState())
-        console.log(editProfile.userSubmitObject())
         return dispatch(postSubmitEditProfile(editProfile.userSubmitObject()))
     }
 }

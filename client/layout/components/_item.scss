@@ -152,6 +152,7 @@ a.item-room.selected {
 .item-room_description {
     font-size: 12px;
     font-weight: 300;
+    overflow-wrap: break-word;
 }
 
 .item-room_details {
@@ -274,6 +275,7 @@ a.item-room.selected {
     font-size: 14px;
     margin-top: 6px;
     white-space: normal;
+    overflow-wrap: break-word;
 }
 
 .item-room-large_details {
