@@ -12,6 +12,8 @@ import has from 'lodash/has'
 import last from 'lodash/last'
 import Helmet from 'react-helmet'
 
+import vendorsManifest from '../../client/public/js/vendors.cache.manifest'
+import appManifest from '../../client/public/js/app.cache.manifest'
 
 function getInitialState(req) {
     const ua = uaParser(req.headers['user-agent']);
@@ -59,13 +61,13 @@ function getInitialState(req) {
 
 // todo: use handlebars
 function renderFullPage(html, head, initialState) {
-    function envPath(path, devPath="http://localhost:9090") {
-        let fullPath = path;
-        if (process.env.NODE_ENV === "mac" || process.env.NODE_ENV === "mac-dev") {
-            fullPath = `${devPath}${fullPath}`
-        }
-        return fullPath
+    function envPath(local, prod) {
+        return (process.env.NODE_ENV === "mac" || process.env.NODE_ENV === "mac-dev") ? local : prod
     }
+
+    let jsPath = envPath('http://localhost:9090/bundle.js', `/${appManifest['app.js']}`)
+    let vendorsPath = envPath(`http://localhost:3000/js/vendors.dll.js`, `/js/${vendorsManifest['vendors.js']}`)
+    let cssPath = envPath('http://localhost:9090/css/main.css', `/${appManifest['app.css']}`)
 
     return `
         <!doctype html>
@@ -77,7 +79,7 @@ function renderFullPage(html, head, initialState) {
             ${head.title.toString()}
             ${head.meta.toString()}
 
-            <link rel="stylesheet" href="${envPath('/css/main.css')}" />
+            <link rel="stylesheet" href="${cssPath}" />
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
             <script>
@@ -97,8 +99,8 @@ function renderFullPage(html, head, initialState) {
             <script>
                 window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
             </script>
-            <script src="${envPath('/js/vendors.dll.js', 'http://localhost:3000')}"></script>
-            <script src="${envPath('/js/bundle.js')}"></script>
+            <script src="${vendorsPath}"></script>
+            <script src="${jsPath}"></script>
         </body>
         </html>
     `

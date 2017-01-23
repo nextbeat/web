@@ -1,6 +1,7 @@
 const webpack               = require('webpack');
 const path                  = require('path');
 const ExtractTextPlugin     = require('extract-text-webpack-plugin');
+const ManifestPlugin        = require('webpack-manifest-plugin');
 const CommonsChunkPlugin    = webpack.optimize.CommonsChunkPlugin;
 const DllReferencePlugin    = webpack.DllReferencePlugin;
 
@@ -9,8 +10,6 @@ module.exports = {
         app: './client/app.js'
     },
     output: {
-        filename: 'js/bundle.js',
-        chunkFilename: 'js/[id].bundle.js',
         path: path.join(__dirname, '../client/public/')
     },
     module: {
@@ -53,7 +52,6 @@ module.exports = {
             context: process.cwd(),
             manifest: require(path.join(__dirname, '../client/public/js', 'vendors.manifest.json'))
         }),
-        new ExtractTextPlugin('css/main.css'),
         new CommonsChunkPlugin({
             name: 'app',
             children: true,

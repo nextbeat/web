@@ -5,6 +5,7 @@ var express     = require('express'),
     api         = require('./lib/api'),
     redis       = require('./lib/redis'),
     session     = require('express-session'),
+    serveStatic = require('serve-static'),
     RedisStore  = require('connect-redis')(session),
     bodyParser  = require('body-parser'),
     routes      = require('./routes'),
@@ -13,9 +14,22 @@ var express     = require('express'),
 var exphbs      = require('express-handlebars'),
     favicon     = require('serve-favicon');
 
-web.use(express.static(path.join(__dirname, '../client/public/html')));
-web.use(express.static(path.join(__dirname, '../client/public')));
-web.use(express.static(path.join(__dirname, '../client/workers')));
+function setCustomHeaders(res, path) {
+    console.log(path);
+    if (serveStatic.mime.lookup(path) === 'text/html') {
+        // html files should not be cached
+        res.setHeader('Cache-Control', 'no-cache');
+    } 
+}
+
+var staticOptions = {
+    maxAge: '1y',
+    setHeaders: setCustomHeaders
+};
+
+web.use(serveStatic(path.join(__dirname, '../client/public/html'), staticOptions));
+web.use(serveStatic(path.join(__dirname, '../client/public'), staticOptions));
+web.use(serveStatic(path.join(__dirname, '../client/workers'), staticOptions));
 
 web.set('trust proxy', true);
 
