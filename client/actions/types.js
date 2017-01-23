@@ -145,6 +145,15 @@ export default {
     USER: 'USER',
     CLEAR_PROFILE: 'CLEAR_PROFILE',
 
+    /**************
+     * EDIT PROFILE
+     **************/
+
+    EDIT_PROFILE: 'EDIT_PROFILE',
+    UPDATE_EDIT_PROFILE: 'UPDATE_EDIT_PROFILE',
+    SUBMIT_EDIT_PROFILE: 'SUBMIT_EDIT_PROFILE',
+    CLEAR_EDIT_PROFILE: 'CLEAR_EDIT_PROFILE',
+
     /********
      * SEARCH
      ********/

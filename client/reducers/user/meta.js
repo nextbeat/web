@@ -79,54 +79,6 @@ function entityUpdate(state, action) {
     return state
 }
 
-function updateUser(state, action) {
-    switch (action.status) {
-        case Status.REQUESTING:
-            return state.merge({
-                isUpdatingUser: true
-            }).delete('updateUserError').delete('hasUpdatedUser')
-        case Status.SUCCESS:
-            return state.merge({
-                isUpdatingUser: false,
-                hasUpdatedUser: true
-            })
-        case Status.FAILURE: 
-            // TODO: more robust error handling
-            let error = 'Unknown error. Please try again.'
-            if (action.error === 'Validation (isURL) failed for website_url') {
-                error = 'Please enter a valid website URL.'
-            }
-            return state.merge({
-                isUpdatingUser: false,
-                hasUpdatedUser: false,
-                updateUserError: error
-            })
-    }
-    return state
-}
-
-function uploadProfilePicture(state, action) {
-    switch (action.status) {
-        case Status.REQUESTING:
-            return state.merge({
-                isUpdatingProfilePicture: true,
-                updatedProfilePictureUrl: action.url,
-            }).delete('updateProfilePictureError', 'hasUpdatedProfilePicture')
-        case Status.SUCCESS:
-            return state.merge({
-                isUpdatingProfilePicture: false,
-                hasUpdatedProfilePicture: true
-            })
-        case Status.FAILURE:
-            return state.merge({
-                isUpdatingProfilePicture: false,
-                hasUpdatedProfilePicture: true,
-                updateProfilePictureError: action.error
-            })
-    }
-    return state
-}
-
 function bookmarkedStacks(state, action) {
     if (action.status === Status.SUCCESS && action.stackStatus === 'open') {
         return state.set('loadedBookmarkedStacks', true)
@@ -141,18 +93,6 @@ function subscriptions(state, action) {
     return state
 }
 
-function clearEditProfile(state, action) {
-    // todo: clean up
-    return state
-        .delete('isUpdatingUser')
-        .delete('hasUpdatedUser')
-        .delete('updateUserError')
-        .delete('isUpdatingProfilePicture')
-        .delete('hasUpdatedProfilePicture')
-        .delete('updateProfilePictureError')
-        .delete('updatedProfilePictureUrl')
-}
-
 export default function meta(state=Map(), action) {
     if (action.type === ActionTypes.LOGIN) {
         return login(state, action)
@@ -164,12 +104,6 @@ export default function meta(state=Map(), action) {
         return clearLoginSignup(state, action)
     } else if (action.type === ActionTypes.ENTITY_UPDATE) {
         return entityUpdate(state, action)
-    } else if (action.type === ActionTypes.UPDATE_USER) {
-        return updateUser(state, action)
-    } else if (action.type === ActionTypes.UPLOAD_PROFILE_PICTURE) {
-        return uploadProfilePicture(state, action)
-    } else if (action.type === ActionTypes.CLEAR_EDIT_PROFILE) {
-        return clearEditProfile(state, action)
     } else if (action.type === ActionTypes.BOOKMARKED_STACKS) {
         return bookmarkedStacks(state, action)
     } else if (action.type === ActionTypes.SUBSCRIPTIONS) {

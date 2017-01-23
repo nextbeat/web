@@ -1,3 +1,4 @@
+import editProfile from './editProfile'
 import editRoom from './editRoom'
 import home from './home'
 import profile from './profile'
@@ -10,6 +11,7 @@ import { combineReducers } from '../utils'
 
 export default combineReducers({
     editRoom,
+    editProfile,
     home,
     profile,
     room,

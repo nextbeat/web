@@ -4,11 +4,10 @@ import fetch from 'isomorphic-fetch'
 import { normalize } from 'normalizr'
 import format from 'date-fns/format'
 
-import { Status } from './types'
 import ActionTypes from './types'
 import { CurrentUser, Stack, Push, UserEntity } from '../models'
 import Schemas from '../schemas'
-import { API_CALL, API_CANCEL } from './types'
+import { Status, API_CALL, API_CANCEL } from './types'
 import { gaIdentify } from './ga'
 import { pushInitialize, pushSubscribe } from './push'
 import { syncUnreadNotifications } from './notifications'
@@ -41,37 +40,6 @@ export function syncStacks(status='all', deep=true, newStack) {
     }
 }
 
-/********
- * UPDATE
- ********/
-
-function postUpdateUser(uuid, userObject) {
-    return {
-        type: ActionTypes.UPDATE_USER,
-        [API_CALL]: {
-            Schema: Schemas.USER,
-            method: 'PUT',
-            endpoint: `users/${uuid}`,
-            body: userObject
-        }
-    }
-}
-
-export function updateUser(userObject) {
-    return (dispatch, getState) => {
-        const currentUser = new CurrentUser(getState())
-        if (!currentUser.isLoggedIn()) {
-            return null;
-        }
-
-        const uuid = currentUser.get('uuid')
-        if (!uuid) {
-            return null;
-        }
-
-        dispatch(postUpdateUser(uuid, assign(userObject, { uuid })))
-    }
-}
 
 /**********
  * FETCHING
@@ -359,15 +327,6 @@ export function clearLogin() {
 
 export function clearSignup() {
     return clearLoginSignup()
-}
-
-export function clearEditProfile() {
-    return {
-        type: ActionTypes.CLEAR_EDIT_PROFILE,
-        [API_CANCEL]: {
-            actionTypes: [ActionTypes.UPDATE_USER]
-        }
-    }
 }
 
 export function clearClosedBookmarkedStacks() {

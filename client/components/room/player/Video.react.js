@@ -518,8 +518,8 @@ function mapStateToProps(state) {
 }
 
 Video.propTypes = {
-    item: React.PropTypes.object.required,
-    autoplay: React.PropTypes.bool.required,
+    item: React.PropTypes.object.isRequired,
+    autoplay: React.PropTypes.bool.isRequired,
 
     decoration: React.PropTypes.object,
     room: React.PropTypes.object

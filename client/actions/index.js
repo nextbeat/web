@@ -84,6 +84,13 @@ export {
 } from './pages/profile'
 
 export {
+    loadEditProfile,
+    updateEditProfile,
+    submitEditProfile,
+    clearEditProfile
+} from './pages/editProfile'
+
+export {
     loadSearchResults,
     clearSearch
 } from './pages/search'
@@ -130,15 +137,13 @@ export {
     logout,
     signup,
     syncStacks,
-    updateUser,
     loadBookmarkedStacks,
     loadSubscriptions,
     subscribe,
     unsubscribe,
     clearLogin,
     clearSignup,
-    clearClosedBookmarkedStacks,
-    clearEditProfile
+    clearClosedBookmarkedStacks
 } from './user'
 
 export {

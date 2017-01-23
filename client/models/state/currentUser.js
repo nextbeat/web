@@ -13,9 +13,6 @@ const KEY_MAP = {
     'isSigningUp': ['meta', 'isSigningUp'],
     'signupError': ['meta', 'signupError'],
     'hasUpdatedEntity': ['meta', 'hasUpdatedEntity'],
-    'isUpdatingUser': ['meta', 'isUpdatingUser'],
-    'hasUpdatedUser': ['meta', 'hasUpdatedUser'],
-    'updateUserError': ['meta', 'updateUserError'],
     // live
     'connected': ['live', 'connected'],
     'isConnecting': ['live', 'isConnecting'],

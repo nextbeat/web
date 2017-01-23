@@ -45,7 +45,7 @@ class EditRoom extends React.Component {
     }
 
     handleTitleChange(e) {
-        this.props.dispatch(updateEditRoom({ description: e.target.value }))
+        this.props.dispatch(updateEditRoom({ description: e.target.value.substring(0, 60) }))
     }
 
     handleTagsChange(tags) {
