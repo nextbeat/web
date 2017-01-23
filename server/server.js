@@ -15,7 +15,6 @@ var exphbs      = require('express-handlebars'),
     favicon     = require('serve-favicon');
 
 function setCustomHeaders(res, path) {
-    console.log(path);
     if (serveStatic.mime.lookup(path) === 'text/html') {
         // html files should not be cached
         res.setHeader('Cache-Control', 'no-cache');

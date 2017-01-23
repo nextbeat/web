@@ -1,6 +1,6 @@
 import { Map, fromJS } from 'immutable'
 import pick from 'lodash/pick'
-import { ActionTypes, Status } from '../../../actions'
+import { ActionTypes, Status, UploadTypes } from '../../../actions'
 import { combineReducers, entity} from '../../utils'
 
 const meta = entity(ActionTypes.EDIT_ROOM);
@@ -65,17 +65,30 @@ function thumbnail(state=Map(), action) {
                 latestMediaItemId: action.response.result[0]
             })
         }
-    } else if (action.type === ActionTypes.UPLOAD_THUMBNAIL) {
+    } else if (action.type === ActionTypes.UPLOAD_FILE && action.uploadType === UploadTypes.THUMBNAIL) {
         return state.set('useDefault', false)
     }
     return state
+}
+
+function roomChanged(state, action) {
+    if ((action.type === ActionTypes.UPLOAD_FILE 
+            && action.uploadType === UploadTypes.THUMBNAIL 
+            && action.status === Status.SUCCESS)
+        || action.type === ActionTypes.USE_DEFAULT_THUMBNAIL
+        || action.type === ActionTypes.UPDATE_EDIT_ROOM)
+    {
+        return true;
+    }
+    return state;
 }
 
 const reducers = {
     meta,
     roomFields,
     submission,
-    thumbnail
+    thumbnail,
+    roomChanged,
 }
 
 export default function(state = Map(), action) {

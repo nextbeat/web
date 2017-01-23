@@ -15,6 +15,7 @@ const KEY_MAP = {
     'error': ['meta', 'error'],
     // edited room
     'roomFields': ['roomFields'],
+    'roomChanged': ['roomChanged'],
     // thumbnail 
     'useDefaultThumbnail': ['thumbnail', 'useDefault'],
     'fetchingDefaultThumbnail': ['thumbnail', 'fetchingDefault'],

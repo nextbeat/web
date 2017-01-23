@@ -90,7 +90,7 @@ class TagsInput extends React.Component {
     renderTag(tag, index) {
         return (
             <div className="edit-room_tag" key={index}>
-                {tag}
+                <span>{tag}</span>
                 <div onClick={this.handleTagClose.bind(this, index)}><Icon type="close" /></div>
             </div>
         )
