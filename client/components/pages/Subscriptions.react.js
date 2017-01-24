@@ -4,6 +4,7 @@ import Helmet from 'react-helmet'
 
 import PageError from '../shared/PageError.react'
 import User from '../shared/User.react'
+import Badge from '../shared/Badge.react'
 import { CurrentUser } from '../../models'
 
 class Subscriptions extends React.Component {
