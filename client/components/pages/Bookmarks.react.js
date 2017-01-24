@@ -31,37 +31,31 @@ class Bookmarks extends React.Component {
     }
 
     renderBookmarks() {
-        const { openStacks, closedStacks, closedFetching } = this.props;
+        const { currentUser } = this.props 
+        const stacks = currentUser.openBookmarkedStacks().concat(currentUser.closedBookmarkedStacks())
+
         return (
             <section className="content_inner">  
-                <h1>BOOKMARKS</h1>
-                { openStacks.size > 0 && 
-                <div>
-                    <div className="rooms-list_header">OPEN</div>
-                    <div className="rooms-list_rooms">
-                        { openStacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
-                    </div>
+                <div className="content_header">
+                    Bookmarks
                 </div>
-                }
 
-                { /* Show no-content history only if there are no open bookmarks */ }
-                { (closedStacks.size > 0 || (openStacks.size === 0 && !closedFetching)) && 
-                <div>
-                    <div className="rooms-list_header">HISTORY</div>
-                    <div className="rooms-list_rooms">
-                        { closedStacks.size === 0 && !closedFetching && <div className="rooms-list_no-content">You haven't bookmarked any rooms!</div> }
-                        { closedStacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
-                    </div>
+                <div className="bookmarks_rooms">
+                    { stacks.size > 0 && 
+                        <div className="rooms-list_rooms">
+                            { stacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
+                        </div>
+                    }
+                    { stacks.size === 0 && !currentUser.bookmarksFetching()  &&
+                        <div className="rooms-list_no-content">You haven't bookmarked any rooms!</div>
+                    }
                 </div>
-                }
-
-                { closedFetching && <Spinner type="grey rooms-list" /> }
             </section>
         )
     }
 
     render() {
-        const { user } = this.props;
+        const { currentUser } = this.props
         return (
             <div className="bookmarks content" id="bookmarks">
                 <AppBanner url="nextbeat://bookmarks"/>
@@ -71,31 +65,25 @@ class Bookmarks extends React.Component {
                         {"property": "al:ios:url", "content": "nextbeat://bookmarks"}
                     ]} 
                 />
-                { !user.isLoggedIn() && <PageError>Must be logged in.</PageError> }
+                { !currentUser.isLoggedIn() && <PageError>Must be logged in.</PageError> }
                 { this.renderBookmarks() }
             </div>
         );
     }
 }
 
-function mapStateToProps(state, props) {
-    // we don't retrieve state here, we just destructure the user
-    // object for easier access to its properties
-    const { user } = props;
-
+function mapStateToProps(state) {
     return {
-        closedFetching: user.get('closedBookmarksFetching'),
-        closedError: user.get('closedBookmarksError'),
-        openStacks: user.openBookmarkedStacks(),
-        closedStacks: user.closedBookmarkedStacks()
+        currentUser: new CurrentUser(state)
     }
 }
 
 const scrollOptions = {
 
      onScrollToBottom: function() {
-        const { dispatch, closedStacks, closedFetching } = this.props 
-        if (!closedFetching && closedStacks.size > 0) {
+        const { dispatch, currentUser } = this.props 
+
+        if (!currentUser.get('closedBookmarksFetching') && currentUser.closedBookmarkedStacks().size > 0) {
             dispatch(loadBookmarkedStacks('closed'))
         }
      }  

@@ -44,10 +44,11 @@ class Sidebar extends React.Component {
     }
 
     renderSubscription(sub) {
-        const url = sub.get('profpic_thumbnail_url') || sub.get('profpic_url');
+        const url = sub.thumbnail('small').get('url')
+        const iconStyle = url ? { backgroundImage: `url(${url})`} : {}
         return (
             <Link key={`sub${sub.get('id')}`} to={`/u/${sub.get('username')}`} activeClassName="selected" className="sidebar_item">
-                <div className="sidebar_icon">{ url ? <img src={url} /> : <Icon type="person" /> }</div>
+                <div className="sidebar_icon" style={iconStyle}>{ !url && <Icon type="person" /> }</div>
                 { sub.get('username') }
                 { sub.get('open_stacks') > 0 && <Badge elementType="sidebar" type="open" /> }
             </Link>
@@ -81,12 +82,12 @@ class Sidebar extends React.Component {
                         </Link>
                     </div>
                     <div className="sidebar_bookmarks sidebar_section">
-                        <h1>BOOKMARKS</h1>
+                        <Link to="/bookmarks" className="sidebar_header">BOOKMARKS</Link>
                         {user.openBookmarkedStacks().size === 0 && <div className="sidebar_no-content">You have no open bookmarks.</div>}
                         {user.openBookmarkedStacks().map(stack => this.renderStackItem(stack))}
                     </div>
                     <div className="sidebar_subscriptions sidebar_section">
-                        <h1>SUBSCRIPTIONS</h1>
+                        <Link to="/subscriptions" className="sidebar_header">SUBSCRIPTIONS</Link>
                         {user.subscriptions().size === 0 && <div className="sidebar_no-content">You have no subscriptions.</div>}
                         {user.subscriptions().map(sub => this.renderSubscription(sub))}
                     </div>

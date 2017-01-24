@@ -13,13 +13,6 @@
     background: $dark-background-color;
     overflow: auto;
 
-    h1 {
-        font-size: 14px;
-        color: $primary-color;
-        font-weight: 500;
-        margin: 10px 0 20px 0;
-    }
-
     .spinner {
         margin: 20px auto;
     }
@@ -35,6 +28,19 @@
 /***************
  * CONTENT VIEWS
  ***************/
+
+a.sidebar_header {
+    font-size: 14px;
+    color: $primary-color;
+    font-weight: 500;
+    margin: 10px 0 20px 0;
+    display: block;
+
+    &:hover {
+        color: $light-primary-color;
+        cursor: pointer;
+    }
+}
 
 a.sidebar_item {
     font-weight: 300;

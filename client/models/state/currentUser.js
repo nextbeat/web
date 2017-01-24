@@ -68,7 +68,7 @@ export default class CurrentUser extends StateModel {
     }
 
     subscriptions() {
-        return this.get('subscriptionIds', List()).map(id => this.__getEntity(id, 'users'));
+        return this.get('subscriptionIds', List()).map(id => new UserEntity(id, this.state.get('entities')));
     }
 
     openStacks() {
@@ -101,8 +101,12 @@ export default class CurrentUser extends StateModel {
         return this.get('subscriptionIds', List()).includes(id);
     }
 
+    bookmarksFetching() {
+        return this.get('openBookmarksFetching') || this.get('closedBookmarksFetching')
+    }
+
     sidebarDataIsLoaded() {
-        return this.get('subscriptionsLoaded') && this.get('subscriptionsLoaded');
+        return this.get('subscriptionsLoaded') && this.get('openBookmarksLoaded');
     }
 
 }

@@ -83,6 +83,11 @@ export default store => {
                     return cb(null, require('../client/components/pages/Bookmarks.react').default)
                 })
             }),
+            analyticsRoute('subscriptions', cb => {
+                require.ensure([], (require) => {
+                    return cb(null, require('../client/components/pages/Subscriptions.react').default)
+                })
+            }),
             analyticsRoute('upload', cb => {
                 require.ensure([], (require) => {
                     return cb(null, require('../client/components/pages/Upload.react').default)
