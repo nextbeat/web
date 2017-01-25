@@ -148,6 +148,11 @@ input.splash-topbar_search-bar {
 
 .splash-topbar_search-icon {
     display: none;
+    pointer-events: auto;
+
+    &:hover {
+        cursor: pointer;
+    }
 
     .svg-icon-search {
         fill: white;

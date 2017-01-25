@@ -1,6 +1,7 @@
 import React from 'react'
 import { findDOMNode } from 'react-dom'
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
 
 import SmallLogo from './shared/SmallLogo.react'
 import Logo from './shared/Logo.react'
@@ -78,7 +79,7 @@ class SplashTopbar extends React.Component {
                         <div className="splash-topbar_search">
                             <input className="splash-topbar_search-bar" type="text" placeholder="Search" ref="search_bar" onKeyPress={this.handleSearchKeyPress} /><Icon type="search" />
                         </div>
-                        <div className="splash-topbar_search-icon"><Icon type="search" /></div>
+                        <Link className="splash-topbar_search-icon" to="/search"><Icon type="search" /></Link>
                     </div>
                     <div className="splash-topbar_header">
                         <Logo type="splash-topbar" />
