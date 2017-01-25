@@ -25,11 +25,13 @@ class SplashTopbar extends React.Component {
 
     componentDidMount() {
         $('.content').on('scroll', this.handleScroll)
+        $('.content').on('touchmove', this.handleScroll)
         this.handleScroll()
     }
 
     componentWillUnmount() {
         $('.content').off('scroll', this.handleScroll)
+        $('.content').off('touchmove', this.handleScroll)
     }
 
 

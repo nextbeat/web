@@ -237,7 +237,9 @@ input.topbar_search-bar {
 
     @include media('<=small') {
         
-        justify-content: space-between;
+        .topbar_inner {
+            justify-content: space-between;
+        }
 
         .topbar_icon-small {
             display: block;
