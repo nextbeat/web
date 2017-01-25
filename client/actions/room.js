@@ -255,7 +255,7 @@ function performSelectMediaItem(roomId, id) {
     }
 }
 
-export function selectMediaItem(roomId, id) {
+export function selectMediaItem(roomId, id, shouldReplaceHistory=false) {
     // We store the last selected media item from each stack
     // in the session in localStorage, so that it persists
     // through multiple sessions
@@ -265,7 +265,13 @@ export function selectMediaItem(roomId, id) {
         if (roomPage.isLoaded()) {
             setStorageItem(roomPage.get('hid'), id)
             var index = roomPage.indexOfMediaItem(id)
-            browserHistory.push(`/r/${roomPage.get('hid')}/${index+1}`)
+            console.log(browserHistory)
+            var url = `/r/${roomPage.get('hid')}/${index+1}`
+            if (shouldReplaceHistory) {
+                browserHistory.replace(url)
+            } else {
+                browserHistory.push(url)
+            }
         }
 
 

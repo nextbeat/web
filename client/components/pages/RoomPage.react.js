@@ -53,8 +53,11 @@ class RoomPage extends React.Component {
                 id = mediaItemId
             }
 
+            let shouldReplaceHistory = true
+
             // or if index is specified
             if (params.index) {
+                shouldReplaceHistory = false
                 if (params.index === 'latest') {
                     id = roomPage.mediaItems().get(roomPage.mediaItems().size-1).get('id')
                 } else {
@@ -65,8 +68,7 @@ class RoomPage extends React.Component {
                 }
             }
 
-
-            dispatch(selectMediaItem(roomPage.get('id'), id))
+            dispatch(selectMediaItem(roomPage.get('id'), id, shouldReplaceHistory))
             dispatch(closeDetailSection())
         }
     }

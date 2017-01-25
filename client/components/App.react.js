@@ -5,6 +5,7 @@ import Helmet from 'react-helmet'
 
 import Sidebar from '../components/Sidebar.react'
 import Topbar from '../components/Topbar.react'
+import SplashTopbar from '../components/SplashTopbar.react'
 import AppBanner from '../components/shared/AppBanner.react'
 import Login from '../components/shared/Login.react'
 import Signup from '../components/shared/Signup.react'
@@ -137,14 +138,17 @@ class App extends React.Component {
     }
 
     render() {
-        const { user, app, connected, children, routes } = this.props;
+        const { user, app, connected, children, routes, router } = this.props;
         const barProps = {
             user,
             app,
-            routes
+            routes,
+            router
         }
 
         const inRoom = routes[routes.length-1].path.substring(0, 2) === 'r/'
+        const inHome = router.isActive('/', true)
+
         const inRoomClass = inRoom ? 'main-container-room' : ''
         const guestClass = user.isLoggedIn() ? '' : 'no-sidebar'
 
@@ -153,7 +157,7 @@ class App extends React.Component {
                 {this.setTitle()}
                 <Login />
                 <Signup />
-                <Topbar {...barProps} />
+                { inHome && !user.isLoggedIn() ? <SplashTopbar {...barProps} /> : <Topbar {...barProps} /> }
                 <div className={`main-container ${inRoomClass}`}>
                     <Sidebar {...barProps} />
                     <div className={`main ${guestClass}`}>

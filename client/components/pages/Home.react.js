@@ -35,7 +35,7 @@ class HomeComponent extends React.Component {
             <div className="home content">
                 <AppBanner />
                 {home.isLoaded() && 
-                    <div>
+                    <div className="content_inner">
                         { !currentUser.isLoggedIn() && <RoomCard id={home.get('mainCardId')} /> }
                         <div className="home_sections">
                             {home.get('sections', List()).map((section, idx) => 

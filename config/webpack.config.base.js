@@ -34,7 +34,10 @@ module.exports = {
                 exclude: /node_modules/,
                 loader: ExtractTextPlugin.extract({
                     loader: [
-                        'css-loader', 
+                        {
+                            loader: 'css-loader',
+                            query: { importLoaders: 2 }
+                        },
                         'postcss-loader', 
                         'sass-loader'
                     ],

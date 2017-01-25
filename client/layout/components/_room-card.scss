@@ -209,7 +209,11 @@ a.room-card_prompt {
 
 // Responsiveness
 
-.room-card {
+.room-card.room-card-collapsed {
+    width: 496px;
+    .chat_history {
+        display: none;
+    }
 
     @include media('<=560px') {
         width: 450px;
@@ -225,14 +229,6 @@ a.room-card_prompt {
     }
 
     @include media('<=small') {
-        display: none;
-    }
-
-}
-
-.room-card.room-card-collapsed {
-    width: 496px;
-    .chat_history {
         display: none;
     }
 }
