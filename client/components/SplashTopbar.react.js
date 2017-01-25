@@ -7,7 +7,7 @@ import SmallLogo from './shared/SmallLogo.react'
 import Logo from './shared/Logo.react'
 import Icon from './shared/Icon.react'
 
-import { promptModal } from '../actions'
+import { promptModal, expandSplashTopbar, collapseSplashTopbar } from '../actions'
 
 class SplashTopbar extends React.Component {
 
@@ -40,7 +40,12 @@ class SplashTopbar extends React.Component {
 
     handleScroll() {
         let scrollTop = $('.content').scrollTop()
-        this.setState({ collapsed: scrollTop > 0 })
+        const { app, dispatch } = this.props
+        if (scrollTop > 0 && !app.get('splashTopbarCollapsed')) {
+            dispatch(collapseSplashTopbar())
+        } else if (scrollTop <= 0 && !!app.get('splashTopbarCollapsed')) {
+            dispatch(expandSplashTopbar())
+        }
     }
 
     handleLoginClick(e) {
@@ -70,11 +75,13 @@ class SplashTopbar extends React.Component {
     // Render
 
     render() {
-        const { collapsed } = this.state 
+        const { app } = this.props
         return (
-            <div className={`splash-topbar ${collapsed ? 'collapsed' : ''}`}>
+            <div className={`splash-topbar ${!!app.get('splashTopbarCollapsed') ? 'collapsed' : ''}`}>
                 <div className="splash-topbar_inner">
-                    <SmallLogo type="splash-topbar" />
+                    <div className="splash-topbar_background">
+                        <SmallLogo type="splash-topbar" />
+                    </div>
                     <div className="splash-topbar_search-container">
                         <div className="splash-topbar_search">
                             <input className="splash-topbar_search-bar" type="text" placeholder="Search" ref="search_bar" onKeyPress={this.handleSearchKeyPress} /><Icon type="search" />

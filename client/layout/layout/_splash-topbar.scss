@@ -5,11 +5,13 @@
     padding: 15px 25px;
     flex: none;
     position: relative;
+    transform: none;
+    will-change: transform;
 
-    transition: height 300ms;
+    transition: transform 300ms;
 
     &.collapsed {
-        height: 65px;
+        transform: translateY(-95px);
 
         .svg-icon-small-logo.svg-icon-small-logo-splash-topbar {
             opacity: 0;
@@ -23,6 +25,10 @@
         .splash-topbar_search-container {
             opacity: 1;
         }
+
+        .splash-topbar_inner {
+            transform: translateY(95px);
+        }
     }
 }
 
@@ -30,16 +36,27 @@
     width: 100%;
     margin: 0 auto;
     max-width: 1000px;
+    position: relative;
+
+    transform: none;
+    transition: transform 300ms;
+}
+
+.splash-topbar_background {
+    width: 100%;
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
 }
 
 .svg-icon-small-logo.svg-icon-small-logo-splash-topbar {
-    @include centerX;
+    margin: 0 auto;
+    display: block;
     width: 550px;
     margin-top: -180px;
     opacity: 0.25;
     pointer-events: none;
 
-    transition: opacity 300ms;
+    transition: opacity 300ms, transform 300ms;
 }
 
 .splash-topbar_header {
@@ -86,7 +103,6 @@
 }
 
 .splash-topbar_text {
-    @include center;
     width: 100%;
     text-align: center;
     letter-spacing: 0.05em;
@@ -94,8 +110,9 @@
     color: #fff;
     font-weight: 300;
     padding: 0 20px;
+    transform: translateY(15px);
 
-    transition: opacity 300ms;
+    transition: opacity 300ms, transform 300ms;
 }
 
 .splash-topbar_search-container {
@@ -116,7 +133,7 @@
     display: flex;
     position: relative;
     width: 300px;
-    height: 65px;
+    height: 36px;
     align-items: center;
 
     .svg-icon-search {
@@ -166,11 +183,11 @@ input.splash-topbar_search-bar {
     @include media('<=medium') {
         .splash-topbar_search-container {
             justify-content: flex-start;
-            margin-left: 135px;
+            margin-left: 115px;
         }
 
         .splash-topbar_search {
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 190px);
         }
     }
 
@@ -187,7 +204,7 @@ input.splash-topbar_search-bar {
 
         .splash-topbar_search-container {
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             margin-left: 0;
         }
 
@@ -197,11 +214,11 @@ input.splash-topbar_search-bar {
 
         .splash-topbar_search-icon {
             display: block;
+            margin-top: 2px;
         }
 
         .splash-topbar_text {
-            font-size: 28px;
-            margin-top: 13px;
+            font-size: 28px;            
         }
     }
 }

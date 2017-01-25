@@ -13,6 +13,8 @@ export {
     promptDropdown,
     closeDropdown,
     toggleDropdown,
+    expandSplashTopbar,
+    collapseSplashTopbar,
     setVideoVolume,
     triggerAuthError,
     clearApp

@@ -148,17 +148,20 @@ class App extends React.Component {
 
         const inRoom = routes[routes.length-1].path.substring(0, 2) === 'r/'
         const inHome = router.isActive('/', true)
+        const showSplashTopbar = inHome && !user.isLoggedIn()
 
         const inRoomClass = inRoom ? 'main-container-room' : ''
         const guestClass = user.isLoggedIn() ? '' : 'no-sidebar'
+        const collapsedClass = !!app.get('splashTopbarCollapsed') ? 'collapsed' : ''
+        const animatableClass = showSplashTopbar ? 'animatable' : ''
 
         return (
             <section className="app-container" id="app-container">
                 {this.setTitle()}
                 <Login />
                 <Signup />
-                { inHome && !user.isLoggedIn() ? <SplashTopbar {...barProps} /> : <Topbar {...barProps} /> }
-                <div className={`main-container ${inRoomClass}`}>
+                { showSplashTopbar ? <SplashTopbar {...barProps} /> : <Topbar {...barProps} /> }
+                <div className={`main-container ${inRoomClass} ${collapsedClass} ${animatableClass}`}>
                     <Sidebar {...barProps} />
                     <div className={`main ${guestClass}`}>
                         {React.cloneElement(children, { user, connected })}

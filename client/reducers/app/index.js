@@ -63,6 +63,12 @@ function state(state = Map(), action) {
         return state.set('sidebarAnimating', true)
     } else if (action.type === ActionTypes.REMOVE_SIDEBAR_ANIMATION) {
         return state.set('sidebarAnimating', false)
+    } else if (action.type === ActionTypes.COLLAPSE_SPLASH_TOPBAR) {
+        return state.set('splashTopbarCollapsed', true)
+    } else if (action.type === ActionTypes.EXPAND_SPLASH_TOPBAR) {
+        return state.set('splashTopbarCollapsed', false)
+    } else if (action.type === ActionTypes.CLEAR_HOME) {
+        return state.set('splashTopbarCollapsed', false)
     } else if (action.type === ActionTypes.SELECT_DETAIL_SECTION) {
         // set as overlay if small or medium screen size
         if (includes(['small', 'medium'], state.get('width'))) {

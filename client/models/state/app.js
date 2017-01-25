@@ -24,6 +24,7 @@ const KEY_MAP = {
     'activeOverlay': ['state', 'overlay'],
     'activeDropdowns': ['state', 'dropdowns'],
     'sidebarAnimating': ['state', 'sidebarAnimating'],
+    'splashTopbarCollapsed': ['state', 'splashTopbarCollapsed'],
     'volume': ['state', 'volume'],
     'width': ['state', 'width']
 }

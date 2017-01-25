@@ -17,4 +17,17 @@
     position: relative;
     flex: 1;
     height: 100%;
+    transform: none;
+
+    &.animatable {
+        transition: transform 300ms;
+    }
+
+    &.collapsed {
+        transform: translateY(-95px);
+
+        .content_inner {
+            margin-bottom: 95px;
+        }
+    }
 }

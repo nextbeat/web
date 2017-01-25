@@ -124,6 +124,18 @@ export function setVideoVolume(volume) {
     }
 }
 
+export function collapseSplashTopbar() {
+    return {
+        type: ActionTypes.COLLAPSE_SPLASH_TOPBAR
+    }
+}
+
+export function expandSplashTopbar() {
+    return {
+        type: ActionTypes.EXPAND_SPLASH_TOPBAR
+    }
+}
+
 /********
  * EVENTS
  ********/
