@@ -62,7 +62,7 @@
     }
 }
 
-.main-container-room .main {
+.app-container-room .main {
     @include media('<=room-medium') {
         margin-left: 0;
     }

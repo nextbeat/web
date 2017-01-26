@@ -34,10 +34,7 @@
     width: 30px;
     height: 30px;
     z-index: 30;
-
-    &.active {
-        display: block;
-    }
+    visibility: hidden;
 
     .svg-icon-menu {
         fill: $button-color;
@@ -206,6 +203,18 @@ input.topbar_search-bar {
 }
 
 // Responsiveness
+
+.topbar_icon-menu {
+    @include media('<=medium') {
+        visibility: visible;
+    }
+}
+
+.app-container-room .topbar_icon-menu {
+    @include media('<=room-medium') {
+        visibility: visible;
+    }
+}
 
 .topbar {
     @include media('<=medium') {
