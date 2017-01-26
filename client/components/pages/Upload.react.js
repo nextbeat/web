@@ -142,6 +142,7 @@ class Upload extends React.Component {
 
         return (
             <div className="upload content" {...dragEvents} >
+                <div>
                 <Helmet title="Upload"/>
                 <div className="content_header">
                     Upload file
@@ -158,6 +159,7 @@ class Upload extends React.Component {
                         { upload.isInSubmitProcess() ? this.renderSubmitRequested() : this.renderSubmitForms() }
                     </div>
                 }
+                </div>
             </div>
         );
     }

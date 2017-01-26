@@ -152,8 +152,7 @@ class App extends React.Component {
 
         const inRoomClass = inRoom ? 'main-container-room' : ''
         const guestClass = user.isLoggedIn() ? '' : 'no-sidebar'
-        const collapsedClass = !!app.get('splashTopbarCollapsed') ? 'collapsed' : ''
-        const animatableClass = showSplashTopbar ? 'animatable' : ''
+        const splashClass = showSplashTopbar ? (!!app.get('splashTopbarCollapsed') ? 'splash splash-collapsed' : 'splash splash-expanded') : ''
 
         return (
             <section className="app-container" id="app-container">
@@ -161,7 +160,7 @@ class App extends React.Component {
                 <Login />
                 <Signup />
                 { showSplashTopbar ? <SplashTopbar {...barProps} /> : <Topbar {...barProps} /> }
-                <div className={`main-container ${inRoomClass} ${collapsedClass} ${animatableClass}`}>
+                <div className={`main-container ${inRoomClass} ${splashClass}`}>
                     <Sidebar {...barProps} />
                     <div className={`main ${guestClass}`}>
                         {React.cloneElement(children, { user, connected })}

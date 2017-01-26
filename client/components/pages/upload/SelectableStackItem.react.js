@@ -22,6 +22,7 @@ class SelectableStackItem extends React.Component {
     handleClick(e) {
         // we call this method in the capture phase to prevent 
         // bubbling down to the LargeStackItem click event
+        console.log('handling click')
         e.stopPropagation();
         e.preventDefault();
 
@@ -48,7 +49,6 @@ class SelectableStackItem extends React.Component {
 
     render() {
         const { stack, upload, width } = this.props
-
         const isSelected = this.stackId() === upload.get('selectedStackId')
 
         return (

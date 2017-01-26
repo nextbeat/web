@@ -4,6 +4,7 @@
     z-index: 2;
     margin-left: $sidebar-width;
     background: $dark-background-color;
+    overflow: hidden;
 
     &.no-sidebar {
         margin-left: 0px;
