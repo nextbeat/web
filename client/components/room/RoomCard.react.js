@@ -108,7 +108,7 @@ class RoomCard extends React.Component {
     }
 
     render() {
-        const { room, showAuthor } = this.props 
+        const { room, showAuthor, title } = this.props 
         const { shouldAutoplayVideo, collapsed } = this.state 
 
         let hideAuthorClass = showAuthor ? '' : 'room-card-hide-author'
@@ -117,6 +117,11 @@ class RoomCard extends React.Component {
 
         return (
             <div className={`room-card ${hideAuthorClass} ${collapsedClass}`} ref={c => this._node = c}>
+                { title &&
+                <Link to={`/r/${room.get('hid')}/${index}`} className="room-card_main-title">
+                    { title }
+                </Link>
+                }
                 <RoomCardHeader room={room} />
                 <div className="room-card_main">
                     <RoomPlayer room={room} shouldAutoplayVideo={shouldAutoplayVideo}>

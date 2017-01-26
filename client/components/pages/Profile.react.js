@@ -73,28 +73,33 @@ class ProfileComponent extends React.Component {
         const { profile, app } = this.props
         let stacks = profile.stacks()
 
-        let shouldDisplayNoContent = stacks.size === 0 && profile.get('stacksHasFetched', false)
+        let openStacks = stacks.filter(s => !s.get('closed'))
+        let closedStacks = stacks.filter(s => s.get('closed'))
 
-        let newestStack = stacks.first()
-        let shouldDisplayRoomCard = false
-        if (newestStack && !newestStack.get('closed') && app.get('width') !== 'small') {
-            stacks = stacks.shift()
-            shouldDisplayRoomCard = true
-        }
+        let shouldDisplayNoContent = stacks.size === 0 && profile.get('stacksHasFetched', false)
 
         return (
             <section>  
                 { this.renderDocumentHead(profile) }
                 <ProfileHeader user={profile.entity()} />
                 <div className="content_inner">
-                    { shouldDisplayRoomCard && <RoomCard id={newestStack.get('id')} showAuthor={false} /> }
-                    { stacks.size > 0 && 
-                    <div className="profile_stacks">
-                        <div className="rooms-list_rooms">
-                            { stacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
+                    { openStacks.size > 0 && 
+                        <div>
+                            <div className="rooms-list_header">OPEN</div>
+                            <div className="rooms-list_rooms">
+                                { openStacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
+                            </div>
                         </div>
-                    </div>
                     }
+                    { closedStacks.size > 0 && 
+                        <div>
+                            <div className="rooms-list_header">ARCHIVE</div>
+                            <div className="rooms-list_rooms">
+                                { closedStacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
+                            </div>
+                        </div>
+                    }
+
                     { profile.get('stacksFetching') && <Spinner type="grey rooms-list" /> }
                     { shouldDisplayNoContent && 
                         <div className="profile_no-content">There's nothing here.</div>

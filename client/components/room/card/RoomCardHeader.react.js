@@ -10,9 +10,10 @@ class RoomCardHeader extends React.Component {
         const { room } = this.props;
         let thumbUrl = room.author().thumbnail('medium').get('url')
         let thumbStyle = { backgroundImage: thumbUrl ? `url(${thumbUrl})` : '' }
+        let index = room.indexOfSelectedMediaItem() + 1
 
         return (
-            <Link to={`/r/${room.get('hid')}`} className="room-card_header">
+            <Link to={`/r/${room.get('hid')}/${index}`} className="room-card_header">
                 <div className="room-card_visits">
                     { `${room.get('views')} view${room.get('views') !== 1 ? 's' : ''}` }
                 </div>
