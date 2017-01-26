@@ -113,6 +113,7 @@ class RoomCard extends React.Component {
 
         let hideAuthorClass = showAuthor ? '' : 'room-card-hide-author'
         let collapsedClass = collapsed ? 'room-card-collapsed' : ''
+        let index = room.indexOfSelectedMediaItem() + 1
 
         return (
             <div className={`room-card ${hideAuthorClass} ${collapsedClass}`} ref={c => this._node = c}>
@@ -123,7 +124,7 @@ class RoomCard extends React.Component {
                     </RoomPlayer>
                     <ChatHistory room={room} />
                 </div>
-                <Link to={`/r/${room.get('hid')}`} className="room-card_prompt">
+                <Link to={`/r/${room.get('hid')}/${index}`} className="room-card_prompt">
                     Enter Room
                 </Link>
             </div>
