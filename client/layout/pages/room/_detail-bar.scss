@@ -8,7 +8,7 @@
     background-color: #fff;
     border-left: 1px solid $border-color;
 
-    &.collapsed {
+    @include media('<=medium') {
         display: none;
 
         &.active {

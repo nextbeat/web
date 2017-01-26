@@ -37,12 +37,10 @@
     }
 
     strong.creator {
-        color: white;
-        background-color: $secondary-color;
-        padding: 0 3px;
+        color: $primary-color;
 
         a {
-            color: white;
+            color: $primary-color;
         }
     }
 }
