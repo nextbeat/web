@@ -255,14 +255,21 @@ function performSelectMediaItem(roomId, id) {
     }
 }
 
-export function selectMediaItem(roomId, id, shouldReplaceHistory=false) {
-    // We store the last selected media item from each stack
-    // in the session in localStorage, so that it persists
-    // through multiple sessions
+export function selectMediaItem(roomId, id, { shouldUpdateHistory = true, shouldReplaceHistory = false } = {}) {
+    
     return (dispatch, getState) => {
 
         const roomPage = new RoomPage(getState())
-        if (roomPage.isLoaded()) {
+        /* If we navigate on the room page, we simply want to 
+         * update the browser history here. This will trigger 
+         * an update on the RoomPage component, which we can then
+         * use to properly select the new media item. (TODO: why?)
+         */
+        if (roomPage.isActive() && shouldUpdateHistory) {
+            /* We store the last selected media item from each stack
+             * in the session in localStorage, so that it persists
+             * through multiple sessions.
+             */
             setStorageItem(roomPage.get('hid'), id)
             var index = roomPage.indexOfMediaItem(id)
             var url = `/r/${roomPage.get('hid')}/${index+1}`
@@ -272,7 +279,6 @@ export function selectMediaItem(roomId, id, shouldReplaceHistory=false) {
                 browserHistory.push(url)
             }
         }
-
 
         return dispatch(performSelectMediaItem(roomId, id))
     }

@@ -43,7 +43,7 @@ class RoomPage extends React.Component {
             dispatch(loadRoomPage(params.hid))
         }
 
-        if (prevProps.roomPage.mediaItems().size === 0 && roomPage.mediaItems().size > 0) {
+        if (prevProps.roomPage.get('mediaItemsFetching') && roomPage.mediaItems().size > 0) {
             // first page of media items has loaded, select the first
             let id = roomPage.mediaItems().first().get('id')
 
@@ -68,8 +68,21 @@ class RoomPage extends React.Component {
                 }
             }
 
-            dispatch(selectMediaItem(roomPage.get('id'), id, shouldReplaceHistory))
+            dispatch(selectMediaItem(roomPage.get('id'), id, { shouldReplaceHistory }))
             dispatch(closeDetailSection())
+        }
+
+        // if we're navigating by updating the url (i.e. using 
+        // the back button) we want to make sure that select media item
+        // is still being fired. note that currently this means that
+        // the select media item action is often being fired twice,
+        // which isn't ideal, but since the action is idempotent is
+        // doesn't really affect anything
+        let prevIndex = parseInt(prevProps.params.index)
+        let currIndex = parseInt(this.props.params.index)
+        if (prevIndex > 0 && currIndex > 0 && prevIndex !== currIndex) {
+            let id = roomPage.mediaItems().get(currIndex-1).get('id')
+            dispatch(selectMediaItem(roomPage.get('id'), id, { shouldUpdateHistory: false }))
         }
     }
 

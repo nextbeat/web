@@ -107,6 +107,10 @@ export default class RoomPage extends StateModel {
 
     // Queries
 
+    isActive() {
+        return !!this.get('isFetching') || this.get('id') > 0
+    }
+
     isLoaded() {
         return this.room().isLoaded()
     }
