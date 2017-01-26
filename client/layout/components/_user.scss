@@ -1,6 +1,6 @@
 .user {
     position: relative;
-    display: inline-block;
+    display: inline-flex;
     min-width: 150px;
     @include clearfix;
 
@@ -14,23 +14,19 @@
 }
 
 .user_profpic {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     position: relative;
-    float: left;
     overflow: hidden;
-    border-radius: 20px;
+    border-radius: 10px;
     background-color: #ddd;
     user-select: none;  
-    z-index: 15; // fixes Webkit bug where border-radius clipping doesn't occur (http://stackoverflow.com/a/25206004/371747)
+    /* fixes Webkit bug where border-radius clipping doesn't occur (http://stackoverflow.com/a/25206004/371747) */
+    z-index: 15; 
 
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-
-    img {
-        @include center;
-    }
 
     .svg-icon-person {
         @include center;
@@ -39,34 +35,45 @@
     }
 }
 
-.user_username {
-    font-size: 13px;
-    color: $text-color;
-    float: left;
-    margin-left: 10px;
+.user_info {
+    margin-left: 13px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
 
-    &:hover {
-        color: $primary-color;
+.user_username {
+    flex: 1 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    a {
+        font-size: 13px;
+        color: $text-color;
+        font-weight: 500;  
+        &:hover {
+            color: $primary-color;
+        }
     }
 }
 
+.user_separator {
+    display: none;
+}
+
 .user_subscribe {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    margin-left: 50px;
-    
+    flex: none;
     .btn {
-        font-size: 12px;
-        padding: 3px 6px;
+        font-size: 13px;
+        font-weight: 300;
+        padding: 4px 8px;
     }
 }
 
 .user_subscriber-count {
-    position: absolute;
-    left: 0;
-    bottom: 3px;
-    margin-left: 50px;
+    flex: none;
     color: $text-color;
     font-size: 13px;
     font-weight: 300;
@@ -74,118 +81,52 @@
 
 // Alternate styles
 
+.user-no-subscribe {
+    .user_profpic {
+        width: 40px;
+        height: 40px;
+    }
+}
+
 .user-small {
 
-    display: flex;
+    display: inline-flex;
     align-items: center;
 
-    * {
-        float: none;
-    }
 
     .user_profpic {
-        width: 25px;
-        height: 25px;
-        border-radius: 5px;
+        width: 18px;
+        height: 18px;
+        border-radius: 3px;
+    }
+
+    .user_info {
+        flex-direction: row;
+        align-items: baseline;
+        margin-left: 7px;
     }
 
     .user_username {
         font-weight: 500;
+        font-size: 12px;
+    }
+
+    .user_separator {
+        display: inline;
+        margin-left: 4px;
     }
 
     .user_subscribe {
-        float: left;
-        position: relative;
-        margin-left: 10px;
-
+        margin-left: 4px;
         .btn {
-            font-weight: 300;
+            font-size: 12px;
+            font-weight: 500;
+            background: none;
+            padding: 0;
+            color: $primary-color;
+        }
+        .btn-inactive {
+            color: $button-color;
         }
     }
 }
-
-.user-right {
-
-    float: right;
-
-    .user_profpic {
-        float: right;
-    }
-
-    .user_username {
-        margin-left: 0;
-        margin-right: 10px;
-        text-align: right;
-        float: right;
-    }
-
-    .user_subscribe {
-        left: auto;
-        right: 0;
-        margin-left: 0;
-        margin-right: 50px;
-    }
-}
-
-
-.user-large {
-    display: flex;
-    align-items: center;
-}
-
-.user-large_right {
-    margin-left: 20px;
-    flex: 1 1;
-}
-
-.user-large_profpic {
-    flex: 0 0 100px;
-    width: 100px;
-    height: 100px;
-    border-radius: 50px;
-}
-
-.user-large_info {
-    margin-top: 10px;
-}
-
-.user-large_username {
-    font-size: 26px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-
-    .user_subscribe {
-        position: static;
-        display: inline-block;
-        margin-left: 10px;
-
-        .btn {
-            font-weight: 300;
-        }
-    }
-
-    .btn-edit-profile {
-        margin-left: 10px;
-    }
-}
-
-.user-large_separator {
-    max-width: 200px;
-    height: 1px;
-    background-color: $border-color;
-}
-
-.user-large_full-name {
-    font-size: 14px;
-    font-weight: 500;
-    margin-top: 5px;
-}
-
-.user-large_description {
-    font-size: 12px;
-    font-weight: 300;
-    margin-top: 3px;
-}
-
-
