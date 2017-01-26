@@ -115,6 +115,7 @@
     font-weight: normal;
     display: flex;
     align-items: flex-start;
+    position: relative;
 
     &:hover {
         cursor: pointer;
@@ -132,7 +133,9 @@ a.item-room {
 }
 
 a.item-room.selected {
-    background-color: rgba($primary-color, 0.1);
+    .item-room_description {
+        font-weight: 500;
+    }
 }
 
 .item-room_thumb {
@@ -167,8 +170,8 @@ a.item-room.selected {
 
 .item-room_badge {
     position: absolute;
-    top: 6px;
-    left: 6px;
+    top: -4px;
+    left: -4px;
     font-size: 10px;
     z-index: 10;
 }
