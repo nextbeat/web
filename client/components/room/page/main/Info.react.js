@@ -43,9 +43,7 @@ class Info extends React.Component {
                     <div className="player_info-small_views">
                         { `${views} view${views !== 1 ? 's' : ''}` }
                     </div>
-                    <div className="player_info-small_bookmarks">
-                        { roomPage.get('bookmark_count') } <Icon type="bookmark" />
-                    </div>
+                    <Bookmark roomPage={roomPage} type="small" />
                 </div>
                 <div className="player_info-small_tags">
                     {roomPage.get('tags', List()).map(tag => <Link to={`/t/${tag}`} key={`t-${tag}`} className="player_info-small_tag">{tag}</Link>)}
