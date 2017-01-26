@@ -118,9 +118,7 @@ class RoomCard extends React.Component {
             <div className={`room-card ${hideAuthorClass} ${collapsedClass}`} ref={c => this._node = c}>
                 <RoomCardHeader room={room} />
                 <div className="room-card_main">
-                    <RoomPlayer room={room} shouldAutoplayVideo={shouldAutoplayVideo}>
-                        <Counter room={room} />
-                    </RoomPlayer>
+                    <RoomPlayer room={room} shouldAutoplayVideo={shouldAutoplayVideo} />
                     <ChatHistory room={room} />
                 </div>
                 <Link to={`/r/${room.get('hid')}`} className="room-card_prompt">

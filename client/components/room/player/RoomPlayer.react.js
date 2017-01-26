@@ -7,6 +7,7 @@ import Video from './Video.react'
 import Image from './Image.react'
 import Icon from '../../shared/Icon.react'
 import Spinner from '../../shared/Spinner.react'
+import CounterInner from '../counter/CounterInner.react'
 
 class RoomPlayer extends React.Component {
 
@@ -35,7 +36,8 @@ class RoomPlayer extends React.Component {
         // TODO: rewrite
         if (!$('.player_main').parent().hasClass('.room-card_main')) {
             const roomHeight = parseInt($('.room').css('height'));
-            const mediaHeight = Math.min(500, roomHeight-150);
+            const roomWidth = parseInt($('.player_main').css('width'));
+            const mediaHeight = Math.min(500, Math.floor(roomWidth * 9 / 16));
             $('.player_media').height(mediaHeight);
         }
     }
@@ -76,6 +78,7 @@ class RoomPlayer extends React.Component {
                 </div>
                 <div className="player_navigation">
                     <div className={`player_nav-button player_nav-backward ${leftDisabledClass}`} onClick={this.handleBackward}><Icon type="arrow-back" /></div>
+                    <div className="player_nav-counter"><CounterInner room={room} /></div>
                     <div className={`player_nav-button player_nav-forward ${rightDisabledClass}`} onClick={this.handleForward}><Icon type="arrow-forward" /></div>
                 </div>
             </div>

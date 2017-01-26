@@ -1,14 +1,17 @@
 .player_navigation {
     width: 100%;
     height: 60px;
-    @include clearfix;
+    display: flex;
     border-bottom: 1px solid $border-color;
+    align-items: stretch;
+
+    @include media('<=small') {
+        height: 50px;
+    }
 }
 
 .player_nav-button {
-    height: 100%;
-    width: 50%;
-    float: left;
+    flex: 1;
     position: relative;
     transition: box-shadow 0.2s;
 
@@ -18,6 +21,11 @@
         height: 50px;
         width: 50px;
         transition: fill 0.2s;
+
+        @include media('<=small') {
+            height: 40px;
+            width: 40px;
+        }
     }
 
     &:hover:not(.disabled) {
@@ -36,6 +44,26 @@
 
 .player_nav-backward {
     border-right: 1px solid #eee;
+}
+
+.player_nav-counter {
+    width: 70px;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #eee;
+    color: #666;
+    font-family: 'Roboto', sans-serif;
+    display: none;
+
+    .selected {
+        font-weight: bold;
+    }
+
+    @include media('<=medium') {
+        display: flex;
+    }
+
 }
 
 // Animation to indicate progress when using arrow keys to navigate

@@ -39,10 +39,10 @@ function authError(state = false, action) {
 }
 
 const WIDTH_RANGES = [
-    { range: [0, 500], type: 'small' },
-    { range: [500, 800], type: 'medium' },
-    { range: [800, 1100], type: 'room-medium' },
-    { range: [1100, Infinity], type: 'large' } 
+    { range: [0, 501], type: 'small' },
+    { range: [501, 801], type: 'medium' },
+    { range: [801, 1101], type: 'room-medium' },
+    { range: [1101, Infinity], type: 'large' } 
 ]
 
 function state(state = Map(), action) {

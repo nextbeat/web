@@ -32,7 +32,10 @@
 }
 
 .player_main {
-    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: column;
+    height: 100%;
 }
 
 .player_hover-button {
@@ -56,9 +59,17 @@
 }
 
 .player_counter {
+    position: absolute;
     top: 0;
     right: 0;
+    z-index: 25;
+    margin: 10px;
+    background: rgba(#000, .3);
+    font-size: 14px;
+    color: rgba(#fff, .9);
+    padding: 5px 8px;
     font-family: 'Roboto', sans-serif;
+    font-weight: 300;
     font-size: 17px;
     display: inline-block;
 
@@ -70,12 +81,15 @@
         color: $primary-color;
         cursor: pointer;
     }
+
+    @include media('<=medium') {
+        display: none;
+    }
 }
 
 .player_counter-separator {
     margin: 0 5px;
 }
-
 
 .player_media {
     margin: auto;
