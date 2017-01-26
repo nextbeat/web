@@ -13,23 +13,17 @@ if (typeof require.ensure !== "function") require.ensure = (d,c) => c(require)
 export default store => {
    
     function analyticsRoute(path, getComponent) {
+        if (arguments.length === 1) {
+            getComponent = path
+            path = undefined
+        }
+
         return {
             path,
             getComponent: (nextState, cb) => { getComponent(cb) },
-            onEnter: function(nextState, replace /*, cb */) {
+            onEnter: function(nextState, replace) {
                 if (typeof window !== 'undefined') { 
                     store.dispatch(gaPage())
-                    // last(nextState.routes).getComponent(nextState, (err, component) => {
-                    //     if (typeof component.fetchData === 'function') {
-                    //         component.fetchData(store, nextState.params)
-                    //             .then(() => { cb(null); return null; })
-                    //             .catch(err => { cb(err); return null; })
-                    //     } else {
-                    //         cb(null)
-                    //     }
-                    // })
-                } else {
-                    // cb(null);
                 }
             }
         }
@@ -48,21 +42,31 @@ export default store => {
                     return cb(null, require('../client/components/pages/Section.react').default)
                 })
             }),
-            analyticsRoute('r/:hid', cb => {
-                require.ensure([], (require) => {
-                    return cb(null, require('../client/components/pages/RoomPage.react').default)
-                })
-            }),
-            analyticsRoute('r/:hid/edit', cb => {
-                require.ensure([], (require) => {
-                    return cb(null, require('../client/components/pages/EditRoom.react').default)
-                })
-            }),
-            analyticsRoute('r/:hid/:index', cb => {
-                require.ensure([], (require) => {
-                    return cb(null, require('../client/components/pages/RoomPage.react').default)
-                })
-            }),
+            {
+                path: 'r',
+                childRoutes: [
+                    {
+                        path: ':hid',
+                        indexRoute: analyticsRoute(cb => {
+                            require.ensure([], (require) => {
+                                return cb(null, require('../client/components/pages/RoomPage.react').default)
+                            })
+                        }),
+                        childRoutes: [
+                            analyticsRoute('edit', cb => {
+                                require.ensure([], (require) => {
+                                    return cb(null, require('../client/components/pages/EditRoom.react').default)
+                                })
+                            }),
+                            analyticsRoute(':index', cb => {
+                                require.ensure([], (require) => {
+                                    return cb(null, require('../client/components/pages/RoomPage.react').default)
+                                })
+                            }),
+                        ]
+                    }
+                ]
+            },
             analyticsRoute('u/:username', cb => {
                 require.ensure([], (require) => {
                     return cb(null, require('../client/components/pages/Profile.react').default)

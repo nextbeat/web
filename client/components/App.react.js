@@ -146,7 +146,7 @@ class App extends React.Component {
             router
         }
 
-        const inRoom = routes[routes.length-1].path.substring(0, 2) === 'r/'
+        const inRoom = router.isActive('/r')
         const inHome = router.isActive('/', true)
         const showSplashTopbar = inHome && !user.isLoggedIn()
 

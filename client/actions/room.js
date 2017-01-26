@@ -265,7 +265,6 @@ export function selectMediaItem(roomId, id, shouldReplaceHistory=false) {
         if (roomPage.isLoaded()) {
             setStorageItem(roomPage.get('hid'), id)
             var index = roomPage.indexOfMediaItem(id)
-            console.log(browserHistory)
             var url = `/r/${roomPage.get('hid')}/${index+1}`
             if (shouldReplaceHistory) {
                 browserHistory.replace(url)
