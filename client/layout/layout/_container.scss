@@ -29,15 +29,10 @@
     &.splash {
         margin-top: 160px;
         transition: transform 300ms;
+        bottom: -95px;
     }
 
     &.splash-collapsed {
         transform: translateY(-95px);
-        margin-top: 160px;
-        transition: transform 300ms;
-
-        .content_inner {
-            margin-bottom: 95px;
-        }
     }
 }
