@@ -62,7 +62,7 @@ class RoomPage extends React.Component {
                     id = roomPage.mediaItems().get(roomPage.mediaItems().size-1).get('id')
                 } else {
                     const idx = parseInt(params.index) - 1
-                    if (idx > 0 && idx < roomPage.mediaItems().size) {
+                    if (idx >= 0 && idx < roomPage.mediaItems().size) {
                         id = roomPage.mediaItems().get(idx).get('id')
                     }
                 }
