@@ -92,6 +92,13 @@ function state(state = Map(), action) {
     return state
 }
 
+function location(state = null, action) {
+    if (action.type === ActionTypes.HAS_NAVIGATED) {
+        return action.location
+    }
+    return state
+}
+
 const reducers = {
     tags,
     authError,

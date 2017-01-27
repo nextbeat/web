@@ -136,6 +136,13 @@ export function expandSplashTopbar() {
     }
 }
 
+export function hasNavigated(location) {
+    return {
+        type: ActionTypes.HAS_NAVIGATED,
+        location
+    }
+}
+
 /********
  * EVENTS
  ********/

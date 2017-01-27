@@ -10,7 +10,10 @@ import AppBanner from '../components/shared/AppBanner.react'
 import Login from '../components/shared/Login.react'
 import Signup from '../components/shared/Signup.react'
 
-import { connectToXMPP, postLogin, loadTags, promptModal, closeModal, clearApp, resizeWindow, onBeforeUnload, pushInitialize, startNewSession, cleanCache, sendPendingEvents } from '../actions'
+import { connectToXMPP, postLogin, loadTags, promptModal, 
+        closeModal, clearApp, resizeWindow, onBeforeUnload, 
+        pushInitialize, startNewSession, cleanCache, 
+        sendPendingEvents, hasNavigated } from '../actions'
 import { CurrentUser, App as AppModel, Notifications } from '../models'
 
 class App extends React.Component {
@@ -52,14 +55,6 @@ class App extends React.Component {
 
     }
 
-    componentWillUnmount() {
-        $(window).off('beforeunload', this.handleBeforeUnload);
-        $(window).off('resize', this.resize);
-        $(document).off('touchstart', this.handleTouchstart);
-
-        this.props.dispatch(clearApp());
-    }
-
     componentDidUpdate(prevProps) {
         if (prevProps.user.get('isLoggingIn') && this.props.user.isLoggedIn()) {
             this.props.dispatch(closeModal())
@@ -70,6 +65,19 @@ class App extends React.Component {
         }
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (this.props.location !== nextProps.location) {
+            this.props.dispatch(hasNavigated(this.props.location))
+        }
+    }
+
+    componentWillUnmount() {
+        $(window).off('beforeunload', this.handleBeforeUnload);
+        $(window).off('resize', this.resize);
+        $(document).off('touchstart', this.handleTouchstart);
+
+        this.props.dispatch(clearApp());
+    }
 
     // Events
 

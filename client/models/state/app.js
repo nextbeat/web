@@ -26,7 +26,9 @@ const KEY_MAP = {
     'sidebarAnimating': ['state', 'sidebarAnimating'],
     'splashTopbarCollapsed': ['state', 'splashTopbarCollapsed'],
     'volume': ['state', 'volume'],
-    'width': ['state', 'width']
+    'width': ['state', 'width'],
+    // location
+    'location': ['location']
 }
 
 export default class App extends StateModel {
@@ -59,6 +61,10 @@ export default class App extends StateModel {
 
     isActiveDropdown(type) {
         return this.get('activeDropdowns', Set()).includes(type)
+    }
+
+    hasNavigated() {
+        return this.get('location') !== null
     }
 
     deviceData() {

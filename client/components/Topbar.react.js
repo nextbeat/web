@@ -1,6 +1,6 @@
 import React from 'react'
 import { findDOMNode } from 'react-dom'
-import { Link, browserHistory } from 'react-router'
+import { Link } from 'react-router'
 import { connect } from 'react-redux'
 
 import { selectSidebar, closeSidebar, toggleDropdown, promptModal, logout, markAllAsRead, loadNotifications } from '../actions'
@@ -11,6 +11,7 @@ import Icon from './shared/Icon.react'
 import Logo from './shared/Logo.react'
 import SmallLogo from './shared/SmallLogo.react'
 import Dropdown from './shared/Dropdown.react'
+import ToggleLink from './shared/ToggleLink.react'
 
 class Topbar extends React.Component {
 
@@ -54,14 +55,21 @@ class Topbar extends React.Component {
 
     toggleNotificationsDropdown() {
         const { app, dispatch, routes } = this.props
+        const { router } = this.context
+
         if (app.get('width') === 'small') {
-            if (routes[routes.length-1].path === '/notifications') {
-                // run componentDidMount operations of Notifications component to simulate reload
-                dispatch(markAllAsRead())
-                dispatch(loadNotifications())
+            if (router.isActive('/notifications')) {
+                // go back to previous page if available
+                if (app.hasNavigated()) {
+                    router.goBack();
+                } else {
+                    // run componentDidMount operations of Notifications component to simulate reload
+                    dispatch(markAllAsRead())
+                    dispatch(loadNotifications())
+                }
             } else {
                 // navigate to page instead of showing dropdown
-                browserHistory.push({ pathname: '/notifications' })
+                router.push({ pathname: '/notifications' })
             }
             this.hideSidebar()
         } else {
@@ -73,7 +81,7 @@ class Topbar extends React.Component {
         if (e.charCode === 13) { // enter
             const query = findDOMNode(this.refs.search_bar).value;
             if (query && query.length > 0) {
-                browserHistory.push({
+                this.context.router.push({
                     pathname: '/search',
                     query: { q: query }
                 })
@@ -101,7 +109,7 @@ class Topbar extends React.Component {
     // Render
 
     renderLoggedIn(includeSmallClass) {
-        const { user, notifications } = this.props;
+        const { user, notifications, app } = this.props;
 
         const profpic_url = user.profileThumbnailUrl();
         const profpicStyle = { backgroundImage: profpic_url ? `url(${profpic_url})` : '' }
@@ -113,7 +121,14 @@ class Topbar extends React.Component {
                 <Icon type="notifications" />
                 { unreadCount > 0 && <div className="topbar_notifications-badge">{unreadCount}</div> }
             </div>,
-            <Link key='upload' className={`topbar_icon topbar_icon-upload ${smallClass}`} to="/upload" onClick={this.hideSidebar}><Icon type="file-upload" /></Link>,
+            <ToggleLink 
+                key='upload' 
+                disableToggle={app.get('width') !== 'small'}
+                className={`topbar_icon topbar_icon-upload ${smallClass}`} 
+                to="/upload" 
+                onClick={this.hideSidebar}>
+            <Icon type="file-upload" />
+            </ToggleLink>,
             <div key='user' id="dropdown-topbar_toggle" className={`topbar_icon topbar_icon-user ${smallClass}`} onClick={this.toggleUserDropdown} style={profpicStyle}>
                 { !profpic_url && <Icon type="person" /> }
             </div>
@@ -173,7 +188,13 @@ class Topbar extends React.Component {
                         <span className="topbar_logo-small" onClick={this.hideSidebar}><Link to="/"><SmallLogo /></Link></span>
                     </div>
 
-                    <Link className={`topbar_icon topbar_icon-search ${loggedInClass}`} to="/search" onClick={this.hideSidebar}><Icon type="search" /></Link>
+                    <ToggleLink 
+                        disableToggle={app.get('width') !== 'small'} 
+                        className={`topbar_icon topbar_icon-search ${loggedInClass}`} 
+                        to="/search" 
+                        onClick={this.hideSidebar}>
+                    <Icon type="search" />
+                    </ToggleLink>
 
                     <div className="topbar_right">
                         { user.isLoggedIn() ? this.renderLoggedIn(false) : this.renderGuest(false) }
@@ -192,6 +213,10 @@ function mapStateToProps(state) {
     return {
         notifications: new NotificationsModel(state)
     }
+}
+
+Topbar.contextTypes = {
+    router: React.PropTypes.object.isRequired
 }
 
 export default connect(mapStateToProps)(Topbar);

@@ -16,6 +16,7 @@ export {
     expandSplashTopbar,
     collapseSplashTopbar,
     setVideoVolume,
+    hasNavigated,
     triggerAuthError,
     clearApp
 } from './app'
