@@ -69,7 +69,7 @@ class Sidebar extends React.Component {
         const profileStyle = { backgroundImage: user.profileThumbnailUrl() ? `url(${user.profileThumbnailUrl()})` : ''}
 
         return (
-            <div className={`sidebar ${activeClass} ${guestClass} ${animatingClass}`}>
+            <div className={`sidebar ${activeClass} ${guestClass} ${animatingClass}`} id='sidebar'>
                 { user.sidebarDataIsLoaded() &&
                 <div>
                     <div className="sidebar_section sidebar_topnav">

@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
+import omit from 'lodash/omit'
 
 import { App } from '../../models'
 
@@ -32,7 +33,8 @@ class ToggleLink extends React.Component {
     }
 
     render() {
-        return <span onClick={this.handleClick}><Link {...this.props} ref={c => this._child = c} /></span>
+        let linkProps = omit(this.props, ['app', 'disableToggle', 'dispatch'])
+        return <span onClick={this.handleClick}><Link {...linkProps} ref={c => this._child = c} /></span>
     }
 }
 

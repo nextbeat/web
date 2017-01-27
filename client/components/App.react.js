@@ -13,7 +13,7 @@ import Signup from '../components/shared/Signup.react'
 import { connectToXMPP, postLogin, loadTags, promptModal, 
         closeModal, clearApp, resizeWindow, onBeforeUnload, 
         pushInitialize, startNewSession, cleanCache, 
-        sendPendingEvents, hasNavigated } from '../actions'
+        sendPendingEvents, hasNavigated, closeSidebar } from '../actions'
 import { CurrentUser, App as AppModel, Notifications } from '../models'
 
 class App extends React.Component {
@@ -22,6 +22,8 @@ class App extends React.Component {
         super(props);
 
         this.handleBeforeUnload = this.handleBeforeUnload.bind(this);
+        this.handleTouchstart = this.handleTouchstart.bind(this);
+        this.handleMousedown = this.handleMousedown.bind(this);
         this.resize = this.resize.bind(this);
 
         this.setTitle = this.setTitle.bind(this);
@@ -52,6 +54,7 @@ class App extends React.Component {
 
         $(window).on('beforeunload', this.handleBeforeUnload);
         $(document).on('touchstart', this.handleTouchstart);
+        $(document).on('mousedown', this.handleMousedown);
 
     }
 
@@ -75,6 +78,7 @@ class App extends React.Component {
         $(window).off('beforeunload', this.handleBeforeUnload);
         $(window).off('resize', this.resize);
         $(document).off('touchstart', this.handleTouchstart);
+        $(document).off('mousedown', this.handleMousedown);
 
         this.props.dispatch(clearApp());
     }
@@ -95,6 +99,17 @@ class App extends React.Component {
         let isTextInput = node => ['INPUT', 'TEXTAREA'].indexOf(node.nodeName) !== -1
         if (!isTextInput(e.target) && isTextInput(document.activeElement)) {
             document.activeElement.blur()
+        }
+    }
+
+    handleMousedown(e) {
+        // Hide sidebar if tapping outside of it on small screens
+        const sidebar = document.getElementById('sidebar')
+        const { app, dispatch } = this.props
+
+        if (!sidebar.contains(e.target) && app.get('width') === 'small') {
+            e.preventDefault()
+            dispatch(closeSidebar())
         }
     }
 
