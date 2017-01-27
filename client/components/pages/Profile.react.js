@@ -12,7 +12,7 @@ import PageError from '../shared/PageError.react'
 import AppBanner from '../shared/AppBanner.react'
 
 import { loadProfile, clearProfile, loadStacksForUser } from '../../actions'
-import { Profile, App } from '../../models'
+import { Profile, App, CurrentUser } from '../../models'
 import { baseUrl } from '../../utils'
 
 class ProfileComponent extends React.Component {
@@ -34,6 +34,13 @@ class ProfileComponent extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (prevProps.params.username !== this.props.params.username) {
+            this.props.dispatch(clearProfile())
+            this.props.dispatch(loadProfile(this.props.params.username))
+        }
+
+        if (prevProps.currentUser.isLoggedIn() !== this.props.currentUser.isLoggedIn()
+            && [prevProps.currentUser.get('username', ''), this.props.currentUser.get('username', '')].indexOf(this.props.params.username) !== -1) {
+            // we want to reload on log out to hide/show any unlisted rooms belonging to the user 
             this.props.dispatch(clearProfile())
             this.props.dispatch(loadProfile(this.props.params.username))
         }
@@ -70,7 +77,7 @@ class ProfileComponent extends React.Component {
     }
 
     renderProfile() {
-        const { profile, app } = this.props
+        const { profile, app, currentUser } = this.props
         let stacks = profile.stacks()
 
         let openStacks = stacks.filter(s => !s.get('closed'))
@@ -124,7 +131,8 @@ class ProfileComponent extends React.Component {
 function mapStateToProps(state, props) {
     return {
         profile: new Profile(state),
-        app: new App(state)
+        app: new App(state),
+        currentUser: new CurrentUser(state)
     }
 }
 
