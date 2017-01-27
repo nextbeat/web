@@ -48,11 +48,15 @@ class App extends React.Component {
         this.resize();
 
         $(window).on('beforeunload', this.handleBeforeUnload);
+        $(document).on('touchstart', this.handleTouchstart);
+
     }
 
     componentWillUnmount() {
         $(window).off('beforeunload', this.handleBeforeUnload);
         $(window).off('resize', this.resize);
+        $(document).off('touchstart', this.handleTouchstart);
+
         this.props.dispatch(clearApp());
     }
 
@@ -76,6 +80,14 @@ class App extends React.Component {
 
     handleBeforeUnload() {
         this.props.dispatch(onBeforeUnload())
+    }
+
+    handleTouchstart(e) {
+        // Dismiss input focus if tap outside of the input element
+        let isTextInput = node => ['INPUT', 'TEXTAREA'].indexOf(node.nodeName) !== -1
+        if (!isTextInput(e.target) && isTextInput(document.activeElement)) {
+            document.activeElement.blur()
+        }
     }
 
 

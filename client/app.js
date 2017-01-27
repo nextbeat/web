@@ -5,6 +5,7 @@ import { Router, Route, browserHistory, match } from 'react-router'
 import { AppContainer } from 'react-hot-loader'
 import { Map, fromJS } from 'immutable'
 import Promise from 'bluebird'
+import $ from 'jquery'
 import configureStore from './store'
 
 import routes from '../routes'
@@ -16,6 +17,9 @@ global.Promise = Promise
 Promise.config({
     cancellation: true
 })
+
+// expose jQuery globally
+window.$ = window.jQuery = $
 
 let initialState = window.__INITIAL_STATE__
 const store = configureStore(fromJS(initialState))

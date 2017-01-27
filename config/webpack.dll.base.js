@@ -5,6 +5,7 @@ const ManifestPlugin        = require('webpack-manifest-plugin');
 module.exports = {
     entry: {
         vendors: [ 
+            'jquery',
             'stanza.io',
             'react',
             'react-dom',
