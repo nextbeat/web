@@ -3,8 +3,8 @@ import { findDOMNode } from 'react-dom'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 
-import { selectSidebar, closeSidebar, toggleDropdown, promptModal, logout, markAllAsRead, loadNotifications } from '../actions'
-import { Notifications as NotificationsModel } from '../models'
+import { selectSidebar, closeSidebar, toggleDropdown, promptModal, logout, markAllAsRead, loadNotifications, clearUpload } from '../actions'
+import { Notifications as NotificationsModel, Upload } from '../models'
 
 import Notifications from './pages/Notifications.react'
 import Icon from './shared/Icon.react'
@@ -27,6 +27,7 @@ class Topbar extends React.Component {
         this.handleLoginClick = this.handleLoginClick.bind(this);
         this.handleSignupClick = this.handleSignupClick.bind(this);
         this.handleLogoutClick = this.handleLogoutClick.bind(this);
+        this.handleUploadClick = this.handleUploadClick.bind(this);
 
         this.renderNotificationsDropdown = this.renderNotificationsDropdown.bind(this);
         this.renderLoggedIn = this.renderLoggedIn.bind(this);
@@ -105,6 +106,18 @@ class Topbar extends React.Component {
         this.props.dispatch(logout())
     }
 
+    handleUploadClick(e) {
+        this.hideSidebar()
+        // If user is on upload page and a submission
+        // has completed, reset the upload process
+        const { dispatch, upload } = this.props 
+        const { router } = this.context
+        if (router.isActive('/upload') && upload.get('stackSubmitted')) {
+            console.log('foo')
+            dispatch(clearUpload())
+        }
+    }
+
 
     // Render
 
@@ -126,7 +139,7 @@ class Topbar extends React.Component {
                 disableToggle={app.get('width') !== 'small'}
                 className={`topbar_icon topbar_icon-upload ${smallClass}`} 
                 to="/upload" 
-                onClick={this.hideSidebar}>
+                onClick={this.handleUploadClick}>
             <Icon type="file-upload" />
             </ToggleLink>,
             <div key='user' id="dropdown-topbar_toggle" className={`topbar_icon topbar_icon-user ${smallClass}`} onClick={this.toggleUserDropdown} style={profpicStyle}>
@@ -211,7 +224,8 @@ class Topbar extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        notifications: new NotificationsModel(state)
+        notifications: new NotificationsModel(state),
+        upload: new Upload(state)
     }
 }
 
