@@ -376,6 +376,7 @@
 
 .upload_add-caption {
     width: 660px;
+    max-width: calc(100% - 20px);
 
     .modal_close {
         display: none;
@@ -398,6 +399,10 @@
         pointer-events: auto;
     }
 
+    @include media("<=small") {
+        padding: 10px;
+    }
+
 }
 
 .upload_add-caption_form {
@@ -405,10 +410,29 @@
     display: flex;
     align-items: center;
 
+    @include media("<=small") {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+.upload_add-caption_buttons {
+    display: flex;
+    flex: 0 0 auto;
+    margin-left: 10px;
+
     .btn {
         flex: 0 0;
         margin-left: 10px;
         font-size: 14px;
+        &:first-child {
+            margin-left: 0;
+        }
+    }
+
+    @include media("<=small") {
+        margin: 10px 0 0 0;
+        justify-content: flex-end;
     }
 }
 

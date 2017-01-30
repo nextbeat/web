@@ -180,8 +180,10 @@ class AddCaption extends React.Component {
                         value={captionText}
                         onChange={this.handleInputChange}
                     />
-                    <a className="btn upload_add-caption_cancel-btn" onClick={this.handleCancel}>Cancel</a>
-                    <a className="btn upload_add-caption_save-btn" onClick={this.handleSave}>Save</a>
+                    <div className="upload_add-caption_buttons">
+                        <a className="btn upload_add-caption_cancel-btn" onClick={this.handleCancel}>Cancel</a>
+                        <a className="btn upload_add-caption_save-btn" onClick={this.handleSave}>Save</a>
+                    </div>
                 </div>
                 <div className="upload_add-caption_info">
                     Drag the caption to adjust its position on the {upload.fileType()}.

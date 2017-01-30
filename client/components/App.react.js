@@ -107,8 +107,8 @@ class App extends React.Component {
         const sidebar = document.getElementById('sidebar')
         const { app, dispatch } = this.props
 
-        if (!sidebar.contains(e.target) && app.get('width') === 'small') {
-            e.preventDefault()
+        if (app.get('activeOverlay') === 'sidebar' && !sidebar.contains(e.target) && app.get('width') === 'small') {
+            // e.preventDefault()
             dispatch(closeSidebar())
         }
     }
