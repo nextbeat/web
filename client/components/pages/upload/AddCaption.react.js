@@ -1,12 +1,27 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Map } from 'immutable'
+import assign from 'lodash/assign'
 
 import Video from '../../room/player/Video.react'
 import Image from '../../room/player/Image.react'
 import Modal from '../../shared/Modal.react'
 
 import { closeModal, updateNewMediaItem, UploadTypes } from '../../../actions'
+
+// extract relevant position data from touch event
+function processEventData(evt) {
+    if ('touches' in evt.originalEvent) {
+        if (evt.originalEvent.touches.length !== 1) {
+            return null; // don't
+        }
+        let touch = evt.originalEvent.touches[0]
+        let rect = touch.target.getBoundingClientRect()
+        return assign(touch, { offsetY: touch.clientY - rect.top })
+    } else {
+        return evt;
+    }
+}
 
 class AddCaption extends React.Component {
 
@@ -19,6 +34,7 @@ class AddCaption extends React.Component {
         this.handleMouseDown = this.handleMouseDown.bind(this)
         this.handleMouseMove = this.handleMouseMove.bind(this)
         this.handleMouseUp = this.handleMouseUp.bind(this)
+        this.handleResize = this.handleResize.bind(this)
 
         this.handleCancel = this.handleCancel.bind(this)
         this.handleSave = this.handleSave.bind(this)
@@ -32,9 +48,12 @@ class AddCaption extends React.Component {
     }
 
     componentDidMount() {
-        $(window).on('mousedown', this.handleMouseDown)
-        $(window).on('mousemove', this.handleMouseMove)
-        $(window).on('mouseup', this.handleMouseUp)
+        $(document).on('mousedown touchstart', this.handleMouseDown)
+        $(document).on('mousemove touchmove', this.handleMouseMove)
+        $(document).on('mouseup touchend', this.handleMouseUp)
+        $(window).on('resize', this.handleResize)
+
+        this.handleResize()
     }
 
     componentWillReceiveProps(nextProps) {
@@ -48,10 +67,17 @@ class AddCaption extends React.Component {
         }
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.app.get('activeModal') !== 'add-caption' && this.props.app.get('activeModal') === 'add-caption') {
+            this.handleResize()
+        }
+    }
+
     componentWillUnmount() {
-        $(window).off('mousedown', this.handleMouseDown)
-        $(window).off('mousemove', this.handleMouseMove)
-        $(window).off('mouseup', this.handleMouseUp)
+        $(document).off('mousedown touchstart', this.handleMouseDown)
+        $(document).off('mousemove touchmove', this.handleMouseMove)
+        $(document).off('mouseup touchend', this.handleMouseUp)
+        $(window).off('resize', this.handleResize)
     }
 
 
@@ -77,13 +103,22 @@ class AddCaption extends React.Component {
 
     // Event handlers
 
+    handleResize(e) {
+        const width = parseInt($('.player_media-inner').css('width'));
+        const mediaHeight = Math.min(340, Math.floor(width * 9 / 16));
+        console.log(width, mediaHeight);
+        $('.upload_add-caption_media-container').height(mediaHeight);
+    }
+
     handleMouseDown(e) {
         var caption = document.getElementById('player_caption')
         if (!caption) {
             return;
         }
 
-        if (e.target === caption || caption.contains(e.target)) {
+        e = processEventData(e);
+
+        if (e && (e.target === caption || caption.contains(e.target))) {
             this.setState({
                 isDraggingCaption: true,
                 offsetY: e.offsetY,
@@ -98,7 +133,9 @@ class AddCaption extends React.Component {
         const { isDraggingCaption, offsetY, startY } = this.state 
         const { upload, dispatch } = this.props 
 
-        if (isDraggingCaption) {
+        e = processEventData(e);
+
+        if (e && isDraggingCaption) {
             var parent = document.getElementById('upload_add-caption_media-container')
             var caption = document.getElementById('player_caption')
 

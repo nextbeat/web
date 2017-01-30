@@ -141,7 +141,7 @@ function checkProcessingProgress(store, job_id) {
         }
 
         checkProgress()
-        let intervalId = setInterval(checkProgress, /* 2000 */ 200000)
+        let intervalId = setInterval(checkProgress, 2000)
     })
 }
 
