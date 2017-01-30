@@ -162,7 +162,7 @@ class Image extends React.Component {
     }
 
     render() {
-        let { image, decoration } = this.props
+        let { image, decoration, hideControls } = this.props
         let { width, height, shouldDisplayControls, isFullScreen } = this.state
 
         const photoContainerEvents = {
@@ -187,10 +187,14 @@ class Image extends React.Component {
             <div className="player_photo-container" {...photoContainerEvents}>
                 <img key={image.get('url')} src={image.get('url')} id="player_photo" className="player_photo" style={this.imageStyle()} />
                 { decoration && <Decoration decoration={decoration} width={width} height={height} /> }
-                <ImageControls {...imageControlsProps} />
+                { !hideControls && <ImageControls {...imageControlsProps} /> }
             </div>
         )
     }
+}
+
+Image.defaultProps = {
+    hideControls: false
 }
 
 function mapStateToProps(state) {

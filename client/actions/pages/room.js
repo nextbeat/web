@@ -161,7 +161,7 @@ export function promptChatActionsForUser(username) {
 
 export function mentionUser(username) {
     return (dispatch, getState) => {
-        let message = (new Room(getState())).get('chatMessage', '')
+        let message = (new RoomPage(getState())).get('chatMessage', '')
         if (message.length === 0 || /\s$/.test(message)) {
             // don't add whitespace
             message = `${message}@${username}`
@@ -194,7 +194,7 @@ function postBanUser(stack_id, username) {
 
 export function banUser(username) {
     return (dispatch, getState) => {
-        const room = new Room(getState())
+        const room = new RoomPage(getState())
         if (!room.currentUserIsAuthor()) {
             return null;
         }
@@ -219,7 +219,7 @@ function postUnbanUser(stack_id, username) {
 
 export function unbanUser(username) {
     return (dispatch, getState) => {
-        const room = new Room(getState())
+        const room = new RoomPage(getState())
         if (!room.currentUserIsAuthor()) {
             return null;
         }
@@ -232,7 +232,7 @@ export function unbanUser(username) {
 
 export function resetChat() {
     return (dispatch, getState) => {
-        const room = new Room(getState())
+        const room = new RoomPage(getState())
         dispatch(clearComments(room.get('id')))
         dispatch(loadComments(room.get('id')))
     }

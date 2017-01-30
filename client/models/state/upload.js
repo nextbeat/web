@@ -161,11 +161,12 @@ export default class Upload extends StateModel {
 
     static bucketUrl(state) {
         var app = new App(state)
-        if (app.get('environment') === 'production') {
-            return 'https://s3.amazonaws.com/nextbeat.media/'
-        } else {
-            return 'https://s3.amazonaws.com/nextbeat.dev.media/'
-        }
+        return '/api/_DEBUG_UPLOAD'
+        // if (app.get('environment') === 'production') {
+        //     return 'https://s3.amazonaws.com/nextbeat.media/'
+        // } else {
+        //     return 'https://s3.amazonaws.com/nextbeat.dev.media/'
+        // }
     }
 
     static cloudfrontUrl(state) {

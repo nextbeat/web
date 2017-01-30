@@ -104,7 +104,6 @@ function initiateProcessingStage(store) {
         store.dispatch(updateNewMediaItem({
             resource_id: res.id
         }))
-        // store.dispatch(_initiateProcessingStage(UploadTypes.MEDIA_ITEM))
         return res.job
     })
 }
@@ -142,7 +141,7 @@ function checkProcessingProgress(store, job_id) {
         }
 
         checkProgress()
-        let intervalId = setInterval(checkProgress, 2000)
+        let intervalId = setInterval(checkProgress, /* 2000 */ 200000)
     })
 }
 

@@ -6,7 +6,7 @@ import Video from '../../room/player/Video.react'
 import Image from '../../room/player/Image.react'
 import Modal from '../../shared/Modal.react'
 
-import { closeModal, updateNewMediaItem } from '../../../actions'
+import { closeModal, updateNewMediaItem, UploadTypes } from '../../../actions'
 
 class AddCaption extends React.Component {
 
@@ -60,7 +60,7 @@ class AddCaption extends React.Component {
     resourceObject(props) {
         const { width, height, upload } = props 
         return Map({
-            url: URL.createObjectURL(upload.get('file')),
+            url: URL.createObjectURL(upload.get(UploadTypes.MEDIA_ITEM, 'file')),
             type: 'objectURL',
             width,
             height
@@ -168,7 +168,7 @@ class AddCaption extends React.Component {
             <Modal name="add-caption" className="upload_add-caption">
                 <div id="upload_add-caption_media-container" className="upload_add-caption_media-container">
                     <div className="player_media-inner">
-                        { isImage && <Image image={resource} decoration={this.decorationObject()} /> }
+                        { isImage && <Image image={resource} decoration={this.decorationObject()} hideControls={true} /> }
                         { isVideo && <Video video={resource} decoration={this.decorationObject()} autoplay={false} /> }
                     </div>
                 </div>
