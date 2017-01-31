@@ -1,0 +1,101 @@
+.player_share_wrapper {
+    position: relative;
+    z-index: 29;
+}
+
+.player_button-share {
+
+    color: $button-color;
+
+    &:hover {
+        color: mix(white, $button-color, 40%);
+        cursor: pointer;
+        svg {
+            fill: mix(white, $button-color, 40%);
+        }
+    }
+
+    span {
+        margin-left: 0;
+        height: 100%;
+        line-height: 25px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .svg-icon-share {
+        width: 18px;
+        height: 18px;
+        margin: 0 6px 5px 0;
+    }
+}
+
+.player_share_modal {
+    position: absolute;
+    bottom: 100%;
+    right: -10px;
+    margin-bottom: 10px;
+    background: #fff;
+    padding: 12px;
+    border: 1px solid $border-color;
+    box-shadow: 0px 0px 10px rgba(0,0,0,.11);
+
+    &::after {
+        position: absolute;
+        top: 100%;
+        right: 20px;
+        margin-top: -4px;
+        width: 10px;
+        height: 10px;
+        background: #fff;
+        border-right: 1px solid $border-color;
+        border-bottom: 1px solid $border-color;
+        box-shadow: 1px 1px 10px -2px rgba(0,0,0,.11);
+        transform: rotate(45deg);
+        content: '';
+    }
+}
+
+.share_social {
+    margin-bottom: 20px;
+    @include clearfix;
+}
+
+.share_social-button {
+    float: left;
+}
+
+.share_facebook-button {
+    margin-right: 15px;
+}
+
+.share_field {
+    margin-top: 10px;
+
+    label {
+        display: inline-block;
+        margin-bottom: 10px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    input {
+        min-width: 230px;
+        padding: 10px;
+        font-size: 14px;
+        font-weight: 300;
+    }
+}
+
+.share_include-post {
+    margin-left: 10px;
+    display: inline-block;
+
+    * { 
+        display: inline-block;
+    }
+
+    label {
+        font-weight: normal;
+    }
+}

@@ -12,31 +12,91 @@ class Info extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.renderLarge.bind(this);
+        this.renderSmall.bind(this);
+    }
+
+    renderSmall() {
+        const { roomPage } = this.props 
+        const views = roomPage.get('views')
+
+        return (
+            <section className="player_info-small">
+                <div className="player_info-small_top">
+                    <div className="player_info-small_description">
+                        <div className="player_info-small_title">{ roomPage.get('description') || "No description." }</div>
+                        <div className="player_info_badges">
+                            { !roomPage.get('closed') && <Badge elementType="player_info" type="open" /> } 
+                            { roomPage.get('privacy_status') === 'unlisted' && <Badge elementType="player_info" type="unlisted" /> }
+                        </div>
+                    </div>
+                    <div className="player_info-small_actions">
+                        { roomPage.currentUserIsAuthor() && <div className="player_info-small_action"><Icon type="more-vert" /></div> }
+                        <div className="player_info-small_action"><Icon type="share" /></div>
+                    </div>
+                </div>
+                <div className="player_info-small_user">
+                    <User user={roomPage.author()} style="small" />
+                </div>
+                <div className="player_info-small_bottom">
+                    <div className="player_info-small_views">
+                        { `${views} view${views !== 1 ? 's' : ''}` }
+                    </div>
+                    <Bookmark roomPage={roomPage} type="small" />
+                </div>
+                <div className="player_info-small_tags">
+                    {roomPage.get('tags', List()).map(tag => <Link to={`/t/${tag}`} key={`t-${tag}`} className="player_info-small_tag">{tag}</Link>)}
+                </div>
+
+            </section>
+        )
+    }
+
+    renderLarge() {
+        const { roomPage } = this.props 
+        const views = roomPage.get('views')
+
+        return (
+            <section className="player_info">
+                <div className="player_info_top">
+                    <div className="player_info_description">
+                        <div className="player_info_title">{ roomPage.get('description') || "No description." }</div>
+                        <div className="player_info_badges">
+                            { !roomPage.get('closed') && <Badge elementType="player_info" type="open" /> } 
+                            { roomPage.get('privacy_status') === 'unlisted' && <Badge elementType="player_info" type="unlisted" /> }
+                        </div>
+                    </div>
+                    <div className="player_info_views">
+                        { `${views} view${views !== 1 ? 's' : ''}` }
+                    </div>
+                </div>
+                <div className="player_info_user">
+                    <User user={roomPage.author()} />
+                </div>
+                <div className="player_info_bottom">
+                    <div className="player_info_tags">
+                        {roomPage.get('tags', List()).map(tag => <Link to={`/t/${tag}`} key={`t-${tag}`} className="player_info_tag">{tag}</Link>)}
+                    </div>
+                    <div className="player_info_buttons">
+                        <div className="player_info_button"><Bookmark roomPage={roomPage} /></div>
+                        <div className="player_info_button"><Share roomPage={roomPage} /></div>
+                    </div>
+                </div>
+            </section>
+        )
     }
 
     render() {
         const { roomPage } = this.props;
-        const profpic_url = roomPage.author().get('profpic_thumbnail_url') || roomPage.author().get('profpic_url');
         const closed = roomPage.get('closed');
+
         return (
-            <section className="player_info">
-            <div className="player_description"><span>{ roomPage.get('description') || "No description." } { !closed && <Badge elementType="player" type="open" /> } { roomPage.get('privacy_status') === 'unlisted' && <Badge elementType="player" type="unlisted" /> }</span></div>
-                <div className="player_tags">
-                    {roomPage.get('tags', List()).map(tag => <Link to={`/t/${tag}`} key={`t-${tag}`} className="player_tag">{tag}</Link>)}
-                </div>
-                <div className="player_info-data">
-                    <User user={roomPage.author()} style="small" />
-                     <div className="player_info-views">
-                        <span className="player_info-view-count">{roomPage.get('views', 0)}</span> view{roomPage.get('views') !== 1 && 's'}
-                    </div>
-                </div>
-                <div className="separator separator-player_info" />
-                <div className="player_buttons">
-                    <div className="player_button"><Bookmark roomPage={roomPage} /></div>
-                    <div className="player_button"><Share roomPage={roomPage} /></div>
-                </div>
-            </section>
-        );
+            <div>
+                { this.renderLarge() }
+                { this.renderSmall() }
+            </div>
+        )
     }
 }
 

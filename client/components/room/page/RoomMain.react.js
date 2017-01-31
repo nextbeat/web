@@ -71,9 +71,6 @@ class RoomMain extends React.Component {
         // so that it scrolls with rest of content
         const shouldDisplayBanner = app.get('width') === 'small' && (roomPage.author().get('username') === 'safiya' || app.get('environment') === 'development')
 
-        // display detail buttons if screen at appropriate width
-        const detailButtonsActive = app.get('width') === 'small' || app.get('width') === 'medium'
-
         return (
             <section className="player-container">
                 <section className="player content" id="player">
@@ -88,9 +85,8 @@ class RoomMain extends React.Component {
                     { roomPage.get('error') && <PageError>The room could not be found, or it has been deleted by its owner.</PageError>}
                     { !roomPage.isFetchingDeep() && !roomPage.get('error') &&
                     <div className="player_inner">
-                        { detailButtonsActive && <div className="player_hover-button player_chat-button" onClick={this.handleChat}>Chat</div>}
-                        { detailButtonsActive ? <ActivityCounter room={roomPage.room()} /> : <Counter room={roomPage.room()} /> }
-                        <RoomPlayer room={roomPage.room()}/>
+                        <Counter room={roomPage.room()} />
+                        <RoomPlayer room={roomPage.room()} />
                         <Info roomPage={roomPage} />
                         <More roomPage={roomPage} />
                     </div>

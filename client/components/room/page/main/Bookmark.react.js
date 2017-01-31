@@ -47,9 +47,11 @@ class Bookmark extends React.Component {
     }
 
     render() {
-        const { roomPage } = this.props;
+        const { roomPage, type } = this.props;
+        const typeClass = type ? `btn-bookmark-${type}` : ''
+
         return (
-            <div className="btn-bookmark">
+            <div className={`btn-bookmark ${typeClass}`}>
                 <div className="btn-bookmark_inner">
                     <div className="btn-bookmark_count">{ roomPage.get('bookmark_count') }</div>
                     { roomPage.isBookmarked() ? this.renderBookmarked() : this.renderUnbookmarked() }
