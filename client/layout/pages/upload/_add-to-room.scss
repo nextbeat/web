@@ -1,0 +1,87 @@
+.spinner-upload-stacks {
+    margin: 40px auto;
+}
+
+.upload_add {
+    width: 100%;
+    margin-top: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid $border-color;
+}
+    
+.upload_subheader {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.upload_stacks {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    @include clearfix;
+}
+
+.upload_selectable-stack-item {
+    float: left;
+    width: 265px;
+    padding-right: 60px;
+    margin-right: 20px;
+    position: relative;
+    cursor: pointer;
+
+    &.selected {
+        background: linear-gradient(to bottom, rgba($primary-color, 0.1) 0%, rgba(1,1,1,0) 100%); 
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.upload_selectable-stack-item_check-box-container {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 60px;
+
+    .svg-icon-check-box {
+        @include centerX;
+        width: 40px;
+        height: 40px;
+        margin-top: 35px;
+        fill: $primary-color;
+    }
+}
+
+.upload_selectable-stack-item_check-box-outline {
+    @include centerX;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    width: 30px;
+    height: 30px;
+    margin-top: 40px;
+}
+
+.item-room-large-new_thumb {
+    background: mix($primary-color, white, 10%);
+    border: 2px dashed mix($primary-color, white, 50%);
+    position: relative;
+
+    .svg-icon-add {
+        fill: mix($primary-color, white, 50%);
+        @include center;
+        width: 65px;
+        height: 65px;
+    }
+}
+
+.item-room-large-new_thumb:after {
+    background: none;
+}
+
+.item-room-large-new_description {
+    color: $detail-text-color;
+    font-style: italic;
+}

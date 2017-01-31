@@ -91,6 +91,11 @@ export default function FileComponent(parentId, options={}) {
                 if (!file) {
                     return
                 }
+
+                if (!Upload.isBrowserCompatible(file)) {
+                    this.setState({ resourceType: 'incompatible' })
+                    return
+                }
                 
                 let fileType = Upload.fileType(file)
                 

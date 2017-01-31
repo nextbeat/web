@@ -5,7 +5,8 @@ import assign from 'lodash/assign'
 import FileComponent from './utils/FileComponent.react'
 import AddCaption from './AddCaption.react'
 import Icon from '../../shared/Icon.react'
-import { uploadMediaItemFile, updateNewMediaItem, promptModal } from '../../../actions'
+import Spinner from '../../shared/Spinner.react'
+import { uploadMediaItemFile, updateNewMediaItem, promptModal, UploadTypes } from '../../../actions'
 
 class FileSelect extends React.Component {
 
@@ -80,6 +81,50 @@ class FileSelect extends React.Component {
 
     // Render
 
+    renderIncompatibleFile() {
+        const { upload } = this.props
+
+        var url = upload.processedImageUrl()
+
+        if (upload.isDoneProcessing()) {
+            return <div className="upload_file-select_processed-image" style={{ backgroundImage: `url(${url})`}}></div>
+        } else {
+            return <div className="upload_file-select_processing"><Spinner type="large grey" /></div>
+        }
+    }
+
+    renderCompatibleFile() {
+        const { resourceLoaded, upload, width, height, offsetY, offsetX } = this.props
+
+        const isImage = upload.fileType() === 'image'
+        const isVideo = upload.fileType() === 'video'
+
+        return [
+            <img id="upload_file-select_image" 
+                className="upload_file-select_image" 
+                style={{ 
+                    display: `${resourceLoaded && isImage ? 'block' : 'none'}`,
+                    position: 'absolute', 
+                    width: `${width}px`,
+                    height: `${height}px`,
+                    top: `${offsetY}px`,
+                    left: `${offsetX}px`
+                }}
+            />,
+            <video id="upload_file-select_video"
+                className="upload_file-select_video"
+                style={{
+                    display: `${resourceLoaded && isVideo ? 'block' : 'none'}`,
+                    position: 'absolute', 
+                    width: `${width}px`,
+                    height: `${height}px`,
+                    top: `${offsetY}px`,
+                    left: `${offsetX}px`
+                }}
+            />
+        ]
+    }
+
     renderUploadPrompt() {
         const { isDragging } = this.state
         const { upload, app } = this.props
@@ -108,38 +153,15 @@ class FileSelect extends React.Component {
     }
 
     renderUploadProgress() {
-        const { resourceLoaded, resourceWidth, resourceHeight, width, height, offsetX, offsetY } = this.props
         const { upload, app } = this.props 
 
-        const isImage = upload.fileType() === 'image'
-        const isVideo = upload.fileType() === 'video'
+        const fileIsCompatible = upload.isBrowserCompatible()
         const hasDecoration = upload.get('mediaItem').getIn(['decoration', 'caption_text'], '').length > 0
 
         return (
             <div className="upload_file-select" id="upload_file-select">
-                <AddCaption app={app} upload={upload} width={resourceWidth} height={resourceHeight} />
-                <img id="upload_file-select_image" 
-                    className="upload_file-select_image" 
-                    style={{ 
-                        display: `${resourceLoaded && isImage ? 'block' : 'none'}`,
-                        position: 'absolute', 
-                        width: `${width}px`,
-                        height: `${height}px`,
-                        top: `${offsetY}px`,
-                        left: `${offsetX}px`
-                    }}
-                />
-                <video id="upload_file-select_video"
-                    className="upload_file-select_video"
-                    style={{
-                        display: `${resourceLoaded && isVideo ? 'block' : 'none'}`,
-                        position: 'absolute', 
-                        width: `${width}px`,
-                        height: `${height}px`,
-                        top: `${offsetY}px`,
-                        left: `${offsetX}px`
-                    }}
-                />
+                <AddCaption app={app} upload={upload} />
+                { fileIsCompatible ? this.renderCompatibleFile() : this.renderIncompatibleFile() }
                 { !upload.isInSubmitProcess() && 
                     <div className="upload_caption-btn" onClick={this.handleAddCaptionClick}>{hasDecoration ? 'Edit' : 'Add'} Caption</div>
                 }

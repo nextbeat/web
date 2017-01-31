@@ -1,0 +1,80 @@
+.upload_add-caption {
+    width: 660px;
+    max-width: calc(100% - 20px);
+
+    .modal_close {
+        display: none;
+    }
+}
+
+.upload_add-caption_media-container {
+    padding: 20px;
+    width: 100%;
+
+    @include media("<=small") {
+        padding: 10px;
+    }
+}
+
+.upload_add-caption_media {
+    width: 100%;
+    background: $dark-background-color;
+    border: 1px solid $border-color;
+    overflow: hidden;
+
+    .player_decoration {
+        /* re-enable mouse events to allow for dragging */
+        pointer-events: auto;
+    }
+}
+
+.upload_add-caption_form {
+    margin: 10px 20px;
+    display: flex;
+    align-items: center;
+
+    @include media("<=small") {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+.upload_add-caption_buttons {
+    display: flex;
+    flex: 0 0 auto;
+    margin-left: 10px;
+
+    .btn {
+        flex: 0 0;
+        margin-left: 10px;
+        font-size: 14px;
+        &:first-child {
+            margin-left: 0;
+        }
+    }
+
+    @include media("<=small") {
+        margin: 10px 0 0 0;
+        justify-content: flex-end;
+    }
+}
+
+.upload_add-caption_cancel-btn {
+    background: #ccc;
+
+    &:hover {
+        background: #ddd;
+    }
+}
+
+input.upload_add-caption_input {
+    flex: 1 0;
+    padding: 7px;
+    font-size: 14px;
+}
+
+.upload_add-caption_info {
+    color: $detail-text-color;
+    font-size: 12px;
+    margin: 0 20px 20px 20px;
+}

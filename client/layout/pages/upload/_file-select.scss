@@ -1,0 +1,82 @@
+.upload_file-select {
+    margin: 40px auto;
+    width: 270px;
+    height: 200px;
+    background-color: $dark-background-color;
+    border-radius: 5px;
+    border: 2px dashed $border-color;
+    position: relative;
+    overflow: hidden;
+
+    .svg-icon-file-upload {
+        width: 90px;
+        height: 90px;
+        display: block;
+        fill: #c6c6c6;
+        margin: 35px auto 0 auto;
+    }
+
+    &.dragging {
+        background-color: mix($primary-color, white, 5%);
+
+        .svg-icon-file-upload {
+            fill: $primary-color;
+        }
+    }
+}
+
+.upload_file-input {
+    display: none;
+}
+
+.upload_select-label {
+    font-size: 18px;
+    font-weight: 500;
+    width: 100%;
+    text-align: center;
+    margin: 5px 0;
+
+    &:hover {
+        color: $primary-color;
+        cursor: pointer;
+    }
+}
+
+.upload_drag-label {
+    font-size: 13px;
+    font-weight: 300;
+    width: 100%;
+    text-align: center;
+}
+
+.upload_caption-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 12px;
+    padding: 4px 5px;
+    color: #fff;
+    background: rgba(#000, 0.6);
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.upload_file-select_processing {
+    height: 100%;
+
+    .spinner {
+        display: block;
+        margin: 77px auto 0 auto;
+    }
+}
+
+.upload_file-select_processed-image {
+    width: 100%;
+    height: 100%;
+    
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}

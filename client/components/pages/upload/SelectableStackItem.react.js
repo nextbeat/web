@@ -22,7 +22,6 @@ class SelectableStackItem extends React.Component {
     handleClick(e) {
         // we call this method in the capture phase to prevent 
         // bubbling down to the LargeStackItem click event
-        console.log('handling click')
         e.stopPropagation();
         e.preventDefault();
 

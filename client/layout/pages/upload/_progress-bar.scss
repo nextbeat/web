@@ -1,0 +1,56 @@
+.upload_progress-bar_container {
+    position: relative;
+}
+
+.upload_progress-bar_data {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.upload_progress-bar_percent {
+    font-weight: 400;
+}
+
+.upload_progress-bar {
+    width: 100%;
+    height: 10px;
+    border: 1px solid $border-color;
+    position: relative;
+}
+
+.upload_progress-bar_progress {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform-origin: left top;
+    transition: transform 0.3s;
+}
+
+.upload_progress-bar_progress-upload {
+    background-color: mix(white, $primary-color, 50%);
+}
+
+.upload_progress-bar_progress-process {
+    background-color: $primary-color;
+}
+
+.upload_progress-bar_cancel {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin-top: 10px;
+}
+
+.upload_progress-bar_cancel-btn {
+    font-size: 12px;
+    font-weight: 300;
+    background: #ccc;
+    padding: 4px 8px;
+
+    &:hover {
+        background: #ddd;
+    }
+}

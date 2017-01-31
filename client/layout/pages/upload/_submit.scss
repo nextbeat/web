@@ -1,0 +1,43 @@
+.upload_submit-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.upload_submit {
+    display: inline-block;
+    font-size: 24px;
+    padding: 10px 25px;
+}
+
+
+// Post-submit
+
+.upload_submit-requested {
+    max-width: 330px;
+    margin: 25px auto;
+    font-weight: 300;
+    font-size: 16px;
+    text-align: center;
+
+    .svg-icon-check {
+        width: 80px;
+        height: 80px;
+        fill: #ccc;
+    }
+
+    .spinner-upload-submit {
+        margin: 25px auto;
+    }
+}
+
+.upload_success-message {
+    margin-top: 20px;
+}
+
+.upload_restart {
+    margin-top: 40px;
+    font-size: 14px;
+    font-weight: 300px;
+    padding: 5px 10px;
+    display: inline-block;
+}

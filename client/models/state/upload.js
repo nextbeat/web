@@ -20,6 +20,15 @@ function fileExtension(fileName) {
     return fileName.split('.').slice(-1)[0].toLowerCase()
 }
 
+const BROWSER_COMPATIBLE_FORMATS = [
+    'jpeg',
+    'jpg',
+    'png',
+    'mp4',
+    'm4v',
+    'webm'
+]
+
 const COMPATIBLE_IMAGE_FORMATS = [
     'jpeg',
     'jpg',
@@ -103,6 +112,30 @@ export default class Upload extends StateModel {
         return true;
     }
 
+    isBrowserCompatible(uploadType) {
+        let file = this.fileState(uploadType).get('file')
+
+        if (!file) {
+            return false
+        }
+
+        return this.constructor.isBrowserCompatible(file)
+    }
+
+    static isBrowserCompatible(file) {
+        // Use canPlayType if applicable
+        if (file.type && this.fileType(file) === 'video') {
+            let videoElement = document.createElement('video')
+            if (typeof videoElement.canPlayType === 'function') {
+                return ["maybe", "probably"].indexOf(document.createElement('video').canPlayType(file.type)) !== -1
+            }
+        }
+
+        // Otherwise, check file extension
+        const ext = fileExtension(file.name)
+        return BROWSER_COMPATIBLE_FORMATS.indexOf(ext) !== -1
+    }
+
 
     /*********
      * GETTERS
@@ -175,6 +208,15 @@ export default class Upload extends StateModel {
         } else {
             return 'https://media.dev.nextbeat.co/'
         }
+    }
+
+    processedImageUrl() {
+        if (!this.isDoneProcessing()) {
+            return null;
+        }
+
+        let attr = this.get('mediaItem').get('type') === 'video' ? 'processedPosterUrl' : 'processedUrl'
+        return this.get('mediaItem').get(attr)
     }
 
 

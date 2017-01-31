@@ -122,6 +122,14 @@ function checkProcessingProgress(store, job_id) {
                     type: mediaItem.get('type') === 'video' ? 'video' : 'image'
                 }
             }).then(res => {
+                upload = new Upload(store.getState())
+                if (!upload.hasFile()) {
+                    // If user has cleared the upload,
+                    // we want to exit early
+                    clearInterval(intervalId)
+                    return resolve()
+                }
+
                 store.dispatch(updateProcessingProgress({
                     uploadType: UploadTypes.MEDIA_ITEM,
                     progress: res.processingProgress.progress,
@@ -131,7 +139,11 @@ function checkProcessingProgress(store, job_id) {
 
                 if (res.initialProcessCompleted) {
                     clearInterval(intervalId)
-                    resolve()
+                    store.dispatch(updateNewMediaItem({
+                        processedUrl: res.processedUrl,
+                        processedPosterUrl: res.processedPosterUrl // undefined if image
+                    }))
+                    return resolve()
                 }
 
             }).catch(e => {
