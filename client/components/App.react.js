@@ -54,7 +54,7 @@ class App extends React.Component {
 
         $(window).on('beforeunload', this.handleBeforeUnload);
         $(document).on('touchstart', this.handleTouchstart);
-        $(document).on('mousedown', this.handleMousedown);
+        $(document).on('mousedown touchstart', this.handleMousedown);
 
     }
 
@@ -78,7 +78,7 @@ class App extends React.Component {
         $(window).off('beforeunload', this.handleBeforeUnload);
         $(window).off('resize', this.resize);
         $(document).off('touchstart', this.handleTouchstart);
-        $(document).off('mousedown', this.handleMousedown);
+        $(document).off('mousedown touchstart', this.handleMousedown);
 
         this.props.dispatch(clearApp());
     }
