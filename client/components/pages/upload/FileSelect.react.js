@@ -153,9 +153,9 @@ class FileSelect extends React.Component {
     }
 
     renderUploadProgress() {
-        const { upload, app } = this.props 
+        const { upload, app, resourceType } = this.props 
 
-        const fileIsCompatible = upload.isBrowserCompatible()
+        const fileIsCompatible = resourceType !== 'incompatible'
         const hasDecoration = upload.get('mediaItem').getIn(['decoration', 'caption_text'], '').length > 0
 
         return (
