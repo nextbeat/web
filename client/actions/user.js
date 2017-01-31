@@ -8,8 +8,8 @@ import { Status } from './types'
 import ActionTypes from './types'
 import { CurrentUser, Stack, Push } from '../models'
 import Schemas from '../schemas'
-import { API_CALL, API_CANCEL } from './types'
-import { gaIdentify } from './ga'
+import { API_CALL, API_CANCEL, GA, GATypes } from './types'
+import { gaIdentify, gaEvent } from './ga'
 import { pushInitialize, pushSubscribe } from './push'
 import { syncUnreadNotifications } from './notifications'
 import { startNewSession } from './analytics'
@@ -233,7 +233,15 @@ export function signup(credentials) {
             if (!res.ok) {
                 return dispatch(actionWith(Status.FAILURE, json))
             }
-            dispatch(actionWith(Status.SUCCESS, { user: json }))
+            dispatch(actionWith(Status.SUCCESS, { 
+                user: json.body,
+                [GA]: {
+                    type: GATypes.EVENT,
+                    category: 'user',
+                    action: 'signup',
+                    label: json.body.username
+                }
+            }))
             process.nextTick(() => {
                 dispatch(login(credentials.username, credentials.password))
             })
@@ -273,6 +281,11 @@ function postLogout() {
         type: ActionTypes.ENTITY_UPDATE,
         response: normalize(newUser, Schemas.USER)
     })
+    store.dispatch(gaEvent({
+        category: 'user',
+        action: 'subscribe',
+        label: user.get('username')
+    }))
 }
 
 function postSubscribe(subscription_id) {
@@ -314,6 +327,11 @@ function onUnsubscribeSuccess(store, next, action, response) {
         type: ActionTypes.ENTITY_UPDATE,
         response: normalize(newUser, Schemas.USER)
     })
+    store.dispatch(gaEvent({
+        category: 'user',
+        action: 'unsubscribe',
+        label: user.get('username')
+    }))
 }
 
 function postUnsubscribe(subscription_id) {

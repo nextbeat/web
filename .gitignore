@@ -1,6 +1,6 @@
 node_modules
 **/*bundle*.js
-client/public/css/main*.css
-client/public/js/main*.css
+client/public/css/*
+client/public/js/*
 dist
 disc*.html
