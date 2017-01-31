@@ -13,7 +13,7 @@ import { closeModal, updateNewMediaItem, UploadTypes } from '../../../actions'
 function processEventData(evt) {
     if ('touches' in evt.originalEvent) {
         if (evt.originalEvent.touches.length !== 1) {
-            return null; // don't
+            return null; 
         }
         let touch = evt.originalEvent.touches[0]
         let rect = touch.target.getBoundingClientRect()
@@ -43,7 +43,9 @@ class AddCaption extends React.Component {
         this.state = {
             resource: Map(),
             savedDecoration: null,
-            isDraggingCaption: false
+            isDraggingCaption: false,
+            containerWidth: 0,
+            containerHeight: 0
         }
     }
 
@@ -104,10 +106,12 @@ class AddCaption extends React.Component {
     // Event handlers
 
     handleResize(e) {
-        const width = parseInt($('.player_media-inner').css('width'));
-        const mediaHeight = Math.min(340, Math.floor(width * 9 / 16));
-        console.log(width, mediaHeight);
-        $('.upload_add-caption_media-container').height(mediaHeight);
+        const containerWidth = parseInt($('.player_media-inner').css('width'));
+        const containerHeight = Math.min(340, Math.floor(containerWidth * 9 / 16));
+        this.setState({
+            containerWidth,
+            containerHeight
+        })
     }
 
     handleMouseDown(e) {
@@ -194,19 +198,23 @@ class AddCaption extends React.Component {
 
     render() {
         const { upload } = this.props 
-        const { resource } = this.state
+        const { resource, containerWidth, containerHeight } = this.state
 
         const isVideo = upload.fileType() === 'video'
         const isImage = upload.fileType() === 'image'
 
         const captionText = upload.get('mediaItem').getIn(['decoration', 'caption_text'], '')
 
+        const containerProps = { containerWidth, containerHeight }
+
         return (
             <Modal name="add-caption" className="upload_add-caption">
                 <div id="upload_add-caption_media-container" className="upload_add-caption_media-container">
-                    <div className="player_media-inner">
-                        { isImage && <Image image={resource} decoration={this.decorationObject()} hideControls={true} /> }
-                        { isVideo && <Video video={resource} decoration={this.decorationObject()} autoplay={false} /> }
+                    <div className="upload_add-caption_media" >
+                        <div className="player_media-inner" style={{ height: `${containerHeight}px` }}>
+                            { isImage && <Image image={resource} decoration={this.decorationObject()} hideControls={true} {...containerProps} /> }
+                            { isVideo && <Video video={resource} decoration={this.decorationObject()} autoplay={false} {...containerProps} /> }
+                        </div>
                     </div>
                 </div>
                 <div className="upload_add-caption_form">

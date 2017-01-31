@@ -17,7 +17,7 @@ class Image extends React.Component {
 
         this.fullScreen = this.fullScreen.bind(this)
 
-        this.resize = this.resize.bind(this)
+        this.calculateDimensions = this.calculateDimensions.bind(this)
         this.handleFullScreenChange = this.handleFullScreenChange.bind(this)
         this.handleOnMouseOver = this.handleOnMouseOver.bind(this)
         this.handleOnMouseOut = this.handleOnMouseOut.bind(this)
@@ -39,11 +39,6 @@ class Image extends React.Component {
     componentDidMount() {
         const { image } = this.props
 
-        $(window).on('resize.photo', this.resize)
-        setTimeout(() => {
-            this.resize(image)
-        })
-
         if (image.get('type') === 'objectURL') {
             $('#player_photo').one('load', () => {
                 URL.revokeObjectURL(image.get('url'))
@@ -51,16 +46,19 @@ class Image extends React.Component {
         }
 
         $(window).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
+
+        this.calculateDimensions(this.props.image)
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.image !== this.props.image) {
-            this.resize(nextProps.image);
+    componentDidUpdate(prevProps) {
+        if (prevProps.image !== this.props.image 
+            || prevProps.containerHeight !== this.props.containerHeight 
+            || prevProps.containerWidth !== this.props.containerWidth) {
+            this.calculateDimensions(this.props.image)
         }
     }
 
     componentWillUnmount() {
-        $(window).off('resize.photo')
         $(window).off('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
     }
 
@@ -98,13 +96,12 @@ class Image extends React.Component {
         })
     }
 
-    resize(image) {
+    calculateDimensions(image) {
         if (!image || !Map.isMap(image)) {
             image = this.props.image
         }
 
-        const containerWidth = $('.player_media-inner').width()
-        const containerHeight = $('.player_media-inner').height()
+        const { containerWidth, containerHeight } = this.props
         const imageRatio = image.get('width')/image.get('height')
         const containerRatio = containerWidth/containerHeight
 
@@ -197,7 +194,7 @@ Image.propTypes = {
     image: React.PropTypes.object.isRequired,
     containerWidth: React.PropTypes.number.isRequired,
     containerHeight: React.PropTypes.number.isRequired,
-    
+
     hideControls: React.PropTypes.bool,
     decoration: React.PropTypes.object,
 }

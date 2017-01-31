@@ -98,7 +98,16 @@
     }
 }
 
-
+.btn-bookmark_count {
+    border: 1px solid $border-color;
+    border-right: none;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 26px;
+    padding: 0 5px;
+    color: $button-color;
+    min-width: 20px;
+}
 
 .btn-bookmark_text {
     margin-left: 17px;

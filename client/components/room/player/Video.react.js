@@ -21,7 +21,7 @@ class Video extends React.Component {
 
         this.shouldForceVideoRotation = this.shouldForceVideoRotation.bind(this);
         this.shouldForceVideoResizing = this.shouldForceVideoResizing.bind(this);
-        this.resize = this.resize.bind(this);
+        this.calculateDimensions = this.calculateDimensions.bind(this);
 
         this.didLoadMetadata = this.didLoadMetadata.bind(this);
         this.didUpdateTime = this.didUpdateTime.bind(this);
@@ -83,10 +83,6 @@ class Video extends React.Component {
         video.addEventListener('progress', this.didProgressDownload);
 
         this.loadVideo(this.props.video);
-        window.addEventListener('resize', this.resize)
-        setTimeout(() => {
-            this.resize()
-        })
 
         $(window).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
 
@@ -114,15 +110,21 @@ class Video extends React.Component {
 
         this.logImpression(false); 
 
-        window.removeEventListener('resize', this.resize);
         $(window).off('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.video !== this.props.video) {
+        if (prevProps.video !== this.props.video) 
+        {
             this.logImpression();
             this.loadVideo(this.props.video);
         }
+
+        if (prevProps.containerWidth !== this.props.containerWidth
+            || prevProps.containerHeight !== this.props.containerHeight) 
+        {
+            this.calculateDimensions();
+        }   
     }
 
     // Queries
@@ -145,11 +147,9 @@ class Video extends React.Component {
         })
     }
 
-    resize() {
-        const { video } = this.props
+    calculateDimensions() {
+        const { video, containerWidth, containerHeight } = this.props
 
-        const containerWidth = $('.player_media-inner').width()
-        const containerHeight = $('.player_media-inner').height()
         const videoRatio = video.get('width')/video.get('height')
         const containerRatio = containerWidth/containerHeight
 
@@ -280,7 +280,8 @@ class Video extends React.Component {
         }
 
         videoPlayer.volume = this.props.app.get('volume', 1)
-        this.resize()
+
+        this.calculateDimensions();
 
         this.setState({
             currentTime: 0,
