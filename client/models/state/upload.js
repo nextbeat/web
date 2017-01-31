@@ -215,8 +215,9 @@ export default class Upload extends StateModel {
             return null;
         }
 
-        let attr = this.get('mediaItem').get('type') === 'video' ? 'processedPosterUrl' : 'processedUrl'
-        return this.get('mediaItem').get(attr)
+        let processedItem = this.get('mediaItem').get('processedItem')
+        let attr = processedItem.get('item_type') === 'video' ? 'poster_url' : 'url'
+        return processedItem.get(attr)
     }
 
 

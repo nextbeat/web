@@ -130,6 +130,12 @@ function checkProcessingProgress(store, job_id) {
                     return resolve()
                 }
 
+                if (res.initialProcessCompleted) {
+                    store.dispatch(updateNewMediaItem({
+                        processedItem: res.processedItem
+                    }))
+                }
+
                 store.dispatch(updateProcessingProgress({
                     uploadType: UploadTypes.MEDIA_ITEM,
                     progress: res.processingProgress.progress,
@@ -139,10 +145,6 @@ function checkProcessingProgress(store, job_id) {
 
                 if (res.initialProcessCompleted) {
                     clearInterval(intervalId)
-                    store.dispatch(updateNewMediaItem({
-                        processedUrl: res.processedUrl,
-                        processedPosterUrl: res.processedPosterUrl // undefined if image
-                    }))
                     return resolve()
                 }
 

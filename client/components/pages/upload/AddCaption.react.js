@@ -87,12 +87,21 @@ class AddCaption extends React.Component {
 
     resourceObject(props) {
         const { width, height, upload } = props 
-        return Map({
-            url: URL.createObjectURL(upload.get(UploadTypes.MEDIA_ITEM, 'file')),
-            type: 'objectURL',
-            width,
-            height
-        })
+        let object = {};
+
+        if (upload.isBrowserCompatible(UploadTypes.MEDIA_ITEM)) {
+            object = {
+                url: URL.createObjectURL(upload.get(UploadTypes.MEDIA_ITEM, 'file')),
+                type: 'objectURL',
+                width,
+                height
+            }
+        } else if (upload.isDoneProcessing()) {
+            object = upload.get('mediaItem').get('processedItem').delete('item_type')
+        }
+
+        return object
+
     }
 
     decorationObject() {

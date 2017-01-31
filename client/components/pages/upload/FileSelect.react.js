@@ -153,16 +153,18 @@ class FileSelect extends React.Component {
     }
 
     renderUploadProgress() {
-        const { upload, app, resourceType } = this.props 
+        const { upload, app, resourceType, resourceWidth, resourceHeight } = this.props 
 
         const fileIsCompatible = resourceType !== 'incompatible'
         const hasDecoration = upload.get('mediaItem').getIn(['decoration', 'caption_text'], '').length > 0
 
+        const shouldDisplayPrompt = !upload.isInSubmitProcess() && (fileIsCompatible || upload.isDoneProcessing())
+
         return (
             <div className="upload_file-select" id="upload_file-select">
-                <AddCaption app={app} upload={upload} />
+                <AddCaption app={app} upload={upload} width={resourceWidth} height={resourceHeight} />
                 { fileIsCompatible ? this.renderCompatibleFile() : this.renderIncompatibleFile() }
-                { !upload.isInSubmitProcess() && 
+                { shouldDisplayPrompt && 
                     <div className="upload_caption-btn" onClick={this.handleAddCaptionClick}>{hasDecoration ? 'Edit' : 'Add'} Caption</div>
                 }
             </div>
