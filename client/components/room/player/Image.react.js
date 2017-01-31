@@ -193,6 +193,15 @@ class Image extends React.Component {
     }
 }
 
+Image.propTypes = {
+    image: React.PropTypes.object.isRequired,
+    containerWidth: React.PropTypes.number.isRequired,
+    containerHeight: React.PropTypes.number.isRequired,
+    
+    hideControls: React.PropTypes.bool,
+    decoration: React.PropTypes.object,
+}
+
 Image.defaultProps = {
     hideControls: false
 }

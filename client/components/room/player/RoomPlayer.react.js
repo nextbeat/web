@@ -15,6 +15,11 @@ class RoomPlayer extends React.Component {
 
         this.handleBackward = this.handleBackward.bind(this)
         this.handleForward = this.handleForward.bind(this)
+
+        this.state = {
+            playerWidth: 0,
+            playerHeight: 0
+        }
     }
 
     // Lifecycle
@@ -32,11 +37,13 @@ class RoomPlayer extends React.Component {
     // Resize
 
     resize() {
-        // TODO: rewrite
+        // TODO: handle room card better
         if (!$('.player_main').parent().hasClass('.room-card_main')) {
             const roomHeight = parseInt($('.room').css('height'));
             const mediaHeight = Math.min(500, roomHeight-150);
-            $('.player_media').height(mediaHeight);
+            this.setState({
+                playerHeight: mediaHeight
+            })
         }
     }
 
@@ -85,7 +92,9 @@ class RoomPlayer extends React.Component {
 
 RoomPlayer.propTypes = {
     room: React.PropTypes.object.isRequired,
-    shouldAutoplayVideo: React.PropTypes.bool.isRequired
+    shouldAutoplayVideo: React.PropTypes.bool.isRequired,
+
+
 }
 
 RoomPlayer.defaultProps = {
