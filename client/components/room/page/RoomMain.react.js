@@ -69,7 +69,7 @@ class RoomMain extends React.Component {
 
         // display welcome banner here on small screen resolutions 
         // so that it scrolls with rest of content
-        const shouldDisplayBanner = app.get('width') === 'small' && (roomPage.author().get('username') === 'safiya' || app.get('environment') === 'development')
+        const shouldDisplayBanner = app.get('width') === 'small' && roomPage.author().get('username') === 'safiya'
 
         return (
             <section className="player-container">
