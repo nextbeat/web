@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
 import Helmet from 'react-helmet'
 import { List } from 'immutable'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
@@ -86,7 +87,8 @@ class Upload extends React.Component {
         const { upload } = this.props
 
         if (upload.get('selectedStackId') > 0) {
-            var stackUrl = `${baseUrl()}/r/${upload.selectedStack().get('hid')}/latest`
+            var fullStackUrl = `${baseUrl()}/r/${upload.selectedStack().get('hid')}/latest`
+            var stackUrl = `/r/${upload.selectedStack().get('hid')}/latest`
         }
 
         return (
@@ -101,7 +103,7 @@ class Upload extends React.Component {
                     <div>
                         <Icon type="check" />
                         <div className="upload_success-message">
-                            Your {upload.fileType()} has been submitted! See it live at <a href={stackUrl}>{stackUrl}</a>
+                            Your {upload.fileType()} has been submitted! See it live at <Link to={stackUrl}>{fullStackUrl}</Link>
                         </div>
                         <div><a className="btn upload_restart" onClick={this.handleRestart}>Upload another file</a></div>
                     </div> 
