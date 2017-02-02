@@ -186,7 +186,7 @@ class Topbar extends React.Component {
         const loggedInClass = user.isLoggedIn() ? 'topbar-logged-in' : 'topbar-guest';
 
         return (
-            <div className="topbar">
+            <div className="topbar" id="topbar">
                 <div className="topbar_inner">
                     <div className="topbar_search-container">
                         <div className="topbar_search">

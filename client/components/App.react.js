@@ -103,11 +103,16 @@ class App extends React.Component {
     }
 
     handleMousedown(e) {
-        // Hide sidebar if tapping outside of it on small screens
+        // Hide sidebar if tapping outside of it or topbar on small screens
         const sidebar = document.getElementById('sidebar')
+        const topbar = document.getElementById('topbar')
         const { app, dispatch } = this.props
 
-        if (app.get('activeOverlay') === 'sidebar' && !sidebar.contains(e.target) && app.get('width') === 'small') {
+        if (app.get('activeOverlay') === 'sidebar' 
+            && !sidebar.contains(e.target) 
+            && !topbar.contains(e.target) 
+            && app.get('width') === 'small') 
+        {
             // e.preventDefault()
             dispatch(closeSidebar())
         }
