@@ -2,7 +2,7 @@ import React from 'react'
 import { fromJS } from 'immutable'
 import { connect } from 'react-redux'
 
-import { goBackward, goForward } from '../../../actions'
+import { goBackward, goForward, selectDetailSection } from '../../../actions'
 import Video from './Video.react'
 import Image from './Image.react'
 import Icon from '../../shared/Icon.react'
@@ -16,6 +16,8 @@ class RoomPlayer extends React.Component {
 
         this.handleBackward = this.handleBackward.bind(this)
         this.handleForward = this.handleForward.bind(this)
+        this.handleCounterClick = this.handleCounterClick.bind(this)
+        
         this.resize = this.resize.bind(this)
 
         this.state = {
@@ -53,8 +55,6 @@ class RoomPlayer extends React.Component {
                 playerWidth,
                 playerHeight
             })
-        } else {
-            
         }
     }
 
@@ -69,6 +69,10 @@ class RoomPlayer extends React.Component {
     handleForward() {
         const { dispatch, room } = this.props
         dispatch(goForward(room.get('id')))
+    }
+
+    handleCounterClick() {
+        this.props.dispatch(selectDetailSection('activity'))
     }
 
     // Render
@@ -108,7 +112,7 @@ class RoomPlayer extends React.Component {
                 </div>
                 <div className="player_navigation">
                     <div className={`player_nav-button player_nav-backward ${leftDisabledClass}`} onClick={this.handleBackward}><Icon type="arrow-back" /></div>
-                    <div className="player_nav-counter"><CounterInner room={room} /></div>
+                    <div className="player_nav-counter" onClick={this.handleCounterClick}><CounterInner room={room} /></div>
                     <div className={`player_nav-button player_nav-forward ${rightDisabledClass}`} onClick={this.handleForward}><Icon type="arrow-forward" /></div>
                 </div>
             </div>

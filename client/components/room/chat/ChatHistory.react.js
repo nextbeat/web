@@ -163,6 +163,7 @@ const scrollOptions = {
 
     onComponentDidUpdate: function(scrollComponent, prevProps) {
         if (prevProps.room.comments().size !== this.props.room.comments().size) {
+            console.log('scrolling to bottom')
             scrollComponent.keepScrollPosition()
             scrollComponent.scrollToBottomIfPreviouslyAtBottom()
             scrollComponent.setScrollState()

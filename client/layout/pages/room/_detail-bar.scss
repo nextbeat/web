@@ -9,18 +9,24 @@
     border-left: 1px solid $border-color;
 
     @include media('<=medium') {
-        display: none;
+        // visibility: hidden;
+        position: absolute;
+        border: none;
+        width: 100%;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        z-index: 1001;
+        transform: translateY(100%);
+        transition-property: transform;
+        transition-duration: 225ms;
+        transition-timing-function: cubic-bezier(0.4, 0.0, 1, 1);
 
         &.active {
-            display: block;
-            width: 100%;
-            position: absolute;
-            border: none;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            z-index: 30;
+            transform: none;
+            transition-duration: 275ms;
+            transition-timing-function: cubic-bezier(0.0, 0.0, 0.2, 1);
         }
 
         .detail-bar_header {
@@ -29,6 +35,13 @@
 
         .detail-bar_main {
             height: 100%;
+        }
+    }
+
+    @include media('<=small') {
+        transition-duration: 195ms;
+        &.active {
+            transition-duration: 225ms;
         }
     }
 }
@@ -116,17 +129,18 @@
 
 .detail-bar_close {
     position: absolute;
-    top: 5px;
-    left: 5px;
-    padding: 3px;
-    padding-bottom: 1px;
-    border: 1px solid $border-color;
-    background-color: rgba(white, 0.9);
+    top: 10px;
+    left: 10px;
+    padding: 6px;
+    padding-bottom: 2px;
+    background-color: rgba(#666, 0.9);
     z-index: 50;
+    box-shadow: 2px 2px 2px rgba(#000, 0.2);
 
     .svg-icon-close {
-        width: 20px;
-        height: 20px;
+        width: 24px;
+        height: 24px;
+        fill: #fff;
     }
 
     &:hover {

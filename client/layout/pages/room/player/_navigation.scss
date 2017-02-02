@@ -60,6 +60,11 @@
         font-weight: bold;
     }
 
+    &:hover {
+        cursor: pointer;
+        color: $primary-color;
+    }
+
     @include media('<=medium') {
         display: flex;
     }

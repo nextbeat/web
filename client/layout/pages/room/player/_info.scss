@@ -37,8 +37,9 @@
     align-items: center;
 }
 
-.player_info_more.player_info-small_acton {
+.player_info_more.player_info-small_action {
     display: none;
+    margin-right: 0;
     @include media("<=medium") {
         display: inline-block;
     }
@@ -146,7 +147,7 @@ a.player_info_tag {
 }
 
 .player_info-small_views {
-    font-size: 12px;
+    font-size: 13px;
     color: $detail-text-color;
     font-weight: 300;
     margin-bottom: 4px;
@@ -171,8 +172,8 @@ a.player_info_tag {
 }
 
 a.player_info-small_tag {
-    color: #ccc;
-    font-size: 11px;
+    color: #aaa;
+    font-size: 12px;
     font-weight: 300;
     margin-right: 5px;
 

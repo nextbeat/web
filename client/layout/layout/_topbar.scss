@@ -268,7 +268,9 @@ input.topbar_search-bar {
 
         .topbar_icon-search {
             display: block;
-            margin-left: 25px;
+            &.topbar-guest {
+                margin-left: 25px;
+            }
         }
 
         .topbar_search {

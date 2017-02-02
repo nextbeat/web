@@ -127,22 +127,22 @@
 
     .btn-bookmark_count {
         border: none;
-        padding: 0 5px;
+        padding: 0 6px;
         color: $button-color;
-        font-size: 18px;
+        font-size: 21px;
         font-weight: 500;
     }
 
     .svg-icon-bookmark, .svg-icon-bookmark-outline {
-        height: 23px;
-        width: 23px;
+        height: 26px;
+        width: 26px;
         fill: $button-color;
         margin-top: 3px;
         position: static;
 
-        &:hover {
-            fill: $primary-color;
-        }
+        // &:hover {
+        //     fill: $primary-color;
+        // }
     }
 
     .btn-bookmark_text {
