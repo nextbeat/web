@@ -125,60 +125,7 @@ a.room-card_header {
         height: 100%;
         padding-bottom: 30px;
     }
-
-    .chat_item {
-        font-size: 12px;
-        margin: 12px 12px 0 12px;
-
-        strong.creator {
-            background: none;
-            color: $primary-color;
-            padding: 0;
-            a {
-                color: $primary-color;
-            }
-        }
-    }
-
-    .chat_item-notification {
-        font-size: 12px;
-        background: none;
-        border: none;
-        padding: 0;
-        color: $detail-text-color;
-        font-style: italic;
-
-        strong {
-            color: $detail-text-color;
-            font-weight: 400;
-        }
-
-        .chat_item-notification_thumb {
-            display: none;
-        }
-
-        .chat_item-notification_text {
-            float: none;
-            width: 100%;
-            padding: 0;
-        }
-
-        &.chat_item-notification-close {
-            background: none;
-            border: none;
-            padding: 0;
-        }
-
-    }
-
-    .chat_item-notification-mediaitem {
-        &:hover {
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
-    }
-
+    
 }
 
 a.room-card_prompt {

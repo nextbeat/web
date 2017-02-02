@@ -9,10 +9,28 @@ class ChatItem extends React.Component {
         this.renderMessage = this.renderMessage.bind(this)
     }
 
-    shouldComponentUpdate(nextProps) {
-        return this.props.comment !== nextProps.comment
+    componentDidMount() {
+        if (this.props.collapsed) {
+            $(this.refs.chat).dotdotdot({
+                height: 45, 
+                watch: true
+            })
+        }
     }
 
+    shouldComponentUpdate(nextProps) {
+        return this.props.comment !== nextProps.comment || this.props.collapsed !== nextProps.collapsed
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.comment !== this.props.comment) {
+            $(this.refs.chat).trigger('update.dot')
+        }
+
+        if (prevProps.collapsed && !this.props.collapsed) {
+            $(this.refs.chat).trigger('destroy.dot')
+        }
+    }
     renderMessage() {
         const { comment, handleSelectUsername } = this.props 
 
@@ -50,13 +68,13 @@ class ChatItem extends React.Component {
 
     render() {
         const { comment, username, isCreator, handleSelectUsername } = this.props;
-        const creatorClass = isCreator ? "creator" : "";
+        const usernameClass = isCreator ? "chat_item_username chat_item_creator" : "chat_item_username";
         
         return (
-            <li className="chat_item">
-                <strong className={creatorClass}>
+            <li className="chat_item" ref="chat">
+                <strong className={usernameClass}>
                     <a onClick={ () => { handleSelectUsername(username) } }>{username}</a>
-                </strong>&nbsp;
+                </strong>
                 {this.renderMessage()}
             </li>
         );

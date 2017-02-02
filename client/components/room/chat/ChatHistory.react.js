@@ -13,7 +13,7 @@ import { loadComments, promptChatActionsForUser } from '../../../actions'
 import { Stack, CurrentUser, App } from '../../../models'
 
 function scrollComponentId(props) {
-    return `history-${props.room.get('id')}`
+    return `history-${props.room.id}-${props.scrollable ? 'scroll' : 'no-scroll'}`
 }
 
 class ChatHistory extends React.Component {
@@ -26,21 +26,26 @@ class ChatHistory extends React.Component {
     }
 
     componentDidMount() {
-        // Prevents document from scrolling when inside chat history element
-        // Sourced from http://stackoverflow.com/a/20520619
-        $(`#${scrollComponentId(this.props)}`).on('mousewheel DOMMouseScroll', function(e) {
-            var direction = e.originalEvent.wheelDelta || -e.originalEvent.detail;
-            if ((direction > 0 && this.scrollTop === 0
-                || direction <= 0 && this.scrollTop == this.scrollHeight-this.offsetHeight)
-                && this.scrollHeight > this.offsetHeight)
-            {
-                e.preventDefault();
-            }
-        })
+
+        if (this.props.scrollable) {
+            // Prevents document from scrolling when inside chat history element
+            // Sourced from http://stackoverflow.com/a/20520619
+            $(`#${scrollComponentId(this.props)}`).on('mousewheel DOMMouseScroll', function(e) {
+                var direction = e.originalEvent.wheelDelta || -e.originalEvent.detail;
+                if ((direction > 0 && this.scrollTop === 0
+                    || direction <= 0 && this.scrollTop == this.scrollHeight-this.offsetHeight)
+                    && this.scrollHeight > this.offsetHeight)
+                {
+                    e.preventDefault();
+                }
+            })
+        }
+
     }
 
     componentWillUnmount() {
          $(`#${scrollComponentId(this.props)}`).off('mousewheel DOMMouseScroll')
+
     }
 
     // Events
@@ -51,10 +56,11 @@ class ChatHistory extends React.Component {
 
     // Render
 
-    renderComment(comment) {
-        const {room } = this.props;
+    renderComment(comment, idx) {
+        const { room, collapseMessages } = this.props;
         const username = comment.author().get('username')
         const isCreator = comment.authorIsCreator()
+        let shouldCollapse = collapseMessages && idx > room.totalCommentsCount() - 5;
 
         if (comment.get('type') === 'message') {
             return <ChatItem 
@@ -63,6 +69,7 @@ class ChatHistory extends React.Component {
                         username={username} 
                         isCreator={isCreator} 
                         handleSelectUsername={this.handleSelectUsername}
+                        collapsed={shouldCollapse}
                     />
         } else if (comment.get('type') === 'notification') {
             return <NotificationChatItem 
@@ -77,9 +84,10 @@ class ChatHistory extends React.Component {
     }
 
     renderLiveComment(comment, idx) {
-        const { room } = this.props;
+        const { room, collapseMessages } = this.props;
         const key = `l${idx}`;
         const isCreator = (room.author().get('username') === comment.get('username'));
+        let shouldCollapse = collapseMessages && idx + room.comments().size > room.totalCommentsCount() - 5;
 
         if (comment.get('type') === 'message') {
             return <LiveChatItem 
@@ -87,6 +95,7 @@ class ChatHistory extends React.Component {
                         comment={comment} 
                         isCreator={isCreator} 
                         handleSelectUsername={this.handleSelectUsername}
+                        collapsed={shouldCollapse}
                     />
         } else if (comment.get('type') === 'notification') {
             return <NotificationChatItem 
@@ -106,14 +115,17 @@ class ChatHistory extends React.Component {
     }
 
     render() {
-        const { room } = this.props;
+        const { room, scrollable, style } = this.props;
+
+        let scrollableClass = scrollable ? 'scrollable': ''
+        let styleClass = `chat_history-${style}`
 
         return (
-            <div id={scrollComponentId(this.props)} className="chat_history">
+            <div id={scrollComponentId(this.props)} className={`chat_history ${scrollableClass} ${styleClass}`}>
                 { room.get('commentsFetching') && <Spinner type="grey" />}
                 { room.get('commentsError') && room.get('commentsError').length > 0 && <p>Could not load comments.</p>}
                 <ul className="chat_items">
-                    {room.comments().reverse().map(comment => this.renderComment(comment))}
+                    {room.comments().reverse().map((comment, idx) => this.renderComment(comment, idx))}
                     {room.liveComments().map((comment, idx) => this.renderLiveComment(comment, idx))}
                 </ul>
             </div>
@@ -122,7 +134,16 @@ class ChatHistory extends React.Component {
 }
 
 ChatHistory.propTypes = {
-    room: React.PropTypes.object.isRequired
+    room: React.PropTypes.object.isRequired,
+    scrollable: React.PropTypes.bool.isRequired,
+    style: React.PropTypes.string.isRequired,
+    collapseMessages: React.PropTypes.bool.isRequired
+}
+
+ChatHistory.defaultProps = {
+    scrollable: true,
+    style: 'expanded',
+    collapseMessages: false
 }
 
 const scrollOptions = {
@@ -131,6 +152,12 @@ const scrollOptions = {
         const { room, dispatch } = this.props
         if (!room.get('commentsFetching') && room.get('id')) {
             dispatch(loadComments(room.get('id')))
+        }
+    },
+
+    onComponentDidMount: function(scrollComponent, props) {
+        if (!props.scrollable) {
+            scrollComponent.scrollToBottom();
         }
     },
 
@@ -144,11 +171,13 @@ const scrollOptions = {
             scrollComponent.scrollToBottomIfPreviouslyAtBottom()
             scrollComponent.setScrollState()
         }
-        // TODO: only on room page
-        // if (prevProps.app.get('activeOverlay') !== this.props.app.get('activeOverlay') && this.props.app.get('activeOverlay') === 'chat') {
-        //     scrollComponent.scrollToBottom()
-        //     scrollComponent.setScrollState()
-        // }
+    },
+
+    onResize: function(scrollComponent, props) {
+        if (!props.scrollable) {
+            // want to always keep static chat history at bottom of element
+            scrollComponent.scrollToBottom();
+        }
     }
 
 }

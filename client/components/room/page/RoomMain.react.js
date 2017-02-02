@@ -7,6 +7,7 @@ import { selectDetailSection, goBackward, goForward } from '../../../actions'
 import RoomPlayer from '../player/RoomPlayer.react'
 import Counter from '../counter/Counter.react'
 import ActivityCounter from '../counter/ActivityCounter.react'
+import SmallChat from './chat/SmallChat.react'
 import Info from './main/Info.react'
 import More from './main/More.react'
 import Spinner from '../../shared/Spinner.react'
@@ -69,7 +70,8 @@ class RoomMain extends React.Component {
 
         // display welcome banner here on small screen resolutions 
         // so that it scrolls with rest of content
-        const shouldDisplayBanner = app.get('width') === 'small' && (roomPage.author().get('username') === 'safiya' || app.get('environment') === 'development')
+        const shouldDisplayBanner = app.get('width') === 'small' && roomPage.author().get('username') === 'safiya'
+        const shouldDisplaySmallChat = ['small', 'medium'].indexOf(app.get('width')) !== -1
 
         return (
             <section className="player-container">
@@ -80,14 +82,15 @@ class RoomMain extends React.Component {
                         </WelcomeBanner>
                     }
                     <AppBanner url={`nextbeat://rooms/${roomPage.get('hid')}`} />
-                    {/* we only display once the room  has loaded */}
+                    {/* we only display once the room has loaded */}
                     { roomPage.isFetchingDeep() &&  <Spinner type="large grey player" />}
                     { roomPage.get('error') && <PageError>The room could not be found, or it has been deleted by its owner.</PageError>}
                     { !roomPage.isFetchingDeep() && !roomPage.get('error') &&
                     <div className="player_inner">
                         <Counter room={roomPage.room()} />
                         <RoomPlayer room={roomPage.room()} />
-                        <Info roomPage={roomPage} />
+                        { shouldDisplaySmallChat && <SmallChat /> }
+                        <Info roomPage={roomPage} app={app} />
                         <More roomPage={roomPage} />
                     </div>
                     }

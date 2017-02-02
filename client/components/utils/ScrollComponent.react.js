@@ -11,8 +11,10 @@ export default function ScrollComponent(domId, scrollOptions={}) {
     const { 
         onScrollToTop,
         onScrollToBottom,
+        onComponentDidMount,
         onComponentWillReceiveProps,
-        onComponentDidUpdate
+        onComponentDidUpdate,
+        onResize
     } = scrollOptions
 
     return function wrapWithScroll(ChildComponent) {
@@ -31,23 +33,31 @@ export default function ScrollComponent(domId, scrollOptions={}) {
                 this.domElement = this.domElement.bind(this)
 
                 this.handleScroll = this.handleScroll.bind(this)
+                this.handleResize = this.handleResize.bind(this)
+
                 this.scrollToBottomIfPreviouslyAtBottom = this.scrollToBottomIfPreviouslyAtBottom.bind(this)
                 this.scrollToTopIfPreviouslyAtTop = this.scrollToTopIfPreviouslyAtTop.bind(this)
                 this.keepScrollPosition = this.keepScrollPosition.bind(this)
             }
 
+            domIdString() {
+                return typeof domId === 'function' ? domId(this.props) : domId
+            }
+
             domElement() {
-                if (typeof domId === 'function') {
-                    return document.getElementById(domId(this.props))
-                } else {
-                    return document.getElementById(domId)
-                }
+                return document.getElementById(this.domIdString())
             }
 
             // Component lifecycle methods
 
             componentDidMount() {
                 $(this.domElement()).on('scroll', this.handleScroll)
+                $(window).on(`resize.${this.domIdString()}`, this.handleResize)
+
+                if (typeof onComponentDidMount === 'function') {
+                    console.log(this.domIdString())
+                    onComponentDidMount.call(this.refs.child, this, this.props)
+                }
             }
 
             componentWillReceiveProps(nextProps) {
@@ -65,6 +75,17 @@ export default function ScrollComponent(domId, scrollOptions={}) {
 
             componentWillUnmount() {
                 $(this.domElement()).off('scroll', this.handleScroll)
+                $(window).off(`resize.${this.domIdString()}`)
+            }
+
+            // Other events
+
+            handleResize() {
+                // child unmounts before parent, so we need to 
+                // check that the child is still around
+                if (typeof onResize === 'function' && this.refs.child) {
+                    onResize.call(this.refs.child, this, this.props)
+                }
             }
 
             // Scroll UI logic

@@ -33,6 +33,15 @@
     color: $detail-text-color;
     flex: 0 0 auto;
     margin-left: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.player_info_more.player_info-small_acton {
+    display: none;
+    @include media("<=medium") {
+        display: inline-block;
+    }
 }
 
 .player_info_badges {
@@ -111,12 +120,13 @@ a.player_info_tag {
 
 .player_info-small_actions {
     flex: 0 0 auto;
-    margin-left: 15px;
+    margin-left: 7px;
 }
 
 .player_info-small_action {
     width: 22px;
     height: 22px;
+    margin: 0 3px 0 8px;
     display: inline-block;
     .svg-icon {
         width: 100%;

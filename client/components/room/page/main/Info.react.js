@@ -54,7 +54,7 @@ class Info extends React.Component {
     }
 
     renderLarge() {
-        const { roomPage } = this.props 
+        const { roomPage, app } = this.props 
         const views = roomPage.get('views')
 
         return (
@@ -69,6 +69,7 @@ class Info extends React.Component {
                     </div>
                     <div className="player_info_views">
                         { `${views} view${views !== 1 ? 's' : ''}` }
+                        { roomPage.currentUserIsAuthor() && <div className="player_info_more player_info-small_action"><Icon type="more-vert" /></div> }
                     </div>
                 </div>
                 <div className="player_info_user">

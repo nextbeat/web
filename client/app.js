@@ -18,8 +18,9 @@ Promise.config({
     cancellation: true
 })
 
-// expose jQuery globally
+// expose jQuery globally and add plugins
 window.$ = window.jQuery = $
+require('dotdotdot')
 
 let initialState = window.__INITIAL_STATE__
 const store = configureStore(fromJS(initialState))

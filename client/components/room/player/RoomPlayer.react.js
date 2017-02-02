@@ -53,6 +53,8 @@ class RoomPlayer extends React.Component {
                 playerWidth,
                 playerHeight
             })
+        } else {
+            
         }
     }
 
