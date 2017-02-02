@@ -1,5 +1,4 @@
 .app-banner {
-    display: block;
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
@@ -7,13 +6,15 @@
     bottom: 10px;
     z-index: 1000;
     background: $primary-color;
-    padding: 5px 8px;
+    padding: 8px 10px 8px 14px;
     border-radius: 10px;
     text-align: left;
     color: #fff;
     font-size: 12px;
     font-weight: 400;
     box-shadow: 0 2px 2px rgba(#000, 0.15);
+    display: flex;
+    align-items: center;
 
     .svg-icon-small-logo {
         display: inline-block;
@@ -23,50 +24,29 @@
     }
 }
 
-.app-banner_main {
-    display: inline-block;
-    height: 25px;
-}
-
-.app-banner_name {
-    font-weight: bold;
-    padding-bottom: 2px;
-}
-
-.app-banner_button {
-    float: right;
-    @include clearfix;
-}
-
 .app-banner_prompt {
+    flex: 1;
     display: inline-block;
-    margin: 5px 5px;
-    width: 100%;
-    padding-right: 28px;
-    font-weight: bold;
-    font-size: 13px;
+    font-weight: 400;
+    font-size: 15px;
+    margin-bottom: 2px;
 }
 
 .app-banner_close {
-    position: absolute;
-    @include centerY;
-    left: auto;
-    right: 10px;
     height: 23px;
     width: 23px;
-    margin-right: -3px;
-    @include clearfix;
+    flex: 0 0 auto;
+    margin-left: 10px;
 
     .svg-icon {
         width: 100%;
         height: 100%;
         fill: #fff;
-        fill-opacity: 0.8;
+        fill-opacity: 1;
     }
 
     &:hover {
         cursor: pointer;
-        fill-opacity: 0.6;
     }
 }
 
