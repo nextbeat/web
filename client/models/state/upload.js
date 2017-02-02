@@ -133,6 +133,7 @@ export default class Upload extends StateModel {
 
         // Otherwise, check file extension
         const ext = fileExtension(file.name)
+        console.log(ext)
         return BROWSER_COMPATIBLE_FORMATS.indexOf(ext) !== -1
     }
 
