@@ -169,20 +169,7 @@ a.room-card_prompt {
         display: none;
     }
 
-    @include media('<=560px') {
-        width: 450px;
-        .room-card_main {
-            height: 308px;
-        }
-        .player_main {
-            width: 450px;
-        }
-        .player_media {
-            height: 450px * 9 / 16;
-        }
-    }
-
-    @include media('<=small') {
+    @include media('<=570px') {
         display: none;
     }
 }

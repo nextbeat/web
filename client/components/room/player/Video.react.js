@@ -493,7 +493,6 @@ class Video extends React.Component {
 
         let videoAttributes = {
             preload: "auto",
-            autoload: true,
             controls: isIOSDevice,
             autoPlay: autoplay !== false && !isIOSDevice // by default, autoplay is undefined 
         }

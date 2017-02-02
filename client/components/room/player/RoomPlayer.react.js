@@ -32,7 +32,7 @@ class RoomPlayer extends React.Component {
         this.setState({
             playerWidth: parseInt($('.player_main').css('width')),
             playerHeight: parseInt($('.player_main').css('height'))
-        });
+        });        
 
         this.resize();
     }
