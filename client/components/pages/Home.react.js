@@ -33,7 +33,6 @@ class HomeComponent extends React.Component {
 
         return (
             <div className="home content">
-                <AppBanner />
                 {home.isLoaded() && 
                     <div className="content_inner">
                         { !currentUser.isLoggedIn() && <RoomCard id={home.get('mainCardId')} title="FEATURED ROOM" /> }

@@ -191,6 +191,7 @@ class App extends React.Component {
 
         return (
             <section className={`app-container ${inRoomClass}`} id="app-container">
+                { inHome && <AppBanner /> /* prevents issues with fixed positioning on home page */ }
                 {this.setTitle()}
                 <Login />
                 <Signup />

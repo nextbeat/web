@@ -20,11 +20,18 @@ class AppBanner extends React.Component {
         this.renderOpenInAppBanner = this.renderOpenInAppBanner.bind(this)
 
         this.state = {
-            hideBanner: false
+            hideBanner: true
         }
     }
 
     componentDidMount() {
+        if (typeof window === 'undefined') {
+            // default to showing banner on client
+            this.setState({
+                hideBanner: false
+            })
+        }
+
         if (storageAvailable('sessionStorage')) {
             this.setState({
                 hideBanner: JSON.parse(sessionStorage.getItem('hideAppBanner')) 
