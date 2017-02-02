@@ -90,12 +90,12 @@ class AddCaption extends React.Component {
         let object = {};
 
         if (upload.isBrowserCompatible(UploadTypes.MEDIA_ITEM)) {
-            object = {
+            object = Map({
                 url: URL.createObjectURL(upload.get(UploadTypes.MEDIA_ITEM, 'file')),
                 type: 'objectURL',
                 width,
                 height
-            }
+            })
         } else if (upload.isDoneProcessing()) {
             object = upload.get('mediaItem').get('processedItem').delete('item_type')
         }

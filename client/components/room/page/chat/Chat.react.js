@@ -21,7 +21,7 @@ class Chat extends React.Component {
     componentDidMount() {
         $(window).on('focus.chat', () => {
             const { dispatch, app } = this.props
-            if (app.get('deviceType') === 'mobile') {
+            if (app.get('activeOverlay') === 'chat' && app.get('deviceType') === 'mobile') {
                 dispatch(resetChat())
             }
         })
@@ -38,13 +38,12 @@ class Chat extends React.Component {
         this.props.dispatch(didUseChat())
     }
 
-
     render() {
         const { roomPage, display, currentUser } = this.props;
         return (
         <div className="chat" onWheel={this.handleOnWheel} style={{ display: (display ? "block" : "none") }}>
             <UserActions />
-            <ChatHistory room={roomPage.room()} />
+            <ChatHistory room={roomPage.room()} scrollable={true} />
             <Compose />
             <ReactCSSTransitionGroup transitionName="chat_lost-connection" transitionEnterTimeout={300} transitionLeaveTimeout={200}>
                 { !!currentUser.get('lostConnection') && 

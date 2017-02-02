@@ -125,7 +125,7 @@ class RoomCard extends React.Component {
                 <RoomCardHeader room={room} />
                 <div className="room-card_main">
                     <RoomPlayer room={room} shouldAutoplayVideo={shouldAutoplayVideo} />
-                    <ChatHistory room={room} />
+                    <ChatHistory room={room} scrollable={true} style='compact' />
                 </div>
                 <Link to={`/r/${room.get('hid')}/${index}`} className="room-card_prompt">
                     Enter Room

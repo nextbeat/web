@@ -138,6 +138,10 @@ export default class Room extends StateModel {
         return this.liveComments().size > 0 ? this.liveComments().last() : this.comments().first()
     }
 
+    totalCommentsCount() {
+        return this.liveComments().size + this.comments().size
+    }
+
     isFetchingDeep() {
         // returns true if fetching the stack OR its media items
         return !this.get('error') && this.mediaItems().size === 0 && !this.get('mediaItemsError')
