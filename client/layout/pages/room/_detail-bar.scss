@@ -8,6 +8,14 @@
     background-color: #fff;
     border-left: 1px solid $border-color;
 
+    .dropdown-stack-actions-detail-bar {
+        position: absolute;
+        right: 10px;
+        top: 35px;
+        width: 110px;
+        text-align: right;
+    }
+
     @include media('<=medium') {
         // visibility: hidden;
         position: absolute;
@@ -71,15 +79,6 @@
             cursor: pointer;
         }
     }
-}
-
-
-.dropdown-detail-bar {
-    position: absolute;
-    right: 10px;
-    top: 35px;
-    width: 110px;
-    text-align: right;
 }
 
 

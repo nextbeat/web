@@ -85,6 +85,10 @@
         font-size: 14px;
         font-weight: 300;
     }
+
+    input[type="checkbox"] {
+        min-width: auto;
+    }
 }
 
 .share_include-post {
@@ -97,5 +101,24 @@
 
     label {
         font-weight: normal;
+    }
+}
+
+
+// Style-specific
+
+.player_info-small {
+
+    .player_share_modal::after {
+        right: 15px;
+    }
+
+    .player_button-share_text {
+        display: none;
+    }
+
+    .svg-icon-share {
+        width: 22px;
+        height: 22px;
     }
 }

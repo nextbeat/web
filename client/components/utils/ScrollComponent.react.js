@@ -129,7 +129,6 @@ export default function ScrollComponent(domId, scrollOptions={}) {
 
             scrollToBottom() {
                 const elem = this.domElement();
-                console.log(elem.scrollHeight, elem.clientHeight);
                 elem.scrollTop = elem.scrollHeight - elem.clientHeight;
             }
 

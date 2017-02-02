@@ -8,6 +8,7 @@ import isEmpty from 'lodash/isEmpty'
 
 import RoomMain from '../room/page/RoomMain.react'
 import DetailBar from '../room/page/DetailBar.react'
+import StackActions from '../room/page/StackActions.react'
 import WelcomeBanner from '../shared/WelcomeBanner.react'
 
 import { loadRoomPage, clearRoomPage, closeDetailSection, selectMediaItem } from '../../actions'
@@ -144,6 +145,7 @@ class RoomPage extends React.Component {
                     Welcome to Safiya's room! Chat and follow along in real time. <a target="_blank" rel="nofollow" href="https://medium.com/@TeamNextbeat/welcome-to-nextbeat-831d25524a4d">Learn more about Nextbeat.</a>
                 </WelcomeBanner>
             }
+            <StackActions />
             <div className="room_inner"> 
                 <RoomMain />
                 <DetailBar />

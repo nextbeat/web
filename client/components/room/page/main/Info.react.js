@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { List } from 'immutable'
 
@@ -7,14 +8,23 @@ import Icon from '../../../shared/Icon.react'
 import Bookmark from './Bookmark.react'
 import Share from './Share.react'
 import Badge from '../../../shared/Badge.react'
+import ActionsDropdown from '../ActionsDropdown.react'
+
+import { toggleDropdown } from '../../../../actions'
 
 class Info extends React.Component {
 
     constructor(props) {
         super(props);
 
-        this.renderLarge.bind(this);
-        this.renderSmall.bind(this);
+        this.renderLarge = this.renderLarge.bind(this);
+        this.renderSmall = this.renderSmall.bind(this);
+
+        this.handleActionsClick = this.handleActionsClick.bind(this);
+    }
+
+    handleActionsClick() {
+        this.props.dispatch(toggleDropdown('stack-actions-info'))
     }
 
     renderSmall() {
@@ -32,8 +42,9 @@ class Info extends React.Component {
                         </div>
                     </div>
                     <div className="player_info-small_actions">
-                        { roomPage.currentUserIsAuthor() && <div className="player_info-small_action"><Icon type="more-vert" /></div> }
-                        <div className="player_info-small_action"><Icon type="share" /></div>
+                        <ActionsDropdown type="info" />
+                        { roomPage.currentUserIsAuthor() && <div className="player_info-small_action" onClick={this.handleActionsClick}><Icon type="more-vert" /></div> }
+                        <div className="player_info-small_action"><Share roomPage={roomPage} /></div>
                     </div>
                 </div>
                 <div className="player_info-small_user">
@@ -68,8 +79,9 @@ class Info extends React.Component {
                         </div>
                     </div>
                     <div className="player_info_views">
+                        <ActionsDropdown type="info" />
                         { `${views} view${views !== 1 ? 's' : ''}` }
-                        { roomPage.currentUserIsAuthor() && <div className="player_info_more player_info-small_action"><Icon type="more-vert" /></div> }
+                        { roomPage.currentUserIsAuthor() && <div className="player_info_more player_info-small_action" onClick={this.handleActionsClick}><Icon type="more-vert" /></div> }
                     </div>
                 </div>
                 <div className="player_info_user">
@@ -101,4 +113,4 @@ class Info extends React.Component {
     }
 }
 
-export default Info;
+export default connect()(Info);

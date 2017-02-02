@@ -8,8 +8,7 @@ import { selectDetailSection, closeDetailSection, toggleDropdown, promptModal } 
 import Chat from './chat/Chat.react'
 import Activity from './activity/Activity.react'
 import Icon from '../../shared/Icon.react'
-import StackActions from './StackActions.react'
-import Dropdown from '../../shared/Dropdown.react'
+import ActionsDropdown from './ActionsDropdown.react'
 
 class DetailBar extends React.Component {
 
@@ -32,22 +31,11 @@ class DetailBar extends React.Component {
     }
 
     toggleDropdown() {
-        this.props.dispatch(toggleDropdown('detail-bar'))
+        this.props.dispatch(toggleDropdown('stack-actions-detail-bar'))
     }
 
 
     // Render
-
-    renderDropdown() {
-        const { dispatch, roomPage } = this.props
-        return (
-            <Dropdown type="detail-bar" triangleMargin={-1}>
-                <Link to={`/r/${roomPage.get('hid')}/edit`} className="dropdown-option">Edit Room</Link>
-                { !roomPage.get('closed') && <a className="dropdown-option" onClick={() => {dispatch(promptModal('close-room'))}}>Close Room</a> }
-                <a className="dropdown-option" onClick={() => {dispatch(promptModal('delete-room'))}}>Delete Room</a>
-            </Dropdown>
-        )
-    }
 
     renderBadge(roomPage) {
         const count = roomPage.unseenLiveMediaItemsCount()
@@ -74,12 +62,11 @@ class DetailBar extends React.Component {
 
         return (
             <div className={`detail-bar ${collapsedClass} ${activeClass}`}>
-                <StackActions />
                 <div className="detail-bar_header">
                     { roomPage.currentUserIsAuthor() && 
                         <div className="detail-bar_toggle-edit" id="dropdown-detail-bar_toggle" onClick={this.toggleDropdown}><Icon type="more-vert" /></div> 
                     }
-                    { this.renderDropdown() }
+                    <ActionsDropdown type="detail-bar" />
                     <div className="detail-bar_tab-container">
                         <span className={`detail-bar_tab ${selected("chat")}`} onClick={this.setSelected.bind(this, "chat")}>Chat</span>
                         <span className={`detail-bar_tab ${selected("activity")}`} onClick={this.setSelected.bind(this, "activity")}>Activity{this.renderBadge(roomPage)}</span>

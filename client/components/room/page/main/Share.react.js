@@ -93,7 +93,7 @@ class Share extends React.Component {
         const { showShareModal, includeIndex } = this.state
         return (
             <div className="player_share_wrapper">
-                <div className="player_button-share" onClick={this.toggleShareModal}><Icon type="share" /><span>Share</span></div>
+                <div className="player_button-share" onClick={this.toggleShareModal}><Icon type="share" /><span className="player_button-share_text">Share</span></div>
                 <div className="player_share_modal" style={{ display: (showShareModal ? "block" : "none") }}>
                     <div className="share_social">
                         {this.renderFacebook()}{this.renderTwitter()}

@@ -123,18 +123,10 @@ export default class Upload extends StateModel {
     }
 
     static isBrowserCompatible(file) {
-        // Use canPlayType if applicable
-        if (file.type && this.fileType(file) === 'video') {
-            let videoElement = document.createElement('video')
-            if (typeof videoElement.canPlayType === 'function') {
-                return ["maybe", "probably"].indexOf(document.createElement('video').canPlayType(file.type)) !== -1
-            }
-        }
-
-        // Otherwise, check file extension
-        const ext = fileExtension(file.name)
-        console.log(ext)
-        return BROWSER_COMPATIBLE_FORMATS.indexOf(ext) !== -1
+        // for now, we are turning off all browser compatibility
+        // checks, treating all files as though they were
+        // incompatible (to ensure a more consistent user experience)
+        return false;
     }
 
 
