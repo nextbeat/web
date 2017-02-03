@@ -57,6 +57,18 @@
 }
 
 /**
+ * We need a different strategy for Firefox because it does not
+ * calculate margin top/bottom % values based on the element width,
+ * so it defaults to 0 if the height isn't explicitly set.
+ * See: https://bugzilla.mozilla.org/show_bug.cgi?id=958714
+ */
+@-moz-document url-prefix() { 
+    .item_container {
+        margin-bottom: 15px !important;
+    }
+}
+
+/**
  * Setting padding-bottom here allows us to adjust height as a percentage
  * of width. We then use absolute positioning in item_inner to create
  * a container for content which spans the full space.

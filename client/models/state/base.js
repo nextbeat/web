@@ -59,7 +59,7 @@ export default class StateModel {
         return this.state.getIn(['entities', entityName, id], Map());
     }
 
-    __getPaginatedEntities(key, { paginatedEntityKey, entityClass }) {
+    __getPaginatedEntities(key, { paginatedEntityKey, entityClass } = {}) {
         let keyPath = this.keyMapPrefix.concat(['pagination', key, 'ids'])
         return this.state.getIn(keyPath, List())
             .map(id => {
