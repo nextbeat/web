@@ -310,7 +310,7 @@ function navigate(roomId, isForward) {
         const nextIndex = isForward ? selectedIndex+1 : selectedIndex-1;
         selectedId = ids.get(nextIndex);
 
-        return dispatch(selectMediaItem(roomId, selectedId));
+        return dispatch(selectMediaItem(roomId, selectedId, { shouldReplaceHistory: true }));
     }
 }
 

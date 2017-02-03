@@ -118,8 +118,6 @@ class App extends React.Component {
         }
     }
 
-
-
     // Render
 
     setTitle() {

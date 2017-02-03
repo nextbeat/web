@@ -25,6 +25,7 @@ export default store => {
                 if (typeof window !== 'undefined') { 
                     store.dispatch(gaPage())
                 }
+                // todo: dev site password prompt
             }
         }
     }

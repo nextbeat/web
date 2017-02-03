@@ -11,7 +11,7 @@ import DetailBar from '../room/page/DetailBar.react'
 import StackActions from '../room/page/StackActions.react'
 import WelcomeBanner from '../shared/WelcomeBanner.react'
 
-import { loadRoomPage, clearRoomPage, closeDetailSection, selectMediaItem } from '../../actions'
+import { loadRoomPage, clearRoomPage, closeDetailSection, selectDetailSection, selectMediaItem } from '../../actions'
 import { RoomPage as RoomPageModel, App } from '../../models'
 import { baseUrl, getStorageItem } from '../../utils'
 
@@ -26,9 +26,14 @@ class RoomPage extends React.Component {
     // LIFECYCLE
 
     componentDidMount() {
-        const { params, dispatch, roomPage } = this.props
+        const { params, dispatch, roomPage, location } = this.props
         if (!roomPage.isLoaded()) {
             dispatch(loadRoomPage(params.hid))
+        }
+
+        let detailSection = location.query.detail
+        if (detailSection === 'activity') {
+            dispatch(selectDetailSection('activity'))
         }
     }
 
@@ -54,11 +59,8 @@ class RoomPage extends React.Component {
                 id = mediaItemId
             }
 
-            let shouldReplaceHistory = true
-
             // or if index is specified
             if (params.index) {
-                shouldReplaceHistory = false
                 if (params.index === 'latest') {
                     id = roomPage.mediaItems().get(roomPage.mediaItems().size-1).get('id')
                 } else {
@@ -69,7 +71,7 @@ class RoomPage extends React.Component {
                 }
             }
 
-            dispatch(selectMediaItem(roomPage.get('id'), id, { shouldReplaceHistory }))
+            dispatch(selectMediaItem(roomPage.get('id'), id, { shouldReplaceHistory: true }))
             dispatch(closeDetailSection())
         }
 

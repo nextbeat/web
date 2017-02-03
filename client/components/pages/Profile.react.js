@@ -100,7 +100,7 @@ class ProfileComponent extends React.Component {
                     }
                     { closedStacks.size > 0 && 
                         <div>
-                            <div className="rooms-list_header">ARCHIVE</div>
+                            <div className="rooms-list_header">PREVIOUS</div>
                             <div className="rooms-list_rooms">
                                 { closedStacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
                             </div>

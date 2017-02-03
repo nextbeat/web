@@ -34,8 +34,8 @@ class RoomPlayer extends React.Component {
         this.setState({
             playerWidth: parseInt($('.player_main').css('width')),
             playerHeight: parseInt($('.player_main').css('height'))
-        });        
-
+        }); 
+       
         this.resize();
     }
 
@@ -47,15 +47,12 @@ class RoomPlayer extends React.Component {
     // Resize
 
     resize() {
-        // TODO: handle room card better
-        if (!$('.player_main').parent().hasClass('.room-card_main')) {
-            const playerWidth = parseInt($('.player_main').css('width'));
-            const playerHeight = Math.min(500, Math.floor(playerWidth * 9 / 16));
-            this.setState({
-                playerWidth,
-                playerHeight
-            })
-        }
+        const playerWidth = parseInt($('.player_main').css('width'));
+        const playerHeight = Math.min(500, Math.floor(playerWidth * 9 / 16));
+        this.setState({
+            playerWidth,
+            playerHeight
+        })
     }
 
 
@@ -72,7 +69,15 @@ class RoomPlayer extends React.Component {
     }
 
     handleCounterClick() {
-        this.props.dispatch(selectDetailSection('activity'))
+        const { room, isRoomCard, dispatch } = this.props 
+        const { router } = this.context
+        const index = room.indexOfSelectedMediaItem() + 1
+
+        if (isRoomCard) {
+            router.push({ pathname: `/r/${room.get('hid')}/${index}`, query: { detail: 'activity' }})
+        } else {
+            dispatch(selectDetailSection('activity'))
+        }
     }
 
     // Render
@@ -111,9 +116,11 @@ class RoomPlayer extends React.Component {
                     </div>
                 </div>
                 <div className="player_navigation">
+                    <div style={{ display: 'flex', width: '100%', alignItems: 'stretch' }}>
                     <div className={`player_nav-button player_nav-backward ${leftDisabledClass}`} onClick={this.handleBackward}><Icon type="arrow-back" /></div>
                     <div className="player_nav-counter" onClick={this.handleCounterClick}><CounterInner room={room} /></div>
                     <div className={`player_nav-button player_nav-forward ${rightDisabledClass}`} onClick={this.handleForward}><Icon type="arrow-forward" /></div>
+                    </div>
                 </div>
             </div>
         );
@@ -123,12 +130,16 @@ class RoomPlayer extends React.Component {
 RoomPlayer.propTypes = {
     room: React.PropTypes.object.isRequired,
     shouldAutoplayVideo: React.PropTypes.bool.isRequired,
-
-
+    isRoomCard: React.PropTypes.bool.isRequired
 }
 
 RoomPlayer.defaultProps = {
-    shouldAutoplayVideo: true
+    shouldAutoplayVideo: true,
+    isRoomCard: false,
+}
+
+RoomPlayer.contextTypes = {
+    router: React.PropTypes.object.isRequired
 }
 
 export default connect()(RoomPlayer);
