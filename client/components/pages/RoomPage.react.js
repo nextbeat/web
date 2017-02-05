@@ -137,16 +137,10 @@ class RoomPage extends React.Component {
 
     render() {
         const { roomPage, app } = this.props;
-        const shouldDisplayBanner = app.get('width') !== 'small' && roomPage.author().get('username') === 'safiya'
 
         return (
         <section className="room">
             {this.renderDocumentHead(roomPage)}
-            { shouldDisplayBanner && 
-                <WelcomeBanner>
-                    Welcome to Safiya's room! Chat and follow along in real time. <a target="_blank" rel="nofollow" href="https://medium.com/@TeamNextbeat/welcome-to-nextbeat-831d25524a4d">Learn more about Nextbeat.</a>
-                </WelcomeBanner>
-            }
             <StackActions />
             <div className="room_inner"> 
                 <RoomMain />
