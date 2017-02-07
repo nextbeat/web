@@ -43,8 +43,8 @@ class LiveChatItem extends React.Component {
         const { comment, handleSelectUsername } = this.props 
 
         const message   = comment.get('message')
-        const regex = /(@\w+)/
-        const elems = message.split(regex).map((str, idx) => {
+        const regex     = /(@\w+)/
+        const elems     = message.split(regex).map((str, idx) => {
             const key = `@${idx}`
             if (str.charAt(0) === '@') {
                 const username = str.substring(1)
@@ -61,12 +61,12 @@ class LiveChatItem extends React.Component {
     }
 
     render() {
-        const { comment, isCreator, handleSelectUsername } = this.props
+        const { comment, isCreator, handleSelectUsername, type } = this.props
         const username = comment.get('username')
         const usernameClass = isCreator ? "chat_item_username chat_item_creator" : "chat_item_username";
 
         return (
-            <li className="chat_item" ref="chat">
+            <li className={`chat_item chat_item-${type}`} ref="chat">
                 <strong className={usernameClass}>
                     <a onClick={() => {handleSelectUsername(username)}}>{username}</a>
                 </strong>
@@ -74,6 +74,11 @@ class LiveChatItem extends React.Component {
             </li>
         );
     }
+}
+
+LiveChatItem.defaultProps = {
+    type: "submitted",
+    collapsed: false
 }
 
 export default LiveChatItem;

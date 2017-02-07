@@ -22,7 +22,11 @@ class ChatHistory extends React.Component {
         super(props);
 
         this.handleSelectUsername = this.handleSelectUsername.bind(this)
-        this.renderComment = this.renderComment.bind(this);
+
+        this.renderComment = this.renderComment.bind(this)
+        this.renderLiveComment = this.renderLiveComment.bind(this)
+        this.renderSubmittingComment = this.renderSubmittingComment.bind(this)
+        this.renderFailedComment = this.renderFailedComment.bind(this)
     }
 
     componentDidMount() {
@@ -111,6 +115,34 @@ class ChatHistory extends React.Component {
         }
     }
 
+    renderSubmittingComment(comment, idx) {
+        const { room } = this.props;
+        const key = `s${idx}`
+        const isCreator = (room.author().get('username') === comment.get('username'));
+        return <LiveChatItem
+                key={key}
+                comment={comment}
+                isCreator={isCreator} 
+                handleSelectUsername={this.handleSelectUsername}
+                collapsed={false}
+                type="submitting"
+            />
+    }
+
+    renderFailedComment(comment, idx) {
+        const { room } = this.props;
+        const key = `s${idx}`
+        const isCreator = (room.author().get('username') === comment.get('username'));
+        return <LiveChatItem
+                key={key}
+                comment={comment}
+                isCreator={isCreator} 
+                handleSelectUsername={this.handleSelectUsername}
+                collapsed={false}
+                type="failed"
+            />
+    }
+
     render() {
         const { comments, liveComments, commentsFetching, commentsError,
                 scrollable, style } = this.props;
@@ -125,6 +157,12 @@ class ChatHistory extends React.Component {
                 <ul className="chat_items">
                     {comments.reverse().map((comment, idx) => this.renderComment(comment, idx))}
                     {liveComments.map((comment, idx) => this.renderLiveComment(comment, idx))}
+                    { style === "expanded" &&
+                        [
+                        submittingComments.map((comment, idx) => this.renderSubmittingComment(comment, idx)),
+                        failedComments.map((comment, idx) => this.renderFailedComment(comment, idx))
+                        ]
+                    }
                 </ul>
             </div>
         );
@@ -186,6 +224,8 @@ function mapStateToProps(state, ownProps) {
 
         comments: room.comments(),
         liveComments: room.liveComments(),
+        submittingComments: room.submittingComments(),
+        failedComments: room.failedComments(),
         totalCommentsCount: room.totalCommentsCount(),
 
         commentsFetching: room.get('commentsFetching'),

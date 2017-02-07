@@ -8,9 +8,9 @@ import { markStackAsRead } from './notifications'
 import { promptModal } from './app'
 import { pushSubscribe } from './push'
 import { loadPaginatedObjects } from './utils'
-import { Room, RoomPage } from '../models'
+import { Room, RoomPage, CurrentUser } from '../models'
 import { API_CALL, API_CANCEL, GA, AnalyticsTypes, GATypes } from './types'
-import { setStorageItem } from '../utils'
+import { setStorageItem, generateUuid } from '../utils'
 
 
 /**********
@@ -73,11 +73,13 @@ export function loadComments(roomId) {
  * CHAT
  ******/
 
-function postComment(roomId, message) {
+function postComment(roomId, message, username, temporaryId) {
     return {
         type: ActionTypes.SEND_COMMENT,
+        temporaryId,
         roomId,
         message,
+        username,
         [API_CALL]: {
             method: 'POST',
             endpoint: `stacks/${roomId}/comments`,
@@ -100,7 +102,9 @@ export function sendComment(roomId, message) {
             return null;
         }
 
-        return dispatch(postComment(roomId, message));
+        let username = (new CurrentUser(getState())).get('username')
+
+        return dispatch(postComment(roomId, message, username, generateUuid()));
     }
 }
 

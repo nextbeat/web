@@ -77,7 +77,7 @@ function sendEventsToServer(store, eventData) {
     if ('sendBeacon' in navigator) {
         var data = new Blob([JSON.stringify(eventData)], { type: 'application/json; charset=UTF-8' })
         var queued = navigator.sendBeacon(url, data)
-        return Promise.resolve(queued);
+        return Promise.resolve(queued)
     } else {
         // if browser doesn't support sendBeacon, use async fetch
         return Promise.resolve().then(() => {
@@ -142,6 +142,7 @@ export function submitEvent(store, eventType, options) {
             pendingEvents = pendingEvents.filterNot(e => e.eventId === eventId).toJS()
         }
         setStorageItem('a_evts', pendingEvents)
+        return null
     })
 }
 

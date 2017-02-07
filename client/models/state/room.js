@@ -31,6 +31,8 @@ const KEY_MAP = {
     'commentsFetching': ['pagination', 'comments', 'isFetching'],
     'commentsError': ['pagination', 'comments', 'error'],
     'liveComments': ['live', 'comments'],
+    'submittingComments': ['live', 'submittingComments'],
+    'failedComments': ['live', 'failedComments'],
     // playback
     'videoDidPlay': ['navigation', 'videoDidPlay']
 }
@@ -89,6 +91,14 @@ export default class Room extends StateModel {
         // instead of being stored as entities, so the method for retrieving them
         // is different
         return this.get('liveComments', List())
+    }
+
+    submittingComments() {
+        return this.get('submittingComments', List())
+    }
+
+    failedComments() {
+        return this.get('failedComments', List())
     }
 
     thumbnail(preferredType) {

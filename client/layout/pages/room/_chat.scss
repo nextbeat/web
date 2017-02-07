@@ -58,6 +58,14 @@
     font-style: italic;
 }
 
+.chat_item-submitting {
+    color: #aaa;
+}
+
+.chat_item-failed {
+    color: $error-color;
+}
+
 a.chat_mention {
     font-weight: normal;
     &:hover {

@@ -70,37 +70,61 @@ function receiveMediaItem(state, action) {
 }
 
 function sendComment(state, action) {
-    if (action.status === Status.SUCCESS) {
+    if (action.status === Status.REQUESTING) {
+
         const comment = Map({
             type: 'message',
             message: action.message,
-            username: state.get('nickname').split('#')[0]
+            username: action.username,
+            temporaryId: action.temporaryId
         })
-        return state.update('comments', comments => comments.push(comment));
+        return state.update('submittingComments', subComments => subComments.push(comment))
+
+    } else if (action.status === Status.SUCCESS) {
+
+        const comment = Map({
+            type: 'message',
+            message: action.message,
+            username: action.username
+        })
+        return state
+            .update('comments', comments => comments.push(comment))
+            .update('submittingComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
+            .update('failedComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
+
     } else if (action.status === Status.FAILURE && action.error !== 'User is not logged in.') {
-        // display comment
-        const comment = Map({
-            type: 'message',
-            message: action.message,
-            username: state.get('nickname').split('#')[0]
-        })
-        state = state.update('comments', comments => comments.push(comment));
-        // display chatbot error message
-        let message = 'Unable to submit message. Please try again.'
+
+        state = state.update('submittingComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
+
         if (action.error === 'User is banned.') {
+            // display chatbot error message
             message = 'You have been banned from posting in this room.'
+            const chatbotComment = Map({
+                type: 'chatbot',
+                message
+            })
+            state = state.update('comments', comments => comments.push(chatbotComment));
+        } else {
+            const comment = Map({
+                type: 'message',
+                message: action.message,
+                username: action.username,
+                temporaryId: action.temporaryId
+            })
+            state = state.update('failedComments', comments => comments.push(comment));
         }
-        const chatbotComment = Map({
-            type: 'chatbot',
-            message
-        })
-        return state.update('comments', comments => comments.push(chatbotComment));
+        return state
+
     }
     return state
 }
 
 function clearComments(state, action) {
-    return state.delete('comments')
+    return state.merge({
+        comments: List(),
+        submittingComments: List(),
+        failedComments: List()
+    })
 }
 
 function deleteMediaItem(state, action) {
@@ -109,6 +133,8 @@ function deleteMediaItem(state, action) {
 
 const initialState = Map({
     comments: List(),
+    submittingComments: List(),
+    failedComments: List(),
     mediaItems: List()
 })
 
