@@ -93,7 +93,7 @@ class LargeStackItem extends React.Component {
                                 <img className="item-room-large_thumb_image" ref={(c) => this._image = c } src={imageUrl} />
                             </div>
                             <div className="item-room-large_views">
-                                <span className="item-room-large_view-count">{stack.get('views', 0)}</span> view{stack.get('views') !== 1 && 's'}
+                                <span className="item-room-large_view-count">{stack.get('views', 0)}</span> visit{stack.get('views') !== 1 && 's'}
                             </div>
                         </div>
                     </div>

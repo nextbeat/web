@@ -52,7 +52,7 @@ class Info extends React.Component {
                 </div>
                 <div className="player_info-small_bottom">
                     <div className="player_info-small_views">
-                        { `${views} view${views !== 1 ? 's' : ''}` }
+                        { `${views} visit${views !== 1 ? 's' : ''}` }
                     </div>
                     <Bookmark roomPage={roomPage} type="small" />
                 </div>
@@ -80,7 +80,7 @@ class Info extends React.Component {
                     </div>
                     <div className="player_info_views">
                         <ActionsDropdown type="info" />
-                        { `${views} view${views !== 1 ? 's' : ''}` }
+                        { `${views} visit${views !== 1 ? 's' : ''}` }
                         { roomPage.currentUserIsAuthor() && <div className="player_info_more player_info-small_action" onClick={this.handleActionsClick}><Icon type="more-vert" /></div> }
                     </div>
                 </div>

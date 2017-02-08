@@ -76,9 +76,9 @@ export function fromString(dirtyDateLeft, dirtyDateRight, options) {
         return format('d', 1)
     }
 
-    let days = Math.floor(hours / 24)
-    let months = Math.abs(differenceInMonths(dateLeft, dateRight))
-    let years = Math.abs(differenceInYears(dateLeft, dateRight))
+    let days = Math.max(2, Math.floor(hours / 24))
+    let months = Math.max(2, Math.abs(differenceInMonths(dateLeft, dateRight)))
+    let years = Math.max(2, Math.abs(differenceInYears(dateLeft, dateRight)))
     if (days < 25) {
         return format('dd', days)
     } else if (days < 45) {
