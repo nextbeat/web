@@ -14,14 +14,10 @@ class Compose extends React.Component {
         this.handleFocus = this.handleFocus.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleLoginClick = this.handleLoginClick.bind(this);
-
-        this.state = {
-            message: ''
-        }
     }
 
     handleChange(e) {
-        this.setState({ message: e.target.value })
+        this.props.dispatch(updateChatMessage(e.target.value))
     }
 
     handleFocus(e) {
@@ -30,13 +26,12 @@ class Compose extends React.Component {
 
     handleSubmit(e) {
         const { currentUser, roomPage, dispatch } = this.props
-        const { message } = this.state
-        dispatch(sendComment(roomPage.get('id'), message))
+        dispatch(sendComment(roomPage.get('id'), roomPage.get('chatMessage')))
         if (currentUser.isLoggedIn()) {
             // If the user isn't logged in, they will be prompted to do so
             // during the sendComment action. We don't want to clear the
             // text box in this case.
-            this.setState({ message: '' })
+            dispatch(updateChatMessage(''))
         }
     }
 
@@ -54,7 +49,7 @@ class Compose extends React.Component {
 
 
     render() {
-        const message = this.state.message
+        const message = this.props.roomPage.get('chatMessage', '')
         return (
             <div className="chat_compose">
                 <div className="chat_compose-inner">
