@@ -36,6 +36,10 @@ const ICONS = {
 
 class Icon extends React.Component {
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextProps.type !== this.props.type
+    }
+
     renderSvg(type) {
         return ICONS[type] ? ICONS[type] : <svg></svg>
     }

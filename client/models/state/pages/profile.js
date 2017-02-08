@@ -20,7 +20,7 @@ export default class Profile extends StateModel {
         super(state);
         this.keyMap = KEY_MAP;
         this.keyMapPrefix = ['pages', 'profile'];
-        this.name = "profile";
+        this.entityName = "users";
     }
 
     entity() {

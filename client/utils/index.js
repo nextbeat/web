@@ -1,4 +1,5 @@
 import assign from 'lodash/assign'
+import forOwn from 'lodash/forOwn'
 import addSeconds from 'date-fns/add_seconds'
 import isBefore from 'date-fns/is_before'
 import format from 'date-fns/format'
@@ -200,6 +201,7 @@ export function getStorageItemExpiration(key, options) {
   return expires;
 }
 
+
 /*************
  * CONVERSIONS
  *************/
@@ -221,11 +223,42 @@ export function urlBase64ToUint8Array(base64String) {
 }
 
 
+/**********
+ * EQUALITY
+ **********/
+
+export function shallowEqual(a, b) {
+  if (a === b) {
+    return true
+  }
+
+  let countA = 0
+  let countB = 0
+  let mismatch = false
+
+  forOwn(a, (value, key) => {
+    if (value !== b[key]) {
+      mismatch = true
+    }
+    countA++
+  })
+
+  if (mismatch) return false
+
+  forOwn(b, () => {
+    countB++
+  })
+
+  return countA === countB
+}
+
+
 /*****************
  * DATE FORMATTING
  *****************/
 
 export { fromString, fromNowString, timeLeftString } from './date'
+
 
 /*******
  * OTHER

@@ -1,4 +1,5 @@
 import { Map } from 'immutable'
+import { createSelector } from 'reselect'
 
 /* Helper model for retrieving data from specific 
  * entities in the state. (Compare with the StateModel 
@@ -37,6 +38,10 @@ export default class EntityModel {
         return this.__entity()
     }
 
+    isEqual(entity) {
+        // test immutable entity state
+        return this.__entity() === entity.__entity()
+    }
 
     // private
 

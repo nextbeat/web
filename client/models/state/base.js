@@ -1,9 +1,12 @@
 import has from 'lodash/has'
 import { Map, List } from 'immutable'
+import { createSelector } from 'reselect'
 
-// Base model class, used to access data in the state tree
-// so that the organization of the state tree is abstracted
-// away in other files
+/**
+ * Base model class, used to access data in the state tree
+ * so that the organization of the state tree is abstracted
+ * away in other files.
+ */
 export default class StateModel {
 
     constructor(state) {
@@ -79,6 +82,5 @@ export default class StateModel {
         let model = new this(state)
         return model.__getEntity(id)
     }
-
 }
 

@@ -69,6 +69,10 @@ class LargeStackItem extends React.Component {
         $(window).off('resize', this.resize);
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return !this.props.stack.isEqual(nextProps.stack)
+    }
+
     render() {
         const { stack, static: staticNum } = this.props;
 
