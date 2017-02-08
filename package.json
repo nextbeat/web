@@ -48,6 +48,7 @@
     "redux-logger": "^2.5.0",
     "redux-thunk": "^1.0.3",
     "request-promise": "0.4.2",
+    "reselect": "^2.5.4",
     "serve-favicon": "2.1.6",
     "serve-static": "^1.11.1",
     "stanza.io": "^8.0.2",
