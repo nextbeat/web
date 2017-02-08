@@ -2,6 +2,7 @@ import React from 'react'
 
 import escape from 'lodash/escape'
 import linkify from 'linkifyjs/html'
+import { shallowEqual } from '../../../utils'
 
 function markupCaption(str) {
     const captionHtml = linkify(escape(str), {
@@ -45,6 +46,10 @@ class Decoration extends React.Component {
 
     componentWillUnmount() {
         $(window).off('resize.decoration')
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return !shallowEqual(nextProps, this.props)
     }
 
 
@@ -107,6 +112,13 @@ class Decoration extends React.Component {
             </div>
         )
     }
+}
+
+Decoration.propTypes = {
+    decoration: React.PropTypes.object.isRequired,
+    width: React.PropTypes.number.isRequired,
+    height: React.PropTypes.number.isRequired,
+    barHeight: React.PropTypes.number
 }
 
 export default Decoration

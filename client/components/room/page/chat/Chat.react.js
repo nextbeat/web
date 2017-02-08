@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import debounce from 'lodash/debounce'
 
 import Compose from './Compose.react'
 import UserActions from './UserActions.react'
@@ -41,7 +42,7 @@ class Chat extends React.Component {
     render() {
         const { roomPage, display, currentUser } = this.props;
         return (
-        <div className="chat" onWheel={this.handleOnWheel} style={{ display: (display ? "block" : "none") }}>
+        <div className="chat" onWheel={debounce(this.handleOnWheel, 200)} style={{ display: (display ? "block" : "none") }}>
             <UserActions />
             <ChatHistory room={roomPage.room()} scrollable={true} />
             <Compose />

@@ -30,11 +30,10 @@ class ActivityItem extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (!this.props.roomPage.get('hasDeletedMediaItem') && nextProps.roomPage.get('hasDeletedMediaItem')) {
+        if (!this.props.hasDeletedMediaItem && nextProps.hasDeletedMediaItem) {
             this.props.dispatch(closeModal())
-            if (nextProps.roomPage.get('selectedMediaItemId') === nextProps.roomPage.get('deletedMediaItemId')) {
-                let newSelectedMediaItem = nextProps.roomPage.mediaItems().first() || nextProps.roomPage.liveMediaItems().first()
-                this.props.dispatch(selectMediaItem(this.props.roomPage.get('id'), newSelectedMediaItem.get('id')))
+            if (nextProps.selectedMediaItemId === nextProps.deletedMediaItemId) {
+                this.props.dispatch(selectMediaItem(this.props.roomId, nextProps.postDeletionSelectedMediaItemId))
             }
         }
     }
@@ -56,9 +55,9 @@ class ActivityItem extends React.Component {
     }
 
     handleClick() {
-        const { dispatch, roomPage, mediaItem } = this.props
+        const { dispatch, roomId, mediaItem } = this.props
 
-        this.props.dispatch(selectMediaItem(roomPage.get('id'), mediaItem.get('id')))
+        this.props.dispatch(selectMediaItem(roomId, mediaItem.get('id')))
         this.props.dispatch(closeDetailSection())
     }
 
@@ -93,7 +92,7 @@ class ActivityItem extends React.Component {
     }
 
     renderModal() {
-        const { mediaItem, roomPage, dispatch } = this.props
+        const { mediaItem, isDeletingMediaItem, deleteMediaItemError, dispatch } = this.props
         return (
             <Modal name={`delete-item-${mediaItem.get('id')}`} className="modal-alert">
                 <div className="modal_header">
@@ -102,11 +101,11 @@ class ActivityItem extends React.Component {
                 <div className="modal-alert_text">
                     Are you sure you want to delete this post? <b>This action cannot be reversed.</b>
                 </div>
-                { roomPage.get('deleteMediaItemError') && 
+                { deleteMediaItemError && 
                     <div className="modal-alert_error">There was an error processing your request. Please try again.</div>
                 }
                 <a className="modal-alert_btn btn" onClick={this.handleDeleteMediaItemClick}>
-                    { roomPage.get('isDeletingMediaItem') ? <Spinner type="white" /> : 'Delete post' }
+                    { isDeletingMediaItem ? <Spinner type="white" /> : 'Delete post' }
                 </a>
                 <a className="modal-alert_btn btn btn-gray" onClick={() => {dispatch(closeModal())}}>
                     Cancel
@@ -116,16 +115,15 @@ class ActivityItem extends React.Component {
     }
 
     render() {
-        const { roomPage, mediaItem, live, index } = this.props;
+        const { mediaItem, live, index, isUnseen, currentUserIsAuthor, selectedMediaItemId } = this.props;
 
-        let selected = mediaItem.get('id') === roomPage.selectedMediaItem().get('id')
-        let unseen = roomPage.isUnseen(mediaItem.get('id'))
+        let selected = mediaItem.get('id') === selectedMediaItemId
 
         const url = mediaItem.thumbnail('small').get('url')
         const selectedClass = selected ? "selected" : "";
-        const liveClass = live && unseen ? "live" : "";
+        const liveClass = live && isUnseen ? "live" : "";
         const videoClass = mediaItem.get('type') === 'video' ? "item-activity_video-wrapper" : "";
-        const currentUserClass = roomPage.currentUserIsAuthor() ? "current-user" : ""
+        const currentUserClass = currentUserIsAuthor ? "current-user" : ""
         
         return (
             <div className={`item item-activity ${selectedClass} ${liveClass} ${currentUserClass}`} onClick={this.handleClick} ref={(c) => this._node = c}>
@@ -138,7 +136,7 @@ class ActivityItem extends React.Component {
                         <div className="item-activity_time"><span>{format(mediaItem.get('user_created_at'), 'h:mm a')}</span></div>
                     </div>
                 </div>
-                { roomPage.currentUserIsAuthor() && 
+                { currentUserIsAuthor && 
                     <div className="item-activity_options" onClick={this.handleOptionsClick}><Icon type="more-vert" /></div>
                 }
                 { this.renderDropdown() }
@@ -154,10 +152,30 @@ ActivityItem.propTypes = {
     live: React.PropTypes.bool
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+    let roomPage = new RoomPage(state)
+    let postDeletionSelectedMediaItem = roomPage.mediaItems().first() || roomPage.liveMediaItems().first()
+
     return {
-        roomPage: new RoomPage(state)
+        roomId: roomPage.get('id'),
+        currentUserIsAuthor: roomPage.currentUserIsAuthor(),
+        // triggers componentDidUpdate when user switches detail section, which prompts resize call
+        selectedDetailSection: roomPage.get('selectedDetailSection'),
+
+        isUnseen: roomPage.isUnseen(ownProps.mediaItem.get('id')),
+        selectedMediaItemId: roomPage.get('selectedMediaItemId'),
+
+        isDeletingMediaItem: roomPage.get('isDeletingMediaItem'),
+        hasDeletedMediaItem: roomPage.get('hasDeletedMediaItem'),
+        deletedMediaItemId: roomPage.get('deletedMediaItemId'),
+        postDeletionSelectedMediaItemId: postDeletionSelectedMediaItem.get('id')
     }
 }
 
-export default connect(mapStateToProps)(ActivityItem);
+function areOwnPropsEqual(prevProps, nextProps) {
+    return prevProps.mediaItem.isEqual(nextProps.mediaItem) 
+        && prevProps.index === nextProps.index 
+        && prevProps.live === nextProps.live
+}
+
+export default connect(mapStateToProps, null, null, { areOwnPropsEqual })(ActivityItem);

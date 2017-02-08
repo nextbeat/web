@@ -19,11 +19,11 @@ class ChatItem extends React.Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        return this.props.comment !== nextProps.comment || this.props.collapsed !== nextProps.collapsed
+        return !this.props.comment.isEqual(nextProps.comment) || this.props.collapsed !== nextProps.collapsed
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.comment !== this.props.comment) {
+        if (prevProps.collapsed && !prevProps.comment.isEqual(this.props.comment)) {
             $(this.refs.chat).trigger('update.dot')
         }
 

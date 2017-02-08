@@ -15,10 +15,10 @@ class Dropdown extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         const { type } = this.props
-        if (!this.props.app.isActiveDropdown(type) && nextProps.app.isActiveDropdown(type)) {
+        if (!this.props.isActive && nextProps.isActive) {
             $(window).on(`mouseup.dropdown-${type}`, this.hideDropdown)
             $(window).on(`keyup.dropdown-${type}`, this.handleKeyUp)
-        } else if (this.props.app.isActiveDropdown(type) && !nextProps.app.isActiveDropdown(type)) {
+        } else if (this.props.isActive && !nextProps.isActive) {
             $(window).off(`mouseup.dropdown-${type}`)
             $(window).off(`keyup.dropdown-${type}`)
         }
@@ -51,7 +51,7 @@ class Dropdown extends React.Component {
     }
 
     render() {
-        const { type, children, app, triangleMargin } = this.props
+        const { type, children, isActive, triangleMargin } = this.props
 
         let triangleStyle = {}
         if (typeof triangleMargin !== 'undefined') {
@@ -64,7 +64,7 @@ class Dropdown extends React.Component {
         return (
             <div id={`dropdown-${type}`} 
                 className={`dropdown dropdown-${type}`} 
-                style={{ display: app.isActiveDropdown(type) ? 'block' : 'none' }}
+                style={{ display: isActive ? 'block' : 'none' }}
             >
                 <div className="dropdown_triangle" style={triangleStyle} />
                 <div className="dropdown_filler" style={triangleStyle} />
@@ -80,9 +80,10 @@ Dropdown.propTypes = {
     type: React.PropTypes.string.isRequired
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+    let app = new App(state)
     return {
-        app: new App(state)
+        isActive: app.isActiveDropdown(ownProps.type)
     }
 }
 

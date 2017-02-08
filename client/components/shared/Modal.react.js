@@ -18,8 +18,7 @@ class Modal extends React.Component {
     }
 
     render() {
-        const { app, name, children, className } = this.props
-        const shouldDisplay = app.get('activeModal') === name
+        const { shouldDisplay, children, className } = this.props
 
         return (
             <div className="modal-container" style={{ display: shouldDisplay ? 'block' : 'none' }}>
@@ -32,9 +31,10 @@ class Modal extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+    let app = new App(state)
     return {
-        app: new App(state)
+        shouldDisplay: app.get('activeModal') === ownProps.name
     }
 }
 

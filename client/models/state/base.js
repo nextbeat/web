@@ -7,32 +7,6 @@ import { createSelector } from 'reselect'
  * so that the organization of the state tree is abstracted
  * away in other files.
  */
-
-let createSelectorFactory = () => {
-    let selectors = {}
-    return (klass) => {
-        if (!selectors[klass]) {
-            let model = (new klass())
-            selectors[klass] = createSelector(
-                [
-                    state => state.getIn(model.keyMapPrefix),
-                    state => state.get('entities')
-                ],
-                (keyState, entities) => {
-                    // temporary
-                    let fauxState = Map()
-                                    .setIn(model.keyMapPrefix, keyState)
-                                    .set('entities', entities)
-                    return new klass(fauxState)
-                }
-            )
-        }
-        return selectors[klass]
-    }
-}
-
-let selectorFactory = createSelectorFactory()
-
 export default class StateModel {
 
     constructor(state) {
@@ -40,10 +14,6 @@ export default class StateModel {
         this.keyMap = {};
         this.keyMapPrefix = [];
         this.entityName = "base";
-    }
-
-    static create(state) {
-        return selectorFactory(this)(state)
     }
 
     keyPath(key) {

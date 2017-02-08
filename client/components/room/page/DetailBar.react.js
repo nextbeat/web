@@ -17,6 +17,7 @@ class DetailBar extends React.Component {
 
         this.handleDetailOverlayClose = this.handleDetailOverlayClose.bind(this)
         this.toggleDropdown = this.toggleDropdown.bind(this)
+        this.renderBadge = this.renderBadge.bind(this)
     }
 
 
@@ -37,8 +38,8 @@ class DetailBar extends React.Component {
 
     // Render
 
-    renderBadge(roomPage) {
-        const count = roomPage.unseenLiveMediaItemsCount()
+    renderBadge() {
+        const count = this.props.unseenLiveMediaItemsCount
         if (count === 0) {
             return null;
         }
@@ -50,26 +51,27 @@ class DetailBar extends React.Component {
     }
 
     render() {
-        const { roomPage, app } = this.props;
-        const selected = type => roomPage.get('selectedDetailSection', 'chat') === type ? "selected" : "";
+        const { selectedDetailSection, width, activeOverlay, 
+                currentUserIsAuthor, isFetchingPage, pageError } = this.props;
+
+        const selected = type => selectedDetailSection === type ? "selected" : "";
 
         // collapse detail bar if window width below threshold
-        const collapsedClass = app.get('width') === 'small' || app.get('width') === 'medium'
-                                    ? 'collapsed' : ''
+        const collapsedClass = width === 'small' || width === 'medium' ? 'collapsed' : ''
 
-        const detailOverlayActive = app.get('activeOverlay') === 'chat' || app.get('activeOverlay') === 'activity'
+        const detailOverlayActive = activeOverlay === 'chat' || activeOverlay === 'activity'
         const activeClass = detailOverlayActive ? 'active' : ''
 
         return (
             <div className={`detail-bar ${collapsedClass} ${activeClass}`}>
                 <div className="detail-bar_header">
-                    { roomPage.currentUserIsAuthor() && 
+                    { currentUserIsAuthor && 
                         <div className="detail-bar_toggle-edit" id="dropdown-detail-bar_toggle" onClick={this.toggleDropdown}><Icon type="more-vert" /></div> 
                     }
                     <ActionsDropdown type="detail-bar" />
                     <div className="detail-bar_tab-container">
                         <span className={`detail-bar_tab ${selected("chat")}`} onClick={this.setSelected.bind(this, "chat")}>Chat</span>
-                        <span className={`detail-bar_tab ${selected("activity")}`} onClick={this.setSelected.bind(this, "activity")}>Activity{this.renderBadge(roomPage)}</span>
+                        <span className={`detail-bar_tab ${selected("activity")}`} onClick={this.setSelected.bind(this, "activity")}>Activity{this.renderBadge()}</span>
                     </div>
                 </div>
                 <div className="detail-bar_main">
@@ -78,8 +80,8 @@ class DetailBar extends React.Component {
                             <Icon type="close" />
                         </div>
                     }
-                    { !roomPage.get('isFetching') && !roomPage.get('error') && <Chat display={roomPage.get('selectedDetailSection', 'chat') === "chat"} /> }
-                    { !roomPage.get('isFetching') && !roomPage.get('error') && <Activity display={roomPage.get('selectedDetailSection', 'chat') === "activity"} /> }
+                    { !isFetchingPage && !pageError && <Chat display={selectedDetailSection === "chat"} /> }
+                    { !isFetchingPage && !pageError && <Activity display={selectedDetailSection === "activity"} /> }
                 </div>
             </div>
         );
@@ -87,9 +89,16 @@ class DetailBar extends React.Component {
 }
 
 function mapStateToProps(state) {
+    let roomPage = new RoomPage(state)
+    let app = new App(state)
     return {
-        roomPage: new RoomPage(state),
-        app: new App(state)
+        selectedDetailSection: roomPage.get('selectedDetailSection', 'chat'),
+        width: app.get('width'),
+        activeOverlay: app.get('activeOverlay'),
+        currentUserIsAuthor: roomPage.currentUserIsAuthor(),
+        isFetchingPage: roomPage.get('isFetching'),
+        pageError: roomPage.get('error'),
+        unseenLiveMediaItemsCount: roomPage.get('unseenLiveMediaItemsCount', 0)
     }
 }
 
