@@ -1,38 +1,6 @@
 import { Map } from 'immutable'
 import { createSelector } from 'reselect'
 
-let createSelectorFactory = () => {
-    let selectors = {}
-    return (klass, id) => {
-
-        if (typeof id === "number") {
-            id = id.toString()
-        } 
-
-        if (!selectors[klass]) {
-            selectors[klass] = {}
-        }
-
-        if (!selectors[klass][id]) {
-            // todo: make entity name static property
-            let model = (new klass())
-            selectors[klass][id] = createSelector(
-                entities => entities.getIn(model.entityName, id),
-                (entity) => {
-                    // temporary
-                    let fauxEntities = Map().setIn([model.entityName, id], entity)
-                    console.log(fauxEntities.toJS())
-                    return new klass(id, fauxEntities)
-                }
-            )
-        }
-
-        return selectors[klass][id]
-    }
-}
-
-let selectorFactory = createSelectorFactory()
-
 /* Helper model for retrieving data from specific 
  * entities in the state. (Compare with the StateModel 
  * base class, which is instantiated with the root 
@@ -48,10 +16,6 @@ export default class EntityModel {
         this.id = id;
         this.entities = entities;
         this.entityName = "base";
-    }
-
-    static create(id, entities) {
-        return selectorFactory(this, id)(entities)
     }
 
     // accessors
