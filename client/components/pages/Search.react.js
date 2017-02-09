@@ -62,7 +62,7 @@ class SearchComponent extends React.Component {
     componentDidUpdate(prevProps) {
         const { dispatch, location } = this.props
         const query = location.query.q
-        if (prevProps.search.get('query') !== query) {
+        if (query && prevProps.search.get('query') !== query) {
             dispatch(clearSearch())
             this.setState({ query })
             dispatch(loadSearchResults(query, 'stacks'))
@@ -85,7 +85,7 @@ class SearchComponent extends React.Component {
 
     handleInputKeyPress(e) {
         if (e.charCode === 13) {
-            browserHistory.push({
+            browserHistory.replace({
                 pathname: '/search',
                 query: { q: this.state.query }
             })

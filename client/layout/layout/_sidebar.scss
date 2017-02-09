@@ -12,6 +12,7 @@
     padding-top: 15px;
     background: $dark-background-color;
     overflow: auto;
+    -webkit-overflow-scrolling: touch;
 
     .spinner {
         margin: 20px auto;
@@ -137,6 +138,7 @@ a.sidebar_item {
     transform: translateX(-100%);
     z-index: 15;
     border-right: 1px solid border-color;
+    overflow-y: scroll;
 
     &.animating {
         transition-property: transform;

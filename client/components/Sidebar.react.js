@@ -35,10 +35,6 @@ class Sidebar extends React.Component {
         $('.sidebar').off('click');
     } 
 
-    componentDidUpdate(prevProps, prevState) {
-        console.log('sidebar update')
-    }
-
     // Render
 
     renderStackItem(stack) {
