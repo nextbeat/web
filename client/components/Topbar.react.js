@@ -131,6 +131,7 @@ class Topbar extends React.Component {
                 <Icon type="notifications" />
                 { totalUnreadNotificationCount > 0 && <div className="topbar_notifications-badge">{totalUnreadNotificationCount}</div> }
             </div>,
+
             <ToggleLink 
                 key='upload' 
                 disableToggle={width !== 'small' || uploadStackSubmitted}
@@ -139,6 +140,7 @@ class Topbar extends React.Component {
                 onClick={this.handleUploadClick}>
             <Icon type="file-upload" />
             </ToggleLink>,
+            
             <div key='user' id="dropdown-topbar_toggle" className={`topbar_icon topbar_icon-user ${smallClass}`} onClick={this.toggleUserDropdown} style={profpicStyle}>
                 { !profilePictureUrl && <Icon type="person" /> }
             </div>

@@ -186,9 +186,10 @@ class App extends React.Component {
         const inRoomClass = inRoom ? 'app-container-room' : ''
         const guestClass = user.isLoggedIn() ? '' : 'no-sidebar'
         const splashClass = showSplashTopbar ? (!!app.get('splashTopbarCollapsed') ? 'splash splash-collapsed' : 'splash splash-expanded') : ''
+        const sidebarActiveClass = app.get('activeOverlay') === 'sidebar' ? 'app-container-sidebar-active' : ''
 
         return (
-            <section className={`app-container ${inRoomClass}`} id="app-container">
+            <section className={`app-container ${inRoomClass} ${sidebarActiveClass}`} id="app-container">
                 { inHome && <AppBanner /> /* prevents issues with fixed positioning on home page */ }
                 {this.setTitle()}
                 <Login />

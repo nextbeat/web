@@ -15,6 +15,10 @@
     -webkit-overflow-scrolling: touch;
 }
 
+.app-container-sidebar-active .content {
+    overflow: hidden;
+}
+
 .content_inner {
     padding: 20px;
 }
