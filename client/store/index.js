@@ -11,7 +11,8 @@ const actionTypesToIgnore = [
     ActionTypes.RESIZE,
     ActionTypes.USE_CHAT,
     ActionTypes.PROLONG_CHAT_SESSION,
-    ActionTypes.ANALYTICS
+    ActionTypes.ANALYTICS,
+    ActionTypes.HAS_NAVIGATED,
 ]
 
 if (process.env.NODE_ENV !== "production") {

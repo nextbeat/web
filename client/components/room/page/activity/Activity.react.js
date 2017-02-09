@@ -104,17 +104,17 @@ const scrollOptions = {
         
         if (prevProps.roomPage.selectedMediaItem().get('id') !== this.props.roomPage.selectedMediaItem().get('id')) {
             const [ selected, activity ] = [ $('.item-activity.selected'), $('#activity-inner') ];
+            let selectedOffset = selected.position().top + activity.scrollTop()
 
             // adjust position to keep selected element at bottom of view
-            if (selected.position().top + selected.outerHeight() > activity.scrollTop() + activity.height()) {
-                const pos = selected.position().top + selected.outerHeight() - activity.height();
-                activity.animate({ scrollTop: pos}, 100);
+            if (selectedOffset + selected.outerHeight() > activity.scrollTop() + activity.height()) {
+                const pos = selected.position().top + activity.scrollTop() + selected.outerHeight() - activity.height();
+                activity.animate({ scrollTop: pos }, 100);
             }
         
             // similar logic for selected element at top of view
-            if (activity.scrollTop() > selected.position().top) {
-                const pos = selected.position().top;
-                activity.animate({ scrollTop: pos}, 100);
+            if (activity.scrollTop() > selectedOffset) {
+                activity.animate({ scrollTop: selectedOffset }, 100);
             }
 
             scrollComponent.setScrollState();
