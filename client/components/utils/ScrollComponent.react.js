@@ -105,7 +105,7 @@ export default function ScrollComponent(domId, scrollOptions={}) {
 
             isStateScrolledToBottom() {
                 const elem = this.domElement();
-                return this.state.scrollHeight - elem.clientHeight <= this.state.scrollTop + 1;
+                return this.state.scrollHeight - elem.clientHeight <= this.state.scrollTop + 5;
             }
 
             setScrollState() {

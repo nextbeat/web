@@ -116,9 +116,9 @@ class ChatHistory extends React.Component {
     }
 
     renderSubmittingComment(comment, idx) {
-        const { room } = this.props;
+        const { authorUsername } = this.props;
         const key = `s${idx}`
-        const isCreator = (room.author().get('username') === comment.get('username'));
+        const isCreator = (authorUsername === comment.get('username'));
         return <LiveChatItem
                 key={key}
                 comment={comment}
@@ -130,9 +130,9 @@ class ChatHistory extends React.Component {
     }
 
     renderFailedComment(comment, idx) {
-        const { room } = this.props;
+        const { authorUsername } = this.props;
         const key = `s${idx}`
-        const isCreator = (room.author().get('username') === comment.get('username'));
+        const isCreator = (authorUsername === comment.get('username'));
         return <LiveChatItem
                 key={key}
                 comment={comment}
@@ -144,8 +144,8 @@ class ChatHistory extends React.Component {
     }
 
     render() {
-        const { comments, liveComments, commentsFetching, commentsError,
-                scrollable, style } = this.props;
+        const { comments, liveComments, submittingComments, failedComments, 
+                commentsFetching, commentsError, scrollable, style } = this.props;
 
         let scrollableClass = scrollable ? 'scrollable': ''
         let styleClass = `chat_history-${style}`
@@ -204,6 +204,14 @@ const scrollOptions = {
             scrollComponent.setScrollState()
         }
         if (prevProps.liveComments.size !== this.props.liveComments.size) {
+            scrollComponent.scrollToBottomIfPreviouslyAtBottom()
+            scrollComponent.setScrollState()
+        }
+        if (prevProps.submittingComments.size !== this.props.submittingComments.size) {
+            scrollComponent.scrollToBottomIfPreviouslyAtBottom()
+            scrollComponent.setScrollState()
+        }
+        if (prevProps.failedComments.size !== this.props.failedComments.size) {
             scrollComponent.scrollToBottomIfPreviouslyAtBottom()
             scrollComponent.setScrollState()
         }

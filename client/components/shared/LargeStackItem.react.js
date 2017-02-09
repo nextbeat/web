@@ -70,7 +70,9 @@ class LargeStackItem extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !this.props.stack.isEqual(nextProps.stack) || this.props.static !== nextProps.static
+        return !this.props.stack.isEqual(nextProps.stack) 
+            || this.props.static !== nextProps.static 
+            || this.state.imageLoaded !== nextState.imageLoaded
     }
 
     render() {
