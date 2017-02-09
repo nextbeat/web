@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 
 import { CurrentUser, App } from '../models'
 import { selectSidebar, closeSidebar } from '../actions'
+import { secureUrl } from '../utils'
 
 import StackItem from './shared/StackItem.react'
 import Icon from './shared/Icon.react'
@@ -47,7 +48,7 @@ class Sidebar extends React.Component {
     }
 
     renderSubscription(sub) {
-        const url = sub.thumbnail('small').get('url')
+        const url = secureUrl(sub.thumbnail('small').get('url'))
         const iconStyle = url ? { backgroundImage: `url(${url})`} : {}
         return (
             <Link key={`sub${sub.get('id')}`} to={`/u/${sub.get('username')}`} activeClassName="selected" className="sidebar_item">

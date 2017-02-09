@@ -2,13 +2,13 @@ import React from 'react'
 import { Link } from 'react-router'
 
 import Icon from '../../shared/Icon.react'
-import { fromNowString } from '../../../utils'
+import { fromNowString, secureUrl } from '../../../utils'
 
 class RoomCardHeader extends React.Component {
 
     render() {
         const { room } = this.props;
-        let thumbUrl = room.author().thumbnail('medium').get('url')
+        let thumbUrl = secureUrl(room.author().thumbnail('medium').get('url'))
         let thumbStyle = { backgroundImage: thumbUrl ? `url(${thumbUrl})` : '' }
         let index = room.indexOfSelectedMediaItem() + 1
 
