@@ -50,7 +50,7 @@ class Share extends React.Component {
         if (!showShareModal) {
             this.setState({ showShareModal: true })
             // add event which detects clicks outside of dropdown to close it
-            $(document).on('mouseup.hideShareModal', e => {
+            $(document).on('mouseup.hideShareModal touchend.hideShareModal', e => {
                 // check that target isn't share wrapper or one of its descendants
                 if (!($share.is(e.target) || $share.has(e.target).length > 0)) {
                     $(document).off('.hideShareModal');
