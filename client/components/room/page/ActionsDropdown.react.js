@@ -9,11 +9,11 @@ import { promptModal } from '../../../actions'
 class ActionsDropdown extends React.Component {
 
     render() {
-        const { dispatch, roomPage, type } = this.props
+        const { dispatch, hid, closed, type } = this.props
         return (
             <Dropdown type={`stack-actions-${type}`} triangleMargin={-1}>
-                <Link to={`/r/${roomPage.get('hid')}/edit`} className="dropdown-option">Edit Room</Link>
-                { !roomPage.get('closed') && <a className="dropdown-option" onClick={() => {dispatch(promptModal('close-room'))}}>Close Room</a> }
+                <Link to={`/r/${hid}/edit`} className="dropdown-option">Edit Room</Link>
+                { !closed && <a className="dropdown-option" onClick={() => {dispatch(promptModal('close-room'))}}>Close Room</a> }
                 <a className="dropdown-option" onClick={() => {dispatch(promptModal('delete-room'))}}>Delete Room</a>
             </Dropdown>
         )
@@ -22,8 +22,10 @@ class ActionsDropdown extends React.Component {
 }
 
 function mapStateToProps(state) {
+    let roomPage = new RoomPage(state)
     return {
-        roomPage: new RoomPage(state)
+        hid: roomPage.get('hid'),
+        closed: roomPage.get('close')
     }
 }
 

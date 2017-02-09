@@ -34,12 +34,15 @@ class Sidebar extends React.Component {
         $('.sidebar').off('click');
     } 
 
+    componentDidUpdate(prevProps, prevState) {
+        console.log('sidebar update')
+    }
+
     // Render
 
     renderStackItem(stack) {
-        const { user } = this.props;
         return (
-            <StackItem key={`bk${stack.get('id')}`} stack={stack} user={user} static={true} />
+            <StackItem key={`bk${stack.get('id')}`} stack={stack} static={true} />
         )
     }
 
@@ -56,40 +59,41 @@ class Sidebar extends React.Component {
     }
 
     render() {
-        const { user, app } = this.props;
+        const { isLoggedIn, activeOverlay, sidebarAnimating, sidebarDataIsLoaded,
+                username, profilePictureUrl, openBookmarkedStacks, subscriptions } = this.props;
 
         // hide sidebar if user is not logged in
-        const guestClass = user.isLoggedIn() ? '' : 'no-sidebar'
+        const guestClass = isLoggedIn ? '' : 'no-sidebar'
 
         // display sidebar if selected
-        const activeClass = app.get('activeOverlay') === 'sidebar' ? 'active' : ''
-        const animatingClass = app.get('sidebarAnimating') ? 'animating' : ''
+        const activeClass = activeOverlay === 'sidebar' ? 'active' : ''
+        const animatingClass = sidebarAnimating ? 'animating' : ''
 
         // set style for displaying profile picture
-        const profileStyle = { backgroundImage: user.profileThumbnailUrl() ? `url(${user.profileThumbnailUrl()})` : ''}
+        const profileStyle = { backgroundImage: profilePictureUrl ? `url(${profilePictureUrl})` : ''}
 
         return (
             <div className={`sidebar ${activeClass} ${guestClass} ${animatingClass}`} id='sidebar'>
-                { user.sidebarDataIsLoaded() &&
+                { sidebarDataIsLoaded &&
                 <div>
                     <div className="sidebar_section sidebar_topnav">
                         <Link to="/" activeClassName="selected" className="sidebar_item">
                             <div className="sidebar_icon"><Icon type="home" /></div>Home
                         </Link>
-                        <Link to={`/u/${user.get('username')}`} activeClassName="selected" className="sidebar_item">
-                            <div className="sidebar_icon" style={profileStyle}>{ !user.profileThumbnailUrl() && <Icon type="person" /> }</div>
+                        <Link to={`/u/${username}`} activeClassName="selected" className="sidebar_item">
+                            <div className="sidebar_icon" style={profileStyle}>{ !profilePictureUrl && <Icon type="person" /> }</div>
                             My Profile
                         </Link>
                     </div>
                     <div className="sidebar_bookmarks sidebar_section">
                         <Link to="/bookmarks" className="sidebar_header">BOOKMARKS</Link>
-                        {user.openBookmarkedStacks().size === 0 && <div className="sidebar_no-content">You have no open bookmarks.</div>}
-                        {user.openBookmarkedStacks().map(stack => this.renderStackItem(stack))}
+                        {openBookmarkedStacks.size === 0 && <div className="sidebar_no-content">You have no open bookmarks.</div>}
+                        {openBookmarkedStacks.map(stack => this.renderStackItem(stack))}
                     </div>
                     <div className="sidebar_subscriptions sidebar_section">
                         <Link to="/subscriptions" className="sidebar_header">SUBSCRIPTIONS</Link>
-                        {user.subscriptions().size === 0 && <div className="sidebar_no-content">You have no subscriptions.</div>}
-                        {user.subscriptions().map(sub => this.renderSubscription(sub))}
+                        {subscriptions.size === 0 && <div className="sidebar_no-content">You have no subscriptions.</div>}
+                        {subscriptions.map(sub => this.renderSubscription(sub))}
                     </div>
                 </div>
                 }
@@ -99,9 +103,19 @@ class Sidebar extends React.Component {
 }
 
 function mapStateToProps(state) {
+    let currentUser = new CurrentUser(state)
+    let app = new App(state)
     return {
-        user: new CurrentUser(state),
-        app: new App(state)
+        isLoggedIn: currentUser.isLoggedIn(),
+        username: currentUser.get('username'),
+        profilePictureUrl: currentUser.profileThumbnailUrl(),
+        sidebarDataIsLoaded: currentUser.sidebarDataIsLoaded(),
+
+        activeOverlay: app.get('activeOverlay'),
+        sidebarAnimating: app.get('sidebarAnimating'),
+
+        openBookmarkedStacks: currentUser.openBookmarkedStacks(),
+        subscriptions: currentUser.subscriptions()
     }
 }
 

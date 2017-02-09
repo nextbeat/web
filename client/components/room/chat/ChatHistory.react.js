@@ -10,10 +10,10 @@ import ChatbotChatItem from './ChatbotChatItem.react'
 import Spinner from '../../shared/Spinner.react'
 
 import { loadComments, promptChatActionsForUser } from '../../../actions'
-import { Stack, CurrentUser, App } from '../../../models'
+import { Room, CurrentUser, App } from '../../../models'
 
 function scrollComponentId(props) {
-    return `history-${props.room.id}-${props.scrollable ? 'scroll' : 'no-scroll'}`
+    return `history-${props.roomId}-${props.scrollable ? 'scroll' : 'no-scroll'}`
 }
 
 class ChatHistory extends React.Component {
@@ -26,7 +26,6 @@ class ChatHistory extends React.Component {
     }
 
     componentDidMount() {
-
         if (this.props.scrollable) {
             // Prevents document from scrolling when inside chat history element
             // Sourced from http://stackoverflow.com/a/20520619
@@ -40,12 +39,10 @@ class ChatHistory extends React.Component {
                 }
             })
         }
-
     }
 
     componentWillUnmount() {
          $(`#${scrollComponentId(this.props)}`).off('mousewheel DOMMouseScroll')
-
     }
 
     // Events
@@ -57,10 +54,10 @@ class ChatHistory extends React.Component {
     // Render
 
     renderComment(comment, idx) {
-        const { room, collapseMessages } = this.props;
+        const { collapseMessages, totalCommentsCount, roomId } = this.props;
         const username = comment.author().get('username')
         const isCreator = comment.authorIsCreator()
-        let shouldCollapse = collapseMessages && idx > room.totalCommentsCount() - 5;
+        let shouldCollapse = collapseMessages && idx > totalCommentsCount - 5;
 
         if (comment.get('type') === 'message') {
             return <ChatItem 
@@ -76,7 +73,7 @@ class ChatHistory extends React.Component {
                         key={comment.get('id')} 
                         comment={comment} 
                         username={username} 
-                        room={room}
+                        roomId={roomId}
                     />
         } else {
             return null;
@@ -84,10 +81,10 @@ class ChatHistory extends React.Component {
     }
 
     renderLiveComment(comment, idx) {
-        const { room, collapseMessages } = this.props;
+        const { authorUsername, comments, totalCommentsCount, collapseMessages, roomId } = this.props;
         const key = `l${idx}`;
-        const isCreator = (room.author().get('username') === comment.get('username'));
-        let shouldCollapse = collapseMessages && idx + room.comments().size > room.totalCommentsCount() - 5;
+        const isCreator = (authorUsername === comment.get('username'));
+        let shouldCollapse = collapseMessages && idx + comments.size > totalCommentsCount - 5;
 
         if (comment.get('type') === 'message') {
             return <LiveChatItem 
@@ -102,7 +99,7 @@ class ChatHistory extends React.Component {
                         key={key} 
                         comment={comment} 
                         username={comment.get('username')} 
-                        room={room}
+                        roomId={roomId}
                     />
         } else if (comment.get('type') === 'chatbot') {
             return <ChatbotChatItem
@@ -115,18 +112,19 @@ class ChatHistory extends React.Component {
     }
 
     render() {
-        const { room, scrollable, style } = this.props;
+        const { comments, liveComments, commentsFetching, commentsError,
+                scrollable, style } = this.props;
 
         let scrollableClass = scrollable ? 'scrollable': ''
         let styleClass = `chat_history-${style}`
 
         return (
             <div id={scrollComponentId(this.props)} className={`chat_history ${scrollableClass} ${styleClass}`}>
-                { room.get('commentsFetching') && <Spinner type="grey" />}
-                { room.get('commentsError') && room.get('commentsError').length > 0 && <p>Could not load comments.</p>}
+                { commentsFetching && <Spinner type="grey" />}
+                { commentsError && commentsError.length > 0 && <p>Could not load comments.</p>}
                 <ul className="chat_items">
-                    {room.comments().reverse().map((comment, idx) => this.renderComment(comment, idx))}
-                    {room.liveComments().map((comment, idx) => this.renderLiveComment(comment, idx))}
+                    {comments.reverse().map((comment, idx) => this.renderComment(comment, idx))}
+                    {liveComments.map((comment, idx) => this.renderLiveComment(comment, idx))}
                 </ul>
             </div>
         );
@@ -134,7 +132,7 @@ class ChatHistory extends React.Component {
 }
 
 ChatHistory.propTypes = {
-    room: React.PropTypes.object.isRequired,
+    roomId: React.PropTypes.number.isRequired,
     scrollable: React.PropTypes.bool.isRequired,
     style: React.PropTypes.string.isRequired,
     collapseMessages: React.PropTypes.bool.isRequired
@@ -149,9 +147,9 @@ ChatHistory.defaultProps = {
 const scrollOptions = {
 
     onScrollToTop: function(scrollComponent) {
-        const { room, dispatch } = this.props
-        if (!room.get('commentsFetching') && room.get('id')) {
-            dispatch(loadComments(room.get('id')))
+        const { roomId, commentsFetching, dispatch } = this.props
+        if (commentsFetching && roomId) {
+            dispatch(loadComments(roomId))
         }
     },
 
@@ -162,12 +160,12 @@ const scrollOptions = {
     },
 
     onComponentDidUpdate: function(scrollComponent, prevProps) {
-        if (prevProps.room.comments().size !== this.props.room.comments().size) {
+        if (prevProps.comments.size !== this.props.comments.size) {
             scrollComponent.keepScrollPosition()
             scrollComponent.scrollToBottomIfPreviouslyAtBottom()
             scrollComponent.setScrollState()
         }
-        if (prevProps.room.liveComments().size !== this.props.room.liveComments().size) {
+        if (prevProps.liveComments.size !== this.props.liveComments.size) {
             scrollComponent.scrollToBottomIfPreviouslyAtBottom()
             scrollComponent.setScrollState()
         }
@@ -179,7 +177,20 @@ const scrollOptions = {
             scrollComponent.scrollToBottom();
         }
     }
-
 }
 
-export default connect()(ScrollComponent(scrollComponentId, scrollOptions)(ChatHistory));
+function mapStateToProps(state, ownProps) {
+    let room = new Room(ownProps.roomId, state)
+    return {
+        authorUsername: room.author().get('username'),
+
+        comments: room.comments(),
+        liveComments: room.liveComments(),
+        totalCommentsCount: room.totalCommentsCount(),
+
+        commentsFetching: room.get('commentsFetching'),
+        commentsError: room.get('commentsError'),
+    }
+}
+
+export default connect(mapStateToProps)(ScrollComponent(scrollComponentId, scrollOptions)(ChatHistory));

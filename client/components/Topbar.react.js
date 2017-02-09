@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 
 import { selectSidebar, closeSidebar, toggleDropdown, promptModal, logout, markAllAsRead, loadNotifications, clearUpload } from '../actions'
-import { Notifications as NotificationsModel, Upload } from '../models'
+import { Notifications as NotificationsModel, Upload, CurrentUser, App } from '../models'
 
 import Notifications from './pages/Notifications.react'
 import Icon from './shared/Icon.react'
@@ -38,8 +38,8 @@ class Topbar extends React.Component {
     // Events
 
     toggleSidebar() {
-        const { app, dispatch } = this.props
-        if (app.get('activeOverlay') === 'sidebar') {
+        const { activeOverlay, dispatch } = this.props
+        if (activeOverlay === 'sidebar') {
             dispatch(closeSidebar())
         } else {
             dispatch(selectSidebar())
@@ -55,13 +55,13 @@ class Topbar extends React.Component {
     }
 
     toggleNotificationsDropdown() {
-        const { app, dispatch, routes } = this.props
+        const { width, hasNavigated, dispatch } = this.props
         const { router } = this.context
 
-        if (app.get('width') === 'small') {
+        if (width === 'small') {
             if (router.isActive('/notifications')) {
                 // go back to previous page if available
-                if (app.hasNavigated()) {
+                if (hasNavigated) {
                     router.goBack();
                 } else {
                     // run componentDidMount operations of Notifications component to simulate reload
@@ -110,10 +110,9 @@ class Topbar extends React.Component {
         this.hideSidebar()
         // If user is on upload page and a submission
         // has completed, reset the upload process
-        const { dispatch, upload } = this.props 
+        const { dispatch, uploadStackSubmitted } = this.props 
         const { router } = this.context
-        if (router.isActive('/upload') && upload.get('stackSubmitted')) {
-            console.log('foo')
+        if (router.isActive('/upload') && uploadStackSubmitted) {
             dispatch(clearUpload())
         }
     }
@@ -122,34 +121,31 @@ class Topbar extends React.Component {
     // Render
 
     renderLoggedIn(includeSmallClass) {
-        const { user, notifications, app } = this.props;
+        const { totalUnreadNotificationCount, profilePictureUrl, width, uploadStackSubmitted } = this.props;
 
-        const profpic_url = user.profileThumbnailUrl();
-        const profpicStyle = { backgroundImage: profpic_url ? `url(${profpic_url})` : '' }
+        const profpicStyle = { backgroundImage: profilePictureUrl ? `url(${profilePictureUrl})` : '' }
         const smallClass = includeSmallClass ? 'topbar_icon-small' : '';
-        const unreadCount = notifications.totalUnreadCount();
 
         return [
             <div key='notifications' id="dropdown-notifications_toggle" className={`topbar_icon topbar_icon-notifications ${smallClass}`} onClick={this.toggleNotificationsDropdown}>
                 <Icon type="notifications" />
-                { unreadCount > 0 && <div className="topbar_notifications-badge">{unreadCount}</div> }
+                { totalUnreadNotificationCount > 0 && <div className="topbar_notifications-badge">{totalUnreadNotificationCount}</div> }
             </div>,
             <ToggleLink 
                 key='upload' 
-                disableToggle={app.get('width') !== 'small'}
+                disableToggle={width !== 'small' || uploadStackSubmitted}
                 className={`topbar_icon topbar_icon-upload ${smallClass}`} 
                 to="/upload" 
                 onClick={this.handleUploadClick}>
             <Icon type="file-upload" />
             </ToggleLink>,
             <div key='user' id="dropdown-topbar_toggle" className={`topbar_icon topbar_icon-user ${smallClass}`} onClick={this.toggleUserDropdown} style={profpicStyle}>
-                { !profpic_url && <Icon type="person" /> }
+                { !profilePictureUrl && <Icon type="person" /> }
             </div>
         ]
     }
 
     renderGuest(includeSmallClass) {
-        const { user } = this.props;
         const smallClass = includeSmallClass ? 'topbar_icon-small' : '';
 
         return [
@@ -159,20 +155,20 @@ class Topbar extends React.Component {
     }
 
     renderUserDropdown() {
-        const { user, app } = this.props 
+        const { username } = this.props 
         return (
             <Dropdown type="topbar" triangleMargin={12}>
-                <Link to={`/u/${user.get('username')}`} className="dropdown-option">Profile</Link>
+                <Link to={`/u/${username}`} className="dropdown-option">Profile</Link>
                 <a onClick={this.handleLogoutClick} className="dropdown-option">Log Out</a>
             </Dropdown>
         )   
     }
 
     renderNotificationsDropdown() {
-        const { app } = this.props;
+        const { isNotificationsActiveDropdown } = this.props;
         return (
             <Dropdown type="notifications">
-                { app.isActiveDropdown('notifications') && 
+                { isNotificationsActiveDropdown && 
                     <div className="topbar_notifications_container">
                         <Notifications />
                     </div> 
@@ -182,8 +178,8 @@ class Topbar extends React.Component {
     }
 
     render() {
-        const { user, app } = this.props;
-        const loggedInClass = user.isLoggedIn() ? 'topbar-logged-in' : 'topbar-guest';
+        const { isLoggedIn, width } = this.props;
+        const loggedInClass = isLoggedIn ? 'topbar-logged-in' : 'topbar-guest';
 
         return (
             <div className="topbar" id="topbar">
@@ -194,7 +190,7 @@ class Topbar extends React.Component {
                         </div>
                     </div>
 
-                    { user.isLoggedIn() && <div className="topbar_icon topbar_icon-menu" onClick={this.toggleSidebar}><Icon type="menu" /></div> }
+                    { isLoggedIn && <div className="topbar_icon topbar_icon-menu" onClick={this.toggleSidebar}><Icon type="menu" /></div> }
                     
                     <div className={`topbar_logo-container ${loggedInClass}`}>
                         <span className="topbar_logo" onClick={this.hideSidebar}><Link to="/"><Logo /></Link></span>
@@ -202,7 +198,7 @@ class Topbar extends React.Component {
                     </div>
 
                     <ToggleLink 
-                        disableToggle={app.get('width') !== 'small'} 
+                        disableToggle={width !== 'small'} 
                         className={`topbar_icon topbar_icon-search ${loggedInClass}`} 
                         to="/search" 
                         onClick={this.hideSidebar}>
@@ -210,9 +206,9 @@ class Topbar extends React.Component {
                     </ToggleLink>
 
                     <div className="topbar_right">
-                        { user.isLoggedIn() ? this.renderLoggedIn(false) : this.renderGuest(false) }
+                        { isLoggedIn ? this.renderLoggedIn(false) : this.renderGuest(false) }
                     </div>
-                    { user.isLoggedIn() ? this.renderLoggedIn(true) : this.renderGuest(true) }
+                    { isLoggedIn ? this.renderLoggedIn(true) : this.renderGuest(true) }
 
                     { this.renderUserDropdown() }
                     { this.renderNotificationsDropdown() }
@@ -223,9 +219,24 @@ class Topbar extends React.Component {
 }
 
 function mapStateToProps(state) {
+    let notifications = new NotificationsModel(state)
+    let upload = new Upload(state)
+    let app = new App(state)
+    let currentUser = new CurrentUser(state)
+
     return {
-        notifications: new NotificationsModel(state),
-        upload: new Upload(state)
+        isLoggedIn: currentUser.isLoggedIn(),
+        username: currentUser.get('username'),
+        profilePictureUrl: currentUser.profileThumbnailUrl(),
+
+        width: app.get('width'),
+        hasNavigated: app.hasNavigated(),
+        activeOverlay: app.get('activeOverlay'),
+
+        isNotificationsActiveDropdown: app.get('activeOverlay') === 'notifications',
+        totalUnreadNotificationCount: notifications.totalUnreadCount(),
+
+        uploadStackSubmitted: upload.get('stackSubmitted')
     }
 }
 

@@ -8,6 +8,7 @@ import Logo from './shared/Logo.react'
 import Icon from './shared/Icon.react'
 
 import { promptModal, expandSplashTopbar, collapseSplashTopbar } from '../actions'
+import { App } from '../models'
 
 class SplashTopbar extends React.Component {
 
@@ -40,10 +41,10 @@ class SplashTopbar extends React.Component {
 
     handleScroll() {
         let scrollTop = $('.content').scrollTop()
-        const { app, dispatch } = this.props
-        if (scrollTop > 0 && !app.get('splashTopbarCollapsed')) {
+        const { splashTopbarCollapsed, dispatch } = this.props
+        if (scrollTop > 0 && !splashTopbarCollapsed) {
             dispatch(collapseSplashTopbar())
-        } else if (scrollTop <= 0 && !!app.get('splashTopbarCollapsed')) {
+        } else if (scrollTop <= 0 && splashTopbarCollapsed) {
             dispatch(expandSplashTopbar())
         }
     }
@@ -62,7 +63,7 @@ class SplashTopbar extends React.Component {
         if (e.charCode === 13) { // enter
             const query = findDOMNode(this.refs.search_bar).value;
             if (query && query.length > 0) {
-                this.props.router.push({
+                this.context.router.push({
                     pathname: '/search',
                     query: { q: query }
                 })
@@ -75,9 +76,9 @@ class SplashTopbar extends React.Component {
     // Render
 
     render() {
-        const { app } = this.props
+        const { splashTopbarCollapsed } = this.props
         return (
-            <div className={`splash-topbar ${!!app.get('splashTopbarCollapsed') ? 'collapsed' : ''}`}>
+            <div className={`splash-topbar ${splashTopbarCollapsed ? 'collapsed' : ''}`}>
                 <div className="splash-topbar_inner">
                     <div className="splash-topbar_background">
                         <SmallLogo type="splash-topbar" />
@@ -105,4 +106,15 @@ class SplashTopbar extends React.Component {
     }
 }
 
-export default connect()(SplashTopbar);
+function mapStateToProps(state) {
+    let app = new App(state) 
+    return {
+        splashTopbarCollapsed: !!app.get('splashTopbarCollapsed')
+    }
+}
+
+SplashTopbar.contextTypes = {
+    router: React.PropTypes.object.isRequired
+}
+
+export default connect(mapStateToProps)(SplashTopbar);

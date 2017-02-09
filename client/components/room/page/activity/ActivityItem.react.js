@@ -46,14 +46,6 @@ class ActivityItem extends React.Component {
         $(window).off('resize', this.resize);
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        let roomPage = this.props.roomPage 
-        let nextRoomPage = nextProps.roomPage 
-        return roomPage.get('hasDeletedMediaItem') !== nextRoomPage.get('hasDeletedMediaItem')
-            || roomPage.get('selectedMediaItemId') !== nextRoomPage.get('selectedMediaItemId')
-            || roomPage.currentUserIsAuthor() !== nextRoomPage.currentUserIsAuthor()
-    }
-
 
     // Events
 

@@ -13,8 +13,8 @@ class NotificationChatItem extends React.Component {
     }
 
     handleSelectMediaItem(mediaitem_id) {
-        const { room, dispatch } = this.props
-        dispatch(selectMediaItem(room.get('id'), mediaitem_id));
+        const { roomId, dispatch } = this.props
+        dispatch(selectMediaItem(roomId, mediaitem_id));
         dispatch(closeDetailSection())
     }
 
@@ -49,5 +49,4 @@ class NotificationChatItem extends React.Component {
     }
 }
 
-// no mapStateToProps since we just need this.props.dispatch
 export default connect()(NotificationChatItem);

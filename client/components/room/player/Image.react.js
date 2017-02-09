@@ -13,8 +13,6 @@ class Image extends React.Component {
     constructor(props) {
         super(props)
 
-        this.shouldForceRotation = this.shouldForceRotation.bind(this)
-
         this.fullScreen = this.fullScreen.bind(this)
 
         this.calculateDimensions = this.calculateDimensions.bind(this)
@@ -60,14 +58,6 @@ class Image extends React.Component {
 
     componentWillUnmount() {
         $(window).off('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
-    }
-
-
-    // Queries
-
-    shouldForceRotation() {
-        const { app } = this.props;
-        return app.get('browser') === 'Chrome' && parseInt(app.get('version')) === 52;
     }
 
     // Actions
@@ -127,7 +117,7 @@ class Image extends React.Component {
 
     imageStyle() {
         const { scale, width, height } = this.state
-        const { image } = this.props 
+        const { image, shouldForceRotation } = this.props 
 
         let style = {
             width: `${width}px`,
@@ -136,7 +126,7 @@ class Image extends React.Component {
         
         // If the image has orientation metadata, we need to rotate the image back into 
         // its proper orientation and scale it to fit into the container frame
-        if (this.shouldForceRotation()) {
+        if (shouldForceRotation) {
             const orientation = parseInt(image.get('orientation', 0))
             if (orientation === 90) {
                 style.transform = `rotate(90deg) scale(${scale})`
@@ -204,8 +194,9 @@ Image.defaultProps = {
 }
 
 function mapStateToProps(state) {
+    let app = new App(state)
     return {
-        app: new App(state)
+        shouldForceRotation: app.get('browser') === 'Chrome' && parseInt(app.get('version')) === 52
     }
 }
 

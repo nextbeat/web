@@ -1,4 +1,5 @@
 import { List, Map, Set } from 'immutable'
+import { createSelector } from 'reselect'
 
 import StateModel from './base'
 import CurrentUser from './currentUser'
@@ -6,6 +7,8 @@ import CurrentUser from './currentUser'
 import StackEntity from '../entities/stack'
 import MediaItemEntity from '../entities/mediaItem'
 import CommentEntity from '../entities/comment'
+
+import { memoize } from '../utils'
 
 const KEY_MAP = {
     // meta 
@@ -24,12 +27,19 @@ const KEY_MAP = {
     'mediaItemsFetching': ['pagination', 'mediaItems', 'isFetching'],
     'mediaItemError': ['pagination', 'mediaItems', 'error'],
     // comments
+    'commentIds': ['pagination', 'comments', 'ids'],
     'commentsFetching': ['pagination', 'comments', 'isFetching'],
     'commentsError': ['pagination', 'comments', 'error'],
     'liveComments': ['live', 'comments'],
     // playback
     'videoDidPlay': ['navigation', 'videoDidPlay']
 }
+
+let memoizedCommentsFn = memoize(
+    (id, state) => (new Room(id, state)).__getPaginatedEntities('comments', { entityClass: CommentEntity }) || List(), 
+    (id, state) => (new Room(id, state)).get('commentIds', List()),
+    (id, state) => id
+)
 
 export default class Room extends StateModel {
 
@@ -50,6 +60,10 @@ export default class Room extends StateModel {
      * Properties
      */
 
+    static memoizedComments(id, state) {
+        return memoizedCommentsFn(id, state)
+    }
+
     author() {
         return this.entity().author()
     }
@@ -67,7 +81,7 @@ export default class Room extends StateModel {
     }
 
     comments() {
-        return this.__getPaginatedEntities('comments', { entityClass: CommentEntity })
+        return this.constructor.memoizedComments(this.id, this.state)
     }
 
     liveComments() {

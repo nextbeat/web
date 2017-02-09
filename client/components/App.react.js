@@ -176,13 +176,8 @@ class App extends React.Component {
     }
 
     render() {
-        const { user, app, connected, children, routes, router } = this.props;
-        const barProps = {
-            user,
-            app,
-            routes,
-            router
-        }
+        const { user, app, connected, children } = this.props
+        const { router } = this.context
 
         const inRoom = router.isActive('/r')
         const inHome = router.isActive('/', true)
@@ -198,9 +193,9 @@ class App extends React.Component {
                 {this.setTitle()}
                 <Login />
                 <Signup />
-                { showSplashTopbar ? <SplashTopbar {...barProps} /> : <Topbar {...barProps} /> }
+                { showSplashTopbar ? <SplashTopbar /> : <Topbar /> }
                 <div className={`main-container ${splashClass}`}>
-                    <Sidebar {...barProps} />
+                    <Sidebar />
                     <div className={`main ${guestClass}`}>
                         {React.cloneElement(children, { user, connected })}
                     </div>
@@ -208,6 +203,10 @@ class App extends React.Component {
             </section>
         );
     }
+}
+
+App.contextTypes = {
+    router: React.PropTypes.object.isRequired
 }
 
 function mapStateToProps(state, props) {

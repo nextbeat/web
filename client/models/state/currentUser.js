@@ -1,9 +1,12 @@
-import StateModel from './base'
-
 import { Map, List, Set } from 'immutable'
+
+import StateModel from './base'
 import Room from './room'
+
 import StackEntity from '../entities/stack'
 import UserEntity from '../entities/user'
+
+import { memoize } from '../utils'
 
 const KEY_MAP = {
     // meta
@@ -38,6 +41,18 @@ const KEY_MAP = {
     'subscriptionsLoaded': ['meta', 'loadedSubscriptions']
 }
 
+let memoizedOpenBookmarksFn = memoize(
+    (state) => (new CurrentUser(state)).get('openBookmarkIds', List()).map(id => new StackEntity(id, state.get('entities'))),
+    (state) => (new CurrentUser(state)).get('openBookmarkIds', List()),
+    (state) => (new CurrentUser(state)).get('id')
+)
+
+let memoizedSusbcriptionsFn = memoize(
+    (state) => (new CurrentUser(state)).get('subscriptionIds', List()).map(id => new UserEntity(id, state.get('entities'))),
+    (state) => (new CurrentUser(state)).get('subscriptionIds', List()),
+    (state) => (new CurrentUser(state)).get('id')
+)
+
 export default class CurrentUser extends StateModel {
 
     constructor(state) {
@@ -46,6 +61,9 @@ export default class CurrentUser extends StateModel {
         this.keyMapPrefix = ['user'];
         this.entityName = "users";
     }
+
+
+    // Accessors 
 
     entity() {
         return new UserEntity(this.get('id'), this.state.get('entities'))
@@ -60,7 +78,7 @@ export default class CurrentUser extends StateModel {
     }
 
     openBookmarkedStacks() {
-        return this.get('openBookmarkIds', List()).map(id => new StackEntity(id, this.state.get('entities')));
+        return this.constructor.memoizedOpenBookmarks(this.state)
     }
 
     closedBookmarkedStacks() {
@@ -68,7 +86,7 @@ export default class CurrentUser extends StateModel {
     }
 
     subscriptions() {
-        return this.get('subscriptionIds', List()).map(id => new UserEntity(id, this.state.get('entities')));
+        return this.constructor.memoizedSubscriptions(this.state)
     }
 
     openStacks() {
@@ -82,6 +100,15 @@ export default class CurrentUser extends StateModel {
             .map(id => new StackEntity(id, this.state.get('entities')))
             .filter(stack => !stack.get('deleted'))
     }
+
+    static memoizedOpenBookmarks(state) {
+        return memoizedOpenBookmarksFn(state)
+    }
+
+    static memoizedSubscriptions(state) {
+        return memoizedSusbcriptionsFn(state)
+    }
+
 
     // Queries
 

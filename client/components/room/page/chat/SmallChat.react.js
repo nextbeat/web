@@ -30,7 +30,7 @@ class SmallChat extends React.Component {
         const { roomPage } = this.props;
         return (
         <div className="player_small-chat" onClick={this.handleChatClick}>
-            <ChatHistory room={roomPage.room()} scrollable={false} style='compact' collapseMessages={true} />
+            <ChatHistory roomId={roomPage.room().id} scrollable={false} style='compact' collapseMessages={true} />
             <div className="player_small-chat_expand">
                 <div className="player_small-chat_expand-prompt" onClick={this.handleExpandClick}>Tap to chat</div>
             </div>

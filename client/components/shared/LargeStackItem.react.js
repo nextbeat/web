@@ -70,7 +70,7 @@ class LargeStackItem extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !this.props.stack.isEqual(nextProps.stack)
+        return !this.props.stack.isEqual(nextProps.stack) || this.props.static !== nextProps.static
     }
 
     render() {
@@ -120,7 +120,8 @@ LargeStackItem.propTypes = {
         if (!(props[propName] instanceof EntityModel)) {
             return new Error('Invalid stack prop supplied to LargeStackItem.')   
         }
-    }
+    },
+    static: React.PropTypes.number
 }
 
 export default LargeStackItem;
