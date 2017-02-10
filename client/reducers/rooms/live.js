@@ -98,7 +98,7 @@ function sendComment(state, action) {
 
         if (action.error === 'User is banned.') {
             // display chatbot error message
-            message = 'You have been banned from posting in this room.'
+            let message = 'You have been banned from posting in this room.'
             const chatbotComment = Map({
                 type: 'chatbot',
                 message

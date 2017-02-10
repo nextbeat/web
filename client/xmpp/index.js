@@ -192,11 +192,11 @@ function handleMessage(s, store) {
                 return store.dispatch(syncUnreadNotifications())
             case 'PRIVATE_CHATBOT':
                 let uuid        = meta[1],
-                    message     = s.body;
-                    room        = Room.roomWithUuid(uuid);
+                    message     = s.body,
+                    room        = Room.roomWithUuid(uuid, store.getState());
 
                 if (room) {
-                    return store.dispatch(receiveChatbotComment(room.get('id'), uuid, message))
+                    return store.dispatch(receiveChatbotComment(room.get('id'), message))
                 }
         }
         
