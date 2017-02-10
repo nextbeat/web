@@ -55,7 +55,37 @@
 }
 
 .chat_item-chatbot {
+    a {
+        color: $secondary-color;
+        &:hover {
+            cursor: pointer;
+            color: $light-secondary-color;   
+        }
+    }
+}
+
+.chat_item-chatbot_header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3px;
+}
+
+.chat_item_emoji {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+}
+
+.chat_item-chatbot_username {
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.chat_item-chatbot_private {
+    color: $detail-text-color;
+    font-weight: 300;
     font-style: italic;
+    margin-left: 5px;
 }
 
 .chat_item-submitting {

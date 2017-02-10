@@ -79,7 +79,11 @@ class ChatHistory extends React.Component {
                         username={username} 
                         roomId={roomId}
                     />
-        } else {
+        } else if (comment.get('type') === 'chatbot') {
+            return <ChatbotChatItem
+                        key={comment.get('id')}
+                        message={comment.get('message')}
+                    />
             return null;
         }
     }

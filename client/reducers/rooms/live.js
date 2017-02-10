@@ -70,7 +70,7 @@ function receiveMediaItem(state, action) {
 }
 
 function sendComment(state, action) {
-    if (action.status === Status.REQUESTING) {
+    if (action.status === Status.REQUESTING && action.username) {
 
         const comment = Map({
             type: 'message',

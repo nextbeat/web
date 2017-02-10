@@ -76,11 +76,6 @@ class RoomMain extends React.Component {
         return (
             <section className="player-container">
                 <section className="player content" id="player">
-                    { shouldDisplayBanner && 
-                        <WelcomeBanner key="banner">
-                            Welcome to Safiya's room! Chat and follow along in real time. <a target="_black" rel="nofollow" href="https://medium.com/@TeamNextbeat/welcome-to-nextbeat-831d25524a4d">Learn more about Nextbeat.</a>
-                        </WelcomeBanner>
-                    }
                     <AppBanner url={`nextbeat://rooms/${roomPage.get('hid')}`} />
                     {/* we only display once the room has loaded */}
                     { roomPage.isFetchingDeep() &&  <Spinner type="large grey player" />}
