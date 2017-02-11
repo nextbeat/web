@@ -49,36 +49,3 @@
         cursor: pointer;
     }
 }
-
-
-// Specific styles
-
-.welcome-banner {
-    background: mix($secondary-color, white, 6%);
-    border-bottom: 1px solid mix($secondary-color, white, 40%);
-    color: $secondary-color;
-    padding: 8px 10px;
-
-    .app-banner_prompt {
-        font-weight: 400;
-        font-size: 14px;
-    }
-
-    .app-banner_close {
-        fill-opacity: 0.5;
-
-        &:hover {
-            cursor: pointer;
-            fill-opacity: 0.7;
-        }
-    }
-
-    a {
-        color: mix($secondary-color, black, 90%);
-        text-decoration: underline;
-        &:hover {
-            color: $secondary-color;
-        }
-    }
-
-}

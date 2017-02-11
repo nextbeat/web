@@ -13,7 +13,6 @@ import More from './main/More.react'
 import Spinner from '../../shared/Spinner.react'
 import PageError from '../../shared/PageError.react'
 import AppBanner from '../../shared/AppBanner.react'
-import WelcomeBanner from '../../shared/WelcomeBanner.react'
 
 class RoomMain extends React.Component {
 

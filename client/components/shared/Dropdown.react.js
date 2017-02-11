@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import { App } from '../../models'
 import { closeDropdown } from '../../actions'
+import Icon from './Icon.react'
 
 class Dropdown extends React.Component {
 
@@ -11,16 +12,24 @@ class Dropdown extends React.Component {
         
         this.hideDropdown = this.hideDropdown.bind(this)
         this.handleKeyUp = this.handleKeyUp.bind(this)
+        this.handleClose = this.handleClose.bind(this)
     }
 
     componentWillReceiveProps(nextProps) {
-        const { type } = this.props
-        if (!this.props.isActive && nextProps.isActive) {
-            $(window).on(`mouseup.dropdown-${type}`, this.hideDropdown)
-            $(window).on(`keyup.dropdown-${type}`, this.handleKeyUp)
-        } else if (this.props.isActive && !nextProps.isActive) {
-            $(window).off(`mouseup.dropdown-${type}`)
-            $(window).off(`keyup.dropdown-${type}`)
+        const { type, isActive, shouldForceClose } = this.props
+
+        // if shouldForceClose is true, client has to manually 
+        // close the dropdown by calling the closeDropdown action
+        if (shouldForceClose) {
+            return;
+        }
+
+        if (!isActive && nextProps.isActive) {
+            $(document).on(`mouseup.dropdown-${type}`, this.hideDropdown)
+            $(document).on(`keyup.dropdown-${type}`, this.handleKeyUp)
+        } else if (isActive && !nextProps.isActive) {
+            $(document).off(`mouseup.dropdown-${type}`)
+            $(document).off(`keyup.dropdown-${type}`)
         }
     }
 
@@ -50,8 +59,19 @@ class Dropdown extends React.Component {
         }
     }
 
+    handleClose() {
+        const { type, dispatch, handleClose } = this.props
+
+        // can pass handleClose from props
+        if (typeof handleClose === 'function') {
+            handleClose()
+        } else {
+            dispatch(closeDropdown(type))
+        }
+    }
+
     render() {
-        const { type, children, isActive, triangleMargin } = this.props
+        const { type, children, isActive, triangleMargin, triangleOnBottom, shouldForceClose } = this.props
 
         let triangleStyle = {}
         if (typeof triangleMargin !== 'undefined') {
@@ -66,9 +86,12 @@ class Dropdown extends React.Component {
                 className={`dropdown dropdown-${type}`} 
                 style={{ display: isActive ? 'block' : 'none' }}
             >
-                <div className="dropdown_triangle" style={triangleStyle} />
-                <div className="dropdown_filler" style={triangleStyle} />
+                <div className={`dropdown_triangle ${triangleOnBottom ? 'bottom' : ''}`} style={triangleStyle} />
+                <div className={`dropdown_filler ${triangleOnBottom ? 'bottom' : ''}`} style={triangleStyle} />
                 <div className="dropdown_main">
+                    { shouldForceClose && 
+                        <div className="dropdown_close" onClick={this.handleClose}><Icon type="close" /></div>
+                    }
                     {children}
                 </div>
             </div>
@@ -77,7 +100,12 @@ class Dropdown extends React.Component {
 }
 
 Dropdown.propTypes = {
-    type: React.PropTypes.string.isRequired
+    type: React.PropTypes.string.isRequired,
+    shouldForceClose: React.PropTypes.bool.isRequired
+}
+
+Dropdown.defaultProps = {
+    shouldForceClose: false
 }
 
 function mapStateToProps(state, ownProps) {

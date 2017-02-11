@@ -9,7 +9,6 @@ import isEmpty from 'lodash/isEmpty'
 import RoomMain from '../room/page/RoomMain.react'
 import DetailBar from '../room/page/DetailBar.react'
 import StackActions from '../room/page/StackActions.react'
-import WelcomeBanner from '../shared/WelcomeBanner.react'
 
 import { loadRoomPage, clearRoomPage, closeDetailSection, selectDetailSection, selectMediaItem } from '../../actions'
 import { RoomPage as RoomPageModel, App } from '../../models'

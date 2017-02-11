@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { storageAvailable } from '../../utils'
-import Icon from './Icon.react'
+import { storageAvailable } from '../../../../utils'
+import Icon from '../../../shared/Icon.react'
 
 class WelcomeBanner extends React.Component {
 
@@ -36,14 +36,20 @@ class WelcomeBanner extends React.Component {
         if (this.state.hideBanner) {
             return null
         }
+
+        const { username } = this.props
         
         return (
-            <div className="app-banner welcome-banner">
-                <div className="app-banner_prompt">
-                    { this.props.children }
-                </div>
-                <div className="app-banner_close" onClick={this.handleClose} >
+            <div className="chat_welcome-banner">
+                <div className="chat_welcome-banner_close" onClick={this.handleClose} >
                     <Icon type="close" />
+                </div>
+                <div className="chat_welcome-banner_prompt">
+                    <h1>Welcome to Nextbeat!</h1>
+                    <p>
+                        Chat and follow along with {username} in real time. 
+                        <a target="_blank" rel="nofollow" href="https://medium.com/@TeamNextbeat/welcome-to-nextbeat-831d25524a4d">Learn more about Nextbeat.</a>
+                    </p>
                 </div>
             </div>
         );
