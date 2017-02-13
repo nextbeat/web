@@ -235,7 +235,7 @@ function mapStateToProps(state) {
         hasNavigated: app.hasNavigated(),
         activeOverlay: app.get('activeOverlay'),
 
-        isNotificationsActiveDropdown: app.get('activeOverlay') === 'notifications',
+        isNotificationsActiveDropdown: app.isActiveDropdown('notifications'),
         totalUnreadNotificationCount: notifications.totalUnreadCount(),
 
         uploadStackSubmitted: upload.get('stackSubmitted')
