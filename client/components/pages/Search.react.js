@@ -85,6 +85,7 @@ class SearchComponent extends React.Component {
 
     handleInputKeyPress(e) {
         if (e.charCode === 13) {
+            e.preventDefault();
             browserHistory.replace({
                 pathname: '/search',
                 query: { q: this.state.query }
@@ -159,10 +160,12 @@ class SearchComponent extends React.Component {
         return (
             <div className="search content" id="search">
                 <Helmet title={search.get('query')} />
+                <form action="#" onsubmit="return false;">
                 <div className="search_header">
-                    <input type="text" placeholder="Search" value={this.state.query} onChange={this.handleInputChange} onKeyPress={this.handleInputKeyPress} className="search_header_input" />
+                    <input type="search" placeholder="Search" value={this.state.query} onChange={this.handleInputChange} onKeyPress={this.handleInputKeyPress} className="search_header_input" />
                     <Icon type="search" />
                 </div>
+                </form>
                 { search.get('query', '').length > 0 && this.renderResults() }
             </div>
         );

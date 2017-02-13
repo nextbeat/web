@@ -41,6 +41,7 @@ class Compose extends React.Component {
     handleSubmit(e) {
         const { currentUser, roomPage, dispatch } = this.props
         dispatch(sendComment(roomPage.get('id'), roomPage.get('chatMessage')))
+
         if (currentUser.isLoggedIn()) {
             this.handleChatInfoDropdownClose()
             // If the user isn't logged in, they will be prompted to do so
@@ -48,6 +49,9 @@ class Compose extends React.Component {
             // text box in this case.
             dispatch(updateChatMessage(''))
         }
+
+        // keep focus on textarea so that keyboard doesn't dismiss on mobile
+        this.refs.textarea.focus()
     }
 
     handleKeyPress(e) {
@@ -76,7 +80,7 @@ class Compose extends React.Component {
             <div className="chat_compose">
                 <ChatInfoDropdown username={roomPage.author().get('username')} handleClose={this.handleChatInfoDropdownClose} />
                 <div className="chat_compose-inner">
-                    <textarea onChange={this.handleChange} onFocus={this.handleFocus} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={message}></textarea>
+                    <textarea ref="textarea" onChange={this.handleChange} onFocus={this.handleFocus} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={message}></textarea>
                     <input type="submit" className="btn" value="Send" disabled={message.length === 0} onClick={this.handleSubmit} />
                 </div>
             </div>

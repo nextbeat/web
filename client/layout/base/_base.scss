@@ -54,6 +54,13 @@ input[type="submit"] {
 }
 
 /*
+ * Removes Webkit default cancel button on search inputs.
+ */
+input[type="search"]::-webkit-search-cancel-button {
+    display: none;
+}
+
+/*
  * Enforces correct font rendering in Firefox.
  */
 textarea {
