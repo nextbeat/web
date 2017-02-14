@@ -190,7 +190,7 @@ const scrollOptions = {
 
     onScrollToTop: function(scrollComponent) {
         const { roomId, commentsFetching, dispatch } = this.props
-        if (commentsFetching && roomId) {
+        if (!commentsFetching && roomId) {
             dispatch(loadComments(roomId))
         }
     },
@@ -202,21 +202,29 @@ const scrollOptions = {
     },
 
     onComponentDidUpdate: function(scrollComponent, prevProps) {
+        function conditionalScrollToBottom() {
+            if (prevProps.scrollable) {
+                scrollComponent.scrollToBottomIfPreviouslyAtBottom()
+            } else {
+                scrollComponent.scrollToBottom()
+            }
+        }
+
         if (prevProps.comments.size !== this.props.comments.size) {
             scrollComponent.keepScrollPosition()
             scrollComponent.scrollToBottomIfPreviouslyAtBottom()
             scrollComponent.setScrollState()
         }
         if (prevProps.liveComments.size !== this.props.liveComments.size) {
-            scrollComponent.scrollToBottomIfPreviouslyAtBottom()
+            conditionalScrollToBottom()
             scrollComponent.setScrollState()
         }
         if (prevProps.submittingComments.size !== this.props.submittingComments.size) {
-            scrollComponent.scrollToBottomIfPreviouslyAtBottom()
+            conditionalScrollToBottom()
             scrollComponent.setScrollState()
         }
         if (prevProps.failedComments.size !== this.props.failedComments.size) {
-            scrollComponent.scrollToBottomIfPreviouslyAtBottom()
+            conditionalScrollToBottom()
             scrollComponent.setScrollState()
         }
     },

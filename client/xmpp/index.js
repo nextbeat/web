@@ -97,9 +97,9 @@ export function getClient(store) {
         //     console.log('OUTGOING', s);
         // })
 
-        client.on('raw:incoming', function(s) {
-            console.log('INCOMING', s);
-        })
+        // client.on('raw:incoming', function(s) {
+        //     console.log('INCOMING', s);
+        // })
 
         // client.on('stream:error', function(e) {
         //     console.log('stream error', e)
@@ -183,7 +183,6 @@ function handleGroupChat(s, store) {
 // other messages
 
 function handleMessage(s, store) {
-    console.log(s);
     if (s.type === "chat" && s.thread) {
         let meta        = s.thread.split('#'),
             identifier  = meta[0];
