@@ -8,6 +8,8 @@ import { submitEvent, submitPendingEvents } from './submit'
 
 const CHAT_SESSION_PROLONG_TIME_MSEC = 10000
 
+/* NOTE: DEPRECATED. CURRENTLY USING GOOGLE ANALYTICS EXCLUSIVELY */
+
 /************
  * GENERATORS
  ************/
