@@ -88,11 +88,12 @@ export function receiveMediaItem(roomId, id, response) {
     }
 }
 
-export function receiveChatbotComment(roomId, message) {
+export function receiveChatbotComment(roomId, message, subtype) {
     return {
         type: ActionTypes.RECEIVE_CHATBOT_COMMENT,
         roomId,
-        message
+        message,
+        subtype
     }
 }
 

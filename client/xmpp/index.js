@@ -97,9 +97,9 @@ export function getClient(store) {
         //     console.log('OUTGOING', s);
         // })
 
-        // client.on('raw:incoming', function(s) {
-        //     console.log('INCOMING', s);
-        // })
+        client.on('raw:incoming', function(s) {
+            console.log('INCOMING', s);
+        })
 
         // client.on('stream:error', function(e) {
         //     console.log('stream error', e)
@@ -176,6 +176,8 @@ function handleGroupChat(s, store) {
                 return store.dispatch(receiveNotificationComment(room.get('id'), comment, username));
             case 'STACK_CLOSED':
                 return store.dispatch(receiveRoomClosed(room.get('id')));
+            case 'PUBLIC_CHATBOT':
+                return store.dispatch(receiveChatbotComment(room.get('id'), s.body, 'public'))
         }
     }
 }
@@ -196,7 +198,7 @@ function handleMessage(s, store) {
                     room        = Room.roomWithUuid(uuid, store.getState());
 
                 if (room) {
-                    return store.dispatch(receiveChatbotComment(room.get('id'), message))
+                    return store.dispatch(receiveChatbotComment(room.get('id'), message, 'private'))
                 }
         }
         

@@ -1,4 +1,7 @@
-import React from 'react';
+import React from 'react'
+import clone from 'lodash/clone'
+
+import renderWithMentions from './utils/renderWithMentions'
 
 if (typeof window !== 'undefined') {
     var robot = require('../../../public/images/robot_64px.png');
@@ -6,16 +9,24 @@ if (typeof window !== 'undefined') {
 
 class ChatbotChatItem extends React.Component {
 
-    renderMessage(message) {
-        // (Very) rudimentary implementation of a Markdown parser with support only for links.
+    constructor(props) {
+        super(props);
+        
+        this.renderMessage = this.renderMessage.bind(this)
+    }
+
+    renderMessage() {
+        const { comment, forceMentions, handleSelectUsername } = this.props
+
         var re = /\[(.+)\]\((.+)\)/g 
 
         let elems = []
-        let result
         let key = 0
         let lastIndex = 0
-        while (result = re.exec(message)) {
-            elems.push(<span key={key}>{message.slice(lastIndex, result.index)}</span>)
+        let result
+
+        while (result = re.exec(comment.get('message'))) {
+            elems.push(<span key={key}>{renderWithMentions(comment, { start: lastIndex, end: result.index, onClick: handleSelectUsername, forceMentions })}</span>)
 
             let displayText = result[1]
             let url = result[2]
@@ -24,24 +35,35 @@ class ChatbotChatItem extends React.Component {
             key += 2
             lastIndex = re.lastIndex
         }
-        elems.push(<span key={key}>{message.slice(lastIndex)}</span>)
+
+        elems.push(<span key={key}>{renderWithMentions(comment, { start: lastIndex, onClick: handleSelectUsername, forceMentions })}</span>)
 
         return elems
     }
 
     render() {
-        const { message } = this.props
+        const { comment } = this.props
+
+        let isPrivate = comment.get('subtype') === 'private'
+        let privateClass = isPrivate ? 'chat_item-chatbot_body-private' : ''
+
         return (
             <li className="chat_item chat_item-chatbot">
                 <div className="chat_item-chatbot_header">
                     <img className="chat_item_emoji" src={robot} />
                     <span className="chat_item-chatbot_username">nextbot</span>
-                    <span className="chat_item-chatbot_private">only visible to you</span>
+                    { isPrivate && <span className="chat_item-chatbot_private">only visible to you</span> }
                 </div>
-                {this.renderMessage(message)}
+                <div className={`chat_item-chatbot_body ${privateClass}`}>
+                    {this.renderMessage()}
+                </div>
             </li>
         );
     }
+}
+
+ChatbotChatItem.defaultProps = {
+    forceMentions: false
 }
 
 export default ChatbotChatItem;

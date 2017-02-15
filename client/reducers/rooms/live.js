@@ -59,7 +59,8 @@ function receiveNotificationComment(state, action) {
 function receiveChatbotComment(state, action) {
     const comment = Map({
         type: 'chatbot',
-        message: action.message
+        message: action.message,
+        subtype: action.subtype
     })
     return state.update('comments', comments => comments.push(comment));
 }

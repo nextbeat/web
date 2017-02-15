@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router'
+import renderWithMentions from './utils/renderWithMentions'
 
 class LiveChatItem extends React.Component {
 
@@ -39,25 +40,9 @@ class LiveChatItem extends React.Component {
         // over xmpp without going to the backend (this is subject to change)
         // we render @mentions for live chat items differently; we highlight ALL
         // @mentions (even if they refer to invalid usernames). This is probably
-        // not a permanent design decision
+        // not a permanent design decision.
         const { comment, handleSelectUsername } = this.props 
-
-        const message   = comment.get('message')
-        const regex     = /(@\w+)/
-        const elems     = message.split(regex).map((str, idx) => {
-            const key = `@${idx}`
-            if (str.charAt(0) === '@') {
-                const username = str.substring(1)
-                return <a key={key} className="chat_mention" onClick={() => {handleSelectUsername(username)}}>{str}</a>
-            }
-            return <span key={key}>{str}</span>
-        })
-
-        return (
-            <span>
-                { elems }
-            </span>
-        )
+        return renderWithMentions(comment, { onClick: handleSelectUsername, forceMentions: true })
     }
 
     render() {

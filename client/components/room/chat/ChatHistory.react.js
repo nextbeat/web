@@ -82,7 +82,8 @@ class ChatHistory extends React.Component {
         } else if (comment.get('type') === 'chatbot') {
             return <ChatbotChatItem
                         key={comment.get('id')}
-                        message={comment.get('message')}
+                        comment={comment}
+                        handleSelectUsername={this.handleSelectUsername}
                     />
             return null;
         }
@@ -112,7 +113,9 @@ class ChatHistory extends React.Component {
         } else if (comment.get('type') === 'chatbot') {
             return <ChatbotChatItem
                         key={key}
-                        message={comment.get('message')}
+                        comment={comment}
+                        forceMentions={true}
+                        handleSelectUsername={this.handleSelectUsername}
                     />
         } else {
             return null;

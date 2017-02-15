@@ -62,7 +62,7 @@ export function fromString(dirtyDateLeft, dirtyDateRight, options) {
         return format('m', 1)
     }
     
-    let minutes = Math.floor(seconds / 60)
+    let minutes = Math.max(2, Math.floor(seconds / 60))
     if (minutes < 44) {
         return format('mm', minutes)
     } else if (minutes < 89) {
