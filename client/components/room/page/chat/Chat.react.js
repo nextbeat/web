@@ -45,7 +45,7 @@ class Chat extends React.Component {
         return (
         <div className="chat" onWheel={debounce(this.handleOnWheel, 200)} style={{ display: (display ? "flex" : "none") }}>
             <UserActions />
-            <WelcomeBanner username={roomPage.author().get('username')} />
+            <WelcomeBanner username={roomPage.author().get('username')} closed={roomPage.get('closed')} />
             <ChatHistory roomId={roomPage.room().id} scrollable={true} />
             <Compose />
             <ReactCSSTransitionGroup transitionName="chat_lost-connection" transitionEnterTimeout={300} transitionLeaveTimeout={200}>

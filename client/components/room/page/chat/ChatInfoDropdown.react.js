@@ -12,8 +12,8 @@ class ChatInfoDropdown extends React.Component {
         const { username } = this.props
         return (
             <Dropdown type="chat-info" triangleMargin={10} shouldForceClose={true} triangleOnBottom={true} {...this.props} >
-                <p><strong>Chat with {username}</strong> and other people in the room!</p>
-                <p>To <strong>@-mention</strong> someone, tap their username then tap "Mention". If that user has enabled notifications, they'll instantly see your message.</p>
+                <p><strong>Chat with {username}</strong> and other people hanging out in the room!</p>
+                <p>To <strong>@-mention</strong> someone, tap their username then tap "Mention".</p>
             </Dropdown>
         )
     }

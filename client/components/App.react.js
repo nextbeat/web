@@ -150,7 +150,7 @@ class App extends React.Component {
             badge = `(${count}) `
         }
 
-        let description = "Open a door to your world and bring your audience with you. Open rooms to check into over the course of the day. Live chat with audiences on the go."
+        let description = "Nextbeat lets you do anything with an audience. Open a room, check in with photos and videos, chat with people hanging out, and build a community that goes where you go."
         let meta = [
             {"property": "og:site_name", "content": "Nextbeat"},
             {"property": "og:description", "content": description},
