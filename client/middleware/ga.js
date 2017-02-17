@@ -32,6 +32,11 @@ const CAMPAIGN_MAP = {
         'campaignSource': 'nextbeat',
         'campaignMedium': 'email',
     },
+    'e5': {
+        'campaignName': 'feb17_outreach',
+        'campaignSource': 'nextbeat',
+        'campaignMedium': 'email'
+    },
     'es': {
         'campaignName': 'email_subscription',
         'campaignSource': 'nextbeat',
