@@ -97,9 +97,9 @@ export function getClient(store) {
         //     console.log('OUTGOING', s);
         // })
 
-        client.on('raw:incoming', function(s) {
-            console.log('INCOMING', s);
-        })
+        // client.on('raw:incoming', function(s) {
+        //     console.log('INCOMING', s);
+        // })
 
         // client.on('stream:error', function(e) {
         //     console.log('stream error', e)

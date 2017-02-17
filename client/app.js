@@ -7,10 +7,12 @@ import { Map, fromJS } from 'immutable'
 import Promise from 'bluebird'
 import $ from 'jquery'
 import configureStore from './store'
-
 import routes from '../routes'
 
 import './layout/main.scss'
+
+// require.ensure shim for server
+if (typeof require.ensure !== "function") require.ensure = (d,c) => c(require)
 
 // configure bluebird
 global.Promise = Promise
@@ -29,6 +31,12 @@ if (initialState.app.environment !== 'production') {
     const Perf = require('react-addons-perf')
     window.Perf = Perf
 }
+
+// Load analytics asynchronously
+// require.ensure([], (require) => {
+    var analytics = require('./analytics');
+    analytics.init();
+// })
 
 let r = routes(store)
 

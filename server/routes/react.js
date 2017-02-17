@@ -27,6 +27,7 @@ function getInitialState(req) {
                 device: ua.device
             },
             facebookAppId: process.env.FACEBOOK_APP_ID,
+            googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID
         },
         push: {
             vapidPublicKey: process.env.VAPID_PUBLIC_KEY
@@ -80,13 +81,6 @@ function renderFullPage(html, head, initialState) {
             ${head.title.toString()}
             ${head.meta.toString()}
 
-            <script>
-                window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-                ga('create', '${process.env.GOOGLE_ANALYTICS_ID}', 'auto');
-                ga('set', 'transport', 'beacon');
-            </script>
-            <script async src='https://www.google-analytics.com/analytics.js'></script>
-
             <link rel="stylesheet" href="${cssPath}" />
             <link rel="manifest" href="/manifest.json" />
         </head>
@@ -98,6 +92,7 @@ function renderFullPage(html, head, initialState) {
             </script>
             <script src="${vendorsPath}"></script>
             <script src="${jsPath}"></script>
+            <script async src='https://www.google-analytics.com/analytics.js'></script>
         </body>
         </html>
     `

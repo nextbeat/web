@@ -17,8 +17,9 @@ const KEY_MAP = {
     'deviceType': ['ua', 'device', 'type'],
     'browser': ['ua', 'browser', 'name'],
     'version': ['ua', 'browser', 'major'],
-    // facebook
+    // third party ids
     'facebookAppId': ['facebookAppId'],
+    'googleAnalyticsId': ['googleAnalyticsId'],
     // state
     'activeModal': ['state', 'modal'],
     'activeOverlay': ['state', 'overlay'],

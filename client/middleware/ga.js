@@ -73,6 +73,7 @@ function handleIdentify(data) {
 }
 
 function handlePage(data) {
+    console.log('SETTING PAGE', document.location.pathname)
     ga('set', 'page', document.location.pathname)
 
     if (document.location.search.length > 0) {
