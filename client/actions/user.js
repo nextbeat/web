@@ -11,7 +11,6 @@ import { Status, API_CALL, API_CANCEL, GA, GATypes } from './types'
 import { gaIdentify, gaEvent } from './ga'
 import { pushInitialize, pushSubscribe } from './push'
 import { syncUnreadNotifications } from './notifications'
-import { startNewSession } from './analytics'
 import { isValidUrl } from '../utils'
 
 
@@ -168,10 +167,6 @@ export function logout() {
                 return dispatch(actionWith(Status.FAILURE));
             }
             dispatch(actionWith(Status.SUCCESS));
-            // we wait until the next tick so the reducer updates state first
-            process.nextTick(() => {
-                dispatch(postLogout())
-            })
         });
     }
 }
@@ -225,15 +220,9 @@ export function postLogin() {
         dispatch(loadBookmarkedStacks("open"))
         dispatch(loadSubscriptions())
         dispatch(pushInitialize())
-        // dispatch(startNewSession())
     }
 }
 
-function postLogout() {
-    return dispatch => {
-        // dispatch(startNewSession())
-    }
-}
 
 /**************
  * SUBSCRIPTION

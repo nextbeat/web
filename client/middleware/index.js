@@ -1,5 +1,4 @@
 export { default as api } from './api'
-export { default as analytics } from './analytics'
 export { default as cache } from './cache'
 export { default as cancel } from './cancel'
 export { default as ga } from './ga'

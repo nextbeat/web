@@ -170,9 +170,3 @@ export {
     gaEvent,
     logVideoImpression
 } from './ga'
-
-export {
-    startNewSession,
-    sendPendingEvents
-} from './analytics'
-

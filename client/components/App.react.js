@@ -12,8 +12,8 @@ import Signup from '../components/shared/Signup.react'
 
 import { connectToXMPP, postLogin, loadTags, promptModal, 
         closeModal, clearApp, resizeWindow, onBeforeUnload, 
-        pushInitialize, startNewSession, cleanCache, 
-        sendPendingEvents, hasNavigated, closeSidebar } from '../actions'
+        pushInitialize, cleanCache, 
+        hasNavigated, closeSidebar } from '../actions'
 import { CurrentUser, App as AppModel, Notifications } from '../models'
 
 class App extends React.Component {
@@ -30,14 +30,6 @@ class App extends React.Component {
     }
 
     // Component lifecycle
-
-    componentWillMount() {
-        if (typeof window !== 'undefined') {
-            // client only
-            this.props.dispatch(sendPendingEvents());
-            this.props.dispatch(startNewSession())
-        }
-    }
 
     componentDidMount() {
         const { user, dispatch } = this.props;
