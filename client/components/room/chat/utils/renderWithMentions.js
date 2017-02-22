@@ -35,7 +35,7 @@ export default function renderWithMentions(comment, { start, end, onClick, force
     let idx     = start // keeps track of current index of string
     inclusiveMentions.forEach(m => {
         const [mStart, mEnd] = m.get('indices').toJS()
-        elems.push(<span key={`${idx},${mStart}`}>{ message.substring(start, mStart) }</span>)
+        elems.push(<span key={`${idx},${mStart}`}>{ message.substring(idx, mStart) }</span>)
 
         const mentionKey = `${mStart},${mEnd}`
         const url = `/u/${m.get('username')}`
