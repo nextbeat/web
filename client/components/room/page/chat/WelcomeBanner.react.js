@@ -50,7 +50,7 @@ class WelcomeBanner extends React.Component {
                     <p> 
                         { closed ? 
                               `Hang out in rooms, watch real time updates, and chat with others.`
-                            : `${username} will be posting updates and hanging out in the chat. Join in and say hi! `
+                            : `${username} will be posting updates and hanging out in the chat. Join in and say hi!`
                         }
                          <a target="_blank" rel="nofollow" href="https://medium.com/@TeamNextbeat/welcome-to-nextbeat-831d25524a4d">Learn more about Nextbeat.</a>
                     </p>
