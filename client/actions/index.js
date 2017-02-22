@@ -165,14 +165,14 @@ export {
 } from './push'
 
 export {
-    startNewSession,
-    sendPendingEvents,
-    logVideoImpression
-} from './analytics'
-
-export {
     gaIdentify,
     gaPage,
-    gaEvent
+    gaEvent,
+    logVideoImpression
 } from './ga'
+
+export {
+    startNewSession,
+    sendPendingEvents
+} from './analytics'
 

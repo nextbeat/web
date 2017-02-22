@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
-import { api, analytics, cache, ga, xmpp, cancel, ui, upload, push } from '../middleware'
+import { api, cache, ga, xmpp, cancel, ui, upload, push } from '../middleware'
 import { ActionTypes } from '../actions'
 import { Map, Iterable } from 'immutable'
 import reducer from '../reducers'
@@ -32,7 +32,7 @@ if (process.env.NODE_ENV !== "production") {
     });
 
     if (typeof window !== 'undefined') { // in browser only
-        // middlewares.push(logger);
+        middlewares.push(logger);
     }
 }
 

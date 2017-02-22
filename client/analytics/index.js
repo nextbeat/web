@@ -26,6 +26,7 @@ const TRACKING_VERSION = '1';
  */
 const NULL_VALUE = '(not set)';
 
+export { Dimensions, Metrics } from './definitions'
 
 export function init(trackerId) {
     // Initialize the command queue in case analytics.js hasn't loaded yet.
@@ -35,8 +36,6 @@ export function init(trackerId) {
     trackCustomDimensions()
     requireAutotrackPlugins()
     sendNavigationTimingMetrics()
-
-    console.log('initialized!')
 }
 
 function createTracker(trackerId) {
@@ -95,7 +94,6 @@ function requireAutotrackPlugins() {
             // TODO: include as dimension
             fieldsObj.page = parseUrl(fieldsObj.page).pathname
                 .replace(/(\/r\/\S+)(\/\d+)/, '$1')
-            console.log(fieldsObj)
             return fieldsObj
         })
     })

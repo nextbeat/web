@@ -2,6 +2,7 @@ import { GATypes, GA } from '../actions'
 import { createFunctionWithTimeout } from '../utils'
 import assign from 'lodash/assign'
 import get from 'lodash/get'
+import pickBy from 'lodash/pickBy'
 import { parse } from 'querystring'
 import fetch from 'isomorphic-fetch'
 
@@ -73,7 +74,6 @@ function handleIdentify(data) {
 }
 
 function handlePage(data) {
-    console.log('SETTING PAGE', document.location.pathname)
     ga('set', 'page', document.location.pathname)
 
     if (document.location.search.length > 0) {
@@ -91,9 +91,14 @@ function handleEvent(data) {
         transport: 'beacon'
     }
 
+    // assign any custom dimensions or metrics in data object
+    assign(eventData, pickBy(data, (_, key) => /(dimension|metric)\d+/.test(key)))
+
     if (data.callback) {
         eventData.hitCallback = createFunctionWithTimeout(data.callback);
     }
+
+    console.log(eventData)
 
     ga('send', 'event', eventData)
 }

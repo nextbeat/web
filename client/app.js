@@ -35,7 +35,7 @@ if (initialState.app.environment !== 'production') {
 // Load analytics asynchronously
 // require.ensure([], (require) => {
     var analytics = require('./analytics');
-    analytics.init();
+    analytics.init(initialState.app.googleAnalyticsId);
 // })
 
 let r = routes(store)
