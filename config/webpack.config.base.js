@@ -16,12 +16,12 @@ module.exports = {
         rules: [
             {
                 test: /\.js$/,
-                exclude: /node_modules\/(?!autotrack)/,
+                exclude: /node_modules\/(?!(autotrack|dom-utils))/,
                 loader: 'babel-loader',
                 query: {
                     babelrc: false,
                     presets: [
-                        ['es2015', { modules: false }],
+                        ['es2015'],
                         'react'
                     ],
                     plugins: [

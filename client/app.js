@@ -32,11 +32,13 @@ if (initialState.app.environment !== 'production') {
     window.Perf = Perf
 }
 
-// Load analytics asynchronously
-// require.ensure([], (require) => {
+// Initialize the command queue in case analytics.js hasn't loaded yet.
+window.ga = window.ga || ((...args) => (ga.q = ga.q || []).push(args));
+// Load rest of analytics module asynchronously
+require.ensure([], (require) => {
     var analytics = require('./analytics');
     analytics.init(initialState.app.googleAnalyticsId);
-// })
+})
 
 let r = routes(store)
 

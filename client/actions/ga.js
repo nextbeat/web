@@ -2,7 +2,7 @@ import assign from 'lodash/assign'
 
 import ActionTypes from './types'
 import { GA, GATypes } from './types'
-import { Metrics, Dimensions } from '../analytics' 
+import { Metrics, Dimensions } from '../analytics/definitions' 
 import { MediaItemEntity } from '../models'
 
 /***********

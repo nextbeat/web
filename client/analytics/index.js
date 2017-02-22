@@ -26,12 +26,7 @@ const TRACKING_VERSION = '1';
  */
 const NULL_VALUE = '(not set)';
 
-export { Dimensions, Metrics } from './definitions'
-
 export function init(trackerId) {
-    // Initialize the command queue in case analytics.js hasn't loaded yet.
-    window.ga = window.ga || ((...args) => (ga.q = ga.q || []).push(args));
-
     createTracker(trackerId)
     trackCustomDimensions()
     requireAutotrackPlugins()
