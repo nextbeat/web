@@ -16,7 +16,7 @@ import 'autotrack/lib/plugins/clean-url-tracker'
  * implementation. This allows you to create a segment or view filter
  * that isolates only data captured with the most recent tracking changes.
  */
-const TRACKING_VERSION = '1';
+const TRACKING_VERSION = '2';
 
 
 /**
@@ -30,6 +30,7 @@ export function init(trackerId) {
     createTracker(trackerId)
     trackCustomDimensions()
     requireAutotrackPlugins()
+    sendInitialPageview()
     sendNavigationTimingMetrics()
 }
 
@@ -92,6 +93,10 @@ function requireAutotrackPlugins() {
             return fieldsObj
         })
     })
+}
+
+function sendInitialPageview() {
+    ga('send', 'pageview', [Dimensions.HIT_SOURCE]: 'pageload')
 }
 
 function sendNavigationTimingMetrics() {
