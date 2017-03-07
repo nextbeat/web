@@ -5,7 +5,7 @@ import { ActionTypes } from '../actions'
 import { Map, Iterable } from 'immutable'
 import reducer from '../reducers'
 
-const middlewares = [thunkMiddleware, ui, upload, push, api, ga, cache, cancel, xmpp];
+const middlewares = [thunkMiddleware, ui, ga, upload, push, api, cache, cancel, xmpp];
 
 const actionTypesToIgnore = [
     ActionTypes.RESIZE,
