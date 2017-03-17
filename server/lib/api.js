@@ -5,10 +5,14 @@ var request = require('request-promise'),
     baseUrl,
     clientToken;
 
+var MAX_CONNECTION_RETRIES  = 10,
+    BASE_DELAY_IN_MSEC      = 500;
+
 function _request(method, url, body, options) {
     
-    var options = options || {},
-        isAuthorized = !!options.auth,
+    options = options || {};
+
+    var isAuthorized = !!options.auth,
         auth = options.auth;
 
     if (!isAuthorized) {
@@ -37,6 +41,42 @@ function _request(method, url, body, options) {
     });
 }
 
+function _tryInitialRequest(baseUrl, triesAttempted, triesLeft, baseDelayInMsec, cb) {
+    console.log("api connection attempt");
+    if (triesLeft === 0) {
+        cb(new Error("Exceeded maximum connection retries."));
+    }
+
+    request.post({
+        url: 'clients/authenticate',
+        baseUrl: baseUrl,
+        auth: {
+            user: process.env.CLIENT_NAME,
+            pass: process.env.CLIENT_SECRET
+        },
+        resolveWithFullResponse: true
+    }).then(function(res) {
+        cb(null, res.body.token);
+    }).catch(function(err) {
+        var delay = Math.pow(2, Math.min(5, triesAttempted))*baseDelayInMsec;
+        setTimeout(function() {
+            _tryInitialRequest(baseUrl, triesAttempted+1, triesLeft-1, baseDelayInMsec, cb);
+        }, delay);
+    });
+}
+
+function tryInitialRequest(baseUrl) {
+    return new Promise(function(resolve, reject) {
+        _tryInitialRequest(baseUrl, 0, MAX_CONNECTION_RETRIES, BASE_DELAY_IN_MSEC, function(err, token) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(token);
+            }
+        })
+    });
+}
+
 module.exports = {
 
     init: function() {
@@ -59,18 +99,10 @@ module.exports = {
             json: true
         });
 
-        return request.post({
-            url: 'clients/authenticate',
-            baseUrl: baseUrl,
-            auth: {
-                user: process.env.CLIENT_NAME,
-                pass: process.env.CLIENT_SECRET
-            },
-            resolveWithFullResponse: true
-        }).then(function(res) {
-            clientToken = res.body.token;
+        return tryInitialRequest().then(function(token) {
+            clientToken = token;
+            return null;
         });
-
     },
 
     get: function(url, body, options) {
