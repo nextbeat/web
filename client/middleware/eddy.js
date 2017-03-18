@@ -18,13 +18,16 @@ function _wrapAction(store, next, action) {
     }
 }
 
-// TODO: connection failure state
-
 function connect(store, next, action) {
     let client = new EddyClient();
     next(assign({}, action, { status: Status.REQUESTING, client }))
-    client.connect().then(() => {
+
+    client.connect()
+    .then(() => {
         next(assign({}, action, { status: Status.SUCCESS }))
+    })
+    .catch(() => {
+        next(assign({}, action, { status: Status.FAILURE }))
     })
 }
 

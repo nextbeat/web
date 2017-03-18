@@ -14,7 +14,7 @@ function eddyHost() {
  * TODO: 
  *
  * - Reconnection logic, connect failure logic
- * - Message queue for messages sent before connection
+ * DONE - Message queue for messages sent before connection
  * - Heartbeat handling (rewrite ping/pong since browsers dont have support)
  */
 
@@ -30,14 +30,25 @@ export default class EddyClient {
         return new Promise((resolve, reject) => {
             this.client = new WebSocket(eddyHost());
 
-            this.client.addEventListener('open', (event) => {
+            let openListener = (event) => {
                 resolve();
                 if (this.messageQueue.length > 0) {
                     this.messageQueue.forEach((sendFn) => {
                         sendFn();
                     });
                 }  
-            })
+                this.client.removeEventListener('open', openListener)
+            }
+
+            let closeListener = (event) => {
+                if (!event.wasClean) {
+                    reject(new Error("Could not establing Websocket connection."))
+                }
+                this.client.removeEventListener('close', closeListener)
+            }
+
+            this.client.addEventListener('open', openListener)
+            this.client.addEventListener('close', closeListener)
 
             this.client.addEventListener('message', (event) => {
                 let data = JSON.parse(event.data)
