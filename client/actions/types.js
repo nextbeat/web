@@ -207,6 +207,15 @@ export default {
     RECEIVE_ROOM_CLOSED: 'RECEIVE_ROOM_CLOSED',
 
     /******
+     * EDDY
+     ******/
+
+    CONNECT_EDDY: 'CONNECT_EDDY',
+    DISCONNECT_EDDY: 'DISCONNECT_EDDY',
+    IDENTIFY_EDDY: 'IDENTIFY_EDDY',
+    UNIDENTIFY_EDDY: 'UNIDENTIFY_EDDY',
+
+    /******
      * USER
      ******/
 

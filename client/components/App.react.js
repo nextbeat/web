@@ -10,7 +10,7 @@ import AppBanner from '../components/shared/AppBanner.react'
 import Login from '../components/shared/Login.react'
 import Signup from '../components/shared/Signup.react'
 
-import { connectToXMPP, postLogin, loadTags, promptModal, 
+import { connectToXMPP, connectEddy, postLogin, loadTags, promptModal, 
         closeModal, clearApp, resizeWindow, onBeforeUnload, 
         pushInitialize, cleanCache, 
         hasNavigated, closeSidebar } from '../actions'
@@ -34,6 +34,7 @@ class App extends React.Component {
     componentDidMount() {
         const { user, dispatch } = this.props;
         dispatch(connectToXMPP());
+        dispatch(connectEddy());
         dispatch(loadTags());
         dispatch(cleanCache());
 

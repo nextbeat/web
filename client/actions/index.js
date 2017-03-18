@@ -135,6 +135,13 @@ export {
 } from './xmpp'
 
 export {
+    connectEddy,
+    disconnectEddy,
+    identifyEddy,
+    unidentifyEddy
+} from './eddy'
+
+export {
     login,
     postLogin,
     logout,

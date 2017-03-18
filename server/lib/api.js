@@ -99,7 +99,7 @@ module.exports = {
             json: true
         });
 
-        return tryInitialRequest().then(function(token) {
+        return tryInitialRequest(baseUrl).then(function(token) {
             clientToken = token;
             return null;
         });
