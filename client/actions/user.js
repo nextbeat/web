@@ -11,6 +11,7 @@ import { Status, API_CALL, API_CANCEL, GA, GATypes } from './types'
 import { gaIdentify, gaEvent } from './ga'
 import { pushInitialize, pushSubscribe } from './push'
 import { syncUnreadNotifications } from './notifications'
+import { identifyEddy, unidentifyEddy } from './eddy'
 import { isValidUrl } from '../utils'
 
 
@@ -167,6 +168,9 @@ export function logout() {
                 return dispatch(actionWith(Status.FAILURE));
             }
             dispatch(actionWith(Status.SUCCESS));
+            process.nextTick(() => {
+                dispatch(postLogout())
+            })
         });
     }
 }
@@ -220,6 +224,13 @@ export function postLogin() {
         dispatch(loadBookmarkedStacks("open"))
         dispatch(loadSubscriptions())
         dispatch(pushInitialize())
+        dispatch(identifyEddy(user.get('username')))
+    }
+}
+
+function postLogout() {
+    return (dispatch) => {
+        dispatch(unidentifyEddy());
     }
 }
 

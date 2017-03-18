@@ -13,36 +13,48 @@ function eddyHost() {
 /**
  * TODO: 
  *
- * - Reconnection logic
+ * - Reconnection logic, connect failure logic
  * - Message queue for messages sent before connection
- * - Better heartbeat handling
+ * - Heartbeat handling (rewrite ping/pong since browsers dont have support)
  */
 
 export default class EddyClient {
 
     constructor() {
-        this.connect();
+        this.messageId = 0;
+        this.outgoingMessages = {};
+        this.messageQueue = [];
     }
 
     connect() {
-        this.client = new WebSocket(eddyHost());
-        this.messageId = 0;
-        this.outgoingMessages = {};
+        return new Promise((resolve, reject) => {
+            this.client = new WebSocket(eddyHost());
 
-        this.client.addEventListener('message', (event) => {
-            let data = JSON.parse(event.data)
-            if ('id' in data) {
-                // Message is a response to a message
-                // the client sent out.
-                this._handleResponseMessage(data)
-            } else {
-                this._handleMessage(data)
-            }
-        })
+            this.client.addEventListener('open', (event) => {
+                resolve();
+                if (this.messageQueue.length > 0) {
+                    this.messageQueue.forEach((sendFn) => {
+                        sendFn();
+                    });
+                }  
+            })
 
-        // this.pingId = setInterval(() => {
-        //     this.client.ping();
-        // }, 10000);
+            this.client.addEventListener('message', (event) => {
+                let data = JSON.parse(event.data)
+                if ('id' in data) {
+                    // Message is a response to a message
+                    // the client sent out.
+                    this._handleResponseMessage(data)
+                } else {
+                    this._handleMessage(data)
+                }
+            });
+
+            // this.pingId = setInterval(() => {
+            //     this.client.ping();
+            // }, 10000);
+        });
+        
     }
 
     disconnect() {
@@ -58,7 +70,15 @@ export default class EddyClient {
         return this._send('unidentify');
     }
 
-    sendChat(message) {
+    join(roomId) {
+        return this._send('room_join', { room_id: roomId });
+    }
+
+    leave(roomId) {
+        return this._send('room_leave', { room_id: roomId });
+    }
+
+    chat(message) {
         return this._send('chat', { message: message });
     }
 
@@ -67,18 +87,18 @@ export default class EddyClient {
 
     _send(type, data) {
         return new Promise((resolve, reject) => {
+            // Increment message id; each message should have
+            // a unique id.
+            this.messageId += 1;
+
+            // Define payload object.
             let payload = { 
                 id: this.messageId,
                 type
             }
-
             if (data) {
                 payload.data = data;
             }
-
-            // Increment message id; each message should have
-            // a unique id.
-            this.messageId += 1;
 
             // Store callback in dictionary of outgoing messages.
             // When client receives a reply from the server, the
@@ -87,16 +107,24 @@ export default class EddyClient {
                 err ? reject(err) : resolve();
             }
 
-            // Send message.
-            this.client.send(JSON.stringify(payload), { binary: true }, function(err) {
-                // If there is a connection error,
-                // catch it here and delete callback.
-                if (err) {
-                    delete this.outgoingMessages[this.messageId];
-                    reject(err);
-                }
-            });
-        })    
+            // TODO: wrap in second promise? to send queue messages sequentially
+            let sendMessage = () => {
+                this.client.send(JSON.stringify(payload), { binary: true }, (err) => {
+                    // If there is a connection error,
+                    // catch it here and delete callback.
+                    if (err) {
+                        delete this.outgoingMessages[this.messageId];
+                        reject(err);
+                    }
+                });
+            }
+
+            if (this.client.readyState !== 1) {
+                this.messageQueue.unshift(sendMessage);
+            } else {
+                sendMessage();
+            }
+        })  
     }
 
     _handleMessage(data) {

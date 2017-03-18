@@ -24,7 +24,8 @@ if (process.env.NODE_ENV !== "production") {
         
     }
 
-    const predicate = (getState, action) => actionTypesToIgnore.indexOf(action.type) === -1
+    // const predicate = (getState, action) => actionTypesToIgnore.indexOf(action.type) === -1
+    const predicate = (getState, action) => action.type.indexOf("EDDY") !== -1
 
     const logger = createLogger({
         stateTransformer,
@@ -32,7 +33,7 @@ if (process.env.NODE_ENV !== "production") {
     });
 
     if (typeof window !== 'undefined') { // in browser only
-        // middlewares.push(logger);
+        middlewares.push(logger);
     }
 }
 
