@@ -12,4 +12,9 @@ export default class Eddy extends StateModel {
         this.keyMapPrefix = ['eddy'];
     }
 
+    isConnected() {
+        let client = this.get('client');
+        return client.readyState === 1;
+    }
+
 }

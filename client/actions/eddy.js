@@ -24,3 +24,17 @@ export function unidentifyEddy() {
         type: ActionTypes.UNIDENTIFY_EDDY
     }
 }
+
+export function joinRoom(roomId) {
+    return {
+        type: ActionTypes.JOIN_ROOM,
+        roomId
+    }
+}
+
+export function leaveRoom(roomId) {
+    return {
+        type: ActionTypes.LEAVE_ROOM,
+        roomId
+    }
+}

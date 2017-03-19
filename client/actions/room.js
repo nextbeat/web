@@ -73,19 +73,13 @@ export function loadComments(roomId) {
  * CHAT
  ******/
 
-function postComment(roomId, message, username, temporaryId) {
+function performSendComment(roomId, message, username, temporaryId) {
     return {
         type: ActionTypes.SEND_COMMENT,
         temporaryId,
         roomId,
         message,
         username,
-        [API_CALL]: {
-            method: 'POST',
-            endpoint: `stacks/${roomId}/comments`,
-            body: { message },
-            authenticated: true
-        },
         [GA]: {
             type: GATypes.EVENT,
             category: 'chat',
@@ -104,7 +98,7 @@ export function sendComment(roomId, message) {
 
         let username = (new CurrentUser(getState())).get('username')
 
-        return dispatch(postComment(roomId, message, username, generateUuid()));
+        return dispatch(performSendComment(roomId, message, username, generateUuid()));
     }
 }
 

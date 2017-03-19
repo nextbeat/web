@@ -89,8 +89,8 @@ export default class EddyClient {
         return this._send('room_leave', { room_id: roomId });
     }
 
-    chat(message) {
-        return this._send('chat', { message: message });
+    chat(roomId, message) {
+        return this._send('chat', { room_id: roomId, message: message });
     }
 
 
@@ -139,7 +139,7 @@ export default class EddyClient {
     }
 
     _handleMessage(data) {
-        console.log(data);
+        // TODO
     }
 
     _handleResponseMessage(data) {

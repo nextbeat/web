@@ -5,18 +5,19 @@ function joinRoom(state, action) {
     switch (action.status) {
         case Status.REQUESTING:
             return state.merge({
-                isJoiningRoom: true
+                isJoining: true
             })
         case Status.SUCCESS:
             return state.merge({
-                isJoiningRoom: false,
-                room: action.jid,
-                nickname: action.nickname
+                isJoining: false,
+                joined: true
             })
         case Status.FAILURE: 
             return state.merge({
-                isJoiningRoom: false
-            }).delete('room').delete('nickname');
+                isJoining: false,
+                joined: false,
+                joinError: action.error
+            }) 
     }
     return state;
 }
@@ -24,7 +25,7 @@ function joinRoom(state, action) {
 function leaveRoom(state, action) {
     switch (action.status) {
         case Status.SUCCESS:
-            return state.delete('room').delete('nickname')
+            return state.set('joined', false)
     } 
     return state;
 }
@@ -97,23 +98,25 @@ function sendComment(state, action) {
 
         state = state.update('submittingComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
 
-        if (action.error === 'User is banned.') {
-            // display chatbot error message
-            let message = 'You have been banned from posting in this room.'
-            const chatbotComment = Map({
-                type: 'chatbot',
-                message
-            })
-            state = state.update('comments', comments => comments.push(chatbotComment));
-        } else {
-            const comment = Map({
-                type: 'message',
-                message: action.message,
-                username: action.username,
-                temporaryId: action.temporaryId
-            })
-            state = state.update('failedComments', comments => comments.push(comment));
-        }
+        const comment = Map({
+            type: 'message',
+            message: action.message,
+            username: action.username,
+            temporaryId: action.temporaryId
+        })
+        state = state.update('failedComments', comments => comments.push(comment));
+
+        // TODO: reimplement banning
+        //
+        // if (action.error === 'User is banned.') {
+        //     // display chatbot error message
+        //     let message = 'You have been banned from posting in this room.'
+        //     const chatbotComment = Map({
+        //         type: 'chatbot',
+        //         message
+        //     })
+        //     state = state.update('comments', comments => comments.push(chatbotComment));
+        // }
         return state
 
     }
@@ -141,18 +144,18 @@ const initialState = Map({
 
 export default function live(state = initialState, action) {
     switch (action.type) {
-        case ActionTypes.JOIN_XMPP_ROOM:
+        case ActionTypes.JOIN_ROOM:
             return joinRoom(state, action);
-        case ActionTypes.LEAVE_XMPP_ROOM:
+        case ActionTypes.LEAVE_ROOM:
             return leaveRoom(state, action);
-        case ActionTypes.RECEIVE_COMMENT:
-            return receiveComment(state, action);
-        case ActionTypes.RECEIVE_NOTIFICATION_COMMENT:
-            return receiveNotificationComment(state, action);
-        case ActionTypes.RECEIVE_CHATBOT_COMMENT:
-            return receiveChatbotComment(state, action)
-        case ActionTypes.RECEIVE_MEDIA_ITEM:
-            return receiveMediaItem(state, action);
+        // case ActionTypes.RECEIVE_COMMENT:
+        //     return receiveComment(state, action);
+        // case ActionTypes.RECEIVE_NOTIFICATION_COMMENT:
+        //     return receiveNotificationComment(state, action);
+        // case ActionTypes.RECEIVE_CHATBOT_COMMENT:
+        //     return receiveChatbotComment(state, action)
+        // case ActionTypes.RECEIVE_MEDIA_ITEM:
+        //     return receiveMediaItem(state, action);
         case ActionTypes.SEND_COMMENT:
             return sendComment(state, action);
         case ActionTypes.CLEAR_COMMENTS:

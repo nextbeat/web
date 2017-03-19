@@ -138,7 +138,9 @@ export {
     connectEddy,
     disconnectEddy,
     identifyEddy,
-    unidentifyEddy
+    unidentifyEddy,
+    joinRoom,
+    leaveRoom
 } from './eddy'
 
 export {

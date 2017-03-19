@@ -45,7 +45,7 @@ class Compose extends React.Component {
         if (currentUser.isLoggedIn()) {
             this.handleChatInfoDropdownClose()
             // If the user isn't logged in, they will be prompted to do so
-            // during the sendComment action. We don't want to clear the
+            // during the sendChat action. We don't want to clear the
             // text box in this case.
             dispatch(updateChatMessage(''))
         }

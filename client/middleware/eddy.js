@@ -2,6 +2,7 @@ import assign from 'lodash/assign'
 
 import EddyClient from '../eddy'
 import { ActionTypes, Status } from '../actions'
+import { joinRoom, leaveRoom } from '../actions'
 import { Eddy } from '../models'
 
 function _wrapAction(store, next, action) {
@@ -11,6 +12,12 @@ function _wrapAction(store, next, action) {
     let actionWith = (status, data) => assign({}, action, { status }, data)
 
     return (fn) => {
+
+        if (!client) {
+            let error = new Error("Attempted to send message before establishing client.")
+            return next(actionWith(Status.FAILURE, { error }))
+        }
+
         next(actionWith(Status.REQUESTING))
         fn(action, client)
             .then(() => { next(actionWith(Status.SUCCESS)) })
@@ -38,11 +45,37 @@ function disconnect(store, next, action) {
 }
 
 function identify(action, client) {
-    return client.identify(action.token)
+    return client.identify(action.token);
 }
 
 function unidentify(action, client) {
     return client.unidentify();
+}
+
+function join(action, client) {
+    return client.join(action.roomId);
+}
+
+function leave(action, client) {
+    return client.leave(action.roomId);
+}
+
+function sendComment(action, client) {
+    return client.chat(action.roomId, action.message);
+}
+
+function loadRoom(store, next, action) {
+    let eddy = new Eddy(store.getState());
+    if (action.status === Status.SUCCESS) {
+        store.dispatch(joinRoom(action.roomId));
+    }
+    return next(action);
+}
+
+function clearRoom(store, next, action) {
+    let eddy = new Eddy(store.getState());
+    store.dispatch(leaveRoom(action.roomId));
+    return next(action);
 }
 
 export default store => next => action => {
@@ -56,6 +89,16 @@ export default store => next => action => {
             return wrap(identify);
         case ActionTypes.UNIDENTIFY_EDDY:
             return wrap(unidentify);
+        case ActionTypes.JOIN_ROOM:
+            return wrap(join);
+        case ActionTypes.LEAVE_ROOM:
+            return wrap(leave);
+        case ActionTypes.SEND_COMMENT:
+            return wrap(sendComment);
+        case ActionTypes.ROOM:
+            return loadRoom(store, next, action)
+        case ActionTypes.CLEAR_ROOM:
+            return clearRoom(store, next, action)
         default:
             return next(action);
     }
