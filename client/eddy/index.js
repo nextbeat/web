@@ -1,4 +1,6 @@
 import Promise from 'bluebird'
+ 
+import { receiveComment, receiveMediaItem, receiveRoomClosed, receiveNotification } from '../actions'
 
 function eddyHost() {
     switch(process.env.NODE_ENV) {
@@ -18,9 +20,16 @@ function eddyHost() {
  * - Heartbeat handling (rewrite ping/pong since browsers dont have support)
  */
 
+export function EddyError(message) {
+    this.message = message;
+}
+EddyError.prototype = Object.create(Error.prototype)
+EddyError.prototype.constructor = EddyError;
+
 export default class EddyClient {
 
-    constructor() {
+    constructor(store) {
+        this.dispatch = store.dispatch;
         this.messageId = 0;
         this.outgoingMessages = {};
         this.messageQueue = [];
@@ -51,13 +60,18 @@ export default class EddyClient {
             this.client.addEventListener('close', closeListener)
 
             this.client.addEventListener('message', (event) => {
-                let data = JSON.parse(event.data)
-                if ('id' in data) {
+                let payload = JSON.parse(event.data)
+                console.log(payload);
+                if ('id' in payload) {
                     // Message is a response to a message
                     // the client sent out.
-                    this._handleResponseMessage(data)
+                    this._handleResponseMessage(payload)
+                } else if (payload.data && 'room_id' in payload.data) {
+                    // Message sent within a room
+                    this._handleInRoomMessage(payload)
                 } else {
-                    this._handleMessage(data)
+                    // Message sent to user
+                    this._handleMessage(payload)
                 }
             });
 
@@ -138,20 +152,45 @@ export default class EddyClient {
         })  
     }
 
-    _handleMessage(data) {
-        // TODO
+    _handleInRoomMessage(payload) {
+        let data = payload.data;
+        let roomId = data.room_id;
+
+        if (payload.type === "chat") 
+        {
+            let comment = {
+                type: "message",
+                message: data.message,
+                username: data.username
+            };
+            this.dispatch(receiveComment(roomId, comment));
+        } 
+        else if (payload.type === "media_item") 
+        {
+            this.dispatch(receiveMediaItem(roomId, data.media_item));
+        }
+        else if (payload.type === "room_closed")
+        {
+            this.dispatch(receiveRoomClosed(roomId));
+        }
     }
 
-    _handleResponseMessage(data) {
-        let callback = this.outgoingMessages[data.id]
+    _handleMessage(payload) {
+        if (payload.type === "notification") {
+            this.dispatch(receiveNotification())
+        }
+    }
+
+    _handleResponseMessage(payload) {
+        let callback = this.outgoingMessages[payload.id]
         if (typeof callback === 'function') {
-            if (data.ok) {
+            if (payload.ok) {
                 callback();
             } else {
-                callback(new Error(data.error));
+                callback(new EddyError(payload.error));
             }
         }
-        delete this.outgoingMessages[data.id];
+        delete this.outgoingMessages[payload.id];
     }
 
 }

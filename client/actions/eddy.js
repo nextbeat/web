@@ -38,3 +38,37 @@ export function leaveRoom(roomId) {
         roomId
     }
 }
+
+
+/*******************
+ * RESPONSE HANDLERS
+ *******************/
+
+export function receiveComment(roomId, comment) {
+    return {
+        type: ActionTypes.RECEIVE_COMMENT,
+        roomId,
+        comment
+    }
+}
+
+export function receiveMediaItem(roomId, mediaItem) {
+    return {
+        type: ActionTypes.RECEIVE_MEDIA_ITEM,
+        roomId,
+        mediaItem
+    }
+}
+
+export function receiveRoomClosed(roomId) {
+    return {
+        type: ActionTypes.RECEIVE_ROOM_CLOSED,
+        roomId
+    }
+}
+
+export function receiveNotification() {
+    return {
+        type: ActionTypes.RECEIVE_NOTIFICATION
+    }
+}

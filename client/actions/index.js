@@ -127,11 +127,8 @@ export {
     lostXMPPConnection,
     joinXMPPRoom,
     leaveXMPPRoom,
-    receiveComment,
     receiveNotificationComment,
     receiveChatbotComment,
-    receiveMediaItem,
-    receiveRoomClosed
 } from './xmpp'
 
 export {
@@ -140,7 +137,11 @@ export {
     identifyEddy,
     unidentifyEddy,
     joinRoom,
-    leaveRoom
+    leaveRoom,
+    receiveComment,
+    receiveMediaItem,
+    receiveRoomClosed,
+    receiveNotification
 } from './eddy'
 
 export {
