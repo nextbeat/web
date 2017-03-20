@@ -121,17 +121,6 @@ export {
 } from './upload'
 
 export {
-    connectToXMPP,
-    disconnectXMPP,
-    reconnectXMPP,
-    lostXMPPConnection,
-    joinXMPPRoom,
-    leaveXMPPRoom,
-    receiveNotificationComment,
-    receiveChatbotComment,
-} from './xmpp'
-
-export {
     connectEddy,
     disconnectEddy,
     identifyEddy,

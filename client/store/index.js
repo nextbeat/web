@@ -1,11 +1,11 @@
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
-import { api, cache, ga, xmpp, cancel, ui, upload, push, eddy } from '../middleware'
+import { api, cache, ga, cancel, ui, upload, push, eddy } from '../middleware'
 import { ActionTypes } from '../actions'
 import { Map, Iterable } from 'immutable'
 import reducer from '../reducers'
 
-const middlewares = [thunkMiddleware, ui, ga, upload, push, api, cache, cancel, eddy, xmpp];
+const middlewares = [thunkMiddleware, ui, ga, upload, push, api, cache, cancel, eddy];
 
 const actionTypesToIgnore = [
     ActionTypes.RESIZE,

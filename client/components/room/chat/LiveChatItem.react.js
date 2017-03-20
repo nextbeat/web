@@ -37,7 +37,7 @@ class LiveChatItem extends React.Component {
         // We handle rendering live chat items differently from remote chat items.
         // Since we do a bit of work on the backend to isolate @mentions which 
         // refer to existing users, and we want to serve room members chat messages
-        // over xmpp without going to the backend (this is subject to change)
+        // over xmpp without going to the backend (NOTE: no longer true; we use eddy now)
         // we render @mentions for live chat items differently; we highlight ALL
         // @mentions (even if they refer to invalid usernames). This is probably
         // not a permanent design decision.

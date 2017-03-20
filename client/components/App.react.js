@@ -33,7 +33,6 @@ class App extends React.Component {
 
     componentDidMount() {
         const { user, dispatch } = this.props;
-        dispatch(connectToXMPP());
         dispatch(connectEddy());
         dispatch(loadTags());
         dispatch(cleanCache());

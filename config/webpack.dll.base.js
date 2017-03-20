@@ -6,7 +6,6 @@ module.exports = {
     entry: {
         vendors: [ 
             'jquery',
-            'stanza.io',
             'react',
             'react-dom',
             'react-router',
