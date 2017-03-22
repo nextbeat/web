@@ -17,7 +17,7 @@ function validatePasswordResetToken(state, action) {
             return state.merge({
                 isValidatingToken: false,
                 tokenValidated: false,
-                tokenError: action.error
+                tokenError: action.error.message
             })
     }
     return state
@@ -38,7 +38,7 @@ function resetPassword(state, action) {
             return state.merge({
                 isResettingPassword: false,
                 passwordReset: false,
-                passwordResetError: action.error
+                passwordResetError: action.error.message
             })
     }
     return state;
@@ -59,7 +59,7 @@ function sendPasswordResetRequest(state, action) {
             return state.merge({
                 isSendingResetRequest: false,
                 resetRequestSent: false,
-                resetRequestError: action.error
+                resetRequestError: action.error.message
             })
     }
     return state;

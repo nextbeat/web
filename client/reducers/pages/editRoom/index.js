@@ -35,7 +35,7 @@ function submissionForField(state, action, field) {
         return state.merge({
             [isSubmittingKey]: false,
             [hasSubmittedKey]: false,
-            [submitErrorKey]: action.error
+            [submitErrorKey]: action.error.message
         })
     }
     return state

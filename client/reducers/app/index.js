@@ -5,6 +5,7 @@ import find from 'lodash/find'
 
 import { ActionTypes, Status } from '../../actions'
 import { combineReducers } from '../utils'
+import { NotLoggedInError } from '../../errors'
 
 function tags(state = Map(), action) {
     if (action.type === ActionTypes.TAGS) {
@@ -20,7 +21,7 @@ function tags(state = Map(), action) {
         } else if (action.status === Status.FAILURE) {
             return state.merge({
                 isFetching: false,
-                error: action.error
+                error: action.error.message
             })
         }
     }
@@ -28,7 +29,7 @@ function tags(state = Map(), action) {
 }
 
 function authError(state = false, action) {
-    if (action.status && action.status === Status.FAILURE && action.error === "User is not logged in.") {
+    if (action.status && action.status === Status.FAILURE && action.error instanceof NotLoggedInError) {
         return true;
     } else if (action.type === ActionTypes.CLEAR_LOGIN_SIGNUP 
                 || action.type === ActionTypes.LOGIN

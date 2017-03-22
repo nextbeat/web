@@ -5,6 +5,7 @@ import { Status } from './types'
 import Schemas from '../schemas'
 import { API_CALL, API_CANCEL } from './types'
 import { App } from '../models'
+import { NotLoggedInError } from '../errors'
 
 /**********
  * FETCHING
@@ -47,7 +48,7 @@ export function triggerAuthError() {
     return {
         type: ActionTypes.TRIGGER_AUTH_ERROR,
         status: Status.FAILURE,
-        error: "User is not logged in."
+        error: new NotLoggedInError()
     }
 }
 

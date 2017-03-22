@@ -1,6 +1,7 @@
 import Promise from 'bluebird'
  
 import { receiveComment, receiveMediaItem, receiveRoomClosed, receiveNotification } from '../actions'
+import { EddyError } from '../errors'
 
 function eddyHost() {
     switch(process.env.NODE_ENV) {
@@ -19,14 +20,8 @@ function eddyHost() {
  *
  * - Reconnection logic, connect failure logic
  * DONE - Message queue for messages sent before connection
- * - Heartbeat handling (rewrite ping/pong since browsers dont have support)
+ * DONE - Heartbeat handling (rewrite ping/pong since browsers dont have support)
  */
-
-export function EddyError(message) {
-    this.message = message;
-}
-EddyError.prototype = Object.create(Error.prototype)
-EddyError.prototype.constructor = EddyError;
 
 export default class EddyClient {
 
@@ -53,7 +48,7 @@ export default class EddyClient {
 
             let closeListener = (event) => {
                 if (!event.wasClean) {
-                    reject(new Error("Could not establing Websocket connection."))
+                    reject(new Error("Could not establish Websocket connection."))
                 }
                 this.client.removeEventListener('close', closeListener)
             }
@@ -77,16 +72,16 @@ export default class EddyClient {
                 }
             });
 
-            // this.pingId = setInterval(() => {
-            //     this.client.ping();
-            // }, 10000);
+            this.pingId = setInterval(() => {
+                this.client.send(JSON.stringify({ type: "ping" }))
+            }, 60000);
         });
         
     }
 
     disconnect() {
         this.client.close();
-        // clearInterval(this.pingId);
+        clearInterval(this.pingId);
     }
 
     identify(token) {

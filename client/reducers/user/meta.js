@@ -16,7 +16,7 @@ function login(state, action) {
         case Status.FAILURE:
             return state.merge({
                 isLoggingIn: false,
-                loginError: action.error
+                loginError: action.error.message
             })
     }
     return state
@@ -55,7 +55,7 @@ function signup(state, action) {
         case Status.FAILURE:
             return state.merge({
                 isSigningUp: false,
-                signupError: action.error
+                signupError: action.error.message
             })
     }
     return state

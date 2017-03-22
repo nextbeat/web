@@ -3,7 +3,7 @@ import { normalize } from 'normalizr'
 
 import EddyClient from '../eddy'
 import { ActionTypes, Status } from '../actions'
-import { joinRoom, leaveRoom, syncUnreadNotifications } from '../actions'
+import { joinRoom, leaveRoom, syncUnreadNotifications, triggerAuthError } from '../actions'
 import { Eddy } from '../models'
 import Schemas from '../schemas'
 
@@ -13,17 +13,28 @@ function _wrapAction(store, next, action) {
 
     let actionWith = (status, data) => assign({}, action, { status }, data)
 
-    return (fn) => {
+    return (fn, { successCallback, failureCallback } = {}) => {
 
         if (!client) {
             let error = new Error("Attempted to send message before establishing client.")
             return next(actionWith(Status.FAILURE, { error }))
         }
 
-        next(actionWith(Status.REQUESTING))
+        next(actionWith(Status.REQUESTING));
+
         fn(action, client)
-            .then(() => { next(actionWith(Status.SUCCESS)) })
-            .catch((error) => { next(actionWith(Status.FAILURE, { error })) })
+            .then(() => { 
+                next(actionWith(Status.SUCCESS));
+                if (typeof successCallback === "function") {
+                    successCallback(action, client);
+                }
+            })
+            .catch((error) => { 
+                next(actionWith(Status.FAILURE, { error }));
+                if (typeof failureCallback === "function") {
+                    failureCallback(action, client);
+                }
+            })
     }
 }
 
@@ -64,6 +75,14 @@ function leave(action, client) {
 
 function sendComment(action, client) {
     return client.chat(action.roomId, action.message);
+}
+
+function wrapSendComment(store, next, action) {
+    let failureCallback = function() {
+        console.log('foo')
+        store.dispatch(triggerAuthError())
+    }
+    return _wrapAction(store, next, action)(sendComment, { failureCallback })
 }
 
 function loadRoom(store, next, action) {
@@ -120,7 +139,7 @@ export default store => next => action => {
         case ActionTypes.LEAVE_ROOM:
             return wrap(leave);
         case ActionTypes.SEND_COMMENT:
-            return wrap(sendComment);
+            return wrapSendComment(store, next, action);
         case ActionTypes.ROOM:
             return loadRoom(store, next, action)
         case ActionTypes.CLEAR_ROOM:

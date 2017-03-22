@@ -1,5 +1,6 @@
 import { Map, List } from 'immutable'
 import { ActionTypes, Status } from '../../actions'
+import { EddyError } from '../../errors'
 
 function joinRoom(state, action) {
     switch (action.status) {
@@ -16,7 +17,7 @@ function joinRoom(state, action) {
             return state.merge({
                 isJoining: false,
                 joined: false,
-                joinError: action.error
+                joinError: action.error.message
             }) 
     }
     return state;
@@ -53,7 +54,7 @@ function sendComment(state, action) {
             .update('submittingComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
             .update('failedComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
 
-    } else if (action.status === Status.FAILURE && action.error !== 'User is not logged in.') {
+    } else if (action.status === Status.FAILURE && !(action.error instanceof EddyError && action.error.message === "not_permitted")) {
 
         state = state.update('submittingComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
 

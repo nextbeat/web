@@ -47,7 +47,7 @@ function loadNotifications(state, action) {
     } else if (action.status === Status.FAILURE) {
         return state.merge({
             isFetching: false,
-            error: action.error
+            error: action.error.message
         })
     }
     return state;

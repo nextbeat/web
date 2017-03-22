@@ -9,6 +9,7 @@ import { normalize } from 'normalizr'
 import { Status, API_CALL } from '../actions'
 import { CurrentUser } from '../models'
 import { baseUrl } from '../utils'
+import { NotLoggedInError } from '../errors'
 
 const API_ROOT = '/api/';
 
@@ -54,7 +55,7 @@ function callApi(options, store, action) {
     const currentUser = new CurrentUser(store.getState());
 
     if (authenticated && !currentUser.isLoggedIn()) {
-        return Promise.reject(new Error("User is not logged in."));
+        return Promise.reject(new NotLoggedInError());
     }
 
     // we wrap in a bluebird promise to give access to bluebird methods (e.g. delay)
@@ -127,7 +128,7 @@ export default store => next => action => {
             console.log(error)
             return next(actionWith({
                 status: Status.FAILURE,
-                error: error.message
+                error: error
             }))
         });
 

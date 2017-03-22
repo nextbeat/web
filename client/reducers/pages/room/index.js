@@ -21,7 +21,7 @@ function more(state = Map(), action) {
         } else if (action.status === Status.FAILURE) {
             return state.merge({
                 isFetching: false,
-                error: action.error
+                error: action.error.message
             })
         }
     }
@@ -54,7 +54,7 @@ function actions(state = Map(), action) {
             return state.merge({
                 isDeleting: false,
                 hasDeleted: false,
-                deleteError: action.error
+                deleteError: action.error.message
             })
         }
     } else if (action.type === ActionTypes.CLOSE_STACK) {
@@ -72,7 +72,7 @@ function actions(state = Map(), action) {
             return state.merge({
                 isClosing: false,
                 hasClosed: false,
-                closeError: action.error
+                closeError: action.error.message
             })
         }
     } else if (action.type === ActionTypes.DELETE_MEDIA_ITEM) {
@@ -91,7 +91,7 @@ function actions(state = Map(), action) {
             return state.merge({
                 isDeletingMediaItem: false,
                 hasDeletedMediaItem: false,
-                deleteMediaItemError: action.error
+                deleteMediaItemError: action.error.message
             })
         }
     }
