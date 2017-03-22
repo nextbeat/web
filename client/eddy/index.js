@@ -4,6 +4,8 @@ import { receiveComment, receiveMediaItem, receiveRoomClosed, receiveNotificatio
 
 function eddyHost() {
     switch(process.env.NODE_ENV) {
+        case 'development':
+            return 'wss://eddy.dev.nextbeat.co:4316/websocket'
         case 'local':
             return 'ws://eddy:4316/websocket'
         case 'mac':
