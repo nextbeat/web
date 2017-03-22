@@ -4,6 +4,7 @@ import { api, cache, ga, cancel, ui, upload, push, eddy } from '../middleware'
 import { ActionTypes } from '../actions'
 import { Map, Iterable } from 'immutable'
 import reducer from '../reducers'
+import createLogger from '../redux-logger'
 
 const middlewares = [thunkMiddleware, ui, ga, upload, push, api, cache, cancel, eddy];
 
@@ -16,7 +17,6 @@ const actionTypesToIgnore = [
 ]
 
 if (process.env.NODE_ENV !== "production") {
-    const createLogger = require('redux-logger');
 
     const stateTransformer = state => {
         if (Iterable.isIterable(state)) return state.toJS();
