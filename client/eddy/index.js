@@ -73,7 +73,7 @@ export default class EddyClient {
             });
 
             this.pingId = setInterval(() => {
-                this.client.send(JSON.stringify({ type: "ping" }))
+                this._send("ping");
             }, 60000);
         });
         
@@ -125,8 +125,8 @@ export default class EddyClient {
             // Store callback in dictionary of outgoing messages.
             // When client receives a reply from the server, the
             // promise is fulfilled. TODO: handle timeout
-            this.outgoingMessages[this.messageId] = (err) => {
-                err ? reject(err) : resolve();
+            this.outgoingMessages[this.messageId] = (err, responseData) => {
+                err ? reject(err) : resolve(responseData);
             }
 
             // TODO: wrap in second promise? to send queue messages sequentially
@@ -158,8 +158,14 @@ export default class EddyClient {
             let comment = {
                 type: "message",
                 message: data.message,
-                username: data.username
+                subtype: data.subtype,
+                id: data.id,
+                author: data.author
             };
+            if (data.recipient) {
+                comment.recipient = data.recipient;
+            }
+
             this.dispatch(receiveComment(roomId, comment));
         } 
         else if (payload.type === "media_item") 
@@ -182,7 +188,7 @@ export default class EddyClient {
         let callback = this.outgoingMessages[payload.id]
         if (typeof callback === 'function') {
             if (payload.ok) {
-                callback();
+                callback(null, payload.data);
             } else {
                 callback(new EddyError(payload.error));
             }

@@ -4,9 +4,7 @@ import ScrollComponent from '../../utils/ScrollComponent.react'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 import ChatItem from './ChatItem.react'
-import LiveChatItem from './LiveChatItem.react'
 import NotificationChatItem from './NotificationChatItem.react'
-import ChatbotChatItem from './ChatbotChatItem.react'
 import Spinner from '../../shared/Spinner.react'
 
 import { loadComments, promptChatActionsForUser } from '../../../actions'
@@ -59,15 +57,13 @@ class ChatHistory extends React.Component {
 
     renderComment(comment, idx) {
         const { collapseMessages, totalCommentsCount, roomId } = this.props;
-        const username = comment.author().get('username')
         const isCreator = comment.authorIsCreator()
         let shouldCollapse = collapseMessages && idx > totalCommentsCount - 5;
 
         if (comment.get('type') === 'message') {
             return <ChatItem 
                         key={comment.get('id')} 
-                        comment={comment} 
-                        username={username} 
+                        comment={comment}
                         isCreator={isCreator} 
                         handleSelectUsername={this.handleSelectUsername}
                         collapsed={shouldCollapse}
@@ -76,16 +72,8 @@ class ChatHistory extends React.Component {
             return <NotificationChatItem 
                         key={comment.get('id')} 
                         comment={comment} 
-                        username={username} 
                         roomId={roomId}
                     />
-        } else if (comment.get('type') === 'chatbot') {
-            return <ChatbotChatItem
-                        key={comment.get('id')}
-                        comment={comment}
-                        handleSelectUsername={this.handleSelectUsername}
-                    />
-            return null;
         }
     }
 
@@ -96,7 +84,7 @@ class ChatHistory extends React.Component {
         let shouldCollapse = collapseMessages && idx + comments.size > totalCommentsCount - 5;
 
         if (comment.get('type') === 'message') {
-            return <LiveChatItem 
+            return <ChatItem 
                         key={key} 
                         comment={comment} 
                         isCreator={isCreator} 
@@ -107,15 +95,7 @@ class ChatHistory extends React.Component {
             return <NotificationChatItem 
                         key={key} 
                         comment={comment} 
-                        username={comment.get('username')} 
                         roomId={roomId}
-                    />
-        } else if (comment.get('type') === 'chatbot') {
-            return <ChatbotChatItem
-                        key={key}
-                        comment={comment}
-                        forceMentions={true}
-                        handleSelectUsername={this.handleSelectUsername}
                     />
         } else {
             return null;
@@ -126,13 +106,13 @@ class ChatHistory extends React.Component {
         const { authorUsername } = this.props;
         const key = `s${idx}`
         const isCreator = (authorUsername === comment.get('username'));
-        return <LiveChatItem
+        return <ChatItem
                 key={key}
                 comment={comment}
                 isCreator={isCreator} 
                 handleSelectUsername={this.handleSelectUsername}
                 collapsed={false}
-                type="submitting"
+                submitStatus="submitting"
             />
     }
 
@@ -140,13 +120,13 @@ class ChatHistory extends React.Component {
         const { authorUsername } = this.props;
         const key = `s${idx}`
         const isCreator = (authorUsername === comment.get('username'));
-        return <LiveChatItem
+        return <ChatItem
                 key={key}
                 comment={comment}
                 isCreator={isCreator} 
                 handleSelectUsername={this.handleSelectUsername}
                 collapsed={false}
-                type="failed"
+                submitStatus="failed"
             />
     }
 

@@ -122,7 +122,8 @@ export function login(username, password) {
         .then(res => res.json().then(json => ({json, res})))
         .then(({json, res}) => {
             if (!res.ok) {
-                return dispatch(actionWith(Status.FAILURE, json))
+                var error = new Error(json.error);
+                return dispatch(actionWith(Status.FAILURE, { error }));
             }
             dispatch(actionWith(Status.SUCCESS, { user: json }))
             dispatch({
@@ -198,7 +199,8 @@ export function signup(credentials) {
         .then(res => res.json().then(json => ({json, res})))
         .then(({json, res}) => {
             if (!res.ok) {
-                return dispatch(actionWith(Status.FAILURE, json))
+                var error = new Error(json.error);
+                return dispatch(actionWith(Status.FAILURE, { error }))
             }
             dispatch(actionWith(Status.SUCCESS, { 
                 user: json.body,
@@ -224,7 +226,7 @@ export function postLogin() {
         dispatch(loadBookmarkedStacks("open"))
         dispatch(loadSubscriptions())
         dispatch(pushInitialize())
-        dispatch(identifyEddy(user.get('username')))
+        dispatch(identifyEddy(user.get('token')))
     }
 }
 

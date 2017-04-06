@@ -44,13 +44,14 @@ function sendComment(state, action) {
 
     } else if (action.status === Status.SUCCESS) {
 
-        const comment = Map({
-            type: 'message',
-            message: action.message,
-            username: action.username
-        })
+        // const comment = Map({
+        //     type: 'message',
+        //     message: action.message,
+        //     username: action.username
+        // })
+
         return state
-            .update('comments', comments => comments.push(comment))
+            .update('comments', comments => comments.push(action.responseData.id))
             .update('submittingComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
             .update('failedComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
 
@@ -77,6 +78,7 @@ function sendComment(state, action) {
         //     })
         //     state = state.update('comments', comments => comments.push(chatbotComment));
         // }
+
         return state
 
     }
@@ -96,12 +98,11 @@ function deleteMediaItem(state, action) {
 }
 
 function receiveComment(state, action) {
-    return state.update('comments', comments => comments.push(Map(action.comment)));
+    return state.update('comments', comments => comments.push(action.comment.id));
 }
 
 function receiveMediaItem(state, action) {
-    const id = action.mediaItem.id;
-    return state.update('mediaItems', mediaItems => mediaItems.push(id));
+    return state.update('mediaItems', mediaItems => mediaItems.push(action.mediaItem.id));
 }
 
 const initialState = Map({

@@ -3,8 +3,8 @@ import { normalize } from 'normalizr'
 
 import EddyClient from '../eddy'
 import { ActionTypes, Status } from '../actions'
-import { joinRoom, leaveRoom, syncUnreadNotifications, triggerAuthError } from '../actions'
-import { Eddy } from '../models'
+import { joinRoom, leaveRoom, syncUnreadNotifications, triggerAuthError,  } from '../actions'
+import { Eddy, CurrentUser } from '../models'
 import Schemas from '../schemas'
 
 function _wrapAction(store, next, action) {
@@ -23,16 +23,16 @@ function _wrapAction(store, next, action) {
         next(actionWith(Status.REQUESTING));
 
         fn(action, client)
-            .then(() => { 
-                next(actionWith(Status.SUCCESS));
+            .then((responseData) => { 
+                next(actionWith(Status.SUCCESS, { responseData }));
                 if (typeof successCallback === "function") {
-                    successCallback(action, client);
+                    successCallback(action, client, responseData);
                 }
             })
             .catch((error) => { 
                 next(actionWith(Status.FAILURE, { error }));
                 if (typeof failureCallback === "function") {
-                    failureCallback(action, client);
+                    failureCallback(action, client, error);
                 }
             })
     }
@@ -78,11 +78,32 @@ function sendComment(action, client) {
 }
 
 function wrapSendComment(store, next, action) {
+
     let failureCallback = function() {
-        console.log('foo')
         store.dispatch(triggerAuthError())
     }
-    return _wrapAction(store, next, action)(sendComment, { failureCallback })
+
+    let successCallback = function(action, client, responseData) {
+        // save comment into entities, now that we have the id
+        // todo: private comment support
+        const currentUser = new CurrentUser(store.getState())
+        const comment = {
+            message: action.message,
+            type: "message",
+            subtype: "public",
+            id: responseData.id,
+            author: {
+                id: currentUser.get('id')
+            }
+        }
+        const response = normalize(comment, Schemas.COMMENT)
+        store.dispatch({
+            type: ActionTypes.ENTITY_UPDATE,
+            response
+        })
+    }
+
+    return _wrapAction(store, next, action)(sendComment, { failureCallback, successCallback })
 }
 
 function loadRoom(store, next, action) {
@@ -97,6 +118,12 @@ function clearRoom(store, next, action) {
     let eddy = new Eddy(store.getState());
     store.dispatch(leaveRoom(action.roomId));
     return next(action);
+}
+
+function receiveComment(store, next, action) {
+    // Trigger an entity update
+    const response = normalize(action.comment, Schemas.COMMENT)
+    return next(assign({}, action, { response }))
 }
 
 function receiveMediaItem(store, next, action) {
@@ -144,6 +171,10 @@ export default store => next => action => {
             return loadRoom(store, next, action)
         case ActionTypes.CLEAR_ROOM:
             return clearRoom(store, next, action)
+        case ActionTypes.RECEIVE_COMMENT:
+            return receiveComment(store, next, action)
+        case ActionTypes.RECEIVE_MEDIA_ITEM:
+            return receiveMediaItem(store, next, action)
         case ActionTypes.RECEIVE_ROOM_CLOSED:
             return receiveRoomClosed(store, next, action)
         case ActionTypes.RECEIVE_NOTIFICATION:

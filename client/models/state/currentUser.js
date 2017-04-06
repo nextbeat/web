@@ -11,6 +11,7 @@ import { memoize } from '../utils'
 const KEY_MAP = {
     // meta
     'id': ['meta', 'id'],
+    'token': ['meta', 'token'],
     'isLoggingIn': ['meta', 'isLoggingIn'],
     'loginError': ['meta', 'loginError'],
     'isSigningUp': ['meta', 'isSigningUp'],
