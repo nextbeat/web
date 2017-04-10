@@ -1,7 +1,8 @@
 import StateModel from './base'
 
 const KEY_MAP = {
-    'client': ['client']
+    'client': ['client'],
+    'hasLostConnection': ['hasLostConnection'],
 }
 
 export default class Eddy extends StateModel {
@@ -10,11 +11,15 @@ export default class Eddy extends StateModel {
         super(state);
         this.keyMap = KEY_MAP;
         this.keyMapPrefix = ['eddy'];
+
+        Object.defineProperty(this, 'client', {
+            get: () => { return this.get('client') }
+        });
     }
 
     isConnected() {
-        let client = this.get('client');
-        return client.readyState === 1;
+        return this.client && this.client.isConnected()
     }
 
 }
+

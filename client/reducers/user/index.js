@@ -3,7 +3,6 @@ import { ActionTypes, Status } from '../../actions'
 import { combineReducers } from '../utils'
 
 import bookmarks from './bookmarks'
-import live from './live'
 import meta from './meta'
 import notifications from './notifications'
 import stacks from './stacks'
@@ -11,7 +10,6 @@ import subscriptions from './subscriptions'
 
 const reducers = {
     meta, 
-    live,
     notifications,
     stacks,
     bookmarks,

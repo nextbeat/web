@@ -1,7 +1,7 @@
 import Promise from 'bluebird'
  
-import { receiveComment, receiveMediaItem, receiveRoomClosed, receiveNotification } from '../actions'
-import { EddyError } from '../errors'
+import { receiveComment, receiveMediaItem, receiveRoomClosed, receiveNotification, reconnectEddy } from '../actions'
+import { EddyError, TimeoutError } from '../errors'
 
 function eddyHost() {
     switch(process.env.NODE_ENV) {
@@ -11,7 +11,7 @@ function eddyHost() {
             return 'ws://eddy:4316/websocket'
         case 'mac':
         default:
-            return 'ws://localhost:4316/websocket'
+            return 'ws://localhost:4444/websocket'
     }
 }
 
@@ -23,6 +23,12 @@ function eddyHost() {
  * DONE - Heartbeat handling (rewrite ping/pong since browsers dont have support)
  */
 
+const PING_INTERVAL = 10000;
+const PONG_TIMEOUT = 500;
+const CONNECT_TIMEOUT = 10000;
+const CONNECT_DELAY_CAP = 30000;
+const BASE_DELAY = 2000;
+
 export default class EddyClient {
 
     constructor(store) {
@@ -32,26 +38,53 @@ export default class EddyClient {
         this.messageQueue = [];
     }
 
+    // Connection logic
+
     connect() {
         return new Promise((resolve, reject) => {
+
+            this._clearTimeouts();
             this.client = new WebSocket(eddyHost());
+            this.messageId = 0;
 
             let openListener = (event) => {
                 resolve();
+
                 if (this.messageQueue.length > 0) {
                     this.messageQueue.forEach((sendFn) => {
                         sendFn();
                     });
                 }  
+
+                this._pingId = setInterval(() => {
+                    console.log('sending ping')
+                    this._sendPing();
+                }, PING_INTERVAL);
+
                 this.client.removeEventListener('open', openListener)
+                this.client.removeEventListener('close', closeListener)
             }
 
             let closeListener = (event) => {
+                console.log('close listener!')
+                this._clearTimeouts();
+
                 if (!event.wasClean) {
                     reject(new Error("Could not establish Websocket connection."))
                 }
+
                 this.client.removeEventListener('close', closeListener)
+                this.client.removeEventListener('open', openListener)
             }
+
+            this._connectTimeoutId = setTimeout(() => {
+                if (!this.isConnected()) {
+                    console.log('client not connected!')
+                    this.client.close();
+                    this.client = null;
+                    reject(new TimeoutError("Websocket connection timeout."))
+                }
+            }, CONNECT_TIMEOUT);
 
             this.client.addEventListener('open', openListener)
             this.client.addEventListener('close', closeListener)
@@ -71,18 +104,22 @@ export default class EddyClient {
                     this._handleMessage(payload)
                 }
             });
+        });   
+    }
 
-            this.pingId = setInterval(() => {
-                this._send("ping");
-            }, 60000);
-        });
-        
+    reconnect() {
+        return this._reconnect(0, BASE_DELAY);
     }
 
     disconnect() {
         this.client.close();
-        clearInterval(this.pingId);
     }
+
+    isConnected() {
+        return this.client && this.client.readyState === 1;
+    }
+
+    // Messages
 
     identify(token) {
         return this._send('identify', { token: token });
@@ -105,7 +142,11 @@ export default class EddyClient {
     }
 
 
-    // Private methods
+    /*****************
+     * Private methods
+     *****************/
+
+    // Message sending and receiving
 
     _send(type, data) {
         return new Promise((resolve, reject) => {
@@ -196,4 +237,39 @@ export default class EddyClient {
         delete this.outgoingMessages[payload.id];
     }
 
+
+    // Connection logic
+
+    _sendPing() {
+        var pingPromise = this._send("ping");
+        console.log('sent ping');
+        this._pongTimeoutId = setTimeout(() => {
+            console.log('ping promise timeout', pingPromise.isFulfilled());
+            if (!pingPromise.isFulfilled()) {
+                // pong has not responded in a timely manner
+                // we assume the worst, and attempt to reconnect
+                this.dispatch(reconnectEddy());
+            }
+        }, PONG_TIMEOUT);
+    }
+
+    _reconnect(attempts, baseDelayTime) {
+        console.log('attempting reconnect', attempts);
+        return this.connect()
+            .catch((e) => {
+                let delay = Math.min(CONNECT_DELAY_CAP, baseDelayTime * Math.pow(2, Math.min(attempts, 15)))
+                let delayWithJitter = delay/2 + Math.random()*delay/2
+                return Promise.resolve()
+                    .delay(delayWithJitter)
+                    .then(() => {
+                        return this._reconnect(attempts+1, baseDelayTime);
+                    });
+            });
+    }
+
+    _clearTimeouts() {
+        clearInterval(this._pingId);
+        clearTimeout(this._pongTimeoutId);
+        clearTimeout(this._connectTimeoutId);
+    }
 }

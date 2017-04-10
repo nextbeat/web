@@ -6,6 +6,12 @@ export function connectEddy() {
     }
 }
 
+export function reconnectEddy() {
+    return {
+        type: ActionTypes.RECONNECT_EDDY
+    }
+}
+
 export function disconnectEddy() {
     return {
         type: ActionTypes.DISCONNECT_EDDY

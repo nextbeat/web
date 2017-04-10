@@ -168,7 +168,7 @@ class App extends React.Component {
     }
 
     render() {
-        const { user, app, connected, children } = this.props
+        const { user, app, children } = this.props
         const { router } = this.context
 
         const inRoom = router.isActive('/r')
@@ -190,7 +190,7 @@ class App extends React.Component {
                 <div className={`main-container ${splashClass}`}>
                     <Sidebar />
                     <div className={`main ${guestClass}`}>
-                        {React.cloneElement(children, { user, connected })}
+                        {React.cloneElement(children, { user })}
                     </div>
                 </div>
             </section>
@@ -210,8 +210,7 @@ function mapStateToProps(state, props) {
     return {
         user,
         notifications,
-        app,
-        connected: user.get('connected')
+        app
     }
 }
 

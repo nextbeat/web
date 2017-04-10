@@ -122,6 +122,7 @@ export {
 
 export {
     connectEddy,
+    reconnectEddy,
     disconnectEddy,
     identifyEddy,
     unidentifyEddy,

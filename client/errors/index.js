@@ -15,3 +15,12 @@ export function EddyError(message) {
 
 EddyError.prototype = Object.create(Error.prototype);
 EddyError.prototype.constructor = EddyError;
+
+export function TimeoutError(message) {
+    this.name = 'TimeoutError';
+    this.message = message;
+    this.stack = (new Error()).stack;
+}
+
+TimeoutError.prototype = Object.create(Error.prototype);
+TimeoutError.prototype.constructor = TimeoutError;

@@ -4,6 +4,10 @@ import { Map } from 'immutable'
 
 import renderMessageText from './utils/renderMessageText'
 
+// if (typeof window !== 'undefined') {
+//     var robot = require('../../../public/images/robot_64px.png');
+// }
+
 class ChatItem extends React.Component {
 
     constructor(props) {
@@ -56,12 +60,13 @@ class ChatItem extends React.Component {
         const { comment } = this.props;
 
         const isPrivate = comment.get('subtype') === 'private'
+        const privateClass = isPrivate ? 'chat_item-chatbot_body-private' : ''
         const username = comment.author().get('username')
 
         return (
             <li className="chat_item chat_item-chatbot">
                 <div className="chat_item-chatbot_header">
-                    <img className="chat_item_emoji" src={robot} />
+                    <img className="chat_item_emoji" />
                     <span className="chat_item-chatbot_username">{username}</span>
                     { isPrivate && <span className="chat_item-chatbot_private">only visible to you</span> }
                 </div>

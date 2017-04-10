@@ -24,8 +24,8 @@ if (process.env.NODE_ENV !== "production") {
         
     }
 
-    const predicate = (getState, action) => actionTypesToIgnore.indexOf(action.type) === -1
-    // const predicate = (getState, action) => action.type.indexOf("EDDY") !== -1
+    // const predicate = (getState, action) => actionTypesToIgnore.indexOf(action.type) === -1
+    const predicate = (getState, action) => action.type.indexOf("EDDY") !== -1
 
     const logger = createLogger({
         stateTransformer,
