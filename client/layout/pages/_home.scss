@@ -158,6 +158,10 @@
     font-weight: 300;
     white-space: normal;
     margin-top: 3px;
+
+    @media screen and (max-device-width: 480px) {
+        -webkit-text-size-adjust: none;
+    }
 }
 
 .home_section_stacks {
