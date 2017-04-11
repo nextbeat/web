@@ -1,6 +1,7 @@
 import Promise from 'bluebird'
  
-import { receiveComment, receiveMediaItem, receiveRoomClosed, receiveNotification, reconnectEddy } from '../actions'
+import { receiveComment, receiveMediaItem, receiveRoomClosed, receiveNotification, reconnectEddy, identifyEddy, joinRoom } from '../actions'
+import { Room, CurrentUser } from '../models'
 import { EddyError, TimeoutError } from '../errors'
 
 function eddyHost() {
@@ -24,7 +25,7 @@ function eddyHost() {
  */
 
 const PING_INTERVAL = 10000;
-const PONG_TIMEOUT = 500;
+const PONG_TIMEOUT = 3000;
 const CONNECT_TIMEOUT = 10000;
 const CONNECT_DELAY_CAP = 30000;
 const BASE_DELAY = 2000;
@@ -33,6 +34,7 @@ export default class EddyClient {
 
     constructor(store) {
         this.dispatch = store.dispatch;
+        this.getState = store.getState;
         this.messageId = 0;
         this.outgoingMessages = {};
         this.messageQueue = [];
@@ -43,7 +45,7 @@ export default class EddyClient {
     connect() {
         return new Promise((resolve, reject) => {
 
-            this._clearTimeouts();
+            this._clear();
             this.client = new WebSocket(eddyHost());
             this.messageId = 0;
 
@@ -57,7 +59,6 @@ export default class EddyClient {
                 }  
 
                 this._pingId = setInterval(() => {
-                    console.log('sending ping')
                     this._sendPing();
                 }, PING_INTERVAL);
 
@@ -67,7 +68,7 @@ export default class EddyClient {
 
             let closeListener = (event) => {
                 console.log('close listener!')
-                this._clearTimeouts();
+                this._clear();
 
                 if (!event.wasClean) {
                     reject(new Error("Could not establish Websocket connection."))
@@ -130,15 +131,15 @@ export default class EddyClient {
     }
 
     join(roomId) {
-        return this._send('room_join', { room_id: roomId });
+        return this._send('room_join', { room_id: parseInt(roomId, 10) });
     }
 
     leave(roomId) {
-        return this._send('room_leave', { room_id: roomId });
+        return this._send('room_leave', { room_id: parseInt(roomId, 10) });
     }
 
     chat(roomId, message) {
-        return this._send('chat', { room_id: roomId, message: message });
+        return this._send('chat', { room_id: parseInt(roomId, 10), message: message });
     }
 
 
@@ -242,9 +243,7 @@ export default class EddyClient {
 
     _sendPing() {
         var pingPromise = this._send("ping");
-        console.log('sent ping');
         this._pongTimeoutId = setTimeout(() => {
-            console.log('ping promise timeout', pingPromise.isFulfilled());
             if (!pingPromise.isFulfilled()) {
                 // pong has not responded in a timely manner
                 // we assume the worst, and attempt to reconnect
@@ -256,20 +255,40 @@ export default class EddyClient {
     _reconnect(attempts, baseDelayTime) {
         console.log('attempting reconnect', attempts);
         return this.connect()
+            .bind(this)
+            .then(() => {
+                // client needs to re-identify and 
+                // join any rooms they were
+                // in before they were disconnected
+                // TODO: actually stream reconnection support on eddy
+                let currentUser = new CurrentUser(this.getState())
+                if (currentUser.isLoggedIn()) {
+                    this.dispatch(identifyEddy(currentUser.get('token')))
+                }
+
+                let loadedRooms = Room.loadedRooms(this.getState())
+                loadedRooms.forEach((room) => {
+                    this.dispatch(joinRoom(room.id))
+                });
+            })
             .catch((e) => {
                 let delay = Math.min(CONNECT_DELAY_CAP, baseDelayTime * Math.pow(2, Math.min(attempts, 15)))
                 let delayWithJitter = delay/2 + Math.random()*delay/2
                 return Promise.resolve()
                     .delay(delayWithJitter)
+                    .bind(this)
                     .then(() => {
                         return this._reconnect(attempts+1, baseDelayTime);
                     });
             });
     }
 
-    _clearTimeouts() {
+    _clear() {
         clearInterval(this._pingId);
         clearTimeout(this._pongTimeoutId);
         clearTimeout(this._connectTimeoutId);
+        this.messageId = 0;
+        this.outgoingMessages = {};
+        this.messageQueue = [];
     }
 }

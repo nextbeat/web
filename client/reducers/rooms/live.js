@@ -51,7 +51,7 @@ function sendComment(state, action) {
         // })
 
         return state
-            .update('comments', comments => comments.push(action.responseData.id))
+            .update('comments', comments => comments.push(action.responseData.comment_id))
             .update('submittingComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
             .update('failedComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
 

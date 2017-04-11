@@ -107,7 +107,7 @@ function wrapSendComment(store, next, action) {
             message: action.message,
             type: "message",
             subtype: "public",
-            id: responseData.id,
+            id: responseData.comment_id,
             author: {
                 id: currentUser.get('id')
             }
