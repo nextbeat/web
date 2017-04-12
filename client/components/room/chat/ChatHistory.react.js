@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { List } from 'immutable'
 import ScrollComponent from '../../utils/ScrollComponent.react'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
@@ -12,6 +13,23 @@ import { Room, CurrentUser, App } from '../../../models'
 
 function scrollComponentId(props) {
     return `history-${props.roomId}-${props.scrollable ? 'scroll' : 'no-scroll'}`
+}
+
+function commentCollapser(res, comment) {
+    let isCollapsibleComment = (comment) => comment.get('type') === 'notification' && comment.get('notification_type') === 'mediaitem';
+    
+    if (res.last() && isCollapsibleComment(res.last())) {
+        // collapse into previous notification comment
+        let count = res.last().__count__;
+        comment.__count__ = count+1;
+        return res.pop().push(comment);
+    } 
+
+    if (isCollapsibleComment(comment)) {
+        comment.__count__ = 1;
+    }
+
+    return res.push(comment);
 }
 
 class ChatHistory extends React.Component {
@@ -56,7 +74,7 @@ class ChatHistory extends React.Component {
     // Render
 
     renderComment(comment, idx) {
-        const { collapseMessages, totalCommentsCount, roomId } = this.props;
+        const { authorUsername, collapseMessages, totalCommentsCount, roomId } = this.props;
         const isCreator = comment.authorIsCreator()
         let shouldCollapse = collapseMessages && idx > totalCommentsCount - 5;
 
@@ -71,8 +89,10 @@ class ChatHistory extends React.Component {
         } else if (comment.get('type') === 'notification') {
             return <NotificationChatItem 
                         key={comment.get('id')} 
-                        comment={comment} 
                         roomId={roomId}
+                        comment={comment} 
+                        username={authorUsername}
+                        count={comment.__count__}
                     />
         }
     }
@@ -94,8 +114,10 @@ class ChatHistory extends React.Component {
         } else if (comment.get('type') === 'notification') {
             return <NotificationChatItem 
                         key={key} 
-                        comment={comment} 
                         roomId={roomId}
+                        comment={comment} 
+                        username={authorUsername}
+                        count={comment.__count__}
                     />
         } else {
             return null;
@@ -142,8 +164,8 @@ class ChatHistory extends React.Component {
                 { commentsFetching && <Spinner type="grey" />}
                 { commentsError && commentsError.length > 0 && <p>Could not load comments.</p>}
                 <ul className="chat_items">
-                    {comments.reverse().map((comment, idx) => this.renderComment(comment, idx))}
-                    {liveComments.map((comment, idx) => this.renderLiveComment(comment, idx))}
+                    {comments.reduce(commentCollapser, List()).reverse().map((comment, idx) => this.renderComment(comment, idx))}
+                    {liveComments.reduce(commentCollapser, List()).map((comment, idx) => this.renderLiveComment(comment, idx))}
                     { style === "expanded" &&
                         [
                         submittingComments.map((comment, idx) => this.renderSubmittingComment(comment, idx)),

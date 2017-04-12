@@ -19,16 +19,13 @@ class NotificationChatItem extends React.Component {
     }
 
     renderNewMediaItemNotification() {
-        const { comment, username } = this.props;
-        const [ count, url, mediaitem_id ] = [ 
-            comment.get('notification_count'), 
-            comment.get('notification_url'),
-            comment.get('mediaitem_id')
-        ];
+        const { comment, username, count } = this.props;
+        const url = comment.get('mediaitem_url');
+        const mediaItemID = comment.get('mediaitem_id');
         const countStr = count === 1 ? "a post" : `${count} posts`;
 
         return (
-            <li className="chat_item chat_item-notification chat_item-notification-mediaitem" onClick={this.handleSelectMediaItem.bind(this, mediaitem_id)}>
+            <li className="chat_item chat_item-notification chat_item-notification-mediaitem" onClick={this.handleSelectMediaItem.bind(this, mediaItemID)}>
                 <div className="chat_item-notification_thumb" style={{ backgroundImage: `url(${url})`}}></div>
                 <span className="chat_item-notification_text"><strong>{username}</strong> added {countStr} to the room.</span>
             </li>
@@ -44,9 +41,25 @@ class NotificationChatItem extends React.Component {
     }
 
     render() {
-        return this.props.comment.get('notification_type', 'close') === 'close' ? 
-           this.renderCloseNotification() : this.renderNewMediaItemNotification()
+        switch (this.props.comment.get('notification_type')) {
+            case 'close':
+                return this.renderCloseNotification();
+            case 'mediaitem':
+                return this.renderNewMediaItemNotification();
+        }
+        return null;
     }
+}
+
+NotificationChatItem.propTypes = {
+    comment: React.PropTypes.object.isRequired,
+    roomId: React.PropTypes.number.isRequired,
+    username: React.PropTypes.string.isRequired,
+    count: React.PropTypes.number,
+}
+
+NotificationChatItem.defaultProps = {
+    count: 1
 }
 
 export default connect()(NotificationChatItem);
