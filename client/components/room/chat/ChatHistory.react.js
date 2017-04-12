@@ -16,7 +16,7 @@ function scrollComponentId(props) {
 }
 
 function commentCollapser(res, comment) {
-    let isCollapsibleComment = (comment) => comment.get('type') === 'notification' && comment.get('notification_type') === 'mediaitem';
+    let isCollapsibleComment = (comment) => comment.get('type') === 'notification' && comment.get('subtype') === 'mediaitem';
     
     if (res.last() && isCollapsibleComment(res.last())) {
         // collapse into previous notification comment

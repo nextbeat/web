@@ -41,7 +41,7 @@ class NotificationChatItem extends React.Component {
     }
 
     render() {
-        switch (this.props.comment.get('notification_type')) {
+        switch (this.props.comment.get('subtype')) {
             case 'close':
                 return this.renderCloseNotification();
             case 'mediaitem':
