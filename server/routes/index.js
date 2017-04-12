@@ -32,17 +32,8 @@ module.exports = {
                 }
             };
 
-            api[method](req.url, req.body, options).then(function(_res) {
-                // we check for the header which is set if the current token
-                // has expired, and update the user's token
-                if (req.user && has(_res.headers, 'x-bbl-jwt-token')) {
-                    var newUser = assign({}, req.user, { token: _res.headers['x-bbl-jwt-token'] })
-                    req.logIn(newUser, function(err) {
-                        res.send(_res.body);
-                    })
-                } else {
-                    res.send(_res.body);
-                }
+            api[method](req.url, req.body, options).then(function(res2) {
+                res.send(res2.body);
             }).catch(function(e) {
                 var statusCode = e.statusCode || 404;
                 res.status(statusCode).json({error: e.error});

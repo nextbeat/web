@@ -34,10 +34,6 @@ function _request(method, url, body, options) {
             auth: auth,
             resolveWithFullResponse: true
         }, options))
-    }).tap(function(res) {
-        if (!isAuthorized && _.has(res.headers, 'x-bbl-jwt-token')) {
-            clientToken = res.headers['x-bbl-jwt-token'];
-        }
     });
 }
 
