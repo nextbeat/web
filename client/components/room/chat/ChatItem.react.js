@@ -4,9 +4,9 @@ import { Map } from 'immutable'
 
 import renderMessageText from './utils/renderMessageText'
 
-// if (typeof window !== 'undefined') {
-//     var robot = require('../../../public/images/robot_64px.png');
-// }
+if (typeof window !== 'undefined') {
+    var robot = require('../../../public/images/robot_64px.png');
+} 
 
 class ChatItem extends React.Component {
 
@@ -66,7 +66,7 @@ class ChatItem extends React.Component {
         return (
             <li className="chat_item chat_item-chatbot">
                 <div className="chat_item-chatbot_header">
-                    <img className="chat_item_emoji" />
+                    <img className="chat_item_emoji" src={robot} />
                     <span className="chat_item-chatbot_username">{username}</span>
                     { isPrivate && <span className="chat_item-chatbot_private">only visible to you</span> }
                 </div>
