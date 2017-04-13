@@ -82,6 +82,10 @@ export default class Room extends StateModel {
         return this.get('liveMediaItemIds', List()).map(id => new MediaItemEntity(id, this.state.get('entities')))
     }
 
+    allMediaItems() {
+        return this.mediaItems().concat(this.liveMediaItems())
+    }
+
     comments() {
         return this.constructor.memoizedComments(this.id, this.state)
     }

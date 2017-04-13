@@ -66,6 +66,14 @@ export function receiveMediaItem(roomId, mediaItem) {
     }
 }
 
+export function receiveNotificationComment(roomId, comment) {
+    return {
+        type: ActionTypes.RECEIVE_NOTIFICATION_COMMENT,
+        roomId,
+        comment
+    }
+}
+
 export function receiveRoomClosed(roomId) {
     return {
         type: ActionTypes.RECEIVE_ROOM_CLOSED,

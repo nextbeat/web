@@ -105,6 +105,10 @@ function receiveMediaItem(state, action) {
     return state.update('mediaItems', mediaItems => mediaItems.push(action.mediaItem.id));
 }
 
+function receiveNotificationComment(state, action) {
+    return state.update('comments', comments => comments.push(action.comment.id));
+}
+
 const initialState = Map({
     comments: List(),
     submittingComments: List(),
@@ -128,6 +132,8 @@ export default function live(state = initialState, action) {
             return receiveComment(state, action);
         case ActionTypes.RECEIVE_MEDIA_ITEM:
             return receiveMediaItem(state, action);
+        case ActionTypes.RECEIVE_NOTIFICATION_COMMENT:
+            return receiveNotificationComment(state, action);
     }
     return state;
 }

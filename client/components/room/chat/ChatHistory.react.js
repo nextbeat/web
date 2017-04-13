@@ -18,7 +18,7 @@ function scrollComponentId(props) {
 function commentCollapser(res, comment) {
     let isCollapsibleComment = (comment) => comment.get('type') === 'notification' && comment.get('subtype') === 'mediaitem';
     
-    if (res.last() && isCollapsibleComment(res.last())) {
+    if (res.last() && isCollapsibleComment(res.last()) && isCollapsibleComment(comment)) {
         // collapse into previous notification comment
         let count = res.last().__count__;
         comment.__count__ = count+1;
@@ -164,7 +164,7 @@ class ChatHistory extends React.Component {
                 { commentsFetching && <Spinner type="grey" />}
                 { commentsError && commentsError.length > 0 && <p>Could not load comments.</p>}
                 <ul className="chat_items">
-                    {comments.reduce(commentCollapser, List()).reverse().map((comment, idx) => this.renderComment(comment, idx))}
+                    {comments.reverse().reduce(commentCollapser, List()).map((comment, idx) => this.renderComment(comment, idx))}
                     {liveComments.reduce(commentCollapser, List()).map((comment, idx) => this.renderLiveComment(comment, idx))}
                     { style === "expanded" &&
                         [

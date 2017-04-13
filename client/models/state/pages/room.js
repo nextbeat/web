@@ -84,6 +84,10 @@ export default class RoomPage extends StateModel {
         return this.room().liveMediaItems()
     }
 
+    allMediaItems() {
+        return this.room().allMediaItems()
+    }
+
     comments() {
         return this.room().comments()
     }

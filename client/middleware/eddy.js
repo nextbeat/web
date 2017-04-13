@@ -148,6 +148,12 @@ function receiveMediaItem(store, next, action) {
     return next(assign({}, action, { response }))
 }
 
+function receiveNotificationComment(store, next, action) {
+    // Trigger an entity update
+    const response = normalize(action.comment, Schemas.COMMENT)
+    return next(assign({}, action, { response }))   
+}
+
 function receiveRoomClosed(store, next, action) {
     // Trigger an entity update
     let updatedStack = {
@@ -193,6 +199,8 @@ export default store => next => action => {
             return receiveComment(store, next, action)
         case ActionTypes.RECEIVE_MEDIA_ITEM:
             return receiveMediaItem(store, next, action)
+        case ActionTypes.RECEIVE_NOTIFICATION_COMMENT:
+            return receiveNotificationComment(store, next, action)
         case ActionTypes.RECEIVE_ROOM_CLOSED:
             return receiveRoomClosed(store, next, action)
         case ActionTypes.RECEIVE_NOTIFICATION:

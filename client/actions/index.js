@@ -130,6 +130,7 @@ export {
     leaveRoom,
     receiveComment,
     receiveMediaItem,
+    receiveNotificationComment,
     receiveRoomClosed,
     receiveNotification
 } from './eddy'

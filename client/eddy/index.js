@@ -1,6 +1,6 @@
 import Promise from 'bluebird'
  
-import { receiveComment, receiveMediaItem, receiveRoomClosed, receiveNotification, reconnectEddy, identifyEddy, joinRoom } from '../actions'
+import { receiveComment, receiveMediaItem, receiveRoomClosed, receiveNotificationComment, receiveNotification, reconnectEddy, identifyEddy, joinRoom } from '../actions'
 import { Room, CurrentUser } from '../models'
 import { EddyError, TimeoutError } from '../errors'
 
@@ -15,14 +15,6 @@ function eddyHost() {
             return 'ws://localhost:4316/websocket'
     }
 }
-
-/**
- * TODO: 
- *
- * - Reconnection logic, connect failure logic
- * DONE - Message queue for messages sent before connection
- * DONE - Heartbeat handling (rewrite ping/pong since browsers dont have support)
- */
 
 const PING_INTERVAL = 10000;
 const PONG_TIMEOUT = 3000;
@@ -210,6 +202,10 @@ export default class EddyClient {
 
             this.dispatch(receiveComment(roomId, comment));
         } 
+        else if (payload.type === "notification_comment")
+        {
+            this.dispatch(receiveNotificationComment(roomId, data.comment))
+        }
         else if (payload.type === "media_item") 
         {
             this.dispatch(receiveMediaItem(roomId, data.media_item));
