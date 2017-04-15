@@ -180,15 +180,11 @@ export function updateChatMessage(message) {
     }
 }
 
-function postBanUser(stack_id, username) {
+function performBanUser(roomId, username) {
     return {
         type: ActionTypes.BAN_USER,
-        [API_CALL]: {
-            method: 'POST',
-            schema: Schemas.USER,
-            endpoint: `stacks/${stack_id}/comments/${username}/ban`,
-            authenticated: true
-        }
+        roomId,
+        username
     }
 }
 
@@ -201,19 +197,15 @@ export function banUser(username) {
         if (room.userIsBanned(username)) {
             return null;
         }
-        dispatch(postBanUser(room.get('id'), username))
+        dispatch(performBanUser(room.get('id'), username))
     }
 }
 
-function postUnbanUser(stack_id, username) {
+function performUnbanUser(roomId, username) {
     return {
         type: ActionTypes.UNBAN_USER,
-        [API_CALL]: {
-            method: 'POST',
-            schema: Schemas.USER,
-            endpoint: `stacks/${stack_id}/comments/${username}/unban`,
-            authenticated: true
-        }
+        roomId,
+        username
     }
 }
 
@@ -226,7 +218,7 @@ export function unbanUser(username) {
         if (!room.userIsBanned(username)) {
             return null;
         }
-        dispatch(postUnbanUser(room.get('id'), username))
+        dispatch(performUnbanUser(room.get('id'), username))
     }
 }
 

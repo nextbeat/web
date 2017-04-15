@@ -98,7 +98,7 @@ class ChatItem extends React.Component {
     }
 
     renderTemporaryComment() {
-        const { comment, isCreator, handleSelectUsername, submitStatus } = this.props
+        const { comment, isCreator, handleSelectUsername, handleResend, submitStatus } = this.props
 
         const submitClass = `chat_item-${submitStatus}`
         const creatorClass = isCreator ? "chat_item_creator" : ""
@@ -110,6 +110,9 @@ class ChatItem extends React.Component {
                     <a onClick={ () => { handleSelectUsername(username) } }>{username} </a>
                 </strong>
                 {this.renderMessage(false)}
+                { submitStatus === "failed" && 
+                    <a className="btn chat_item-failed_retry" onClick={ () => { handleResend(comment) } }>Retry</a>
+                }
             </li>
         );
     }
@@ -133,6 +136,7 @@ ChatItem.propTypes = {
     isCreator: React.PropTypes.bool,
     isCollapsed: React.PropTypes.bool,
     handleSelectUsername: React.PropTypes.func,
+    handleResend: React.PropTypes.func,
     submitStatus: React.PropTypes.string,
 }
 

@@ -89,6 +89,14 @@ function leave(action, client) {
     return client.leave(action.roomId);
 }
 
+function ban(action, client) {
+    return client.ban(action.roomId, action.username);
+}
+
+function unban(action, client) {
+    return client.unban(action.roomId, action.username);
+}
+
 function sendComment(action, client) {
     return client.chat(action.roomId, action.message);
 }
@@ -96,7 +104,10 @@ function sendComment(action, client) {
 function wrapSendComment(store, next, action) {
 
     let failureCallback = function() {
-        store.dispatch(triggerAuthError())
+        const currentUser = new CurrentUser(store.getState())
+        if (!currentUser.isLoggedIn()) {
+            store.dispatch(triggerAuthError())
+        }
     }
 
     let successCallback = function(action, client, responseData) {
@@ -191,6 +202,10 @@ export default store => next => action => {
             return wrap(leave);
         case ActionTypes.SEND_COMMENT:
             return wrapSendComment(store, next, action);
+        case ActionTypes.BAN_USER:
+            return wrap(ban);
+        case ActionTypes.UNBAN_USER:
+            return wrap(unban);
         case ActionTypes.ROOM:
             return loadRoom(store, next, action)
         case ActionTypes.CLEAR_ROOM:

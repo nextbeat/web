@@ -28,6 +28,7 @@ export {
     loadMoreStacks,
     loadCommentsMetadata,
     sendComment,
+    resendComment,
     didUseChat,
     didPlayVideo,
     bookmark,

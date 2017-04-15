@@ -102,6 +102,10 @@ export function sendComment(roomId, message) {
     }
 }
 
+export function resendComment(roomId, comment) {
+    return performSendComment(roomId, comment.get('message'), comment.get('username'), comment.get('temporaryId'))
+}
+
 function onCommentsMetadataSuccess(store, next, action, response) {
     store.dispatch({
         type: ActionTypes.ENTITY_UPDATE,

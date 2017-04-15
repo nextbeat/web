@@ -40,22 +40,22 @@ function sendComment(state, action) {
             username: action.username,
             temporaryId: action.temporaryId
         })
-        return state.update('submittingComments', subComments => subComments.push(comment))
+
+        // Filter comment out of submitting and failed first,
+        // in case we are resending a comment.
+        return state
+            .update('submittingComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
+            .update('failedComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
+            .update('submittingComments', subComments => subComments.push(comment))
 
     } else if (action.status === Status.SUCCESS) {
-
-        // const comment = Map({
-        //     type: 'message',
-        //     message: action.message,
-        //     username: action.username
-        // })
 
         return state
             .update('comments', comments => comments.push(action.responseData.comment_id))
             .update('submittingComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
             .update('failedComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
 
-    } else if (action.status === Status.FAILURE && !(action.error instanceof EddyError && action.error.message === "not_permitted")) {
+    } else if (action.status === Status.FAILURE) {
 
         state = state.update('submittingComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
 
@@ -66,18 +66,6 @@ function sendComment(state, action) {
             temporaryId: action.temporaryId
         })
         state = state.update('failedComments', comments => comments.push(comment));
-
-        // TODO: reimplement banning
-        //
-        // if (action.error === 'User is banned.') {
-        //     // display chatbot error message
-        //     let message = 'You have been banned from posting in this room.'
-        //     const chatbotComment = Map({
-        //         type: 'chatbot',
-        //         message
-        //     })
-        //     state = state.update('comments', comments => comments.push(chatbotComment));
-        // }
 
         return state
 

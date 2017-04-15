@@ -72,7 +72,6 @@ export default class EddyClient {
 
             this._connectTimeoutId = setTimeout(() => {
                 if (!this.isConnected()) {
-                    console.log('client not connected!')
                     this.client.close();
                     this.client = null;
                     reject(new TimeoutError("Websocket connection timeout."))
@@ -84,7 +83,6 @@ export default class EddyClient {
 
             this.client.addEventListener('message', (event) => {
                 let payload = JSON.parse(event.data)
-                console.log(payload);
                 if ('id' in payload) {
                     // Message is a response to a message
                     // the client sent out.
@@ -132,6 +130,14 @@ export default class EddyClient {
 
     chat(roomId, message) {
         return this._send('chat', { room_id: parseInt(roomId, 10), message: message });
+    }
+
+    ban(roomId, username) {
+        return this._send('ban', { room_id: parseInt(roomId, 10), username: username });
+    }
+
+    unban(roomId, username) {
+        return this._send('unban', { room_id: parseInt(roomId, 10), username: username });
     }
 
 

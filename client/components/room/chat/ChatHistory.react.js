@@ -8,7 +8,7 @@ import ChatItem from './ChatItem.react'
 import NotificationChatItem from './NotificationChatItem.react'
 import Spinner from '../../shared/Spinner.react'
 
-import { loadComments, promptChatActionsForUser } from '../../../actions'
+import { loadComments, promptChatActionsForUser, resendComment } from '../../../actions'
 import { Room, CurrentUser, App } from '../../../models'
 
 function scrollComponentId(props) {
@@ -38,6 +38,7 @@ class ChatHistory extends React.Component {
         super(props);
 
         this.handleSelectUsername = this.handleSelectUsername.bind(this)
+        this.handleResend = this.handleResend.bind(this)
 
         this.renderComment = this.renderComment.bind(this)
         this.renderLiveComment = this.renderLiveComment.bind(this)
@@ -69,6 +70,11 @@ class ChatHistory extends React.Component {
 
     handleSelectUsername(username) {
         this.props.dispatch(promptChatActionsForUser(username))
+    }
+
+    handleResend(comment) {
+        const { dispatch, roomId } = this.props
+        dispatch(resendComment(roomId, comment))
     }
 
     // Render
@@ -147,6 +153,7 @@ class ChatHistory extends React.Component {
                 comment={comment}
                 isCreator={isCreator} 
                 handleSelectUsername={this.handleSelectUsername}
+                handleResend={this.handleResend}
                 collapsed={false}
                 submitStatus="failed"
             />
