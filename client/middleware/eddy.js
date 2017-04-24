@@ -103,13 +103,6 @@ function sendComment(action, client) {
 
 function wrapSendComment(store, next, action) {
 
-    let failureCallback = function() {
-        const currentUser = new CurrentUser(store.getState())
-        if (!currentUser.isLoggedIn()) {
-            store.dispatch(triggerAuthError())
-        }
-    }
-
     let successCallback = function(action, client, responseData) {
         // save comment into entities, now that we have the id
         // todo: private comment support
@@ -130,7 +123,7 @@ function wrapSendComment(store, next, action) {
         })
     }
 
-    return _wrapAction(store, next, action)(sendComment, { failureCallback, successCallback })
+    return _wrapAction(store, next, action)(sendComment, { successCallback })
 }
 
 function loadRoom(store, next, action) {

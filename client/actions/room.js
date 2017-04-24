@@ -5,7 +5,7 @@ import { browserHistory } from 'react-router'
 import ActionTypes from './types'
 import Schemas from '../schemas'
 import { markStackAsRead } from './notifications'
-import { promptModal } from './app'
+import { promptModal, triggerAuthError } from './app'
 import { pushSubscribe } from './push'
 import { loadPaginatedObjects } from './utils'
 import { Room, RoomPage, CurrentUser } from '../models'
@@ -96,9 +96,14 @@ export function sendComment(roomId, message) {
             return null;
         }
 
-        let username = (new CurrentUser(getState())).get('username')
+        let currentUser = new CurrentUser(getState())
 
-        return dispatch(performSendComment(roomId, message, username, generateUuid()));
+        if (!currentUser.isLoggedIn()) {
+            return dispatch(triggerAuthError())
+        } else {
+            let username = currentUser.get('username')
+            return dispatch(performSendComment(roomId, message, username, generateUuid()));
+        }
     }
 }
 
