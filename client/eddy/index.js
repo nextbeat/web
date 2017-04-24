@@ -7,12 +7,12 @@ import { EddyError, TimeoutError } from '../errors'
 function eddyHost() {
     switch(process.env.NODE_ENV) {
         case 'development':
-            return 'wss://eddy.dev.nextbeat.co:4316/websocket'
+            return 'wss://eddy.dev.nextbeat.co:4316/websocket?origin=web'
         case 'local':
-            return 'ws://eddy:4316/websocket'
+            return 'ws://eddy:4316/websocket?origin=web'
         case 'mac':
         default:
-            return 'ws://localhost:4316/websocket'
+            return 'ws://localhost:4316/websocket?origin=web'
     }
 }
 

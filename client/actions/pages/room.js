@@ -83,7 +83,7 @@ export function deleteStack() {
 
 function onCloseStackSuccess(store, next, action, response) {
     const room = new RoomPage(store.getState())
-    const newRoom = {
+    const newStack = {
         id: room.get('id'),
         closed: true
     }
