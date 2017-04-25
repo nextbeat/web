@@ -248,7 +248,7 @@ a.chat_mention {
         border: 1px solid #ccc;
     }
 
-    .btn {
+    .chat_compose_submit {
         display: block;
         float: right;
         margin-top: 5px;
@@ -260,6 +260,11 @@ a.chat_mention {
             border: 0;
             cursor: pointer;
             background-color: $light-secondary-color;
+        }
+
+        @include media('<=small') {
+            padding: 9px 15px;
+            font-size: 15px;
         }
     }
 }

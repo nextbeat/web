@@ -227,17 +227,21 @@ const scrollOptions = {
             scrollComponent.scrollToBottomIfPreviouslyAtBottom()
             scrollComponent.setScrollState()
         }
+        if (prevProps.submittingComments.size < this.props.submittingComments.size) {
+            conditionalScrollToBottom()
+            scrollComponent.setScrollState()
+        }
+        if (prevProps.failedComments.size < this.props.failedComments.size) {
+            conditionalScrollToBottom()
+            scrollComponent.setScrollState()
+        }
         if (prevProps.liveComments.size !== this.props.liveComments.size) {
-            conditionalScrollToBottom()
-            scrollComponent.setScrollState()
-        }
-        if (prevProps.submittingComments.size !== this.props.submittingComments.size) {
-            conditionalScrollToBottom()
-            scrollComponent.setScrollState()
-        }
-        if (prevProps.failedComments.size !== this.props.failedComments.size) {
-            conditionalScrollToBottom()
-            scrollComponent.setScrollState()
+            // for some reason, on mobile browsers the dom doesn't properly 
+            // update until the next cycle
+            process.nextTick(() => {
+                conditionalScrollToBottom()
+                scrollComponent.setScrollState()
+            })
         }
     },
 

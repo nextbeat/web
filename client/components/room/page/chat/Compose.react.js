@@ -81,7 +81,7 @@ class Compose extends React.Component {
                 <ChatInfoDropdown username={roomPage.author().get('username')} handleClose={this.handleChatInfoDropdownClose} />
                 <div className="chat_compose-inner">
                     <textarea ref="textarea" onChange={this.handleChange} onFocus={this.handleFocus} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={message}></textarea>
-                    <input type="submit" className="btn" value="Send" disabled={message.length === 0} onClick={this.handleSubmit} />
+                    <input type="submit" className="chat_compose_submit btn" value="Send" disabled={message.length === 0} onClick={this.handleSubmit} />
                 </div>
             </div>
         );
