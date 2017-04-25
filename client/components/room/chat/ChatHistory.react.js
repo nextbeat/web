@@ -107,7 +107,6 @@ class ChatHistory extends React.Component {
         const { authorUsername, comments, totalCommentsCount, collapseMessages, roomId } = this.props;
         const key = `l${idx}`;
         const isCreator = (authorUsername === comment.author().get('username'));
-        console.log('LIVE', authorUsername, comment.author().get('username'));
         let shouldCollapse = collapseMessages && idx + comments.size > totalCommentsCount - 5;
 
         if (comment.get('type') === 'message') {
