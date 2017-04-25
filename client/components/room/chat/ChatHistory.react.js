@@ -81,7 +81,7 @@ class ChatHistory extends React.Component {
 
     renderComment(comment, idx) {
         const { authorUsername, collapseMessages, totalCommentsCount, roomId } = this.props;
-        const isCreator = comment.authorIsCreator()
+        const isCreator = comment.author().get('username') === authorUsername;
         let shouldCollapse = collapseMessages && idx > totalCommentsCount - 5;
 
         if (comment.get('type') === 'message') {
@@ -106,7 +106,8 @@ class ChatHistory extends React.Component {
     renderLiveComment(comment, idx) {
         const { authorUsername, comments, totalCommentsCount, collapseMessages, roomId } = this.props;
         const key = `l${idx}`;
-        const isCreator = (authorUsername === comment.get('username'));
+        const isCreator = (authorUsername === comment.author().get('username'));
+        console.log('LIVE', authorUsername, comment.author().get('username'));
         let shouldCollapse = collapseMessages && idx + comments.size > totalCommentsCount - 5;
 
         if (comment.get('type') === 'message') {

@@ -89,7 +89,7 @@ class ChatItem extends React.Component {
         
         return (
             <li className="chat_item" ref="chat">
-                <strong className={`chat_item-username ${creatorClass}`}>
+                <strong className={`chat_item_username ${creatorClass}`}>
                     <a onClick={ () => { handleSelectUsername(username) } }>{username} </a>
                 </strong>
                 {this.renderMessage(false)}
@@ -106,7 +106,7 @@ class ChatItem extends React.Component {
 
         return (
             <li className={`chat_item ${submitClass}`} ref="chat">
-                <strong className={`chat_item-username ${creatorClass}`}>
+                <strong className={`chat_item_username ${creatorClass}`}>
                     <a onClick={ () => { handleSelectUsername(username) } }>{username} </a>
                 </strong>
                 {this.renderMessage(false)}
