@@ -12,7 +12,7 @@ import Signup from '../components/shared/Signup.react'
 
 import { connectToXMPP, connectEddy, postLogin, loadTags, promptModal, 
         closeModal, clearApp, resizeWindow, onBeforeUnload, 
-        pushInitialize, cleanCache, 
+        pushInitialize, cleanCache, reconnectEddy,
         hasNavigated, closeSidebar } from '../actions'
 import { CurrentUser, App as AppModel, Notifications } from '../models'
 
@@ -188,6 +188,9 @@ class App extends React.Component {
                 <Signup />
                 { showSplashTopbar ? <SplashTopbar /> : <Topbar /> }
                 <div className={`main-container ${splashClass}`}>
+                    <div style={{zIndex: '9999', color: 'white', position: 'absolute', top: '10px', right: '10px', width: '100px', height: '30px', background: 'red'}} onClick={() => this.props.dispatch(reconnectEddy())}>
+                        Reconnect
+                    </div>
                     <Sidebar />
                     <div className={`main ${guestClass}`}>
                         {React.cloneElement(children, { user })}

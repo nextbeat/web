@@ -286,6 +286,10 @@ export default class EddyClient {
     }
 
     _clear() {
+        if (this.client && this.client.readyState !== 3) {
+            this.client.close();
+        }
+        this.client = null;
         clearInterval(this._pingId);
         clearTimeout(this._pongTimeoutId);
         clearTimeout(this._connectTimeoutId);
