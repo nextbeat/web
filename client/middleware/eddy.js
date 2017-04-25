@@ -39,13 +39,7 @@ function _wrapAction(store, next, action) {
 }
 
 function connect(store, next, action) {
-    let eddy = new Eddy(store.getState()) 
-    let client;
-    if (eddy.client) {
-        client = eddy.client;
-    } else {
-        client = new EddyClient(store);
-    }
+    let client = new EddyClient(store);
     
     next(assign({}, action, { status: Status.REQUESTING, client }))
 
