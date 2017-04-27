@@ -1,19 +1,35 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { List } from 'immutable'
 import ScrollComponent from '../../utils/ScrollComponent.react'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 import ChatItem from './ChatItem.react'
-import LiveChatItem from './LiveChatItem.react'
 import NotificationChatItem from './NotificationChatItem.react'
-import ChatbotChatItem from './ChatbotChatItem.react'
 import Spinner from '../../shared/Spinner.react'
 
-import { loadComments, promptChatActionsForUser } from '../../../actions'
+import { loadComments, promptChatActionsForUser, resendComment } from '../../../actions'
 import { Room, CurrentUser, App } from '../../../models'
 
 function scrollComponentId(props) {
     return `history-${props.roomId}-${props.scrollable ? 'scroll' : 'no-scroll'}`
+}
+
+function commentCollapser(res, comment) {
+    let isCollapsibleComment = (comment) => comment.get('type') === 'notification' && comment.get('subtype') === 'mediaitem';
+    
+    if (res.last() && isCollapsibleComment(res.last()) && isCollapsibleComment(comment)) {
+        // collapse into previous notification comment
+        let count = res.last().__count__;
+        comment.__count__ = count+1;
+        return res.pop().push(comment);
+    } 
+
+    if (isCollapsibleComment(comment)) {
+        comment.__count__ = 1;
+    }
+
+    return res.push(comment);
 }
 
 class ChatHistory extends React.Component {
@@ -22,6 +38,7 @@ class ChatHistory extends React.Component {
         super(props);
 
         this.handleSelectUsername = this.handleSelectUsername.bind(this)
+        this.handleResend = this.handleResend.bind(this)
 
         this.renderComment = this.renderComment.bind(this)
         this.renderLiveComment = this.renderLiveComment.bind(this)
@@ -55,19 +72,22 @@ class ChatHistory extends React.Component {
         this.props.dispatch(promptChatActionsForUser(username))
     }
 
+    handleResend(comment) {
+        const { dispatch, roomId } = this.props
+        dispatch(resendComment(roomId, comment))
+    }
+
     // Render
 
     renderComment(comment, idx) {
-        const { collapseMessages, totalCommentsCount, roomId } = this.props;
-        const username = comment.author().get('username')
-        const isCreator = comment.authorIsCreator()
+        const { authorUsername, collapseMessages, totalCommentsCount, roomId } = this.props;
+        const isCreator = comment.author().get('username') === authorUsername;
         let shouldCollapse = collapseMessages && idx > totalCommentsCount - 5;
 
         if (comment.get('type') === 'message') {
             return <ChatItem 
                         key={comment.get('id')} 
-                        comment={comment} 
-                        username={username} 
+                        comment={comment}
                         isCreator={isCreator} 
                         handleSelectUsername={this.handleSelectUsername}
                         collapsed={shouldCollapse}
@@ -75,28 +95,22 @@ class ChatHistory extends React.Component {
         } else if (comment.get('type') === 'notification') {
             return <NotificationChatItem 
                         key={comment.get('id')} 
-                        comment={comment} 
-                        username={username} 
                         roomId={roomId}
+                        comment={comment} 
+                        username={authorUsername}
+                        count={comment.__count__}
                     />
-        } else if (comment.get('type') === 'chatbot') {
-            return <ChatbotChatItem
-                        key={comment.get('id')}
-                        comment={comment}
-                        handleSelectUsername={this.handleSelectUsername}
-                    />
-            return null;
         }
     }
 
     renderLiveComment(comment, idx) {
         const { authorUsername, comments, totalCommentsCount, collapseMessages, roomId } = this.props;
         const key = `l${idx}`;
-        const isCreator = (authorUsername === comment.get('username'));
+        const isCreator = (authorUsername === comment.author().get('username'));
         let shouldCollapse = collapseMessages && idx + comments.size > totalCommentsCount - 5;
 
         if (comment.get('type') === 'message') {
-            return <LiveChatItem 
+            return <ChatItem 
                         key={key} 
                         comment={comment} 
                         isCreator={isCreator} 
@@ -106,16 +120,10 @@ class ChatHistory extends React.Component {
         } else if (comment.get('type') === 'notification') {
             return <NotificationChatItem 
                         key={key} 
-                        comment={comment} 
-                        username={comment.get('username')} 
                         roomId={roomId}
-                    />
-        } else if (comment.get('type') === 'chatbot') {
-            return <ChatbotChatItem
-                        key={key}
-                        comment={comment}
-                        forceMentions={true}
-                        handleSelectUsername={this.handleSelectUsername}
+                        comment={comment} 
+                        username={authorUsername}
+                        count={comment.__count__}
                     />
         } else {
             return null;
@@ -126,13 +134,13 @@ class ChatHistory extends React.Component {
         const { authorUsername } = this.props;
         const key = `s${idx}`
         const isCreator = (authorUsername === comment.get('username'));
-        return <LiveChatItem
+        return <ChatItem
                 key={key}
                 comment={comment}
                 isCreator={isCreator} 
                 handleSelectUsername={this.handleSelectUsername}
                 collapsed={false}
-                type="submitting"
+                submitStatus="submitting"
             />
     }
 
@@ -140,13 +148,14 @@ class ChatHistory extends React.Component {
         const { authorUsername } = this.props;
         const key = `s${idx}`
         const isCreator = (authorUsername === comment.get('username'));
-        return <LiveChatItem
+        return <ChatItem
                 key={key}
                 comment={comment}
                 isCreator={isCreator} 
                 handleSelectUsername={this.handleSelectUsername}
+                handleResend={this.handleResend}
                 collapsed={false}
-                type="failed"
+                submitStatus="failed"
             />
     }
 
@@ -162,8 +171,8 @@ class ChatHistory extends React.Component {
                 { commentsFetching && <Spinner type="grey" />}
                 { commentsError && commentsError.length > 0 && <p>Could not load comments.</p>}
                 <ul className="chat_items">
-                    {comments.reverse().map((comment, idx) => this.renderComment(comment, idx))}
-                    {liveComments.map((comment, idx) => this.renderLiveComment(comment, idx))}
+                    {comments.reverse().reduce(commentCollapser, List()).map((comment, idx) => this.renderComment(comment, idx))}
+                    {liveComments.reduce(commentCollapser, List()).map((comment, idx) => this.renderLiveComment(comment, idx))}
                     { style === "expanded" &&
                         [
                         submittingComments.map((comment, idx) => this.renderSubmittingComment(comment, idx)),
@@ -218,17 +227,21 @@ const scrollOptions = {
             scrollComponent.scrollToBottomIfPreviouslyAtBottom()
             scrollComponent.setScrollState()
         }
+        if (prevProps.submittingComments.size < this.props.submittingComments.size) {
+            conditionalScrollToBottom()
+            scrollComponent.setScrollState()
+        }
+        if (prevProps.failedComments.size < this.props.failedComments.size) {
+            conditionalScrollToBottom()
+            scrollComponent.setScrollState()
+        }
         if (prevProps.liveComments.size !== this.props.liveComments.size) {
-            conditionalScrollToBottom()
-            scrollComponent.setScrollState()
-        }
-        if (prevProps.submittingComments.size !== this.props.submittingComments.size) {
-            conditionalScrollToBottom()
-            scrollComponent.setScrollState()
-        }
-        if (prevProps.failedComments.size !== this.props.failedComments.size) {
-            conditionalScrollToBottom()
-            scrollComponent.setScrollState()
+            // for some reason, on mobile browsers the dom doesn't properly 
+            // update until the next cycle
+            process.nextTick(() => {
+                conditionalScrollToBottom()
+                scrollComponent.setScrollState()
+            })
         }
     },
 

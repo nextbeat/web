@@ -30,7 +30,7 @@ const KEY_MAP = {
     'commentIds': ['pagination', 'comments', 'ids'],
     'commentsFetching': ['pagination', 'comments', 'isFetching'],
     'commentsError': ['pagination', 'comments', 'error'],
-    'liveComments': ['live', 'comments'],
+    'liveCommentIds': ['live', 'comments'],
     'submittingComments': ['live', 'submittingComments'],
     'failedComments': ['live', 'failedComments'],
     // playback
@@ -82,15 +82,16 @@ export default class Room extends StateModel {
         return this.get('liveMediaItemIds', List()).map(id => new MediaItemEntity(id, this.state.get('entities')))
     }
 
+    allMediaItems() {
+        return this.mediaItems().concat(this.liveMediaItems())
+    }
+
     comments() {
         return this.constructor.memoizedComments(this.id, this.state)
     }
 
     liveComments() {
-        // note: live comments are stored in their entirety in stack.live.comments,
-        // instead of being stored as entities, so the method for retrieving them
-        // is different
-        return this.get('liveComments', List())
+        return this.get('liveCommentIds', List()).map(id => new CommentEntity(id, this.state.get('entities')))
     }
 
     submittingComments() {

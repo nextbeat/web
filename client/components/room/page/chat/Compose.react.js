@@ -45,7 +45,7 @@ class Compose extends React.Component {
         if (currentUser.isLoggedIn()) {
             this.handleChatInfoDropdownClose()
             // If the user isn't logged in, they will be prompted to do so
-            // during the sendComment action. We don't want to clear the
+            // during the sendChat action. We don't want to clear the
             // text box in this case.
             dispatch(updateChatMessage(''))
         }
@@ -81,7 +81,7 @@ class Compose extends React.Component {
                 <ChatInfoDropdown username={roomPage.author().get('username')} handleClose={this.handleChatInfoDropdownClose} />
                 <div className="chat_compose-inner">
                     <textarea ref="textarea" onChange={this.handleChange} onFocus={this.handleFocus} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={message}></textarea>
-                    <input type="submit" className="btn" value="Send" disabled={message.length === 0} onClick={this.handleSubmit} />
+                    <input type="submit" className="chat_compose_submit btn" value="Send" disabled={message.length === 0} onClick={this.handleSubmit} />
                 </div>
             </div>
         );

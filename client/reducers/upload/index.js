@@ -43,7 +43,7 @@ function uploadFile(state, action) {
         fileState = fileState.merge({
             uploadProgress: 0,
             uploadComplete: false,
-            error: action.error
+            error: action.error.message
         }).delete('file')
 
     }
@@ -59,7 +59,7 @@ function stopFileUpload(state, action) {
     return state.updateIn(['uploads', action.uploadType], fileState => {
         return fileState.merge({
             uploadProgress: 0,
-            error: action.error,
+            error: action.error.message,
             uploadComplete: false
         }).delete('file')
     })

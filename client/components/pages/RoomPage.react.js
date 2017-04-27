@@ -83,7 +83,7 @@ class RoomPage extends React.Component {
         let prevIndex = parseInt(prevProps.params.index)
         let currIndex = parseInt(this.props.params.index)
         if (prevIndex > 0 && currIndex > 0 && prevIndex !== currIndex) {
-            let id = roomPage.mediaItems().get(currIndex-1).get('id')
+            let id = roomPage.allMediaItems().get(currIndex-1).get('id')
             dispatch(selectMediaItem(roomPage.get('id'), id, { shouldUpdateHistory: false }))
         }
     }

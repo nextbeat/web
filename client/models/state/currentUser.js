@@ -11,17 +11,12 @@ import { memoize } from '../utils'
 const KEY_MAP = {
     // meta
     'id': ['meta', 'id'],
+    'token': ['meta', 'token'],
     'isLoggingIn': ['meta', 'isLoggingIn'],
     'loginError': ['meta', 'loginError'],
     'isSigningUp': ['meta', 'isSigningUp'],
     'signupError': ['meta', 'signupError'],
     'hasUpdatedEntity': ['meta', 'hasUpdatedEntity'],
-    // live
-    'connected': ['live', 'connected'],
-    'isConnecting': ['live', 'isConnecting'],
-    'requestedDisconnect': ['live', 'requestedDisconnect'],
-    'lostConnection': ['live', 'lostConnection'],
-    'client': ['live', 'client'],
     // user stacks
     'stacksFetching': ['stacks', 'isFetching'],
     'openStackIds': ['stacks', 'openStackIds'],
@@ -118,10 +113,6 @@ export default class CurrentUser extends StateModel {
 
     isUser(user) {
         return this.isLoggedIn() && this.get('id') === user.get('id')
-    }
-
-    isConnected() {
-        return this.get('connected', false);
     }
 
     isSubscribed(id) {

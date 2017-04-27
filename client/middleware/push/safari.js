@@ -3,6 +3,7 @@ import assign from 'lodash/assign'
 import { PushTypes, pushSubscribe, pushSyncSubscription } from '../../actions'
 import { CurrentUser, App } from '../../models'
 import { baseApiUrl } from '../../utils'
+import { NotLoggedInError } from '../../errors'
 
 function checkPermission(store, next, action, permissionData) {
     if (permissionData.permission === 'default') {
@@ -45,7 +46,7 @@ export function subscribe(store, next, action) {
     if (!currentUser.isLoggedIn()) {
         return next(assign({}, action, {
             pushStatus: PushTypes.ERROR,
-            error: 'User is not logged in.'
+            error: new NotLoggedInError()
         }))
     }
 

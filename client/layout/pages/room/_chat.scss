@@ -102,6 +102,16 @@
     color: $error-color;
 }
 
+a.chat_item-failed_retry {
+    background-color: $error-color;
+    font-size: 10px;
+    padding: 2px 4px;
+    border-radius: 2px;
+    color: white;
+    font-weight: 400;
+    margin-left: 5px;
+}
+
 a.chat_mention {
     font-weight: normal;
     &:hover {
@@ -238,7 +248,7 @@ a.chat_mention {
         border: 1px solid #ccc;
     }
 
-    .btn {
+    .chat_compose_submit {
         display: block;
         float: right;
         margin-top: 5px;
@@ -250,6 +260,11 @@ a.chat_mention {
             border: 0;
             cursor: pointer;
             background-color: $light-secondary-color;
+        }
+
+        @include media('<=small') {
+            padding: 9px 15px;
+            font-size: 15px;
         }
     }
 }

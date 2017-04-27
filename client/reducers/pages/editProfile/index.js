@@ -33,7 +33,7 @@ function submission(state=Map(), action) {
         } else if (action.status === Status.FAILURE) {
             // TODO: more robust error handling
             let error = 'Unknown error. Please try again.'
-            if (action.error === 'Validation (isURL) failed for website_url') {
+            if (action.error.message === 'Validation (isURL) failed for website_url') {
                 error = 'Please enter a valid website URL.'
             }
             return state.merge({

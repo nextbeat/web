@@ -28,6 +28,7 @@ export {
     loadMoreStacks,
     loadCommentsMetadata,
     sendComment,
+    resendComment,
     didUseChat,
     didPlayVideo,
     bookmark,
@@ -121,18 +122,19 @@ export {
 } from './upload'
 
 export {
-    connectToXMPP,
-    disconnectXMPP,
-    reconnectXMPP,
-    lostXMPPConnection,
-    joinXMPPRoom,
-    leaveXMPPRoom,
+    connectEddy,
+    reconnectEddy,
+    disconnectEddy,
+    identifyEddy,
+    unidentifyEddy,
+    joinRoom,
+    leaveRoom,
     receiveComment,
-    receiveNotificationComment,
-    receiveChatbotComment,
     receiveMediaItem,
-    receiveRoomClosed
-} from './xmpp'
+    receiveNotificationComment,
+    receiveRoomClosed,
+    receiveNotification
+} from './eddy'
 
 export {
     login,

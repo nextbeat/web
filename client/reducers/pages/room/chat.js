@@ -24,14 +24,14 @@ function commentsMetadata(state, action) {
 
 function banUser(state, action) {
     if (action.status === Status.SUCCESS) {
-        return state.update('bannedUserIds', List(), ids => ids.push(action.response.result))
+        return state.update('bannedUserIds', List(), ids => ids.push(action.responseData.user_id))
     }
     return state;
 }
 
 function unbanUser(state, action) {
     if (action.status === Status.SUCCESS) {
-        return state.update('bannedUserIds', List(), ids => ids.filterNot(id => id === action.response.result))
+        return state.update('bannedUserIds', List(), ids => ids.filterNot(id => id === action.responseData.user_id))
     }
     return state;
 }

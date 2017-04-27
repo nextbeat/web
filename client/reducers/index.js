@@ -4,6 +4,7 @@ import keys from 'lodash/keys'
 
 import app from './app'
 import user from './user'
+import eddy from './eddy'
 import rooms from './rooms'
 import push from './push'
 import upload from './upload'
@@ -61,5 +62,6 @@ export default combineReducers({
     upload,
     app,
     user,
+    eddy,
     push
 })

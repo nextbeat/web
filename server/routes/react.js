@@ -39,6 +39,7 @@ function getInitialState(req) {
             user: {
                 meta: { 
                     id: req.user.id,
+                    token: req.user.token,
                     hasUpdatedEntity: true 
                 }
             },

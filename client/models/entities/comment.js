@@ -10,15 +10,11 @@ export default class Comment extends EntityModel {
     }
 
     author() {
-        return new User(this.__entity().get('author_id', 0), this.entities)
+        return new User(this.__entity().get('author', 0), this.entities)
     }
 
     stack() {
-        return new Stack(this.__entity().get('stack_id', 0), this.entities)
-    }
-
-    authorIsCreator() {
-        return this.author().get('id') === this.stack().author().get('id')
+        return new Stack(this.__entity().get('stack', 0), this.entities)
     }
 
 }

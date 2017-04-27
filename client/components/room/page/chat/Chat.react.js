@@ -10,7 +10,7 @@ import ChatHistory from '../../chat/ChatHistory.react'
 import Spinner from '../../../shared/Spinner.react'
 
 import { loadComments, sendComment, promptChatActionsForUser, resetChat, didUseChat } from '../../../../actions'
-import { RoomPage, CurrentUser, App } from '../../../../models'
+import { RoomPage, CurrentUser, App, Eddy } from '../../../../models'
 
 class Chat extends React.Component {
 
@@ -41,7 +41,7 @@ class Chat extends React.Component {
     }
 
     render() {
-        const { roomPage, display, currentUser } = this.props;
+        const { roomPage, display, hasLostConnection } = this.props;
         return (
         <div className="chat" onWheel={debounce(this.handleOnWheel, 200)} style={{ display: (display ? "flex" : "none") }}>
             <UserActions />
@@ -49,7 +49,7 @@ class Chat extends React.Component {
             <ChatHistory roomId={roomPage.room().id} scrollable={true} />
             <Compose />
             <ReactCSSTransitionGroup transitionName="chat_lost-connection" transitionEnterTimeout={300} transitionLeaveTimeout={200}>
-                { !!currentUser.get('lostConnection') && 
+                { hasLostConnection && 
                     <div key="lost-connection" className="chat_lost-connection">
                         Lost connection. Reconnecting...
                     </div>
@@ -61,10 +61,11 @@ class Chat extends React.Component {
 }
 
 function mapStateToProps(state) {
+    let eddy = new Eddy(state)
     return {
         roomPage: new RoomPage(state),
         app: new App(state),
-        currentUser: new CurrentUser(state)
+        hasLostConnection: eddy.get('hasLostConnection')
     }
 }
 

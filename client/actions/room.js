@@ -5,7 +5,7 @@ import { browserHistory } from 'react-router'
 import ActionTypes from './types'
 import Schemas from '../schemas'
 import { markStackAsRead } from './notifications'
-import { promptModal } from './app'
+import { promptModal, triggerAuthError } from './app'
 import { pushSubscribe } from './push'
 import { loadPaginatedObjects } from './utils'
 import { Room, RoomPage, CurrentUser } from '../models'
@@ -73,19 +73,13 @@ export function loadComments(roomId) {
  * CHAT
  ******/
 
-function postComment(roomId, message, username, temporaryId) {
+function performSendComment(roomId, message, username, temporaryId) {
     return {
         type: ActionTypes.SEND_COMMENT,
         temporaryId,
         roomId,
         message,
         username,
-        [API_CALL]: {
-            method: 'POST',
-            endpoint: `stacks/${roomId}/comments`,
-            body: { message },
-            authenticated: true
-        },
         [GA]: {
             type: GATypes.EVENT,
             category: 'chat',
@@ -102,10 +96,19 @@ export function sendComment(roomId, message) {
             return null;
         }
 
-        let username = (new CurrentUser(getState())).get('username')
+        let currentUser = new CurrentUser(getState())
 
-        return dispatch(postComment(roomId, message, username, generateUuid()));
+        if (!currentUser.isLoggedIn()) {
+            return dispatch(triggerAuthError())
+        } else {
+            let username = currentUser.get('username')
+            return dispatch(performSendComment(roomId, message, username, generateUuid()));
+        }
     }
+}
+
+export function resendComment(roomId, comment) {
+    return performSendComment(roomId, comment.get('message'), comment.get('username'), comment.get('temporaryId'))
 }
 
 function onCommentsMetadataSuccess(store, next, action, response) {
