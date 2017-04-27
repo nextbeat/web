@@ -6,6 +6,8 @@ import { EddyError, TimeoutError } from '../errors'
 
 function eddyHost() {
     switch(process.env.NODE_ENV) {
+        case 'production':
+            return 'wss://eddy.nextbeat.co:4316/websocket?origin=web'
         case 'development':
             return 'wss://eddy.dev.nextbeat.co:4316/websocket?origin=web'
         case 'local':
