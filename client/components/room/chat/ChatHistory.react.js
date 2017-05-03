@@ -44,6 +44,10 @@ class ChatHistory extends React.Component {
         this.renderLiveComment = this.renderLiveComment.bind(this)
         this.renderSubmittingComment = this.renderSubmittingComment.bind(this)
         this.renderFailedComment = this.renderFailedComment.bind(this)
+
+        this.state = {
+            hasUnseenLiveMessages: false
+        }
     }
 
     componentDidMount() {
@@ -161,25 +165,34 @@ class ChatHistory extends React.Component {
 
     render() {
         const { comments, liveComments, submittingComments, failedComments, 
-                commentsFetching, commentsError, scrollable, style } = this.props;
+                commentsFetching, commentsError, scrollable, style,
+                scrollToBottom } = this.props;
+
+        const { hasUnseenLiveMessages } = this.state;
 
         let scrollableClass = scrollable ? 'scrollable': ''
         let styleClass = `chat_history-${style}`
 
         return (
-            <div id={scrollComponentId(this.props)} className={`chat_history ${scrollableClass} ${styleClass}`}>
-                { commentsFetching && <Spinner type="grey" />}
-                { commentsError && commentsError.length > 0 && <p className="chat_history_error">Could not load comments.</p>}
-                <ul className="chat_items">
-                    {comments.reverse().reduce(commentCollapser, List()).map((comment, idx) => this.renderComment(comment, idx))}
-                    {liveComments.reduce(commentCollapser, List()).map((comment, idx) => this.renderLiveComment(comment, idx))}
-                    { style === "expanded" &&
-                        [
-                        submittingComments.map((comment, idx) => this.renderSubmittingComment(comment, idx)),
-                        failedComments.map((comment, idx) => this.renderFailedComment(comment, idx))
-                        ]
-                    }
-                </ul>
+            <div className="chat_history_container">
+                <div id={scrollComponentId(this.props)} className={`chat_history ${scrollableClass} ${styleClass}`}>
+                    { commentsFetching && <Spinner type="grey" />}
+                    <ul className="chat_items">
+                        {comments.reverse().reduce(commentCollapser, List()).map((comment, idx) => this.renderComment(comment, idx))}
+                        {liveComments.reduce(commentCollapser, List()).map((comment, idx) => this.renderLiveComment(comment, idx))}
+                        { style === "expanded" &&
+                            [
+                            submittingComments.map((comment, idx) => this.renderSubmittingComment(comment, idx)),
+                            failedComments.map((comment, idx) => this.renderFailedComment(comment, idx))
+                            ]
+                        }
+                    </ul>
+                </div>
+                { hasUnseenLiveMessages && 
+                    <div className="chat_history_new-messages" onClick={() => scrollToBottom(100)}>
+                        New messages below
+                    </div>
+                }
             </div>
         );
     }
@@ -207,6 +220,11 @@ const scrollOptions = {
         }
     },
 
+    onScrollToBottom: function() {
+        console.log('IN SCROLL TO BOTTOM');
+        this.setState({ hasUnseenLiveMessages: false });
+    },
+
     onComponentDidMount: function(scrollComponent, props) {
         if (!props.scrollable) {
             scrollComponent.scrollToBottom();
@@ -222,25 +240,28 @@ const scrollOptions = {
             }
         }
 
-        if (prevProps.comments.size !== this.props.comments.size) {
+        if (prevProps.comments.size < this.props.comments.size) {
             scrollComponent.keepScrollPosition()
             scrollComponent.scrollToBottomIfPreviouslyAtBottom()
-            scrollComponent.setScrollState()
         }
         if (prevProps.submittingComments.size < this.props.submittingComments.size) {
             scrollComponent.scrollToBottom()
-            scrollComponent.setScrollState()
         }
         if (prevProps.failedComments.size < this.props.failedComments.size) {
             conditionalScrollToBottom()
-            scrollComponent.setScrollState()
         }
-        if (prevProps.liveComments.size !== this.props.liveComments.size) {
+        if (prevProps.liveComments.size < this.props.liveComments.size) {
             // for some reason, on mobile browsers the dom doesn't properly 
             // update until the next cycle
             process.nextTick(() => {
+                let lastComment = this.props.liveComments.last()
+                if (this.props.scrollable && !lastComment.has('temporaryId')) {
+                    // we want to ignore user-submitted comments
+                    if (!scrollComponent.isScrolledToBottom()) {
+                        this.setState({ hasUnseenLiveMessages: true })
+                    }
+                }
                 conditionalScrollToBottom()
-                scrollComponent.setScrollState()
             })
         }
     },

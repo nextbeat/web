@@ -35,8 +35,10 @@ export default function ScrollComponent(domId, scrollOptions={}) {
                 this.handleScroll = this.handleScroll.bind(this)
                 this.handleResize = this.handleResize.bind(this)
 
-                this.scrollToBottomIfPreviouslyAtBottom = this.scrollToBottomIfPreviouslyAtBottom.bind(this)
+                this.scrollToTop = this.scrollToTop.bind(this)
+                this.scrollToBottom = this.scrollToBottom.bind(this)
                 this.scrollToTopIfPreviouslyAtTop = this.scrollToTopIfPreviouslyAtTop.bind(this)
+                this.scrollToBottomIfPreviouslyAtBottom = this.scrollToBottomIfPreviouslyAtBottom.bind(this)
                 this.keepScrollPosition = this.keepScrollPosition.bind(this)
             }
 
@@ -127,26 +129,41 @@ export default function ScrollComponent(domId, scrollOptions={}) {
 
             // Actions
 
-            scrollToBottom() {
+            scrollToBottom(duration=0) {
                 const elem = this.domElement();
-                elem.scrollTop = elem.scrollHeight - elem.clientHeight;
+                const newTop = elem.scrollHeight - elem.clientHeight;
+                $(elem).animate({ scrollTop: newTop }, {
+                    duration,
+                    complete: () => {
+                        this.setScrollState();
+                    }
+                })
+                // elem.scrollTop = elem.scrollHeight - elem.clientHeight;
+                // this.setScrollState();
             }
 
-            scrollToTop() {
+            scrollToTop(duration=0) {
                 const elem = this.domElement();
-                elem.scrollTop = 0;
+                $(elem).animate({ scrollTop: 0 }, {
+                    duration,
+                    complete: () => {
+                        this.setScrollState();
+                    }
+                })
             }
 
             scrollToBottomIfPreviouslyAtBottom() {
                 if (this.isStateScrolledToBottom()) {
-                    this.scrollToBottom()
+                    this.scrollToBottom();
                 }
+                this.setScrollState();
             }
 
             scrollToTopIfPreviouslyAtTop() {
                 if (this.isStateScrolledToTop()) {
-                    this.scrollToTop()
+                    this.scrollToTop();
                 }
+                this.setScrollState();
             }
 
             keepScrollPosition() {
@@ -158,7 +175,11 @@ export default function ScrollComponent(domId, scrollOptions={}) {
             // Render
 
             render() {
-                return <ChildComponent {...this.props} {...this.state} ref='child' />
+                const scrollProps = {
+                    scrollToTop: this.scrollToTop,
+                    scrollToBottom: this.scrollToBottom
+                }
+                return <ChildComponent {...this.props} {...this.state} {...scrollProps} ref='child' />
             }
 
         }

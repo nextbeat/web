@@ -7,11 +7,17 @@
     overflow: hidden;
 }
 
+.chat_history_container {
+    position: relative;
+    flex: 1 0;
+    overflow: auto;
+}
+
 .chat_history {
     overflow: hidden;
     width: 100%;
     padding: 3px;
-    flex: 1 0;
+    height: 100%;
 
     &.scrollable {
         overflow: auto;
@@ -30,6 +36,26 @@
     font-size: 13px;
     font-style: italic;
     color: #888;
+}
+
+.chat_history_new-messages {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    z-index: 30;
+    width: auto;
+    white-space: nowrap;
+    background: rgba(#000, 0.6);
+    color: #fff;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 300;
+    border-radius: 3px;
+
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 .chat_items {

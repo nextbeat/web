@@ -122,7 +122,6 @@ const scrollOptions = {
 
         if (prevProps.roomPage.liveMediaItems().size !== this.props.roomPage.liveMediaItems().size) {
             scrollComponent.scrollToBottomIfPreviouslyAtBottom();
-            scrollComponent.setScrollState();
         }
     }
 }

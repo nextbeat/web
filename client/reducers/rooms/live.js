@@ -59,8 +59,6 @@ function sendComment(state, action) {
 
         state = state.update('submittingComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
 
-        console.log(action.error);
-
         const comment = Map({
             type: 'message',
             message: action.message,
