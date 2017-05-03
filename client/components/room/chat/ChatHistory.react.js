@@ -228,7 +228,7 @@ const scrollOptions = {
             scrollComponent.setScrollState()
         }
         if (prevProps.submittingComments.size < this.props.submittingComments.size) {
-            conditionalScrollToBottom()
+            scrollComponent.scrollToBottom()
             scrollComponent.setScrollState()
         }
         if (prevProps.failedComments.size < this.props.failedComments.size) {
