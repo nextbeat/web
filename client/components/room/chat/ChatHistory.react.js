@@ -169,7 +169,7 @@ class ChatHistory extends React.Component {
         return (
             <div id={scrollComponentId(this.props)} className={`chat_history ${scrollableClass} ${styleClass}`}>
                 { commentsFetching && <Spinner type="grey" />}
-                { commentsError && commentsError.length > 0 && <p>Could not load comments.</p>}
+                { commentsError && commentsError.length > 0 && <p className="chat_history_error">Could not load comments.</p>}
                 <ul className="chat_items">
                     {comments.reverse().reduce(commentCollapser, List()).map((comment, idx) => this.renderComment(comment, idx))}
                     {liveComments.reduce(commentCollapser, List()).map((comment, idx) => this.renderLiveComment(comment, idx))}
