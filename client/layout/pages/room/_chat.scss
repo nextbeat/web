@@ -15,9 +15,11 @@
 
 .chat_history {
     overflow: hidden;
+    position: absolute;
+    top: 0;
+    bottom: 0;
     width: 100%;
     padding: 3px;
-    height: 100%;
 
     &.scrollable {
         overflow: auto;
@@ -442,9 +444,10 @@ a.chat_compose-notification {
     flex-direction: column;
     position: relative;
 
-    .chat_history {
+    .chat_history_container {
         height: 100%;
         flex: 1;
+        overflow: hidden;
     }
 
     &::after {

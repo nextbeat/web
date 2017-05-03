@@ -132,24 +132,34 @@ export default function ScrollComponent(domId, scrollOptions={}) {
             scrollToBottom(duration=0) {
                 const elem = this.domElement();
                 const newTop = elem.scrollHeight - elem.clientHeight;
-                $(elem).animate({ scrollTop: newTop }, {
-                    duration,
-                    complete: () => {
-                        this.setScrollState();
-                    }
-                })
-                // elem.scrollTop = elem.scrollHeight - elem.clientHeight;
-                // this.setScrollState();
+                console.log('scrolling to bottom', newTop, elem)
+                if (duration > 0) {
+                    $(elem).animate({ scrollTop: newTop }, {
+                        duration,
+                        complete: () => {
+                            this.setScrollState();
+                        }
+                    })
+                } else {
+                    elem.scrollTop = newTop;
+                    this.setScrollState();
+                }
             }
 
             scrollToTop(duration=0) {
                 const elem = this.domElement();
-                $(elem).animate({ scrollTop: 0 }, {
-                    duration,
-                    complete: () => {
-                        this.setScrollState();
-                    }
-                })
+                if (duration > 0) {
+                    $(elem).animate({ scrollTop: 0 }, {
+                        duration,
+                        complete: () => {
+                            this.setScrollState();
+                        }
+                    })
+                } else {
+                    elem.scrollTop = 0;
+                    this.setScrollState();
+                }
+                
             }
 
             scrollToBottomIfPreviouslyAtBottom() {
