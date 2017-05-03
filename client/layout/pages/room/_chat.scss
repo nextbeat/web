@@ -23,6 +23,15 @@
     }
 }
 
+.chat_history_error {
+    width: 100%;
+    text-align: center;
+    margin: 15px 0;
+    font-size: 13px;
+    font-style: italic;
+    color: #888;
+}
+
 .chat_items {
     list-style-type: none;
     margin: 0;
