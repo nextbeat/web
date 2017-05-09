@@ -38,9 +38,9 @@ const KEY_MAP = {
 }
 
 let memoizedCommentsFn = memoize(
-    (id, state) => (new Room(id, state)).__getPaginatedEntities('comments', { entityClass: CommentEntity }) || List(), 
-    (id, state) => (new Room(id, state)).get('commentIds', List()),
-    (id, state) => id
+    (id, state) => (new Room(id, state)).__getPaginatedEntities('comments', { entityClass: CommentEntity }) || List(), // function
+    (id, state) => (new Room(id, state)).get('commentIds', List()), // hash value function
+    (id, state) => id // hash key function
 )
 
 export default class Room extends StateModel {

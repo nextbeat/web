@@ -14,7 +14,7 @@ const KEY_MAP = {
     // chat
     'bannedUserIds': ['chat', 'bannedUserIds'],
     'selectedChatUsername': ['chat', 'selectedUsername'],
-    'chatMessage': ['chat', 'message'],
+    'mentions': ['chat', 'mentions'],
     // ui
     'selectedDetailSection': ['ui', 'detailSection'],
     // more

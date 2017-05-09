@@ -7,9 +7,13 @@ function promptChatActions(state, action) {
     })
 }
 
-function updateMessage(state, action) {
+function mentionUser(state, action) {
+    return state.update('mentions', List(), m => m.push(action.username))
+}
+
+function clearChatMessage(state, action) {
     return state.merge({
-        message: action.message
+        mentions: List()
     })
 }
 
@@ -39,8 +43,10 @@ function unbanUser(state, action) {
 export default function chat(state=Map(), action) {
     if (action.type === ActionTypes.PROMPT_CHAT_ACTIONS) {
         return promptChatActions(state, action)
-    } else if (action.type === ActionTypes.UPDATE_CHAT_MESSAGE) {
-        return updateMessage(state, action)
+    } else if (action.type === ActionTypes.MENTION_USER) {
+        return mentionUser(state, action)
+    } else if (action.type === ActionTypes.CLEAR_CHAT_MESSAGE) {
+        return clearChatMessage(state, action)
     } else if (action.type === ActionTypes.COMMENTS_METADATA) {
         return commentsMetadata(state, action)
     } else if (action.type === ActionTypes.BAN_USER) {
