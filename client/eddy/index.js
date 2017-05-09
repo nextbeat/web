@@ -202,6 +202,7 @@ export default class EddyClient {
                 message: data.message,
                 subtype: data.subtype,
                 id: data.id,
+                user_mentions: data.user_mentions,
                 author: data.author
             };
             if (data.recipient) {

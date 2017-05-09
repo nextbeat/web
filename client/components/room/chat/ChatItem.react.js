@@ -52,8 +52,7 @@ class ChatItem extends React.Component {
     renderMessage(includeLinks=false) {
         const { comment, handleSelectUsername } = this.props 
 
-        let forceMentions = !comment.has('user_mentions')
-        return renderMessageText(comment, { onClick: handleSelectUsername, includeLinks, forceMentions })
+        return renderMessageText(comment, { onClick: handleSelectUsername, includeLinks })
     }
 
     renderBotComment() {
