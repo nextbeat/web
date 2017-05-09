@@ -52,7 +52,7 @@ class ChatItem extends React.Component {
     renderMessage(includeLinks=false) {
         const { comment, handleSelectUsername } = this.props 
 
-        return renderMessageText(comment, { onClick: handleSelectUsername, includeLinks })
+        return renderMessageText(comment, { onMentionClick: handleSelectUsername, includeLinks })
     }
 
     renderBotComment() {
