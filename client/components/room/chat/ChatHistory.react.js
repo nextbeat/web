@@ -221,7 +221,6 @@ const scrollOptions = {
     },
 
     onScrollToBottom: function() {
-        console.log('IN SCROLL TO BOTTOM');
         this.setState({ hasUnseenLiveMessages: false });
     },
 

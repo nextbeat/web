@@ -160,23 +160,15 @@ export function promptChatActionsForUser(username) {
 }
 
 export function mentionUser(username) {
-    return (dispatch, getState) => {
-        let message = (new RoomPage(getState())).get('chatMessage', '')
-        if (message.length === 0 || /\s$/.test(message)) {
-            // don't add whitespace
-            message = `${message}@${username}`
-        } else {
-            message = `${message} @${username}`
-        }
-        
-        dispatch(updateChatMessage(message))
+    return {
+        type: ActionTypes.MENTION_USER,
+        username
     }
 }
 
-export function updateChatMessage(message) {
+export function clearChatMessage() {
     return {
-        type: ActionTypes.UPDATE_CHAT_MESSAGE,
-        message
+        type: ActionTypes.CLEAR_CHAT_MESSAGE
     }
 }
 
