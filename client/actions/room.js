@@ -33,7 +33,6 @@ export function loadRoom(id) {
         dispatch(fetchRoom(id))
         dispatch(loadMediaItems(id));
         dispatch(loadComments(id));
-        dispatch(loadCommentsMetadata(id));
     }
 }
 
@@ -67,6 +66,13 @@ function fetchComments(roomId, pagination) {
 
 export function loadComments(roomId) {
     return loadPaginatedObjects(['rooms', roomId, 'pagination', 'comments'], fetchComments.bind(this, roomId), 60);
+}
+
+export function getRoomInfo(roomId) {
+    return {
+        type: ActionTypes.ROOM_INFO,
+        roomId
+    }
 }
 
 /******
@@ -109,35 +115,6 @@ export function sendComment(roomId, message) {
 
 export function resendComment(roomId, comment) {
     return performSendComment(roomId, comment.get('message'), comment.get('username'), comment.get('temporaryId'))
-}
-
-function onCommentsMetadataSuccess(store, next, action, response) {
-    store.dispatch({
-        type: ActionTypes.ENTITY_UPDATE,
-        response: normalize(response.banned_users, Schemas.USERS)
-    })
-}
-
-
-function fetchCommentsMetadata(roomId) {
-    return {
-        type: ActionTypes.COMMENTS_METADATA,
-        roomId,
-        [API_CALL]: {
-            endpoint: `stacks/${roomId}/comments/meta`,
-            onSuccessImmediate: onCommentsMetadataSuccess
-        }
-    }
-}
-
-export function loadCommentsMetadata(roomId) {
-    return (dispatch, getState) => {
-        const stack = new Room(roomId, getState())
-        if (!stack.currentUserIsAuthor()) {
-            return null;
-        }
-        dispatch(fetchCommentsMetadata(roomId))
-    }   
 }
 
 export function didUseChat() {

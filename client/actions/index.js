@@ -26,7 +26,7 @@ export {
     loadMediaItems,
     loadComments,
     loadMoreStacks,
-    loadCommentsMetadata,
+    getRoomInfo,
     sendComment,
     resendComment,
     didUseChat,

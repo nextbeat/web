@@ -3,8 +3,9 @@ import { normalize } from 'normalizr'
 
 import EddyClient from '../eddy'
 import { ActionTypes, Status } from '../actions'
-import { joinRoom, leaveRoom, reconnectEddy, syncUnreadNotifications, triggerAuthError } from '../actions'
-import { Eddy, CurrentUser } from '../models'
+import { joinRoom, leaveRoom, reconnectEddy, getRoomInfo,
+         syncUnreadNotifications, triggerAuthError } from '../actions'
+import { Eddy, CurrentUser, Room } from '../models'
 import Schemas from '../schemas'
 
 function _wrapAction(store, next, action) {
@@ -78,6 +79,16 @@ function identify(action, client) {
     return client.identify(action.token);
 }
 
+function wrapIdentify(store, next, action) {
+    let successCallback = function(action, client, responseData) {
+        let rooms = Room.loadedRooms(store.getState())
+        rooms.forEach(room => {
+            store.dispatch(getRoomInfo(room.id))
+        })
+    }
+    return _wrapAction(store, next, action)(identify, { successCallback })
+}
+
 function unidentify(action, client) {
     return client.unidentify();
 }
@@ -88,6 +99,10 @@ function join(action, client) {
 
 function leave(action, client) {
     return client.leave(action.roomId);
+}
+
+function roomInfo(action, client) {
+    return client.getRoomInfo(action.roomId);
 }
 
 function ban(action, client) {
@@ -129,7 +144,6 @@ function wrapSendComment(store, next, action) {
 }
 
 function loadRoom(store, next, action) {
-    let eddy = new Eddy(store.getState());
     if (action.status === Status.SUCCESS) {
         store.dispatch(joinRoom(action.roomId));
     }
@@ -137,7 +151,6 @@ function loadRoom(store, next, action) {
 }
 
 function clearRoom(store, next, action) {
-    let eddy = new Eddy(store.getState());
     store.dispatch(leaveRoom(action.roomId));
     return next(action);
 }
@@ -188,13 +201,15 @@ export default store => next => action => {
         case ActionTypes.DISCONNECT_EDDY:
             return disconnect(store, next, action);
         case ActionTypes.IDENTIFY_EDDY:
-            return wrap(identify);
+            return wrapIdentify(store, next, action);
         case ActionTypes.UNIDENTIFY_EDDY:
             return wrap(unidentify);
         case ActionTypes.JOIN_ROOM:
             return wrap(join);
         case ActionTypes.LEAVE_ROOM:
             return wrap(leave);
+        case ActionTypes.ROOM_INFO:
+            return wrap(roomInfo);
         case ActionTypes.SEND_COMMENT:
             return wrapSendComment(store, next, action);
         case ActionTypes.BAN_USER:

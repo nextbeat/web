@@ -12,7 +12,6 @@ const KEY_MAP = {
     'isFetching': ['meta', 'isFetching'],
     'error': ['meta', 'error'],
     // chat
-    'bannedUserIds': ['chat', 'bannedUserIds'],
     'selectedChatUsername': ['chat', 'selectedUsername'],
     'mentions': ['chat', 'mentions'],
     // ui
@@ -160,8 +159,7 @@ export default class RoomPage extends StateModel {
     }
 
     userIsBanned(username) {
-        // note that this takes username as param, NOT user id
-        return this.bannedUsers().filter(u => u.get('username') === username).size > 0
+        return this.room().userIsBanned(username)
     }
 
 }

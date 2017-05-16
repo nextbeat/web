@@ -1,4 +1,4 @@
-import { Map, List } from 'immutable'
+import { Map, List, fromJS } from 'immutable'
 import { ActionTypes, Status } from '../../actions'
 import { EddyError } from '../../errors'
 
@@ -9,10 +9,16 @@ function joinRoom(state, action) {
                 isJoining: true
             })
         case Status.SUCCESS:
-            return state.merge({
+            state = state.merge({
                 isJoining: false,
-                joined: true
+                joined: true,
+                pinnedComment: fromJS(action.responseData.pinned_chat),
+                creator: action.responseData.creator,
             })
+            if ('banned_users' in action.responseData) {
+                state = state.set('bannedUsers', fromJS(action.responseData.banned_users));
+            }
+            return state;
         case Status.FAILURE: 
             return state.merge({
                 isJoining: false,
@@ -28,6 +34,20 @@ function leaveRoom(state, action) {
         case Status.SUCCESS:
             return state.set('joined', false)
     } 
+    return state;
+}
+
+function roomInfo(state, action) {
+    if (action.status === Status.SUCCESS) {
+        state = state.merge({
+            pinnedComment: fromJS(action.responseData.pinned_chat),
+            creator: action.responseData.creator,
+        })
+        if ('banned_users' in action.responseData) {
+            state = state.set('bannedUsers', fromJS(action.responseData.banned_users));
+        }
+        return state;
+    }
     return state;
 }
 
@@ -73,6 +93,20 @@ function sendComment(state, action) {
     return state
 }
 
+function banUser(state, action) {
+    if (action.status === Status.SUCCESS) {
+        return state.update('bannedUsers', List(), users => users.push(action.username));
+    }
+    return state;
+}
+
+function unbanUser(state, action) {
+    if (action.status === Status.SUCCESS) {
+        return state.update('bannedUsers', List(), users => users.filterNot(u => u === action.username))
+    }
+    return state;
+}
+
 function clearComments(state, action) {
     return state.merge({
         comments: List(),
@@ -110,8 +144,14 @@ export default function live(state = initialState, action) {
             return joinRoom(state, action);
         case ActionTypes.LEAVE_ROOM:
             return leaveRoom(state, action);
+        case ActionTypes.ROOM_INFO:
+            return roomInfo(state, action);
         case ActionTypes.SEND_COMMENT:
             return sendComment(state, action);
+        case ActionTypes.BAN_USER:
+            return banUser(state, action);
+        case ActionTypes.UNBAN_USER:
+            return unbanUser(state, action);
         case ActionTypes.CLEAR_COMMENTS:
             return clearComments(state, action);
         case ActionTypes.DELETE_MEDIA_ITEM:

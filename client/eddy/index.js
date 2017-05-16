@@ -1,6 +1,8 @@
 import Promise from 'bluebird'
  
-import { receiveComment, receiveMediaItem, receiveRoomClosed, receiveNotificationComment, receiveNotification, reconnectEddy, identifyEddy, joinRoom } from '../actions'
+import { receiveComment, receiveMediaItem, receiveRoomClosed, 
+         receiveNotificationComment, receiveNotification, 
+         reconnectEddy, identifyEddy, joinRoom } from '../actions'
 import { Room, CurrentUser } from '../models'
 import { EddyError, TimeoutError } from '../errors'
 
@@ -128,6 +130,10 @@ export default class EddyClient {
 
     leave(roomId) {
         return this._send('room_leave', { room_id: parseInt(roomId, 10) });
+    }
+
+    getRoomInfo(roomId) {
+        return this._send('room_info', { room_id: parseInt(roomId, 10) });
     }
 
     chat(roomId, message) {

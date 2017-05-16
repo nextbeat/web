@@ -16,9 +16,8 @@ const KEY_MAP = {
     'isFetching': ['meta', 'isFetching'],
     'error': ['meta', 'error'],
     // live
-    'isJoiningRoom': ['live', 'isJoiningRoom'],
-    'room': ['live', 'room'],
-    'nickname': ['live', 'nickname'],
+    'isJoining': ['live', 'isJoining'],
+    'joined': ['live', 'joined'],
     // media items
     'selectedMediaItemId': ['navigation', 'selected'],
     'seenMediaItemIds': ['navigation', 'seen'],
@@ -33,6 +32,10 @@ const KEY_MAP = {
     'liveCommentIds': ['live', 'comments'],
     'submittingComments': ['live', 'submittingComments'],
     'failedComments': ['live', 'failedComments'],
+    // other data
+    'bannedUsers': ['live', 'bannedUsers'],
+    'pinnedComment': ['live', 'pinnedComment'],
+    'creator': ['live', 'creator'],
     // playback
     'videoDidPlay': ['navigation', 'videoDidPlay']
 }
@@ -173,11 +176,16 @@ export default class Room extends StateModel {
     }
 
     isJoining() {
-        return this.get('isJoiningRoom', false)
+        return !!this.get('isJoining', false)
     }
 
     hasJoined() {
-        return this.has('room')
+        return !!this.get('joined', false)
+    }
+
+    userIsBanned(username) {
+        // note that this takes username as param, NOT user id
+        return this.get('bannedUsers', List()).indexOf(username) > -1
     }
 
     static loadedRooms(state) {
