@@ -273,7 +273,7 @@ a.chat_mention {
 $pinned-chat-color: #1dc310;
 
 .chat_pinned-comment {
-    border-bottom: 1px solid $border-color;
+    border-bottom: 1px solid #eaeaea;
     position: relative;
 }
 
@@ -359,6 +359,8 @@ $pinned-chat-color: #1dc310;
     display: block;
     padding: 6px 11px;
     background-color: $secondary-color;
+    box-shadow: none;
+    border: 0;
 
     &:hover {
         box-shadow: none;
@@ -371,6 +373,17 @@ $pinned-chat-color: #1dc310;
         padding: 9px 15px;
         font-size: 15px;
     }
+
+    transition-duration: 150ms;
+    transition-property: background-color;
+    transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.chat_compose_submit-over-max {
+    background-color: #ccc;
+    &:hover {
+        background-color: #ccc;
+    }
 }
 
 .chat_compose_pin {
@@ -378,26 +391,50 @@ $pinned-chat-color: #1dc310;
     align-items: center;
 }
 
+.chat_compose_pin_counter_container {
+    margin-left: 10px;
+    width: 80px;
+    overflow: hidden;
+}
+
 .chat_compose_pin_counter {
     font-family: 'Roboto', sans-serif;
     font-size: 11px;
     color: #aaa;
-    margin-left: 10px;
     user-select: none;
 }
 
-a.chat_compose-notification {
-    text-align: center;
-    margin-top: 40px;
-    display: block;
-    font-style: italic;
-    font-weight: normal;
-    font-size: 14px;
+.chat_compose_pin_counter-over-max {
+    color: $error-color;
+}
 
-    &:hover {
-        cursor: pointer;
+
+.chat_compose_pin_counter-enter {
+    transform: translateX(-100%);
+    opacity: 0.5;
+
+    &.chat_compose_pin_counter-enter-active {
+        transform: translateX(0);
+        opacity: 1;
+        transition-property: transform, opacity;
+        transition-duration: 150ms;
+        transition-timing-function: cubic-bezier(0.0, 0.0, 0.2, 1);
     }
 }
+
+.chat_compose_pin_counter-leave {
+    transform: translateX(0);
+    opacity: 1;
+
+    &.chat_compose_pin_counter-leave-active {
+        transform: translateX(-100%);
+        opacity: 0.5;
+        transition-property: transform, opacity;
+        transition-duration: 150ms;
+        transition-timing-function: cubic-bezier(0.4, 0.0, 1, 1);
+    }
+}
+
 
 .dropdown-chat-info {
     position: absolute;
@@ -405,19 +442,14 @@ a.chat_compose-notification {
     right: 0;
     margin-right: 15px;
     width: 270px;
-    font-size: 12px;
+} 
 
-    .dropdown_main {
-        padding: 12px;
-    }
-
-    p {
-        margin: 0 0 8px 0;
-        &:last-child {
-            margin: 0;
-        }
-    }
-}   
+.dropdown-chat-pin-over-max-length {
+    position: absolute;
+    bottom: 55px;
+    right: 10px;
+    width: 180px;
+}  
 
 
 // Welcome banner

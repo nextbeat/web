@@ -83,3 +83,18 @@ a.dropdown-option {
         }
     }
 }
+
+.dropdown-info {
+    font-size: 12px;
+
+    .dropdown_main {
+        padding: 12px;
+    }
+
+     p {
+        margin: 0 0 8px 0;
+        &:last-child {
+            margin: 0;
+        }
+    }
+}

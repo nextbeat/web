@@ -71,7 +71,7 @@ class Dropdown extends React.Component {
     }
 
     render() {
-        const { type, children, isActive, triangleMargin, triangleOnBottom, shouldForceClose } = this.props
+        const { type, style, children, isActive, triangleMargin, triangleOnBottom, shouldForceClose } = this.props
 
         let triangleStyle = {}
         if (typeof triangleMargin !== 'undefined') {
@@ -83,7 +83,7 @@ class Dropdown extends React.Component {
 
         return (
             <div id={`dropdown-${type}`} 
-                className={`dropdown dropdown-${type}`} 
+                className={`dropdown dropdown-${type} ${style ? `dropdown-${style}` : ''}`} 
                 style={{ display: isActive ? 'block' : 'none' }}
             >
                 <div className={`dropdown_triangle ${triangleOnBottom ? 'bottom' : ''}`} style={triangleStyle} />

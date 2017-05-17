@@ -1,20 +1,29 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import { List } from 'immutable'
 
 import ChatInfoDropdown from './ChatInfoDropdown.react'
+import ChatPinOverMaxLengthDropdown from './ChatPinOverMaxLengthDropdown.react'
 import Checkbox from '../../../shared/Checkbox.react'
+
 import { promptModal, clearChatMessage, sendComment, pinComment,
          didUseChat, promptDropdown, closeDropdown } from '../../../../actions'
 import { CurrentUser, RoomPage } from '../../../../models'
 import { storageAvailable } from '../../../../utils'
+
+function length(message) {
+    return message.trim().length
+}
+
+const MAX_MESSAGE_LENGTH = 120
 
 class Compose extends React.Component {
 
     constructor(props) {
         super(props);
 
-        this.shouldPromptDropdown = this.shouldPromptDropdown.bind(this);
+        this.shouldPromptChatInfoDropdown = this.shouldPromptChatInfoDropdown.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -38,7 +47,7 @@ class Compose extends React.Component {
         if (mentions(nextProps).size > mentions(this.props).size) {
             let message = this.state.message
             let username = mentions(nextProps).last()
-            if (message.length === 0 || /\s$/.test(message)) {
+            if (length(message) === 0 || /\s$/.test(message)) {
                 // don't add whitespace
                 message = `${message}@${username}`
             } else {
@@ -48,7 +57,7 @@ class Compose extends React.Component {
         }
     }
 
-    shouldPromptDropdown() {
+    shouldPromptChatInfoDropdown() {
         const { currentUser } = this.props 
         return currentUser.isLoggedIn() && storageAvailable('localStorage') && !JSON.parse(localStorage.getItem('hideChatInfoDropdown')) 
     }
@@ -64,7 +73,7 @@ class Compose extends React.Component {
     handleFocus(e) {
         const { dispatch, currentUser } = this.props
         dispatch(didUseChat())
-        if (this.shouldPromptDropdown()) {
+        if (this.shouldPromptChatInfoDropdown()) {
             dispatch(promptDropdown('chat-info'))
         } 
     }
@@ -74,8 +83,13 @@ class Compose extends React.Component {
         const { isPinned, message } = this.state 
 
         if (isPinned) {
-            dispatch(pinComment(roomPage.get('id'), message))
-            this.setState({ isPinned: false })
+            if (length(message) > MAX_MESSAGE_LENGTH) {
+                dispatch(promptDropdown('chat-pin-over-max-length'))
+                return;
+            } else {
+                dispatch(pinComment(roomPage.get('id'), message))
+                this.setState({ isPinned: false })
+            }
         } else {
             dispatch(sendComment(roomPage.get('id'), message))
         }
@@ -118,18 +132,28 @@ class Compose extends React.Component {
         return (
             <div className="chat_compose">
                 <ChatInfoDropdown username={roomPage.author().get('username')} handleClose={this.handleChatInfoDropdownClose} />
+                <ChatPinOverMaxLengthDropdown maxLength={MAX_MESSAGE_LENGTH} />
                 <div className="chat_compose-inner">
                     <textarea ref="textarea" onChange={this.handleChange} onFocus={this.handleFocus} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={message}></textarea>
                     <div className="chat_compose_controls">
-                        <input type="submit" className="chat_compose_submit btn" value="Send" disabled={message.length === 0} onClick={this.handleSubmit} />
+                        <input type="submit" 
+                       className={`chat_compose_submit btn ${isPinned && length(message) > MAX_MESSAGE_LENGTH ? 'chat_compose_submit-over-max' : ''}`} 
+                           value="Send" 
+                           disabled={length(message) === 0} 
+                           onClick={this.handleSubmit} 
+                        />
                         { roomPage.currentUserIsAuthor() &&
                             <div className="chat_compose_pin">
                                 <Checkbox checked={isPinned} onChange={this.handlePinnedChange} label="Pin" />
-                                { isPinned && 
-                                    <div className="chat_compose_pin_counter">
-                                        { message.length }/120
-                                    </div>
-                                }
+                                <div className="chat_compose_pin_counter_container">
+                                    <ReactCSSTransitionGroup transitionName="chat_compose_pin_counter" transitionEnterTimeout={150} transitionLeaveTimeout={150}>
+                                        { isPinned && 
+                                            <div className="chat_compose_pin_counter">
+                                                <span className={length(message) > MAX_MESSAGE_LENGTH ? 'chat_compose_pin_counter-over-max' : ''}>{length(message)}</span>/{MAX_MESSAGE_LENGTH}
+                                            </div>
+                                        }
+                                    </ReactCSSTransitionGroup>
+                                </div>
                             </div>
                         }
                     </div>
