@@ -36,7 +36,7 @@ class Dropdown extends React.Component {
     handleKeyUp(e) {
         const { type, dispatch } = this.props
         if (e.which === 27) { // esc
-            dispatch(closeDropdown(type))
+            this.handleClose()
         }
     }
 
@@ -54,7 +54,7 @@ class Dropdown extends React.Component {
         {   
             process.nextTick(() => {
                 $(document).off(`mouseup.dropdown-${type}`);
-                dispatch(closeDropdown(type))
+                this.handleClose()
             })
         }
     }

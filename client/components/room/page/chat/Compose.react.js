@@ -4,6 +4,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import { List } from 'immutable'
 
 import ChatInfoDropdown from './ChatInfoDropdown.react'
+import ChatPinInfoDropdown from './ChatPinInfoDropdown.react'
 import ChatPinOverMaxLengthDropdown from './ChatPinOverMaxLengthDropdown.react'
 import Checkbox from '../../../shared/Checkbox.react'
 
@@ -24,6 +25,7 @@ class Compose extends React.Component {
         super(props);
 
         this.shouldPromptChatInfoDropdown = this.shouldPromptChatInfoDropdown.bind(this);
+        this.shouldPromptChatPinInfoDropdown = this.shouldPromptChatPinInfoDropdown.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -32,6 +34,9 @@ class Compose extends React.Component {
         this.handlePinnedChange = this.handlePinnedChange.bind(this);
         this.handleLoginClick = this.handleLoginClick.bind(this);
         this.handleChatInfoDropdownClose = this.handleChatInfoDropdownClose.bind(this);
+        this.handleChatPinInfoDropdownClose = this.handleChatPinInfoDropdownClose.bind(this);
+
+        this.renderPinControl = this.renderPinControl.bind(this);
 
         // We're using state here instead of going through
         // Redux (which would be the more canonical
@@ -62,11 +67,18 @@ class Compose extends React.Component {
         return currentUser.isLoggedIn() && storageAvailable('localStorage') && !JSON.parse(localStorage.getItem('hideChatInfoDropdown')) 
     }
 
+    shouldPromptChatPinInfoDropdown() {
+        return storageAvailable('localStorage') && !JSON.parse(localStorage.getItem('hideChatPinInfoDropdown')) 
+    }
+
     handleChange(e) {
         this.setState({ message: e.target.value })
     }
 
     handlePinnedChange(checked) {
+        if (checked && this.shouldPromptChatPinInfoDropdown()) {
+            this.props.dispatch(promptDropdown('chat-pin-info'))
+        }
         this.setState({ isPinned: checked })
     }
 
@@ -126,12 +138,38 @@ class Compose extends React.Component {
         this.props.dispatch(closeDropdown('chat-info'))
     }
 
+    handleChatPinInfoDropdownClose() {
+        if (storageAvailable('localStorage')) {
+            localStorage.setItem('hideChatPinInfoDropdown', true)
+        }
+        this.props.dispatch(closeDropdown('chat-pin-info'))
+    }
+
+    renderPinControl() {
+        const { message, isPinned } = this.state 
+        return (
+            <div className="chat_compose_pin">
+                <Checkbox checked={isPinned} onChange={this.handlePinnedChange} label="Pin" />
+                <div className="chat_compose_pin_counter_container">
+                    <ReactCSSTransitionGroup transitionName="chat_compose_pin_counter" transitionEnterTimeout={150} transitionLeaveTimeout={150}>
+                        { isPinned && 
+                            <div className="chat_compose_pin_counter">
+                                <span className={length(message) > MAX_MESSAGE_LENGTH ? 'chat_compose_pin_counter-over-max' : ''}>{length(message)}</span>/{MAX_MESSAGE_LENGTH}
+                            </div>
+                        }
+                    </ReactCSSTransitionGroup>
+                </div>
+            </div>
+        )
+    }
+
     render() {
         const { roomPage } = this.props
         const { message, isPinned } = this.state
         return (
             <div className="chat_compose">
                 <ChatInfoDropdown username={roomPage.author().get('username')} handleClose={this.handleChatInfoDropdownClose} />
+                <ChatPinInfoDropdown handleClose={this.handleChatPinInfoDropdownClose} />
                 <ChatPinOverMaxLengthDropdown maxLength={MAX_MESSAGE_LENGTH} />
                 <div className="chat_compose-inner">
                     <textarea ref="textarea" onChange={this.handleChange} onFocus={this.handleFocus} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={message}></textarea>
@@ -142,20 +180,7 @@ class Compose extends React.Component {
                            disabled={length(message) === 0} 
                            onClick={this.handleSubmit} 
                         />
-                        { roomPage.currentUserIsAuthor() &&
-                            <div className="chat_compose_pin">
-                                <Checkbox checked={isPinned} onChange={this.handlePinnedChange} label="Pin" />
-                                <div className="chat_compose_pin_counter_container">
-                                    <ReactCSSTransitionGroup transitionName="chat_compose_pin_counter" transitionEnterTimeout={150} transitionLeaveTimeout={150}>
-                                        { isPinned && 
-                                            <div className="chat_compose_pin_counter">
-                                                <span className={length(message) > MAX_MESSAGE_LENGTH ? 'chat_compose_pin_counter-over-max' : ''}>{length(message)}</span>/{MAX_MESSAGE_LENGTH}
-                                            </div>
-                                        }
-                                    </ReactCSSTransitionGroup>
-                                </div>
-                            </div>
-                        }
+                        { roomPage.currentUserIsAuthor() && this.renderPinControl() }
                     </div>
                 </div>
             </div>
