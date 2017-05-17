@@ -165,7 +165,7 @@ class ChatHistory extends React.Component {
 
     render() {
         const { comments, liveComments, submittingComments, failedComments,
-                commentsFetching, commentsError, scrollable, style,
+                hasLoadedChat, scrollable, style,
                 scrollToBottom } = this.props;
 
         const { hasUnseenLiveMessages } = this.state;
@@ -176,17 +176,19 @@ class ChatHistory extends React.Component {
         return (
             <div className="chat_history_container">
                 <div id={scrollComponentId(this.props)} className={`chat_history ${scrollableClass} ${styleClass}`}>
-                    { commentsFetching && <Spinner type="grey" />}
-                    <ul className="chat_items">
-                        {comments.reverse().reduce(commentCollapser, List()).map((comment, idx) => this.renderComment(comment, idx))}
-                        {liveComments.reduce(commentCollapser, List()).map((comment, idx) => this.renderLiveComment(comment, idx))}
-                        { style === "expanded" &&
-                            [
-                            submittingComments.map((comment, idx) => this.renderSubmittingComment(comment, idx)),
-                            failedComments.map((comment, idx) => this.renderFailedComment(comment, idx))
-                            ]
-                        }
-                    </ul>
+                    { !hasLoadedChat && <Spinner type="grey" />}
+                    { hasLoadedChat &&
+                        <ul className="chat_items">
+                            {comments.reverse().reduce(commentCollapser, List()).map((comment, idx) => this.renderComment(comment, idx))}
+                            {liveComments.reduce(commentCollapser, List()).map((comment, idx) => this.renderLiveComment(comment, idx))}
+                            { style === "expanded" &&
+                                [
+                                submittingComments.map((comment, idx) => this.renderSubmittingComment(comment, idx)),
+                                failedComments.map((comment, idx) => this.renderFailedComment(comment, idx))
+                                ]
+                            }
+                        </ul>
+                    }
                 </div>
                 { hasUnseenLiveMessages && 
                     <div className="chat_history_new-messages" onClick={() => scrollToBottom(100)}>
@@ -284,8 +286,7 @@ function mapStateToProps(state, ownProps) {
         failedComments: room.failedComments(),
         totalCommentsCount: room.totalCommentsCount(),
 
-        commentsFetching: room.get('commentsFetching'),
-        commentsError: room.get('commentsError'),
+        hasLoadedChat: room.hasLoadedChat()
     }
 }
 

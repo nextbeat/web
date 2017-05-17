@@ -3,7 +3,9 @@ import { connect } from 'react-redux'
 import { List } from 'immutable'
 
 import ChatInfoDropdown from './ChatInfoDropdown.react'
-import { promptModal, clearChatMessage, sendComment, didUseChat, promptDropdown, closeDropdown } from '../../../../actions'
+import Checkbox from '../../../shared/Checkbox.react'
+import { promptModal, clearChatMessage, sendComment, pinComment,
+         didUseChat, promptDropdown, closeDropdown } from '../../../../actions'
 import { CurrentUser, RoomPage } from '../../../../models'
 import { storageAvailable } from '../../../../utils'
 
@@ -18,6 +20,7 @@ class Compose extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleFocus = this.handleFocus.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.handlePinnedChange = this.handlePinnedChange.bind(this);
         this.handleLoginClick = this.handleLoginClick.bind(this);
         this.handleChatInfoDropdownClose = this.handleChatInfoDropdownClose.bind(this);
 
@@ -25,7 +28,8 @@ class Compose extends React.Component {
         // Redux (which would be the more canonical
         // implementation) for performance reasons
         this.state = {
-            message: ''
+            message: '',
+            isPinned: false
         };
     }
 
@@ -53,6 +57,10 @@ class Compose extends React.Component {
         this.setState({ message: e.target.value })
     }
 
+    handlePinnedChange(checked) {
+        this.setState({ isPinned: checked })
+    }
+
     handleFocus(e) {
         const { dispatch, currentUser } = this.props
         dispatch(didUseChat())
@@ -63,7 +71,14 @@ class Compose extends React.Component {
 
     handleSubmit(e) {
         const { currentUser, roomPage, dispatch } = this.props
-        dispatch(sendComment(roomPage.get('id'), this.state.message))
+        const { isPinned, message } = this.state 
+
+        if (isPinned) {
+            dispatch(pinComment(roomPage.get('id'), message))
+            this.setState({ isPinned: false })
+        } else {
+            dispatch(sendComment(roomPage.get('id'), message))
+        }
 
         if (currentUser.isLoggedIn()) {
             this.handleChatInfoDropdownClose()
@@ -99,13 +114,25 @@ class Compose extends React.Component {
 
     render() {
         const { roomPage } = this.props
-        const { message } = this.state
+        const { message, isPinned } = this.state
         return (
             <div className="chat_compose">
                 <ChatInfoDropdown username={roomPage.author().get('username')} handleClose={this.handleChatInfoDropdownClose} />
                 <div className="chat_compose-inner">
                     <textarea ref="textarea" onChange={this.handleChange} onFocus={this.handleFocus} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={message}></textarea>
-                    <input type="submit" className="chat_compose_submit btn" value="Send" disabled={message.length === 0} onClick={this.handleSubmit} />
+                    <div className="chat_compose_controls">
+                        <input type="submit" className="chat_compose_submit btn" value="Send" disabled={message.length === 0} onClick={this.handleSubmit} />
+                        { roomPage.currentUserIsAuthor() &&
+                            <div className="chat_compose_pin">
+                                <Checkbox checked={isPinned} onChange={this.handlePinnedChange} label="Pin" />
+                                { isPinned && 
+                                    <div className="chat_compose_pin_counter">
+                                        { message.length }/120
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         );

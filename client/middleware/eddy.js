@@ -175,7 +175,26 @@ function pinComment(action, client) {
 }
 
 function wrapPinComment(store, next, action) {
-    let successCallback = () => { /* TODO */ }
+
+    let successCallback = function(action, client, responseData) {
+        const currentUser = new CurrentUser(store.getState())
+        const comment = {
+            message: action.message,
+            type: "message",
+            subtype: "pinned",
+            id: responseData.comment_id,
+            user_mentions: responseData.user_mentions,
+            author: {
+                id: currentUser.get('id')
+            }
+        }
+        const response = normalize(comment, Schemas.COMMENT)
+        store.dispatch({
+            type: ActionTypes.ENTITY_UPDATE,
+            response
+        })
+    }
+
     return _wrapAction(store, next, action)(pinComment, { successCallback })
 }
 
@@ -261,7 +280,7 @@ export default store => next => action => {
         case ActionTypes.PIN_COMMENT:
             return wrapPinComment(store, next, action);
         case ActionTypes.UNPIN_COMMENT:
-            return wrap(unpin);
+            return wrap(unpinComment);
         case ActionTypes.BAN_USER:
             return wrap(ban);
         case ActionTypes.UNBAN_USER:

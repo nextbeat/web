@@ -92,6 +92,20 @@ function sendComment(state, action) {
     return state
 }
 
+function pinComment(state, action) {
+    if (action.status === Status.SUCCESS) {
+        return state.set('pinnedCommentId', action.responseData.comment_id)
+    }
+    return state;
+}
+
+function unpinComment(state, action) {
+    if (action.status === Status.SUCCESS) {
+        return state.set('pinnedCommentId', undefined)
+    }
+    return state;
+}
+
 function banUser(state, action) {
     if (action.status === Status.SUCCESS) {
         return state.update('bannedUsers', List(), users => users.push(action.username));
@@ -155,6 +169,10 @@ export default function live(state = initialState, action) {
             return roomInfo(state, action);
         case ActionTypes.SEND_COMMENT:
             return sendComment(state, action);
+        case ActionTypes.PIN_COMMENT:
+            return pinComment(state, action);
+        case ActionTypes.UNPIN_COMMENT:
+            return unpinComment(state, action);
         case ActionTypes.BAN_USER:
             return banUser(state, action);
         case ActionTypes.UNBAN_USER:

@@ -190,6 +190,10 @@ export default class Room extends StateModel {
         return !!this.get('joined', false)
     }
 
+    hasLoadedChat() {
+        return !this.get('commentsFetching') && this.hasJoined() && !this.get('commentsError')
+    }
+
     userIsBanned(username) {
         // note that this takes username as param, NOT user id
         return this.get('bannedUsers', List()).indexOf(username) > -1

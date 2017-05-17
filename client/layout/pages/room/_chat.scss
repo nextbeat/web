@@ -274,6 +274,7 @@ $pinned-chat-color: #1dc310;
 
 .chat_pinned-comment {
     border-bottom: 1px solid $border-color;
+    position: relative;
 }
 
 .chat_item-pinned-comment {
@@ -309,6 +310,20 @@ $pinned-chat-color: #1dc310;
     margin-top: 2px;
 }
 
+.chat_pinned-comment_unpin {
+    display: inline-block;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 11px;
+    padding: 3px 6px;
+    background-color: #bbb;
+
+    &:hover {
+        background-color: #ccc;
+    }
+}
+
 // Compose
 
 .chat_compose {
@@ -326,30 +341,49 @@ $pinned-chat-color: #1dc310;
         font-size: 13px;
         border: 1px solid #ccc;
     }
-
-    .chat_compose_submit {
-        display: block;
-        float: right;
-        margin-top: 5px;
-        padding: 6px 11px;
-        background-color: $secondary-color;
-
-        &:hover {
-            box-shadow: none;
-            border: 0;
-            cursor: pointer;
-            background-color: $light-secondary-color;
-        }
-
-        @include media('<=small') {
-            padding: 9px 15px;
-            font-size: 15px;
-        }
-    }
 }
 
 .chat_compose-inner {
     margin-bottom: 5px;
+}
+
+.chat_compose_controls {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.chat_compose_submit {
+    display: block;
+    padding: 6px 11px;
+    background-color: $secondary-color;
+
+    &:hover {
+        box-shadow: none;
+        border: 0;
+        cursor: pointer;
+        background-color: $light-secondary-color;
+    }
+
+    @include media('<=small') {
+        padding: 9px 15px;
+        font-size: 15px;
+    }
+}
+
+.chat_compose_pin {
+    display: flex;
+    align-items: center;
+}
+
+.chat_compose_pin_counter {
+    font-family: 'Roboto', sans-serif;
+    font-size: 11px;
+    color: #aaa;
+    margin-left: 10px;
+    user-select: none;
 }
 
 a.chat_compose-notification {
