@@ -16,6 +16,10 @@ function renderWithRegexMentions(message, { start, end, onMentionClick }) {
 }
 
 function renderWithMentions(comment, { start, end, onMentionClick, forceMentions=false }) {
+    if (!comment.get('message')) {
+        return null
+    }
+    
     let message = comment.get('message')
     start = start || 0
     end = end || message.length
@@ -53,7 +57,7 @@ function renderWithMentions(comment, { start, end, onMentionClick, forceMentions
 }
 
 
-export default function renderMessageText(comment, { onMentionClick, forceMentions=false, includeLinks=false }) {
+export default function renderMessageText(comment, { onMentionClick, forceMentions=false, includeLinks=false } = {}) {
     if (!includeLinks) {
         return renderWithMentions(comment, { onMentionClick, forceMentions })
     }

@@ -39,6 +39,23 @@ function _wrapAction(store, next, action) {
     }
 }
 
+function _roomInfoSuccessCallback(store, next, action) {
+    // Separate function since used both in roomJoin and roomInfo
+    return (action, client, responseData) => {
+        if ('id' in responseData.pinned_chat) {
+            // normalize pinned comment
+            let pinnedComment = assign({}, responseData.pinned_chat, {
+                type: "message"
+            })
+            const response = normalize(pinnedComment, Schemas.COMMENT)
+            store.dispatch({
+                type: ActionTypes.ENTITY_UPDATE,
+                response
+            })
+        }
+    }
+}
+
 function connect(store, next, action) {
     let client = new EddyClient(store);
     
@@ -97,12 +114,22 @@ function join(action, client) {
     return client.join(action.roomId);
 }
 
+function wrapJoin(store, next, action) {
+    let successCallback = _roomInfoSuccessCallback(store, next, action)
+    return _wrapAction(store, next, action)(join, { successCallback })
+}
+
 function leave(action, client) {
     return client.leave(action.roomId);
 }
 
 function roomInfo(action, client) {
     return client.getRoomInfo(action.roomId);
+}
+
+function wrapRoomInfo(store, next, action) {
+    let successCallback = _roomInfoSuccessCallback(store, next, action)
+    return _wrapAction(store, next, action)(roomInfo, { successCallback })
 }
 
 function ban(action, client) {
@@ -143,6 +170,19 @@ function wrapSendComment(store, next, action) {
     return _wrapAction(store, next, action)(sendComment, { successCallback })
 }
 
+function pinComment(action, client) {
+    return client.pin(action.roomId, action.message);
+}
+
+function wrapPinComment(store, next, action) {
+    let successCallback = () => { /* TODO */ }
+    return _wrapAction(store, next, action)(pinComment, { successCallback })
+}
+
+function unpinComment(action, client) {
+    return client.unpin(action.roomId);
+}
+
 function loadRoom(store, next, action) {
     if (action.status === Status.SUCCESS) {
         store.dispatch(joinRoom(action.roomId));
@@ -156,6 +196,12 @@ function clearRoom(store, next, action) {
 }
 
 function receiveComment(store, next, action) {
+    // Trigger an entity update
+    const response = normalize(action.comment, Schemas.COMMENT)
+    return next(assign({}, action, { response }))
+}
+
+function receivePinnedComment(store, next, action) {
     // Trigger an entity update
     const response = normalize(action.comment, Schemas.COMMENT)
     return next(assign({}, action, { response }))
@@ -205,13 +251,17 @@ export default store => next => action => {
         case ActionTypes.UNIDENTIFY_EDDY:
             return wrap(unidentify);
         case ActionTypes.JOIN_ROOM:
-            return wrap(join);
+            return wrapJoin(store, next, action);
         case ActionTypes.LEAVE_ROOM:
             return wrap(leave);
         case ActionTypes.ROOM_INFO:
-            return wrap(roomInfo);
+            return wrapRoomInfo(store, next, action);
         case ActionTypes.SEND_COMMENT:
             return wrapSendComment(store, next, action);
+        case ActionTypes.PIN_COMMENT:
+            return wrapPinComment(store, next, action);
+        case ActionTypes.UNPIN_COMMENT:
+            return wrap(unpin);
         case ActionTypes.BAN_USER:
             return wrap(ban);
         case ActionTypes.UNBAN_USER:
@@ -222,6 +272,8 @@ export default store => next => action => {
             return clearRoom(store, next, action)
         case ActionTypes.RECEIVE_COMMENT:
             return receiveComment(store, next, action)
+        case ActionTypes.RECEIVE_PINNED_COMMENT:
+            return receivePinnedComment(store, next, action)
         case ActionTypes.RECEIVE_MEDIA_ITEM:
             return receiveMediaItem(store, next, action)
         case ActionTypes.RECEIVE_NOTIFICATION_COMMENT:

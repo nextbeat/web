@@ -58,6 +58,21 @@ export function receiveComment(roomId, comment) {
     }
 }
 
+export function receivePinnedComment(roomId, comment) {
+    return {
+        type: ActionTypes.RECEIVE_PINNED_COMMENT,
+        roomId,
+        comment
+    }
+}
+
+export function receiveUnpinnedComment(roomId) {
+    return {
+        type: ActionTypes.RECEIVE_UNPINNED_COMMENT,
+        roomId
+    }
+}
+
 export function receiveMediaItem(roomId, mediaItem) {
     return {
         type: ActionTypes.RECEIVE_MEDIA_ITEM,

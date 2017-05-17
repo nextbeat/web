@@ -164,7 +164,7 @@ class ChatHistory extends React.Component {
     }
 
     render() {
-        const { comments, liveComments, submittingComments, failedComments, 
+        const { comments, liveComments, submittingComments, failedComments,
                 commentsFetching, commentsError, scrollable, style,
                 scrollToBottom } = this.props;
 

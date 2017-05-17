@@ -34,7 +34,7 @@ const KEY_MAP = {
     'failedComments': ['live', 'failedComments'],
     // other data
     'bannedUsers': ['live', 'bannedUsers'],
-    'pinnedComment': ['live', 'pinnedComment'],
+    'pinnedCommentId': ['live', 'pinnedCommentId'],
     'creator': ['live', 'creator'],
     // playback
     'videoDidPlay': ['navigation', 'videoDidPlay']
@@ -103,6 +103,13 @@ export default class Room extends StateModel {
 
     failedComments() {
         return this.get('failedComments', List())
+    }
+
+    pinnedComment() {
+        if (!this.get('pinnedCommentId')) {
+            return null;
+        }
+        return new CommentEntity(this.get('pinnedCommentId'), this.state.get('entities'))
     }
 
     thumbnail(preferredType) {

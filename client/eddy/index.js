@@ -1,6 +1,9 @@
 import Promise from 'bluebird'
+import assign from 'lodash/assign'
+import omit from 'lodash/omit'
  
 import { receiveComment, receiveMediaItem, receiveRoomClosed, 
+         receivePinnedComment, receiveUnpinnedComment,
          receiveNotificationComment, receiveNotification, 
          reconnectEddy, identifyEddy, joinRoom } from '../actions'
 import { Room, CurrentUser } from '../models'
@@ -140,6 +143,14 @@ export default class EddyClient {
         return this._send('chat', { room_id: parseInt(roomId, 10), message: message });
     }
 
+    pin(roomId, message) {
+        return this._send('pin', { room_id: parseInt(roomId, 10), message: message });
+    }
+
+    unpin(roomId) {
+        return this._send('unpin', { room_id: parseInt(roomId, 10)});
+    }
+
     ban(roomId, username) {
         return this._send('ban', { room_id: parseInt(roomId, 10), username: username });
     }
@@ -203,20 +214,22 @@ export default class EddyClient {
 
         if (payload.type === "chat") 
         {
-            let comment = {
-                type: "message",
-                message: data.message,
-                subtype: data.subtype,
-                id: data.id,
-                user_mentions: data.user_mentions,
-                author: data.author
-            };
-            if (data.recipient) {
-                comment.recipient = data.recipient;
-            }
-
+            let comment = assign(omit(data, 'room_id'), {
+                type: "message"
+            })
             this.dispatch(receiveComment(roomId, comment));
         } 
+        else if (payload.type === "pinned_chat")
+        {
+            let comment = assign(omit(data, 'room_id'), {
+                type: "message"
+            })
+            this.dispatch(receivePinnedComment(roomId, data));
+        }
+        else if (payload.type === "unpinned_chat") 
+        {
+            this.dispatch(receiveUnpinnedComment(roomId));
+        }
         else if (payload.type === "notification_comment")
         {
             this.dispatch(receiveNotificationComment(roomId, data.comment))
@@ -264,7 +277,6 @@ export default class EddyClient {
     }
 
     _reconnect(attempts, baseDelayTime) {
-        console.log('attempting reconnect', attempts);
         return this.connect()
             .bind(this)
             .then(() => {

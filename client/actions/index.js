@@ -29,6 +29,10 @@ export {
     getRoomInfo,
     sendComment,
     resendComment,
+    pinComment,
+    unpinComment,
+    banUser,
+    unbanUser,
     didUseChat,
     didPlayVideo,
     bookmark,
@@ -58,8 +62,6 @@ export {
 
 export {
     loadRoomPage,
-    banUser,
-    unbanUser,
     mentionUser,
     clearChatMessage,
     promptChatActionsForUser,
@@ -130,6 +132,8 @@ export {
     joinRoom,
     leaveRoom,
     receiveComment,
+    receivePinnedComment,
+    receiveUnpinnedComment,
     receiveMediaItem,
     receiveNotificationComment,
     receiveRoomClosed,

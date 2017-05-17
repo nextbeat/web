@@ -95,6 +95,10 @@ export default class RoomPage extends StateModel {
         return this.room().liveComments()
     }
 
+    pinnedComment() {
+        return this.room().pinnedComment()
+    }
+
     thumbnail(preferredType) {
         return this.room().thumbnail(preferredType)
     }

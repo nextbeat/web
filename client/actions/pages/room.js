@@ -172,48 +172,6 @@ export function clearChatMessage() {
     }
 }
 
-function performBanUser(roomId, username) {
-    return {
-        type: ActionTypes.BAN_USER,
-        roomId,
-        username
-    }
-}
-
-export function banUser(username) {
-    return (dispatch, getState) => {
-        const room = new RoomPage(getState())
-        if (!room.currentUserIsAuthor()) {
-            return null;
-        }
-        if (room.userIsBanned(username)) {
-            return null;
-        }
-        dispatch(performBanUser(room.get('id'), username))
-    }
-}
-
-function performUnbanUser(roomId, username) {
-    return {
-        type: ActionTypes.UNBAN_USER,
-        roomId,
-        username
-    }
-}
-
-export function unbanUser(username) {
-    return (dispatch, getState) => {
-        const room = new RoomPage(getState())
-        if (!room.currentUserIsAuthor()) {
-            return null;
-        }
-        if (!room.userIsBanned(username)) {
-            return null;
-        }
-        dispatch(performUnbanUser(room.get('id'), username))
-    }
-}
-
 export function resetChat() {
     return (dispatch, getState) => {
         const room = new RoomPage(getState())

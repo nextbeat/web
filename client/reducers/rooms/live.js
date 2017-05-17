@@ -2,6 +2,17 @@ import { Map, List, fromJS } from 'immutable'
 import { ActionTypes, Status } from '../../actions'
 import { EddyError } from '../../errors'
 
+function processRoomInfo(state, action) {
+    state = state.merge({
+        pinnedCommentId: action.responseData.pinned_chat.id,
+        creator: action.responseData.creator,
+    })
+    if ('banned_users' in action.responseData) {
+        state = state.set('bannedUsers', fromJS(action.responseData.banned_users));
+    }
+    return state;
+}
+
 function joinRoom(state, action) {
     switch (action.status) {
         case Status.REQUESTING:
@@ -12,13 +23,8 @@ function joinRoom(state, action) {
             state = state.merge({
                 isJoining: false,
                 joined: true,
-                pinnedComment: fromJS(action.responseData.pinned_chat),
-                creator: action.responseData.creator,
             })
-            if ('banned_users' in action.responseData) {
-                state = state.set('bannedUsers', fromJS(action.responseData.banned_users));
-            }
-            return state;
+            return processRoomInfo(state, action);
         case Status.FAILURE: 
             return state.merge({
                 isJoining: false,
@@ -39,14 +45,7 @@ function leaveRoom(state, action) {
 
 function roomInfo(state, action) {
     if (action.status === Status.SUCCESS) {
-        state = state.merge({
-            pinnedComment: fromJS(action.responseData.pinned_chat),
-            creator: action.responseData.creator,
-        })
-        if ('banned_users' in action.responseData) {
-            state = state.set('bannedUsers', fromJS(action.responseData.banned_users));
-        }
-        return state;
+        return processRoomInfo(state, action);
     }
     return state;
 }
@@ -123,6 +122,14 @@ function receiveComment(state, action) {
     return state.update('comments', comments => comments.push(action.comment.id));
 }
 
+function receivePinnedComment(state, action) {
+    return state.set('pinnedCommentId', action.comment.id)
+}
+
+function receiveUnpinnedComment(state, action) {
+    return state.set('pinnedCommentId', undefined)
+}
+
 function receiveMediaItem(state, action) {
     return state.update('mediaItems', mediaItems => mediaItems.push(action.mediaItem.id));
 }
@@ -158,6 +165,10 @@ export default function live(state = initialState, action) {
             return deleteMediaItem(state, action);
         case ActionTypes.RECEIVE_COMMENT:
             return receiveComment(state, action);
+        case ActionTypes.RECEIVE_PINNED_COMMENT:
+            return receivePinnedComment(state, action);
+        case ActionTypes.RECEIVE_UNPINNED_COMMENT:
+            return receiveUnpinnedComment(state, action);
         case ActionTypes.RECEIVE_MEDIA_ITEM:
             return receiveMediaItem(state, action);
         case ActionTypes.RECEIVE_NOTIFICATION_COMMENT:

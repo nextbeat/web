@@ -117,6 +117,88 @@ export function resendComment(roomId, comment) {
     return performSendComment(roomId, comment.get('message'), comment.get('username'), comment.get('temporaryId'))
 }
 
+function performPinComment(roomId, message) {
+    return {
+        type: ActionTypes.PIN_COMMENT,
+        roomId,
+        message
+    }
+}
+
+export function pinComment(roomId, message) {
+    return (dispatch, getState) => {
+
+        if (!message || message.trim().length === 0) {
+            return null;
+        }
+
+        const room = new Room(roomId, getState())
+        if (!room.currentUserIsAuthor()) {
+            return null;
+        }
+        dispatch(performPinComment(roomId, message))
+    }
+}
+
+function performUnpinComment(roomId) {
+    return {
+        type: ActionTypes.UNPIN_COMMENT,
+        roomId
+    }
+}
+
+export function unpinComment(roomId) {
+    return (dispatch, getState) => {
+        const room = new Room(roomId, getState())
+        if (!room.currentUserIsAuthor()) {
+            return null;
+        }
+        dispatch(performUnpinComment(roomId))
+    }
+}
+
+function performBanUser(roomId, username) {
+    return {
+        type: ActionTypes.BAN_USER,
+        roomId,
+        username
+    }
+}
+
+export function banUser(roomId, username) {
+    return (dispatch, getState) => {
+        const room = new Room(roomId, getState())
+        if (!room.currentUserIsAuthor()) {
+            return null;
+        }
+        if (room.userIsBanned(username)) {
+            return null;
+        }
+        dispatch(performBanUser(roomId, username))
+    }
+}
+
+function performUnbanUser(roomId, username) {
+    return {
+        type: ActionTypes.UNBAN_USER,
+        roomId,
+        username
+    }
+}
+
+export function unbanUser(roomId, username) {
+    return (dispatch, getState) => {
+        const room = new Room(roomId, getState())
+        if (!room.currentUserIsAuthor()) {
+            return null;
+        }
+        if (!room.userIsBanned(username)) {
+            return null;
+        }
+        dispatch(performUnbanUser(roomId, username))
+    }
+}
+
 export function didUseChat() {
     // Dispatch this action whenever the client interacts with
     // the chat in some way (scrolls, focuses on text box, etc)

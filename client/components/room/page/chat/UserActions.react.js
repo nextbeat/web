@@ -35,9 +35,9 @@ class UserActions extends React.Component {
         const { dispatch, username, roomPage } = this.props 
         dispatch(closeModal())
         if (roomPage.userIsBanned(username)) {
-            dispatch(unbanUser(username))
+            dispatch(unbanUser(roomPage.get('id'), username))
         } else {
-            dispatch(banUser(username))
+            dispatch(banUser(roomPage.get('id'), username))
         }
     }
 
