@@ -18,8 +18,37 @@ class DetailBar extends React.Component {
         this.handleDetailOverlayClose = this.handleDetailOverlayClose.bind(this)
         this.toggleDropdown = this.toggleDropdown.bind(this)
         this.renderBadge = this.renderBadge.bind(this)
+
+        this.handleResize = this.handleResize.bind(this)
+
+        this.state = {
+            disableAnimations: false,
+            disableAnimationsTimeoutId: -1
+        }
     }
 
+    componentDidMount() {
+        $(window).on('resize.detail-bar', this.handleResize)
+    }
+
+    componentWillUnmount() {
+        $(window).off('resize.detail-bar')
+    }
+
+    handleResize() {
+        // disable animations for small amount of time, so 
+        // that resizing does not trigger collapse animation
+        clearTimeout(this.state.disableAnimationsTimeoutId)
+
+        const disableAnimationsTimeoutId = setTimeout(() => {
+            this.setState({ disableAnimations: false })
+        }, 300)
+
+        this.setState({
+            disableAnimationsTimeoutId,
+            disableAnimations: true
+        })
+    }
 
     // Actions
 
@@ -53,17 +82,19 @@ class DetailBar extends React.Component {
     render() {
         const { selectedDetailSection, width, activeOverlay, 
                 currentUserIsAuthor, isFetchingPage, pageError } = this.props;
+        const { disableAnimations } = this.state;
 
         const selected = type => selectedDetailSection === type ? "selected" : "";
 
         // collapse detail bar if window width below threshold
         const collapsedClass = width === 'small' || width === 'medium' ? 'collapsed' : ''
+        const disableAnimationsClass = disableAnimations ? 'detail-bar-disable-animations' : ''
 
         const detailOverlayActive = activeOverlay === 'chat' || activeOverlay === 'activity'
         const activeClass = detailOverlayActive ? 'active' : ''
 
         return (
-            <div className={`detail-bar ${collapsedClass} ${activeClass}`}>
+            <div className={`detail-bar ${collapsedClass} ${activeClass} ${disableAnimationsClass}`}>
                 <div className="detail-bar_header">
                     { currentUserIsAuthor && 
                         <div className="detail-bar_toggle-edit" id="dropdown-detail-bar_toggle" onClick={this.toggleDropdown}><Icon type="more-vert" /></div> 
@@ -78,6 +109,7 @@ class DetailBar extends React.Component {
                     { detailOverlayActive && 
                         <div className="detail-bar_close" onClick={this.handleDetailOverlayClose} >
                             <Icon type="close" />
+                            Collapse
                         </div>
                     }
                     { !isFetchingPage && !pageError && <Chat display={selectedDetailSection === "chat"} /> }

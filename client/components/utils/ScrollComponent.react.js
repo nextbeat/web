@@ -132,7 +132,6 @@ export default function ScrollComponent(domId, scrollOptions={}) {
             scrollToBottom(duration=0) {
                 const elem = this.domElement();
                 const newTop = elem.scrollHeight - elem.clientHeight;
-                console.log('scrolling to bottom', newTop, elem)
                 if (duration > 0) {
                     $(elem).animate({ scrollTop: newTop }, {
                         duration,
