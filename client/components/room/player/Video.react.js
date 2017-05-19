@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import assign from 'lodash/assign'
 import debounce from 'lodash/debounce' 
 import Promise from 'bluebird'
-// import Hls from 'hls.js'
+import Hls from 'hls.js'
 import { toggleFullScreen, isFullScreen } from '../../../utils'
 
 import Decoration from './Decoration.react'
@@ -13,6 +13,10 @@ import { App } from '../../../models'
 import { setVideoVolume, logVideoImpression, didPlayVideo } from '../../../actions'
 
 const START_IMPRESSION_WAIT_TIME = 500;
+
+function canPlayHlsNative(videoElem) {
+    return videoElem.canPlayType && !!videoElem.canPlayType('application/vnd.apple.mpegURL')
+}
 
 class Video extends React.Component {
 
@@ -39,6 +43,7 @@ class Video extends React.Component {
         this.handleFullScreenChange = this.handleFullScreenChange.bind(this);
 
         this.loadVideo = this.loadVideo.bind(this);
+        this.unloadVideo = this.unloadVideo.bind(this);
         this.playPause = this.playPause.bind(this);
         this.seek = this.seek.bind(this);
         this.adjustVolume = this.adjustVolume.bind(this);
@@ -66,7 +71,8 @@ class Video extends React.Component {
             impressionStartTime: -1,
             width: 0,
             height: 0,
-            scale: 1
+            scale: 1,
+            hls: null
         };
     }
 
@@ -82,7 +88,7 @@ class Video extends React.Component {
         video.addEventListener('waiting', this.isWaiting);
         video.addEventListener('progress', this.didProgressDownload);
 
-        this.loadVideo(this.props.video);
+        this.loadVideo();
 
         $(window).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
 
@@ -108,6 +114,7 @@ class Video extends React.Component {
         clearInterval(this.state.timeIntervalId);
         clearInterval(this.state.hoverTimeoutId);
 
+        this.unloadVideo();
         this.logImpression(false); 
 
         $(window).off('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
@@ -117,7 +124,7 @@ class Video extends React.Component {
         if (prevProps.video !== this.props.video) 
         {
             this.logImpression();
-            this.loadVideo(this.props.video);
+            this.loadVideo();
         }
 
         if (prevProps.containerWidth !== this.props.containerWidth
@@ -252,24 +259,43 @@ class Video extends React.Component {
 
     // Actions
 
-    loadVideo(video) {
+    loadVideo() {
+        const { video, alternateVideo } = this.props;
+
+        this.unloadVideo();
+
         clearInterval(this.state.timeIntervalId);
         clearInterval(this.state.hoverTimeoutId);
 
         let videoPlayer = document.getElementById('video_player');
 
-        if (video.get('type') === 'hls') {
-            // var hls = new Hls();
-            // hls.attachMedia(videoPlayer);
-            // hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-            //     console.log("video and hls.js are now bound together !");
-            //     hls.loadSource(video.get('url'));
-            //     hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-            //         console.log("manifest loaded, found " + data.levels.length + " quality levels");
-            //         video.play();
-            //     });
-            // });
-        } else {
+        if (video.get('type') === 'hls') 
+        {
+            if (canPlayHlsNative(videoPlayer)) 
+            {
+                videoPlayer.src = video.get('url'); 
+            } 
+            else if (Hls.isSupported()) 
+            {
+                // use hls.js player
+                var hls = new Hls();
+                hls.attachMedia(videoPlayer);
+                hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+                    hls.loadSource(video.get('url'));
+                    hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                        video.play();
+                    });
+                });
+                this.setState({ hls })
+            } 
+            else 
+            {
+                // degrade to alternate mp4 video
+                videoPlayer.src = alternateVideo.get('url')
+            }  
+        } 
+        else 
+        {
             videoPlayer.src = video.get('url')
         }
 
@@ -295,6 +321,14 @@ class Video extends React.Component {
                 this.setState({ isLoading: true })
             }
         }, 100)
+    }
+
+    unloadVideo() {
+        const { hls } = this.state;
+        if (hls) {
+            hls.destroy();
+            this.setState({ hls: null });
+        }
     }
 
     playPause() {

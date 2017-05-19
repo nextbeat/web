@@ -103,7 +103,8 @@ class RoomPlayer extends React.Component {
                     { room.mediaItems().size == 0 && !room.get('mediaItemsError') && <Spinner type="large grey"/> }
                     { !item.isEmpty() && (item.isVideo() ? 
                         <Video 
-                            video={item.video('mp4')} 
+                            video={item.video('hls')} 
+                            alternateVideo={item.video('mp4')}
                             decoration={item.get('decoration')} 
                             room={room} 
                             autoplay={shouldAutoplayVideo} 

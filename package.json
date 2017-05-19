@@ -21,7 +21,7 @@
     "express": "4.x",
     "express-handlebars": "1.1.0",
     "express-session": "^1.13.0",
-    "hls.js": "^0.5.42",
+    "hls.js": "0.7.8",
     "hoist-non-react-statics": "^1.0.6",
     "immutable": "^3.7.6",
     "jquery": "^2.2.0",
