@@ -4,6 +4,7 @@ import assign from 'lodash/assign'
 import last from 'lodash/last'
 
 import App from '../client/components/App.react'
+import { App as AppModel } from '../client/models'
 
 import { gaPage } from '../client/actions'
 
@@ -127,6 +128,22 @@ export default store => {
                         })
                     }),
                 ]
+            },
+            {
+                'path': 'access',
+                getComponent: (nextState, cb) => {
+                    let environment = (new AppModel(store.getState())).get('environment') 
+                    if (environment === 'production') {
+                        require.ensure([], (require) => {
+                            return cb(null, require('../client/components/pages/NoMatch.react').default)
+                        })
+                    } else {
+                        require.ensure([], (require) => {
+                            return cb(null, require('../client/components/pages/InternalAccess.react').default)
+                        })
+                    }
+
+                }
             },
             analyticsRoute('*', cb => {
                 require.ensure([], (require) => {

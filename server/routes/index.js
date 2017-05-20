@@ -2,7 +2,7 @@
 var express         = require('express'),
 
     api             = require('../lib/api'),
-    passport        = require('../lib/passport'),
+    passportLib     = require('../lib/passport'),
     universalLinks  = require('../conf/universal-links');
 
 import has from 'lodash/has'
@@ -13,7 +13,8 @@ module.exports = {
 
     init: function(web) {
 
-        passport = passport.init(web);
+        var passport = passportLib.init(web),
+            internalPassport = passportLib.internalInit(web);
 
         // API calls
 
@@ -122,7 +123,24 @@ module.exports = {
             })
         });
 
+        router.post('/internal-login', 
+            internalPassport.authenticate('local', { 
+                successRedirect: '/', 
+                failureRedirect: '/access' 
+            })
+        );
+
         // React
+        
+        router.use(function(req, res, next) {
+            if (process.env.NODE_ENV !== 'production') {
+                console.log('internal user', req.internalUser);
+                if (!req.internalUser && req.path !== '/access') {
+                    res.redirect('/access');
+                }
+            } 
+            next();
+        })
 
         router.get('*', handleReactRender)
 
