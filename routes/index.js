@@ -35,7 +35,7 @@ export default store => {
             'path': 'internal/access',
             getComponent: (nextState, cb) => {
                 let environment = (new AppModel(store.getState())).get('environment') 
-                if (environment === 'production') {
+                if (environment !== 'development') {
                     require.ensure([], (require) => {
                         return cb(null, require('../client/components/pages/NoMatch.react').default)
                     })

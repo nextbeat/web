@@ -140,7 +140,7 @@ module.exports = {
         // React
         
         router.use(function(req, res, next) {
-            if (process.env.NODE_ENV !== 'production') {
+            if (process.env.NODE_ENV === 'development') {
                 if (req.cookies[INTERNAL_COOKIE_KEY] !== 'true' && req.path !== '/internal/access') {
                     res.redirect('/internal/access');
                     return;
