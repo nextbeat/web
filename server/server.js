@@ -1,18 +1,19 @@
 require("babel-core/register");
 
-var express     = require('express'),
-    web         = express(),
-    api         = require('./lib/api'),
-    redis       = require('./lib/redis'),
-    session     = require('express-session'),
-    serveStatic = require('serve-static'),
-    RedisStore  = require('connect-redis')(session),
-    bodyParser  = require('body-parser'),
-    routes      = require('./routes'),
-    path        = require('path');
+var express         = require('express'),
+    web             = express(),
+    api             = require('./lib/api'),
+    redis           = require('./lib/redis'),
+    session         = require('express-session'),
+    serveStatic     = require('serve-static'),
+    RedisStore      = require('connect-redis')(session),
+    bodyParser      = require('body-parser'),
+    cookieParser    = require('cookie-parser'),
+    routes          = require('./routes'),
+    path            = require('path');
 
-var exphbs      = require('express-handlebars'),
-    favicon     = require('serve-favicon');
+var exphbs          = require('express-handlebars'),
+    favicon         = require('serve-favicon');
 
 function setCustomHeaders(res, path) {
     if (serveStatic.mime.lookup(path) === 'text/html') {
@@ -39,6 +40,8 @@ web.use(bodyParser.urlencoded({
     extended: true,
     limit: '1mb'
 }));
+
+web.use(cookieParser(process.env.SESSION_SECRET));
 
 web.use(session({
     store: new RedisStore({ client: redis.client() }),

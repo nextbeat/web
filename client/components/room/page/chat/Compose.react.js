@@ -175,7 +175,7 @@ class Compose extends React.Component {
                     <textarea ref="textarea" onChange={this.handleChange} onFocus={this.handleFocus} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={message}></textarea>
                     <div className="chat_compose_controls">
                         <input type="submit" 
-                       className={`chat_compose_submit btn ${isPinned && length(message) > MAX_MESSAGE_LENGTH ? 'chat_compose_submit-over-max' : ''}`} 
+                           className={`chat_compose_submit btn ${isPinned && length(message) > MAX_MESSAGE_LENGTH ? 'chat_compose_submit-over-max' : ''}`} 
                            value="Send" 
                            disabled={length(message) === 0} 
                            onClick={this.handleSubmit} 

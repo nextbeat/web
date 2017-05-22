@@ -9,12 +9,13 @@ import has from 'lodash/has'
 import assign from 'lodash/assign'
 import { handleReactRender } from './react'
 
+var INTERNAL_COOKIE_KEY = 'nb__int';
+
 module.exports = {
 
     init: function(web) {
 
-        var passport = passportLib.init(web),
-            internalPassport = passportLib.internalInit(web);
+        var passport = passportLib.init(web);
 
         // API calls
 
@@ -123,20 +124,26 @@ module.exports = {
             })
         });
 
-        router.post('/internal-login', 
-            internalPassport.authenticate('local', { 
-                successRedirect: '/', 
-                failureRedirect: '/access' 
-            })
+        router.post('/internal/login', 
+            function(req, res) {
+                if ('password' in req.body && req.body.password === process.env.INTERNAL_PASSPHRASE) {
+                    // Not inherently secure, but currently dev website
+                    // is public so anything is an improvement.
+                    res.cookie(INTERNAL_COOKIE_KEY, 'true', { maxAge: 1000*60*60*24*365, httpOnly: true }); 
+                    res.status(200).end();
+                } else {
+                    res.status(401).send({ error: 'Incorrect passphrase.' });
+                }
+            }
         );
 
         // React
         
         router.use(function(req, res, next) {
             if (process.env.NODE_ENV !== 'production') {
-                console.log('internal user', req.internalUser);
-                if (!req.internalUser && req.path !== '/access') {
-                    res.redirect('/access');
+                if (req.cookies[INTERNAL_COOKIE_KEY] !== 'true' && req.path !== '/internal/access') {
+                    res.redirect('/internal/access');
+                    return;
                 }
             } 
             next();

@@ -1,0 +1,63 @@
+.internal-access_form {
+    margin: 50px auto;
+    width: 250px;
+
+    form * {
+        display: block;
+    }
+}
+
+.internal-access_logo {
+
+    text-align: center;
+    position: relative;
+
+    .svg-icon-logo {
+        fill: $primary-color;
+        width: 215px;
+    }
+}
+
+.internal-access_environment {
+    color: $secondary-color;
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+}
+
+.internal-access_description {
+    font-size: 13px;
+    margin-top: 15px;
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.internal-access_password {
+    margin-top: 25px;
+    width: 100%;
+    font-size: 13px;
+    font-weight: 300;
+    padding: 6px 8px;
+
+    &::placeholder {
+        color: #bbb;
+    }
+}
+
+.internal-access_submit {
+    margin: 25px auto 0;
+}
+
+.internal-access_error {
+    margin-top: 20px;
+    text-align: center;
+    color: $error-color;
+    font-size: 13px;
+    font-weight: 300;
+}
+
