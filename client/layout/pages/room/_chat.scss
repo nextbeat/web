@@ -60,6 +60,16 @@
     }
 }
 
+.chat_history_overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    z-index: 50;
+}
+
 .chat_items {
     list-style-type: none;
     margin: 0;
