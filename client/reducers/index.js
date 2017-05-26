@@ -1,4 +1,4 @@
-import { Map, List } from 'immutable'
+import { Map, List, fromJS } from 'immutable'
 import includes from 'lodash/includes'
 import keys from 'lodash/keys'
 
@@ -24,11 +24,14 @@ const initialEntities = Map({
 function entities(state = initialEntities, action) {
     if (action.response && action.response.entities) {
         let entities = action.response.entities
-        // we want merge individual entities, but we don't want to recursively merge their object properties
+        // we want to merge individual entities, but we don't 
+        // want to recursively merge their object properties
         keys(entities).forEach(entityTypeKey => {
             state = state.update(entityTypeKey, Map(), entityTypeMap => {
                 keys(entities[entityTypeKey]).forEach(entityIdKey => {
-                    entityTypeMap = entityTypeMap.update(entityIdKey, Map(), entity => entity.merge(entities[entityTypeKey][entityIdKey]))
+                    entityTypeMap = entityTypeMap.update(entityIdKey, Map(), 
+                        entity => entity.merge(entities[entityTypeKey][entityIdKey]) 
+                    )
                 })
                 return entityTypeMap
             })

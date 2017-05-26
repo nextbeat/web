@@ -1,5 +1,6 @@
 import { Map, List } from 'immutable'
 import { ActionTypes, Status } from '../../../actions'
+import { paginate } from '../../utils'
 
 function promptChatActions(state, action) {
     return state.merge({
@@ -17,6 +18,20 @@ function clearChatMessage(state, action) {
     })
 }
 
+function searchChat(state, action) {
+    state = state.set('search', paginate(ActionTypes.SEARCH_CHAT, ActionTypes.CLEAR_SEARCH_CHAT)(state, action));
+    if (action.type === ActionTypes.SEARCH_CHAT) {
+        state = state.set('showSearchResults', true)
+    }
+    return state
+}
+
+function hideSearchChatResults(state, action) {
+    return state.merge({
+        showSearchResults: false
+    })
+}
+
 export default function chat(state=Map(), action) {
     if (action.type === ActionTypes.PROMPT_CHAT_ACTIONS) {
         return promptChatActions(state, action)
@@ -24,6 +39,10 @@ export default function chat(state=Map(), action) {
         return mentionUser(state, action)
     } else if (action.type === ActionTypes.CLEAR_CHAT_MESSAGE) {
         return clearChatMessage(state, action)
+    } else if (action.type === ActionTypes.SEARCH_CHAT || action.type === ActionTypes.CLEAR_SEARCH_CHAT) {
+        return searchChat(state, action)
+    } else if (action.type === ActionTypes.HIDE_SEARCH_CHAT_RESULTS) {
+        return hideSearchChatResults(state, action)
     }
     return state;
 }

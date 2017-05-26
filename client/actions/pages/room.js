@@ -7,7 +7,8 @@ import { markStackAsRead } from '../notifications'
 import { promptModal } from '../app'
 import { loadRoom, loadComments, clearComments, clearRoom } from '../room'
 import { RoomPage } from '../../models'
-import { API_CALL, API_CANCEL, GA, AnalyticsTypes, GATypes } from '../types'
+import { API_CALL, API_CANCEL, GA, AnalyticsTypes, GATypes, EntityUpdateStrategy } from '../types'
+import { loadPaginatedObjects } from '../utils'
 
 
 /**********
@@ -52,6 +53,49 @@ function fetchMoreStacks(stack_id) {
 
 export function loadMoreStacks(stack_id, tags) {
     return fetchMoreStacks(stack_id, tags)
+}
+
+function doSearchChat(roomId, query, pagination) {
+    return {
+        type: ActionTypes.SEARCH_CHAT,
+        roomId,
+        [API_CALL]: {
+            schema: Schemas.COMMENTS,
+            endpoint: `stacks/${roomId}/comments/search`,
+            queries: { q: query },
+            pagination
+        }
+    }
+}
+
+export function searchChat(query, isNewSearch=true) {
+    return (dispatch, getState) => {
+        const room = new RoomPage(getState())
+        const roomId = room.get('id')
+        if (isNewSearch) {
+            dispatch(clearSearchChat())
+        }
+        loadPaginatedObjects(['pages', 'room', 'chat', 'search'], doSearchChat.bind(this, roomId, query), 20)(dispatch, getState)
+    }
+}
+
+export function clearSearchChat() {
+    return {
+        type: ActionTypes.CLEAR_SEARCH_CHAT
+    }
+}
+
+function doHideSearchChatResults() {
+    return {
+        type: ActionTypes.HIDE_SEARCH_CHAT_RESULTS
+    }
+}
+
+export function hideSearchChatResults() {
+    return (dispatch) => {
+        dispatch(clearSearchChat())
+        dispatch(doHideSearchChatResults())
+    }
 }
 
 
@@ -223,7 +267,7 @@ function performClearRoomPage() {
     return {
         type: ActionTypes.CLEAR_ROOM_PAGE,
         [API_CANCEL]: {
-            actionTypes: [ActionTypes.MORE_STACKS]
+            actionTypes: [ActionTypes.MORE_STACKS, ActionTypes.SEARCH_CHAT]
         }
     }
 }

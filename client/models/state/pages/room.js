@@ -3,6 +3,7 @@ import StateModel from '../base'
 
 import MediaItemEntity from '../../entities/mediaItem'
 import StackEntity from '../../entities/stack'
+import CommentEntity from '../../entities/comment'
 
 import Room from '../room'
 
@@ -14,6 +15,10 @@ const KEY_MAP = {
     // chat
     'selectedChatUsername': ['chat', 'selectedUsername'],
     'mentions': ['chat', 'mentions'],
+    'showSearchResults': ['chat', 'showSearchResults'],
+    'searchResultIds': ['chat', 'search', 'ids'],
+    'searchResultsFetching': ['chat', 'search', 'isFetching'],
+    'searchResultsError': ['chat', 'search', 'error'],
     // ui
     'selectedDetailSection': ['ui', 'detailSection'],
     // more
@@ -107,10 +112,10 @@ export default class RoomPage extends StateModel {
         return this.get('moreStackIds', List()).map(id => new StackEntity(id, this.state.get('entities')))
     }
 
-    bannedUsers() {
-        return this.get('bannedUserIds', List()).map(id => this.__getEntity(id, 'users'))
+    searchResults() {
+        return this.get('searchResultIds', List()).map(id => new CommentEntity(id, this.state.get('entities')))
     }
-
+    
 
     // Queries
 

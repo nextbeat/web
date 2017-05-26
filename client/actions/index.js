@@ -25,7 +25,6 @@ export {
     loadRoom,
     loadMediaItems,
     loadComments,
-    loadMoreStacks,
     getRoomInfo,
     sendComment,
     resendComment,
@@ -62,6 +61,10 @@ export {
 
 export {
     loadRoomPage,
+    loadMoreStacks,
+    searchChat,
+    clearSearchChat,
+    hideSearchChatResults,
     mentionUser,
     clearChatMessage,
     promptChatActionsForUser,

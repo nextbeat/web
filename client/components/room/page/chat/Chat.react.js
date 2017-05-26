@@ -5,6 +5,7 @@ import debounce from 'lodash/debounce'
 
 import Compose from './Compose.react'
 import ChatSearchBar from './ChatSearchBar.react'
+import ChatSearchResults from './ChatSearchResults.react'
 import UserActions from './UserActions.react'
 import WelcomeBanner from './WelcomeBanner.react'
 import ChatHistory from '../../chat/ChatHistory.react'
@@ -54,6 +55,9 @@ class Chat extends React.Component {
             { pinnedComment && 
                 <PinnedChatItem pinnedComment={pinnedComment} />
             }
+            { roomPage.get('showSearchResults') && 
+                <ChatSearchResults />
+            } 
             <ChatHistory roomId={roomPage.room().id} scrollable={true} />
             <Compose />
             <ReactCSSTransitionGroup transitionName="chat_lost-connection" transitionEnterTimeout={300} transitionLeaveTimeout={200}>

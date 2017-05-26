@@ -1,6 +1,9 @@
 import React from 'react'
+import { findDOMNode } from 'react-dom'
+import { connect } from 'react-redux'
 
 import Icon from '../../../shared/Icon.react'
+import { searchChat } from '../../../../actions'
 
 class ChatSearchBar extends React.Component {
 
@@ -10,8 +13,13 @@ class ChatSearchBar extends React.Component {
         this.handleKeyPress = this.handleKeyPress.bind(this);
     }
 
-    handleKeyPress() {
-
+    handleKeyPress(e) {
+        if (e.charCode === 13) { // enter
+            const query = findDOMNode(this.refs.search).value;
+            if (query && query.length > 0) {
+                this.props.dispatch(searchChat(query, true))
+            }
+        }
     }
 
     render() {
@@ -28,4 +36,4 @@ class ChatSearchBar extends React.Component {
     }
 }
 
-export default ChatSearchBar;
+export default connect()(ChatSearchBar);

@@ -15,8 +15,6 @@
         right: 26px;
         margin-top: 2px;
     }
-
-    // border-bottom: 1px solid $border-color;
 }
 
 .chat_search {
@@ -30,4 +28,94 @@
     &::placeholder {
         color: #ccc;
     }
+}
+
+
+// Search results
+
+.chat_search-results {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: #fff;
+    z-index: 100;
+}
+
+.chat_search-results_header {
+    color: #777;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 0 20px;
+    position: relative;
+    margin-top: 8px;
+    margin-bottom: 12px;
+    user-select: none;
+}
+
+.chat_search-results_close {
+    position: absolute;
+    right: 17px;
+    top: 0;
+
+    .svg-icon-close {
+        fill: #ccc;
+        width: 22px;
+        height: 22px;
+    }
+}
+
+.chat_search-results_results {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.chat_item-search {
+    margin: 0 10px;
+    position: relative;
+    user-select: none;
+
+    &:hover {
+        background: #f6f6f6;
+        cursor: pointer;
+
+        .chat_item-search_jump {
+            display: inline-block;
+        }
+    }
+}
+
+.chat_item-search_jump {
+    color: #fff;
+    font-size: 10px;
+    background: #c5c5c5;
+    padding: 3px 4px;
+    position: absolute;
+    display: none;
+    top: 6px;
+    right: 6px;
+}
+
+.chat_item-search_inner {
+    margin: 0 7px;
+    padding: 10px 0;
+    border-bottom: 1px solid $border-color;
+}
+
+.chat_item-search_username {
+    color: $secondary-color;
+    font-weight: 700;
+    margin-right: 7px;
+}
+
+.chat_item-search_time {
+    color: $detail-text-color;
+    font-size: 11px;
+    font-style: italic;
+}
+
+.chat_item-search_body {
+    margin-top: 5px;
 }

@@ -1,4 +1,5 @@
 import parse from 'date-fns/parse'
+import format from 'date-fns/format'
 import differenceInMonths from 'date-fns/difference_in_months'
 import differenceInYears from 'date-fns/difference_in_years'
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict'
@@ -106,4 +107,9 @@ export function timeLeftString(dirtyDate, options) {
     } else {
         return `${distanceInWordsStrict(date, now, { unit: 'h' })} left`
     }
+}
+
+export function timeString(dirtyDate, options) {
+    let date = parse(dirtyDate)
+    return format(date, 'h:mm a')
 }
