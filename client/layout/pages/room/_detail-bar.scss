@@ -62,24 +62,25 @@
 
 .detail-bar_header {
     width: 100%;
-    height: 40px;
+    height: 30px;
     border-bottom: 1px solid #eee;
     text-align: center;
     position: relative;
+    // background: #f6f6f6;
 }
 
 .detail-bar_toggle-edit {
     position: absolute;
     right: 3px;
-    top: 6px;
+    top: 4px;
 
     .svg-icon-more-vert {
-        fill: #aaa;
-        width: 25px;
-        height: 25px;
+        fill: #a3a3a3;
+        width: 20px;
+        height: 20px;
 
         &:hover {
-            fill: #bbb;
+            fill: #b6b6b6;
             cursor: pointer;
         }
     }
@@ -97,16 +98,18 @@
     color: #888;
     padding: 0 10px;
     display: inline-block;
-    line-height: 35px;
+    line-height: 25px;
+    font-size: 13px;
     text-align: center;
+    text-transform: uppercase;
     margin-right: 30px;
     position: relative;
 
     &.selected {
-        border-bottom: 5px solid $light-primary-color;
+        border-bottom: 5px solid $secondary-color;
         color: $text-color;
         &:hover {
-            border-bottom: 5px solid $light-primary-color;
+            border-bottom: 5px solid $secondary-color;
         }
     }
 
@@ -115,7 +118,7 @@
     }
 
     &:hover {
-        border-bottom: 5px solid mix(white, $light-primary-color, 80%);
+        border-bottom: 5px solid mix(white, $secondary-color, 60%);
         cursor: pointer;
     }
 }

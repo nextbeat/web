@@ -1,0 +1,90 @@
+
+// Welcome banner
+
+.chat_welcome-banner {
+    background: $secondary-color;
+    color: #fff;
+    flex: 0 0 auto;
+    @include clearfix;
+}
+
+.chat_welcome-banner_close {
+    float: right;
+    margin: 13px 8px 0 0;
+    width: 22px;
+    height: 22px;
+
+    .svg-icon {
+        fill: #fff;
+        width: 100%;
+        height: 100%;
+    }
+
+    &:hover {
+        cursor: pointer;
+        .svg-icon {
+            fill: mix($secondary-color, #fff, 20%);
+        }
+    }
+}
+
+.chat_welcome-banner_prompt {
+    padding: 15px;
+
+    h1 {
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    p {
+        font-size: 13px;
+        margin: 15px 0 0 0;
+        font-weight: 300;
+    }
+
+    a {
+        margin-left: 5px;
+        color: #fff;
+        font-weight: 300;
+        text-decoration: underline;
+
+        &:hover {
+            color: mix($secondary-color, #fff, 20%);
+            cursor: pointer;
+        }
+    }
+}
+
+
+// Lost connection
+
+.chat_lost-connection {
+    background: rgba(#ecd539, .95);
+    font-weight: 300;
+    font-size: 13px;
+    width: 100%;
+    padding: 8px 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: center;
+}
+
+.chat_lost-connection-enter {
+    transform: translateY(-30px);
+
+    &.chat_lost-connection-enter-active {
+        transform: translateY(0);
+        transition: transform 0.3s;
+    }
+}
+
+.chat_lost-connection-leave {
+    transform: translateY(0);
+
+    &.chat_lost-connection-leave-active {
+        transform: translateY(-30px);
+        transition: transform 0.2s;
+    }
+}

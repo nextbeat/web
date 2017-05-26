@@ -4,6 +4,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import debounce from 'lodash/debounce'
 
 import Compose from './Compose.react'
+import ChatSearchBar from './ChatSearchBar.react'
 import UserActions from './UserActions.react'
 import WelcomeBanner from './WelcomeBanner.react'
 import ChatHistory from '../../chat/ChatHistory.react'
@@ -49,6 +50,7 @@ class Chat extends React.Component {
         <div className="chat" onWheel={debounce(this.handleOnWheel, 200)} style={{ display: (display ? "flex" : "none") }}>
             <UserActions />
             <WelcomeBanner username={roomPage.author().get('username')} closed={roomPage.get('closed')} />
+            <ChatSearchBar />
             { pinnedComment && 
                 <PinnedChatItem pinnedComment={pinnedComment} />
             }
