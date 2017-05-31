@@ -76,17 +76,13 @@
     a {
         color: $secondary-color;
     }
-
-//     &:first-child {
-//         margin-top: 0;
-//     }
     
     .mention {
         color: red;
     }
 
     .highlight {
-        background-color: blue;
+        background-color: #ccc;
     }
 }
 

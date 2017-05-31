@@ -1,6 +1,7 @@
 import React from 'react'
 import inRange from 'lodash/inRange'
 import { List } from 'immutable'
+import { hashCode } from '../../../../utils'
 
 // function renderWithRegexMentions(message, { start, end, onMentionClick }) {
 //     const re = /(@\w+)/
@@ -109,9 +110,7 @@ function preprocessAnnotations(comment, { includeLinks=false } = {}) {
     return annotations.sort((a1, a2) => a1.start - a2.start || a2.end - a1.end)
 }
 
-function recursiveCreateElement(start, end, annotations, message, level) {
-
-    console.log(level, start, end, annotations.toJS(), message.substring(start, end))
+function recursiveCreateElement(start, end, annotations, message) {
 
     if (annotations.size === 0) {
         return message.substring(start, end);
@@ -120,20 +119,31 @@ function recursiveCreateElement(start, end, annotations, message, level) {
     let annotation = annotations.get(0)
     annotations = annotations.shift()
     return [
-        recursiveCreateElement(start, annotation.start, List(), message, level+1),
+        recursiveCreateElement(start, annotation.start, List(), message),
         React.createElement(
             'span',
             {className: annotation.type, key: `${annotation.type},${annotation.start},${annotation.end}`},
-            recursiveCreateElement(annotation.start, annotation.end, annotations.filter(a => a.start >= annotation.start && a.end <= annotation.end), message, level+1)
+            recursiveCreateElement(annotation.start, annotation.end, annotations.filter(a => a.start >= annotation.start && a.end <= annotation.end), message)
         ),
-        recursiveCreateElement(annotation.end, end, annotations.filter(a => a.start >= annotation.end), message, level+1)
+        recursiveCreateElement(annotation.end, end, annotations.filter(a => a.start >= annotation.end), message)
     ]
+}  
+
+function doRenderMessageText(comment) {
+    let annotations = preprocessAnnotations(comment)
+    let message     = comment.get('message')
+    return <span>{recursiveCreateElement(0, message.length, annotations, message)}</span>
+}
+
+let cache = {}
+function memoizedRenderMessageText(comment) {
+    let key = hashCode(comment.get('message') + JSON.stringify(comment.get('result_indices')))
+    if (!cache[key]) {
+        cache[key] = doRenderMessageText(comment);
+    }
+    return cache[key]
 }
 
 export default function renderMessageText(comment) {
-    let annotations = preprocessAnnotations(comment)
-    let message     = comment.get('message')
-
-    console.log(message, annotations.toJS())
-    return <span>{recursiveCreateElement(0, message.length, annotations, message, 0)}</span>
+    return memoizedRenderMessageText(comment)
 }
