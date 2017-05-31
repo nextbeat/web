@@ -76,14 +76,19 @@
     a {
         color: $secondary-color;
     }
-    
-    .mention {
-        color: red;
-    }
+}
 
-    .highlight {
-        background-color: #ccc;
+a.chat_item_mention {
+    font-weight: normal;
+    &:hover {
+        color: $light-secondary-color;
+        cursor: pointer;
     }
+}
+
+.chat_item_highlight {
+    background: #ddd;
+    padding: 1px 3px;
 }
 
 .chat_item_username {
@@ -157,14 +162,6 @@ a.chat_item-failed_retry {
     color: white;
     font-weight: 400;
     margin-left: 5px;
-}
-
-a.chat_mention {
-    font-weight: normal;
-    &:hover {
-        color: $light-secondary-color;
-        cursor: pointer;
-    }
 }
 
 .chat_live-mention {
