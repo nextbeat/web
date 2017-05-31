@@ -3,7 +3,7 @@ import StateModel from '../base'
 
 import MediaItemEntity from '../../entities/mediaItem'
 import StackEntity from '../../entities/stack'
-import CommentEntity from '../../entities/comment'
+import SearchResultCommentEntity from '../../entities/searchResultComment'
 
 import Room from '../room'
 
@@ -113,7 +113,7 @@ export default class RoomPage extends StateModel {
     }
 
     searchResults() {
-        return this.get('searchResultIds', List()).map(id => new CommentEntity(id, this.state.get('entities')))
+        return this.get('searchResultIds', List()).map(id => new SearchResultCommentEntity(id, this.state.get('entities')))
     }
     
 

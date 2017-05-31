@@ -60,7 +60,7 @@ function doSearchChat(roomId, query, pagination) {
         type: ActionTypes.SEARCH_CHAT,
         roomId,
         [API_CALL]: {
-            schema: Schemas.COMMENTS,
+            schema: Schemas.SEARCH_RESULT_COMMENTS,
             endpoint: `stacks/${roomId}/comments/search`,
             queries: { q: query },
             pagination
