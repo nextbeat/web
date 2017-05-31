@@ -28,7 +28,6 @@ class SearchResultChatItem extends React.Component {
                     </div>
                     <div className="chat_item-search_body">
                         { renderMessageText(comment) }
-                        { comment.get('result_indices') }
                     </div>
                 </div>
             </li>
