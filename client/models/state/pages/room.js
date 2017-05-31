@@ -16,8 +16,10 @@ const KEY_MAP = {
     'selectedChatUsername': ['chat', 'selectedUsername'],
     'mentions': ['chat', 'mentions'],
     'showSearchResults': ['chat', 'showSearchResults'],
+    'searchQuery': ['chat', 'searchQuery'],
     'searchResultIds': ['chat', 'search', 'ids'],
     'searchResultsFetching': ['chat', 'search', 'isFetching'],
+    'searchResultsHasFetched': ['chat', 'search', 'hasFetched'],
     'searchResultsError': ['chat', 'search', 'error'],
     // ui
     'selectedDetailSection': ['ui', 'detailSection'],

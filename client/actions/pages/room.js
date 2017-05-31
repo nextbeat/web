@@ -59,6 +59,7 @@ function doSearchChat(roomId, query, pagination) {
     return {
         type: ActionTypes.SEARCH_CHAT,
         roomId,
+        query,
         [API_CALL]: {
             schema: Schemas.SEARCH_RESULT_COMMENTS,
             endpoint: `stacks/${roomId}/comments/search`,
@@ -68,13 +69,20 @@ function doSearchChat(roomId, query, pagination) {
     }
 }
 
-export function searchChat(query, isNewSearch=true) {
+export function searchChat(query, forceUpdate=false) {
     return (dispatch, getState) => {
         const room = new RoomPage(getState())
         const roomId = room.get('id')
-        if (isNewSearch) {
+        const lastQuery = room.get('searchQuery', '')
+
+        if (!query) {
+            query = lastQuery;
+        }
+
+        if (lastQuery !== query || forceUpdate) {
             dispatch(clearSearchChat())
         }
+        
         loadPaginatedObjects(['pages', 'room', 'chat', 'search'], doSearchChat.bind(this, roomId, query), 20)(dispatch, getState)
     }
 }

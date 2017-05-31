@@ -11,15 +11,30 @@ class ChatSearchBar extends React.Component {
         super(props);
 
         this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+
+        this.state = {
+            query: ''
+        }
+    }
+
+    componentDidMount() {
+        if (this.props.query) {
+            this.setState({ query: this.props.query })
+        }
     }
 
     handleKeyPress(e) {
         if (e.charCode === 13) { // enter
-            const query = findDOMNode(this.refs.search).value;
+            const { query } = this.state
             if (query && query.length > 0) {
                 this.props.dispatch(searchChat(query, true))
             }
         }
+    }
+
+    handleChange(e) {
+        this.setState({ query: e.target.value })
     }
 
     render() {
@@ -29,6 +44,8 @@ class ChatSearchBar extends React.Component {
                        placeholder="Search for @username or #tag"
                        ref="search"
                        onKeyPress={this.handleKeyPress}
+                       onChange={this.handleChange}
+                       value={this.state.query}
                 />
                 <Icon type="search" />
             </div>

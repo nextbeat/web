@@ -19,9 +19,12 @@ function clearChatMessage(state, action) {
 }
 
 function searchChat(state, action) {
-    state = state.set('search', paginate(ActionTypes.SEARCH_CHAT, ActionTypes.CLEAR_SEARCH_CHAT)(state, action));
+    state = state.set('search', paginate(ActionTypes.SEARCH_CHAT, ActionTypes.CLEAR_SEARCH_CHAT)(state.get('search'), action));
     if (action.type === ActionTypes.SEARCH_CHAT) {
         state = state.set('showSearchResults', true)
+    }
+    if (action.query) {
+        state = state.set('searchQuery', action.query)
     }
     return state
 }
