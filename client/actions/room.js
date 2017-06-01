@@ -1,6 +1,8 @@
 import { List } from 'immutable'
 import { normalize } from 'normalizr'
 import { browserHistory } from 'react-router'
+import format from 'date-fns/format'
+import assign from 'lodash/assign'
 
 import ActionTypes from './types'
 import Schemas from '../schemas'
@@ -12,6 +14,7 @@ import { Room, RoomPage, CurrentUser } from '../models'
 import { API_CALL, API_CANCEL, GA, AnalyticsTypes, GATypes } from './types'
 import { setStorageItem, generateUuid } from '../utils'
 
+const COMMENTS_PAGE_SIZE = 40;
 
 /**********
  * FETCHING
@@ -32,7 +35,7 @@ export function loadRoom(id) {
     return dispatch => {
         dispatch(fetchRoom(id))
         dispatch(loadMediaItems(id));
-        dispatch(loadComments(id));
+        dispatch(loadLatestComments(id));
     }
 }
 
@@ -52,28 +55,84 @@ export function loadMediaItems(roomId) {
     return loadPaginatedObjects(['rooms', roomId, 'pagination', 'mediaItems'], fetchMediaItems.bind(this, roomId), "all");
 }
 
-function fetchComments(roomId, pagination) {
-    return {
-        type: ActionTypes.COMMENTS,
-        roomId,
-        [API_CALL]: {
-            schema: Schemas.COMMENTS,
-            endpoint: `stacks/${roomId}/comments`,
-            pagination
-        }
-    }
-}
-
-export function loadComments(roomId) {
-    return loadPaginatedObjects(['rooms', roomId, 'pagination', 'comments'], fetchComments.bind(this, roomId), 60);
-}
-
 export function getRoomInfo(roomId) {
     return {
         type: ActionTypes.ROOM_INFO,
         roomId
     }
 }
+
+
+/* Comments */
+
+function goToComment(roomId, comment) {
+    return {
+        type: ActionTypes.GO_TO_COMMENT,
+        roomId,
+        comment
+    }
+}
+
+function onFetchCommentSuccess(store, next, action) {
+    if (action.fetchType === 'around') {
+        store.dispatch(goToComment(action.roomId, action.comment))
+    }
+}
+
+function fetchComments(roomId, queries, options) {
+    return assign({}, options, {
+        type: ActionTypes.COMMENTS,
+        roomId,
+        [API_CALL]: {
+            schema: Schemas.COMMENTS,
+            endpoint: `stacks/${roomId}/comments`,
+            pagination: {
+                limit: COMMENTS_PAGE_SIZE,
+                page: 1
+            },
+            queries,
+            onSuccess: onFetchCommentSuccess
+        }
+    })
+}
+
+export function loadComments(roomId, direction) {
+    return (dispatch, getState) => {
+        const room = new Room(roomId, getState())
+        if (direction === 'before') {
+            if (room.get('hasReachedOldestComment')) {
+                return null;
+            }
+            const queries = {
+                before: room.comments().last().get('created_at')
+            }
+            return dispatch(fetchComments(roomId, queries, { fetchType: 'before' }));
+        } else if (direction === 'after') {
+            if (room.get('hasReachedLatestComment')) {
+                return null;
+            }
+            const queries = {
+                after: room.comments().first().get('created_at')
+            }
+            return dispatch(fetchComments(roomId, queries, { fetchType: 'after' }));
+        }
+    }
+}
+
+export function loadLatestComments(roomId) {
+    const queries = {
+        before: format(Date.now())
+    };
+    return fetchComments(roomId, queries, { fetchType: 'mostRecent' });
+}
+
+export function jumpToComment(roomId, comment) {
+    const queries = {
+        around: format(comment.get('created_at'))
+    }
+    return fetchComments(roomId, queries, { fetchType: 'around', comment })
+}
+
 
 /******
  * CHAT

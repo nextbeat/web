@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import ChatHistory from '../../chat/ChatHistory.react'
+import SmallFixedChatHistory from '../../chat/SmallFixedChatHistory.react'
 
 import { RoomPage, App } from '../../../../models'
 import { selectDetailSection } from '../../../../actions'
@@ -30,7 +30,7 @@ class SmallChat extends React.Component {
         const { roomPage } = this.props;
         return (
         <div className="player_small-chat" onClick={this.handleChatClick}>
-            <ChatHistory roomId={roomPage.room().id} scrollable={false} style='compact' collapseMessages={true} />
+            <SmallFixedChatHistory roomId={roomPage.room().id} />
             <div className="player_small-chat_expand">
                 <div className="player_small-chat_expand-prompt" onClick={this.handleExpandClick}>Tap to chat</div>
             </div>

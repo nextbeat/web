@@ -35,8 +35,10 @@ export default function ScrollComponent(domId, scrollOptions={}) {
                 this.handleScroll = this.handleScroll.bind(this)
                 this.handleResize = this.handleResize.bind(this)
 
+                this._doScroll = this._doScroll.bind(this)
                 this.scrollToTop = this.scrollToTop.bind(this)
                 this.scrollToBottom = this.scrollToBottom.bind(this)
+                this.scrollToElementWithId = this.scrollToElementWithId.bind(this)
                 this.scrollToTopIfPreviouslyAtTop = this.scrollToTopIfPreviouslyAtTop.bind(this)
                 this.scrollToBottomIfPreviouslyAtBottom = this.scrollToBottomIfPreviouslyAtBottom.bind(this)
                 this.keepScrollPosition = this.keepScrollPosition.bind(this)
@@ -128,37 +130,40 @@ export default function ScrollComponent(domId, scrollOptions={}) {
             }
 
             // Actions
-
-            scrollToBottom(duration=0) {
+            
+            _doScroll(top, duration) {
                 const elem = this.domElement();
-                const newTop = elem.scrollHeight - elem.clientHeight;
                 if (duration > 0) {
-                    $(elem).animate({ scrollTop: newTop }, {
+                    $(elem).animate({ scrollTop: top }, {
                         duration,
                         complete: () => {
                             this.setScrollState();
-                        }
+                        },
+                        easing: $.bez([0, 0, 0.2, 1]) // ease in
                     })
                 } else {
-                    elem.scrollTop = newTop;
+                    elem.scrollTop = top;
                     this.setScrollState();
                 }
             }
 
-            scrollToTop(duration=0) {
+            scrollToBottom(duration=0) {
                 const elem = this.domElement();
-                if (duration > 0) {
-                    $(elem).animate({ scrollTop: 0 }, {
-                        duration,
-                        complete: () => {
-                            this.setScrollState();
-                        }
-                    })
-                } else {
-                    elem.scrollTop = 0;
-                    this.setScrollState();
-                }
-                
+                const newTop = elem.scrollHeight - elem.clientHeight;
+                this._doScroll(newTop, duration);
+            }
+
+            scrollToTop(duration=0) {
+                this._doScroll(0, duration);
+            }
+
+            scrollToElementWithId(id, duration=0) {
+                // sets element in center of scroll container
+                const containerElem = this.domElement();
+                const elem = document.getElementById(id);
+                const newTop = Math.max(1, elem.offsetTop - containerElem.clientHeight/2);
+                console.log(newTop, containerElem.scrollTop);
+                this._doScroll(newTop, duration);
             }
 
             scrollToBottomIfPreviouslyAtBottom() {

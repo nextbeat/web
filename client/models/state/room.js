@@ -28,10 +28,16 @@ const KEY_MAP = {
     // comments
     'commentIds': ['pagination', 'comments', 'ids'],
     'commentsFetching': ['pagination', 'comments', 'isFetching'],
+    'commentsHasFetched': ['pagination', 'comments', 'hasFetched'],
     'commentsError': ['pagination', 'comments', 'error'],
+    'commentsFetchType': ['pagination', 'comments', 'fetchType'],
+    'hasReachedOldestComment': ['pagination', 'comments', 'hasReachedOldest'],
+    'hasReachedLatestComment': ['pagination', 'comments', 'hasReachedLatest'],
+    'latestCommentIds': ['pagination', 'comments', 'latestIds'],
     'liveCommentIds': ['live', 'comments'],
     'submittingComments': ['live', 'submittingComments'],
     'failedComments': ['live', 'failedComments'],
+    'selectedComment': ['navigation', 'selectedComment'],
     // other data
     'bannedUsers': ['live', 'bannedUsers'],
     'pinnedCommentId': ['live', 'pinnedCommentId'],
@@ -93,6 +99,10 @@ export default class Room extends StateModel {
         return this.constructor.memoizedComments(this.id, this.state)
     }
 
+    latestComments() {
+        return this.get('latestCommentIds', List()).map(id => new CommentEntity(id, this.state.get('entities')))
+    }
+
     liveComments() {
         return this.get('liveCommentIds', List()).map(id => new CommentEntity(id, this.state.get('entities')))
     }
@@ -103,6 +113,10 @@ export default class Room extends StateModel {
 
     failedComments() {
         return this.get('failedComments', List())
+    }
+
+    jumpedComments() {
+        return this.get('jumpedCommentIds', List()).map(id => new CommentEntity(id, this.state.get('entities')))
     }
 
     pinnedComment() {
@@ -191,7 +205,7 @@ export default class Room extends StateModel {
     }
 
     hasLoadedChat() {
-        return !this.get('commentsFetching') && this.hasJoined() && !this.get('commentsError')
+        return this.get('commentsHasFetched') && this.hasJoined()
     }
 
     userIsBanned(username) {

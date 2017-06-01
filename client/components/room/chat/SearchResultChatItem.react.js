@@ -1,19 +1,29 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 import renderMessageText from './utils/renderMessageText'
 import { timeString } from '../../../utils'
+import { jumpToComment, hideSearchChatResults } from '../../../actions'
 
 class SearchResultChatItem extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick() {
+        const { dispatch, comment, roomId } = this.props;
+        dispatch(hideSearchChatResults());
+        dispatch(jumpToComment(roomId, comment));
     }
 
     render() {
         const { comment } = this.props;
 
         return (
-            <li className="chat_item chat_item-search">
+            <li className="chat_item chat_item-search" onClick={this.handleClick}>
                 <div className="chat_item-search_jump">
                     Jump
                 </div>
@@ -37,10 +47,11 @@ class SearchResultChatItem extends React.Component {
 
 SearchResultChatItem.propTypes = {
     comment: React.PropTypes.object.isRequired,
+    roomId: React.PropTypes.number.isRequired,
 
     isCreator: React.PropTypes.bool,
     handleSelect: React.PropTypes.func
 }
 
-export default SearchResultChatItem;
+export default connect()(SearchResultChatItem);
 

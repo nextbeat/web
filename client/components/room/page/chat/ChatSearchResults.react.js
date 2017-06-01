@@ -23,7 +23,7 @@ class ChatSearchResults extends React.Component {
     }
 
     render() {
-        const { searchResults, isFetching, hasFetched, error, query } = this.props;
+        const { searchResults, isFetching, hasFetched, error, query, roomId } = this.props;
 
         return (
             <div className="chat_search-results">
@@ -34,7 +34,7 @@ class ChatSearchResults extends React.Component {
                 </div>
                 <div className="chat_search-results_body" id="chat_search-results_body">
                     <ul className="chat_search-results_results">  
-                        {searchResults.map((comment, idx) => <SearchResultChatItem key={idx} comment={comment} />)}
+                        {searchResults.map((comment, idx) => <SearchResultChatItem roomId={roomId} key={idx} comment={comment} />)}
                     </ul>
                     { hasFetched && searchResults.size === 0 &&
                         <div className="chat_search-results_no-results">
@@ -60,6 +60,7 @@ const scrollOptions = {
 function mapStateToProps(state) {
     let roomPage = new RoomPage(state)
     return {
+        roomId: roomPage.get('id'),
         searchResults: roomPage.searchResults(),
         isFetching: roomPage.get('searchResultsFetching'),
         hasFetched: roomPage.get('searchResultsHasFetched'),

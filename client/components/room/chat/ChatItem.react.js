@@ -56,14 +56,14 @@ class ChatItem extends React.Component {
     }
 
     renderBotComment() {
-        const { comment } = this.props;
+        const { comment, id } = this.props;
 
         const isPrivate = comment.get('subtype') === 'private'
         const privateClass = isPrivate ? 'chat_item-chatbot_body-private' : ''
         const username = comment.author().get('username')
 
         return (
-            <li className="chat_item chat_item-chatbot">
+            <li className="chat_item chat_item-chatbot" id={id}>
                 <div className="chat_item-chatbot_header">
                     <img className="chat_item_emoji" src={robot} />
                     <span className="chat_item-chatbot_username">{username}</span>
@@ -77,7 +77,7 @@ class ChatItem extends React.Component {
     }
 
     renderUserComment() {
-        const { comment, isCreator, handleSelectUsername } = this.props;
+        const { comment, isCreator, handleSelectUsername, id } = this.props;
 
         // Currently only bot comments can be private,
         // so we don't bother with private comment styling
@@ -87,7 +87,7 @@ class ChatItem extends React.Component {
         const username = comment.author().get('username')
         
         return (
-            <li className="chat_item" ref="chat">
+            <li className="chat_item" ref="chat" id={id}>
                 <strong className={`chat_item_username ${creatorClass}`}>
                     <a onClick={ () => { handleSelectUsername(username) } }>{username} </a>
                 </strong>

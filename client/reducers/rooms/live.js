@@ -152,6 +152,16 @@ function receiveNotificationComment(state, action) {
     return state.update('comments', comments => comments.push(action.comment.id));
 }
 
+function loadComments(state, action) {
+    // When refreshing the most recent comments,
+    // we need to clear out all old live comments,
+    // as they will be fetched from the server.
+    if (action.status === Status.REQUESTING && action.fetchType === 'mostRecent') {
+        return clearComments(state, action)
+    }
+    return state
+}
+
 const initialState = Map({
     comments: List(),
     submittingComments: List(),
@@ -191,6 +201,8 @@ export default function live(state = initialState, action) {
             return receiveMediaItem(state, action);
         case ActionTypes.RECEIVE_NOTIFICATION_COMMENT:
             return receiveNotificationComment(state, action);
+        case ActionTypes.COMMENTS:
+            return loadComments(state, action);
     }
     return state;
 }

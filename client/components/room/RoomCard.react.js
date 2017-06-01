@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import RoomPlayer from './player/RoomPlayer.react'
-import ChatHistory from './chat/ChatHistory.react'
+import ScrollableChatHistory from './chat/ScrollableChatHistory.react'
 import Counter from './counter/Counter.react'
 import RoomCardHeader from './card/RoomCardHeader.react'
 
@@ -125,7 +125,7 @@ class RoomCard extends React.Component {
                 <RoomCardHeader room={room} />
                 <div className="room-card_main">
                     <RoomPlayer room={room} shouldAutoplayVideo={shouldAutoplayVideo} isRoomCard={true} />
-                    <ChatHistory roomId={room.id} scrollable={true} style='compact' />
+                    <ScrollableChatHistory roomId={room.id} style='compact' />
                 </div>
                 <Link to={`/r/${room.get('hid')}/${index}`} className="room-card_prompt">
                     Enter Room
