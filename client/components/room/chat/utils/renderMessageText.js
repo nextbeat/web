@@ -102,5 +102,9 @@ function memoizedRenderMessageText(comment, options) {
 }
 
 export default function renderMessageText(comment, options={}) {
+    if (!comment.get('message')) {
+        return null;
+    }
+    
     return memoizedRenderMessageText(comment, options)
 }
