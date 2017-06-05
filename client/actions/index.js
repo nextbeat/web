@@ -67,6 +67,7 @@ export {
     searchChat,
     clearSearchChat,
     hideSearchChatResults,
+    getSearchSuggestions,
     mentionUser,
     clearChatMessage,
     promptChatActionsForUser,

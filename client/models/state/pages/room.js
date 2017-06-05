@@ -21,6 +21,10 @@ const KEY_MAP = {
     'searchResultsFetching': ['chat', 'search', 'isFetching'],
     'searchResultsHasFetched': ['chat', 'search', 'hasFetched'],
     'searchResultsError': ['chat', 'search', 'error'],
+    'searchSuggestionsFetching': ['chat', 'searchSuggestions', 'isFetching'],
+    'searchSuggestionsHasFetched': ['chat', 'searchSuggestions', 'hasFetched'],
+    'searchSuggestions': ['chat', 'searchSuggestions', 'terms'],
+    'searchHistory': ['chat', 'searchHistory'],
     // ui
     'selectedDetailSection': ['ui', 'detailSection'],
     // more

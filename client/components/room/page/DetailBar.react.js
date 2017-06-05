@@ -97,7 +97,7 @@ class DetailBar extends React.Component {
             <div className={`detail-bar ${collapsedClass} ${activeClass} ${disableAnimationsClass}`}>
                 <div className="detail-bar_header">
                     { currentUserIsAuthor && 
-                        <div className="detail-bar_toggle-edit" id="dropdown-detail-bar_toggle" onClick={this.toggleDropdown}><Icon type="more-vert" /></div> 
+                        <div className="detail-bar_toggle-edit dropdown-detail-bar_toggle" onClick={this.toggleDropdown}><Icon type="more-vert" /></div> 
                     }
                     <ActionsDropdown type="detail-bar" />
                     <div className="detail-bar_tab-container">

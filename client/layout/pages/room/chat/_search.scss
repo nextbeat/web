@@ -38,6 +38,79 @@
     }
 }
 
+.dropdown-chat-search-suggestions {
+    position: absolute;
+    width: 260px;
+    top: 100%;
+
+    .dropdown_main {
+        border-radius: 5px;
+        padding: 0;
+    }
+}
+
+.chat_search-suggestions_main {
+    padding: 0 12px;
+}
+
+.chat_search-suggestions_section {
+    padding: 13px 0;
+    border-bottom: 1px solid $border-color;
+    position: relative;
+
+    .spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+.chat_search-suggestions_header {
+    font-size: 13px;
+    font-weight: 500;
+    color: #aaa;
+    text-transform: uppercase;
+}
+
+.chat_search-suggestions_list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.chat_search-suggestions_term {
+    color: $text-color;
+    font-size: 13px;
+    margin-top: 13px;
+    cursor: pointer;
+
+    &.chat_search-suggestions_term-default {
+        cursor: auto;
+    }
+
+    &.chat_search-suggestions_term-dummy {
+        visibility: hidden;
+        cursor: auto;
+    }
+}
+
+.chat_search-suggestions_term-default_template {
+    color: #aaa;
+    font-weight: 300;
+}
+
+.chat_search-suggestions_term-default_detail {
+    color: #ccc;
+    font-weight: 300;
+    font-size: 11px;
+    font-style: italic;
+}
+
 
 // Search results
 

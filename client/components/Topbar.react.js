@@ -127,7 +127,7 @@ class Topbar extends React.Component {
         const smallClass = includeSmallClass ? 'topbar_icon-small' : '';
 
         return [
-            <div key='notifications' id="dropdown-notifications_toggle" className={`topbar_icon topbar_icon-notifications ${smallClass}`} onClick={this.toggleNotificationsDropdown}>
+            <div key='notifications' className={`topbar_icon topbar_icon-notifications dropdown-notifications_toggle ${smallClass}`} onClick={this.toggleNotificationsDropdown}>
                 <Icon type="notifications" />
                 { totalUnreadNotificationCount > 0 && <div className="topbar_notifications-badge">{totalUnreadNotificationCount}</div> }
             </div>,
@@ -141,7 +141,7 @@ class Topbar extends React.Component {
             <Icon type="file-upload" />
             </ToggleLink>,
             
-            <div key='user' id="dropdown-topbar_toggle" className={`topbar_icon topbar_icon-user ${smallClass}`} onClick={this.toggleUserDropdown} style={profpicStyle}>
+            <div key='user' className={`topbar_icon topbar_icon-user dropdown-topbar_toggle ${smallClass}`} onClick={this.toggleUserDropdown} style={profpicStyle}>
                 { !profilePictureUrl && <Icon type="person" /> }
             </div>
         ]

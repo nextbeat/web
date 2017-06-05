@@ -36,7 +36,7 @@ class ChatSearchResults extends React.Component {
                     <ul className="chat_search-results_results">  
                         {searchResults.map((comment, idx) => <SearchResultChatItem roomId={roomId} key={idx} comment={comment} />)}
                     </ul>
-                    { (hasFetched && searchResults.size === 0) || (typeof error !== 'undefined') &&
+                    { ((hasFetched && searchResults.size === 0) || (typeof error !== 'undefined')) &&
                         <div className="chat_search-results_no-results">
                             We couldn't find anything matching your request.
                         </div>

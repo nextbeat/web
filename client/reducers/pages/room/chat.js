@@ -22,6 +22,9 @@ function searchChat(state, action) {
     state = state.set('search', paginate(ActionTypes.SEARCH_CHAT, ActionTypes.CLEAR_SEARCH_CHAT)(state.get('search'), action));
     if (action.type === ActionTypes.SEARCH_CHAT) {
         state = state.set('showSearchResults', true)
+        if (action.status === Status.SUCCESS && action.query) {
+            state = state.update('searchHistory', List(), history => history.unshift(action.query).toOrderedSet().toList().take(3))
+        }
     }
     if (action.query) {
         state = state.set('searchQuery', action.query)
@@ -35,6 +38,31 @@ function hideSearchChatResults(state, action) {
     })
 }
 
+function searchSuggestions(state, action) {
+    if (action.status === Status.REQUESTING) {
+        return state.update('searchSuggestions', Map(), s => s.merge({
+                terms: List(),
+                isFetching: true,
+                hasFetched: false
+            }).delete('searchSuggestionsError')
+        );
+    } else if (action.status === Status.SUCCESS) {
+         return state.update('searchSuggestions', Map(), s => s.merge({
+                terms: action.response,
+                isFetching: false,
+                hasFetched: true
+            })
+         );
+    } else if (action.status === Status.FAILURE) {
+         return state.update('searchSuggestions', Map(), s => s.merge({
+                isFetching: false,
+                error: action.error
+            })
+        );
+    }
+    return state
+}
+
 export default function chat(state=Map(), action) {
     if (action.type === ActionTypes.PROMPT_CHAT_ACTIONS) {
         return promptChatActions(state, action)
@@ -46,6 +74,8 @@ export default function chat(state=Map(), action) {
         return searchChat(state, action)
     } else if (action.type === ActionTypes.HIDE_SEARCH_CHAT_RESULTS) {
         return hideSearchChatResults(state, action)
+    } else if (action.type === ActionTypes.SEARCH_SUGGESTIONS) {
+        return searchSuggestions(state, action)
     }
     return state;
 }

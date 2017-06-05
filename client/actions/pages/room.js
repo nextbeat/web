@@ -106,6 +106,25 @@ export function hideSearchChatResults() {
     }
 }
 
+function fetchSearchSuggestions(roomId) {
+    return {
+        type: ActionTypes.SEARCH_SUGGESTIONS,
+        roomId,
+        [API_CALL]: {
+            endpoint: `stacks/${roomId}/comments/search/suggestions`,
+            queries: { limit: 3 }
+        }
+    }
+}
+
+export function getSearchSuggestions() {
+    return (dispatch, getState) => {
+        const room = new RoomPage(getState())
+        const id = room.get('id')
+        dispatch(fetchSearchSuggestions(id))
+    }
+}
+
 
 /**************
  * CRUD ACTIONS
