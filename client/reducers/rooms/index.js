@@ -32,7 +32,7 @@ function comments(state=Map(), action) {
             state = state.merge({
                 isFetching: true,
                 fetchType: action.fetchType
-            })
+            }).delete('error')
             // If we're reloading the most recent comments
             // or jumping to a comment from a search result,
             // we want to flush any currently present comments.

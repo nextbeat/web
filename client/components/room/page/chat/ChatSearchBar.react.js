@@ -3,7 +3,7 @@ import { findDOMNode } from 'react-dom'
 import { connect } from 'react-redux'
 
 import Icon from '../../../shared/Icon.react'
-import { searchChat } from '../../../../actions'
+import { searchChat, hideSearchChatResults } from '../../../../actions'
 
 class ChatSearchBar extends React.Component {
 
@@ -12,6 +12,7 @@ class ChatSearchBar extends React.Component {
 
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleClose = this.handleClose.bind(this);
 
         this.state = {
             query: ''
@@ -37,7 +38,12 @@ class ChatSearchBar extends React.Component {
         this.setState({ query: e.target.value })
     }
 
+    handleClose() {
+        this.props.dispatch(hideSearchChatResults())
+    }
+
     render() {
+        const { closeable } = this.props;
         return (
             <div className="chat_search_container">
                 <input className="chat_search" 
@@ -47,10 +53,17 @@ class ChatSearchBar extends React.Component {
                        onChange={this.handleChange}
                        value={this.state.query}
                 />
-                <Icon type="search" />
+                {closeable ? 
+                    <div className="chat_search_icon" onClick={this.handleClose}><Icon type="cancel" /></div> :
+                    <div className="chat_search_icon"><Icon type="search" /></div>
+                }
             </div>
         )
     }
+}
+
+ChatSearchBar.defaultProps = {
+    closeable: false
 }
 
 export default connect()(ChatSearchBar);

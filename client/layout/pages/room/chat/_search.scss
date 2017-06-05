@@ -6,14 +6,22 @@
     align-items: center;
     padding: 0 20px;
     position: relative;
+}
 
-    .svg-icon-search {
-        display: block;
-        @include centerY;
-        width: 15px;
-        left: auto;
-        right: 26px;
-        margin-top: 2px;
+.chat_search_icon {
+    display: block;
+    @include centerY;
+    width: 15px;
+    left: auto;
+    right: 26px;
+    margin-top: 2px;
+
+    .svg-icon {
+        width: 100%;
+    }
+
+    .svg-icon-cancel {
+        fill: #bbb;
     }
 }
 

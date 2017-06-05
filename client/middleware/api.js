@@ -60,8 +60,6 @@ function callApi(options, store, action) {
         return Promise.reject(new NotLoggedInError());
     }
 
-    console.log(url);
-
     // we wrap in a bluebird promise to give access to bluebird methods (e.g. delay)
     return Promise.resolve().then(function() {
             return fetch(url, fetchOptions(options, store))

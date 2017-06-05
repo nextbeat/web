@@ -27,7 +27,7 @@ class ChatSearchResults extends React.Component {
 
         return (
             <div className="chat_search-results">
-                <ChatSearchBar query={query} />
+                <ChatSearchBar query={query} closeable={true} />
                 <div className="chat_search-results_header">
                     Search results { isFetching && <Spinner type="grey small chat-search" />}
                     <div className="chat_search-results_close" onClick={this.handleClose}><Icon type="close" /></div>
@@ -36,7 +36,7 @@ class ChatSearchResults extends React.Component {
                     <ul className="chat_search-results_results">  
                         {searchResults.map((comment, idx) => <SearchResultChatItem roomId={roomId} key={idx} comment={comment} />)}
                     </ul>
-                    { hasFetched && searchResults.size === 0 &&
+                    { (hasFetched && searchResults.size === 0) || (typeof error !== 'undefined') &&
                         <div className="chat_search-results_no-results">
                             We couldn't find anything matching your request.
                         </div>
