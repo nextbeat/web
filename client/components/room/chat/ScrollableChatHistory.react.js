@@ -7,7 +7,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import ChatItem from './ChatItem.react'
 import NotificationChatItem from './NotificationChatItem.react'
 import Spinner from '../../shared/Spinner.react'
-import commentCollapser from './utils/commentCollapser'
+import commentReducer from './utils/commentReducer'
 
 import { loadComments, loadLatestComments, promptChatActionsForUser, resendComment } from '../../../actions'
 import { Room, CurrentUser, App } from '../../../models'
@@ -26,9 +26,6 @@ class ScrollableChatHistory extends React.Component {
         this.handleJumpToPresent = this.handleJumpToPresent.bind(this)
 
         this.renderComment = this.renderComment.bind(this)
-        this.renderLiveComment = this.renderLiveComment.bind(this)
-        this.renderSubmittingComment = this.renderSubmittingComment.bind(this)
-        this.renderFailedComment = this.renderFailedComment.bind(this)
 
         this.state = {
             inMessageArchive: false,
@@ -80,72 +77,21 @@ class ScrollableChatHistory extends React.Component {
         if (comment.get('type') === 'message') {
             return <ChatItem 
                         id={`comment-${roomId}-${comment.get('id')}`}
-                        key={comment.get('id')} 
+                        key={idx} 
                         comment={comment}
                         isCreator={isCreator} 
                         handleSelectUsername={this.handleSelectUsername}
+                        showHeader={!comment.__no_header__}
                     />
         } else if (comment.get('type') === 'notification') {
             return <NotificationChatItem 
-                        key={comment.get('id')} 
+                        key={idx}
                         roomId={roomId}
                         comment={comment} 
                         username={authorUsername}
                         count={comment.__count__}
                     />
         }
-    }
-
-    renderLiveComment(comment, idx) {
-        const { authorUsername, comments, roomId } = this.props;
-        const key = `l${idx}`;
-        const isCreator = (authorUsername === comment.author().get('username'));
-
-        if (comment.get('type') === 'message') {
-            return <ChatItem 
-                        key={key} 
-                        comment={comment} 
-                        isCreator={isCreator} 
-                        handleSelectUsername={this.handleSelectUsername}
-                    />
-        } else if (comment.get('type') === 'notification') {
-            return <NotificationChatItem 
-                        key={key} 
-                        roomId={roomId}
-                        comment={comment} 
-                        username={authorUsername}
-                        count={comment.__count__}
-                    />
-        } else {
-            return null;
-        }
-    }
-
-    renderSubmittingComment(comment, idx) {
-        const { authorUsername } = this.props;
-        const key = `s${idx}`
-        const isCreator = (authorUsername === comment.get('username'));
-        return <ChatItem
-                key={key}
-                comment={comment}
-                isCreator={isCreator} 
-                handleSelectUsername={this.handleSelectUsername}
-                submitStatus="submitting"
-            />
-    }
-
-    renderFailedComment(comment, idx) {
-        const { authorUsername } = this.props;
-        const key = `s${idx}`
-        const isCreator = (authorUsername === comment.get('username'));
-        return <ChatItem
-                key={key}
-                comment={comment}
-                isCreator={isCreator} 
-                handleSelectUsername={this.handleSelectUsername}
-                handleResend={this.handleResend}
-                submitStatus="failed"
-            />
     }
 
     render() {
@@ -157,6 +103,14 @@ class ScrollableChatHistory extends React.Component {
 
         let styleClass = `chat_history-${style}`
 
+        let commentsList = comments.reverse();
+        if (hasReachedLatestComment) {
+            commentsList = commentsList.concat(liveComments);
+            if (style === "expanded") {
+                commentsList = commentsList.concat(submittingComments).concat(failedComments);
+            }
+        }
+
         return (
             <div className="chat_history_container">
                 {!hasLoadedChat &&
@@ -167,17 +121,7 @@ class ScrollableChatHistory extends React.Component {
                 <div id={scrollComponentId(this.props)} className={`chat_history scrollable ${styleClass}`}>
                     { commentsFetching && commentsFetchType !== 'after' && <Spinner type="grey" />}
                     <ul className="chat_items">
-                        {comments.reverse().reduce(commentCollapser, List()).map((comment, idx) => this.renderComment(comment, idx))}
-                        { hasReachedLatestComment &&
-                            [
-                            liveComments.reduce(commentCollapser, List()).map((comment, idx) => this.renderLiveComment(comment, idx)),
-                            style !== "expanded" ? null :
-                                [
-                                submittingComments.map((comment, idx) => this.renderSubmittingComment(comment, idx)),
-                                failedComments.map((comment, idx) => this.renderFailedComment(comment, idx))
-                                ]
-                            ]
-                        }
+                        { commentsList.reduce(commentReducer, List()).map((comment, idx) => this.renderComment(comment, idx)) }
                     </ul>
                     { commentsFetching && commentsFetchType === 'after' && <Spinner type="grey" />}
                 </div>
@@ -266,7 +210,7 @@ const scrollOptions = {
             // update until the next cycle
             process.nextTick(() => {
                 let lastComment = this.props.liveComments.last()
-                if (!lastComment.has('temporaryId')) {
+                if (!lastComment.has('temporary_id')) {
                     // we want to ignore user-submitted comments
                     if (!scrollComponent.isScrolledToBottom()) {
                         this.setState({ hasUnseenLiveMessages: true })

@@ -138,13 +138,14 @@ export function jumpToComment(roomId, comment) {
  * CHAT
  ******/
 
-function performSendComment(roomId, message, username, temporaryId) {
+function performSendComment({ roomId, message, username, temporaryId, createdAt }) {
     return {
         type: ActionTypes.SEND_COMMENT,
         temporaryId,
         roomId,
         message,
         username,
+        createdAt,
         [GA]: {
             type: GATypes.EVENT,
             category: 'chat',
@@ -167,13 +168,23 @@ export function sendComment(roomId, message) {
             return dispatch(triggerAuthError())
         } else {
             let username = currentUser.get('username')
-            return dispatch(performSendComment(roomId, message, username, generateUuid()));
+            let temporaryId = generateUuid()
+            let createdAt = new Date()
+            let comment = { roomId, message, username, temporaryId, createdAt }
+            return dispatch(performSendComment(comment));
         }
     }
 }
 
 export function resendComment(roomId, comment) {
-    return performSendComment(roomId, comment.get('message'), comment.get('username'), comment.get('temporaryId'))
+    let newComment = {
+        roomId,
+        message: comment.get('message'),
+        username: comment.get('username'),
+        temporary_id: comment.get('temporary_id'),
+        created_at: new Date()
+    }
+    return performSendComment(newComment)
 }
 
 function performPinComment(roomId, message) {

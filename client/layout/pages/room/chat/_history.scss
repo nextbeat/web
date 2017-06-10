@@ -67,28 +67,24 @@
     padding: 0;
 }
 
+
+// Chat item
+
 .chat_item {
     font-size: 13px;
     margin: 12px 8px 0 12px;
     white-space: pre-wrap;
     word-wrap: break-word;
 
-    a {
-        color: $secondary-color;
+    &.chat_item-no-header {
+        margin-top: 10px;
     }
 }
 
-a.chat_item_mention {
-    font-weight: normal;
-    &:hover {
-        color: $light-secondary-color;
-        cursor: pointer;
-    }
-}
-
-.chat_item_highlight {
-    background: #ddd;
-    padding: 1px 3px;
+.chat_item_header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3px;
 }
 
 .chat_item_username {
@@ -100,7 +96,7 @@ a.chat_item_mention {
         cursor: pointer;
     }
 
-    &.chat_item_creator {
+    &.creator {
         color: $primary-color;
         a {
             color: $primary-color;
@@ -108,20 +104,24 @@ a.chat_item_mention {
     }
 }
 
-.chat_item-chatbot {
-    a {
-        color: $secondary-color;
-        &:hover {
-            cursor: pointer;
-            color: $light-secondary-color;   
-        }
+.chat_item_timestamp {
+    color: #aaa;
+    font-size: 11px;
+    font-style: italic;
+}
+
+a.chat_item_mention {
+    font-weight: normal;
+    color: $secondary-color;
+    &:hover {
+        color: $light-secondary-color;
+        cursor: pointer;
     }
 }
 
-.chat_item-chatbot_header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 3px;
+.chat_item_highlight {
+    background: #ddd;
+    padding: 1px 3px;
 }
 
 .chat_item_emoji {
@@ -130,19 +130,14 @@ a.chat_item_mention {
     height: 16px;
 }
 
-.chat_item-chatbot_username {
-    font-weight: bold;
-    margin-left: 5px;
-}
-
-.chat_item-chatbot_private {
+.chat_item_private {
     color: $detail-text-color;
     font-weight: 300;
     font-style: italic;
     margin-left: 5px;
 }
 
-.chat_item-chatbot_body-private {
+.chat_item_body-private {
     color: $detail-text-color;
 }
 
@@ -167,6 +162,9 @@ a.chat_item-failed_retry {
 .chat_live-mention {
     color: $detail-text-color;
 }
+
+
+// Notification comments
 
 .chat_item-notification {
     color: white;

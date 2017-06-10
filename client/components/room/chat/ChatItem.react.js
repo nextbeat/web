@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router'
 import { Map } from 'immutable'
+import { timeString } from '../../../utils'
 
 import renderMessageText from './utils/renderMessageText'
 
@@ -14,9 +15,6 @@ class ChatItem extends React.Component {
         super(props)
 
         this.renderMessage = this.renderMessage.bind(this)
-        this.renderBotComment = this.renderBotComment.bind(this)
-        this.renderUserComment = this.renderUserComment.bind(this)
-        this.renderTemporaryComment = this.renderTemporaryComment.bind(this)
     }
 
 
@@ -55,77 +53,43 @@ class ChatItem extends React.Component {
         return renderMessageText(comment, { onMentionClick: handleSelectUsername, includeLinks })
     }
 
-    renderBotComment() {
-        const { comment, id } = this.props;
+    render() {
+        const { comment, isCreator, handleSelectUsername, id, showHeader } = this.props;
 
+        const creatorClass = isCreator ? "creator" : ""
+        const headerClass = showHeader ? "" : "chat_item-no-header"
         const isPrivate = comment.get('subtype') === 'private'
-        const privateClass = isPrivate ? 'chat_item-chatbot_body-private' : ''
+        const privateClass = isPrivate ? 'chat_item-_body-private' : ''
         const username = comment.author().get('username')
-
-        return (
-            <li className="chat_item chat_item-chatbot" id={id}>
-                <div className="chat_item-chatbot_header">
-                    <img className="chat_item_emoji" src={robot} />
-                    <span className="chat_item-chatbot_username">{username}</span>
-                    { isPrivate && <span className="chat_item-chatbot_private">only visible to you</span> }
-                </div>
-                <div className={`chat_item-chatbot_body ${privateClass}`}>
-                    {this.renderMessage(true)}
-                </div>
-            </li>
-        );
-    }
-
-    renderUserComment() {
-        const { comment, isCreator, handleSelectUsername, id } = this.props;
-
-        // Currently only bot comments can be private,
-        // so we don't bother with private comment styling
-        // on user comments
-
-        const creatorClass = isCreator ? "chat_item_creator" : ""
-        const username = comment.author().get('username')
+        const timestamp = timeString(comment.get('created_at'))
+        const isBot = comment.author().get('is_bot')
+        const submitStatus = comment.get('submit_status')
+        const submitClass = submitStatus ? `chat_item-${submitStatus}` : ''
         
         return (
-            <li className="chat_item" ref="chat" id={id}>
-                <strong className={`chat_item_username ${creatorClass}`}>
-                    <a onClick={ () => { handleSelectUsername(username) } }>{username} </a>
-                </strong>
-                {this.renderMessage(false)}
-            </li>
-        );
-    }
-
-    renderTemporaryComment() {
-        const { comment, isCreator, handleSelectUsername, handleResend, submitStatus } = this.props
-
-        const submitClass = `chat_item-${submitStatus}`
-        const creatorClass = isCreator ? "chat_item_creator" : ""
-        const username = comment.get('username')
-
-        return (
-            <li className={`chat_item ${submitClass}`} ref="chat">
-                <strong className={`chat_item_username ${creatorClass}`}>
-                    <a onClick={ () => { handleSelectUsername(username) } }>{username} </a>
-                </strong>
-                {this.renderMessage(false)}
-                { submitStatus === "failed" && 
-                    <a className="btn chat_item-failed_retry" onClick={ () => { handleResend(comment) } }>Retry</a>
+            <li className={`chat_item ${headerClass} ${submitClass}`} ref="chat" id={id}>
+                { showHeader && 
+                <div className="chat_item_header">
+                    { isBot && <img className="chat_item_emoji" src={robot} /> }
+                    <div className="chat_item_header_main">
+                        <span 
+                            onClick={ () => {handleSelectUsername(username)} } 
+                            className={`chat_item_username ${creatorClass}`}>
+                            {username}
+                        </span>
+                        <span className="chat_item_timestamp">{timestamp}</span>
+                        { isPrivate && <span className="chat_item_private">only visible to you</span> }
+                    </div>
+                </div>
                 }
+                <div className={`chat_item_body ${privateClass}`}>
+                    {this.renderMessage(isBot)}
+                    { submitStatus === "failed" && 
+                        <a className="btn chat_item-failed_retry" onClick={ () => { handleResend(comment) } }>Retry</a>
+                    }
+                </div>
             </li>
         );
-    }
-
-    render() {
-        const { comment } = this.props;
-
-        if (typeof comment.author !== "function") {
-            // temporary comment; in process of submission
-            return this.renderTemporaryComment()
-        }
-
-        const isBot = comment.author().get('is_bot')
-        return isBot ? this.renderBotComment() : this.renderUserComment()
     }
 }
 
@@ -136,12 +100,12 @@ ChatItem.propTypes = {
     isCollapsed: React.PropTypes.bool,
     handleSelectUsername: React.PropTypes.func,
     handleResend: React.PropTypes.func,
-    submitStatus: React.PropTypes.string,
+    showHeader: React.PropTypes.bool
 }
 
 ChatItem.defaultProps = {
-    submitStatus: "submitted",
-    isCollapsed: false
+    isCollapsed: false,
+    showHeader: true
 }
 
 export default ChatItem;

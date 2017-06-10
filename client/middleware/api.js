@@ -63,7 +63,10 @@ function callApi(options, store, action) {
     // we wrap in a bluebird promise to give access to bluebird methods (e.g. delay)
     return Promise.resolve().then(function() {
             return fetch(url, fetchOptions(options, store))
-        }).then(response => response.json().then(json => ({ json, response })))
+        }).then(response => {
+            return response.json()
+                .then( json => ({ json, response }))
+        })
         // .delay(1000) // FOR DEBUG
         .then(({ json, response }) => {
             if (!response.ok) {

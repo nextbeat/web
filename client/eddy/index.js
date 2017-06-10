@@ -203,6 +203,11 @@ export default class EddyClient {
             if (this.client.readyState !== 1) {
                 this.messageQueue.unshift(sendMessage);
             } else {
+                // DEBUG!
+                if (type === 'chat') {
+                    setTimeout(() => sendMessage(), 1000);
+                    return;
+                }
                 sendMessage();
             }
         })  

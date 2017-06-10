@@ -55,34 +55,39 @@ function sendComment(state, action) {
 
         const comment = Map({
             type: 'message',
+            subtype: 'public',
             message: action.message,
             username: action.username,
-            temporaryId: action.temporaryId
+            temporary_id: action.temporaryId,
+            submit_status: "submitting",
+            created_at: action.createdAt
         })
 
         // Filter comment out of submitting and failed first,
         // in case we are resending a comment.
         return state
-            .update('submittingComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
-            .update('failedComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
+            .update('submittingComments', comments => comments.filter(c => c.get('temporary_id') !== action.temporaryId))
+            .update('failedComments', comments => comments.filter(c => c.get('temporary_id') !== action.temporaryId))
             .update('submittingComments', subComments => subComments.push(comment))
 
     } else if (action.status === Status.SUCCESS) {
 
         return state
             .update('comments', comments => comments.push(action.responseData.comment_id))
-            .update('submittingComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
-            .update('failedComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
+            .update('submittingComments', comments => comments.filter(c => c.get('temporary_id') !== action.temporaryId))
+            .update('failedComments', comments => comments.filter(c => c.get('temporary_id') !== action.temporaryId))
 
     } else if (action.status === Status.FAILURE) {
 
-        state = state.update('submittingComments', comments => comments.filter(c => c.get('temporaryId') !== action.temporaryId))
+        state = state.update('submittingComments', comments => comments.filter(c => c.get('temporary_id') !== action.temporaryId))
 
         const comment = Map({
             type: 'message',
             message: action.message,
             username: action.username,
-            temporaryId: action.temporaryId
+            temporary_id: action.temporaryId,
+            submit_status: "failed",
+            created_at: action.createdAt
         })
         state = state.update('failedComments', comments => comments.push(comment));
 

@@ -51,6 +51,8 @@ export function leaveRoom(roomId) {
  *******************/
 
 export function receiveComment(roomId, comment) {
+    // TODO: properly send this in Eddy payload!
+    comment.created_at = new Date() 
     return {
         type: ActionTypes.RECEIVE_COMMENT,
         roomId,

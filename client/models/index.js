@@ -22,5 +22,8 @@ export { default as MediaItemEntity } from './entities/mediaItem'
 export { default as UserEntity } from './entities/user'
 export { default as CommentEntity } from './entities/comment'
 
+export { default as TemporaryCommentEntity } from './entities/temporary/comment'
+
 export { default as StateModel } from './state/base'
 export { default as EntityModel } from './entities/base'
+export { default as TemporaryEntityModel } from './entities/temporary/base'

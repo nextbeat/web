@@ -7,6 +7,7 @@ import CurrentUser from './currentUser'
 import StackEntity from '../entities/stack'
 import MediaItemEntity from '../entities/mediaItem'
 import CommentEntity from '../entities/comment'
+import TemporaryCommentEntity from '../entities/temporary/comment'
 
 import { memoize } from '../utils'
 
@@ -108,11 +109,11 @@ export default class Room extends StateModel {
     }
 
     submittingComments() {
-        return this.get('submittingComments', List())
+        return this.get('submittingComments', List()).map(comment => new TemporaryCommentEntity(comment))
     }
 
     failedComments() {
-        return this.get('failedComments', List())
+        return this.get('failedComments', List()).map(comment => new TemporaryCommentEntity(comment))
     }
 
     jumpedComments() {

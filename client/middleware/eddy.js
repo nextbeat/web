@@ -1,5 +1,6 @@
 import assign from 'lodash/assign'
 import { normalize } from 'normalizr'
+import format from 'date-fns/format'
 
 import EddyClient from '../eddy'
 import { ActionTypes, Status } from '../actions'
@@ -156,6 +157,7 @@ function wrapSendComment(store, next, action) {
             subtype: "public",
             id: responseData.comment_id,
             user_mentions: responseData.user_mentions,
+            created_at: format(new Date()),
             author: {
                 id: currentUser.get('id')
             }

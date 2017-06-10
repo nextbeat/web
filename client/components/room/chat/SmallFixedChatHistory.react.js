@@ -7,7 +7,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import ChatItem from './ChatItem.react'
 import NotificationChatItem from './NotificationChatItem.react'
 import Spinner from '../../shared/Spinner.react'
-import commentCollapser from './utils/commentCollapser'
+import commentReducer from './utils/commentReducer'
 
 import { loadComments, promptChatActionsForUser, resendComment } from '../../../actions'
 import { Room, CurrentUser, App } from '../../../models'
@@ -94,8 +94,8 @@ class SmallFixedChatHistory extends React.Component {
                 <div id={scrollComponentId(this.props)} className="chat_history chat-history-compact">
                     { commentsFetching && <Spinner type="grey" />}
                     <ul className="chat_items">
-                        {comments.reverse().reduce(commentCollapser, List()).map((comment, idx) => this.renderComment(comment, idx))}
-                        {liveComments.reduce(commentCollapser, List()).map((comment, idx) => this.renderLiveComment(comment, idx))}
+                        {comments.reverse().reduce(commentReducer, List()).map((comment, idx) => this.renderComment(comment, idx))}
+                        {liveComments.reduce(commentReducer, List()).map((comment, idx) => this.renderLiveComment(comment, idx))}
                     </ul>
                 </div>
             </div>
