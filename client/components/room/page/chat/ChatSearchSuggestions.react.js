@@ -53,8 +53,8 @@ class ChatSearchSuggestions extends React.Component {
                         </div>
                         { isFetching &&
                             [
-                            <Spinner type="grey" />,
-                            <ul className="chat_search-suggestions_list">
+                            <Spinner key="spinner" type="grey" />,
+                            <ul key="list" className="chat_search-suggestions_list">
                                 { /* Fills out section to proper height */ }
                                 { [1,2,3].map(idx => <li key={idx} className="chat_search-suggestions_term chat_search-suggestions_term-dummy">foo</li>) }
                             </ul>

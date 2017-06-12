@@ -48,7 +48,7 @@ function comments(state=Map(), action) {
                 hasFetched: true
             })
             if (action.fetchType === 'mostRecent') {
-                const hasReachedOldest = action.response.result.size < action.response.limit
+                const hasReachedOldest = action.response.result.length < action.response.limit
                 return state.merge({
                     ids: List(action.response.result),
                     latestIds: List(action.response.result).slice(0, 5),

@@ -9,7 +9,7 @@ import NotificationChatItem from './NotificationChatItem.react'
 import Spinner from '../../shared/Spinner.react'
 import commentReducer from './utils/commentReducer'
 
-import { loadComments, loadLatestComments, promptChatActionsForUser, resendComment } from '../../../actions'
+import { loadComments, loadLatestComments, promptChatActionsForUser, resendComment, selectMediaItem, closeDetailSection } from '../../../actions'
 import { Room, CurrentUser, App } from '../../../models'
 
 function scrollComponentId(props) {
@@ -22,6 +22,7 @@ class ScrollableChatHistory extends React.Component {
         super(props);
 
         this.handleSelectUsername = this.handleSelectUsername.bind(this)
+        this.handleSelectMediaItem = this.handleSelectMediaItem.bind(this)
         this.handleResend = this.handleResend.bind(this)
         this.handleJumpToPresent = this.handleJumpToPresent.bind(this)
 
@@ -58,6 +59,12 @@ class ScrollableChatHistory extends React.Component {
         this.props.dispatch(promptChatActionsForUser(username))
     }
 
+    handleSelectMediaItem(mediaItemId) {
+        const { dispatch, roomId } = this.props
+        dispatch(selectMediaItem(roomId, mediaItemId));
+        dispatch(closeDetailSection())
+    }
+
     handleResend(comment) {
         const { dispatch, roomId } = this.props
         dispatch(resendComment(roomId, comment))
@@ -80,8 +87,9 @@ class ScrollableChatHistory extends React.Component {
                         key={idx} 
                         comment={comment}
                         isCreator={isCreator} 
-                        handleSelectUsername={this.handleSelectUsername}
                         showHeader={!comment.__no_header__}
+                        handleSelectUsername={this.handleSelectUsername}
+                        handleSelectMediaItem={this.handleSelectMediaItem}
                     />
         } else if (comment.get('type') === 'notification') {
             return <NotificationChatItem 
@@ -90,6 +98,7 @@ class ScrollableChatHistory extends React.Component {
                         comment={comment} 
                         username={authorUsername}
                         count={comment.__count__}
+                        handleSelectMediaItem={this.handleSelectMediaItem}
                     />
         }
     }
