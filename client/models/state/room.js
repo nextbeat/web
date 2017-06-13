@@ -205,6 +205,10 @@ export default class Room extends StateModel {
         return !!this.get('joined', false)
     }
 
+    hasLoadedComment(comment) {
+        return this.get('commentIds', List()).concat(this.get('liveCommentIds', List())).indexOf(comment.get('id')) > -1
+    }
+
     hasLoadedChat() {
         return this.get('commentsHasFetched') && this.hasJoined()
     }

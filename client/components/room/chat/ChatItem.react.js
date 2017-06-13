@@ -71,7 +71,7 @@ class ChatItem extends React.Component {
                     { isBot && <img className="chat_item_emoji" src={robot} /> }
                     <div className="chat_item_header_info">
                         <span 
-                            onClick={() => { handleSelectUsername(username) }} 
+                            onClick={() => { !isBot && handleSelectUsername(username) }} 
                             className={`chat_item_username ${creatorClass}`}>
                             {username}
                         </span>
@@ -98,12 +98,13 @@ class ChatItem extends React.Component {
         const isPrivate         = comment.get('subtype') === 'private'
         const privateClass      = isPrivate ? 'chat_item_body-private' : ''
         const isBot             = comment.author().get('is_bot')
+        const isBotClass        = isBot ? 'chat_item-chatbot' : ''
 
         const submitStatus      = comment.get('submit_status')
         const submitClass       = submitStatus ? `chat_item-${submitStatus}` : ''
         
         return (
-            <li className={`chat_item ${highlightedClass} ${headerClass} ${submitClass}`} ref="chat" id={id}>
+            <li className={`chat_item ${highlightedClass} ${headerClass} ${submitClass} ${isBotClass}`} ref="chat" id={id}>
                 { showHeader && this.renderHeader() }
                 <div className={`chat_item_body ${privateClass}`}>
                     {this.renderMessage(isBot)}

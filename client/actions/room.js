@@ -66,10 +66,18 @@ export function getRoomInfo(roomId) {
 /* Comments */
 
 function goToComment(roomId, comment) {
-    return {
-        type: ActionTypes.GO_TO_COMMENT,
-        roomId,
-        comment
+    return dispatch => {
+        dispatch({
+            type: ActionTypes.DESELECT_COMMENT,
+            roomId
+        })
+        process.nextTick(() => {
+            dispatch({
+                type: ActionTypes.GO_TO_COMMENT,
+                roomId,
+                comment
+            })
+        })
     }
 }
 
@@ -127,10 +135,17 @@ export function loadLatestComments(roomId) {
 }
 
 export function jumpToComment(roomId, comment) {
-    const queries = {
-        around: format(comment.get('created_at'))
+    return (dispatch, getState) => {
+        const room = new Room(roomId, getState())
+        if (room.hasLoadedComment(comment)) {
+            dispatch(goToComment(roomId, comment))
+        } else {
+            const queries = {
+                around: format(comment.get('created_at'))
+            }
+            dispatch(fetchComments(roomId, queries, { fetchType: 'around', comment }))
+        }
     }
-    return fetchComments(roomId, queries, { fetchType: 'around', comment })
 }
 
 

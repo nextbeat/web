@@ -1,5 +1,7 @@
 import EntityModel from './base'
+
 import Stack from './stack'
+import Comment from './comment'
 
 export default class MediaItem extends EntityModel {
 
@@ -31,8 +33,16 @@ export default class MediaItem extends EntityModel {
         return new Stack(this.__entity().get('stack_id', 0), this.entities)
     }
 
+    referencedComment() {
+        return this.hasReference() ? new Comment(this.get('references'), this.entities) : null;
+    }
+
 
     // queries
+        
+    hasReference() {
+        return this.has('references')
+    }
 
     isVideo() {
         return this.get('type') === 'video'

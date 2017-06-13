@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { goBackward, goForward, selectDetailSection } from '../../../actions'
 import Video from './Video.react'
 import Image from './Image.react'
+import ItemReference from './ItemReference.react'
 import Icon from '../../shared/Icon.react'
 import Spinner from '../../shared/Spinner.react'
 import CounterInner from '../counter/CounterInner.react'
@@ -101,6 +102,7 @@ class RoomPlayer extends React.Component {
                 <div className="player_media" style={{ height: `${playerHeight}px` }}>
                     <div className="player_media-inner" id="player_media-inner">
                     { room.mediaItems().size == 0 && !room.get('mediaItemsError') && <Spinner type="large grey"/> }
+                    { item.hasReference() && <ItemReference room={room} {...containerProps} /> }
                     { !item.isEmpty() && (item.isVideo() ? 
                         <Video 
                             video={item.video('hls')} 
@@ -118,9 +120,9 @@ class RoomPlayer extends React.Component {
                 </div>
                 <div className="player_navigation">
                     <div style={{ display: 'flex', width: '100%', alignItems: 'stretch' }}>
-                    <div className={`player_nav-button player_nav-backward ${leftDisabledClass}`} onClick={this.handleBackward}><Icon type="arrow-back" /></div>
-                    <div className="player_nav-counter" onClick={this.handleCounterClick}><CounterInner room={room} /></div>
-                    <div className={`player_nav-button player_nav-forward ${rightDisabledClass}`} onClick={this.handleForward}><Icon type="arrow-forward" /></div>
+                        <div className={`player_nav-button player_nav-backward ${leftDisabledClass}`} onClick={this.handleBackward}><Icon type="arrow-back" /></div>
+                        <div className="player_nav-counter" onClick={this.handleCounterClick}><CounterInner room={room} /></div>
+                        <div className={`player_nav-button player_nav-forward ${rightDisabledClass}`} onClick={this.handleForward}><Icon type="arrow-forward" /></div>
                     </div>
                 </div>
             </div>

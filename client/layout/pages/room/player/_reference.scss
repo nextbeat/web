@@ -1,0 +1,111 @@
+.player_reference {
+    position: absolute;
+    display: flex;
+    min-height: 45px;
+    align-items: stretch;
+    z-index: 50;
+    margin: 10px;
+
+    overflow: hidden;
+}
+
+.player_reference_icon_container {
+    display: flex;
+    align-items: stretch;
+    background: rgba(#000, 0.7);
+
+    .player_reference.compact & {
+        display: none;
+    }
+}
+
+.player_reference_icon {
+    width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 3px 0;
+    border-right: 1px solid rgba(#fff, 0.3);
+
+    .svg-icon {
+        fill: rgba(#fff, 0.9);
+        width: 18px;
+        height: 18px;
+    }
+}
+
+.player_reference_main_container {
+    overflow: hidden;
+    display: flex;
+    align-items: stretch;
+}
+
+.player_reference_main {
+
+    display: flex;
+    align-items: stretch;
+    background: rgba(#000, 0.7);
+
+    transition-property: transform; 
+    transition-duration: 0.225s;
+    transition-timing-function: cubic-bezier(0.0, 0.0, 0.2, 1);
+
+    cursor: pointer;
+
+
+    .player_reference.collapsed & {
+        transform: translateX(calc(-100% + 30px));
+        transition-duration: 0.195s;
+        transition-timing-function: cubic-bezier(0.4, 0.0, 1, 1);
+    }
+}
+
+.player_reference_comment {
+    max-width: 300px;
+    font-size: 12px;
+    padding: 7px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .player_reference.compact & {
+        padding-left: 11px;
+    }
+}
+
+.player_reference_comment_username {
+    color: $secondary-color;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.player_reference_comment_timestamp {
+    color: rgba(#fff, 0.3);
+    font-size: 10px;
+    font-style: italic;
+    padding-left: 8px;
+}
+
+.player_reference_comment_body {
+    color: rgba(#fff, 0.9);
+}
+
+.player_reference_collapse {
+
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .svg-icon {
+        width: 20px;
+        height: 20px;
+        fill: rgba(#fff, 0.8);
+        transform: rotate(90deg);
+        transition: transform 0.3s 0.225s;
+
+        .player_reference.collapsed & {
+            transform: rotate(270deg);
+        }
+    }
+}

@@ -126,16 +126,18 @@
 .chat_item_username {
     color: $secondary-color;
     font-weight: bold;
-
-    &:hover {
-        cursor: pointer;
-    }
+    cursor: pointer;
 
     &.creator {
         color: $primary-color;
         a {
             color: $primary-color;
         }
+    }
+
+    .chat_item-chatbot & {
+        color: $text-color;
+        cursor: auto;
     }
 }
 
@@ -164,6 +166,7 @@ a.chat_item_mention {
     display: inline-block;
     width: 16px;
     height: 16px;
+    margin-right: 5px;
 }
 
 .chat_item_private {
@@ -245,42 +248,85 @@ a.chat_item-failed_retry {
         margin: 8px 12px 0 12px;
     }
 
-    .chat_item-notification {
-        font-size: 12px;
-        background: none;
-        border: none;
-        padding: 0;
-        color: $detail-text-color;
-        font-style: italic;
+    .chat_item-highlighted {
+        margin: 8px 0 0 0;
+    }
 
-        strong {
-            color: $detail-text-color;
-            font-weight: 400;
-        }
+    .chat_item_referenced {
+        display: none;
+    }
+
+    .chat_item-notification {
+        margin: 8px 0 0;
+        font-size: 12px;
 
         .chat_item-notification_thumb {
             display: none;
         }
 
         .chat_item-notification_text {
-            float: none;
-            width: 100%;
-            padding: 0;
+            margin-left: 0;
         }
+    }
+}
 
-        &.chat_item-notification-close {
-            background: none;
-            border: none;
-            padding: 0;
-        }
+.chat_history-small-fixed {
 
+    .chat_items {
+        margin-top: 4px;
     }
 
-    .chat_item-notification-mediaitem {
-        &:hover {
-            cursor: pointer;
-            background: none;
-            border: none;
+    .chat_item {
+        font-size: 12px;
+        margin: 8px 12px 0 12px;
+    }
+
+    .chat_item_header {
+        display: inline;
+        margin-right: 5px;
+    }
+
+    .chat_item_header_main {
+        display: inline;
+    }
+
+    .chat_item_header_info {
+        display: inline;
+    }
+
+    .chat_item_timestamp {
+        display: none;
+    }
+
+    .chat_item_body { 
+        display: inline;
+    }
+
+    .chat_item-highlighted {
+        margin: 8px 12px 0 12px;
+        padding: 0;
+        background: none;
+    }
+
+    .chat_item_referenced {
+        display: none;
+    }
+
+    .chat_item-notification {
+        font-size: 12px;
+        margin: 8px 12px 0 12px;
+        padding: 0;
+        background: none;
+
+        color: $detail-text-color;
+        font-style: italic;
+
+        .chat_item-notification_thumb {
+            display: none;
+        }
+
+        .chat_item-notification_text {
+            margin-left: 0;
         }
     }
 }
