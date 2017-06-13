@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { List } from 'immutable'
+import { List, Set } from 'immutable'
 import ScrollComponent from '../../utils/ScrollComponent.react'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
@@ -9,7 +9,7 @@ import NotificationChatItem from './NotificationChatItem.react'
 import Spinner from '../../shared/Spinner.react'
 import commentReducer from './utils/commentReducer'
 
-import { loadComments, loadLatestComments, promptChatActionsForUser, resendComment, selectMediaItem, closeDetailSection } from '../../../actions'
+import { loadComments, loadLatestComments, promptChatActionsForUser, resendComment, selectMediaItem, closeDetailSection, toggleDropdown } from '../../../actions'
 import { Room, CurrentUser, App } from '../../../models'
 
 function scrollComponentId(props) {
@@ -23,7 +23,10 @@ class ScrollableChatHistory extends React.Component {
 
         this.handleSelectUsername = this.handleSelectUsername.bind(this)
         this.handleSelectMediaItem = this.handleSelectMediaItem.bind(this)
+        this.handleSelectChatOptions = this.handleSelectChatOptions.bind(this)
+
         this.handleResend = this.handleResend.bind(this)
+        this.handleRespond = this.handleRespond.bind(this)
         this.handleJumpToPresent = this.handleJumpToPresent.bind(this)
 
         this.renderComment = this.renderComment.bind(this)
@@ -65,9 +68,21 @@ class ScrollableChatHistory extends React.Component {
         dispatch(closeDetailSection())
     }
 
+    handleSelectChatOptions(chatId) {
+        const { dispatch } = this.props
+        dispatch(toggleDropdown(`${chatId}-options`))
+    }
+
     handleResend(comment) {
         const { dispatch, roomId } = this.props
         dispatch(resendComment(roomId, comment))
+    }
+
+    handleRespond(comment) {
+        this.context.router.push({
+            pathname: '/upload',
+            query: { comment: comment.get('id') }
+        })
     }
 
     handleJumpToPresent() {
@@ -78,18 +93,25 @@ class ScrollableChatHistory extends React.Component {
     // Render
 
     renderComment(comment, idx) {
-        const { authorUsername, roomId } = this.props;
+        const { roomId, authorUsername, currentUserIsAuthor, activeDropdowns } = this.props;
+
         const isCreator = comment.author().get('username') === authorUsername;
+        const componentId = `comment-${roomId}-${comment.get('id')}`
+        const isDropdownActive = activeDropdowns.includes(`${componentId}-options`)
 
         if (comment.get('type') === 'message') {
             return <ChatItem 
-                        id={`comment-${roomId}-${comment.get('id')}`}
+                        id={componentId}
                         key={idx} 
                         comment={comment}
                         isCreator={isCreator} 
                         showHeader={!comment.__no_header__}
+                        showOptions={currentUserIsAuthor}
                         handleSelectUsername={this.handleSelectUsername}
                         handleSelectMediaItem={this.handleSelectMediaItem}
+                        handleSelectOptions={this.handleSelectChatOptions}
+                        handleRespond={this.handleRespond}
+                        isDropdownActive={isDropdownActive}
                     />
         } else if (comment.get('type') === 'notification') {
             return <NotificationChatItem 
@@ -156,6 +178,10 @@ ScrollableChatHistory.propTypes = {
 
 ScrollableChatHistory.defaultProps = {
     style: 'expanded',
+}
+
+ScrollableChatHistory.contextTypes = {
+    router: React.PropTypes.object.isRequired
 }
 
 const scrollOptions = {
@@ -240,8 +266,10 @@ const scrollOptions = {
 
 function mapStateToProps(state, ownProps) {
     let room = new Room(ownProps.roomId, state)
+    let app = new App(state)
     return {
         authorUsername: room.author().get('username'),
+        currentUserIsAuthor: room.currentUserIsAuthor(),
 
         comments: room.comments(),
         liveComments: room.liveComments(),
@@ -254,6 +282,8 @@ function mapStateToProps(state, ownProps) {
         hasReachedLatestComment: room.get('hasReachedLatestComment'),
 
         selectedComment: room.get('selectedComment'),
+
+        activeDropdowns: app.get('activeDropdowns', Set())
     }
 }
 

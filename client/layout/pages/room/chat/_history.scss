@@ -71,13 +71,27 @@
 // Chat item
 
 .chat_item {
+    position: relative;
     font-size: 13px;
-    margin: 12px 8px 0 12px;
+    margin: 12px 0 0;
+    padding: 0 8px 0 12px;
     white-space: pre-wrap;
     word-wrap: break-word;
 
     &.chat_item-no-header {
         margin-top: 10px;
+    }
+
+    .dropdown {
+        top: 25px;
+        right: 0;
+        text-align: right;
+        width: 78px;
+
+        a.dropdown-option {
+            font-size: 12px;
+            padding: 4px 0;
+        }
     }
 }
 
@@ -121,7 +135,35 @@
     &:hover {
         background-color: mix(white, $light-secondary-color, 20%);
     }
+
+    .chat_item.show-options:hover & {
+        margin-right: 10px;
+    }
 }
+
+.chat_item_options {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: none;
+
+    &.dropdown-active {
+        display: block;
+    }
+
+    .svg-icon-more-vert {
+        width: 20px;
+        height: 20px;
+    }
+
+    .chat_item.show-options:hover & {
+        display: block;
+    }
+
+    .chat_item-highlighted & {
+        top: 8px;
+    }
+}   
 
 .chat_item_username {
     color: $secondary-color;
