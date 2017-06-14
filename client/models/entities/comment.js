@@ -14,7 +14,8 @@ export default class Comment extends EntityModel {
     }
 
     stack() {
-        return new Stack(this.__entity().get('stack', 0), this.entities)
+        const stackId = this.__entity().get('stack', 0) || this.__entity().get('stack_id', 0)
+        return new Stack(stackId, this.entities)
     }
 
 }

@@ -145,22 +145,22 @@ class Upload extends React.Component {
         return (
             <div className="upload content" {...dragEvents} >
                 <div>
-                <Helmet title="Upload"/>
-                <div className="content_header">
-                    Upload file
-                </div>
-                <FileSelect upload={upload} app={app} file={upload.get(UploadTypes.MEDIA_ITEM, 'file')} />
-                { upload.has('error') && 
-                    <div className="upload_error">
-                        {upload.get('error')}
+                    <Helmet title="Upload"/>
+                    <div className="content_header">
+                        Upload file
                     </div>
-                }
-                { upload.hasFile(UploadTypes.MEDIA_ITEM) && 
-                    <div className="upload_post-upload">
-                        <UploadBar upload={upload} /> 
-                        { upload.isInSubmitProcess() ? this.renderSubmitRequested() : this.renderSubmitForms() }
-                    </div>
-                }
+                    <FileSelect upload={upload} app={app} file={upload.get(UploadTypes.MEDIA_ITEM, 'file')} />
+                    { upload.has('error') && 
+                        <div className="upload_error">
+                            {upload.get('error')}
+                        </div>
+                    }
+                    { upload.hasFile(UploadTypes.MEDIA_ITEM) && 
+                        <div className="upload_post-upload">
+                            <UploadBar upload={upload} /> 
+                            { upload.isInSubmitProcess() ? this.renderSubmitRequested() : this.renderSubmitForms() }
+                        </div>
+                    }
                 </div>
             </div>
         );

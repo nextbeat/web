@@ -276,7 +276,7 @@ export default store => next => action => {
     let uploadType = action.uploadType
     let upload = new Upload(store.getState())
 
-    if (action.type === ActionTypes.STOP_FILE_UPLOAD) {
+    if (action.type === ActionTypes.STOP_FILE_UPLOAD || action.type === ActionTypes.CLEAR_FILE_UPLOAD) {
         // We want to abort the upload request if this
         // action is called.
         let xhr = upload.get(uploadType, 'xhr')

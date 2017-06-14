@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { clearUpload, UploadTypes } from '../../../actions'
+import { clearFileUpload, UploadTypes } from '../../../actions'
 
 class UploadBar extends React.Component {
 
@@ -12,7 +12,7 @@ class UploadBar extends React.Component {
     }
 
     handleCancel() {
-        this.props.dispatch(clearUpload())
+        this.props.dispatch(clearFileUpload(UploadTypes.MEDIA_ITEM))
     }
 
     render() {

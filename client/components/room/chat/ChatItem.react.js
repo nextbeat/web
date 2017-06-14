@@ -37,6 +37,7 @@ class ChatItem extends React.Component {
         return !(typeof this.props.comment.isEqual === "function" && this.props.comment.isEqual(nextProps.comment)) 
                 || this.props.isCollapsed !== nextProps.isCollapsed
                 || this.props.isDropdownActive !== nextProps.isDropdownActive
+                || this.props.showOptions !== nextProps.showOptions
     }
 
     componentDidUpdate(prevProps) {

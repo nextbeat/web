@@ -3,6 +3,7 @@ import assign from 'lodash/assign'
 
 import StateModel from './base'
 import App from './app'
+import CommentEntity from '../entities/comment'
 import { generateUuid } from '../../utils'
 import { Status, UploadTypes } from '../../actions'
 
@@ -13,7 +14,12 @@ const KEY_MAP = {
     'submitStackRequested': ['submitStackRequested'],
     'isSubmittingStack': ['isSubmittingStack'],
     'stackSubmitted': ['stackSubmitted'],
-    'submitStackError': ['submitStackError']
+    'submitStackError': ['submitStackError'],
+    // Uploading response fields
+    'referencedCommentId': ['referencedComment', 'id'],
+    'referencedCommentIsFetching': ['referencedComment', 'isFetching'],
+    'referencedCommentHasFetched': ['referencedComment', 'hasFetched'],
+    'referencedCommentError': ['referencedComment', 'error']
 }
 
 function fileExtension(fileName) {
@@ -214,6 +220,23 @@ export default class Upload extends StateModel {
     }
 
 
+    /**********************
+     * REFERENCING COMMENTS
+     **********************/
+
+    referencedCommentIsLoaded() {
+        return !!this.get('referencedCommentHasFetched')
+    }
+
+    referencedComment() {
+        if (!this.referencedCommentIsLoaded()) {
+            return null;
+        }
+
+        return new CommentEntity(this.get('referencedCommentId'), this.state.get('entities'))
+    }
+
+
     /************
      * SUBMISSION
      ************/
@@ -256,6 +279,7 @@ export default class Upload extends StateModel {
         }
 
         // Format media item object
+        // 
         const mediaItemState = this.get('mediaItem').toJS()
         let mediaItem = {
             type: mediaItemState.type,
@@ -275,6 +299,10 @@ export default class Upload extends StateModel {
             mediaItem.videos = [{
                 original_id: mediaItemState.resource_id
             }]
+        }
+
+        if (this.referencedCommentIsLoaded()) {
+            mediaItem.references = this.get('referencedCommentId')
         }
 
         stack.media_items = [mediaItem]

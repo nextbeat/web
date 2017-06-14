@@ -79,9 +79,9 @@ class ScrollableChatHistory extends React.Component {
     }
 
     handleRespond(comment) {
+        const { hid } = this.props;
         this.context.router.push({
-            pathname: '/upload',
-            query: { comment: comment.get('id') }
+            pathname: `/r/${hid}/upload/${comment.get('id')}`
         })
     }
 
@@ -268,6 +268,7 @@ function mapStateToProps(state, ownProps) {
     let room = new Room(ownProps.roomId, state)
     let app = new App(state)
     return {
+        hid: room.get('hid'),
         authorUsername: room.author().get('username'),
         currentUserIsAuthor: room.currentUserIsAuthor(),
 

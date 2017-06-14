@@ -75,6 +75,11 @@ export default store => {
                                         return cb(null, require('../client/components/pages/EditRoom.react').default)
                                     })
                                 }),
+                                analyticsRoute('upload/:comment', cb => {
+                                    require.ensure([], (require) => {
+                                        return cb(null, require('../client/components/pages/UploadResponse.react').default)
+                                    })
+                                }),
                                 analyticsRoute(':index', cb => {
                                     require.ensure([], (require) => {
                                         return cb(null, require('../client/components/pages/RoomPage.react').default)

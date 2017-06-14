@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 import { List } from 'immutable'
+import Helmet from 'react-helmet'
 
 import Icon from '../shared/Icon.react'
 import Spinner from '../shared/Spinner.react'
@@ -77,6 +78,7 @@ class EditRoom extends React.Component {
         // todo: error message if not authorized
         return (
             <div className="edit edit-room content">
+                <Helmet title="Edit Room" />
                 <EditThumbnailModal defaultFn={this.thumbnailDefaultFn} />
                 <div className="content_inner">
                     <div className="content_header">

@@ -170,8 +170,9 @@ class App extends React.Component {
     render() {
         const { user, app, children } = this.props
         const { router } = this.context
+        const pathname = router.location.pathname
 
-        const inRoom = router.isActive('/r')
+        const inRoom = router.isActive('/r') && !/\/(upload|edit)/.test(pathname)
         const inHome = router.isActive('/', true)
         const showSplashTopbar = inHome && !user.isLoggedIn()
 

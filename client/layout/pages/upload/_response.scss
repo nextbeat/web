@@ -1,0 +1,49 @@
+.upload-response_comment_container {
+    margin-top: 15px;
+}
+
+.upload-response_comment_header {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.upload-response_comment {
+    background: mix(white, $secondary-color, 85%);
+}
+
+.upload-response_comment_inner {
+    max-width: 300px;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 400;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.upload-response_comment_info {
+    margin-bottom: 5px;
+}
+
+.upload-response_comment_username {
+    font-weight: 700;
+    color: $secondary-color;
+
+    &.creator {
+        color: $primary-color;
+    }
+}
+
+.upload-response_comment_timestamp {
+    font-size: 11px;
+    font-style: italic;
+    color: #aaa;
+    margin-left: 5px;
+}
+
+.upload-response_comment_body {
+    a:hover {
+        cursor: auto;
+        color: $secondary-color;
+    }
+}

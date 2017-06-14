@@ -1,6 +1,17 @@
 import { Map, fromJS } from 'immutable'
-import { ActionTypes, Status } from '../../actions'
+import { ActionTypes, Status, UploadTypes } from '../../actions'
 import { combineReducers, entity, paginate } from '../utils'
+
+const initialState = fromJS({
+    uploads: {},
+    submission: {
+        newStack: {
+            title: '',
+            tags: [],
+            privacyStatus: 'public'
+        }
+    }
+})
 
 /**
  * Upload state has the form:
@@ -66,7 +77,16 @@ function stopFileUpload(state, action) {
 }
 
 function clearFileUpload(state, action) {
-    return state.deleteIn(['uploads', action.uploadType])
+    state = state.deleteIn(['uploads', action.uploadType])
+    if (action.uploadType === UploadTypes.MEDIA_ITEM) {
+        // also clear stack submission
+        state = state.update('submission', sState => 
+            Map()
+                .set('referencedComment', sState.get('referencedComment'))
+                .set('newStack', Map(initialState.newStack))
+        )
+    }
+    return state
 }
 
 function updateProcessingProgress(state, action) {
@@ -154,16 +174,41 @@ function syncStacks(state, action) {
     return state.set('submission', sState)
 }
 
-const initialState = fromJS({
-    uploads: {},
-    submission: {
-        newStack: {
-            title: '',
-            tags: [],
-            privacyStatus: 'public'
-        }
+
+/**********************
+ * REFERENCING COMMENTS
+ **********************/
+
+function referencedComment(state, action) {
+    let cState = state.getIn(['submission', 'referencedComment'], Map());
+    if (action.status === Status.REQUESTING) {
+        cState = cState.merge({
+            isFetching: true,
+            hasFetched: false,
+        }).delete('error').delete('id')
+    } else if (action.status === Status.SUCCESS) {
+        cState = cState.merge({
+            isFetching: false,
+            hasFetched: true,
+            id: action.commentId
+        })
+    } else if (action.status === Status.FAILURE) {
+        cState = cState.merge({
+            isFetching: false,
+            hasFetched: false,
+            error: action.error
+        })
     }
-})
+    state = state.setIn(['submission', 'referencedComment'], cState);
+
+    // Update other submission fields
+    if (action.status === Status.SUCCESS) {
+        const stackId = action.response.entities.comments[action.response.result].stack_id
+        state = state.setIn(['submission', 'selectedStackId'], stackId)
+    }
+
+    return state
+}
 
 export default function(state=initialState, action) {
     if (action.type === ActionTypes.CLEAR_UPLOAD) {
@@ -186,6 +231,8 @@ export default function(state=initialState, action) {
         return stopFileUpload(state, action)
     } else if (action.type === ActionTypes.CLEAR_FILE_UPLOAD) {
         return clearFileUpload(state, action)
+    } else if (action.type === ActionTypes.REFERENCED_COMMENT) {
+        return referencedComment(state, action)
     }
     return state
 }

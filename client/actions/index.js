@@ -124,6 +124,7 @@ export {
     updateNewStack,
     updateNewMediaItem,
     submitStackRequest,
+    loadReferencedComment,
     stopFileUpload,
     clearFileUpload,
     clearUpload

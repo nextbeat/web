@@ -1,6 +1,8 @@
 import ActionTypes from './types'
-import { API_CALL, API_CANCEL, UploadTypes } from './types'
+import { API_CALL, API_CANCEL, UploadTypes, Status } from './types'
 import { generateUuid } from '../utils'
+import Schemas from '../schemas'
+import { CommentEntity } from '../models'
 
 /********
  * UPLOAD
@@ -109,10 +111,48 @@ export function submitStackRequest() {
 }
 
 
+/**********************
+ * REFERENCING COMMENTS
+ **********************/
+
+function fetchReferencedComment(commentId) {
+    return {
+        type: ActionTypes.REFERENCED_COMMENT,
+        commentId,
+        [API_CALL]: {
+            schema: Schemas.COMMENT,
+            endpoint: `comments/${commentId}`
+        }
+    }
+}
+export function loadReferencedComment(commentId) {
+    return (dispatch, getState) => {
+        commentId = parseInt(commentId, 10)
+        const comment = new CommentEntity(commentId, getState().get('entities'))
+        if (!comment.isEmpty()) {
+            // Comment is already loaded; 
+            // call success block immediately
+            var response = {
+                result: commentId,
+                entities: {
+                    comments: { [commentId]: comment.entityState().toJS() },
+                }
+            }
+            return dispatch({
+                type: ActionTypes.REFERENCED_COMMENT,
+                status: Status.SUCCESS,
+                commentId,
+                response
+            })
+        } else {
+            return dispatch(fetchReferencedComment(commentId))
+        }
+    }
+}
+
 /*******
  * RESET
  *******/
-
 
 export function clearUpload() {
     return {
