@@ -60,7 +60,7 @@ class ChatItem extends React.Component {
     }
 
     renderHeader() {
-        const { comment, isCreator, handleSelectUsername, handleSelectMediaItem } = this.props;
+        const { comment, isCreator, handleSelectUsername } = this.props;
 
         const creatorClass  = isCreator ? "creator" : ""
         const username      = comment.author().get('username')
@@ -98,7 +98,7 @@ class ChatItem extends React.Component {
 
     render() {
         const { id, comment, isCreator, isSelected, isDropdownActive, isSearchResult, 
-                handleSelectOptions, showHeader, showOptions } = this.props;
+                handleSelectOptions, handleSelectMediaItem, handleJump, showHeader, showOptions } = this.props;
 
         const isHighlighted     = comment.get('is_referenced_by') || isSelected
         const highlightedClass  = isHighlighted ? "chat_item-highlighted" : ""

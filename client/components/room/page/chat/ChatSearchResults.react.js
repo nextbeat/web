@@ -9,7 +9,7 @@ import Icon from '../../../shared/Icon.react'
 import ScrollComponent from '../../../utils/ScrollComponent.react'
 import { RoomPage, App } from '../../../../models'
 
-import { hideSearchChatResults, searchChat, selectMediaItem, closeDetailSection, toggleDropdown } from '../../../../actions'
+import { hideSearchChatResults, searchChat, selectMediaItem, closeDetailSection, toggleDropdown, jumpToComment } from '../../../../actions'
 
 class ChatSearchResults extends React.Component {
 
@@ -32,7 +32,7 @@ class ChatSearchResults extends React.Component {
     handleSelectMediaItem(mediaItemId) {
         const { dispatch, roomId } = this.props
         dispatch(selectMediaItem(roomId, mediaItemId));
-        dispatch(hideSearchChatResults())
+        // dispatch(hideSearchChatResults())
         dispatch(closeDetailSection())
     }
 
@@ -52,6 +52,7 @@ class ChatSearchResults extends React.Component {
         const { dispatch, roomId } = this.props;
         dispatch(hideSearchChatResults());
         dispatch(jumpToComment(roomId, comment));
+        dispatch(closeDetailSection())
     }
 
 
