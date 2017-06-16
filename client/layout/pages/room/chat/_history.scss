@@ -93,6 +93,12 @@
             padding: 4px 0;
         }
     }
+
+    &:hover {
+        .chat_item_referenced {
+            display: flex;
+        }
+    }
 }
 
 .chat_item-highlighted {
@@ -114,7 +120,7 @@
 
 .chat_item_referenced {
     position: absolute;
-    display: flex;
+    display: none;
     top: 8px;
     right: 10px;
     padding: 1px 7px 2px 4px;

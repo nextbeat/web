@@ -97,12 +97,13 @@ class ChatItem extends React.Component {
     }
 
     render() {
-        const { id, comment, isCreator, isSelected, isDropdownActive, 
+        const { id, comment, isCreator, isSelected, isDropdownActive, isSearchResult, 
                 handleSelectOptions, showHeader, showOptions } = this.props;
 
         const isHighlighted     = comment.get('is_referenced_by') || isSelected
         const highlightedClass  = isHighlighted ? "chat_item-highlighted" : ""
         const isReferenced      = !!comment.get('is_referenced_by')
+        const searchResultClass = isSearchResult ? "chat_item-search" : ""
 
         const headerClass       = showHeader ? "" : "chat_item-no-header"
         const isPrivate         = comment.get('subtype') === 'private'
@@ -117,22 +118,29 @@ class ChatItem extends React.Component {
         const dropdownActiveClass = isDropdownActive ? "dropdown-active" : ""
         
         return (
-            <li className={`chat_item ${highlightedClass} ${headerClass} ${submitClass} ${isBotClass} ${showOptionsClass}`} ref="chat" id={id}>
-                { this.renderDropdown() }
-                { showHeader && this.renderHeader() }
-                <div className={`chat_item_options ${dropdownActiveClass}`} onClick={() => { handleSelectOptions(id) }}>
-                    <Icon type="more-vert" />
-                </div>
-                { isReferenced && 
-                    <div className="chat_item_referenced" onClick={() => { handleSelectMediaItem(comment.get('is_referenced_by')) }}>
-                        <Icon type="reply" /> See response
+            <li className={`chat_item ${highlightedClass} ${headerClass} ${submitClass} ${isBotClass} ${showOptionsClass} ${searchResultClass}`} ref="chat" id={id}>
+                <div className="chat_item_inner">
+                    { this.renderDropdown() }
+                    { showHeader && this.renderHeader() }
+                    <div className={`chat_item_options ${dropdownActiveClass}`} onClick={() => { handleSelectOptions(id) }}>
+                        <Icon type="more-vert" />
                     </div>
-                }
-                <div className={`chat_item_body ${privateClass}`}>
-                    {this.renderMessage(isBot)}
-                    { submitStatus === "failed" && 
-                        <a className="btn chat_item-failed_retry" onClick={ () => { handleResend(comment) } }>Retry</a>
+                    { isSearchResult &&
+                        <div className="chat_item-search_jump" onClick={() => { handleJump(comment) }}>
+                            Jump
+                        </div>
                     }
+                    { isReferenced && 
+                        <div className="chat_item_referenced" onClick={() => { handleSelectMediaItem(comment.get('is_referenced_by')) }}>
+                            <Icon type="reply" /> See response
+                        </div>
+                    }
+                    <div className={`chat_item_body ${privateClass}`}>
+                        {this.renderMessage(isBot)}
+                        { submitStatus === "failed" && 
+                            <a className="btn chat_item-failed_retry" onClick={ () => { handleResend(comment) } }>Retry</a>
+                        }
+                    </div>
                 </div>
             </li>
         );
@@ -145,14 +153,16 @@ ChatItem.propTypes = {
     isCreator: React.PropTypes.bool,
     isCollapsed: React.PropTypes.bool,
     isSelected: React.PropTypes.bool,
+    isSearchResult: React.PropTypes.bool,
     handleSelectUsername: React.PropTypes.func,
     handleResend: React.PropTypes.func,
     handleSelectMediaItem: React.PropTypes.func,
     handleRespond: React.PropTypes.func,
     handleSelectOptions: React.PropTypes.func,
+    handleJump: React.PropTypes.func,
     showHeader: React.PropTypes.bool,
     showOptions: React.PropTypes.bool,
-    isDropdownActive: React.PropTypes.bool,
+    isDropdownActive: React.PropTypes.bool
 }
 
 ChatItem.defaultProps = {
@@ -161,6 +171,7 @@ ChatItem.defaultProps = {
     showHeader: true,
     showOptions: false,
     isDropdownActive: false,
+    isSearchResult: false
 }
 
 export default ChatItem;

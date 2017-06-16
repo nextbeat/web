@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import Icon from '../../shared/Icon.react'
 import renderMessageText from './utils/renderMessageText'
 import { timeString } from '../../../utils'
 import { jumpToComment, hideSearchChatResults } from '../../../actions'
@@ -10,23 +11,33 @@ class SearchResultChatItem extends React.Component {
     constructor(props) {
         super(props);
 
-        this.handleClick = this.handleClick.bind(this);
+        this.handleJumpClick = this.handleJumpClick.bind(this);
     }
 
-    handleClick() {
+    handleJumpClick() {
         const { dispatch, comment, roomId } = this.props;
         dispatch(hideSearchChatResults());
         dispatch(jumpToComment(roomId, comment));
     }
 
     render() {
-        const { comment } = this.props;
+        const { comment, showOptions } = this.props;
+
+        const isReferenced = !!comment.get('is_referenced_by')
+        const highlightClass = isReferenced ? "chat_item-highlighted" : ""
+        const showOptionsClass = showOptions ? "show-options" : ""
 
         return (
-            <li className="chat_item chat_item-search" onClick={this.handleClick}>
-                <div className="chat_item-search_jump">
+            <li className={`chat_item chat_item-search ${highlightClass} ${showOptionsClass}`}>
+                <div className="chat_item-search_jump" onClick={this.handleJumpClick}>
                     Jump
                 </div>
+
+                { isReferenced &&
+                    <div className="chat_item_referenced" onClick={() => { handleSelectMediaItem(comment.get('is_referenced_by')) }}>
+                        <Icon type="reply" /> See response
+                    </div>
+                }
                 <div className="chat_item-search_inner">
                     <div className="chat_item-search_header">
                         <span className="chat_item-search_username">
@@ -50,7 +61,7 @@ SearchResultChatItem.propTypes = {
     roomId: React.PropTypes.number.isRequired,
 
     isCreator: React.PropTypes.bool,
-    handleSelect: React.PropTypes.func
+    showOptions: React.PropTypes.bool
 }
 
 export default connect()(SearchResultChatItem);
