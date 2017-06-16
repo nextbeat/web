@@ -36,13 +36,13 @@ const KEY_MAP = {
     'subscriptionsLoaded': ['meta', 'loadedSubscriptions']
 }
 
-let memoizedOpenBookmarksFn = memoize(
+let memoizedOpenBookmarks = memoize(
     (state) => (new CurrentUser(state)).get('openBookmarkIds', List()).map(id => new StackEntity(id, state.get('entities'))),
     (state) => (new CurrentUser(state)).get('openBookmarkIds', List()),
     (state) => (new CurrentUser(state)).get('id')
 )
 
-let memoizedSusbcriptionsFn = memoize(
+let memoizedSusbcriptions = memoize(
     (state) => (new CurrentUser(state)).get('subscriptionIds', List()).map(id => new UserEntity(id, state.get('entities'))),
     (state) => (new CurrentUser(state)).get('subscriptionIds', List()),
     (state) => (new CurrentUser(state)).get('id')
@@ -97,11 +97,11 @@ export default class CurrentUser extends StateModel {
     }
 
     static memoizedOpenBookmarks(state) {
-        return memoizedOpenBookmarksFn(state)
+        return memoizedOpenBookmarks.get(state)
     }
 
     static memoizedSubscriptions(state) {
-        return memoizedSusbcriptionsFn(state)
+        return memoizedSusbcriptions.get(state)
     }
 
 

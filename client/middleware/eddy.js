@@ -157,6 +157,7 @@ function wrapSendComment(store, next, action) {
             subtype: "public",
             id: responseData.comment_id,
             user_mentions: responseData.user_mentions,
+            stack_id: action.roomId,
             created_at: format(new Date()),
             author: {
                 id: currentUser.get('id')
@@ -185,6 +186,7 @@ function wrapPinComment(store, next, action) {
             type: "message",
             subtype: "pinned",
             id: responseData.comment_id,
+            stack_id: action.roomId,
             user_mentions: responseData.user_mentions,
             author: {
                 id: currentUser.get('id')
@@ -231,6 +233,9 @@ function receivePinnedComment(store, next, action) {
 function receiveMediaItem(store, next, action) {
     // Trigger an entity update
     const response = normalize(action.mediaItem, Schemas.MEDIA_ITEM)
+    if (!!action.mediaItem.references) {
+        Room.flushComments()
+    }
     return next(assign({}, action, { response }))
 }
 

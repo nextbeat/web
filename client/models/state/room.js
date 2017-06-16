@@ -47,7 +47,7 @@ const KEY_MAP = {
     'videoDidPlay': ['navigation', 'videoDidPlay']
 }
 
-let memoizedCommentsFn = memoize(
+let memoizedComments = memoize(
     (id, state) => (new Room(id, state)).__getPaginatedEntities('comments', { entityClass: CommentEntity }) || List(), // function
     (id, state) => (new Room(id, state)).get('commentIds', List()), // hash value function
     (id, state) => id // hash key function
@@ -73,7 +73,11 @@ export default class Room extends StateModel {
      */
 
     static memoizedComments(id, state) {
-        return memoizedCommentsFn(id, state)
+        return memoizedComments.get(id, state)
+    }
+
+    static flushComments() {
+        return memoizedComments.flush()
     }
 
     author() {

@@ -245,13 +245,8 @@ export default class Upload extends StateModel {
         const comment = this.referencedComment();
         const currentUser = new CurrentUser(this.state);
 
-        console.log(hid, room, comment.get('stack_id'), )
-
         if (this.get('referencedCommentError') || !comment) {
             throw new Error("Chat message not found.");
-        }
-        if (currentUser.get('id') !== comment.get('author_id')) {
-            throw new Error("User does not have permission to upload.");
         }
         if (!(comment.get('type') === 'message' && comment.get('subtype') === 'public')) {
             throw new Error("Chat message not found.")
@@ -261,6 +256,9 @@ export default class Upload extends StateModel {
         }
         if (room && room.get('closed')) {
             throw new Error("Room is closed.")
+        }
+        if (room && currentUser.get('id') !== room.get('author_id')) {
+            throw new Error("User does not have permission to upload.");
         }
         if (!!comment.get('is_referenced_by')) {
             throw new Error("Chat message already has response.")
