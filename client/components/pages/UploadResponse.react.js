@@ -8,6 +8,7 @@ import UploadBar from './upload/UploadBar.react'
 
 import Icon from '../shared/Icon.react'
 import Spinner from '../shared/Spinner.react'
+import PageError from '../shared/PageError.react'
 import { timeString, baseUrl } from '../../utils'
 import renderMessageText from '../room/chat/utils/renderMessageText'
 
@@ -22,6 +23,7 @@ class UploadResponse extends React.Component {
         this.handleBackClick = this.handleBackClick.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
 
+        this.renderBody = this.renderBody.bind(this)
         this.renderComment = this.renderComment.bind(this)
         this.renderSubmitForms = this.renderSubmitForms.bind(this)
         this.renderSubmitRequested = this.renderSubmitRequested.bind(this)
@@ -54,9 +56,20 @@ class UploadResponse extends React.Component {
 
 
     // Render
+    
+    renderNoComment(message) {
+        return (
+            <div className="upload-response_comment_container">
+                <PageError>
+                    {message}
+                </PageError>
+            </div>
+        )
+    }
 
     renderComment() {
-        const { upload } = this.props
+        const { upload } = this.props;
+
         const comment = upload.referencedComment()
         const isCreator = comment.stack().author().get('username') === comment.author().get('username')
         const isCreatorClass = isCreator ? "creator" : ""
@@ -126,8 +139,31 @@ class UploadResponse extends React.Component {
         )
     }
 
+    renderBody() {
+        const { upload, app, params } = this.props 
+
+        try {
+            upload.checkReferencedCommentValidity({ hid: params.hid })
+        } catch (e) {
+            return this.renderNoComment(e.message);
+        }
+
+        return (
+            <div>
+                { this.renderComment() }
+                <FileSelect upload={upload} app={app} file={upload.get(UploadTypes.MEDIA_ITEM, 'file')} />
+                { upload.hasFile(UploadTypes.MEDIA_ITEM) && 
+                    <div className="upload_post-upload">
+                        <UploadBar upload={upload} /> 
+                        { upload.isInSubmitProcess() ? this.renderSubmitRequested() : this.renderSubmitForms() }
+                    </div>
+                }
+            </div>
+        )
+    }
+
     render() {
-        const { upload, app } = this.props 
+        const { upload } = this.props 
         const hasLoadedComment = upload.referencedCommentIsLoaded()
 
         const defaultDragFn = e => { e.preventDefault() }
@@ -152,18 +188,7 @@ class UploadResponse extends React.Component {
                          <div className="content_header_info">The chat message below will appear in the top left of your image or video.</div>
                      </div>
                 </div>
-                { hasLoadedComment &&
-                    <div>
-                        { this.renderComment() }
-                        <FileSelect upload={upload} app={app} file={upload.get(UploadTypes.MEDIA_ITEM, 'file')} />
-                        { upload.hasFile(UploadTypes.MEDIA_ITEM) && 
-                            <div className="upload_post-upload">
-                                <UploadBar upload={upload} /> 
-                                { upload.isInSubmitProcess() ? this.renderSubmitRequested() : this.renderSubmitForms() }
-                            </div>
-                        }
-                    </div>
-                }
+                { hasLoadedComment && this.renderBody() }
             </div>
         )
     }

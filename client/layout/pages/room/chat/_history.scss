@@ -104,7 +104,6 @@
 .chat_item_header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     margin-bottom: 3px;
 }
 
@@ -114,7 +113,10 @@
 }
 
 .chat_item_referenced {
+    position: absolute;
     display: flex;
+    top: 8px;
+    right: 10px;
     padding: 1px 7px 2px 4px;
     color: white;
     font-size: 10px;

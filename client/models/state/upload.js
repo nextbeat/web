@@ -3,6 +3,8 @@ import assign from 'lodash/assign'
 
 import StateModel from './base'
 import App from './app'
+import Room from './room'
+import CurrentUser from './currentUser'
 import CommentEntity from '../entities/comment'
 import { generateUuid } from '../../utils'
 import { Status, UploadTypes } from '../../actions'
@@ -234,6 +236,35 @@ export default class Upload extends StateModel {
         }
 
         return new CommentEntity(this.get('referencedCommentId'), this.state.get('entities'))
+    }
+
+    checkReferencedCommentValidity({ hid } = {}) {
+        // Throws an error if the comment is invalid,
+        // which is displayed on the upload response page
+        const room = Room.roomWithHid(hid, this.state)
+        const comment = this.referencedComment();
+        const currentUser = new CurrentUser(this.state);
+
+        console.log(hid, room, comment.get('stack_id'), )
+
+        if (this.get('referencedCommentError') || !comment) {
+            throw new Error("Chat message not found.");
+        }
+        if (currentUser.get('id') !== comment.get('author_id')) {
+            throw new Error("User does not have permission to upload.");
+        }
+        if (!(comment.get('type') === 'message' && comment.get('subtype') === 'public')) {
+            throw new Error("Chat message not found.")
+        }
+        if (room && comment.get('stack_id') !== room.id) {
+            throw new Error("Chat message not found.")
+        }
+        if (room && room.get('closed')) {
+            throw new Error("Room is closed.")
+        }
+        if (!!comment.get('is_referenced_by')) {
+            throw new Error("Chat message already has response.")
+        }
     }
 
 

@@ -25,7 +25,7 @@ function mapStateToProps(state) {
     let roomPage = new RoomPage(state)
     return {
         hid: roomPage.get('hid'),
-        closed: roomPage.get('close')
+        closed: roomPage.get('closed')
     }
 }
 

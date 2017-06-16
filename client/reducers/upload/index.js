@@ -195,7 +195,7 @@ function referencedComment(state, action) {
     } else if (action.status === Status.FAILURE) {
         cState = cState.merge({
             isFetching: false,
-            hasFetched: false,
+            hasFetched: true,
             error: action.error
         })
     }

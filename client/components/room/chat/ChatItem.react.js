@@ -67,7 +67,6 @@ class ChatItem extends React.Component {
         const timestamp     = timeString(comment.get('created_at'))
         const isBot         = comment.author().get('is_bot')
         const isPrivate     = comment.get('subtype') === 'private'
-        const isReferenced  = !!comment.get('is_referenced_by')
 
         return (
             <div className="chat_item_header">
@@ -83,11 +82,6 @@ class ChatItem extends React.Component {
                         { isPrivate && <span className="chat_item_private">only visible to you</span> }
                     </div>
                 </div>
-                { isReferenced && 
-                    <div className="chat_item_referenced" onClick={() => { handleSelectMediaItem(comment.get('is_referenced_by')) }}>
-                        <Icon type="reply" /> See response
-                    </div>
-                }
             </div>
         );
     }
@@ -108,6 +102,7 @@ class ChatItem extends React.Component {
 
         const isHighlighted     = comment.get('is_referenced_by') || isSelected
         const highlightedClass  = isHighlighted ? "chat_item-highlighted" : ""
+        const isReferenced      = !!comment.get('is_referenced_by')
 
         const headerClass       = showHeader ? "" : "chat_item-no-header"
         const isPrivate         = comment.get('subtype') === 'private'
@@ -128,6 +123,11 @@ class ChatItem extends React.Component {
                 <div className={`chat_item_options ${dropdownActiveClass}`} onClick={() => { handleSelectOptions(id) }}>
                     <Icon type="more-vert" />
                 </div>
+                { isReferenced && 
+                    <div className="chat_item_referenced" onClick={() => { handleSelectMediaItem(comment.get('is_referenced_by')) }}>
+                        <Icon type="reply" /> See response
+                    </div>
+                }
                 <div className={`chat_item_body ${privateClass}`}>
                     {this.renderMessage(isBot)}
                     { submitStatus === "failed" && 

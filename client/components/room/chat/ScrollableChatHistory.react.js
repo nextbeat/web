@@ -93,7 +93,7 @@ class ScrollableChatHistory extends React.Component {
     // Render
 
     renderComment(comment, idx) {
-        const { roomId, authorUsername, currentUserIsAuthor, activeDropdowns } = this.props;
+        const { roomId, authorUsername, currentUserIsAuthor, isClosed, activeDropdowns } = this.props;
 
         const isCreator = comment.author().get('username') === authorUsername;
         const componentId = `comment-${roomId}-${comment.get('id')}`
@@ -106,7 +106,7 @@ class ScrollableChatHistory extends React.Component {
                         comment={comment}
                         isCreator={isCreator} 
                         showHeader={!comment.__no_header__}
-                        showOptions={currentUserIsAuthor}
+                        showOptions={currentUserIsAuthor && !isClosed}
                         handleSelectUsername={this.handleSelectUsername}
                         handleSelectMediaItem={this.handleSelectMediaItem}
                         handleSelectOptions={this.handleSelectChatOptions}
@@ -269,6 +269,7 @@ function mapStateToProps(state, ownProps) {
     let app = new App(state)
     return {
         hid: room.get('hid'),
+        isClosed: room.get('closed'),
         authorUsername: room.author().get('username'),
         currentUserIsAuthor: room.currentUserIsAuthor(),
 
