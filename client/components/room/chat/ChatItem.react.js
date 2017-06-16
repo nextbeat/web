@@ -113,7 +113,7 @@ class ChatItem extends React.Component {
         const submitStatus      = comment.get('submit_status')
         const submitClass       = submitStatus ? `chat_item-${submitStatus}` : ''
 
-        const showOptionsClass  = showOptions && !isBot ? "show-options" : ""
+        const showOptionsClass  = showOptions && !isBot && !isReferenced ? "show-options" : ""
         const dropdownActiveClass = isDropdownActive ? "dropdown-active" : ""
         
         return (

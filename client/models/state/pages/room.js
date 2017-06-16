@@ -178,3 +178,5 @@ export default class RoomPage extends StateModel {
     }
 
 }
+
+RoomPage.NUM_SEARCH_SUGGESTIONS = 4;

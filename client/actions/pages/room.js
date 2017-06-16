@@ -112,7 +112,7 @@ function fetchSearchSuggestions(roomId) {
         roomId,
         [API_CALL]: {
             endpoint: `stacks/${roomId}/comments/search/suggestions`,
-            queries: { limit: 3 }
+            queries: { limit: RoomPage.NUM_SEARCH_SUGGESTIONS }
         }
     }
 }
