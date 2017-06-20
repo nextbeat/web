@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import Icon from '../../shared/Icon.react'
 import { timeString } from '../../../utils'
 
-import { jumpToComment, selectDetailSection } from '../../../actions'
+import { jumpToComment, selectDetailSection, hideSearchChatResults } from '../../../actions'
 
 class ItemReference extends React.Component {
 
@@ -33,6 +33,7 @@ class ItemReference extends React.Component {
         const comment = room.selectedMediaItem().referencedComment()
 
         dispatch(jumpToComment(room.id, comment))
+        dispatch(hideSearchChatResults())
         dispatch(selectDetailSection('chat'))
     }
 
