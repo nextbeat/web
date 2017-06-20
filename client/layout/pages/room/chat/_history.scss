@@ -83,7 +83,7 @@
 
     .dropdown {
         top: 20px;
-        right: 5px;
+        right: 13px;
         text-align: right;
         width: 78px;
 
@@ -127,7 +127,7 @@
     align-items: center;
 
     .chat_item.show-options & {
-        margin-right: 8px;
+        margin-right: 16px;
     }
 }
 
@@ -169,7 +169,7 @@
 
 .chat_item_options {
     position: absolute;
-    right: 0;
+    right: 10px;
     top: 0;
     display: none;
 
