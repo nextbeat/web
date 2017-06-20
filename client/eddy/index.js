@@ -220,7 +220,8 @@ export default class EddyClient {
         if (payload.type === "chat") 
         {
             let comment = assign(omit(data, 'room_id'), {
-                type: "message"
+                type: "message",
+                stack_id: roomId
             })
             this.dispatch(receiveComment(roomId, comment));
         } 

@@ -48,7 +48,6 @@ class Dropdown extends React.Component {
         // check that target isn't dropdown. note that we DO want to hide 
         // if the target is one of the dropdown's descendants, since all of those 
         // should be links which should, on click, collapse the dropdown
-        console.log(e.target);
         if (!($dropdown.is(e.target)
             || $toggle.is(e.target) 
             || $toggle.has(e.target).length > 0)) 

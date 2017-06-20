@@ -67,7 +67,7 @@ export default function ScrollComponent(domId, scrollOptions={}) {
                 if (typeof onComponentWillReceiveProps === 'function') {
                     onComponentWillReceiveProps.call(this.refs.child, this, nextProps)
                 }
-                this.setScrollState()
+                // this.setScrollState()
             }
 
             componentDidUpdate(prevProps) {
@@ -162,7 +162,6 @@ export default function ScrollComponent(domId, scrollOptions={}) {
                 const containerElem = this.domElement();
                 const elem = document.getElementById(id);
                 const newTop = Math.max(1, elem.offsetTop - containerElem.clientHeight/2);
-                console.log(newTop, containerElem.scrollTop);
                 this._doScroll(newTop, duration);
             }
 
