@@ -16,12 +16,18 @@ class ItemReference extends React.Component {
         
         this.state = {
             collapsed: false,
+            animated: true,
             compact: this.props.containerWidth < 500,
         }
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({ compact: nextProps.containerWidth < 500 })
+
+        if (nextProps.room.selectedMediaItem() !== this.props.room.selectedMediaItem()) {
+            this.setState({ collapsed: false, animated: false })
+            setTimeout(() => this.setState({ animated: true }), 100)
+        }
     }
 
     handleCollapseClick() {
@@ -39,7 +45,7 @@ class ItemReference extends React.Component {
 
     render() {
         const { room } = this.props 
-        const { collapsed, compact } = this.state
+        const { collapsed, compact, animated } = this.state
 
         const item = room.selectedMediaItem()
         const comment = item.referencedComment()
@@ -50,9 +56,10 @@ class ItemReference extends React.Component {
 
         const collapsedClass = collapsed ? "collapsed" : "";
         const compactClass = compact ? "compact" : "";
+        const animatedClass = animated ? "animated": "";
 
         return (
-            <div className={`player_reference ${collapsedClass} ${compactClass}`}>
+            <div className={`player_reference ${collapsedClass} ${compactClass} ${animatedClass}`}>
                 <div className="player_reference_icon_container">
                     <div className="player_reference_icon">
                         <Icon type="reply" />

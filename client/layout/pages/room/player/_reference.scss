@@ -46,15 +46,19 @@
     align-items: stretch;
     background: rgba(#000, 0.7);
 
-    transition-property: transform; 
-    transition-duration: 0.225s;
-    transition-timing-function: cubic-bezier(0.0, 0.0, 0.2, 1);
-
     cursor: pointer;
+    transition-property: transform; 
 
+    .player_reference.animated & {
+        transition-duration: 0.225s;
+        transition-timing-function: cubic-bezier(0.0, 0.0, 0.2, 1);
+    }
 
     .player_reference.collapsed & {
         transform: translateX(calc(-100% + 30px));
+    }
+
+    .player_reference.collapsed.animated & {
         transition-duration: 0.195s;
         transition-timing-function: cubic-bezier(0.4, 0.0, 1, 1);
     }
@@ -102,7 +106,10 @@
         height: 20px;
         fill: rgba(#fff, 0.8);
         transform: rotate(90deg);
-        transition: transform 0.3s 0.225s;
+
+        .player_reference.animated & {
+            transition: transform 0.3s 0.225s;
+        }
 
         .player_reference.collapsed & {
             transform: rotate(270deg);
