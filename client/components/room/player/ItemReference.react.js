@@ -21,14 +21,37 @@ class ItemReference extends React.Component {
         }
     }
 
+
+    // Component lifecycle
+
+    componentDidMount() {
+        $(this.refs.text).dotdotdot({
+            watch: true,
+            height: 50
+        })
+    }
+
     componentWillReceiveProps(nextProps) {
         this.setState({ compact: nextProps.containerWidth < 500 })
 
         if (nextProps.room.selectedMediaItem() !== this.props.room.selectedMediaItem()) {
+            $(this.refs.text).trigger('destroy.dot')
             this.setState({ collapsed: false, animated: false })
             setTimeout(() => this.setState({ animated: true }), 100)
         }
     }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.room.selectedMediaItem() !== this.props.room.selectedMediaItem()) {
+            $(this.refs.text).dotdotdot({
+                watch: true,
+                height: 50
+            })
+        }
+    }
+
+
+    // Actions
 
     handleCollapseClick() {
         this.setState({ collapsed: !this.state.collapsed })
@@ -42,6 +65,9 @@ class ItemReference extends React.Component {
         dispatch(hideSearchChatResults())
         dispatch(selectDetailSection('chat'))
     }
+
+
+    // Render
 
     render() {
         const { room } = this.props 
@@ -72,7 +98,7 @@ class ItemReference extends React.Component {
                                 <span className="player_reference_comment_username">{comment.author().get('username')}</span>
                                 <span className="player_reference_comment_timestamp">{timeString(comment.get('created_at'))}</span>
                             </div>
-                            <div className="player_reference_comment_body">
+                            <div ref="text" className="player_reference_comment_body">
                                 {comment.get('message')}
                             </div>
                         </div>

@@ -99,7 +99,6 @@ class ScrollableChatHistory extends React.Component {
         const componentId = `comment-${roomId}-${comment.get('id')}`
         const isDropdownActive = activeDropdowns.includes(`${componentId}-options`)
         const isSelected = comment.get('id') === selectedComment;
-        console.log(isSelected);
 
         if (comment.get('type') === 'message') {
             return <ChatItem 
