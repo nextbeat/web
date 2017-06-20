@@ -91,7 +91,7 @@ class ChatItem extends React.Component {
         const { comment, handleSelectMediaItem } = this.props
         return (
             <div className="chat_item_referenced" onClick={() => { handleSelectMediaItem(comment.get('is_referenced_by')) }}>
-                <Icon type="reply" /> See response
+                <Icon type="reply" />See response
             </div>
         )
     }

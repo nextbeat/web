@@ -82,8 +82,8 @@
     }
 
     .dropdown {
-        top: 25px;
-        right: 0;
+        top: 20px;
+        right: 5px;
         text-align: right;
         width: 78px;
 
@@ -119,27 +119,24 @@
     position: absolute;
     display: flex;
     align-items: center;
-    vertical-align: bottom;
     top: 8px;
     right: 10px;
-    padding: 1px 7px 2px 4px;
-    color: white;
-    font-size: 10px;
+    color: $secondary-color;
+    font-size: 11px;
     font-weight: 500;
-    background-color: $light-secondary-color;
-    border-radius: 4px;
     cursor: pointer;
 
     .svg-icon-reply {
         display: inline-block;
         width: 15px;
         height: 15px;
-        fill: #fff;
-        margin-right: 1px;
+        fill: $secondary-color;
+        margin-right: 4px;
     }
 
     &:hover {
-        background-color: mix(white, $light-secondary-color, 20%);
+        // background-color: mix(white, $light-secondary-color, 20%);
+        text-decoration: underline;
     }
 
     .chat_item.show-options:hover & {
@@ -153,18 +150,24 @@
     top: 0;
     display: none;
 
-    &.dropdown-active {
+    .chat_item.show-options & {
         display: block;
+        cursor: pointer;
     }
+
+    // &.dropdown-active {
+    //     display: block;
+    // }
 
     .svg-icon-more-vert {
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
+        fill: #aaa;
     }
 
-    .chat_item.show-options:hover & {
-        display: block;
-    }
+    // .chat_item.show-options:hover & {
+    //     display: block;
+    // }
 
     .chat_item-highlighted & {
         top: 8px;
@@ -215,6 +218,12 @@ a.chat_item_mention {
     width: 16px;
     height: 16px;
     margin-right: 5px;
+}
+
+.chat_item_body {
+    .chat_item.show-options & {
+        margin-right: 20px;
+    }
 }
 
 .chat_item_private {
