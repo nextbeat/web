@@ -25,9 +25,6 @@ class PinnedChatItem extends React.Component {
 
         return (
             <div className="chat_pinned-comment">
-                { currentUserIsAuthor && 
-                    <div className="btn btn-gray chat_pinned-comment_unpin" onClick={this.handleUnpin}>Remove</div>
-                }
                 <div className="chat_item-pinned-comment chat_item">
                     <div className="chat_item-pinned-comment_header">
                         <span className={`chat_item_username chat_item-pinned-comment_username ${creatorClass}`}>{pinnedComment.author().get('username')}</span>
@@ -37,6 +34,9 @@ class PinnedChatItem extends React.Component {
                        { renderMessageText(pinnedComment) }
                     </div>
                 </div>
+                { currentUserIsAuthor && 
+                    <div className="btn btn-gray chat_pinned-comment_unpin" onClick={this.handleUnpin}>Remove</div>
+                }
             </div>
         )
     }
