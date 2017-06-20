@@ -99,14 +99,19 @@
 }
 
 .chat_item-highlighted {
-    background: mix(white, $secondary-color, 85%);
+    background: #f0f0f0;
     margin: 12px 0 0;
     padding: 8px 8px 10px 12px;
+}
+
+.chat_item-is-referenced {
+    background: mix(white, $secondary-color, 85%);
 }
 
 .chat_item_header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 3px;
 }
 
@@ -115,12 +120,25 @@
     align-items: center;
 }
 
+.chat_item_header_right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    .chat_item.show-options & {
+        margin-right: 8px;
+    }
+}
+
+.chat_item_header_right_divider {
+    color: #aaa;
+    margin: 0 5px;
+}
+
 .chat_item_referenced {
-    position: absolute;
     display: flex;
     align-items: center;
-    top: 8px;
-    right: 10px;
     color: $secondary-color;
     font-size: 11px;
     font-weight: 500;
@@ -142,6 +160,11 @@
     .chat_item.show-options:hover & {
         margin-right: 10px;
     }
+}
+
+.chat_item_referenced_inner {
+    display: flex;
+    align-items: center;
 }
 
 .chat_item_options {
@@ -209,7 +232,7 @@ a.chat_item_mention {
 }
 
 .chat_item_highlight {
-    background: #ddd;
+    background: rgba(#000, 0.12);
     padding: 1px 3px;
 }
 
@@ -266,8 +289,6 @@ a.chat_item-failed_retry {
     display: flex;
     align-items: center;
     background-color: mix(white, $primary-color, 90%);
-    margin-top: 12px;
-    padding: 8px 8px 10px 12px;
     cursor: pointer;
 
     &:hover {

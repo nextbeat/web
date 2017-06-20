@@ -17,7 +17,6 @@ class ChatItem extends React.Component {
         super(props)
 
         this.renderMessage = this.renderMessage.bind(this)
-        this.renderReferenced = this.renderReferenced.bind(this)
         this.renderHeader = this.renderHeader.bind(this)
         this.renderDropdown = this.renderDropdown.bind(this)
     }
@@ -39,6 +38,7 @@ class ChatItem extends React.Component {
                 || this.props.isCollapsed !== nextProps.isCollapsed
                 || this.props.isDropdownActive !== nextProps.isDropdownActive
                 || this.props.showOptions !== nextProps.showOptions
+                || this.props.isSelected !== nextProps.isSelected
     }
 
     componentDidUpdate(prevProps) {
@@ -61,13 +61,15 @@ class ChatItem extends React.Component {
     }
 
     renderHeader() {
-        const { comment, isCreator, handleSelectUsername } = this.props;
+        const { comment, isCreator, isSearchResult,
+                handleJump, handleSelectUsername, handleSelectMediaItem } = this.props;
 
         const creatorClass  = isCreator ? "creator" : ""
         const username      = comment.author().get('username')
         const timestamp     = timeString(comment.get('created_at'))
         const isBot         = comment.author().get('is_bot')
         const isPrivate     = comment.get('subtype') === 'private'
+        const isReferenced  = !!comment.get('is_referenced_by')
 
         return (
             <div className="chat_item_header">
@@ -83,17 +85,23 @@ class ChatItem extends React.Component {
                         { isPrivate && <span className="chat_item_private">only visible to you</span> }
                     </div>
                 </div>
+                <div className="chat_item_header_right">
+                    { isReferenced && 
+                        <div className="chat_item_referenced" onClick={() => { handleSelectMediaItem(comment.get('is_referenced_by')) }}>
+                        { isSearchResult ? 
+                            <span className="chat_item_referenced_inner">Response</span> : 
+                            <span className="chat_item_referenced_inner"><Icon type="reply" />See response</span> }
+                        </div>
+                    }
+                    { isReferenced && isSearchResult && <span className="chat_item_header_right_divider">•</span>}
+                    { isSearchResult &&
+                        <div className="chat_item-search_jump" onClick={() => { handleJump(comment) }}>
+                            Jump
+                        </div>
+                    }
+                </div>
             </div>
         );
-    }
-
-    renderReferenced() {
-        const { comment, handleSelectMediaItem } = this.props
-        return (
-            <div className="chat_item_referenced" onClick={() => { handleSelectMediaItem(comment.get('is_referenced_by')) }}>
-                <Icon type="reply" />See response
-            </div>
-        )
     }
 
     renderDropdown() {
@@ -108,11 +116,13 @@ class ChatItem extends React.Component {
 
     render() {
         const { id, comment, isCreator, isSelected, isDropdownActive, isSearchResult, 
-                handleSelectOptions, handleJump, showHeader, showOptions } = this.props;
+                handleSelectOptions, showHeader, showOptions } = this.props;
 
-        const isHighlighted     = comment.get('is_referenced_by') || isSelected
-        const highlightedClass  = isHighlighted ? "chat_item-highlighted" : ""
+
         const isReferenced      = !!comment.get('is_referenced_by')
+        const referencedClass   = isReferenced ? "chat_item-is-referenced" : ""
+        const isHighlighted     = isReferenced || isSelected
+        const highlightedClass  = isHighlighted ? "chat_item-highlighted" : ""
         const searchResultClass = isSearchResult ? "chat_item-search" : ""
 
         const headerClass       = showHeader ? "" : "chat_item-no-header"
@@ -126,23 +136,19 @@ class ChatItem extends React.Component {
 
         const showOptionsClass  = showOptions && !isBot && !isReferenced ? "show-options" : ""
         const dropdownActiveClass = isDropdownActive ? "dropdown-active" : ""
+
+        const chatItemClasses = `${highlightedClass} ${referencedClass} ${headerClass} ${submitClass} ${isBotClass} ${showOptionsClass} ${searchResultClass}`
         
         return (
-            <li className={`chat_item ${highlightedClass} ${headerClass} ${submitClass} ${isBotClass} ${showOptionsClass} ${searchResultClass}`} ref="chat" id={id}>
+            <li className={`chat_item ${chatItemClasses}`} ref="chat" id={id}>
                 <div className="chat_item_inner">
                     { this.renderDropdown() }
                     { showHeader && this.renderHeader() }
                     <div className={`chat_item_options ${dropdownActiveClass}`} onClick={() => { handleSelectOptions(id) }}>
                         <Icon type="more-vert" />
                     </div>
-                    { isSearchResult &&
-                        <div className="chat_item-search_jump" onClick={() => { handleJump(comment) }}>
-                            Jump
-                        </div>
-                    }
                     <div className={`chat_item_body ${privateClass}`}>
                         {this.renderMessage(isBot)}
-                        { isReferenced && this.renderReferenced() }
                         { submitStatus === "failed" && 
                             <a className="btn chat_item-failed_retry" onClick={ () => { handleResend(comment) } }>Retry</a>
                         }

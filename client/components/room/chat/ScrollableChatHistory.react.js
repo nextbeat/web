@@ -93,11 +93,13 @@ class ScrollableChatHistory extends React.Component {
     // Render
 
     renderComment(comment, idx) {
-        const { roomId, authorUsername, currentUserIsAuthor, isClosed, activeDropdowns } = this.props;
+        const { roomId, authorUsername, currentUserIsAuthor, isClosed, activeDropdowns, selectedComment } = this.props;
 
         const isCreator = comment.author().get('username') === authorUsername;
         const componentId = `comment-${roomId}-${comment.get('id')}`
         const isDropdownActive = activeDropdowns.includes(`${componentId}-options`)
+        const isSelected = comment.get('id') === selectedComment;
+        console.log(isSelected);
 
         if (comment.get('type') === 'message') {
             return <ChatItem 
@@ -112,6 +114,7 @@ class ScrollableChatHistory extends React.Component {
                         handleSelectOptions={this.handleSelectChatOptions}
                         handleRespond={this.handleRespond}
                         isDropdownActive={isDropdownActive}
+                        isSelected={isSelected}
                     />
         } else if (comment.get('type') === 'notification') {
             return <NotificationChatItem 
