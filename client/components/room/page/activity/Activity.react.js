@@ -46,7 +46,7 @@ class Activity extends React.Component {
         let selectedItem = roomPage.selectedMediaItem();
 
         return (
-        <section className="activity" style={{ display: (display ? "block" : "none") }}>
+        <section className="activity" style={{ display: (display ? "flex" : "none") }}>
             <div className="activity_time">
                 { roomPage.get('closed') && format(roomPage.get('created_at'), 'MMMM D, YYYY') }
                 { !roomPage.get('closed') && timeLeftString(roomPage.get('expires')) }
