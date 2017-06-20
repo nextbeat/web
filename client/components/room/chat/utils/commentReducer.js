@@ -3,6 +3,7 @@ import differenceInMinutes from 'date-fns/difference_in_minutes'
 export default function commentReducer(res, comment) {
     let isCollapsibleComment = (comment) => comment.get('type') === 'notification' && comment.get('subtype') === 'mediaitem';
     let isPublicMessage = (comment) => comment.get('type') === 'message' && comment.get('subtype') === 'public';
+    let hasReference = (comment) => !!comment.get('is_referenced_by');
     
     if (res.last() && isCollapsibleComment(res.last()) && isCollapsibleComment(comment)) {
         // collapse into previous notification comment
@@ -11,7 +12,7 @@ export default function commentReducer(res, comment) {
         return res.pop().push(comment);
     } 
 
-    if (res.last() && isPublicMessage(res.last()) && isPublicMessage(comment)) {
+    if (res.last() && isPublicMessage(res.last()) && isPublicMessage(comment) && !hasReference(comment)) {
         const sameAuthor = res.last().author().get('username') === comment.author().get('username');
         const diff = differenceInMinutes(comment.get('created_at'), res.last().get('created_at'));
         if (sameAuthor && diff < 10) {

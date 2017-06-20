@@ -17,6 +17,7 @@ class ChatItem extends React.Component {
         super(props)
 
         this.renderMessage = this.renderMessage.bind(this)
+        this.renderReferenced = this.renderReferenced.bind(this)
         this.renderHeader = this.renderHeader.bind(this)
         this.renderDropdown = this.renderDropdown.bind(this)
     }
@@ -86,6 +87,15 @@ class ChatItem extends React.Component {
         );
     }
 
+    renderReferenced() {
+        const { comment, handleSelectMediaItem } = this.props
+        return (
+            <div className="chat_item_referenced" onClick={() => { handleSelectMediaItem(comment.get('is_referenced_by')) }}>
+                <Icon type="reply" /> See response
+            </div>
+        )
+    }
+
     renderDropdown() {
         const { id, handleRespond, comment } = this.props;
 
@@ -98,7 +108,7 @@ class ChatItem extends React.Component {
 
     render() {
         const { id, comment, isCreator, isSelected, isDropdownActive, isSearchResult, 
-                handleSelectOptions, handleSelectMediaItem, handleJump, showHeader, showOptions } = this.props;
+                handleSelectOptions, handleJump, showHeader, showOptions } = this.props;
 
         const isHighlighted     = comment.get('is_referenced_by') || isSelected
         const highlightedClass  = isHighlighted ? "chat_item-highlighted" : ""
@@ -130,13 +140,9 @@ class ChatItem extends React.Component {
                             Jump
                         </div>
                     }
-                    { isReferenced && 
-                        <div className="chat_item_referenced" onClick={() => { handleSelectMediaItem(comment.get('is_referenced_by')) }}>
-                            <Icon type="reply" /> See response
-                        </div>
-                    }
                     <div className={`chat_item_body ${privateClass}`}>
                         {this.renderMessage(isBot)}
+                        { isReferenced && this.renderReferenced() }
                         { submitStatus === "failed" && 
                             <a className="btn chat_item-failed_retry" onClick={ () => { handleResend(comment) } }>Retry</a>
                         }
