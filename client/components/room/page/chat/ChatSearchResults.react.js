@@ -52,7 +52,6 @@ class ChatSearchResults extends React.Component {
         const { dispatch, roomId } = this.props;
         dispatch(hideSearchChatResults());
         dispatch(jumpToComment(roomId, comment));
-        dispatch(closeDetailSection())
     }
 
 
