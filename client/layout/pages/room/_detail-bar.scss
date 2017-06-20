@@ -138,19 +138,18 @@
 .detail-bar_close {
     display: flex;
     align-items: center;
-    padding: 4px;
-    background-color: rgba(#777, 1.0);
+    justify-content: center;
+    background-color: rgba(#eee, 1.0);
     z-index: 50;
-    // box-shadow: 2px 2px 2px rgba(#000, 0.2);
+    height: 28px;
     color: #fff;
     text-align: center;
-    font-size: 12px;
+    border-bottom: 1px solid $border-color;
 
-    .svg-icon-close {
-        width: 20px;
-        height: 20px;
-        fill: #fff;
-        margin-right: 4px;
+    .svg-icon-expand-more {
+        width: 25px;
+        height: 25px;
+        fill: rgba(#000, 0.3);
     }
 
     &:hover {
