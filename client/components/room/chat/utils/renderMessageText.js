@@ -94,7 +94,7 @@ function doRenderMessageText(comment, options) {
 
 let cache = {}
 function memoizedRenderMessageText(comment, options) {
-    let key = hashCode(comment.get('message') + JSON.stringify(comment.get('result_indices')) + JSON.stringify(options))
+    let key = hashCode(comment.get('message') + JSON.stringify(comment.get('user_mentions')) + JSON.stringify(comment.get('result_indices')) + JSON.stringify(options))
     if (!cache[key]) {
         cache[key] = doRenderMessageText(comment, options);
     }

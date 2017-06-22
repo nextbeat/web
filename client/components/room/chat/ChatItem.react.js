@@ -183,7 +183,8 @@ ChatItem.defaultProps = {
     showHeader: true,
     showOptions: false,
     isDropdownActive: false,
-    isSearchResult: false
+    isSearchResult: false,
+    isSelected: false
 }
 
 export default ChatItem;

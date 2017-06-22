@@ -4,7 +4,7 @@ import { Map } from 'immutable'
 export default class TemporaryComment extends TemporaryEntityModel {
     
     author() {
-        return Map({ username: this.get('username') })
+        return Map({ username: this.get('username'), is_bot: false })
     }
 
     stack() { /* unused */
