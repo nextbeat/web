@@ -59,7 +59,7 @@ class StackItem extends React.Component {
         const { stack, currentUser, notifications } = this.props;
 
         const author = stack.author()
-        const unreadNotificationCount = currentUser.isLoggedIn() && notifications.unreadMediaItemCount(stack.get('id'))
+        const unreadNotificationCount = 0 // currentUser.isLoggedIn() && notifications.unreadMediaItemCount(stack.get('id'))
 
         return (
             <div className="item_container" ref={(c) => this._node = c} >

@@ -144,7 +144,7 @@ export {
     receiveMediaItem,
     receiveNotificationComment,
     receiveRoomClosed,
-    receiveNotification
+    receiveActivityEvent
 } from './eddy'
 
 export {
@@ -163,7 +163,7 @@ export {
 } from './user'
 
 export {
-    loadNotifications,
+    loadActivity,
     syncUnreadNotifications,
     markStackAsRead,
     markAllAsRead,

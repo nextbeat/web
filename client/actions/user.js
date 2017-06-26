@@ -10,7 +10,6 @@ import Schemas from '../schemas'
 import { Status, API_CALL, API_CANCEL, GA, GATypes } from './types'
 import { gaIdentify, gaEvent } from './ga'
 import { pushInitialize, pushSubscribe } from './push'
-import { syncUnreadNotifications } from './notifications'
 import { identifyEddy, unidentifyEddy } from './eddy'
 import { isValidUrl } from '../utils'
 
@@ -222,7 +221,6 @@ export function postLogin() {
     return (dispatch, getState) => {
         const user = new CurrentUser(getState())
         dispatch(gaIdentify(user))
-        dispatch(syncUnreadNotifications())
         dispatch(loadBookmarkedStacks("open"))
         dispatch(loadSubscriptions())
         dispatch(pushInitialize())

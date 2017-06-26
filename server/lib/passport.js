@@ -39,13 +39,16 @@ module.exports = {
         });
 
         passport.deserializeUser(function(user, done) {
-            var url = 'users/' + user.username;
-            api.get(url).then(function(res) {
+            var url = `users/${user.username}`,
+                options = {
+                    auth: user.token
+                };
+
+            api.get(url, undefined, options).then(function(res) {
                 var userObj = _.assign({}, res.body, { token : user.token });
                 done(null, userObj);
                 return null;
             }).catch(function(e) {
-                console.log(e);
                 done(null, null);
             });
         })

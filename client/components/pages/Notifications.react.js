@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { List } from 'immutable'
 
 import { Notifications as NotificationsModel } from '../../models'
-import { loadNotifications, clearNotifications, markAllAsRead } from '../../actions'
+import { loadActivity, clearNotifications } from '../../actions'
 import Spinner from '../shared/Spinner.react' 
 import NotificationItem from './notifications/NotificationItem.react'
 
@@ -14,8 +14,7 @@ class Notifications extends React.Component {
     }
 
     componentDidMount() {
-        this.props.dispatch(loadNotifications())
-        this.props.dispatch(markAllAsRead())
+        this.props.dispatch(loadActivity())
     }
 
     componentWillUnmount() {
@@ -23,19 +22,18 @@ class Notifications extends React.Component {
     }
 
     render() {
-        const { notifications } = this.props 
-        const notificationsList = notifications.allNotifications()
+        const { activity, isFetching } = this.props 
 
         return (
             <div className="notifications content" id="notifications">
                 <div className="content_inner">
-                    { notifications.get('isFetching') && <Spinner type="grey" /> }
-                    { !notifications.get('isFetching') &&
+                    { isFetching && <Spinner type="grey" /> }
+                    { !isFetching &&
                         <div className="notifications_list">
-                            { notificationsList.map((notification, idx) => 
+                            { activity.map((notification, idx) => 
                                 <NotificationItem key={idx} notification={notification} />
                             )}
-                            { notificationsList.size === 0 &&
+                            { activity.size === 0 &&
                                 <div className="notifications_not-found">
                                     Check back later to see notifications about people you've subscribed to and rooms you've bookmarked.
                                 </div>
@@ -49,8 +47,10 @@ class Notifications extends React.Component {
 }
 
 function mapStateToProps(state) {
+    const notifications = new NotificationsModel(state)
     return {
-        notifications: new NotificationsModel(state)
+        activity: notifications.activity(),
+        isFetching: notifications.get('isFetching')
     }
 }
 

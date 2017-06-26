@@ -4,7 +4,7 @@ import omit from 'lodash/omit'
  
 import { receiveComment, receiveMediaItem, receiveRoomClosed, 
          receivePinnedComment, receiveUnpinnedComment,
-         receiveNotificationComment, receiveNotification, 
+         receiveNotificationComment, receiveActivityEvent, 
          reconnectEddy, identifyEddy, joinRoom } from '../actions'
 import { Room, CurrentUser } from '../models'
 import { EddyError, TimeoutError } from '../errors'
@@ -251,8 +251,8 @@ export default class EddyClient {
     }
 
     _handleMessage(payload) {
-        if (payload.type === "notification") {
-            this.dispatch(receiveNotification())
+        if (payload.type === "activity_event") {
+            this.dispatch(receiveActivityEvent())
         }
     }
 

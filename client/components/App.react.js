@@ -137,10 +137,10 @@ class App extends React.Component {
         }
 
         let badge = '';
-        let count = notifications.totalUnreadCount(true);
-        if (count > 0) {
-            badge = `(${count}) `
-        }
+        // let count = notifications.unreadCount();
+        // if (count > 0) {
+        //     badge = `(${count}) `
+        // }
 
         let description = "Nextbeat lets you do anything with an audience. Open a room, check in with photos and videos, chat with people hanging out, and build a community that goes where you go."
         let meta = [

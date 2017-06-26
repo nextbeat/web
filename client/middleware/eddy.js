@@ -4,8 +4,7 @@ import format from 'date-fns/format'
 
 import EddyClient from '../eddy'
 import { ActionTypes, Status } from '../actions'
-import { joinRoom, leaveRoom, reconnectEddy, getRoomInfo,
-         syncUnreadNotifications, triggerAuthError } from '../actions'
+import { joinRoom, leaveRoom, reconnectEddy, getRoomInfo, triggerAuthError } from '../actions'
 import { Eddy, CurrentUser, Room } from '../models'
 import Schemas from '../schemas'
 
@@ -256,10 +255,6 @@ function receiveRoomClosed(store, next, action) {
 }
 
 function receiveNotification(store, next, action) {
-    // On receiving a "notification" event,
-    // client syncs with the API server to
-    // retrieve a new list of unread notifications
-    store.dispatch(syncUnreadNotifications());
     return next(action);
 }
 

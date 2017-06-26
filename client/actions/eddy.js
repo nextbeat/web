@@ -96,8 +96,8 @@ export function receiveRoomClosed(roomId) {
     }
 }
 
-export function receiveNotification() {
+export function receiveActivityEvent() {
     return {
-        type: ActionTypes.RECEIVE_NOTIFICATION
+        type: ActionTypes.RECEIVE_ACTIVITY_EVENT
     }
 }

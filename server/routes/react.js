@@ -41,6 +41,9 @@ function getInitialState(req) {
                     id: req.user.id,
                     token: req.user.token,
                     hasUpdatedEntity: true 
+                },
+                notifications: {
+                    unreadCount: req.user.unread_count
                 }
             },
             entities: {

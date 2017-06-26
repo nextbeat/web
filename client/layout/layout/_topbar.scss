@@ -170,12 +170,12 @@ input.topbar_search-bar {
 
 .topbar_notifications-badge {
     background: $primary-color;
-    color: white;
     position: absolute;
-    font-size: 12px;
-    padding: 1px 4px;
-    border-radius: 4px;
-    top: 0;
+    width: 12px;
+    height: 12px;
+    border: 2px solid white;
+    border-radius: 6px;
+    top: 5px;
     left: 20px;
 }
 

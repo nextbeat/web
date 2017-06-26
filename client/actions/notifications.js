@@ -10,19 +10,19 @@ import { API_CALL, API_CANCEL } from './types'
  * FETCHING ACTIVITY
  *******************/
 
-function fetchNotifications() {
+function fetchActivity() {
     return {
-        type: ActionTypes.NOTIFICATIONS,
+        type: ActionTypes.ACTIVITY,
         [API_CALL]: {
-            endpoint: "notifications",
+            endpoint: "activity",
             authenticated: true
         }
     }
 }
 
-export function loadNotifications() {
+export function loadActivity() {
     // todo: pagination?
-    return fetchNotifications();
+    return fetchActivity();
 }
 
 /****************
@@ -92,30 +92,33 @@ function markAsRead(options) {
 }
 
 export function markStackAsRead(id) {
-    return (dispatch, getState) => {
-        const roomPage = new RoomPage(getState())
-        const currentUser = new CurrentUser(getState())
-        id = id || roomPage.get('id');
-        if (typeof id === "number") {
-            id = id.toString();
-        }
-
-        if (!id) {
-            // either did not specify stack id or no stack is loaded
-            return null;
-        }
-
-        const notifications = new Notifications(getState())
-        if (notifications.unreadMediaItemCount(id) === 0) {
-            // if stack already marked as read, do nothing
-            //
-            // note that this method call might need to change 
-            // when we have more than one notification type
-            return null;
-        }
-
-        dispatch(markAsRead({ stack: id }))
+    return {
+       type: ActionTypes.MARK_AS_READ 
     }
+    // return (dispatch, getState) => {
+    //     const roomPage = new RoomPage(getState())
+    //     const currentUser = new CurrentUser(getState())
+    //     id = id || roomPage.get('id');
+    //     if (typeof id === "number") {
+    //         id = id.toString();
+    //     }
+
+    //     if (!id) {
+    //         // either did not specify stack id or no stack is loaded
+    //         return null;
+    //     }
+
+    //     const notifications = new Notifications(getState())
+    //     if (notifications.unreadMediaItemCount(id) === 0) {
+    //         // if stack already marked as read, do nothing
+    //         //
+    //         // note that this method call might need to change 
+    //         // when we have more than one notification type
+    //         return null;
+    //     }
+
+    //     dispatch(markAsRead({ stack: id }))
+    // }
 }
 
 

@@ -3,7 +3,7 @@ import { findDOMNode } from 'react-dom'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 
-import { selectSidebar, closeSidebar, toggleDropdown, promptModal, logout, markAllAsRead, loadNotifications, clearUpload } from '../actions'
+import { selectSidebar, closeSidebar, toggleDropdown, promptModal, logout, markAllAsRead, loadActivity, clearUpload } from '../actions'
 import { Notifications as NotificationsModel, Upload, CurrentUser, App } from '../models'
 
 import Notifications from './pages/Notifications.react'
@@ -65,8 +65,7 @@ class Topbar extends React.Component {
                     router.goBack();
                 } else {
                     // run componentDidMount operations of Notifications component to simulate reload
-                    dispatch(markAllAsRead())
-                    dispatch(loadNotifications())
+                    dispatch(loadActivity())
                 }
             } else {
                 // navigate to page instead of showing dropdown
@@ -121,7 +120,7 @@ class Topbar extends React.Component {
     // Render
 
     renderLoggedIn(includeSmallClass) {
-        const { totalUnreadNotificationCount, profilePictureUrl, width, uploadStackSubmitted } = this.props;
+        const { unreadCount, profilePictureUrl, width, uploadStackSubmitted } = this.props;
 
         const profpicStyle = { backgroundImage: profilePictureUrl ? `url(${profilePictureUrl})` : '' }
         const smallClass = includeSmallClass ? 'topbar_icon-small' : '';
@@ -129,7 +128,7 @@ class Topbar extends React.Component {
         return [
             <div key='notifications' className={`topbar_icon topbar_icon-notifications dropdown-notifications_toggle ${smallClass}`} onClick={this.toggleNotificationsDropdown}>
                 <Icon type="notifications" />
-                { totalUnreadNotificationCount > 0 && <div className="topbar_notifications-badge">{totalUnreadNotificationCount}</div> }
+                { unreadCount > 0 && <div className="topbar_notifications-badge" /> }
             </div>,
 
             <ToggleLink 
@@ -236,7 +235,7 @@ function mapStateToProps(state) {
         activeOverlay: app.get('activeOverlay'),
 
         isNotificationsActiveDropdown: app.isActiveDropdown('notifications'),
-        totalUnreadNotificationCount: notifications.totalUnreadCount(),
+        unreadCount: notifications.unreadCount(),
 
         uploadStackSubmitted: upload.get('stackSubmitted')
     }

@@ -34,15 +34,16 @@ function markAsRead(state, action) {
     return state;
 }
 
-function loadNotifications(state, action) {
+function loadActivity(state, action) {
     if (action.status === Status.REQUESTING) {
         return state.merge({
             isFetching: true
-        }).delete('all').delete('error')
+        }).delete('activity').delete('error')
     } else if (action.status === Status.SUCCESS) {
         return state.merge({
             isFetching: false,
-            all: action.response
+            activity: action.response,
+            unreadCount: 0
         })
     } else if (action.status === Status.FAILURE) {
         return state.merge({
@@ -53,6 +54,26 @@ function loadNotifications(state, action) {
     return state;
 }
 
+function clearNotifications(state, action) {
+    return state
+        .delete('activity')
+        .delete('isFetching')
+        .delete('error');
+}
+
+function login(state, action) {
+    if (action.status === Status.SUCCESS) {
+        return state.merge({
+            unreadCount: action.user.unread_count
+        });
+    }
+    return state;
+}
+
+function receiveActivityEvent(state, action) {
+    return state.update('unreadCount', 0, count => count+1);
+}
+
 export default function notifications(state=initialState, action) {
     switch (action.type) {
         case ActionTypes.SYNC_UNREAD_NOTIFICATIONS:
@@ -61,10 +82,14 @@ export default function notifications(state=initialState, action) {
             return markAsRead(state, action);
         case ActionTypes.MARK_ALL_AS_READ:
             return markAllAsRead(state, action);
-        case ActionTypes.NOTIFICATIONS:
-            return loadNotifications(state, action)
+        case ActionTypes.ACTIVITY:
+            return loadActivity(state, action);
+        case ActionTypes.LOGIN:
+            return login(state, action);
+        case ActionTypes.RECEIVE_ACTIVITY_EVENT:
+            return receiveActivityEvent(state, action);
         case ActionTypes.CLEAR_NOTIFICATIONS:
-            return state.delete('all').delete('isFetching').delete('error')
+            return clearNotifications(state, action)
     }
     return state;
 }

@@ -4,12 +4,13 @@ import { Map, Set, List } from 'immutable'
 
 const KEY_MAP = {
     // notifications
+    'activity': ['activity'],
     'unreadNotifications': ['unread'],
     'readNotifications': ['read'],
-    'allNotifications': ['all'],
     'isFetching': ['isFetching'],
     'error': ['error'],
-    'isSyncingUnread': ['isSyncingUnread']
+    'isSyncingUnread': ['isSyncingUnread'],
+    'unreadCount': ['unreadCount']
 }
 
 export default class Notifications extends StateModel {
@@ -28,26 +29,14 @@ export default class Notifications extends StateModel {
         return this.get('readNotifications', List())
     }
 
-    allNotifications() {
-        return this.get('allNotifications', List())
+    activity() {
+        return this.get('activity', List())
     }
 
     // Queries
 
-    unreadMediaItemCount(stack_id) {
-        if (!isNumber(stack_id)) {
-            stack_id = parseInt(stack_id, 10)
-        }
-
-        return this.unreadNotifications().filter(note => 
-            note.get('type') === 'new_mediaitem' && note.get('stack_id') === stack_id
-        ).size
-    }
-
-    totalUnreadCount() {
-        return this.unreadNotifications().filter(note =>
-            note.get('type') !== 'comments'
-        ).size
+    unreadCount() {
+        return this.get('unreadCount', 0)
     }
 
 }
