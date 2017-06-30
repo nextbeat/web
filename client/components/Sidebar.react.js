@@ -39,7 +39,7 @@ class Sidebar extends React.Component {
 
     renderStackItem(stack) {
         return (
-            <StackItem key={`bk${stack.get('id')}`} stack={stack} static={true} />
+            <StackItem key={`bk${stack.get('id')}`} stack={stack} static={true} showBadge={true} />
         )
     }
 

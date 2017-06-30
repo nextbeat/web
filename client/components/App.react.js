@@ -14,12 +14,14 @@ import { connectToXMPP, connectEddy, postLogin, loadTags, promptModal,
         closeModal, clearApp, resizeWindow, onBeforeUnload, 
         pushInitialize, cleanCache,
         hasNavigated, closeSidebar } from '../actions'
-import { CurrentUser, App as AppModel, Notifications } from '../models'
+import { CurrentUser, App as AppModel, RoomPage } from '../models'
 
 class App extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.isInRoom = this.isInRoom.bind(this);
 
         this.handleBeforeUnload = this.handleBeforeUnload.bind(this);
         this.handleTouchstart = this.handleTouchstart.bind(this);
@@ -28,6 +30,7 @@ class App extends React.Component {
 
         this.setTitle = this.setTitle.bind(this);
     }
+
 
     // Component lifecycle
 
@@ -75,6 +78,16 @@ class App extends React.Component {
         this.props.dispatch(clearApp());
     }
 
+
+    // Queries
+    
+    isInRoom() {
+        const { router } = this.context
+        const pathname = router.location.pathname
+        return router.isActive('/r') && !/\/(upload|edit)/.test(pathname)
+    }
+
+
     // Events
 
     resize(e) {
@@ -113,7 +126,7 @@ class App extends React.Component {
     // Render
 
     setTitle() {
-        const { app, user, notifications } = this.props;
+        const { app, user, roomPage } = this.props;
         const environment = app.get('environment', 'development');
         const fbAppId = app.get('facebookAppId');
 
@@ -137,10 +150,9 @@ class App extends React.Component {
         }
 
         let badge = '';
-        // let count = notifications.unreadCount();
-        // if (count > 0) {
-        //     badge = `(${count}) `
-        // }
+        if (this.isInRoom() && roomPage.get('unreadCount') > 0) {
+            badge = `(${roomPage.get('unreadCount')}) `
+        }
 
         let description = "Nextbeat lets you do anything with an audience. Open a room, check in with photos and videos, chat with people hanging out, and build a community that goes where you go."
         let meta = [
@@ -172,11 +184,10 @@ class App extends React.Component {
         const { router } = this.context
         const pathname = router.location.pathname
 
-        const inRoom = router.isActive('/r') && !/\/(upload|edit)/.test(pathname)
         const inHome = router.isActive('/', true)
         const showSplashTopbar = inHome && !user.isLoggedIn()
 
-        const inRoomClass = inRoom ? 'app-container-room' : ''
+        const inRoomClass = this.isInRoom() ? 'app-container-room' : ''
         const guestClass = user.isLoggedIn() ? '' : 'no-sidebar'
         const splashClass = showSplashTopbar ? (!!app.get('splashTopbarCollapsed') ? 'splash splash-collapsed' : 'splash splash-expanded') : ''
         const sidebarActiveClass = app.get('activeOverlay') === 'sidebar' ? 'app-container-sidebar-active' : ''
@@ -205,13 +216,13 @@ App.contextTypes = {
 
 function mapStateToProps(state, props) {
     const user = new CurrentUser(state)
-    const notifications = new Notifications(state)
     const app = new AppModel(state)
+    const roomPage = new RoomPage(state)
 
     return {
         user,
-        notifications,
-        app
+        app,
+        roomPage
     }
 }
 

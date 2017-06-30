@@ -6,11 +6,10 @@ import assign from 'lodash/assign'
 
 import ActionTypes from './types'
 import Schemas from '../schemas'
-import { markStackAsRead } from './notifications'
 import { promptModal, triggerAuthError } from './app'
 import { pushSubscribe } from './push'
 import { loadPaginatedObjects } from './utils'
-import { Room, RoomPage, CurrentUser } from '../models'
+import { Room, RoomPage, CurrentUser, MediaItemEntity } from '../models'
 import { API_CALL, API_CANCEL, GA, AnalyticsTypes, GATypes } from './types'
 import { setStorageItem, generateUuid } from '../utils'
 
@@ -398,12 +397,12 @@ export function didPlayVideo(roomId) {
  * MEDIA ITEM SELECTION
  **********************/
 
-function performSelectMediaItem(roomId, id) {
-    return {
+function performSelectMediaItem(roomId, id, options = {}) {
+    return assign({}, options, {
         type: ActionTypes.SELECT_MEDIA_ITEM,
         roomId,
         id 
-    }
+    })
 }
 
 export function selectMediaItem(roomId, id, { shouldUpdateHistory = true, shouldReplaceHistory = false } = {}) {
@@ -431,7 +430,25 @@ export function selectMediaItem(roomId, id, { shouldUpdateHistory = true, should
             }
         }
 
-        return dispatch(performSelectMediaItem(roomId, id))
+        /* Calculate number of media items in the range between the
+         * last seen media item and the currently selected media item.
+         * Decrement the unreadCount accordingly.
+         */
+        let lastReadDate = roomPage.get('lastRead')
+        let selectedMediaItem = new MediaItemEntity(id, getState().get('entities'))
+        let selectedMediaItemDate = new Date(selectedMediaItem.get('user_created_at'))
+
+        let options = {}
+        if (lastReadDate < selectedMediaItemDate) {
+            let numSeenSinceLastSeen = roomPage.allMediaItems().filter(mediaItem => {
+                let mediaItemDate = new Date(mediaItem.get('user_created_at'))
+                return mediaItemDate > lastReadDate && mediaItemDate <= selectedMediaItemDate;
+            }).size 
+            options.unreadCount = Math.max(roomPage.get('unreadCount') - numSeenSinceLastSeen, 0)
+            options.lastRead = selectedMediaItemDate
+        }
+
+        return dispatch(performSelectMediaItem(roomId, id, options))
     }
 }
 

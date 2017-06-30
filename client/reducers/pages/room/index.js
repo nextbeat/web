@@ -98,12 +98,34 @@ function actions(state = Map(), action) {
     return state
 }
 
+function unread(state=Map(), action) {
+    if (action.type === ActionTypes.ROOM_PAGE && action.status === Status.SUCCESS) {
+        return state.set('count', 0)
+    }
+    if (action.type === ActionTypes.MEDIA_ITEMS && action.status === Status.SUCCESS) {
+        const mostRecentMediaItemId = action.response.result[action.response.result.length-1]
+        const mostRecentMediaItem = action.response.entities.mediaItems[mostRecentMediaItemId.toString()]
+        return state.set('lastRead', new Date(mostRecentMediaItem.user_created_at))
+    }
+    if (action.type === ActionTypes.RECEIVE_MEDIA_ITEM) {
+        return state.update('count', 0, c => c+1)
+    }
+    if (action.type === ActionTypes.SELECT_MEDIA_ITEM && 'unreadCount' in action && 'lastRead' in action) {
+        return state.merge({
+            count: action.unreadCount,
+            lastRead: action.lastRead
+        })
+    }
+    return state;
+}
+
 const reducers = {
     meta, 
     chat,
     ui,
     more,
-    actions
+    actions,
+    unread
 }
 
 export default function(state = Map(), action) {

@@ -12,6 +12,9 @@ const KEY_MAP = {
     'id': ['meta', 'id'],
     'isFetching': ['meta', 'isFetching'],
     'error': ['meta', 'error'],
+    // unread
+    'unreadCount': ['unread', 'count'],
+    'lastRead': ['unread', 'lastRead'],
     // chat
     'selectedChatUsername': ['chat', 'selectedUsername'],
     'mentions': ['chat', 'mentions'],

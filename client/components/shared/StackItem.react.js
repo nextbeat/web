@@ -1,11 +1,10 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { Map } from 'immutable'
 import without from 'lodash/without'
 
 import Badge from './Badge.react'
-import { Notifications, CurrentUser, EntityModel } from '../../models'
+import { EntityModel } from '../../models'
 import { fromNowString } from '../../utils'
 
 class StackItem extends React.Component {
@@ -14,41 +13,50 @@ class StackItem extends React.Component {
         super(props);
 
         this.resize = this.resize.bind(this);
+
+        this.state = {
+            width: 0,
+            gridClass: '',
+            imageLoaded: false
+        };
     }
 
-    resize(node, parent) {
+    resize() {
+        var parent = $(this._node).parent;
 
-        // resize room items
-        function switchClass(klass) {
-            const klasses = ['one-across', 'two-across', 'three-across'];
-            const klassesToRemove = without(klasses, klass);
-            node.removeClass(klassesToRemove.join(" "));
-            node.addClass(klass);
-        }
-
+        let gridClass = '';
         if (!this.props.static) {
             if (parent.width() > 800) {
-                switchClass('three-across');
+                gridClass = 'three-across';
             } else if (parent.width() > 500) {
-                switchClass('two-across');
+                gridClass = 'two-across';
             } else {
-                switchClass('one-across');
+                gridClass = 'one-across';
             }
         }
 
         // resize thumbnail
-        const thumb = node.find('.item-room_thumb');
-        thumb.width(thumb.height()*4/3);
+        const height = $(this._node).find('.item-room_thumb').height();
+        const width = Math.floor(height*4/3);
+
+        this.setState({ gridClass, width });
     }
 
     componentDidMount() {
-        const node = $(this._node);
-        const parent = node.parent();
-        $(window).resize(this.resize.bind(this, node, parent));
+        $(window).resize(this.resize);
+        this.resize();
+
+        $(this._image).one('load', () => {
+            this.setState({ imageLoaded: true })
+        })
+
+        if (this._image.complete) {
+            this.setState({ imageLoaded: true })
+        }
     }
 
-    componentDidUpdate() {
-        this.resize($(this._node))
+    componentWillReceiveProps() {
+        this.resize();
     }
 
     componentWillUnmount() {
@@ -56,15 +64,21 @@ class StackItem extends React.Component {
     }
 
     render() {
-        const { stack, currentUser, notifications } = this.props;
+        const { stack, showBadge } = this.props;
+        const { gridClass, width, imageLoaded  } = this.state
 
         const author = stack.author()
-        const unreadNotificationCount = 0 // currentUser.isLoggedIn() && notifications.unreadMediaItemCount(stack.get('id'))
+        const unreadCount = stack.get('unread_count', 0);
+
+        const imageLoadedClass = imageLoaded ? 'loaded' : '';
+        const imageUrl = stack.thumbnail('small').get('url');
 
         return (
-            <div className="item_container" ref={(c) => this._node = c} >
+            <div className={`item_container ${gridClass}`} ref={(c) => this._node = c} >
             <Link to={`/r/${stack.get('hid')}`} className="item-room" activeClassName="selected">
-                    <div className="item-room_thumb" style={{backgroundImage: `url(${stack.thumbnail('small').get('url')})`}}></div>
+                    <div className={`item-room_thumb ${imageLoadedClass}`} style={{ width: `${width}px` }}>
+                        <img className="item-room_thumb_image" ref={(c) => this._image = c} src={imageUrl} />
+                    </div>
                     <div className="item-room_main">
                             <div className="item-room_description">{stack.get('description') || "No description."}</div>
                             <div className="item-room_details">
@@ -72,17 +86,10 @@ class StackItem extends React.Component {
                             </div>
                     </div>
                     {!stack.get('closed') && <Badge elementType="item-room" type="open" />}
-                    {currentUser.isLoggedIn() && unreadNotificationCount > 0 && <Badge elementType="item-room" type="new">{unreadNotificationCount}</Badge>}
+                    {showBadge && unreadCount > 0 && <Badge elementType="item-room" type="new">NEW</Badge>}
             </Link>
             </div>
         );
-    }
-}
-
-function mapStateToProps(state) {
-    return { 
-        notifications: new Notifications(state),
-        currentUser: new CurrentUser(state)
     }
 }
 
@@ -91,7 +98,14 @@ StackItem.propTypes = {
         if (!(props[propName] instanceof EntityModel)) {
             return new Error('Invalid stack prop supplied to StackItem.')   
         }
-    }
+    },
+    showBadge: React.PropTypes.bool,
+    static: React.PropTypes.bool
 }
 
-export default connect(mapStateToProps)(StackItem);
+StackItem.defaultProps = {
+    showBadge: false,
+    static: false
+}
+
+export default StackItem;

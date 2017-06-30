@@ -164,9 +164,6 @@ export {
 
 export {
     loadActivity,
-    syncUnreadNotifications,
-    markStackAsRead,
-    markAllAsRead,
     clearNotifications
 } from './notifications'
 

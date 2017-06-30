@@ -231,10 +231,20 @@ function receivePinnedComment(store, next, action) {
 
 function receiveMediaItem(store, next, action) {
     // Trigger an entity update
-    const response = normalize(action.mediaItem, Schemas.MEDIA_ITEM)
+    let response = normalize(action.mediaItem, Schemas.MEDIA_ITEM)
     if (!!action.mediaItem.references) {
         Room.flushComments()
     }
+
+    // Update stack's unread_count
+    // let room = new Room(action.roomId, store.getState())
+    // let updatedStack = {
+    //     id: action.roomId,
+    //     unread_count: room.get('unread_count', 0) + 1
+    // } 
+    // let stackResponse = normalize(updatedStack, Schemas.STACK)
+    // assign(response.entities, stackResponse.entities)
+
     return next(assign({}, action, { response }))
 }
 

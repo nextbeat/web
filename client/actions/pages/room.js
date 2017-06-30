@@ -3,7 +3,6 @@ import { normalize } from 'normalizr'
 
 import ActionTypes from '../types'
 import Schemas from '../../schemas'
-import { markStackAsRead } from '../notifications'
 import { promptModal } from '../app'
 import { loadRoom, loadComments, clearComments, clearRoom } from '../room'
 import { RoomPage } from '../../models'
@@ -19,7 +18,6 @@ function onRoomPageSuccess(store, next, action, response) {
     const stack = response.entities.stacks[response.result];
     store.dispatch(loadRoom(stack.id));
     store.dispatch(loadMoreStacks(stack.id));
-    store.dispatch(markStackAsRead(stack.id));
     store.dispatch(recordView(stack.id)); 
 }
 

@@ -153,11 +153,21 @@ a.item-room.selected {
 .item-room_thumb {
     height: 55px;
     flex-shrink: 0;
-    background-color: #ccc;
 
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.1s ease-in;
+
+    &.loaded {
+        opacity: 1;
+    }
+}
+
+.item-room_thumb_image {
+    @include center;
+    height: 100%;
+    width: auto;
 }
 
 .item-room_main {
@@ -217,10 +227,6 @@ a.item-room.selected {
     overflow: hidden;
     opacity: 0;
     transition: opacity 0.1s ease-in;
-
-    &.cached {
-        transition: none;
-    }
 
     &.loaded {
         opacity: 1;
