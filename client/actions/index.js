@@ -41,6 +41,7 @@ export {
     selectMediaItem,
     goForward,
     goBackward,
+    markStack,
     clearComments,
     clearRoom
 } from './room'
@@ -144,7 +145,8 @@ export {
     receiveMediaItem,
     receiveNotificationComment,
     receiveRoomClosed,
-    receiveActivityEvent
+    receiveActivityEvent,
+    receiveRoomMarked
 } from './eddy'
 
 export {

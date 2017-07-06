@@ -26,11 +26,18 @@ function joinRoom(state, action) {
             })
             return processRoomInfo(state, action);
         case Status.FAILURE: 
-            return state.merge({
-                isJoining: false,
-                joined: false,
-                joinError: action.error.message
-            }) 
+            // Because of a bug where join room fires twice on reconnection,
+            // the second join room will fail and the state tree will enter
+            // a failure state, causing the chat to hang
+            if (action.error.message === "already_joined") {
+                return state
+            } else {
+                return state.merge({
+                    isJoining: false,
+                    joined: false,
+                    joinError: action.error.message
+                }) 
+            }
     }
     return state;
 }

@@ -101,3 +101,11 @@ export function receiveActivityEvent() {
         type: ActionTypes.RECEIVE_ACTIVITY_EVENT
     }
 }
+
+export function receiveRoomMarked(roomId, unreadCount) {
+    return {
+        type: ActionTypes.RECEIVE_ROOM_MARKED,
+        roomId,
+        unreadCount
+    }
+}

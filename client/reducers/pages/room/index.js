@@ -116,6 +116,12 @@ function unread(state=Map(), action) {
             lastRead: action.lastRead
         })
     }
+    if (action.type === ActionTypes.RECEIVE_ROOM_MARKED) {
+        return state.merge({
+            count: action.unreadCount,
+            lastRead: action.lastRead
+        })
+    }
     return state;
 }
 

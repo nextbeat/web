@@ -397,12 +397,12 @@ export function didPlayVideo(roomId) {
  * MEDIA ITEM SELECTION
  **********************/
 
-function performSelectMediaItem(roomId, id, options = {}) {
-    return assign({}, options, {
+function performSelectMediaItem(roomId, id) {
+    return {
         type: ActionTypes.SELECT_MEDIA_ITEM,
         roomId,
         id 
-    })
+    }
 }
 
 export function selectMediaItem(roomId, id, { shouldUpdateHistory = true, shouldReplaceHistory = false } = {}) {
@@ -430,25 +430,7 @@ export function selectMediaItem(roomId, id, { shouldUpdateHistory = true, should
             }
         }
 
-        /* Calculate number of media items in the range between the
-         * last seen media item and the currently selected media item.
-         * Decrement the unreadCount accordingly.
-         */
-        let lastReadDate = roomPage.get('lastRead')
-        let selectedMediaItem = new MediaItemEntity(id, getState().get('entities'))
-        let selectedMediaItemDate = new Date(selectedMediaItem.get('user_created_at'))
-
-        let options = {}
-        if (lastReadDate < selectedMediaItemDate) {
-            let numSeenSinceLastSeen = roomPage.allMediaItems().filter(mediaItem => {
-                let mediaItemDate = new Date(mediaItem.get('user_created_at'))
-                return mediaItemDate > lastReadDate && mediaItemDate <= selectedMediaItemDate;
-            }).size 
-            options.unreadCount = Math.max(roomPage.get('unreadCount') - numSeenSinceLastSeen, 0)
-            options.lastRead = selectedMediaItemDate
-        }
-
-        return dispatch(performSelectMediaItem(roomId, id, options))
+        return dispatch(performSelectMediaItem(roomId, id))
     }
 }
 
@@ -490,6 +472,21 @@ export function goBackward(roomId) {
     return navigate(roomId, false);
 }
 
+function performMarkStack(roomId, date) {
+    return {
+        type: ActionTypes.MARK_STACK,
+        [API_CALL]: {
+            method: 'PUT',
+            endpoint: `stacks/${roomId}/mark`,
+            queries: { ts: +date },
+            authenticated: true
+        }
+    }
+}
+
+export function markStack(roomId, date) {
+    return performMarkStack(roomId, date)
+}
 
 /*******
  * RESET

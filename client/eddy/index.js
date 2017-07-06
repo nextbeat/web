@@ -5,6 +5,7 @@ import omit from 'lodash/omit'
 import { receiveComment, receiveMediaItem, receiveRoomClosed, 
          receivePinnedComment, receiveUnpinnedComment,
          receiveNotificationComment, receiveActivityEvent, 
+         receiveRoomMarked,
          reconnectEddy, identifyEddy, joinRoom } from '../actions'
 import { Room, CurrentUser } from '../models'
 import { EddyError, TimeoutError } from '../errors'
@@ -248,10 +249,15 @@ export default class EddyClient {
         {
             this.dispatch(receiveRoomClosed(roomId));
         }
+        else if (payload.type === "room_marked") 
+        {
+            this.dispatch(receiveRoomMarked(roomId, data.unread_count))
+        }
     }
 
     _handleMessage(payload) {
-        if (payload.type === "activity_event") {
+        if (payload.type === "activity_event") 
+        {
             this.dispatch(receiveActivityEvent())
         }
     }

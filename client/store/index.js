@@ -1,12 +1,12 @@
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
-import { api, cache, ga, cancel, ui, upload, push, eddy } from '../middleware'
+import { api, cache, ga, cancel, navigation, ui, upload, push, eddy } from '../middleware'
 import { ActionTypes } from '../actions'
 import { Map, Iterable } from 'immutable'
 import reducer from '../reducers'
 import createLogger from 'redux-logger'
 
-const middlewares = [thunkMiddleware, ui, ga, upload, push, api, cache, cancel, eddy];
+const middlewares = [thunkMiddleware, ui, ga, upload, navigation, push, api, cache, cancel, eddy];
 
 const actionTypesToIgnore = [
     ActionTypes.RESIZE,
@@ -25,7 +25,6 @@ if (process.env.NODE_ENV !== "production") {
     }
 
     const predicate = (getState, action) => actionTypesToIgnore.indexOf(action.type) === -1
-    // const predicate = (getState, action) => action.type.indexOf("EDDY") !== -1
 
     const logger = createLogger({
         stateTransformer,
