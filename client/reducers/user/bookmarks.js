@@ -15,14 +15,14 @@ function bookmarks(stackStatus, state=Map(), action) {
 
         } else if (action.type === ActionTypes.BOOKMARK && action.status === Status.SUCCESS && action.stackStatus === 'open') {
 
-            if (state.get('ids', List()).includes(action.id)) {
+            if (state.get('ids', List()).includes(action.roomId)) {
                 return state;
             }
-            return state.update('ids', List(), ids => ids.unshift(action.id));
+            return state.update('ids', List(), ids => ids.unshift(action.roomId));
 
         } else if (action.type === ActionTypes.UNBOOKMARK && action.status === Status.SUCCESS && action.stackStatus === 'open') {
 
-            const index = state.get('ids', List()).indexOf(action.id);
+            const index = state.get('ids', List()).indexOf(action.roomId);
             if (index === -1) {
                 return state;
             }

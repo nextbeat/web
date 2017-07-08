@@ -132,6 +132,52 @@ function wrapRoomInfo(store, next, action) {
     return _wrapAction(store, next, action)(roomInfo, { successCallback })
 }
 
+function bookmark(action, client) {
+    return client.bookmark(action.roomId);
+}
+
+function wrapBookmark(store, next, action) {
+
+    let successCallback = function(action, client) {
+        let room = new Room(action.roomId, store.getState())
+        const newStack = {
+            id: room.get('id'),
+            bookmark_count: room.get('bookmark_count', 0) + 1,
+            bookmarked: true
+        }
+        const response = normalize(newStack, Schemas.STACK)
+        store.dispatch({
+            type: ActionTypes.ENTITY_UPDATE,
+            response
+        })
+    }
+
+    return _wrapAction(store, next, action)(bookmark, { successCallback })
+}
+
+function unbookmark(action, client) {
+    return client.unbookmark(action.roomId);
+}
+
+function wrapUnbookmark(store, next, action) {
+
+    let successCallback = function(action, client) {
+        let room = new Room(action.roomId, store.getState())
+        const newStack = {
+            id: room.get('id'),
+            bookmark_count: room.get('bookmark_count', 1) - 1,
+            bookmarked: false
+        }
+        const response = normalize(newStack, Schemas.STACK)
+        store.dispatch({
+            type: ActionTypes.ENTITY_UPDATE,
+            response
+        })
+    }
+
+    return _wrapAction(store, next, action)(unbookmark, { successCallback })
+}
+
 function ban(action, client) {
     return client.ban(action.roomId, action.username);
 }
@@ -236,15 +282,6 @@ function receiveMediaItem(store, next, action) {
         Room.flushComments()
     }
 
-    // Update stack's unread_count
-    // let room = new Room(action.roomId, store.getState())
-    // let updatedStack = {
-    //     id: action.roomId,
-    //     unread_count: room.get('unread_count', 0) + 1
-    // } 
-    // let stackResponse = normalize(updatedStack, Schemas.STACK)
-    // assign(response.entities, stackResponse.entities)
-
     return next(assign({}, action, { response }))
 }
 
@@ -261,6 +298,26 @@ function receiveRoomClosed(store, next, action) {
         closed: true
     }
     const response = normalize(updatedStack, Schemas.STACK)
+    return next(assign({}, action, { response }))
+}
+
+function receiveBookmark(store, next, action) {
+    let room = new Room(action.roomId, store.getState())
+    const newStack = {
+        id: action.roomId,
+        bookmark_count: room.get('bookmark_count', 0) + 1,
+    }
+    const response = normalize(newStack, Schemas.STACK)
+    return next(assign({}, action, { response }))
+}
+
+function receiveUnbookmark(store, next, action) {
+    let room = new Room(action.roomId, store.getState())
+    const newStack = {
+        id: action.roomId,
+        bookmark_count: room.get('bookmark_count', 1) - 1,
+    }
+    const response = normalize(newStack, Schemas.STACK)
     return next(assign({}, action, { response }))
 }
 
@@ -293,6 +350,10 @@ export default store => next => action => {
             return wrapPinComment(store, next, action);
         case ActionTypes.UNPIN_COMMENT:
             return wrap(unpinComment);
+        case ActionTypes.BOOKMARK:
+            return wrapBookmark(store, next, action);
+        case ActionTypes.UNBOOKMARK:
+            return wrapUnbookmark(store, next, action);
         case ActionTypes.BAN_USER:
             return wrap(ban);
         case ActionTypes.UNBAN_USER:
@@ -311,6 +372,10 @@ export default store => next => action => {
             return receiveNotificationComment(store, next, action)
         case ActionTypes.RECEIVE_ROOM_CLOSED:
             return receiveRoomClosed(store, next, action)
+        case ActionTypes.RECEIVE_BOOKMARK:
+            return receiveBookmark(store, next, action)
+        case ActionTypes.RECEIVE_UNBOOKMARK:
+            return receiveUnbookmark(store, next, action)
         case ActionTypes.RECEIVE_NOTIFICATION:
             return receiveNotification(store, next, action)
         default:

@@ -96,6 +96,20 @@ export function receiveRoomClosed(roomId) {
     }
 }
 
+export function receiveBookmark(roomId) {
+    return {
+        type: ActionTypes.RECEIVE_BOOKMARK,
+        roomId
+    }
+}
+
+export function receiveUnbookmark(roomId) {
+    return {
+        type: ActionTypes.RECEIVE_UNBOOKMARK,
+        roomId
+    }
+}
+
 export function receiveActivityEvent() {
     return {
         type: ActionTypes.RECEIVE_ACTIVITY_EVENT

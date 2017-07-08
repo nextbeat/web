@@ -5,7 +5,7 @@ import omit from 'lodash/omit'
 import { receiveComment, receiveMediaItem, receiveRoomClosed, 
          receivePinnedComment, receiveUnpinnedComment,
          receiveNotificationComment, receiveActivityEvent, 
-         receiveRoomMarked,
+         receiveRoomMarked, receiveBookmark, receiveUnbookmark,
          reconnectEddy, identifyEddy, joinRoom } from '../actions'
 import { Room, CurrentUser } from '../models'
 import { EddyError, TimeoutError } from '../errors'
@@ -152,6 +152,14 @@ export default class EddyClient {
         return this._send('unpin', { room_id: parseInt(roomId, 10)});
     }
 
+    bookmark(roomId) {
+        return this._send('bookmark', { room_id: parseInt(roomId, 10)})
+    }
+
+    unbookmark(roomId) {
+        return this._send('unbookmark', { room_id: parseInt(roomId, 10)})
+    }
+
     ban(roomId, username) {
         return this._send('ban', { room_id: parseInt(roomId, 10), username: username });
     }
@@ -252,6 +260,15 @@ export default class EddyClient {
         else if (payload.type === "room_marked") 
         {
             this.dispatch(receiveRoomMarked(roomId, data.unread_count))
+        }
+        else if (payload.type === "bookmark") 
+        {
+            // TODO: replace with bookmark_update event?
+            this.dispatch(receiveBookmark(roomId))
+        }
+        else if (payload.type === "unbookmark")
+        {
+            this.dispatch(receiveUnbookmark(roomId))
         }
     }
 
