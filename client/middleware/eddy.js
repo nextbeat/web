@@ -138,11 +138,10 @@ function bookmark(action, client) {
 
 function wrapBookmark(store, next, action) {
 
-    let successCallback = function(action, client) {
-        let room = new Room(action.roomId, store.getState())
+    let successCallback = function(action, client, responseData) {
         const newStack = {
-            id: room.get('id'),
-            bookmark_count: room.get('bookmark_count', 0) + 1,
+            id: action.roomId,
+            bookmark_count: responseData.count,
             bookmarked: true
         }
         const response = normalize(newStack, Schemas.STACK)
@@ -161,11 +160,10 @@ function unbookmark(action, client) {
 
 function wrapUnbookmark(store, next, action) {
 
-    let successCallback = function(action, client) {
-        let room = new Room(action.roomId, store.getState())
+    let successCallback = function(action, client, responseData) {
         const newStack = {
-            id: room.get('id'),
-            bookmark_count: room.get('bookmark_count', 1) - 1,
+            id: action.roomId,
+            bookmark_count: responseData.count,
             bookmarked: false
         }
         const response = normalize(newStack, Schemas.STACK)
@@ -301,21 +299,10 @@ function receiveRoomClosed(store, next, action) {
     return next(assign({}, action, { response }))
 }
 
-function receiveBookmark(store, next, action) {
-    let room = new Room(action.roomId, store.getState())
+function receiveBookmarkUpdate(store, next, action) {
     const newStack = {
         id: action.roomId,
-        bookmark_count: room.get('bookmark_count', 0) + 1,
-    }
-    const response = normalize(newStack, Schemas.STACK)
-    return next(assign({}, action, { response }))
-}
-
-function receiveUnbookmark(store, next, action) {
-    let room = new Room(action.roomId, store.getState())
-    const newStack = {
-        id: action.roomId,
-        bookmark_count: room.get('bookmark_count', 1) - 1,
+        bookmark_count: action.count
     }
     const response = normalize(newStack, Schemas.STACK)
     return next(assign({}, action, { response }))
@@ -372,10 +359,8 @@ export default store => next => action => {
             return receiveNotificationComment(store, next, action)
         case ActionTypes.RECEIVE_ROOM_CLOSED:
             return receiveRoomClosed(store, next, action)
-        case ActionTypes.RECEIVE_BOOKMARK:
-            return receiveBookmark(store, next, action)
-        case ActionTypes.RECEIVE_UNBOOKMARK:
-            return receiveUnbookmark(store, next, action)
+        case ActionTypes.RECEIVE_BOOKMARK_UPDATE:
+            return receiveBookmarkUpdate(store, next, action)
         case ActionTypes.RECEIVE_NOTIFICATION:
             return receiveNotification(store, next, action)
         default:

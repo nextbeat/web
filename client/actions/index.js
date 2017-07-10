@@ -145,8 +145,7 @@ export {
     receiveMediaItem,
     receiveNotificationComment,
     receiveRoomClosed,
-    receiveBookmark,
-    receiveUnbookmark,
+    receiveBookmarkUpdate,
     receiveActivityEvent,
     receiveRoomMarked
 } from './eddy'

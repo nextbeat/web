@@ -96,17 +96,11 @@ export function receiveRoomClosed(roomId) {
     }
 }
 
-export function receiveBookmark(roomId) {
+export function receiveBookmarkUpdate(roomId, count) {
     return {
-        type: ActionTypes.RECEIVE_BOOKMARK,
-        roomId
-    }
-}
-
-export function receiveUnbookmark(roomId) {
-    return {
-        type: ActionTypes.RECEIVE_UNBOOKMARK,
-        roomId
+        type: ActionTypes.RECEIVE_BOOKMARK_UPDATE,
+        roomId,
+        count
     }
 }
 

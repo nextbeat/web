@@ -5,7 +5,7 @@ import omit from 'lodash/omit'
 import { receiveComment, receiveMediaItem, receiveRoomClosed, 
          receivePinnedComment, receiveUnpinnedComment,
          receiveNotificationComment, receiveActivityEvent, 
-         receiveRoomMarked, receiveBookmark, receiveUnbookmark,
+         receiveRoomMarked, receiveBookmarkUpdate,
          reconnectEddy, identifyEddy, joinRoom } from '../actions'
 import { Room, CurrentUser } from '../models'
 import { EddyError, TimeoutError } from '../errors'
@@ -261,14 +261,10 @@ export default class EddyClient {
         {
             this.dispatch(receiveRoomMarked(roomId, data.unread_count))
         }
-        else if (payload.type === "bookmark") 
+        else if (payload.type === "bookmark_update") 
         {
             // TODO: replace with bookmark_update event?
-            this.dispatch(receiveBookmark(roomId))
-        }
-        else if (payload.type === "unbookmark")
-        {
-            this.dispatch(receiveUnbookmark(roomId))
+            this.dispatch(receiveBookmarkUpdate(roomId, data.count))
         }
     }
 
