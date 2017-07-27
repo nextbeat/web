@@ -296,60 +296,6 @@ export function didUseChat() {
  * BOOKMARKING
  *************/
 
-// function onBookmarkSuccess(store, next, action, response) {
-//     const stack = (new RoomPage(store.getState())).entity()
-//     const newStack = {
-//         id: stack.get('id'),
-//         bookmark_count: stack.get('bookmark_count', 0) + 1,
-//         bookmarked: true
-//     }
-//     store.dispatch({
-//         type: ActionTypes.ENTITY_UPDATE,
-//         response: normalize(newStack, Schemas.STACK)
-//     })
-// }
-
-// function postBookmark(stack_id, stackStatus) {
-//     return {
-//         type: ActionTypes.BOOKMARK,
-//         id: stack_id,
-//         stackStatus,
-//         [API_CALL]: {
-//             method: 'POST',
-//             endpoint: `stacks/${stack_id}/bookmark`,
-//             authenticated: true,
-//             onSuccess: onBookmarkSuccess
-//         }
-//     }
-// }
-
-// function onUnbookmarkSuccess(store, next, action, response) {
-//     const stack = (new RoomPage(store.getState())).entity()
-//     const newStack = {
-//         id: stack.get('id'),
-//         bookmark_count: stack.get('bookmark_count', 1) - 1,
-//         bookmarked: false
-//     }
-//     store.dispatch({
-//         type: ActionTypes.ENTITY_UPDATE,
-//         response: normalize(newStack, Schemas.STACK)
-//     })
-// }
-
-// function postUnbookmark(stack_id, stackStatus) {
-//     return {
-//         type: ActionTypes.UNBOOKMARK,
-//         id: stack_id,
-//         stackStatus,
-//         [API_CALL]: {
-//             method: 'POST',
-//             endpoint: `stacks/${stack_id}/unbookmark`,
-//             authenticated: true,
-//             onSuccess: onUnbookmarkSuccess
-//         }
-//     }
-// }
-
 function performUnbookmark(roomId, stackStatus) {
     return {
         type: ActionTypes.UNBOOKMARK,
