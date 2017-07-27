@@ -1,10 +1,11 @@
 import React from 'react'
+import { List } from 'immutable'
 import { connect } from 'react-redux'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import debounce from 'lodash/debounce'
 
 import Compose from './Compose.react'
-import ChatSearchBar from './ChatSearchBar.react'
+import ChatHeader from './ChatHeader.react'
 import ChatSearchResults from './ChatSearchResults.react'
 import UserActions from './UserActions.react'
 import WelcomeBanner from './WelcomeBanner.react'
@@ -46,12 +47,12 @@ class Chat extends React.Component {
     render() {
         const { roomPage, display, hasLostConnection } = this.props;
         const pinnedComment = roomPage.pinnedComment()
+        const chatTags = roomPage.get('chatTags') || List()
 
         return (
         <div className="chat" onWheel={debounce(this.handleOnWheel, 200)} style={{ display: (display ? "flex" : "none") }}>
             <UserActions />
             <WelcomeBanner username={roomPage.author().get('username')} closed={roomPage.get('closed')} />
-            <ChatSearchBar />
             { pinnedComment && 
                 <PinnedChatItem pinnedComment={pinnedComment} />
             }
@@ -59,6 +60,9 @@ class Chat extends React.Component {
                 <ChatSearchResults />
             } 
             <ScrollableChatHistory roomId={roomPage.room().id} />
+            { chatTags.size > 0 && 
+                <ChatHeader tags={chatTags} />
+            }
             <Compose />
             <ReactCSSTransitionGroup transitionName="chat_lost-connection" transitionEnterTimeout={300} transitionLeaveTimeout={200}>
                 { hasLostConnection && 

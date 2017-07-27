@@ -43,6 +43,7 @@ const KEY_MAP = {
     'bannedUsers': ['live', 'bannedUsers'],
     'pinnedCommentId': ['live', 'pinnedCommentId'],
     'creator': ['live', 'creator'],
+    'chatTags': ['live', 'tags'],
     // playback
     'videoDidPlay': ['navigation', 'videoDidPlay']
 }

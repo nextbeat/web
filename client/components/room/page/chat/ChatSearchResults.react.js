@@ -80,9 +80,8 @@ class ChatSearchResults extends React.Component {
 
         return (
             <div className="chat_search-results">
-                <ChatSearchBar query={query} closeable={true} />
                 <div className="chat_search-results_header">
-                    Search results { isFetching && <Spinner type="grey small chat-search" />}
+                    {query} { isFetching && <Spinner type="grey small chat-search" />}
                     <div className="chat_search-results_close" onClick={this.handleClose}><Icon type="close" /></div>
                 </div>
                 <div className="chat_search-results_body" id="chat_search-results_body">

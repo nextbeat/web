@@ -147,15 +147,15 @@
     font-weight: 700;
     padding: 0 20px;
     position: relative;
-    margin-top: 8px;
-    margin-bottom: 12px;
+    margin-top: 18px;
+    margin-bottom: 10px;
     user-select: none;
 }
 
 .chat_search-results_close {
     position: absolute;
     right: 17px;
-    top: 0;
+    top: -2px;
 
     .svg-icon-close {
         fill: #ccc;

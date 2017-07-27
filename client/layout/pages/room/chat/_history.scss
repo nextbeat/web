@@ -225,9 +225,18 @@
 a.chat_item_mention {
     font-weight: normal;
     color: $secondary-color;
+    cursor: pointer;
     &:hover {
         color: $light-secondary-color;
-        cursor: pointer;
+    }
+}
+
+a.chat_item_hashtag {
+    font-weight: normal;
+    color: #888;
+    cursor: pointer;
+    &:hover {
+        color: $light-primary-color;
     }
 }
 

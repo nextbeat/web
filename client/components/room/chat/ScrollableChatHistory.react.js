@@ -9,7 +9,7 @@ import NotificationChatItem from './NotificationChatItem.react'
 import Spinner from '../../shared/Spinner.react'
 import commentReducer from './utils/commentReducer'
 
-import { loadComments, loadLatestComments, promptChatActionsForUser, resendComment, selectMediaItem, closeDetailSection, toggleDropdown } from '../../../actions'
+import { loadComments, loadLatestComments, promptChatActionsForUser, resendComment, selectMediaItem, closeDetailSection, toggleDropdown, searchChat } from '../../../actions'
 import { Room, CurrentUser, App } from '../../../models'
 
 function scrollComponentId(props) {
@@ -22,6 +22,7 @@ class ScrollableChatHistory extends React.Component {
         super(props);
 
         this.handleSelectUsername = this.handleSelectUsername.bind(this)
+        this.handleSelectHashtag = this.handleSelectHashtag.bind(this)
         this.handleSelectMediaItem = this.handleSelectMediaItem.bind(this)
         this.handleSelectChatOptions = this.handleSelectChatOptions.bind(this)
 
@@ -60,6 +61,10 @@ class ScrollableChatHistory extends React.Component {
 
     handleSelectUsername(username) {
         this.props.dispatch(promptChatActionsForUser(username))
+    }
+
+    handleSelectHashtag(tag) {
+        this.props.dispatch(searchChat(tag))
     }
 
     handleSelectMediaItem(mediaItemId) {
@@ -109,6 +114,7 @@ class ScrollableChatHistory extends React.Component {
                         showHeader={!comment.__no_header__}
                         showOptions={currentUserIsAuthor && !isClosed}
                         handleSelectUsername={this.handleSelectUsername}
+                        handleSelectHashtag={this.handleSelectHashtag}
                         handleSelectMediaItem={this.handleSelectMediaItem}
                         handleSelectOptions={this.handleSelectChatOptions}
                         handleRespond={this.handleRespond}

@@ -17,10 +17,25 @@ function getLinkData(comment) {
     return links
 }
 
+function getHashtagData(comment) {
+    var re = /(^|\s)#(\w+)/g
+
+    let hashtags = []
+    let result
+
+    while (result = re.exec(comment.get('message'))) {
+        let start = result[0].indexOf('#')+result.index
+        hashtags.push({ type: 'hashtag', start: start, end: start+result[2].length+1, text: `#${result[2]}`})
+    }
+
+    return hashtags
+}
+
 function preprocessAnnotations(comment, { includeLinks=false }) {
     let mentions = comment.get('user_mentions') || List();
     let highlights = comment.get('result_indices') || List();
     let links = includeLinks ? getLinkData(comment) : List();
+    let hashtags = getHashtagData(comment);
 
     let annotations = List();
     mentions.forEach(m => {
@@ -31,6 +46,9 @@ function preprocessAnnotations(comment, { includeLinks=false }) {
     })
     links.forEach(l => {
         annotations = annotations.push(l)
+    })
+    hashtags.forEach(h => {
+        annotations = annotations.push(h)
     })
     
     return annotations.sort((a1, a2) => a1.start - a2.start || a2.end - a1.end)
@@ -46,10 +64,14 @@ function elementForAnnotation(annotation, annotations, message, options) {
     let textEnd = annotation.end;
 
     let onMentionClick = options.onMentionClick || (() => {})
+    let onHashtagClick = options.onHashtagClick || (() => {})
 
     if (annotation.type === 'mention') {
         type = 'a';
         assign(props, { onClick: onMentionClick.bind(this, annotation.username) });
+    } else if (annotation.type === 'hashtag') {
+        type = 'a';
+        assign(props, { onClick: onHashtagClick.bind(this, annotation.text) })
     } else if (annotation.type === 'highlight') {
         type = 'span';
     } else if (annotation.type === 'link') {

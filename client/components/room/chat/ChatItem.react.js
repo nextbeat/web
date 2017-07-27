@@ -55,9 +55,9 @@ class ChatItem extends React.Component {
     // Render
 
     renderMessage(includeLinks=false) {
-        const { comment, handleSelectUsername } = this.props 
+        const { comment, handleSelectUsername, handleSelectHashtag } = this.props 
 
-        return renderMessageText(comment, { onMentionClick: handleSelectUsername, includeLinks })
+        return renderMessageText(comment, { onMentionClick: handleSelectUsername, onHashtagClick: handleSelectHashtag, includeLinks })
     }
 
     renderHeader() {
@@ -167,6 +167,7 @@ ChatItem.propTypes = {
     isSelected: React.PropTypes.bool,
     isSearchResult: React.PropTypes.bool,
     handleSelectUsername: React.PropTypes.func,
+    handleSelectHashtag: React.PropTypes.func,
     handleResend: React.PropTypes.func,
     handleSelectMediaItem: React.PropTypes.func,
     handleRespond: React.PropTypes.func,

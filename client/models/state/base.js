@@ -36,6 +36,7 @@ export default class StateModel {
                 return this.entity().get(key, defaultValue);
             }
         }
+        // console.log(this.keyPath(key))
         return this.state.getIn(this.keyPath(key), defaultValue);
     }
 
