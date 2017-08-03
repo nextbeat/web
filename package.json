@@ -8,7 +8,8 @@
     "start": "webpack-dev-server --progress --colors --port 9090 --config config/webpack.config.development",
     "build:app": "webpack --config config/webpack.config.production",
     "build:dll": "webpack --config config/webpack.dll.production",
-    "build": "npm run clean && npm run build:dll && npm run build:app"
+    "build": "npm run clean && npm run build:dll && npm run build:app",
+    "server": "gulp server"
   },
   "dependencies": {
     "autotrack": "^2.0.1",
