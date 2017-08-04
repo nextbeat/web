@@ -13,6 +13,7 @@
     display: flex;
     align-items: center;
     flex-direction: row-reverse;
+    overflow: hidden;
 
     .svg-icon-whatshot {
         width: 17px; 
@@ -20,11 +21,18 @@
         fill: $primary-color;
 
     }
-}   
+} 
+
+.chat_header_tags_container {
+    margin: 0 10px 0 6px;
+    flex: 1 1;
+    overflow: hidden;
+}  
 
 .chat_header_tags {
-    margin: 0 10px;
     display: flex;
+    flex-direction: row-reverse;
+    overflow: auto;
 }
 
 .chat_header_tag {
