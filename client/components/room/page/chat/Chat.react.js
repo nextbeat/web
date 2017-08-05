@@ -53,15 +53,15 @@ class Chat extends React.Component {
         <div className="chat" onWheel={debounce(this.handleOnWheel, 200)} style={{ display: (display ? "flex" : "none") }}>
             <UserActions />
             <WelcomeBanner username={roomPage.author().get('username')} closed={roomPage.get('closed')} />
+            { chatTags.size > 0 && 
+                <ChatHeader tags={chatTags} />
+            }
             { pinnedComment && 
                 <PinnedChatItem pinnedComment={pinnedComment} />
             }
             { roomPage.get('showSearchResults') && 
                 <ChatSearchResults />
             } 
-            { chatTags.size > 0 && 
-                <ChatHeader tags={chatTags} />
-            }
             <ScrollableChatHistory roomId={roomPage.room().id} />
             <Compose />
             <ReactCSSTransitionGroup transitionName="chat_lost-connection" transitionEnterTimeout={300} transitionLeaveTimeout={200}>
