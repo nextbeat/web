@@ -1,12 +1,13 @@
 .chat_header_container {
     background: white;
     width: 100%;
-    height: 30px;
+    height: 35px;
     display: flex;
     align-items: center;
     padding: 0 10px;
     position: relative;
     justify-content: flex-end;
+    border-bottom: 1px solid $border-color;
 }
 
 .chat_header {

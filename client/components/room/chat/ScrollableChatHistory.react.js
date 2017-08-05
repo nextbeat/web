@@ -235,13 +235,16 @@ const scrollOptions = {
         if (prevProps.comments.size < this.props.comments.size) {
             if (this.props.commentsFetchType === 'before') {
                 scrollComponent.keepScrollPosition()
+                scrollComponent.setScrollState()
             } else if (this.props.commentsFetchType === 'around' || this.props.commentsFetchType === 'mostRecent') {
                 scrollComponent.scrollToBottom()
+                scrollComponent.setScrollState()
             }
         }
 
         if (prevProps.submittingComments.size < this.props.submittingComments.size) {
             scrollComponent.scrollToBottom()
+            scrollComponent.setScrollState()
         }
 
         if (prevProps.failedComments.size < this.props.failedComments.size) {

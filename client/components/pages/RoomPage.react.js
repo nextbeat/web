@@ -10,7 +10,7 @@ import RoomMain from '../room/page/RoomMain.react'
 import DetailBar from '../room/page/DetailBar.react'
 import StackActions from '../room/page/StackActions.react'
 
-import { loadRoomPage, clearRoomPage, closeDetailSection, selectDetailSection, selectMediaItem } from '../../actions'
+import { loadRoomPage, clearRoomPage, closeDetailSection, selectDetailSection, selectMediaItem, getRoomInfo } from '../../actions'
 import { RoomPage as RoomPageModel, App } from '../../models'
 import { baseUrl, getStorageItem } from '../../utils'
 

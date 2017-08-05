@@ -67,7 +67,6 @@ export default class EddyClient {
             }
 
             let closeListener = (event) => {
-                console.log('close listener!')
                 this._clear();
 
                 if (!event.wasClean) {

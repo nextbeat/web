@@ -59,10 +59,10 @@ class Chat extends React.Component {
             { roomPage.get('showSearchResults') && 
                 <ChatSearchResults />
             } 
-            <ScrollableChatHistory roomId={roomPage.room().id} />
             { chatTags.size > 0 && 
                 <ChatHeader tags={chatTags} />
             }
+            <ScrollableChatHistory roomId={roomPage.room().id} />
             <Compose />
             <ReactCSSTransitionGroup transitionName="chat_lost-connection" transitionEnterTimeout={300} transitionLeaveTimeout={200}>
                 { hasLostConnection && 
