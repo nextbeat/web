@@ -252,7 +252,9 @@ class Video extends React.Component {
         const video = document.getElementById('video_player');
         if (video.buffered.length >= 1) {
             this.setState({
-                loadedDuration: video.buffered.end(0)
+                loadedDuration: video.buffered.end(0),
+                // sometimes, duration will change between loadedmetadata and this event call
+                duration: video.duration
             })
         }
     }
