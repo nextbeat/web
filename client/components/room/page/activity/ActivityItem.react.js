@@ -115,29 +115,34 @@ class ActivityItem extends React.Component {
     }
 
     render() {
-        const { mediaItem, live, index, isUnseen, currentUserIsAuthor, selectedMediaItemId } = this.props;
+        const { mediaItem, live, index, isUnseen, username, currentUserIsAuthor, selectedMediaItemId } = this.props;
 
         let selected = mediaItem.get('id') === selectedMediaItemId
 
         const url = mediaItem.thumbnail('small').get('url')
         const selectedClass = selected ? "selected" : "";
         const liveClass = live && isUnseen ? "live" : "";
-        const videoClass = mediaItem.get('type') === 'video' ? "item-activity_video-wrapper" : "";
+        const typeString = mediaItem.get('type') === 'video' ? "a video" : "an image"
         const currentUserClass = currentUserIsAuthor ? "current-user" : ""
         
         return (
-            <div className={`item item-activity ${selectedClass} ${liveClass} ${currentUserClass}`} onClick={this.handleClick} ref={(c) => this._node = c}>
-                <div className="item_inner">
-                    <div className="item_thumb" style={{ backgroundImage: `url(${url})`}}>
-                        { mediaItem.get('type') === 'video' && <Icon type="video" /> }
+            <div className={`activity-item ${selectedClass} ${liveClass} ${currentUserClass}`} onClick={this.handleClick} ref={(c) => this._node = c}>
+                <div className="activity-item_inner">
+                    <div className="activity-item_main">
+                        <div className="activity-item_thumb" style={{ backgroundImage: `url(${url})`}} />
+                        <div className="activity-item_text">
+                            {username} added {typeString}. 
+                            <span className="activity-item_text-timestamp">{format(mediaItem.get('user_created_at'), 'h:mm a')}</span>
+                        </div>
                     </div>
-                    <div className="item_main">
-                        <div className="item-activity_index"><span>{index+1}</span></div>
-                        <div className="item-activity_time"><span>{format(mediaItem.get('user_created_at'), 'h:mm a')}</span></div>
+                    { mediaItem.hasReference() &&
+                    <div className="activity-item_comment">
+                        { mediaItem.referencedComment().get('message') }
                     </div>
+                    }
                 </div>
                 { currentUserIsAuthor && 
-                    <div className="item-activity_options" onClick={this.handleOptionsClick}><Icon type="more-vert" /></div>
+                    <div className="activity-item_options" onClick={this.handleOptionsClick}><Icon type="more-vert" /></div>
                 }
                 { this.renderDropdown() }
                 { this.renderModal() }
@@ -158,6 +163,7 @@ function mapStateToProps(state, ownProps) {
 
     return {
         roomId: roomPage.get('id'),
+        username: roomPage.author().get('username'),
         currentUserIsAuthor: roomPage.currentUserIsAuthor(),
         // triggers componentDidUpdate when user switches detail section, which prompts resize call
         selectedDetailSection: roomPage.get('selectedDetailSection'),
