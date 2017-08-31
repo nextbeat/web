@@ -67,7 +67,6 @@ export default function ScrollComponent(domId, scrollOptions={}) {
                 if (typeof onComponentWillReceiveProps === 'function') {
                     onComponentWillReceiveProps.call(this.refs.child, this, nextProps)
                 }
-                // this.setScrollState()
             }
 
             componentDidUpdate(prevProps) {
@@ -121,6 +120,7 @@ export default function ScrollComponent(domId, scrollOptions={}) {
             }
 
             handleScroll() {
+                this.setScrollState()
                 if (this.isScrolledToTop() && typeof onScrollToTop === "function") {
                     onScrollToTop.call(this.refs.child, this)
                 }

@@ -14,7 +14,6 @@ class ActivityItem extends React.Component {
      constructor(props) {
         super(props);
 
-        this.resize = this.resize.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.handleOptionsClick = this.handleOptionsClick.bind(this);
         this.handleDropdownDeleteClick = this.handleDropdownDeleteClick.bind(this);
@@ -24,10 +23,6 @@ class ActivityItem extends React.Component {
         this.renderModal = this.renderModal.bind(this);
     }
 
-    componentDidMount() {
-        const node = $(this._node);
-        $(window).resize(this.resize.bind(this, node));
-    }
 
     componentWillReceiveProps(nextProps) {
         if (!this.props.hasDeletedMediaItem && nextProps.hasDeletedMediaItem) {
@@ -38,21 +33,7 @@ class ActivityItem extends React.Component {
         }
     }
 
-    componentDidUpdate() {
-        this.resize($(this._node))
-    }
-
-    componentWillUnmount() {
-        $(window).off('resize', this.resize);
-    }
-
-
     // Events
-
-    resize(node) {
-        const thumb = node.find('.item_thumb');
-        thumb.width(thumb.height()*4.0/3.0);
-    }
 
     handleClick() {
         const { dispatch, roomId, mediaItem } = this.props
