@@ -226,6 +226,7 @@ class Video extends React.Component {
     }
 
     didPause() {
+        console.log('did pause')
         const video = document.getElementById('video_player');
         clearInterval(this.state.timeIntervalId);
 
@@ -335,10 +336,13 @@ class Video extends React.Component {
 
     playPause() {
         const video = document.getElementById('video_player');
-        if (this.state.isPlaying === false) {
+        if (!this.state.isPlaying) {
             video.play();
         } else {
             video.pause();
+            if (this.state.isLoading) {
+                this.setState({ isPlaying: false })
+            }
         }
     }
 
