@@ -21,14 +21,6 @@ function collapsedMessageFromData(data) {
     }
 }
 
-self.addEventListener('install', event => {
-    console.log('installed 5', self)
-});
-
-self.addEventListener('activate', event => {
-    console.log('activated 5')
-})
-
 self.addEventListener('push', event => {
     var data = event.data.json(),
         tag  = tagFromData(data);

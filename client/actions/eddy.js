@@ -45,6 +45,14 @@ export function leaveRoom(roomId) {
     }
 }
 
+export function startRoomTimer(roomId, timerId) {
+    return {
+        type: ActionTypes.START_ROOM_TIMER,
+        roomId,
+        timerId
+    }
+}
+
 
 /*******************
  * RESPONSE HANDLERS

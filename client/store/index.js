@@ -32,7 +32,7 @@ if (process.env.NODE_ENV !== "production") {
     });
 
     if (typeof window !== 'undefined') { // in browser only
-        // middlewares.push(logger);
+        middlewares.push(logger);
     }
 }
 

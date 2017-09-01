@@ -139,6 +139,7 @@ export {
     unidentifyEddy,
     joinRoom,
     leaveRoom,
+    startRoomTimer,
     receiveComment,
     receivePinnedComment,
     receiveUnpinnedComment,

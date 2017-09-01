@@ -19,6 +19,7 @@ const KEY_MAP = {
     // live
     'isJoining': ['live', 'isJoining'],
     'joined': ['live', 'joined'],
+    'timerId': ['live', 'timerId'], // calls room_info every X seconds
     // media items
     'selectedMediaItemId': ['navigation', 'selected'],
     'seenMediaItemIds': ['navigation', 'seen'],

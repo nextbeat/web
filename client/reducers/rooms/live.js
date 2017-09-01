@@ -51,6 +51,10 @@ function leaveRoom(state, action) {
     return state;
 }
 
+function startRoomTimer(state, action) {
+    return state.set('timerId', action.timerId)
+}
+
 function roomInfo(state, action) {
     if (action.status === Status.SUCCESS) {
         return processRoomInfo(state, action);
@@ -188,6 +192,8 @@ export default function live(state = initialState, action) {
             return joinRoom(state, action);
         case ActionTypes.LEAVE_ROOM:
             return leaveRoom(state, action);
+        case ActionTypes.START_ROOM_TIMER:
+            return startRoomTimer(state, action);
         case ActionTypes.ROOM_INFO:
             return roomInfo(state, action);
         case ActionTypes.SEND_COMMENT:

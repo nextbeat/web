@@ -4,7 +4,7 @@ import format from 'date-fns/format'
 
 import EddyClient from '../eddy'
 import { ActionTypes, Status } from '../actions'
-import { joinRoom, leaveRoom, reconnectEddy, getRoomInfo, triggerAuthError } from '../actions'
+import { joinRoom, leaveRoom, reconnectEddy, getRoomInfo, startRoomTimer, triggerAuthError } from '../actions'
 import { Eddy, CurrentUser, Room } from '../models'
 import Schemas from '../schemas'
 
@@ -115,12 +115,32 @@ function join(action, client) {
 }
 
 function wrapJoin(store, next, action) {
-    let successCallback = _roomInfoSuccessCallback(store, next, action)
+    let successCallback = function(action, client, responseData) {
+        // call room info success callback
+        _roomInfoSuccessCallback(store, next, action)(action, client, responseData)
+
+        // set up room info timer
+        let roomInfoIntervalId = setInterval(() => {
+            store.dispatch(getRoomInfo(action.roomId))
+        }, 15000)
+
+        store.dispatch(startRoomTimer(action.roomId, roomInfoIntervalId))
+    }
     return _wrapAction(store, next, action)(join, { successCallback })
 }
 
 function leave(action, client) {
     return client.leave(action.roomId);
+}
+
+function wrapLeave(store, next, action) {
+    let room = new Room(action.roomId, store.getState())
+    let timerId = room.get('timerId')
+    if (timerId) {
+        clearInterval(timerId)
+    }
+
+    return _wrapAction(store, next, action)(leave)
 }
 
 function roomInfo(action, client) {
@@ -328,7 +348,7 @@ export default store => next => action => {
         case ActionTypes.JOIN_ROOM:
             return wrapJoin(store, next, action);
         case ActionTypes.LEAVE_ROOM:
-            return wrap(leave);
+            return wrapLeave(store, next, action);
         case ActionTypes.ROOM_INFO:
             return wrapRoomInfo(store, next, action);
         case ActionTypes.SEND_COMMENT:
