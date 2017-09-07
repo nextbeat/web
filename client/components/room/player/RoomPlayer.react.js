@@ -105,7 +105,7 @@ class RoomPlayer extends React.Component {
                     { item.hasReference() && <ItemReference room={room} {...containerProps} /> }
                     { !item.isEmpty() && (item.isVideo() ? 
                         <Video 
-                            video={item.video('hls')} 
+                            video={item.video('mp4')}
                             alternateVideo={item.video('mp4')}
                             decoration={item.get('decoration')} 
                             room={room} 

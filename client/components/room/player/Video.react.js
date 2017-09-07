@@ -226,7 +226,6 @@ class Video extends React.Component {
     }
 
     didPause() {
-        console.log('did pause')
         const video = document.getElementById('video_player');
         clearInterval(this.state.timeIntervalId);
 
