@@ -106,11 +106,6 @@ class DetailBar extends React.Component {
                     </div>
                 </div>
                 <div className="detail-bar_main">
-                    { detailOverlayActive && 
-                        <div className="detail-bar_close" onClick={this.handleDetailOverlayClose} >
-                            <Icon type="expand-more" />
-                        </div>
-                    }
                     { !isFetchingPage && !pageError && <Chat display={selectedDetailSection === "chat"} /> }
                     { !isFetchingPage && !pageError && <Activity display={selectedDetailSection === "activity"} /> }
                 </div>

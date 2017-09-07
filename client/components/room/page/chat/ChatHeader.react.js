@@ -27,12 +27,12 @@ class ChatHeader extends React.Component {
         return (
             <div className="chat_header_container">
                 <div className="chat_header">
-                <Icon type="whatshot" />
-                <div className="chat_header_tags_container">
-                    <div className="chat_header_tags">
-                        { tags.map(t => this.renderTag(t))}
+                    <Icon type="whatshot" />
+                    <div className="chat_header_tags_container">
+                        <div className="chat_header_tags">
+                            { tags.map(t => this.renderTag(t))}
+                        </div>
                     </div>
-                </div>
                 </div>
             </div>
         )
