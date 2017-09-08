@@ -1,4 +1,5 @@
 import { GATypes, GA } from '../actions'
+import { Dimensions } from '../analytics/definitions'
 import { createFunctionWithTimeout } from '../utils'
 import assign from 'lodash/assign'
 import get from 'lodash/get'
@@ -71,6 +72,7 @@ function parseQuery(queryString) {
 function handleIdentify(data) {
     const user = data.user
     ga('set', 'userId', user.get('id'))
+    ga('set', Dimensions.USER_ID, String(user.get('id')))
 }
 
 function handlePage(data) {

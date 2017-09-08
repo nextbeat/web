@@ -11,7 +11,8 @@ export const Dimensions = {
     HIT_TYPE: 'dimension10',
     HIT_SOURCE: 'dimension11',
     VISIBILITY_STATE: 'dimension12',
-    URL_QUERY_PARAMS: 'dimension13'
+    URL_QUERY_PARAMS: 'dimension13',
+    USER_ID: 'dimension14'
 }
 
 export const Metrics = {
