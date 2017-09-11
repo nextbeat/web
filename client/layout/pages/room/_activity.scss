@@ -6,15 +6,29 @@
     flex-direction: column;
 }
 
+.activity_header {
+    height: 35px;
+    border-bottom: 1px solid $border-color;
+    background: white;
+    position: relative;
+}
+
+.activity_close {
+    position: absolute;
+    top: 3px;
+    left: 4px;
+    width: 50px;
+}
+
 .activity_time {
+    position: absolute;
+    right: 0;
+    top: 0;
     color: #777;
     font-size: 13px;
     padding-right: 10px;
-    height: 35px;
     line-height: 35px;
-    background-color: white;
     text-align: right;
-    border-bottom: 1px solid $border-color;
 }
 
 .activity_inner {

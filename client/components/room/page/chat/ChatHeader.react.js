@@ -2,14 +2,20 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import Icon from '../../../shared/Icon.react'
-import { searchChat } from '../../../../actions'
+import { searchChat, closeDetailSection } from '../../../../actions'
+import { App } from '../../../../models'
 
 class ChatHeader extends React.Component {
 
     constructor(props) {
         super(props)
-        
+
+        this.handleClose = this.handleClose.bind(this)
         this.renderTag = this.renderTag.bind(this)
+    }
+
+    handleClose() {
+        this.props.dispatch(closeDetailSection())
     }
 
     renderTag(tag) {
@@ -23,7 +29,9 @@ class ChatHeader extends React.Component {
     }
 
     render() {
-        const { tags } = this.props
+        const { tags, app } = this.props
+        let isOverlayActive = app.get('activeOverlay') === 'chat'
+
         return (
             <div className="chat_header_container">
                 <div className="chat_header">
@@ -34,6 +42,11 @@ class ChatHeader extends React.Component {
                         </div>
                     </div>
                 </div>
+                { isOverlayActive &&
+                    <div className="chat_header_close" onClick={this.handleClose}>
+                        <Icon type="expand-more" />
+                    </div>
+                }
             </div>
         )
     }
@@ -47,4 +60,10 @@ ChatHeader.defaultProps = {
     tags: []
 }
 
-export default connect()(ChatHeader)
+function mapStateToProps(state) {
+    return {
+        app: new App(state)
+    }
+}
+
+export default connect(mapStateToProps)(ChatHeader)
