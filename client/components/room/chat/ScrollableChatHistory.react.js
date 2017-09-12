@@ -9,7 +9,7 @@ import NotificationChatItem from './NotificationChatItem.react'
 import Spinner from '../../shared/Spinner.react'
 import commentReducer from './utils/commentReducer'
 
-import { loadComments, loadLatestComments, promptChatActionsForUser, resendComment, selectMediaItem, closeDetailSection, toggleDropdown, searchChat } from '../../../actions'
+import { loadComments, promptChatActionsForUser, resendComment, selectMediaItem, closeDetailSection, toggleDropdown, searchChat } from '../../../actions'
 import { Room, CurrentUser, App } from '../../../models'
 
 function scrollComponentId(props) {
@@ -92,7 +92,7 @@ class ScrollableChatHistory extends React.Component {
 
     handleJumpToPresent() {
         const { dispatch, roomId } = this.props 
-        dispatch(loadLatestComments(roomId))
+        dispatch(loadComments(roomId, 'mostRecent'))
     }
 
     // Render

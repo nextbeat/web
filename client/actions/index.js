@@ -25,7 +25,6 @@ export {
     loadRoom,
     loadMediaItems,
     loadComments,
-    loadLatestComments,
     jumpToComment,
     getRoomInfo,
     sendComment,

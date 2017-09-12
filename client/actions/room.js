@@ -1,7 +1,8 @@
-import { List } from 'immutable'
+import { List, fromJS } from 'immutable'
 import { normalize } from 'normalizr'
 import { browserHistory } from 'react-router'
 import format from 'date-fns/format'
+import differenceInSeconds from 'date-fns/difference_in_seconds'
 import assign from 'lodash/assign'
 
 import ActionTypes from './types'
@@ -9,7 +10,8 @@ import Schemas from '../schemas'
 import { promptModal, triggerAuthError } from './app'
 import { pushSubscribe } from './push'
 import { loadPaginatedObjects } from './utils'
-import { Room, RoomPage, CurrentUser, MediaItemEntity } from '../models'
+import { selectDetailSection } from './pages/room'
+import { Room, RoomPage, CurrentUser, MediaItemEntity, CommentEntity } from '../models'
 import { API_CALL, API_CANCEL, GA, AnalyticsTypes, GATypes } from './types'
 import { setStorageItem, generateUuid } from '../utils'
 
@@ -30,11 +32,11 @@ function fetchRoom(id) {
     }
 }
 
-export function loadRoom(id) {
+export function loadRoom(id, { jumpToCommentAtDate } = {}) {
     return dispatch => {
         dispatch(fetchRoom(id))
         dispatch(loadMediaItems(id));
-        dispatch(loadLatestComments(id));
+        dispatch(loadComments(id, 'mostRecent', { jumpTo: jumpToCommentAtDate }));
     }
 }
 
@@ -70,6 +72,7 @@ function goToComment(roomId, comment) {
             type: ActionTypes.DESELECT_COMMENT,
             roomId
         })
+        disp
         process.nextTick(() => {
             dispatch({
                 type: ActionTypes.GO_TO_COMMENT,
@@ -80,9 +83,29 @@ function goToComment(roomId, comment) {
     }
 }
 
-function onFetchCommentSuccess(store, next, action) {
+function commentClosestToDate(date, response) {
+    let comments = response.entities.comments
+    let diff = differenceInSeconds
+    let comment = Object.values(comments)
+        .filter(c => c.type === "message")
+        .sort((a, b) => Math.abs(diff(a, date)) - Math.abs(diff(b, date)))[0]
+    return new CommentEntity(parseInt(comment.id, 10), fromJS(response.entities))
+}
+
+function onFetchCommentSuccess(store, next, action, response) {
     if (action.fetchType === 'around') {
-        store.dispatch(goToComment(action.roomId, action.comment))
+        let comment = action.comment
+        if (!comment) {
+            comment = commentClosestToDate(action.date, response)
+            // Force open chat section if in mobile res
+            store.dispatch(selectDetailSection('chat'))
+        }
+        store.dispatch(goToComment(action.roomId, comment))
+    } else if (action.fetchType === 'mostRecent' && typeof action.jumpTo === 'string') {
+        const queries = {
+            around: action.jumpTo
+        }
+        store.dispatch(fetchComments(action.roomId, queries, { fetchType: 'around', date: action.jumpTo }))
     }
 }
 
@@ -103,7 +126,7 @@ function fetchComments(roomId, queries, options) {
     })
 }
 
-export function loadComments(roomId, direction) {
+export function loadComments(roomId, direction, { jumpTo } = {}) {
     return (dispatch, getState) => {
         const room = new Room(roomId, getState())
         if (direction === 'before') {
@@ -122,15 +145,13 @@ export function loadComments(roomId, direction) {
                 after: room.comments().first().get('created_at')
             }
             return dispatch(fetchComments(roomId, queries, { fetchType: 'after' }));
+        } else if (direction === 'mostRecent') {
+            const queries = {
+                before: format(Date.now())
+            };
+            return dispatch(fetchComments(roomId, queries, { fetchType: 'mostRecent', jumpTo }));
         }
     }
-}
-
-export function loadLatestComments(roomId) {
-    const queries = {
-        before: format(Date.now())
-    };
-    return fetchComments(roomId, queries, { fetchType: 'mostRecent' });
 }
 
 export function jumpToComment(roomId, comment) {
