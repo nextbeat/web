@@ -2,7 +2,6 @@ import { List, fromJS } from 'immutable'
 import { normalize } from 'normalizr'
 import { browserHistory } from 'react-router'
 import format from 'date-fns/format'
-import differenceInSeconds from 'date-fns/difference_in_seconds'
 import assign from 'lodash/assign'
 
 import ActionTypes from './types'
@@ -72,7 +71,6 @@ function goToComment(roomId, comment) {
             type: ActionTypes.DESELECT_COMMENT,
             roomId
         })
-        disp
         process.nextTick(() => {
             dispatch({
                 type: ActionTypes.GO_TO_COMMENT,
@@ -85,10 +83,10 @@ function goToComment(roomId, comment) {
 
 function commentClosestToDate(date, response) {
     let comments = response.entities.comments
-    let diff = differenceInSeconds
+
     let comment = Object.values(comments)
         .filter(c => c.type === "message")
-        .sort((a, b) => Math.abs(diff(a, date)) - Math.abs(diff(b, date)))[0]
+        .sort((a, b) => Math.abs(+(new Date(a.created_at)-date*1000)) - Math.abs(+(new Date(b.created_at)-date*1000)))[0]
     return new CommentEntity(parseInt(comment.id, 10), fromJS(response.entities))
 }
 
@@ -101,7 +99,7 @@ function onFetchCommentSuccess(store, next, action, response) {
             store.dispatch(selectDetailSection('chat'))
         }
         store.dispatch(goToComment(action.roomId, comment))
-    } else if (action.fetchType === 'mostRecent' && typeof action.jumpTo === 'string') {
+    } else if (action.fetchType === 'mostRecent' && action.jumpTo) {
         const queries = {
             around: action.jumpTo
         }

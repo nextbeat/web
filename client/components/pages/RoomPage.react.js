@@ -28,8 +28,9 @@ class RoomPage extends React.Component {
     
     loadRoom() {
         const { params, dispatch, location } = this.props
-        if (location.query.comment && location.query.comment.length > 0) {
-            let jumpToCommentAtDate = location.query.comment;
+        let comment = location.query.comment;
+        if (comment && comment.length > 0 && /^\d+$/.test(comment)) {
+            let jumpToCommentAtDate = parseInt(comment, 10)/1000
             dispatch(loadRoomPage(params.hid, { jumpToCommentAtDate }))
         } else {
             dispatch(loadRoomPage(params.hid))
