@@ -3,11 +3,12 @@ import { connect } from 'react-redux'
 import format from 'date-fns/format'
 import { timeLeftString } from '../../../../utils'
 
-import { RoomPage } from '../../../../models'
+import { RoomPage, App } from '../../../../models'
 import { selectMediaItem, closeDetailSection } from '../../../../actions'
 import ScrollComponent from '../../../utils/ScrollComponent.react'
 import ActivityItem from './ActivityItem.react'
 import Spinner from '../../../shared/Spinner.react'
+import Icon from '../../../shared/Icon.react'
 
 class Activity extends React.Component {
 
@@ -15,6 +16,7 @@ class Activity extends React.Component {
         super(props);
 
         this.handleNewMediaClick = this.handleNewMediaClick.bind(this);
+        this.handleClose = this.handleClose.bind(this);
 
         this.state = {
             displayNewItem: false
@@ -37,19 +39,31 @@ class Activity extends React.Component {
         });
     }
 
+    handleClose() {
+        this.props.dispatch(closeDetailSection())
+    }
+
 
     // Render
 
     render() {
-        const { roomPage, display } = this.props;
+        const { roomPage, display, app } = this.props;
         const { displayNewItem } = this.state;
         let selectedItem = roomPage.selectedMediaItem();
+        let isActiveOverlay = app.get('activeOverlay') === 'activity'
 
         return (
         <section className="activity" style={{ display: (display ? "flex" : "none") }}>
-            <div className="activity_time">
-                { roomPage.get('closed') && format(roomPage.get('created_at'), 'MMMM D, YYYY') }
-                { !roomPage.get('closed') && timeLeftString(roomPage.get('expires')) }
+            <div className="activity_header">
+                { isActiveOverlay &&
+                    <div className="activity_close" onClick={this.handleClose}>
+                        <Icon type="expand-more" />
+                    </div>
+                }
+                <div className="activity_time">
+                    { roomPage.get('closed') && format(roomPage.get('created_at'), 'MMMM D, YYYY') }
+                    { !roomPage.get('closed') && timeLeftString(roomPage.get('expires')) }
+                </div>
             </div>
             <div className="activity_inner" id="activity-inner">
                 {roomPage.get('mediaItemsFetching') && <Spinner type="grey" />}
@@ -128,7 +142,8 @@ const scrollOptions = {
 
 function mapStateToProps(state) {
     return {
-        roomPage: new RoomPage(state)
+        roomPage: new RoomPage(state),
+        app: new App(state)
     }
 }
 

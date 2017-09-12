@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import assign from 'lodash/assign'
 import isEmpty from 'lodash/isEmpty'
+import isDateValid from 'date-fns/is_valid'
 
 import RoomMain from '../room/page/RoomMain.react'
 import DetailBar from '../room/page/DetailBar.react'
@@ -19,15 +20,26 @@ class RoomPage extends React.Component {
     constructor(props) {
         super(props);
 
+        this.loadRoom = this.loadRoom.bind(this)
         this.renderDocumentHead = this.renderDocumentHead.bind(this);
     }
 
     // LIFECYCLE
+    
+    loadRoom() {
+        const { params, dispatch, location } = this.props
+        if (location.query.comment && location.query.comment.length > 0) {
+            let jumpToCommentAtDate = location.query.comment;
+            dispatch(loadRoomPage(params.hid, { jumpToCommentAtDate }))
+        } else {
+            dispatch(loadRoomPage(params.hid))
+        }
+    }
 
     componentDidMount() {
-        const { params, dispatch, roomPage, location } = this.props
+        const { dispatch, roomPage, location } = this.props
         if (!roomPage.isLoaded()) {
-            dispatch(loadRoomPage(params.hid))
+              this.loadRoom()
         }
 
         let detailSection = location.query.detail
@@ -45,7 +57,7 @@ class RoomPage extends React.Component {
         if (prevProps.params.hid !== params.hid) {
             // new room, reload
             dispatch(clearRoomPage())
-            dispatch(loadRoomPage(params.hid))
+            this.loadRoom()
         }
 
         if (prevProps.roomPage.get('mediaItemsFetching') && roomPage.mediaItems().size > 0) {

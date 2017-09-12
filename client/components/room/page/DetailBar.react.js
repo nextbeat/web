@@ -15,7 +15,6 @@ class DetailBar extends React.Component {
     constructor(props) {
         super(props);
 
-        this.handleDetailOverlayClose = this.handleDetailOverlayClose.bind(this)
         this.toggleDropdown = this.toggleDropdown.bind(this)
         this.renderBadge = this.renderBadge.bind(this)
 
@@ -54,10 +53,6 @@ class DetailBar extends React.Component {
 
     setSelected(selected) {
         this.props.dispatch(selectDetailSection(selected))
-    }
-
-    handleDetailOverlayClose() {
-        this.props.dispatch(closeDetailSection())
     }
 
     toggleDropdown() {
@@ -106,11 +101,6 @@ class DetailBar extends React.Component {
                     </div>
                 </div>
                 <div className="detail-bar_main">
-                    { detailOverlayActive && 
-                        <div className="detail-bar_close" onClick={this.handleDetailOverlayClose} >
-                            <Icon type="expand-more" />
-                        </div>
-                    }
                     { !isFetchingPage && !pageError && <Chat display={selectedDetailSection === "chat"} /> }
                     { !isFetchingPage && !pageError && <Activity display={selectedDetailSection === "activity"} /> }
                 </div>

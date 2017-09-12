@@ -16,14 +16,16 @@ import { loadPaginatedObjects } from '../utils'
 
 function onRoomPageSuccess(store, next, action, response) {
     const stack = response.entities.stacks[response.result];
-    store.dispatch(loadRoom(stack.id));
+    // Optionally, jump to comment at provided date upon load
+    store.dispatch(loadRoom(stack.id, { jumpToCommentAtDate: action.jumpToCommentAtDate }));
     store.dispatch(loadMoreStacks(stack.id));
     store.dispatch(recordView(stack.id)); 
 }
 
-function fetchRoomPage(hid) {
+function fetchRoomPage(hid, { jumpToCommentAtDate } = {}) {
     return {
         type: ActionTypes.ROOM_PAGE,
+        jumpToCommentAtDate,
         [API_CALL]: {
             schema: Schemas.STACK,
             endpoint: `stacks/${hid}`,
@@ -33,8 +35,8 @@ function fetchRoomPage(hid) {
     }
 }
 
-export function loadRoomPage(hid) {
-    return fetchRoomPage(hid)
+export function loadRoomPage(hid, { jumpToCommentAtDate } = {}) {
+    return fetchRoomPage(hid, { jumpToCommentAtDate })
 }
 
 function fetchMoreStacks(stack_id) {
@@ -245,7 +247,7 @@ export function resetChat() {
     return (dispatch, getState) => {
         const room = new RoomPage(getState())
         dispatch(clearComments(room.get('id')))
-        dispatch(loadComments(room.get('id')))
+        dispatch(loadComments(room.get('id'), 'mostRecent'))
     }
 }
 

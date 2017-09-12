@@ -45,15 +45,16 @@ class Chat extends React.Component {
     }
 
     render() {
-        const { roomPage, display, hasLostConnection } = this.props;
+        const { roomPage, display, hasLostConnection, app } = this.props;
         const pinnedComment = roomPage.pinnedComment()
         const chatTags = roomPage.get('chatTags') || List()
+        const isOverlayActive = app.get('activeOverlay') === 'chat'
 
         return (
         <div className="chat" onWheel={debounce(this.handleOnWheel, 200)} style={{ display: (display ? "flex" : "none") }}>
             <UserActions />
             <WelcomeBanner username={roomPage.author().get('username')} closed={roomPage.get('closed')} />
-            { chatTags.size > 0 && 
+            { (chatTags.size > 0 || isOverlayActive) && 
                 <ChatHeader tags={chatTags} />
             }
             { pinnedComment && 
