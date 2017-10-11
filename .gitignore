@@ -2,3 +2,4 @@ node_modules
 client/public/js/*
 client/public/css/main*.css
 dist
+.gulp-cache

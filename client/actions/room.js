@@ -159,7 +159,7 @@ export function jumpToComment(roomId, comment) {
             dispatch(goToComment(roomId, comment))
         } else {
             const queries = {
-                around: format(comment.get('created_at'))
+                around: (new Date(comment.get('created_at'))).getTime() / 1000
             }
             dispatch(fetchComments(roomId, queries, { fetchType: 'around', comment }))
         }

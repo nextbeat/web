@@ -269,7 +269,8 @@ const scrollOptions = {
         }
 
         if (!prevProps.selectedComment && this.props.selectedComment) {
-            scrollComponent.scrollToElementWithId(`comment-${this.props.roomId}-${this.props.selectedComment}`, 250)
+            const commentId = `comment-${this.props.roomId}-${this.props.selectedComment}`
+            scrollComponent.scrollToElementWithId(commentId, 250)
             setTimeout(() => { this.setState({ inScrollToCommentWindow: false })}, 300);
         }
     }
