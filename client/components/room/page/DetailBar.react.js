@@ -119,7 +119,7 @@ function mapStateToProps(state) {
         currentUserIsAuthor: roomPage.currentUserIsAuthor(),
         isFetchingPage: roomPage.get('isFetching'),
         pageError: roomPage.get('error'),
-        unseenLiveMediaItemsCount: roomPage.unseenLiveMediaItemsCount()
+        unseenLiveMediaItemsCount: roomPage.get('unreadCount')
     }
 }
 
