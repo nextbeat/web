@@ -1,7 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import { List } from 'immutable'
+import TransitionGroup from 'react-transition-group/TransitionGroup'
+import CSSTransition from 'react-transition-group/CSSTransition'
 
 import ChatInfoDropdown from './ChatInfoDropdown.react'
 import ChatPinInfoDropdown from './ChatPinInfoDropdown.react'
@@ -151,13 +152,15 @@ class Compose extends React.Component {
             <div className="chat_compose_pin">
                 <Checkbox checked={isPinned} onChange={this.handlePinnedChange} label="Pin" />
                 <div className="chat_compose_pin_counter_container">
-                    <ReactCSSTransitionGroup transitionName="chat_compose_pin_counter" transitionEnterTimeout={150} transitionLeaveTimeout={150}>
+                    <TransitionGroup>
                         { isPinned && 
-                            <div className="chat_compose_pin_counter">
-                                <span className={length(message) > MAX_MESSAGE_LENGTH ? 'chat_compose_pin_counter-over-max' : ''}>{length(message)}</span>/{MAX_MESSAGE_LENGTH}
-                            </div>
+                            <CSSTransition classNames="chat_compose_pin_counter" timeout={150}>
+                                <div className="chat_compose_pin_counter">
+                                    <span className={length(message) > MAX_MESSAGE_LENGTH ? 'chat_compose_pin_counter-over-max' : ''}>{length(message)}</span>/{MAX_MESSAGE_LENGTH}
+                                </div>
+                            </CSSTransition>
                         }
-                    </ReactCSSTransitionGroup>
+                    </TransitionGroup>
                 </div>
             </div>
         )

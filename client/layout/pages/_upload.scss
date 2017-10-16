@@ -36,10 +36,10 @@
     }
 }
 
-.upload-leave {
+.upload-exit {
     opacity: 1;
 
-    &.upload-leave-active {
+    &.upload-exit-active {
         opacity: 0.01;
         transition: opacity 150ms;
     }

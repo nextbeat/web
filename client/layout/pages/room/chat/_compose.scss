@@ -95,11 +95,11 @@
     }
 }
 
-.chat_compose_pin_counter-leave {
+.chat_compose_pin_counter-exit {
     transform: translateX(0);
     opacity: 1;
 
-    &.chat_compose_pin_counter-leave-active {
+    &.chat_compose_pin_counter-exit-active {
         transform: translateX(-100%);
         opacity: 0.5;
         transition-property: transform, opacity;

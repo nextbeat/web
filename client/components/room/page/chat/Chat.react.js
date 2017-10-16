@@ -1,8 +1,9 @@
 import React from 'react'
 import { List } from 'immutable'
-import { connect } from 'react-redux'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import debounce from 'lodash/debounce'
+import { connect } from 'react-redux'
+import TransitionGroup from 'react-transition-group/TransitionGroup'
+import CSSTransition from 'react-transition-group/CSSTransition'
 
 import Compose from './Compose.react'
 import ChatHeader from './ChatHeader.react'
@@ -65,13 +66,15 @@ class Chat extends React.Component {
             } 
             <ScrollableChatHistory roomId={roomPage.room().id} />
             <Compose />
-            <ReactCSSTransitionGroup transitionName="chat_lost-connection" transitionEnterTimeout={300} transitionLeaveTimeout={200}>
+            <TransitionGroup>
                 { hasLostConnection && 
-                    <div key="lost-connection" className="chat_lost-connection">
-                        Lost connection. Reconnecting...
-                    </div>
+                    <CSSTransition classNames="chat_lost-connection" timeout={{ enter: 300, exit: 200 }}>
+                        <div key="lost-connection" className="chat_lost-connection">
+                            Lost connection. Reconnecting...
+                        </div>
+                    </CSSTransition>
                 }
-            </ReactCSSTransitionGroup>
+            </TransitionGroup>
         </div>
         );
     }

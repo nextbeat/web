@@ -28,11 +28,6 @@ require('jquery-bez');
 let initialState = window.__INITIAL_STATE__
 const store = configureStore(fromJS(initialState))
 
-if (initialState.app.environment !== 'production') {
-    const Perf = require('react-addons-perf')
-    window.Perf = Perf
-}
-
 // Initialize the command queue in case analytics.js hasn't loaded yet.
 window.ga = window.ga || ((...args) => (ga.q = ga.q || []).push(args));
 // Load rest of analytics module asynchronously

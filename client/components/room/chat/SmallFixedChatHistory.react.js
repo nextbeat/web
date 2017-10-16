@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { List } from 'immutable'
 import ScrollComponent from '../../utils/ScrollComponent.react'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 import ChatItem from './ChatItem.react'
 import NotificationChatItem from './NotificationChatItem.react'

@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import Helmet from 'react-helmet'
 import { List } from 'immutable'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import TransitionGroup from 'react-transition-group/TransitionGroup'
+import CSSTransition from 'react-transition-group/CSSTransition'
 
 import FileSelect from './upload/FileSelect.react'
 import UploadBar from './upload/UploadBar.react'
@@ -16,6 +17,10 @@ import { Upload as UploadModel, CurrentUser, App } from '../../models'
 import { baseUrl } from '../../utils'
 
 import { UploadTypes, submitStackRequest, clearUpload, selectStackForUpload, triggerAuthError } from '../../actions'
+
+const UploadComponentTransition = (props) => (
+    <CSSTransition {...props} timeout={{ enter: 300, exit: 150 }} classNames="upload" />
+)
 
 class Upload extends React.Component {
 
@@ -72,10 +77,18 @@ class Upload extends React.Component {
         return (
             <div className="upload_submit-forms">
                 { user.get('stacksFetching') && <Spinner type="grey upload-stacks" /> }
-                <ReactCSSTransitionGroup transitionName="upload" transitionEnterTimeout={300} transitionLeaveTimeout={150}>
-                    { user.openStacks().size > 0 && <AddToRoom key='add-to-room' upload={upload} stacks={user.openStacks()} /> }
-                    { upload.hasSelectedNewStack() && <CreateRoom key='create-room' upload={upload} stacks={user.openStacks()} /> }
-                </ReactCSSTransitionGroup>
+                <TransitionGroup>
+                { user.openStacks().size > 0 && 
+                    <UploadComponentTransition>
+                        <AddToRoom key='add-to-room' upload={upload} stacks={user.openStacks()} />
+                    </UploadComponentTransition> 
+                }
+                { upload.hasSelectedNewStack() && 
+                    <UploadComponentTransition>
+                        <CreateRoom key='create-room' upload={upload} stacks={user.openStacks()} />
+                    </UploadComponentTransition> 
+                }
+                </TransitionGroup>
                 <div className="upload_submit-container">
                     <a className={`btn ${upload.isSubmittable() ? '' : 'btn-inactive'} upload_submit`} onClick={this.handleSubmit}>Submit</a>
                 </div>
