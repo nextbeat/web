@@ -96,7 +96,7 @@ function requireAutotrackPlugins() {
 }
 
 function sendInitialPageview() {
-    ga('send', 'pageview', [Dimensions.HIT_SOURCE]: 'pageload')
+    ga('send', 'pageview', {[Dimensions.HIT_SOURCE]: 'pageload'})
 }
 
 function sendNavigationTimingMetrics() {

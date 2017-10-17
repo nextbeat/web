@@ -15,19 +15,9 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.js$/,
+                test: /\.(j|t)s$/,
                 exclude: /node_modules\/(?!(autotrack|dom-utils))/,
-                loader: 'babel-loader',
-                query: {
-                    babelrc: false,
-                    presets: [
-                        ['es2015'],
-                        'react'
-                    ],
-                    plugins: [
-                        'transform-object-rest-spread'
-                    ]
-                }
+                loader: 'awesome-typescript-loader',
             },
             {
                 test: /\.scss$/,

@@ -10,6 +10,15 @@ module.exports = merge(config, {
         filename: 'js/bundle.js',
         chunkFilename: 'js/[id].bundle.js',
     },
+    module: {
+        rules: [
+            {
+                enforce: 'pre',
+                test: /\.js$/,
+                loader: 'source-map-loader'
+            }
+        ]
+    },
     devtool: 'source-map',
     devServer: {
         inline: true
