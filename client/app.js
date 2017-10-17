@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from 'react-dom'
+import { hydrate } from 'react-dom'
 import { Provider } from 'react-redux'
 import { Router, Route, browserHistory, match } from 'react-router'
 import { AppContainer } from 'react-hot-loader'
@@ -42,7 +42,7 @@ let r = routes(store)
 // before rendering so that the client-side markup initially matches 
 // the server-side markup.
 match({ history: browserHistory, routes: r }, (error, redirectLocation, renderProps) => {
-    render(
+    hydrate(
         <Provider store={store}>
             <Router {...renderProps}>
                 { r }
