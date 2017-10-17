@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { Link } from 'react-router'
 import { Map } from 'immutable'
@@ -9,7 +10,7 @@ import Dropdown from '../../shared/Dropdown.react'
 
 if (typeof window !== 'undefined') {
     var robot = require('../../../public/images/robot_64px.png');
-} 
+}
 
 class ChatItem extends React.Component {
 
@@ -160,22 +161,22 @@ class ChatItem extends React.Component {
 }
 
 ChatItem.propTypes = {
-    comment: React.PropTypes.object.isRequired,
+    comment: PropTypes.object.isRequired,
 
-    isCreator: React.PropTypes.bool,
-    isCollapsed: React.PropTypes.bool,
-    isSelected: React.PropTypes.bool,
-    isSearchResult: React.PropTypes.bool,
-    handleSelectUsername: React.PropTypes.func,
-    handleSelectHashtag: React.PropTypes.func,
-    handleResend: React.PropTypes.func,
-    handleSelectMediaItem: React.PropTypes.func,
-    handleRespond: React.PropTypes.func,
-    handleSelectOptions: React.PropTypes.func,
-    handleJump: React.PropTypes.func,
-    showHeader: React.PropTypes.bool,
-    showOptions: React.PropTypes.bool,
-    isDropdownActive: React.PropTypes.bool
+    isCreator: PropTypes.bool,
+    isCollapsed: PropTypes.bool,
+    isSelected: PropTypes.bool,
+    isSearchResult: PropTypes.bool,
+    handleSelectUsername: PropTypes.func,
+    handleSelectHashtag: PropTypes.func,
+    handleResend: PropTypes.func,
+    handleSelectMediaItem: PropTypes.func,
+    handleRespond: PropTypes.func,
+    handleSelectOptions: PropTypes.func,
+    handleJump: PropTypes.func,
+    showHeader: PropTypes.bool,
+    showOptions: PropTypes.bool,
+    isDropdownActive: PropTypes.bool
 }
 
 ChatItem.defaultProps = {

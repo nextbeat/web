@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { Link } from 'react-router'
 
@@ -28,12 +29,12 @@ class NotificationChatItem extends React.Component {
 }
 
 NotificationChatItem.propTypes = {
-    comment: React.PropTypes.object.isRequired,
-    roomId: React.PropTypes.number.isRequired,
-    username: React.PropTypes.string.isRequired,
-    count: React.PropTypes.number,
+    comment: PropTypes.object.isRequired,
+    roomId: PropTypes.number.isRequired,
+    username: PropTypes.string.isRequired,
+    count: PropTypes.number,
 
-    handleSelectMediaItem: React.PropTypes.func
+    handleSelectMediaItem: PropTypes.func
 }
 
 NotificationChatItem.defaultProps = {

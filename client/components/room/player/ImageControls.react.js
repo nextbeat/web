@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 
 import Icon from '../../shared/Icon.react'
@@ -30,9 +31,9 @@ class ImageControls extends React.Component {
 }
 
 ImageControls.propTypes = {
-    shouldDisplayControls: React.PropTypes.bool,
-    isFullScreen: React.PropTypes.bool,
-    fullScreen: React.PropTypes.func
+    shouldDisplayControls: PropTypes.bool,
+    isFullScreen: PropTypes.bool,
+    fullScreen: PropTypes.func
 }
 
 export default ImageControls

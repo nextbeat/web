@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 
@@ -53,7 +54,7 @@ class ChatHeader extends React.Component {
 }
 
 ChatHeader.propTypes = {
-    tags: React.PropTypes.object
+    tags: PropTypes.object
 }
 
 ChatHeader.defaultProps = {

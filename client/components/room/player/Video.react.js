@@ -1,7 +1,8 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import assign from 'lodash/assign'
-import debounce from 'lodash/debounce' 
+import debounce from 'lodash/debounce'
 import Promise from 'bluebird'
 import Hls from 'hls.js'
 import { toggleFullScreen, isFullScreen } from '../../../utils'
@@ -557,11 +558,11 @@ function mapStateToProps(state) {
 }
 
 Video.propTypes = {
-    video: React.PropTypes.object.isRequired,
-    autoplay: React.PropTypes.bool.isRequired,
+    video: PropTypes.object.isRequired,
+    autoplay: PropTypes.bool.isRequired,
 
-    decoration: React.PropTypes.object,
-    room: React.PropTypes.object
+    decoration: PropTypes.object,
+    room: PropTypes.object
 }
 
 Video.defaultProps = {

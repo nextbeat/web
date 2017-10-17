@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import Promise from 'bluebird'
@@ -181,12 +182,12 @@ class Image extends React.Component {
 }
 
 Image.propTypes = {
-    image: React.PropTypes.object.isRequired,
-    containerWidth: React.PropTypes.number.isRequired,
-    containerHeight: React.PropTypes.number.isRequired,
+    image: PropTypes.object.isRequired,
+    containerWidth: PropTypes.number.isRequired,
+    containerHeight: PropTypes.number.isRequired,
 
-    hideControls: React.PropTypes.bool,
-    decoration: React.PropTypes.object,
+    hideControls: PropTypes.bool,
+    decoration: PropTypes.object,
 }
 
 Image.defaultProps = {

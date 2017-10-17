@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { fromJS } from 'immutable'
 import { connect } from 'react-redux'
@@ -131,9 +132,9 @@ class RoomPlayer extends React.Component {
 }
 
 RoomPlayer.propTypes = {
-    room: React.PropTypes.object.isRequired,
-    shouldAutoplayVideo: React.PropTypes.bool.isRequired,
-    isRoomCard: React.PropTypes.bool.isRequired
+    room: PropTypes.object.isRequired,
+    shouldAutoplayVideo: PropTypes.bool.isRequired,
+    isRoomCard: PropTypes.bool.isRequired
 }
 
 RoomPlayer.defaultProps = {
@@ -142,7 +143,7 @@ RoomPlayer.defaultProps = {
 }
 
 RoomPlayer.contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired
 }
 
 export default connect()(RoomPlayer);

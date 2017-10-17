@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { List, Set } from 'immutable'
@@ -179,8 +180,8 @@ class ScrollableChatHistory extends React.Component {
 }
 
 ScrollableChatHistory.propTypes = {
-    roomId: React.PropTypes.number.isRequired,
-    style: React.PropTypes.string.isRequired,
+    roomId: PropTypes.number.isRequired,
+    style: PropTypes.string.isRequired,
 }
 
 ScrollableChatHistory.defaultProps = {
@@ -188,7 +189,7 @@ ScrollableChatHistory.defaultProps = {
 }
 
 ScrollableChatHistory.contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired
 }
 
 const scrollOptions = {

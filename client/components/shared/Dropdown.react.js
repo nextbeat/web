@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 
@@ -100,8 +101,8 @@ class Dropdown extends React.Component {
 }
 
 Dropdown.propTypes = {
-    type: React.PropTypes.string.isRequired,
-    shouldForceClose: React.PropTypes.bool.isRequired
+    type: PropTypes.string.isRequired,
+    shouldForceClose: PropTypes.bool.isRequired
 }
 
 Dropdown.defaultProps = {

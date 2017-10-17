@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 
 import Icon from '../../shared/Icon.react'
@@ -185,20 +186,20 @@ class VideoControls extends React.Component {
 
 VideoControls.propTypes = {
     // Constants
-    currentTime: React.PropTypes.number,
-    duration: React.PropTypes.number,
-    loadedDuration: React.PropTypes.number,
-    volume: React.PropTypes.number,
-    shouldDisplayControls: React.PropTypes.bool,
-    isPlaying: React.PropTypes.bool,
-    isFullScreen: React.PropTypes.bool,
+    currentTime: PropTypes.number,
+    duration: PropTypes.number,
+    loadedDuration: PropTypes.number,
+    volume: PropTypes.number,
+    shouldDisplayControls: PropTypes.bool,
+    isPlaying: PropTypes.bool,
+    isFullScreen: PropTypes.bool,
 
     // Functions
-    adjustVolume: React.PropTypes.func,
-    mute: React.PropTypes.func,
-    playPause: React.PropTypes.func,
-    seek: React.PropTypes.func,
-    fullScreen: React.PropTypes.func
+    adjustVolume: PropTypes.func,
+    mute: PropTypes.func,
+    playPause: PropTypes.func,
+    seek: PropTypes.func,
+    fullScreen: PropTypes.func
 
 }
 

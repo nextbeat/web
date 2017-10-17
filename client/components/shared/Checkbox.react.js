@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 
 import Icon from './Icon.react'
@@ -33,9 +34,9 @@ class Checkbox extends React.Component {
 }
 
 Checkbox.propTypes = {
-    checked: React.PropTypes.bool.isRequired,
-    onChange: React.PropTypes.func,
-    label: React.PropTypes.string
+    checked: PropTypes.bool.isRequired,
+    onChange: PropTypes.func,
+    label: PropTypes.string
 }
 
 export default Checkbox;

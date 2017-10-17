@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import hoistStatics from 'hoist-non-react-statics'
 import assign from 'lodash/assign'
@@ -169,11 +170,11 @@ export default function FileComponent(parentId, options={}) {
 
 
         FileContainer.propTypes = {
-            file: React.PropTypes.object
+            file: PropTypes.object
         }
 
         return hoistStatics(FileContainer, ChildComponent);
-    }
+    };
 
 
 }

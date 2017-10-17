@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Set } from 'immutable'
@@ -101,7 +102,7 @@ class ChatSearchResults extends React.Component {
 }
 
 ChatSearchResults.contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired
 }
 
 const scrollOptions = {

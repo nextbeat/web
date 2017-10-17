@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
@@ -196,7 +197,7 @@ class UploadResponse extends React.Component {
 }
 
 UploadResponse.contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired
 }
 
 function mapStateToProps(state) {

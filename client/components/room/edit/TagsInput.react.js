@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import Icon from '../../shared/Icon.react'
 
@@ -117,8 +118,8 @@ class TagsInput extends React.Component {
 }
 
 TagsInput.propTypes = {
-    tags: React.PropTypes.object.isRequired, // Immutable List
-    onChange: React.PropTypes.func.isRequired
+    tags: PropTypes.object.isRequired, // Immutable List
+    onChange: PropTypes.func.isRequired
 }
 
 export default TagsInput

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { Link } from 'react-router'
 import { Map } from 'immutable'
@@ -99,8 +100,8 @@ StackItem.propTypes = {
             return new Error('Invalid stack prop supplied to StackItem.')   
         }
     },
-    showBadge: React.PropTypes.bool,
-    static: React.PropTypes.bool
+    showBadge: PropTypes.bool,
+    static: PropTypes.bool
 }
 
 StackItem.defaultProps = {

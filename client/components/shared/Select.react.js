@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import startCase from 'lodash/startCase'
 
@@ -31,10 +32,10 @@ class Select extends React.Component {
 }
 
 Select.propTypes = {
-    selected: React.PropTypes.string.isRequired,
-    values: React.PropTypes.array.isRequired,
-    onChange: React.PropTypes.func.isRequired,
-    className: React.PropTypes.string
+    selected: PropTypes.string.isRequired,
+    values: PropTypes.array.isRequired,
+    onChange: PropTypes.func.isRequired,
+    className: PropTypes.string
 }
 
 export default Select

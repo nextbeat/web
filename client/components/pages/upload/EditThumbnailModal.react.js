@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 
@@ -60,7 +61,7 @@ class EditThumbnailModal extends React.Component {
 }
 
 EditThumbnailModal.propTypes = {
-    defaultFn: React.PropTypes.func // function called when selecting 'use default thumbnail'
+    defaultFn: PropTypes.func // function called when selecting 'use default thumbnail'
 }
 
 export default connect()(EditThumbnailModal);

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { findDOMNode } from 'react-dom'
 import { connect } from 'react-redux'
@@ -114,7 +115,7 @@ function mapStateToProps(state) {
 }
 
 SplashTopbar.contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired
 }
 
 export default connect(mapStateToProps)(SplashTopbar);

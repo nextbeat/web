@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { Link } from 'react-router'
 
@@ -33,7 +34,7 @@ class RoomCardHeader extends React.Component {
 }
 
 RoomCardHeader.propTypes = {
-    room: React.PropTypes.object
+    room: PropTypes.object
 }
 
 export default RoomCardHeader;

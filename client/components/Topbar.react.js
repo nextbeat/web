@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { findDOMNode } from 'react-dom'
 import { Link } from 'react-router'
@@ -242,7 +243,7 @@ function mapStateToProps(state) {
 }
 
 Topbar.contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired
 }
 
 export default connect(mapStateToProps)(Topbar);

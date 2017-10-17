@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 
 import escape from 'lodash/escape'
@@ -115,10 +116,10 @@ class Decoration extends React.Component {
 }
 
 Decoration.propTypes = {
-    decoration: React.PropTypes.object.isRequired,
-    width: React.PropTypes.number.isRequired,
-    height: React.PropTypes.number.isRequired,
-    barHeight: React.PropTypes.number
+    decoration: PropTypes.object.isRequired,
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    barHeight: PropTypes.number
 }
 
 export default Decoration

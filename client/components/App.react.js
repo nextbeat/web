@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
@@ -211,7 +212,7 @@ class App extends React.Component {
 }
 
 App.contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired
 }
 
 function mapStateToProps(state, props) {

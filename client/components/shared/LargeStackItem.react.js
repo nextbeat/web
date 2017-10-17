@@ -1,5 +1,6 @@
+import PropTypes from 'prop-types'
 import React from 'react'
-import { Link } from 'react-router' 
+import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { Map } from 'immutable'
 import without from 'lodash/without'
@@ -120,7 +121,7 @@ LargeStackItem.propTypes = {
             return new Error('Invalid stack prop supplied to LargeStackItem.')   
         }
     },
-    static: React.PropTypes.number
+    static: PropTypes.number
 }
 
 export default LargeStackItem;

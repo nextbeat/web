@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
@@ -43,7 +44,7 @@ ToggleLink.defaultProps = {
 }
 
 ToggleLink.contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired
 }
 
 function mapStateToProps(state) {

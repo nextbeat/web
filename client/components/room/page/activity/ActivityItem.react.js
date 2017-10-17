@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import format from 'date-fns/format'
@@ -133,9 +134,9 @@ class ActivityItem extends React.Component {
 }
 
 ActivityItem.propTypes = {
-    mediaItem: React.PropTypes.object.isRequired,
-    index: React.PropTypes.number.isRequired,
-    live: React.PropTypes.bool
+    mediaItem: PropTypes.object.isRequired,
+    index: PropTypes.number.isRequired,
+    live: PropTypes.bool
 }
 
 function mapStateToProps(state, ownProps) {

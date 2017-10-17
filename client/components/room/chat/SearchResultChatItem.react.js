@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 
@@ -57,11 +58,11 @@ class SearchResultChatItem extends React.Component {
 }
 
 SearchResultChatItem.propTypes = {
-    comment: React.PropTypes.object.isRequired,
-    roomId: React.PropTypes.number.isRequired,
+    comment: PropTypes.object.isRequired,
+    roomId: PropTypes.number.isRequired,
 
-    isCreator: React.PropTypes.bool,
-    showOptions: React.PropTypes.bool
+    isCreator: PropTypes.bool,
+    showOptions: PropTypes.bool
 }
 
 export default connect()(SearchResultChatItem);

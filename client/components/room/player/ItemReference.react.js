@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 
@@ -113,7 +114,7 @@ class ItemReference extends React.Component {
 }
 
 ItemReference.propTypes = {
-    room: React.PropTypes.object.isRequired
+    room: PropTypes.object.isRequired
 }
 
 export default connect()(ItemReference)

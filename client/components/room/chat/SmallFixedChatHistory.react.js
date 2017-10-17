@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { List } from 'immutable'
@@ -103,7 +104,7 @@ class SmallFixedChatHistory extends React.Component {
 }
 
 SmallFixedChatHistory.propTypes = {
-    roomId: React.PropTypes.number.isRequired,
+    roomId: PropTypes.number.isRequired,
 }
 
 const scrollOptions = {

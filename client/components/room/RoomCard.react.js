@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 
@@ -136,8 +137,8 @@ class RoomCard extends React.Component {
 }
 
 RoomCard.propTypes = {
-    id: React.PropTypes.number.isRequired,
-    showAuthor: React.PropTypes.bool
+    id: PropTypes.number.isRequired,
+    showAuthor: PropTypes.bool
 }
 
 RoomCard.defaultProps = {
