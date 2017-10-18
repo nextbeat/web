@@ -1,6 +1,5 @@
-/********
- * STATUS
- ********/
+import { AnyAction } from 'redux'
+import { ThunkAction as ReduxThunkAction } from 'redux-thunk'
 
 export const Status = {
     REQUESTING: 'REQUESTING',
@@ -43,6 +42,47 @@ export const UploadTypes = {
     THUMBNAIL: 'THUMBNAIL',
     PROFILE_PICTURE: 'PROFILE_PICTURE',
     COVER_IMAGE: 'COVER_IMAGE'
+}
+
+export type StatusType = "requesting" | "success" | "failure"
+
+export interface Pagination {
+    page: number
+    limit: number
+    beforeDate: number // unix epoch in milliseconds
+}
+
+export interface ApiCall {
+    endpoint: string
+    authenticated?: boolean
+    body?: object
+    onSuccess?: () => void
+    onSuccessImmediate?: () => void
+    pagination?: any
+    queries?: { [key: string]: string }
+    schema?: any
+}
+
+export interface ApiCancel {
+    actionTypes: string[]
+}
+
+export interface Action extends AnyAction {
+    type: ActionType
+    status?: StatusType
+    API_CALL?: ApiCall 
+    API_CANCEL?: ApiCancel
+}
+
+export type ThunkAction = ReduxThunkAction<void, any, never>
+
+// To do: make default once ported everything over?
+export enum ActionType {
+
+    /* Section */
+    Section = 'SECTION',
+    ClearSection = 'CLEAR_SECTION'
+
 }
 
 export default {

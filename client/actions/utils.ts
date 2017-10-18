@@ -1,8 +1,15 @@
-import { Map } from 'immutable';
+import { Map } from 'immutable'
+import { Dispatch } from 'react-redux'
+
+import { Action, Pagination } from '@actions/types'
 
 // todo: api server should handle stack_id inputs
 // todo: return nextUrl in api server?
-export function loadPaginatedObjects(keyPath, action, defaultLimit=20) {
+
+type ActionFn = (pagination: Pagination) => Action
+type PaginationThunk = (dispatch: Dispatch, getState: () => Map<string, any>) => void 
+
+export function loadPaginatedObjects(keyPath: string[], action: ActionFn, defaultLimit = 20): PaginationThunk {
     return (dispatch, getState) => {
 
         const { 
@@ -24,6 +31,6 @@ export function loadPaginatedObjects(keyPath, action, defaultLimit=20) {
             beforeDate
         };
 
-        return dispatch(action(pagination));
+        dispatch(action(pagination));
     }
 }

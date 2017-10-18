@@ -5,12 +5,14 @@ const ManifestPlugin        = require('webpack-manifest-plugin');
 const CommonsChunkPlugin    = webpack.optimize.CommonsChunkPlugin;
 const DllReferencePlugin    = webpack.DllReferencePlugin;
 
+let absolutePath(p) => path.resolve(__dirname, '../client', p) 
+
 module.exports = {
     entry: {
         app: './client/app.js'
     },
     output: {
-        path: path.join(__dirname, '../client/public/')
+        path: absolutePath('public')
     },
     module: {
         rules: [
@@ -40,6 +42,16 @@ module.exports = {
             }
         ]
     },
+    resolve: {
+        alias: {
+            '@client': absolutePath('')
+            '@actions': absolutePath('actions'),
+            '@components': absolutePath('components'),
+            '@models': absolutePath('models'),
+            '@reducers': absolutePath('reducers'),
+            '@schemas': absolutePath('schemas')
+        }
+    }
     plugins: [
         new DllReferencePlugin({
             context: process.cwd(),
