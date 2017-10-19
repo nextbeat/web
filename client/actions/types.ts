@@ -5,8 +5,8 @@ export type StatusType = "requesting" | "success" | "failure"
 
 export interface Pagination {
     page: number
-    limit: number
-    beforeDate: number // unix epoch in milliseconds
+    limit: number | "all"
+    beforeDate?: number // unix epoch in milliseconds
 }
 
 export interface ApiCall {
@@ -40,14 +40,37 @@ export interface ApiCancelAction extends GenericAction {
 export type ThunkAction = ReduxThunkAction<void, any, never>
 
 export enum ActionType {
-    /* Section */
+    /* APP */
+    TAGS = 'TAGS',
+    RESIZE = 'RESIZE',
+    PROMPT_MODAL = 'PROMPT_MODAL',
+    CLOSE_MODAL = 'CLOSE_MODAL',
+    PROMPT_DROPDOWN = 'PROMPT_DROPDOWN',
+    CLOSE_DROPDOWN = 'CLOSE_DROPDOWN',
+    SELECT_SIDEBAR = 'SELECT_SIDEBAR',
+    CLOSE_SIDEBAR = 'CLOSE_SIDEBAR',
+    ADD_SIDEBAR_ANIMATION = 'ADD_SIDEBAR_ANIMATION',
+    REMOVE_SIDEBAR_ANIMATION = 'REMOVE_SIDEBAR_ANIMATION',
+    COLLAPSE_SPLASH_TOPBAR = 'COLLAPSE_SPLASH_TOPBAR',
+    EXPAND_SPLASH_TOPBAR = 'EXPAND_SPLASH_TOPBAR',
+    SET_VIDEO_VOLUME = 'SET_VIDEO_VOLUME',
+    HAS_NAVIGATED = 'HAS_NAVIGATED',
+    ON_BEFORE_UNLOAD = 'ON_BEFORE_UNLOAD',
+    TRIGGER_AUTH_ERROR = 'TRIGGER_AUTH_ERROR',
+    CLEAN_CACHE = 'CLEAN_CACHE',
+    CLEAR_APP = 'CLEAR_APP',
+
+    /* SECTION */
     SECTION = 'SECTION',
     CLEAR_SECTION = 'CLEAR_SECTION'
 }
 
+import { AppActionAll } from './app'
 import { SectionActionAll } from './pages/section'
 
-export type Action = SectionActionAll /* | ... */
+export type Action = 
+    AppActionAll |
+    SectionActionAll
 
 
 /* DEPRECATED */

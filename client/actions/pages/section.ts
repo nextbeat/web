@@ -12,8 +12,9 @@ import * as Schema from '@schemas'
 import { loadPaginatedObjects } from '@actions/utils'
 import { Section } from '@models'
 
-export type SectionActionAll = SectionAction 
-    | ClearSectionAction
+export type SectionActionAll = 
+    SectionAction |
+    ClearSectionAction
 
 /**********
  * FETCHING
@@ -23,7 +24,6 @@ interface SectionAction extends ApiCallAction {
     type: ActionType.SECTION
     slug: string
 }
-
 function fetchSection(slug: string, pagination: Pagination): SectionAction {
     return {
         type: ActionType.SECTION,
@@ -53,7 +53,6 @@ interface ClearSectionAction extends ApiCancelAction {
     type: ActionType.CLEAR_SECTION
     slug: string
 }
-
 export function clearSection(slug: string): ClearSectionAction {
     return {
         type: ActionType.CLEAR_SECTION,

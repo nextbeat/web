@@ -7,8 +7,10 @@ import { List } from 'immutable'
 
 import { loadSection, clearSection } from '@actions/pages/section'
 import { Store, State, DispatchProps, RouteProps, ServerRenderingComponent, staticImplements } from '@types'
+
 import Section from '@models/state/pages/section'
 import StackEntity from '@models/entities/stack'
+
 import LargeStackItem from '@components/shared/LargeStackItem.react'
 import Spinner from '@components/shared/Spinner.react'
 import AppBanner from '@components/shared/AppBanner.react'
