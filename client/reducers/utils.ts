@@ -1,45 +1,30 @@
 import { Map, List, Record } from 'immutable'
 import mapValues from 'lodash-es/mapValues'
 
-import { Action, ActionType } from '@actions/types'
+import { Action, ActionTypeKey, ApiCallAction, ApiCancelAction } from '@actions/types'
+import { State, Reducer } from '@types'
 
-export type State = Map<string, any>
-export type Reducer<S> = (state: S, action: Action) => S
-
-export function combineReducers(reducers: Reducer<S>[]): Reducer<State> {
+export function combineReducers(reducers: {[key: string]: Reducer}): Reducer {
     return (state, action) => 
-        state.merge(mapValues(reducers, (reducer: Reducer<State>, key: string) => reducer(state.get(key, Map()), action)))
+        state.merge(mapValues(reducers, (reducer: Reducer, key: string) => reducer(state.get(key, Map()), action)))
 }
 
-
-export interface PaginationProps {
-    readonly isFetching: boolean
-    readonly beforeDate?: number
-    readonly ids?: number[]
-    readonly total?: number
-    readonly page?: number
-    readonly limit?: number
-    readonly error?: string
-}
-
-export type Pagination = Map<keyof PaginationProps, any>
-
-const defaultPaginationState = Map<keyof PaginationProps, any>({
+const defaultPaginationState = Map({
     isFetching: false
 })
 
-export function paginate(type: ActionType, clearType?: ActionType): Reducer<Pagination> {
+export function paginate(type: ActionTypeKey, clearType?: ActionTypeKey): Reducer {
 
-    return function(state=defaultPaginationState, action) {
+    return function(state=defaultPaginationState, action: ApiCallAction | ApiCancelAction) {
         if (action.type === type) {
             switch (action.status) {
                 case "requesting":
-                    return state.merge<keyof PaginationProps, any>({
+                    return state.merge({
                         isFetching: true,
                         beforeDate: action.pagination.beforeDate
                     });
                 case "success":
-                    return state.merge<keyof PaginationProps, any>({
+                    return state.merge({
                         isFetching: false,
                         hasFetched: true,
                         ids: state.get('ids', List()).concat(action.response.result),
@@ -48,7 +33,7 @@ export function paginate(type: ActionType, clearType?: ActionType): Reducer<Pagi
                         limit: action.response.limit
                     });
                 case "failure":
-                    return state.merge<keyof PaginationProps, any>({
+                    return state.merge({
                         isFetching: false,
                         error: 'Failed to load.'
                     });
@@ -60,31 +45,22 @@ export function paginate(type: ActionType, clearType?: ActionType): Reducer<Pagi
     }
 }
 
+export function entity(type: ActionTypeKey): Reducer {
 
-export interface EntityProps {
-    readonly isFetching: boolean
-    readonly id: number
-    readonly error?: string
-}
-
-export type Entity = Map<keyof EntityProps, any>
-
-export function entity(type: ActionType): Reducer<Entity> {
-
-    return function(state=Map(), action) {
+    return function(state: State, action: ApiCallAction) {
         if (action.type === type) {
             switch (action.status) {
                 case "requesting":
-                    return state.merge<keyof EntityProps, any>({
+                    return state.merge({
                         isFetching: true
                     })
                 case "success":
-                    return state.merge<keyof EntityProps, any>({
+                    return state.merge({
                         isFetching: false,
                         id: action.response.result
                     })
                 case "failure":
-                    return state.merge<keyof EntityProps, any>({
+                    return state.merge({
                         isFetching: false,
                         error: 'Failed to load.'
                     })

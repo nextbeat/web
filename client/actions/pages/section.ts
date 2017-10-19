@@ -1,15 +1,32 @@
-import { ActionType, Action, ThunkAction, Pagination } from '@actions/types'
+import { 
+    ActionType, 
+    GenericAction, 
+    ApiCallAction,
+    ApiCancelAction,
+    ThunkAction, 
+    ApiCall,
+    ApiCancel,
+    Pagination
+} from '@actions/types'
 import * as Schema from '@schemas'
 import { loadPaginatedObjects } from '@actions/utils'
 import { Section } from '@models'
+
+export type SectionActionAll = SectionAction 
+    | ClearSectionAction
 
 /**********
  * FETCHING
  **********/
 
-function fetchSection(slug: string, pagination: Pagination): Action {
+interface SectionAction extends ApiCallAction {
+    type: ActionType.SECTION
+    slug: string
+}
+
+function fetchSection(slug: string, pagination: Pagination): SectionAction {
     return {
-        type: ActionType.Section,
+        type: ActionType.SECTION,
         slug,
         API_CALL: {
             schema: Schema.Stacks,
@@ -19,11 +36,10 @@ function fetchSection(slug: string, pagination: Pagination): Action {
     }
 }
 
-export function loadSection(slug: string): ThunkAction {
+export function loadSection(slug?: string): ThunkAction {
     return (dispatch, getState) => {
         if (!slug) {
-            const section = new Section(getState())
-            slug = section.get('slug')
+            slug = Section.get(getState(), 'slug')
         }
         loadPaginatedObjects(['pages', 'section', 'pagination', 'stacks'], fetchSection.bind(this, slug))(dispatch, getState)
     }
@@ -33,12 +49,17 @@ export function loadSection(slug: string): ThunkAction {
  * RESET
  *******/
 
-export function clearSection(slug): Action {
+interface ClearSectionAction extends ApiCancelAction {
+    type: ActionType.CLEAR_SECTION
+    slug: string
+}
+
+export function clearSection(slug: string): ClearSectionAction {
     return {
-        type: ActionType.ClearSection,
+        type: ActionType.CLEAR_SECTION,
         slug,
         API_CANCEL: {
-            actionTypes: [ActionType.Section]
+            actionTypes: [ActionType.SECTION]
         }
     }
 }

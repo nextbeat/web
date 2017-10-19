@@ -1,6 +1,57 @@
 import { AnyAction } from 'redux'
 import { ThunkAction as ReduxThunkAction } from 'redux-thunk'
 
+export type StatusType = "requesting" | "success" | "failure"
+
+export interface Pagination {
+    page: number
+    limit: number
+    beforeDate: number // unix epoch in milliseconds
+}
+
+export interface ApiCall {
+    endpoint: string
+    authenticated?: boolean
+    body?: object
+    onSuccess?: () => void
+    onSuccessImmediate?: () => void
+    pagination?: any
+    queries?: { [key: string]: string }
+    schema?: any
+}
+
+export interface ApiCancel {
+    actionTypes: string[]
+}
+
+export interface GenericAction extends AnyAction {
+    type: ActionType
+    status?: StatusType
+}
+
+export interface ApiCallAction extends GenericAction {
+    API_CALL: ApiCall
+}
+
+export interface ApiCancelAction extends GenericAction {
+    API_CANCEL: ApiCancel
+}
+
+export type ThunkAction = ReduxThunkAction<void, any, never>
+
+export enum ActionType {
+    /* Section */
+    SECTION = 'SECTION',
+    CLEAR_SECTION = 'CLEAR_SECTION'
+}
+
+import { SectionActionAll } from './pages/section'
+
+export type Action = SectionActionAll /* | ... */
+
+
+/* DEPRECATED */
+
 export const Status = {
     REQUESTING: 'REQUESTING',
     SUCCESS: 'SUCCESS',
@@ -44,46 +95,6 @@ export const UploadTypes = {
     COVER_IMAGE: 'COVER_IMAGE'
 }
 
-export type StatusType = "requesting" | "success" | "failure"
-
-export interface Pagination {
-    page: number
-    limit: number
-    beforeDate: number // unix epoch in milliseconds
-}
-
-export interface ApiCall {
-    endpoint: string
-    authenticated?: boolean
-    body?: object
-    onSuccess?: () => void
-    onSuccessImmediate?: () => void
-    pagination?: any
-    queries?: { [key: string]: string }
-    schema?: any
-}
-
-export interface ApiCancel {
-    actionTypes: string[]
-}
-
-export interface Action extends AnyAction {
-    type: ActionType
-    status?: StatusType
-    API_CALL?: ApiCall 
-    API_CANCEL?: ApiCancel
-}
-
-export type ThunkAction = ReduxThunkAction<void, any, never>
-
-// To do: make default once ported everything over?
-export enum ActionType {
-
-    /* Section */
-    Section = 'SECTION',
-    ClearSection = 'CLEAR_SECTION'
-
-}
 
 export default {
 
