@@ -8,12 +8,13 @@ import { List } from 'immutable'
 import { loadSection, clearSection } from '@actions/pages/section'
 import { Store, State, DispatchProps, RouteProps, ServerRenderingComponent, staticImplements } from '@types'
 import Section from '@models/state/pages/section'
+import StackEntity from '@models/entities/stack'
 import LargeStackItem from '@components/shared/LargeStackItem.react'
 import Spinner from '@components/shared/Spinner.react'
 import AppBanner from '@components/shared/AppBanner.react'
 
 interface Props {
-    stacks: List<any>
+    stacks: List<StackEntity>
     name: string
     description: string
     isFetching: boolean
@@ -75,7 +76,7 @@ class SectionComponent extends React.Component<Props & DispatchProps & RouteProp
                     }
                     <div className="section_rooms">
                         { stacks.map(stack => <LargeStackItem key={`ss${stack.get('id')}`} stack={stack} />) }
-                        { isFetching && <Spinner type="grey large section" /> }
+                        { isFetching && <Spinner type="section" styles={["grey", "large"]} /> }
                     </div>
                 </div>
             </div>

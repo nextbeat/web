@@ -3,7 +3,7 @@ import { createSelector } from 'reselect'
 import createCachedSelector from 're-reselect'
 
 import { StateModelFactory, State } from '../base'
-import StackEntity from '../../entities/stack'
+import Stack from '@models/entities/stack'
 
 // todo: merge in common props?
 interface SectionProps {
@@ -15,7 +15,7 @@ interface SectionProps {
 
     stacksFetching: string
     stacksError: string
-    stackIds: List<number>
+    stackIds: List<Stack>
 }
 
 // todo: merge in common keys?
@@ -38,10 +38,10 @@ export default class Section extends StateModelFactory<SectionProps>(keyMap, key
 
     static stacks = createCachedSelector(
         (state: State) => Section.get(state, 'stackIds'),
-        (state: State) => state,
-        (ids, state) => ids.map(id => state.getIn(['entities', 'stacks', id.toString()]))
+        (state: State) => state.get('entities'),
+        (ids, entities) => ids.map(id => new Stack(id, entities))
     )(
-        (ids, state) => ids.map(id => id.toString()).join('_')
+        (ids, entities) => ids.map(id => id.toString()).join('_')
     )
 
     static isLoaded(state: State): boolean {

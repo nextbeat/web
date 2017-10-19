@@ -1,6 +1,7 @@
 import has from 'lodash-es/has'
 import { Map, List } from 'immutable'
 import { createSelector } from 'reselect'
+import { entityClass } from '@models/entities/base'
 
 export type State = Map<string, any>
 
@@ -21,20 +22,13 @@ export function StateModelFactory<Props>(
             return state.getIn(this.keyPath(key), defaultValue)
         }
 
-        // static getEntity(state: State, id: string): State | null {
-        //     if (!entityName) {
-        //         return null
-        //     }
-        //     return state.getIn(['entities', entityName, id]) || null
-        // }
-
-        static getEntity = createSelector(
-            (state: State) => {
-                let id = StateModel.get(state, 'id' as keyof Props) as any as number
-                return state.getIn(['entities', entityName as string, id.toString()]) as State
-            },
-            (entity) => ({ entity: entity }) // todo: entity class wrapper
-        )
+        static getEntity(state: State): State | null {
+            let id = this.get(state, 'id' as keyof Props)
+            if (!id) {
+                return null
+            }
+            return state.getIn(['entities', entityName as string, id.toString()]) as State
+        }
 
         // static getPaginatedEntities(state: State, key: string): List<State> | null {
         //     const keyPath = keyMapPrefix.concat(['pagination', key, 'ids'])

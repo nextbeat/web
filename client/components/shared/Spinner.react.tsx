@@ -1,10 +1,16 @@
-import React from 'react';
+import * as  React from 'react'
 
-class Spinner extends React.Component {
+type SpinnerType = 'grey' | 'white' | 'faded' | 'large' | 'small'
+
+interface Props {
+    styles: SpinnerType[]
+    type?: string
+}
+
+class Spinner extends React.Component<Props> {
 
     render() {
-        const styles = (this.props.type || "").split(" ");
-        const stylesClass = styles.map(s => `spinner-${s}`).join(" ");
+        const stylesClass = `${this.props.styles.map(s => `spinner-${s}`).join(" ")} ${this.props.type ? this.props.type : ''}`
         return (<div className={`spinner ${stylesClass}`}>
             <div><div></div></div>
             <div><div></div></div>
