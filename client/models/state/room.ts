@@ -182,6 +182,8 @@ export default class Room {
         (state: State, id: number) => id
     )
 
+    // todo: submitting and failed comments
+
     static pinnedComment = createSelector(
         (state: State, id: number) => {
             let pinnedCommentId = Room.get(state, id, 'pinnedCommentId')
@@ -206,6 +208,9 @@ export default class Room {
      * Queries
      */
     
+    static isLoaded(state: State, id: number): boolean {
+        return (Room.get(state, id, 'id', 0) > 0)
+    }
     static status(state: State, id: number) {
         return Room.entity(state, id).get('closed') ? 'closed' : 'open' 
     }
@@ -241,6 +246,14 @@ export default class Room {
             return false
         }
         return this.entity(state, id).get('bookmarked') || CurrentUser.bookmarkedStackIds(state).indexOf(id) > -1
+    }
+
+    static loadedRoomIds(state: State): List<number> {
+        let rooms = state.get('rooms', Map()) as State
+        return rooms.reduce((res, _, idKey) => {
+            let id = parseInt(idKey, 10)
+            return Room.isLoaded(state, id) ? res.push(id) : res;
+        }, List())
     }
 
     // TODO
@@ -297,25 +310,16 @@ export default class Room {
 //         return !!this.get('joined', false)
 //     }
 
-//     hasLoadedComment(comment) {
-//         return this.get('commentIds', List()).concat(this.get('liveCommentIds', List())).indexOf(comment.get('id')) > -1
-//     }
-
 //     hasLoadedChat() {
 //         return this.get('commentsHasFetched') && this.hasJoined()
 //     }
 
-//     userIsBanned(username) {
-//         // note that this takes username as param, NOT user id
-//         return this.get('bannedUsers', List()).indexOf(username) > -1
-//     }
-
 //     static loadedRooms(state) {
-//         let rooms = state.get('rooms')
-//         return rooms.reduce((res, _, id) => {
-//             let room = new Room(id, state)
-//             return room.isLoaded() ? res.push(room) : res;
-//         }, List())
+        // let rooms = state.get('rooms')
+        // return rooms.reduce((res, _, id) => {
+        //     let room = new Room(id, state)
+        //     return room.isLoaded() ? res.push(room) : res;
+        // }, List())
 //     }
 
 //     static roomWithUuid(uuid, state) {

@@ -1,16 +1,26 @@
-import Promise from 'bluebird'
-import assign from 'lodash/assign'
-import omit from 'lodash/omit'
- 
-import { receiveComment, receiveMediaItem, receiveRoomClosed, 
-         receivePinnedComment, receiveUnpinnedComment,
-         receiveNotificationComment, receiveActivityEvent, 
-         receiveRoomMarked, receiveBookmarkUpdate,
-         reconnectEddy, identifyEddy, joinRoom } from '../actions'
-import { Room, CurrentUser } from '../models'
-import { EddyError, TimeoutError } from '../errors'
+import * as Promise from 'bluebird'
+import assign from 'lodash-es/assign'
+import omit from 'lodash-es/omit'
 
-function eddyHost() {
+import { 
+    receiveComment,
+    receiveMediaItem,
+    receiveRoomClosed,
+    receivePinnedComment,
+    receiveUnpinnedComment,
+    receiveNotificationComment,
+    receiveActivityEvent,
+    receiveRoomMarked,
+    receiveBookmarkUpdate,
+    reconnectEddy,
+    identifyEddy, 
+    joinRoom
+} from '@actions/eddy'
+import { Room, CurrentUser } from '@models'
+import { EddyError, TimeoutError } from '@errors'
+import { State, Store, Dispatch } from '@types'
+
+function eddyHost(): string {
     switch(process.env.NODE_ENV) {
         case 'production':
             return 'wss://eddy.nextbeat.co:4316/websocket?origin=web'
@@ -30,9 +40,82 @@ const CONNECT_TIMEOUT = 10000;
 const CONNECT_DELAY_CAP = 30000;
 const BASE_DELAY = 2000;
 
+
+/**
+ * Type definitions
+ */
+
+type EddySendType = 
+    'identify' |
+    'unidentify' |
+    'room_join' |
+    'room_leave' |
+    'room_info' |
+    'chat' |
+    'ban' |
+    'unban' |
+    'pin' |
+    'unpin' |
+    'bookmark' |
+    'unbookmark' |
+    'ping'
+
+type EddyReceiveType = 
+    'chat' |
+    'pinned_chat' |
+    'unpinned_chat' |
+    'notification_comment' |
+    'media_item' |
+    'room_closed' |
+    'room_marked' |
+    'bookmark_update' |
+    'activity_event'
+
+interface EddyRoomData {
+    room_id: number
+    [key: string]: any
+}
+
+interface EddySendPayload {
+    type: EddySendType
+    id: number
+    data?: object
+}
+
+interface EddyReceivePayload {
+    type: EddyReceiveType
+    data?: object
+}
+
+interface EddyResponsePayload extends EddyReceivePayload {
+    id: number
+    ok: boolean
+    error?: string
+}
+
+interface EddyInRoomReceivePayload extends EddyReceivePayload {
+    data: EddyRoomData
+}
+
+
+/**
+ * Eddy client
+ */
+
 export default class EddyClient {
 
-    constructor(store) {
+    dispatch: Dispatch;
+    getState: (() => State); 
+    messageId: number;
+    outgoingMessages: { [id: number]: (error: Error | null, responseData: any) => void };
+    messageQueue: any[];
+    client: WebSocket;
+
+    private pingId: NodeJS.Timer;
+    private connectTimeoutId: NodeJS.Timer;
+    private pongTimeoutId: NodeJS.Timer;
+
+    constructor(store: Store) {
         this.dispatch = store.dispatch;
         this.getState = store.getState;
         this.messageId = 0;
@@ -49,7 +132,7 @@ export default class EddyClient {
             this.client = new WebSocket(eddyHost());
             this.messageId = 0;
 
-            let openListener = (event) => {
+            let openListener = (event: Event) => {
                 resolve();
 
                 if (this.messageQueue.length > 0) {
@@ -58,7 +141,7 @@ export default class EddyClient {
                     });
                 }  
 
-                this._pingId = setInterval(() => {
+                this.pingId = setInterval(() => {
                     this._sendPing();
                 }, PING_INTERVAL);
 
@@ -66,7 +149,7 @@ export default class EddyClient {
                 this.client.removeEventListener('close', closeListener)
             }
 
-            let closeListener = (event) => {
+            let closeListener = (event: CloseEvent) => {
                 this._clear();
 
                 if (!event.wasClean) {
@@ -77,10 +160,9 @@ export default class EddyClient {
                 this.client.removeEventListener('open', openListener)
             }
 
-            this._connectTimeoutId = setTimeout(() => {
+            this.connectTimeoutId = setTimeout(() => {
                 if (!this.isConnected()) {
                     this.client.close();
-                    this.client = null;
                     reject(new TimeoutError("Websocket connection timeout."))
                 }
             }, CONNECT_TIMEOUT);
@@ -88,7 +170,7 @@ export default class EddyClient {
             this.client.addEventListener('open', openListener)
             this.client.addEventListener('close', closeListener)
 
-            this.client.addEventListener('message', (event) => {
+            this.client.addEventListener('message', (event: MessageEvent) => {
                 let payload = JSON.parse(event.data)
                 if ('id' in payload) {
                     // Message is a response to a message
@@ -119,7 +201,7 @@ export default class EddyClient {
 
     // Messages
 
-    identify(token) {
+    identify(token: string) {
         return this._send('identify', { token: token });
     }
 
@@ -127,66 +209,59 @@ export default class EddyClient {
         return this._send('unidentify');
     }
 
-    join(roomId) {
-        return this._send('room_join', { room_id: parseInt(roomId, 10) });
+    join(roomId: number) {
+        return this._send('room_join', { room_id: roomId });
     }
 
-    leave(roomId) {
-        return this._send('room_leave', { room_id: parseInt(roomId, 10) });
+    leave(roomId: number) {
+        return this._send('room_leave', { room_id: roomId });
     }
 
-    getRoomInfo(roomId) {
-        return this._send('room_info', { room_id: parseInt(roomId, 10) });
+    getRoomInfo(roomId: number) {
+        return this._send('room_info', { room_id: roomId });
     }
 
-    chat(roomId, message) {
-        return this._send('chat', { room_id: parseInt(roomId, 10), message: message });
+    chat(roomId: number, message: string) {
+        return this._send('chat', { room_id: roomId, message: message });
     }
 
-    pin(roomId, message) {
-        return this._send('pin', { room_id: parseInt(roomId, 10), message: message });
+    pin(roomId: number, message: string) {
+        return this._send('pin', { room_id: roomId, message: message });
     }
 
-    unpin(roomId) {
-        return this._send('unpin', { room_id: parseInt(roomId, 10)});
+    unpin(roomId: number) {
+        return this._send('unpin', { room_id: roomId });
     }
 
-    bookmark(roomId) {
-        return this._send('bookmark', { room_id: parseInt(roomId, 10)})
+    bookmark(roomId: number) {
+        return this._send('bookmark', { room_id: roomId })
     }
 
-    unbookmark(roomId) {
-        return this._send('unbookmark', { room_id: parseInt(roomId, 10)})
+    unbookmark(roomId: number) {
+        return this._send('unbookmark', { room_id: roomId })
     }
 
-    ban(roomId, username) {
-        return this._send('ban', { room_id: parseInt(roomId, 10), username: username });
+    ban(roomId: number, username: string) {
+        return this._send('ban', { room_id: roomId, username: username });
     }
 
-    unban(roomId, username) {
-        return this._send('unban', { room_id: parseInt(roomId, 10), username: username });
+    unban(roomId: number, username: string) {
+        return this._send('unban', { room_id: roomId, username: username });
     }
-
-
-    /*****************
-     * Private methods
-     *****************/
 
     // Message sending and receiving
 
-    _send(type, data) {
+    private _send(type: EddySendType, data?: object) {
         return new Promise((resolve, reject) => {
             // Increment message id; each message should have
             // a unique id.
             this.messageId += 1;
 
             // Define payload object.
-            let payload = { 
+            let payload: EddySendPayload = { 
                 id: this.messageId,
-                type
-            }
-            if (data) {
-                payload.data = data;
+                type,
+                data
             }
 
             // Store callback in dictionary of outgoing messages.
@@ -198,30 +273,30 @@ export default class EddyClient {
 
             // TODO: wrap in second promise? to send queue messages sequentially
             let sendMessage = () => {
-                this.client.send(JSON.stringify(payload), { binary: true }, (err) => {
-                    // If there is a connection error,
-                    // catch it here and delete callback.
-                    if (err) {
-                        delete this.outgoingMessages[this.messageId];
-                        reject(err);
-                    }
-                });
+                this.client.send(JSON.stringify(payload));
             }
 
             if (this.client.readyState !== 1) {
                 this.messageQueue.unshift(sendMessage);
             } else {
-                // DEBUG!
-                // if (type === 'chat') {
-                //     setTimeout(() => sendMessage(), 1000);
-                //     return;
-                // }
                 sendMessage();
             }
         })  
     }
 
-    _handleInRoomMessage(payload) {
+    private _handleResponseMessage(payload: EddyResponsePayload) {
+        let callback = this.outgoingMessages[payload.id]
+        if (typeof callback === 'function') {
+            if (payload.ok) {
+                callback(null, payload.data);
+            } else {
+                callback(new EddyError(payload.error), null);
+            }
+        }
+        delete this.outgoingMessages[payload.id];
+    }
+
+    private _handleInRoomMessage(payload: EddyInRoomReceivePayload) {
         let data = payload.data;
         let roomId = data.room_id;
 
@@ -267,31 +342,19 @@ export default class EddyClient {
         }
     }
 
-    _handleMessage(payload) {
+    private _handleMessage(payload: EddyReceivePayload) {
         if (payload.type === "activity_event") 
         {
             this.dispatch(receiveActivityEvent())
         }
     }
 
-    _handleResponseMessage(payload) {
-        let callback = this.outgoingMessages[payload.id]
-        if (typeof callback === 'function') {
-            if (payload.ok) {
-                callback(null, payload.data);
-            } else {
-                callback(new EddyError(payload.error));
-            }
-        }
-        delete this.outgoingMessages[payload.id];
-    }
-
 
     // Connection logic
 
-    _sendPing() {
+    private _sendPing() {
         var pingPromise = this._send("ping");
-        this._pongTimeoutId = setTimeout(() => {
+        this.pongTimeoutId = setTimeout(() => {
             if (!pingPromise.isFulfilled()) {
                 // pong has not responded in a timely manner
                 // we assume the worst, and attempt to reconnect
@@ -300,22 +363,22 @@ export default class EddyClient {
         }, PONG_TIMEOUT);
     }
 
-    _reconnect(attempts, baseDelayTime) {
+    private _reconnect(attempts: number, baseDelayTime: number): Promise<any> {
         return this.connect()
             .bind(this)
             .then(() => {
-                // client needs to re-identify and 
-                // join any rooms they were
-                // in before they were disconnected
+                // client needs to re-identify and join any rooms 
+                // they were in before they were disconnected
                 // TODO: actually stream reconnection support on eddy
-                let currentUser = new CurrentUser(this.getState())
-                if (currentUser.isLoggedIn()) {
-                    this.dispatch(identifyEddy(currentUser.get('token')))
+
+                const state = this.getState()
+                if (CurrentUser.isLoggedIn(state)) {
+                    this.dispatch(identifyEddy(CurrentUser.get(state, 'token')))
                 }
 
-                let loadedRooms = Room.loadedRooms(this.getState())
-                loadedRooms.forEach((room) => {
-                    this.dispatch(joinRoom(room.id))
+                let loadedRooms = Room.loadedRoomIds(this.getState())
+                loadedRooms.forEach((roomId) => {
+                    this.dispatch(joinRoom(roomId))
                 });
             })
             .catch((e) => {
@@ -330,14 +393,13 @@ export default class EddyClient {
             });
     }
 
-    _clear() {
+    private _clear() {
         if (this.client && this.client.readyState !== 3) {
             this.client.close();
         }
-        this.client = null;
-        clearInterval(this._pingId);
-        clearTimeout(this._pongTimeoutId);
-        clearTimeout(this._connectTimeoutId);
+        clearInterval(this.pingId);
+        clearTimeout(this.pongTimeoutId);
+        clearTimeout(this.connectTimeoutId);
         this.messageId = 0;
         this.outgoingMessages = {};
         this.messageQueue = [];
