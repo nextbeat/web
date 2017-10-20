@@ -1,18 +1,41 @@
-import assign from 'lodash/assign'
+import assign from 'lodash-es/assign'
 import { normalize } from 'normalizr'
-import format from 'date-fns/format'
+import * as format from 'date-fns/format'
+import * as Promise from 'bluebird'
 
-import EddyClient from '../eddy'
-import { ActionTypes, Status } from '../actions'
-import { joinRoom, leaveRoom, reconnectEddy, getRoomInfo, startRoomTimer, triggerAuthError } from '../actions'
-import { Eddy, CurrentUser, Room } from '../models'
-import Schemas from '../schemas'
+// import EddyClient from '../eddy'
+// import { ActionTypes, Status } from '../actions'
+// import { joinRoom, leaveRoom, reconnectEddy, getRoomInfo, startRoomTimer, triggerAuthError } from '../actions'
+// import { Eddy, CurrentUser, Room } from '../models'
+// import Schemas from '../schemas'
 
-function _wrapAction(store, next, action) {
+import { Store, Dispatch } from '@types'
+import { Status, Action, GenericAction, ActionType } from '@actions/types' 
+
+interface WrapOptions {
+    successCallback?: WrapCallback
+    failureCallback?: WrapCallback
+}
+
+interface WrapCallback {
+    (action: GenericAction, client: any, data: any): void
+}
+
+interface WrapFn {
+    (action: GenericAction, client: any): Promise<object>
+}
+
+interface Wrap {
+    (fn: WrapFn, options: WrapOptions): void
+}
+
+function wrapAction(store: Store, next: Dispatch, action: Action): Wrap {
     let eddy = new Eddy(store.getState());
     let client = eddy.get('client');
 
-    let actionWith = (status, data) => assign({}, action, { status }, data)
+    function actionWith (status: Status, data?: {[key: string]: any}): GenericAction {
+        return assign({}, action, { status }, data)
+    }
 
     return (fn, { successCallback, failureCallback } = {}) => {
 
@@ -328,61 +351,55 @@ function receiveBookmarkUpdate(store, next, action) {
     return next(assign({}, action, { response }))
 }
 
-function receiveNotification(store, next, action) {
-    return next(action);
-}
-
-export default store => next => action => {
-    let wrap = _wrapAction(store, next, action)
+export default (store: Store) => (next: Dispatch) => (action: Action) => {
+    let wrap = wrapAction(store, next, action)
     switch (action.type) {
-        case ActionTypes.CONNECT_EDDY:
+        case ActionType.CONNECT_EDDY:
             return connect(store, next, action);
-        case ActionTypes.RECONNECT_EDDY:
+        case ActionType.RECONNECT_EDDY:
             return reconnect(store, next, action);
-        case ActionTypes.DISCONNECT_EDDY:
+        case ActionType.DISCONNECT_EDDY:
             return disconnect(store, next, action);
-        case ActionTypes.IDENTIFY_EDDY:
+        case ActionType.IDENTIFY_EDDY:
             return wrapIdentify(store, next, action);
-        case ActionTypes.UNIDENTIFY_EDDY:
+        case ActionType.UNIDENTIFY_EDDY:
             return wrap(unidentify);
-        case ActionTypes.JOIN_ROOM:
+        case ActionType.JOIN_ROOM:
             return wrapJoin(store, next, action);
-        case ActionTypes.LEAVE_ROOM:
+        case ActionType.LEAVE_ROOM:
             return wrapLeave(store, next, action);
-        case ActionTypes.ROOM_INFO:
+        case ActionType.ROOM_INFO:
             return wrapRoomInfo(store, next, action);
-        case ActionTypes.SEND_COMMENT:
+        case ActionType.SEND_COMMENT:
             return wrapSendComment(store, next, action);
-        case ActionTypes.PIN_COMMENT:
+        case ActionType.PIN_COMMENT:
             return wrapPinComment(store, next, action);
-        case ActionTypes.UNPIN_COMMENT:
+        case ActionType.UNPIN_COMMENT:
             return wrap(unpinComment);
-        case ActionTypes.BOOKMARK:
+        case ActionType.BOOKMARK:
             return wrapBookmark(store, next, action);
-        case ActionTypes.UNBOOKMARK:
+        case ActionType.UNBOOKMARK:
             return wrapUnbookmark(store, next, action);
-        case ActionTypes.BAN_USER:
+        case ActionType.BAN_USER:
             return wrap(ban);
-        case ActionTypes.UNBAN_USER:
+        case ActionType.UNBAN_USER:
             return wrap(unban);
-        case ActionTypes.ROOM:
+        case ActionType.ROOM:
             return loadRoom(store, next, action)
-        case ActionTypes.CLEAR_ROOM:
+        case ActionType.CLEAR_ROOM:
             return clearRoom(store, next, action)
-        case ActionTypes.RECEIVE_COMMENT:
+        case ActionType.RECEIVE_COMMENT:
             return receiveComment(store, next, action)
-        case ActionTypes.RECEIVE_PINNED_COMMENT:
+        case ActionType.RECEIVE_PINNED_COMMENT:
             return receivePinnedComment(store, next, action)
-        case ActionTypes.RECEIVE_MEDIA_ITEM:
+        case ActionType.RECEIVE_MEDIA_ITEM:
             return receiveMediaItem(store, next, action)
-        case ActionTypes.RECEIVE_NOTIFICATION_COMMENT:
+        case ActionType.RECEIVE_NOTIFICATION_COMMENT:
             return receiveNotificationComment(store, next, action)
-        case ActionTypes.RECEIVE_ROOM_CLOSED:
+        case ActionType.RECEIVE_ROOM_CLOSED:
             return receiveRoomClosed(store, next, action)
-        case ActionTypes.RECEIVE_BOOKMARK_UPDATE:
+        case ActionType.RECEIVE_BOOKMARK_UPDATE:
             return receiveBookmarkUpdate(store, next, action)
-        case ActionTypes.RECEIVE_NOTIFICATION:
-            return receiveNotification(store, next, action)
         default:
             return next(action);
     }

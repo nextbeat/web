@@ -1,6 +1,5 @@
 import { List, Map } from 'immutable'
-import { createSelector } from 'reselect'
-import createCachedSelector from 're-reselect'
+import { createSelector } from '@models/utils'
 
 import { StateModelFactory, State } from '../base'
 import Stack from '@models/entities/stack'
@@ -15,7 +14,7 @@ interface SectionProps {
 
     stacksFetching: string
     stacksError: string
-    stackIds: List<Stack>
+    stackIds: List<number>
 }
 
 // todo: merge in common keys?
@@ -36,12 +35,13 @@ const keyMapPrefix = ['pages', 'section']
 
 export default class Section extends StateModelFactory<SectionProps>(keyMap, keyMapPrefix) {
 
-    static stacks = createCachedSelector(
-        (state: State) => Section.get(state, 'stackIds'),
-        (state: State) => state.get('entities'),
-        (ids, entities) => ids.map(id => new Stack(id, entities))
+    static stacks = createSelector(
+        (state: State) => {
+            let stackIds = Section.get(state, 'stackIds');
+            return stackIds.map(id => new Stack(id, state.get('entities')))
+        }
     )(
-        (ids, entities) => ids.map(id => id.toString()).join('_')
+        (state: State) => Section.get(state, 'stackIds')
     )
 
     static isLoaded(state: State): boolean {

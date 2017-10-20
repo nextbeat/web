@@ -1,195 +1,79 @@
 import { Map, List, fromJS } from 'immutable'
-import { createSelector } from 'reselect'
-import createCachedSelector from 're-reselect'
 
 export type State = Map<string, any>
 
-function StateModelFactory<Props>(
-    keyMap: {[key in keyof Props]: string[]}, 
-    keyMapPrefix: string[],
-    entityName?: string
-) {
 
-    class StateModel {
-        static get<K extends keyof Props>(state: State, key: K, defaultValue?: Props[K]): Props[K] {
-            return state.getIn(this.keyPath(key), defaultValue)
-        }
+type Selector<R> = (state: State, ...args: any[]) => R
+type Resolver<R> = (state: State, ...args: any[]) => R
 
-        // static getEntity(state: State, id: string): State | null {
-        //     if (!entityName) {
-        //         return null
-        //     }
-        //     return state.getIn(['entities', entityName, id]) || null
-        // }
+type OutputSelector<R> = (keyResolver: Resolver<string|number>, hashResolver: Resolver<any>) => OutputSelectorResult<R>
 
-        static getEntity = createSelector(
-            (state: State) => {
-                let id = StateModel.get(state, 'id' as keyof Props) as any as number
-                return state.getIn(['entities', entityName as string, id.toString()]) as State
-            },
-            (entity) => ({ entity: entity }) // todo: entity class wrapper
-        )
+type OutputSelectorResult<R> = Selector<R> & {
+    removeKey: (state: State, ...args: any[]) => void
+}
 
-        // static getPaginatedEntities(state: State, key: string): List<State> | null {
-        //     const keyPath = keyMapPrefix.concat(['pagination', key, 'ids'])
-        //     const ids = state.getIn(keyPath, List()) as List<number>
-        //     return ids.map(id => {
-        //         // todo: static getEntity for pagination key
-        //         return this.getEntity(state, id.toString()) as State
-        //     })
-        // }
+export function createSelector<R>(func: Selector<R>): OutputSelector<R> {
 
-        protected static keyPath(key: keyof Props): string[] {
-            let path = keyMap[key]
-            if (keyMapPrefix.length > 0) {
-                path = keyMapPrefix.concat(path)
+    return (keyResolver: Resolver<string|number>, hashResolver: Resolver<any>) => {
+
+        let hashes: any = {}
+        let results: any = {}
+
+        let selector = function memoize(state: State, ...args: any[]): R {
+            let key = keyResolver(state, ...args)
+            let hash = hashResolver(state, ...args)
+            console.log(key, hash, hashes, results)
+            if (hashes[key] !== hash) {
+                results[key] = func(state, ...args)
             }
-            return path
+            hashes[key] = hash
+            return results[key] as R 
+        } as OutputSelectorResult<R>
+
+        selector.removeKey = (state: State, ...args: any[]) => {
+            let key = keyResolver(state, ...args)
+            delete hashes[key]
+            delete results[key]
         }
+
+        return selector 
     }
-
-    return StateModel
-}
-
-
-// Section
-
-interface SectionProps {
-    isFetching: boolean
-    name: string
-}
-
-let sectionKeyMap = {
-    // meta
-    'isFetching': ['meta', 'isFetching'],
-    'name': ['meta', 'name'],
-}
-
-let sectionKeyMapPrefix = ['pages', 'section']
-
-class Section extends StateModelFactory<SectionProps>(sectionKeyMap, sectionKeyMapPrefix) {
     
-    static getPrettyName = createSelector(
-        (state: State) => Section.get(state, 'name'),
-        (name) => ({ name: `~${name}~` })
-    )
-
 }
-
-
-// Room
-
-interface RoomProps {
-    title: string,
-    commentIds: List<number>
-}
-
-let roomKeyMap: {[key in keyof RoomProps]: string[]} = {
-    'title': ['title'],
-    'commentIds': ['pagination', 'comments', 'ids']
-}
-
-class Room {
-
-    static getComments = createCachedSelector(
-        (state: State, id: number) => Room.get(state, id, 'commentIds', List()) as List<number>,
-        (ids) => ids.map(id => ({ comment: state.getIn(['entities', 'comments', id.toString()]).toJS() }) )
-    )(
-        (state, id) => `${id}-${Room.get(state, id, 'commentIds', List()).size}`
-    )
-
-    protected static keyPath(id: number, key: keyof RoomProps): string[] {
-        return ['rooms', id.toString()].concat(roomKeyMap[key])
-    }
-
-    static get<K extends keyof RoomProps>(state: State, id: number, key: K, defaultValue?: RoomProps[K]): RoomProps[K] {
-        return state.getIn(this.keyPath(id, key), defaultValue)
-    }
-
-}
-
-// Test
 
 let state = fromJS({
-    entities: {
-        comments: {
-            '1': {
-                message: 'foo'
-            },
-            '2': {
-                message: 'bar'
-            },
-            '3': {
-                message: 'qux'
-            },
-            '4': {
-                message: 'abc'
-            }
-        }
-    },
-    rooms: {
-        '1': {
-            title: 'New Room',
-            pagination: {
-                comments: {
-                    ids: [1, 2]
-                }
-            }
-        },
-        '2': {
-            pagination: {
-                comments: {
-                    ids: [3, 4]
-                }
-            }
-        }
-    },
-    pages: {
-        section: {
-            meta: {
-                isFetching: false,
-                name: 'featured'
-            }
-        }
+    foo: 1,
+    bar: {
+        qux: 'hello'
     }
 })
 
-console.log(Section.get(state, 'name'), Section.getPrettyName(state))
+const selector = createSelector(
+    state => ({ bar: `~~${state.getIn(['bar', 'qux'])}~~` })
+)(
+    state => state.get('foo') as number,
+    state => state.get('bar')
+)
 
-let c1 = Room.getComments(state, 1)
-let c2 = Room.getComments(state, 2)
-let c1b = Room.getComments(state, 1)
+let s1 = selector(state)
 
-console.log(Room.get(state, 1, 'title'), c1 === c2, c1 === c1b)
+console.log(s1)
 
-interface Type<T> {
-    new (...args: any[]): T;
-}
+let s2 = selector(state)
 
-/* static interface declaration */
-interface ComparableStatic<T> extends Type<Comparable<T>> {
-    compare(a: T, b: T): number;
-}
+console.log(s2 === s1)
 
-/* interface declaration */
-interface Comparable<T> {
-    compare(a: T): number;
-}
+state = state.set('foo', 2)
+let s3 = selector(state)
+console.log(s3 === s1)
 
-/* class decorator */
-function staticImplements<T>() {
-    return (constructor: T) => {}
-}
+state = state.set('foo', 1)
+let s4 = selector(state)
+console.log(s4 === s1)
 
-@staticImplements<ComparableStatic<TableCell>>()   /* this statement implements both normal interface & static interface */
-class TableCell { /* implements Comparable<TableCell> { */  /* not required. become optional */
-    value: number;
+state = state.setIn(['bar', 'qux'], 'goodbye')
+let s5 = selector(state)
+console.log(s5, s5 === s1)
 
-    compare(a: TableCell): number {
-        return this.value - a.value;
-    }
 
-    static compare(a: TableCell, b: TableCell): number {
-        return a.value - b.value;
-    }
-}
+

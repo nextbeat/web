@@ -34,7 +34,7 @@ export class EntityModel<Props> {
         return this.entity().toJS()
     }
 
-    protected entity(): State {
+    entity(): State {
         return this.entities.getIn([this.entityName, this.id.toString()], Map())
     }
 

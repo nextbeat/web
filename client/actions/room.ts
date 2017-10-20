@@ -1,63 +1,90 @@
 import { List, fromJS } from 'immutable'
 import { normalize } from 'normalizr'
 import { browserHistory } from 'react-router'
-import format from 'date-fns/format'
-import assign from 'lodash/assign'
+import * as format from 'date-fns/format'
+import assign from 'lodash-es/assign'
 
-import ActionTypes from './types'
-import Schemas from '../schemas'
-import { promptModal, triggerAuthError } from './app'
-import { pushSubscribe } from './push'
+// import ActionTypes from './types'
+// import Schemas from '../schemas'
+// import { promptModal, triggerAuthError } from './app'
+// import { pushSubscribe } from './push'
+// import { loadPaginatedObjects } from './utils'
+// import { selectDetailSection } from './pages/room'
+// import { Room, RoomPage, CurrentUser, MediaItemEntity, CommentEntity } from '../models'
+// import { API_CALL, API_CANCEL, GA, AnalyticsTypes, GATypes } from './types'
+// import { setStorageItem, generateUuid } from '../utils'
+
+import { ActionType, ApiCallAction, ApiCancelAction, GenericAction, ThunkAction, Pagination } from './types'
 import { loadPaginatedObjects } from './utils'
-import { selectDetailSection } from './pages/room'
-import { Room, RoomPage, CurrentUser, MediaItemEntity, CommentEntity } from '../models'
-import { API_CALL, API_CANCEL, GA, AnalyticsTypes, GATypes } from './types'
-import { setStorageItem, generateUuid } from '../utils'
+import * as Schemas from '@schemas'
 
 const COMMENTS_PAGE_SIZE = 40;
+
+export type RoomActionAll = 
+    RoomAction |
+    MediaItemsAction |
+    RoomInfoAction
 
 /**********
  * FETCHING
  **********/
 
-function fetchRoom(id) {
+interface RoomAction extends ApiCallAction {
+    type: ActionType.ROOM,
+    roomId: number
+}
+function fetchRoom(id: number): RoomAction {
     return {
-        type: ActionTypes.ROOM,
+        type: ActionType.ROOM,
         roomId: id,
-        [API_CALL]: {
-            schema: Schemas.STACK,
+        API_CALL: {
+            schema: Schemas.Stack,
             endpoint: `stacks/${id}`
         }
     }
 }
 
-export function loadRoom(id, { jumpToCommentAtDate } = {}) {
+interface LoadRoomOptions {
+    jumpToCommentAtDate?: number
+}
+export function loadRoom(id: number, options: LoadRoomOptions = {}): ThunkAction {
     return dispatch => {
         dispatch(fetchRoom(id))
         dispatch(loadMediaItems(id));
-        dispatch(loadComments(id, 'mostRecent', { jumpTo: jumpToCommentAtDate }));
+        dispatch(loadComments(id, 'mostRecent', { jumpTo: options.jumpToCommentAtDate }));
     }
 }
 
-function fetchMediaItems(roomId, pagination) {
+interface MediaItemsAction extends ApiCallAction {
+    type: ActionType.MEDIA_ITEMS
+    roomId: number
+}
+function fetchMediaItems(roomId: number, pagination: Pagination): MediaItemsAction {
     return {
-        type: ActionTypes.MEDIA_ITEMS,
+        type: ActionType.MEDIA_ITEMS,
         roomId,
-        [API_CALL]: {
-            schema: Schemas.MEDIA_ITEMS,
+        API_CALL: {
+            schema: Schemas.MediaItem,
             endpoint: `stacks/${roomId}/mediaitems`,
             pagination
         }
     }
 }
 
-export function loadMediaItems(roomId) {
-    return loadPaginatedObjects(['rooms', roomId, 'pagination', 'mediaItems'], fetchMediaItems.bind(this, roomId), "all");
+export function loadMediaItems(roomId: number) {
+    let keyPath = ['rooms', roomId.toString(), 'pagination', 'mediaItems']
+    let fetchFn = (pagination: Pagination) => fetchMediaItems(roomId, pagination)
+
+    return loadPaginatedObjects(keyPath, fetchFn, "all");
 }
 
-export function getRoomInfo(roomId) {
+interface RoomInfoAction extends GenericAction {
+    type: ActionType.ROOM_INFO
+    roomId: number
+}
+export function getRoomInfo(roomId: number): RoomInfoAction {
     return {
-        type: ActionTypes.ROOM_INFO,
+        type: ActionType.ROOM_INFO,
         roomId
     }
 }
@@ -65,15 +92,15 @@ export function getRoomInfo(roomId) {
 
 /* Comments */
 
-function goToComment(roomId, comment) {
+function goToComment(roomId: number, comment: object): ThunkAction {
     return dispatch => {
         dispatch({
-            type: ActionTypes.DESELECT_COMMENT,
+            type: ActionType.DESELECT_COMMENT,
             roomId
         })
         process.nextTick(() => {
             dispatch({
-                type: ActionTypes.GO_TO_COMMENT,
+                type: ActionType.GO_TO_COMMENT,
                 roomId,
                 comment
             })
@@ -124,7 +151,7 @@ function fetchComments(roomId, queries, options) {
     })
 }
 
-export function loadComments(roomId, direction, { jumpTo } = {}) {
+export function loadComments(roomId, direction, { jumpTo } = {}): ThunkAction {
     return (dispatch, getState) => {
         const room = new Room(roomId, getState())
         if (direction === 'before') {
@@ -152,7 +179,7 @@ export function loadComments(roomId, direction, { jumpTo } = {}) {
     }
 }
 
-export function jumpToComment(roomId, comment) {
+export function jumpToComment(roomId: number, comment: object): ThunkAction {
     return (dispatch, getState) => {
         const room = new Room(roomId, getState())
         if (room.hasLoadedComment(comment)) {
@@ -472,8 +499,6 @@ export function markStack(roomId, date) {
 /*******
  * RESET
  *******/
-
-// TODO: expand into clearRoom(?), clearMediaItems, clearComments
 
 export function clearComments(roomId) {
     return {

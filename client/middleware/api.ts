@@ -1,19 +1,21 @@
 import { join } from 'path'
-import assign from 'lodash/assign'
-import isEmpty from 'lodash/isEmpty'
-import format from 'date-fns/format'
-import fetch from 'isomorphic-fetch'
-import Promise from 'bluebird'
+import assign from 'lodash-es/assign'
+import isEmpty from 'lodash-es/isEmpty'
+import * as format from 'date-fns/format'
+import * as fetch from 'isomorphic-fetch'
+import * as Promise from 'bluebird'
 import { stringify } from 'querystring'
 import { normalize } from 'normalizr'
-import { Status, API_CALL, EntityUpdateStrategy } from '../actions'
-import { CurrentUser } from '../models'
-import { baseUrl } from '../utils'
-import { NotLoggedInError } from '../errors'
+
+import { Store, Dispatch } from '@types'
+import { Status, ApiCall, Pagination, ApiCallAction, GenericAction } from '@actions/types'
+import { CurrentUser } from '@models'
+import { baseUrl } from '@utils'
+import { NotLoggedInError } from '@errors'
 
 const API_ROOT = '/api/';
 
-function urlWithParams(endpoint, pagination, queries) {
+function urlWithParams(endpoint: string, pagination: Pagination, queries: any): string {
     let url = join(API_ROOT, endpoint);
     queries = queries || {};
 
@@ -22,7 +24,7 @@ function urlWithParams(endpoint, pagination, queries) {
             page: pagination.page,
             limit: pagination.limit,
         })
-        if (typeof before !== "undefined") {
+        if (typeof pagination.beforeDate !== "undefined") {
             queries.before = format(pagination.beforeDate)
         }
     }
@@ -34,12 +36,19 @@ function urlWithParams(endpoint, pagination, queries) {
     return `${baseUrl()}${url}`;
 }
 
-function fetchOptions(options, store) {
+interface FetchInit {
+    method: "GET" | "HEAD" | "PUT" | "POST" | "DELETE"
+    body?: string
+    headers: object
+    credentials: "same-origin"
+}
+
+function fetchOptions(options: ApiCall): FetchInit {
     let { 
         method="GET", 
         body={}
     } = options
-    method = method.toUpperCase()
+
     return {
         method,
         body: ["GET", "HEAD"].indexOf(method) === -1 ? JSON.stringify(body) : undefined, 
@@ -51,8 +60,8 @@ function fetchOptions(options, store) {
     }
 }
 
-function callApi(options, store, action) {
-    const { endpoint, schema, pagination, authenticated, queries, cancelOn } = options;
+function callApi(options: ApiCall, store: Store, action: ApiCallAction): Promise<[object, object]> {
+    const { endpoint, schema, pagination, authenticated, queries } = options;
     const url = urlWithParams(endpoint, pagination, queries);
     const currentUser = new CurrentUser(store.getState());
 
@@ -61,33 +70,34 @@ function callApi(options, store, action) {
     }
 
     // we wrap in a bluebird promise to give access to bluebird methods (e.g. delay)
-    return Promise.resolve().then(function() {
-            return fetch(url, fetchOptions(options, store))
-        }).then(response => {
-            return response.json()
-                .then( json => ({ json, response }))
-        })
-        // .delay(1000) // FOR DEBUG
-        .then(({ json, response }) => {
-            if (!response.ok) {
-                return Promise.reject(new Error(json.error));
-            }
-            if (typeof pagination !== 'undefined') {
-                return [assign({}, normalize(json.objects, schema), json.meta), json];
-            } else if (typeof schema !== 'undefined') {
-                return [normalize(json, schema), json];
-            } else {
-                return [json, json];
-            }
-        })
+    return Promise.resolve()
+    .then(function() {
+        return fetch(url, fetchOptions(options))
+    })
+    .then(response => {
+        return response.json().then( json => ({ json, response }))
+    })
+    // .delay(1000) // FOR DEBUG
+    .then(({ json, response }) => {
+        if (!response.ok) {
+            return Promise.reject(new Error(json.error));
+        }
+        if (typeof pagination !== 'undefined' && typeof schema !== 'undefined') {
+            return [assign({}, normalize(json.objects, schema), json.meta), json];
+        } else if (typeof schema !== 'undefined') {
+            return [normalize(json, schema), json];
+        } else {
+            return [json, json];
+        }
+    })
 }
 
 // A Redux middleware function which looks for actions
 // which call the API server and fetches the data
-export default store => next => action => {
+export default (store: Store) => (next: Dispatch) => (action: ApiCallAction) => {
 
-    const apiCall = action[API_CALL];
-    if (typeof apiCall === 'undefined') {
+    const apiCall = action.API_CALL;
+    if (!apiCall) {
         return next(action);
     }
 
@@ -102,9 +112,8 @@ export default store => next => action => {
     // dispatch action depending on success of the call
     const fetchPromise = callApi(apiCall, store, action)
 
-    function actionWith(data) {
+    function actionWith(data: { status: Status, [key: string]: any }): ApiCallAction {
         var newAction = assign({}, action, data, { fetchPromise });
-        delete newAction[API_CALL];
         return newAction;
     }
 
@@ -130,7 +139,6 @@ export default store => next => action => {
 
         })
         .catch(error => {
-            console.log(error)
             return next(actionWith({
                 status: Status.FAILURE,
                 error: error
@@ -139,9 +147,10 @@ export default store => next => action => {
 
     // dispatch action which asserts request is being made
     // include fetch promise so we can cancel it if need be
-    let requestData = { status: Status.REQUESTING }
-    if (pagination) requestData.pagination = pagination
-    next(actionWith(requestData));
-    
+    let requestData: any = { status: Status.REQUESTING }
+    if (pagination) {
+        requestData.pagination = pagination
+    }
 
+    next(actionWith(requestData));
 }

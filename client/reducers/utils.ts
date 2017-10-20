@@ -1,7 +1,7 @@
 import { Map, List, Record } from 'immutable'
 import mapValues from 'lodash-es/mapValues'
 
-import { Action, ActionTypeKey, ApiCallAction, ApiCancelAction } from '@actions/types'
+import { Action, ActionType, ApiCallAction, ApiCancelAction, Status } from '@actions/types'
 import { State, Reducer } from '@types'
 
 export function combineReducers(reducers: {[key: string]: Reducer}): Reducer {
@@ -13,17 +13,17 @@ const defaultPaginationState = Map({
     isFetching: false
 })
 
-export function paginate(type: ActionTypeKey, clearType?: ActionTypeKey): Reducer {
+export function paginate(type: ActionType, clearType?: ActionType): Reducer {
 
     return function(state=defaultPaginationState, action: ApiCallAction | ApiCancelAction) {
         if (action.type === type) {
             switch (action.status) {
-                case "requesting":
+                case Status.REQUESTING:
                     return state.merge({
                         isFetching: true,
                         beforeDate: action.pagination.beforeDate
                     });
-                case "success":
+                case Status.SUCCESS:
                     return state.merge({
                         isFetching: false,
                         hasFetched: true,
@@ -32,7 +32,7 @@ export function paginate(type: ActionTypeKey, clearType?: ActionTypeKey): Reduce
                         page: action.response.page,
                         limit: action.response.limit
                     });
-                case "failure":
+                case Status.FAILURE:
                     return state.merge({
                         isFetching: false,
                         error: 'Failed to load.'
@@ -45,21 +45,21 @@ export function paginate(type: ActionTypeKey, clearType?: ActionTypeKey): Reduce
     }
 }
 
-export function entity(type: ActionTypeKey): Reducer {
+export function entity(type: ActionType): Reducer {
 
     return function(state: State, action: ApiCallAction) {
         if (action.type === type) {
             switch (action.status) {
-                case "requesting":
+                case Status.REQUESTING:
                     return state.merge({
                         isFetching: true
                     })
-                case "success":
+                case Status.SUCCESS:
                     return state.merge({
                         isFetching: false,
                         id: action.response.result
                     })
-                case "failure":
+                case Status.FAILURE:
                     return state.merge({
                         isFetching: false,
                         error: 'Failed to load.'

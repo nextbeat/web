@@ -18,7 +18,8 @@
             "@models/*": ["client/models/*"],
             "@reducers/*": ["client/reducers/*"],
             "@schemas": ["client/schemas"],
-            "@types": ["client/types"]
+            "@types": ["client/types"],
+            "@utils": ["client/utils"]
         },
         "sourceMap": true,
         "strictNullChecks": true,

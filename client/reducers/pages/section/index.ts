@@ -1,6 +1,6 @@
 import { Map } from 'immutable'
 
-import { ActionType, Action } from '@actions/types'
+import { ActionType, Action, Status } from '@actions/types'
 import { State, Reducer } from '@types'
 import { 
     combineReducers, 
@@ -12,7 +12,7 @@ import {
 let meta: Reducer = (state, action) => {
     state = entity(ActionType.SECTION)(state, action).delete('id')
     // add extra info to meta state
-    if (action.type === ActionType.SECTION && action.status === "success") {
+    if (action.type === ActionType.SECTION && action.status === Status.SUCCESS) {
         return state.merge(action.rawResponse.section)
     }
     return state
