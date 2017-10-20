@@ -5,7 +5,9 @@ import { State } from '@types'
 
 interface StackProps {
     author: number
+    bookmarked: boolean
     closed: boolean
+    deleted: boolean
     description: string
     hid: string
     id: number

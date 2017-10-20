@@ -9,7 +9,7 @@ import { normalize } from 'normalizr'
 
 import { Store, Dispatch } from '@types'
 import { Status, ApiCall, Pagination, ApiCallAction, GenericAction } from '@actions/types'
-import { CurrentUser } from '@models'
+import CurrentUser from '@models/state/currentUser'
 import { baseUrl } from '@utils'
 import { NotLoggedInError } from '@errors'
 
@@ -63,9 +63,8 @@ function fetchOptions(options: ApiCall): FetchInit {
 function callApi(options: ApiCall, store: Store, action: ApiCallAction): Promise<[object, object]> {
     const { endpoint, schema, pagination, authenticated, queries } = options;
     const url = urlWithParams(endpoint, pagination, queries);
-    const currentUser = new CurrentUser(store.getState());
 
-    if (authenticated && !currentUser.isLoggedIn()) {
+    if (authenticated && CurrentUser.isLoggedIn(store.getState())) {
         return Promise.reject(new NotLoggedInError());
     }
 

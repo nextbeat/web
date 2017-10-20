@@ -3,14 +3,13 @@ import { Map, List } from 'immutable'
 import { createSelector } from 'reselect'
 import { entityClass } from '@models/entities/base'
 
-export type State = Map<string, any>
+import { State } from '@types'
 
 /**
- * Base model class, used to access data in the state tree
+ * Base model class factory, used to access data in the state tree
  * so that the organization of the state tree is abstracted
  * away in other files.
  */
-
 export function StateModelFactory<Props>(
     keyMap: {[key in keyof Props]: string[]}, 
     keyMapPrefix: string[],
@@ -22,6 +21,10 @@ export function StateModelFactory<Props>(
             return state.getIn(this.keyPath(key), defaultValue)
         }
 
+        static has<K extends keyof Props>(state: State, key: K): boolean {
+            return state.hasIn(this.keyPath(key))
+        }
+
         static getEntity(state: State): State | null {
             let id = this.get(state, 'id' as keyof Props)
             if (!id) {
@@ -29,15 +32,6 @@ export function StateModelFactory<Props>(
             }
             return state.getIn(['entities', entityName as string, id.toString()]) as State
         }
-
-        // static getPaginatedEntities(state: State, key: string): List<State> | null {
-        //     const keyPath = keyMapPrefix.concat(['pagination', key, 'ids'])
-        //     const ids = state.getIn(keyPath, List()) as List<number>
-        //     return ids.map(id => {
-        //         // todo: static getEntity for pagination key
-        //         return this.getEntity(state, id.toString()) as State
-        //     })
-        // }
 
         protected static keyPath(key: keyof Props): string[] {
             let path = keyMap[key]

@@ -5,16 +5,6 @@ import * as format from 'date-fns/format'
 import assign from 'lodash-es/assign'
 import values from 'lodash-es/values'
 
-// import ActionTypes from './types'
-// import Schemas from '../schemas'
-// import { promptModal, triggerAuthError } from './app'
-// import { pushSubscribe } from './push'
-// import { loadPaginatedObjects } from './utils'
-// import { selectDetailSection } from './pages/room'
-// import { Room, RoomPage, CurrentUser, MediaItemEntity, CommentEntity } from '../models'
-// import { API_CALL, API_CANCEL, GA, AnalyticsTypes, GATypes } from './types'
-// import { setStorageItem, generateUuid } from '../utils'
-
 import { Store, Dispatch } from '@types' 
 import { 
     ActionType, 
@@ -29,6 +19,7 @@ import { triggerAuthError } from '@actions/app'
 import { loadPaginatedObjects } from '@actions/utils'
 import Comment from '@models/entities/comment'
 import Room, { FetchDirection } from '@models/state/room'
+import CurrentUser from '@models/state/currentUser'
 import * as Schemas from '@schemas'
 
 const COMMENTS_PAGE_SIZE = 40;
@@ -275,12 +266,10 @@ export function sendComment(roomId: number, message: string): ThunkAction {
             return null;
         }
 
-        let currentUser = new CurrentUser(getState())
-
-        if (!currentUser.isLoggedIn()) {
+        if (!CurrentUser.isLoggedIn(getState())) {
             return dispatch(triggerAuthError())
         } else {
-            let username = currentUser.get('username')
+            let username = CurrentUser.entity(getState()).get('username')
             let temporaryId = generateUuid()
             let createdAt = new Date()
             return dispatch(performSendComment({ message, roomId, username, temporaryId, createdAt }));

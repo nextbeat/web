@@ -4,10 +4,11 @@ import { EntityModel, ResourceSizeType } from './base'
 import { State } from '@types'
 
 interface UserProps {
+    cover_image_url: string
+    id: number
+    profpic_url: string
+    subscriber_count: number
     username: string
-
-    cover_image_url?: string
-    profpic_url?: string
 }
 
 export default class User extends EntityModel<UserProps> {

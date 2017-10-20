@@ -12,7 +12,6 @@ const actionTypesToIgnore = [
     ActionTypes.RESIZE,
     ActionTypes.USE_CHAT,
     ActionTypes.PROLONG_CHAT_SESSION,
-    ActionTypes.ANALYTICS,
     ActionTypes.HAS_NAVIGATED,
 ]
 

@@ -12,6 +12,18 @@ export enum Status {
 
 export type AnalyticsType = 'event' | 'page' | 'identify'
 
+export enum AnalyticsEventType {
+    SESSION_START = 'SESSION_START',
+    SESSION_STOP = 'SESSION_STOP',
+    VIDEO_IMPRESSION = 'VIDEO_IMPRESSION'
+}
+
+export enum AnalyticsSessionType {
+    APP = 'APP',
+    STACK = 'STACK',
+    CHAT = 'CHAT'
+}
+
 export interface Pagination {
     page: number
     limit: number | "all"
@@ -37,10 +49,14 @@ export interface ApiCancel {
 
 export interface AnalyticsCall {
     type: AnalyticsType
-    category: string
-    action: string
-    label: string | number
+    category?: string
+    action?: string
+    label?: string | number
+    callback?: () => void
+    userId?: number
+    [key: string]: any // metrics and dimensions. todo: keyof
 }
+
 
 export interface GenericAction extends AnyAction {
     type: ActionType
@@ -104,6 +120,10 @@ export enum ActionType {
     RECEIVE_BOOKMARK_UPDATE = 'RECEIVE_BOOKMARK_UPDATE',
     RECEIVE_ROOM_MARKED = 'RECEIVE_ROOM_MARKED',
 
+    /* GOOGLE ANALYTICS */
+    GA = 'GA',
+    LOG_VIDEO_IMPRESSION = 'LOG_VIDEO_IMPRESSION',
+ 
     /* NOTIFICATIONS */
     ACTIVITY = 'ACTIVITY',
     CLEAR_NOTIFICATIONS = 'CLEAR_NOTIFICATIONS',
@@ -130,62 +150,64 @@ export enum ActionType {
     CLEAR_COMMENTS = 'CLEAR_COMMENTS',
     CLEAR_ROOM = 'CLEAR_ROOM',
 
+    /* USER */
+    LOGIN = 'LOGIN',
+    LOGOUT = 'LOGOUT',
+    SIGNUP = 'SIGNUP',
+    CLEAR_LOGIN_SIGNUP = 'CLEAR_LOGIN_SIGNUP',
+    SYNC_STACKS = 'SYNC_STACKS',
+    UPDATE_USER = 'UPDATE_USER',
+    CLEAR_EDIT_PROFILE = 'CLEAR_EDIT_PROFILE',
+    BOOKMARKED_STACKS = 'BOOKMARKED_STACKS',
+    CLEAR_CLOSED_BOOKMARKED_STACKS = 'CLEAR_CLOSED_BOOKMARKED_STACKS',
+    SUBSCRIPTIONS = 'SUBSCRIPTIONS',
+    SUBSCRIBE = 'SUBSCRIBE',
+    UNSUBSCRIBE = 'UNSUBSCRIBE',
+
+    /* PUSH */
+    PUSH_INITIALIZE = 'PUSH_INITIALIZE',
+    PUSH_SUBSCRIBE = 'PUSH_SUBSCRIBE',
+    PUSH_UNSUBSCRIBE = 'PUSH_UNSUBSCRIBE',
+    PUSH_SYNC_SUBSCRIPTION = 'PUSH_SYNC_SUBSCRIPTION',
+
+    /*********
+     * PAGES *
+     *********/
+
     /* SECTION */
     SECTION = 'SECTION',
-    CLEAR_SECTION = 'CLEAR_SECTION'
+    CLEAR_SECTION = 'CLEAR_SECTION',
+
+    /*********
+     * OTHER *
+     *********/
+
+    ENTITY_UPDATE = 'ENTITY_UPDATE',
+    CLEAR_FETCH = 'CLEAR_FETCH'
 }
 
 import { AppActionAll } from './app'
 import { EddyActionAll } from './eddy'
+import { GAActionAll } from './ga'
 import { NotificationActionAll } from './notifications'
+import { PushActionAll } from './push'
 import { RoomActionAll } from './room'
+import { UserActionAll } from './user'
+
 import { SectionActionAll } from './pages/section'
 
 export type Action = 
     AppActionAll |
     EddyActionAll |
+    GAActionAll |
     NotificationActionAll |
+    PushActionAll |
     RoomActionAll |
-    SectionActionAll
+    UserActionAll |
+    SectionActionAll 
 
 
 /* DEPRECATED */
-
-// export const Status = {
-//     REQUESTING: 'REQUESTING',
-//     SUCCESS: 'SUCCESS',
-//     FAILURE: 'FAILURE',
-// }
-
-// export const API_CALL = 'API_CALL';
-// export const API_CANCEL = 'API_CANCEL';
-
-// export const GA = 'GA';
-// export const GATypes = {
-//     IDENTIFY: 'IDENTIFY',
-//     PAGE: 'PAGE',
-//     EVENT: 'EVENT'
-// }
-
-// export const AnalyticsTypes = {
-//     SESSION_START: 'SESSION_START',
-//     SESSION_STOP: 'SESSION_STOP',
-//     VIDEO_IMPRESSION: 'VIDEO_IMPRESSION'
-// }
-
-// export const AnalyticsSessionTypes = {
-//     APP: 'APP',
-//     CHAT: 'CHAT',
-//     STACK: 'STACK'
-// }
-
-// export const PushTypes = {
-//     UNSUPPORTED: 'UNSUPPORTED',
-//     DENIED: 'DENIED',
-//     SUBSCRIBED: 'SUBSCRIBED',
-//     UNSUBSCRIBED: 'UNSUBSCRIBED',
-//     ERROR: 'ERROR'
-// }
 
 // export const UploadTypes = {
 //     MEDIA_ITEM: 'MEDIA_ITEM',
@@ -301,49 +323,4 @@ export type Action =
 //     UPDATE_NEW_MEDIA_ITEM: 'UPDATE_NEW_MEDIA_ITEM',
 //     SUBMIT_STACK_REQUEST: 'SUBMIT_STACK_REQUEST',
 //     REFERENCED_COMMENT: 'REFERENCED_COMMENT',
-
-//     /******
-//      * USER
-//      ******/
-
-//     LOGIN: 'LOGIN',
-//     LOGOUT: 'LOGOUT',
-//     SIGNUP: 'SIGNUP',
-//     CLEAR_LOGIN_SIGNUP: 'CLEAR_LOGIN_SIGNUP',
-//     SYNC_STACKS: 'SYNC_STACKS',
-//     UPDATE_USER: 'UPDATE_USER',
-//     CLEAR_EDIT_PROFILE: 'CLEAR_EDIT_PROFILE',
-//     BOOKMARKED_STACKS: 'BOOKMARKED_STACKS',
-//     CLEAR_CLOSED_BOOKMARKED_STACKS: 'CLEAR_CLOSED_BOOKMARKED_STACKS',
-//     SUBSCRIPTIONS: 'SUBSCRIPTIONS',
-//     SUBSCRIBE: 'SUBSCRIBE',
-//     UNSUBSCRIBE: 'UNSUBSCRIBE',
-
-//     /******
-//      * PUSH
-//      ******/
-
-//     PUSH_INITIALIZE: 'PUSH_INITIALIZE',
-//     PUSH_SUBSCRIBE: 'PUSH_SUBSCRIBE',
-//     PUSH_UNSUBSCRIBE: 'PUSH_UNSUBSCRIBE',
-//     PUSH_SYNC_SUBSCRIPTION: 'PUSH_SYNC_SUBSCRIPTION',
-
-//     /***********
-//      * ANALYTICS
-//      ***********/
-
-//     START_NEW_SESSION: 'START_NEW_SESSION',
-//     SEND_PENDING_EVENTS: 'SEND_PENDING_EVENTS',
-//     LOG_VIDEO_IMPRESSION: 'LOG_VIDEO_IMPRESSION',
-//     PROLONG_CHAT_SESSION:'PROLONG_CHAT_SESSION',
-
-//     /*******
-//      * OTHER
-//      *******/
-
-//     ENTITY_UPDATE: 'ENTITY_UPDATE',
-//     CLEAR_FETCH: 'CLEAR_FETCH',
-//     ANALYTICS: 'ANALYTICS',
-//     GA: 'GA'
-// }
 

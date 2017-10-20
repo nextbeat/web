@@ -19,15 +19,15 @@ export default class MediaItem extends EntityModel<MediaItemProps> {
         return new Stack(this.get('stack', 0), this.entities)
     }
 
-    video(preferredSize: ResourceSizeType) {
+    video(preferredSize?: ResourceSizeType) {
         return this.getResource('videos', preferredSize)
     }   
 
-    image(preferredSize: ResourceSizeType) {
+    image(preferredSize?: ResourceSizeType) {
         return this.getResource('images', preferredSize)
     }
 
-    thumbnail(preferredSize: ResourceSizeType) {
+    thumbnail(preferredSize?: ResourceSizeType) {
         // default to the largest thumbnail
         let defaultKeyFn = (thumbnails: State) => {
             let orderedThumbnails = thumbnails.sort((a, b) => a.get('width') > b.get('width') ? 1 : -1)

@@ -6,6 +6,7 @@ import Stack from '@models/entities/stack'
 import MediaItem from '@models/entities/mediaItem'
 import Comment from '@models/entities/comment'
 import User from '@models/entities/user'
+import CurrentUser from '@models/state/currentUser'
 
 // import TemporaryCommentEntity from '../entities/temporary/comment'
 
@@ -229,120 +230,23 @@ export default class Room {
     }
 
     static isCurrentUserAuthor(state: State, id: number): boolean {
-        // TODO: implement!
-        return false
+        if (!CurrentUser.isLoggedIn(state)) {
+            return false
+        }
+        return this.author(state).get('username') === CurrentUser.entity(state).get('username')
     }
 
     static isBookmarked(state: State, id: number): boolean {
-        // TODO: implement!
-        return false
+        if (!CurrentUser.isLoggedIn(state)) {
+            return false
+        }
+        return this.entity(state, id).get('bookmarked') || CurrentUser.bookmarkedStackIds(state).indexOf(id) > -1
     }
 
-
+    // TODO
 }
 
-// export default class Room_ extends StateModel {
 
-//     constructor(id, state) {
-//         super(state);
-
-//         this.id = id;
-//         this.keyMap = KEY_MAP;
-//         this.keyMapPrefix = ['rooms', this.id];
-//         this.entityName = 'stacks';
-//     }
-
-//     entity() {
-//         return new StackEntity(this.id, this.state.get('entities'))
-//     }
-
-//     /**
-//      * Properties
-//      */
-
-//     static memoizedComments(id, state) {
-//         return memoizedComments.get(id, state)
-//     }
-
-//     static flushComments() {
-//         return memoizedComments.flush()
-//     }
-
-//     author() {
-//         return this.entity().author()
-//     }
-
-//     mediaItems() {
-//         return this.__getPaginatedEntities('mediaItems', { entityClass: MediaItemEntity })
-//     }
-
-//     selectedMediaItem() {
-//         return new MediaItemEntity(this.get('selectedMediaItemId', 0), this.state.get('entities'))
-//     }
-
-//     liveMediaItems() {
-//         return this.get('liveMediaItemIds', List()).map(id => new MediaItemEntity(id, this.state.get('entities')))
-//     }
-
-//     allMediaItems() {
-//         return this.mediaItems().concat(this.liveMediaItems())
-//     }
-
-//     comments() {
-//         return this.constructor.memoizedComments(this.id, this.state)
-//     }
-
-//     latestComments() {
-//         return this.get('latestCommentIds', List()).map(id => new CommentEntity(id, this.state.get('entities')))
-//     }
-
-//     liveComments() {
-//         return this.get('liveCommentIds', List()).map(id => new CommentEntity(id, this.state.get('entities')))
-//     }
-
-//     submittingComments() {
-//         return this.get('submittingComments', List()).map(comment => new TemporaryCommentEntity(comment))
-//     }
-
-//     failedComments() {
-//         return this.get('failedComments', List()).map(comment => new TemporaryCommentEntity(comment))
-//     }
-
-//     pinnedComment() {
-//         if (!this.get('pinnedCommentId')) {
-//             return null;
-//         }
-//         return new CommentEntity(this.get('pinnedCommentId'), this.state.get('entities'))
-//     }
-
-//     thumbnail(preferredType) {
-//         return this.entity().thumbnail(preferredType)
-//     }
-
-//     /**
-//      * Queries
-//      */
-
-//     status() {
-//         return this.get('closed') ? "closed" : "open"
-//     }
-
-//     isBookmarked() {
-//         const currentUser = new CurrentUser(this.state);
-//         if (!currentUser.isLoggedIn()) {
-//             return false;
-//         }
-//         const bookmarkIds = currentUser.get('openBookmarkIds', List()).concat(currentUser.get('closedBookmarkIds', List()))
-//         return this.get('bookmarked') || bookmarkIds.indexOf(this.get('id')) !== -1;
-//     }
-
-//     currentUserIsAuthor() {
-//         const currentUser = new CurrentUser(this.state);
-//         if (!currentUser.isLoggedIn()) {
-//             return false;
-//         }
-//         return this.author().get('username') === currentUser.get('username');
-//     }
 
 //     indexOfSelectedMediaItem() {
 //         const selectedId = this.get('selectedMediaItemId', -1)

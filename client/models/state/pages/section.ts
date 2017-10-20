@@ -1,7 +1,8 @@
 import { List, Map } from 'immutable'
-import { createSelector } from '@models/utils'
 
-import { StateModelFactory, State } from '../base'
+import { State } from '@types'
+import { createSelector } from '@models/utils'
+import { StateModelFactory } from '@models/state/base'
 import Stack from '@models/entities/stack'
 
 // todo: merge in common props?
