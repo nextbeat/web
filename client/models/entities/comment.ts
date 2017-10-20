@@ -6,6 +6,8 @@ import { State } from '@types'
 
 interface CommentProps {
     author: number
+    created_at: string
+    id: number
     message: string
     stack: number
 }

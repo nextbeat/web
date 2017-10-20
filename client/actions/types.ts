@@ -10,6 +10,8 @@ export enum Status {
     FAILURE = 'FAILURE'
 } 
 
+export type AnalyticsType = 'event' | 'page' | 'identify'
+
 export interface Pagination {
     page: number
     limit: number | "all"
@@ -33,6 +35,13 @@ export interface ApiCancel {
     actionTypes: string[]
 }
 
+export interface AnalyticsCall {
+    type: AnalyticsType
+    category: string
+    action: string
+    label: string | number
+}
+
 export interface GenericAction extends AnyAction {
     type: ActionType
     status?: Status
@@ -40,10 +49,16 @@ export interface GenericAction extends AnyAction {
 
 export interface ApiCallAction extends GenericAction {
     API_CALL: ApiCall
+    response?: object
+    rawResponse?: object
 }
 
 export interface ApiCancelAction extends GenericAction {
     API_CANCEL: ApiCancel
+}
+
+export interface AnalyticsAction extends GenericAction {
+    GA: AnalyticsCall
 }
 
 export type ThunkAction = ReduxThunkAction<void, any, never>
@@ -104,9 +119,9 @@ export enum ActionType {
     BAN_USER = 'BAN_USER',
     UNBAN_USER = 'UNBAN_USER',
     USE_CHAT = 'USE_CHAT',
-    DID_PLAY_VIDEO = 'DID_PLAY_VIDEO',
     BOOKMARK = 'BOOKMARK',
     UNBOOKMARK = 'UNBOOKMARK',
+    DID_PLAY_VIDEO = 'DID_PLAY_VIDEO',
     SELECT_MEDIA_ITEM = 'SELECT_MEDIA_ITEM',
     RECORD_VIEW = 'RECORD_VIEW',
     GO_TO_COMMENT = 'GO_TO_COMMENT',

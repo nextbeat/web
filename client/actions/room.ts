@@ -3,6 +3,7 @@ import { normalize } from 'normalizr'
 import { browserHistory } from 'react-router'
 import * as format from 'date-fns/format'
 import assign from 'lodash-es/assign'
+import values from 'lodash-es/values'
 
 // import ActionTypes from './types'
 // import Schemas from '../schemas'
@@ -14,8 +15,20 @@ import assign from 'lodash-es/assign'
 // import { API_CALL, API_CANCEL, GA, AnalyticsTypes, GATypes } from './types'
 // import { setStorageItem, generateUuid } from '../utils'
 
-import { ActionType, ApiCallAction, ApiCancelAction, GenericAction, ThunkAction, Pagination } from './types'
-import { loadPaginatedObjects } from './utils'
+import { Store, Dispatch } from '@types' 
+import { 
+    ActionType, 
+    ApiCallAction, 
+    ApiCancelAction, 
+    AnalyticsAction,
+    GenericAction, 
+    ThunkAction, 
+    Pagination 
+} from '@actions/types'
+import { triggerAuthError } from '@actions/app'
+import { loadPaginatedObjects } from '@actions/utils'
+import Comment from '@models/entities/comment'
+import Room, { FetchDirection } from '@models/state/room'
 import * as Schemas from '@schemas'
 
 const COMMENTS_PAGE_SIZE = 40;
@@ -23,7 +36,21 @@ const COMMENTS_PAGE_SIZE = 40;
 export type RoomActionAll = 
     RoomAction |
     MediaItemsAction |
-    RoomInfoAction
+    RoomInfoAction |
+    CommentsAction |
+    SendCommentAction |
+    PinCommentAction |
+    UnpinCommentAction |
+    BanUserAction |
+    UnbanUserAction |
+    UseChatAction |
+    BookmarkAction |
+    UnbookmarkAction |
+    DidPlayVideoAction |
+    SelectMediaItemAction |
+    MarkStackAction |
+    ClearCommentsAction |
+    ClearRoomAction
 
 /**********
  * FETCHING
@@ -45,7 +72,7 @@ function fetchRoom(id: number): RoomAction {
 }
 
 interface LoadRoomOptions {
-    jumpToCommentAtDate?: number
+    jumpToCommentAtDate?: number // date in seconds
 }
 export function loadRoom(id: number, options: LoadRoomOptions = {}): ThunkAction {
     return dispatch => {
@@ -108,16 +135,18 @@ function goToComment(roomId: number, comment: object): ThunkAction {
     }
 }
 
-function commentClosestToDate(date, response) {
+function commentClosestToDate(date: number, response: any) {
     let comments = response.entities.comments
 
-    let comment = Object.values(comments)
+    let comment = values(comments)
         .filter(c => c.type === "message")
-        .sort((a, b) => Math.abs(+(new Date(a.created_at)-date*1000)) - Math.abs(+(new Date(b.created_at)-date*1000)))[0]
-    return new CommentEntity(parseInt(comment.id, 10), fromJS(response.entities))
+        .sort((a, b) => Math.abs(
+            (new Date(a.created_at)).getTime()-date*1000) - Math.abs((new Date(b.created_at)).getTime()-date*1000)
+        )[0]
+    return new Comment(parseInt(comment.id, 10), fromJS(response.entities))
 }
 
-function onFetchCommentSuccess(store, next, action, response) {
+function onFetchCommentSuccess(store: Store, next: Dispatch, action: CommentsAction, response: any) {
     if (action.fetchType === 'around') {
         let comment = action.comment
         if (!comment) {
@@ -130,16 +159,28 @@ function onFetchCommentSuccess(store, next, action, response) {
         const queries = {
             around: action.jumpTo
         }
-        store.dispatch(fetchComments(action.roomId, queries, { fetchType: 'around', date: action.jumpTo }))
+        store.dispatch(fetchComments(action.roomId, queries, { fetchType: 'around', jumpTo: action.jumpTo }))
     }
 }
 
-function fetchComments(roomId, queries, options) {
-    return assign({}, options, {
-        type: ActionTypes.COMMENTS,
+interface FetchCommentsOptions {
+    fetchType: FetchDirection
+    jumpTo?: number
+}
+interface CommentsAction extends ApiCallAction {
+    type: ActionType.COMMENTS
+    roomId: number
+    fetchType: FetchDirection
+    jumpTo?: number
+}
+function fetchComments(roomId: number, queries: any, options: FetchCommentsOptions): CommentsAction {
+    return {        
+        type: ActionType.COMMENTS,
         roomId,
-        [API_CALL]: {
-            schema: Schemas.COMMENTS,
+        fetchType: options.fetchType,
+        jumpTo: options.jumpTo,
+        API_CALL: {
+            schema: Schemas.Comments,
             endpoint: `stacks/${roomId}/comments`,
             pagination: {
                 limit: COMMENTS_PAGE_SIZE,
@@ -148,47 +189,49 @@ function fetchComments(roomId, queries, options) {
             queries,
             onSuccess: onFetchCommentSuccess
         }
-    })
+    }
 }
 
-export function loadComments(roomId, direction, { jumpTo } = {}): ThunkAction {
+interface LoadCommentsOptions {
+    jumpTo?: number // date in seconds
+}
+export function loadComments(roomId: number, direction: FetchDirection, options: LoadCommentsOptions = {}): ThunkAction {
     return (dispatch, getState) => {
-        const room = new Room(roomId, getState())
+        const state = getState()
         if (direction === 'before') {
-            if (room.get('hasReachedOldestComment')) {
+            if (Room.get(state, roomId, 'hasReachedOldestComment')) {
                 return null;
             }
             const queries = {
-                before: room.comments().last().get('created_at')
+                before: (Room.comments(state, roomId).last() as Comment).get('created_at')
             }
             return dispatch(fetchComments(roomId, queries, { fetchType: 'before' }));
         } else if (direction === 'after') {
-            if (room.get('hasReachedLatestComment')) {
+            if (Room.get(state, roomId, 'hasReachedLatestComment')) {
                 return null;
             }
             const queries = {
-                after: room.comments().first().get('created_at')
+                after: (Room.comments(state, roomId).first() as Comment).get('created_at')
             }
             return dispatch(fetchComments(roomId, queries, { fetchType: 'after' }));
         } else if (direction === 'mostRecent') {
             const queries = {
                 before: format(Date.now())
             };
-            return dispatch(fetchComments(roomId, queries, { fetchType: 'mostRecent', jumpTo }));
+            return dispatch(fetchComments(roomId, queries, { fetchType: 'mostRecent', jumpTo: options.jumpTo }));
         }
     }
 }
 
-export function jumpToComment(roomId: number, comment: object): ThunkAction {
+export function jumpToComment(roomId: number, comment: Comment): ThunkAction {
     return (dispatch, getState) => {
-        const room = new Room(roomId, getState())
-        if (room.hasLoadedComment(comment)) {
+        if (Room.hasLoadedComment(getState(), roomId, comment)) {
             dispatch(goToComment(roomId, comment))
         } else {
             const queries = {
                 around: (new Date(comment.get('created_at'))).getTime() / 1000
             }
-            dispatch(fetchComments(roomId, queries, { fetchType: 'around', comment }))
+            dispatch(fetchComments(roomId, queries, { fetchType: 'around', jumpTo: queries.around }))
         }
     }
 }
@@ -198,24 +241,34 @@ export function jumpToComment(roomId: number, comment: object): ThunkAction {
  * CHAT
  ******/
 
-function performSendComment({ roomId, message, username, temporaryId, createdAt }) {
+interface SendCommentOptions {
+    roomId: number,
+    temporaryId: number,
+    message: string,
+    username: string,
+    createdAt: Date
+}
+interface SendCommentAction extends AnalyticsAction, SendCommentOptions {
+    type: ActionType.SEND_COMMENT
+}
+function performSendComment(options: SendCommentOptions): SendCommentAction {
     return {
-        type: ActionTypes.SEND_COMMENT,
-        temporaryId,
-        roomId,
-        message,
-        username,
-        createdAt,
-        [GA]: {
-            type: GATypes.EVENT,
+        type: ActionType.SEND_COMMENT,
+        temporaryId: options.temporaryId,
+        roomId: options.roomId,
+        message: options.message,
+        username: options.username,
+        createdAt: options.createdAt,
+        GA: {
+            type: 'event',
             category: 'chat',
             action: 'send',
-            label: roomId
+            label: options.roomId
         }
     }
 }
 
-export function sendComment(roomId, message) {
+export function sendComment(roomId: number, message: string): ThunkAction {
     return (dispatch, getState) => {
 
         if (!message || message.trim().length === 0) {
@@ -230,111 +283,132 @@ export function sendComment(roomId, message) {
             let username = currentUser.get('username')
             let temporaryId = generateUuid()
             let createdAt = new Date()
-            let comment = { roomId, message, username, temporaryId, createdAt }
-            return dispatch(performSendComment(comment));
+            return dispatch(performSendComment({ message, roomId, username, temporaryId, createdAt }));
         }
     }
 }
 
-export function resendComment(roomId, comment) {
+// TODO: define TemporaryComment
+export function resendComment(roomId: number, comment: any): SendCommentAction {
     let newComment = {
         roomId,
         message: comment.get('message'),
         username: comment.get('username'),
-        temporary_id: comment.get('temporary_id'),
-        created_at: new Date()
+        temporaryId: comment.get('temporary_id'),
+        createdAt: new Date()
     }
     return performSendComment(newComment)
 }
 
-function performPinComment(roomId, message) {
+interface PinCommentAction extends GenericAction {
+    type: ActionType.PIN_COMMENT
+    roomId: number
+    message: string
+}
+function performPinComment(roomId: number, message: string): PinCommentAction {
     return {
-        type: ActionTypes.PIN_COMMENT,
+        type: ActionType.PIN_COMMENT,
         roomId,
         message
     }
 }
 
-export function pinComment(roomId, message) {
+export function pinComment(roomId: number, message: string): ThunkAction {
     return (dispatch, getState) => {
 
         if (!message || message.trim().length === 0) {
             return null;
         }
 
-        const room = new Room(roomId, getState())
-        if (!room.currentUserIsAuthor()) {
+        if (!Room.isCurrentUserAuthor(getState(), roomId)) {
             return null;
         }
+
         dispatch(performPinComment(roomId, message))
     }
 }
 
-function performUnpinComment(roomId) {
+interface UnpinCommentAction extends GenericAction {
+    type: ActionType.UNPIN_COMMENT
+    roomId: number
+}
+function performUnpinComment(roomId: number): UnpinCommentAction {
     return {
-        type: ActionTypes.UNPIN_COMMENT,
+        type: ActionType.UNPIN_COMMENT,
         roomId
     }
 }
 
-export function unpinComment(roomId) {
+export function unpinComment(roomId: number): ThunkAction {
     return (dispatch, getState) => {
-        const room = new Room(roomId, getState())
-        if (!room.currentUserIsAuthor()) {
+        if (!Room.isCurrentUserAuthor(getState(), roomId)) {
             return null;
         }
         dispatch(performUnpinComment(roomId))
     }
 }
 
-function performBanUser(roomId, username) {
+interface BanUserAction extends GenericAction {
+    type: ActionType.BAN_USER
+    roomId: number
+    username: string
+}
+function performBanUser(roomId: number, username: string): BanUserAction {
     return {
-        type: ActionTypes.BAN_USER,
+        type: ActionType.BAN_USER,
         roomId,
         username
     }
 }
 
-export function banUser(roomId, username) {
+export function banUser(roomId: number, username: string): ThunkAction {
     return (dispatch, getState) => {
-        const room = new Room(roomId, getState())
-        if (!room.currentUserIsAuthor()) {
+        const state = getState()
+        if (!Room.isCurrentUserAuthor(state, roomId)) {
             return null;
         }
-        if (room.userIsBanned(username)) {
+        if (Room.isUserBanned(state, roomId, username)) {
             return null;
         }
         dispatch(performBanUser(roomId, username))
     }
 }
 
-function performUnbanUser(roomId, username) {
+interface UnbanUserAction extends GenericAction {
+    type: ActionType.UNBAN_USER
+    roomId: number
+    username: string
+}
+function performUnbanUser(roomId: number, username: string): UnbanUserAction {
     return {
-        type: ActionTypes.UNBAN_USER,
+        type: ActionType.UNBAN_USER,
         roomId,
         username
     }
 }
 
-export function unbanUser(roomId, username) {
+export function unbanUser(roomId: number, username: string): ThunkAction {
     return (dispatch, getState) => {
-        const room = new Room(roomId, getState())
-        if (!room.currentUserIsAuthor()) {
+        const state = getState()
+        if (!Room.isCurrentUserAuthor(state, roomId)) {
             return null;
         }
-        if (!room.userIsBanned(username)) {
+        if (!Room.isUserBanned(state, roomId, username)) {
             return null;
         }
         dispatch(performUnbanUser(roomId, username))
     }
 }
 
-export function didUseChat() {
+interface UseChatAction extends GenericAction {
+    type: ActionType.USE_CHAT
+}
+export function didUseChat(): UseChatAction {
     // Dispatch this action whenever the client interacts with
     // the chat in some way (scrolls, focuses on text box, etc)
     // which tells analytics tracker to prolong the chat session
     return {
-        type: ActionTypes.USE_CHAT
+        type: ActionType.USE_CHAT
     }
 }
 
@@ -342,28 +416,39 @@ export function didUseChat() {
  * BOOKMARKING
  *************/
 
-function performUnbookmark(roomId, stackStatus) {
+type StackStatus = 'open' | 'closed'
+
+interface UnbookmarkAction extends GenericAction {
+    type: ActionType.UNBOOKMARK
+    roomId: number
+    stackStatus: StackStatus
+}
+function performUnbookmark(roomId: number, stackStatus: StackStatus): UnbookmarkAction {
     return {
-        type: ActionTypes.UNBOOKMARK,
+        type: ActionType.UNBOOKMARK,
         roomId,
         stackStatus
     }
 }
 
-function performBookmark(roomId, stackStatus) {
+interface BookmarkAction extends GenericAction {
+    type: ActionType.BOOKMARK
+    roomId: number
+    stackStatus: StackStatus
+}
+function performBookmark(roomId: number, stackStatus: StackStatus): BookmarkAction {
     return {
-        type: ActionTypes.BOOKMARK,
+        type: ActionType.BOOKMARK,
         roomId,
         stackStatus
     }
 }
 
-export function bookmark(roomId) {
+export function bookmark(roomId: number): ThunkAction {
     return (dispatch, getState) => {
-
-        const room = new Room(roomId, getState())
-        const status = room.status()
-        if (room.isBookmarked() || room.currentUserIsAuthor()) {
+        const state = getState()
+        const status = Room.status(state, roomId)
+        if (Room.isBookmarked(state, roomId) || Room.isCurrentUserAuthor(state, roomId)) {
             return null;
         }
 
@@ -371,12 +456,11 @@ export function bookmark(roomId) {
     }
 }
 
-export function unbookmark(roomId) {
+export function unbookmark(roomId: number): ThunkAction {
     return (dispatch, getState) => {
-
-        const room = new Room(roomId, getState())
-        const status = room.status()
-        if (!room.isBookmarked() || room.currentUserIsAuthor()) {
+        const state = getState()
+        const status = Room.status(state, roomId)
+        if (!Room.isBookmarked(state, roomId) || Room.isCurrentUserAuthor(state, roomId)) {
             return null;
         }
         
@@ -389,13 +473,17 @@ export function unbookmark(roomId) {
  * PLAYBACK
  **********/
 
-export function didPlayVideo(roomId) {
+interface DidPlayVideoAction extends GenericAction {
+    type: ActionType.DID_PLAY_VIDEO
+    roomId: number
+}
+export function didPlayVideo(roomId: number) {
     // Dispatch this function when user plays
     // a video in the room. Used in the room card
     // to mark when a video has already been played
     // so we can set the autoplay flag.
     return {
-        type: ActionTypes.DID_PLAY_VIDEO,
+        type: ActionType.DID_PLAY_VIDEO,
         roomId
     }
 }
@@ -405,15 +493,24 @@ export function didPlayVideo(roomId) {
  * MEDIA ITEM SELECTION
  **********************/
 
-function performSelectMediaItem(roomId, id) {
+interface SelectMediaItemAction extends GenericAction {
+    type: ActionType.SELECT_MEDIA_ITEM
+    roomId: number
+    id: number
+}    
+function performSelectMediaItem(roomId: number, mediaItemId: number): SelectMediaItemAction {
     return {
-        type: ActionTypes.SELECT_MEDIA_ITEM,
+        type: ActionType.SELECT_MEDIA_ITEM,
         roomId,
-        id 
+        id: mediaItemId 
     }
 }
 
-export function selectMediaItem(roomId, id, { shouldUpdateHistory = true, shouldReplaceHistory = false } = {}) {
+interface SelectMediaItemOptions {
+    shouldUpdateHistory?: boolean
+    shouldReplaceHistory?: boolean
+}
+export function selectMediaItem(roomId: number, mediaItemId: number, { shouldUpdateHistory = true, shouldReplaceHistory = false }: SelectMediaItemOptions): ThunkAction {
     
     return (dispatch, getState) => {
 
@@ -438,22 +535,19 @@ export function selectMediaItem(roomId, id, { shouldUpdateHistory = true, should
             }
         }
 
-        return dispatch(performSelectMediaItem(roomId, id))
+        return dispatch(performSelectMediaItem(roomId, mediaItemId))
     }
 }
 
-function navigate(roomId, isForward) {
+function navigate(roomId: number, isForward: boolean): ThunkAction {
     return (dispatch, getState) => {
-        const room = new Room(roomId, getState())
-        let selectedId = room.get('selectedMediaItemId', -1)
+        const state = getState()
+        let selectedId = Room.get(state, roomId, 'selectedMediaItemId', -1)
         if (selectedId === -1) {
             return null;
         }
 
-        const paginatedIds = room.get('mediaItemIds', List())
-        const liveIds = room.get('liveMediaItemIds', List())
-        const ids = paginatedIds.concat(liveIds);
-        const selectedIndex = ids.indexOf(selectedId);
+        let selectedIndex = Room.indexOfMediaItemId(state, roomId, selectedId)
 
         if (selectedIndex == -1) {
             return null;
@@ -466,53 +560,59 @@ function navigate(roomId, isForward) {
         }
 
         const nextIndex = isForward ? selectedIndex+1 : selectedIndex-1;
-        selectedId = ids.get(nextIndex);
+        selectedId = Room.mediaItemIdAtIndex(state, roomId, nextIndex)
 
         return dispatch(selectMediaItem(roomId, selectedId, { shouldReplaceHistory: true }));
     }
 }
 
-export function goForward(roomId) {
+export function goForward(roomId: number) {
     return navigate(roomId, true);
 }
 
-export function goBackward(roomId) {
+export function goBackward(roomId: number) {
     return navigate(roomId, false);
 }
 
-function performMarkStack(roomId, date) {
+interface MarkStackAction extends ApiCallAction {
+    type: ActionType.MARK_STACK
+}
+export function markStack(roomId: number, date: Date): MarkStackAction {
     return {
-        type: ActionTypes.MARK_STACK,
-        [API_CALL]: {
+        type: ActionType.MARK_STACK,
+        API_CALL: {
             method: 'PUT',
             endpoint: `stacks/${roomId}/mark`,
-            queries: { ts: +date },
+            queries: { ts: date.getTime().toString() },
             authenticated: true
         }
     }
-}
-
-export function markStack(roomId, date) {
-    return performMarkStack(roomId, date)
 }
 
 /*******
  * RESET
  *******/
 
-export function clearComments(roomId) {
+interface ClearCommentsAction extends GenericAction {
+    type: ActionType.CLEAR_COMMENTS
+    roomId: number
+}
+export function clearComments(roomId: number): ClearCommentsAction {
     return {
-        type: ActionTypes.CLEAR_COMMENTS,
+        type: ActionType.CLEAR_COMMENTS,
         roomId
     }
 }
 
-export function clearRoom(roomId) {
+interface ClearRoomAction extends ApiCancelAction {
+    type: ActionType.CLEAR_ROOM
+}
+export function clearRoom(roomId: number): ClearRoomAction {
     return {
-        type: ActionTypes.CLEAR_ROOM,
+        type: ActionType.CLEAR_ROOM,
         roomId,
-        [API_CANCEL]: {
-            actionTypes: [ActionTypes.COMMENTS, ActionTypes.MEDIA_ITEMS, ActionTypes.ROOM]
+        API_CANCEL: {
+            actionTypes: [ActionType.COMMENTS, ActionType.MEDIA_ITEMS, ActionType.ROOM]
         }
     }
 }
