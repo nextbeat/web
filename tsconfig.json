@@ -13,6 +13,7 @@
             "@actions": ["client/actions"],
             "@actions/*": ["client/actions/*"],
             "@components/*": ["client/components/*"],
+            "@eddy": ["client/eddy"],
             "@errors": ["client/errors"],
             "@models": ["client/models"],
             "@models/*": ["client/models/*"],

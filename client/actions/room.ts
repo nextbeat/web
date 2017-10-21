@@ -47,7 +47,7 @@ export type RoomActionAll =
  * FETCHING
  **********/
 
-interface RoomAction extends ApiCallAction {
+export interface RoomAction extends ApiCallAction {
     type: ActionType.ROOM,
     roomId: number
 }
@@ -73,7 +73,7 @@ export function loadRoom(id: number, options: LoadRoomOptions = {}): ThunkAction
     }
 }
 
-interface MediaItemsAction extends ApiCallAction {
+export interface MediaItemsAction extends ApiCallAction {
     type: ActionType.MEDIA_ITEMS
     roomId: number
 }
@@ -96,7 +96,7 @@ export function loadMediaItems(roomId: number) {
     return loadPaginatedObjects(keyPath, fetchFn, "all");
 }
 
-interface RoomInfoAction extends GenericAction {
+export interface RoomInfoAction extends GenericAction {
     type: ActionType.ROOM_INFO
     roomId: number
 }
@@ -158,7 +158,7 @@ interface FetchCommentsOptions {
     fetchType: FetchDirection
     jumpTo?: number
 }
-interface CommentsAction extends ApiCallAction {
+export interface CommentsAction extends ApiCallAction {
     type: ActionType.COMMENTS
     roomId: number
     fetchType: FetchDirection
@@ -239,7 +239,7 @@ interface SendCommentOptions {
     username: string,
     createdAt: Date
 }
-interface SendCommentAction extends AnalyticsAction, SendCommentOptions {
+export interface SendCommentAction extends AnalyticsAction, SendCommentOptions {
     type: ActionType.SEND_COMMENT
 }
 function performSendComment(options: SendCommentOptions): SendCommentAction {
@@ -289,7 +289,7 @@ export function resendComment(roomId: number, comment: any): SendCommentAction {
     return performSendComment(newComment)
 }
 
-interface PinCommentAction extends GenericAction {
+export interface PinCommentAction extends GenericAction {
     type: ActionType.PIN_COMMENT
     roomId: number
     message: string
@@ -317,7 +317,7 @@ export function pinComment(roomId: number, message: string): ThunkAction {
     }
 }
 
-interface UnpinCommentAction extends GenericAction {
+export interface UnpinCommentAction extends GenericAction {
     type: ActionType.UNPIN_COMMENT
     roomId: number
 }
@@ -337,7 +337,7 @@ export function unpinComment(roomId: number): ThunkAction {
     }
 }
 
-interface BanUserAction extends GenericAction {
+export interface BanUserAction extends GenericAction {
     type: ActionType.BAN_USER
     roomId: number
     username: string
@@ -363,7 +363,7 @@ export function banUser(roomId: number, username: string): ThunkAction {
     }
 }
 
-interface UnbanUserAction extends GenericAction {
+export interface UnbanUserAction extends GenericAction {
     type: ActionType.UNBAN_USER
     roomId: number
     username: string
@@ -407,7 +407,7 @@ export function didUseChat(): UseChatAction {
 
 type StackStatus = 'open' | 'closed'
 
-interface UnbookmarkAction extends GenericAction {
+export interface UnbookmarkAction extends GenericAction {
     type: ActionType.UNBOOKMARK
     roomId: number
     stackStatus: StackStatus
@@ -420,7 +420,7 @@ function performUnbookmark(roomId: number, stackStatus: StackStatus): Unbookmark
     }
 }
 
-interface BookmarkAction extends GenericAction {
+export interface BookmarkAction extends GenericAction {
     type: ActionType.BOOKMARK
     roomId: number
     stackStatus: StackStatus
@@ -593,7 +593,7 @@ export function clearComments(roomId: number): ClearCommentsAction {
     }
 }
 
-interface ClearRoomAction extends ApiCancelAction {
+export interface ClearRoomAction extends ApiCancelAction {
     type: ActionType.CLEAR_ROOM
 }
 export function clearRoom(roomId: number): ClearRoomAction {

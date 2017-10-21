@@ -1,4 +1,5 @@
-import { GenericAction, ActionType } from './types'
+import { GenericAction, ActionType, Status } from '@actions/types'
+import EddyClient from '@eddy'
 
 export type EddyActionAll =
     ConnectEddyAction |
@@ -19,8 +20,10 @@ export type EddyActionAll =
     ReceiveActivityEventAction |
     ReceiveRoomMarkedAction
 
-interface ConnectEddyAction extends GenericAction {
+export interface ConnectEddyAction extends GenericAction {
     type: ActionType.CONNECT_EDDY
+    status?: Status
+    client?: EddyClient
 }
 export function connectEddy(): ConnectEddyAction {
     return {
@@ -28,7 +31,7 @@ export function connectEddy(): ConnectEddyAction {
     }
 }
 
-interface ReconnectEddyAction extends GenericAction {
+export interface ReconnectEddyAction extends GenericAction {
     type: ActionType.RECONNECT_EDDY
 }
 export function reconnectEddy(): ReconnectEddyAction  {
@@ -37,7 +40,7 @@ export function reconnectEddy(): ReconnectEddyAction  {
     }
 }
 
-interface DisconnectEddyAction extends GenericAction {
+export interface DisconnectEddyAction extends GenericAction {
     type: ActionType.DISCONNECT_EDDY
 }
 export function disconnectEddy(): DisconnectEddyAction {
@@ -46,7 +49,7 @@ export function disconnectEddy(): DisconnectEddyAction {
     }
 }
 
-interface IdentifyEddyAction extends GenericAction {
+export interface IdentifyEddyAction extends GenericAction {
     type: ActionType.IDENTIFY_EDDY
     token: string
 }
@@ -57,7 +60,7 @@ export function identifyEddy(token: string): IdentifyEddyAction {
     }
 }
 
-interface UnidentifyEddyAction extends GenericAction {
+export interface UnidentifyEddyAction extends GenericAction {
     type: ActionType.UNIDENTIFY_EDDY
 }
 export function unidentifyEddy(): UnidentifyEddyAction {
@@ -66,7 +69,7 @@ export function unidentifyEddy(): UnidentifyEddyAction {
     }
 }
 
-interface JoinRoomAction extends GenericAction {
+export interface JoinRoomAction extends GenericAction {
     type: ActionType.JOIN_ROOM
     roomId: number
 }
@@ -77,7 +80,7 @@ export function joinRoom(roomId: number): JoinRoomAction {
     }
 }
 
-interface LeaveRoomAction extends GenericAction {
+export interface LeaveRoomAction extends GenericAction {
     type: ActionType.LEAVE_ROOM
     roomId: number
 }
@@ -88,12 +91,12 @@ export function leaveRoom(roomId: number) {
     }
 }
 
-interface StartRoomTimerAction extends GenericAction {
+export interface StartRoomTimerAction extends GenericAction {
     type: ActionType.START_ROOM_TIMER
     roomId: number
-    timerId: number
+    timerId: NodeJS.Timer
 }
-export function startRoomTimer(roomId: number, timerId: number): StartRoomTimerAction {
+export function startRoomTimer(roomId: number, timerId: NodeJS.Timer): StartRoomTimerAction {
     return {
         type: ActionType.START_ROOM_TIMER,
         roomId,
@@ -106,12 +109,12 @@ export function startRoomTimer(roomId: number, timerId: number): StartRoomTimerA
  * RESPONSE HANDLERS
  *******************/
 
-interface ReceiveCommentAction extends GenericAction {
+export interface ReceiveCommentAction extends GenericAction {
     type: ActionType.RECEIVE_COMMENT
     roomId: number
-    comment: object
+    comment: any
 }
-export function receiveComment(roomId: number, comment: object): ReceiveCommentAction {
+export function receiveComment(roomId: number, comment: any): ReceiveCommentAction {
     return {
         type: ActionType.RECEIVE_COMMENT,
         roomId,
@@ -119,12 +122,12 @@ export function receiveComment(roomId: number, comment: object): ReceiveCommentA
     }
 }
 
-interface ReceivePinnedCommentAction extends GenericAction {
+export interface ReceivePinnedCommentAction extends GenericAction {
     type: ActionType.RECEIVE_PINNED_COMMENT
     roomId: number
-    comment: object
+    comment: any
 }
-export function receivePinnedComment(roomId: number, comment: object): ReceivePinnedCommentAction {
+export function receivePinnedComment(roomId: number, comment: any): ReceivePinnedCommentAction {
     return {
         type: ActionType.RECEIVE_PINNED_COMMENT,
         roomId,
@@ -132,7 +135,7 @@ export function receivePinnedComment(roomId: number, comment: object): ReceivePi
     }
 }
 
-interface ReceiveUnpinnedCommentAction extends GenericAction {
+export interface ReceiveUnpinnedCommentAction extends GenericAction {
     type: ActionType.RECEIVE_UNPINNED_COMMENT
     roomId: number
 }
@@ -143,12 +146,12 @@ export function receiveUnpinnedComment(roomId: number): ReceiveUnpinnedCommentAc
     }
 }
 
-interface ReceiveMediaItemAction extends GenericAction {
+export interface ReceiveMediaItemAction extends GenericAction {
     type: ActionType.RECEIVE_MEDIA_ITEM
     roomId: number
-    mediaItem: object
+    mediaItem: any
 }
-export function receiveMediaItem(roomId: number, mediaItem: object): ReceiveMediaItemAction {
+export function receiveMediaItem(roomId: number, mediaItem: any): ReceiveMediaItemAction {
     return {
         type: ActionType.RECEIVE_MEDIA_ITEM,
         roomId,
@@ -156,12 +159,12 @@ export function receiveMediaItem(roomId: number, mediaItem: object): ReceiveMedi
     }
 }
 
-interface ReceiveNotificationCommentAction extends GenericAction {
+export interface ReceiveNotificationCommentAction extends GenericAction {
     type: ActionType.RECEIVE_NOTIFICATION_COMMENT
     roomId: number
-    comment: object
+    comment: any
 }
-export function receiveNotificationComment(roomId: number, comment: object): ReceiveNotificationCommentAction {
+export function receiveNotificationComment(roomId: number, comment: any): ReceiveNotificationCommentAction {
     return {
         type: ActionType.RECEIVE_NOTIFICATION_COMMENT,
         roomId,
@@ -169,7 +172,7 @@ export function receiveNotificationComment(roomId: number, comment: object): Rec
     }
 }
 
-interface ReceiveRoomClosedAction extends GenericAction {
+export interface ReceiveRoomClosedAction extends GenericAction {
     type: ActionType.RECEIVE_ROOM_CLOSED
     roomId: number
 }
@@ -180,7 +183,7 @@ export function receiveRoomClosed(roomId: number): ReceiveRoomClosedAction {
     }
 }
 
-interface ReceiveBookmarkUpdateAction extends GenericAction {
+export interface ReceiveBookmarkUpdateAction extends GenericAction {
     type: ActionType.RECEIVE_BOOKMARK_UPDATE
     roomId: number
     count: number
@@ -193,7 +196,7 @@ export function receiveBookmarkUpdate(roomId: number, count: number): ReceiveBoo
     }
 }
 
-interface ReceiveActivityEventAction extends GenericAction {
+export interface ReceiveActivityEventAction extends GenericAction {
     type: ActionType.RECEIVE_ACTIVITY_EVENT
 }
 export function receiveActivityEvent(): ReceiveActivityEventAction {
@@ -202,7 +205,7 @@ export function receiveActivityEvent(): ReceiveActivityEventAction {
     }
 }
 
-interface ReceiveRoomMarkedAction extends GenericAction {
+export interface ReceiveRoomMarkedAction extends GenericAction {
     type: ActionType.RECEIVE_ROOM_MARKED
     roomId: number
     unreadCount: number

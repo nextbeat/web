@@ -21,7 +21,7 @@ interface RoomProps {
 
     isJoining: boolean
     joined: boolean
-    timerId: number // calls room_info every X seconds
+    timerId: NodeJS.Timer // calls room_info every X seconds
 
     selectedMediaItemId: number
     seenMediaItemIds: List<number>
