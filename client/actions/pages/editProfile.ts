@@ -1,39 +1,61 @@
-import assign from 'lodash/assign'
+import assign from 'lodash-es/assign'
 
-import ActionTypes from '../types'
-import { API_CALL, API_CANCEL } from '../types'
-import { CurrentUser, EditProfile } from '../../models'
+import { 
+    ActionType, 
+    ApiCallAction, 
+    ApiCancelAction,
+    GenericAction,
+    ThunkAction
+} from '@actions/types'
+import CurrentUser from '@models/state/currentUser'
+import EditProfile from '@models/state/pages/editProfile'
 
+export type EditProfileActionAll = 
+    EditProfileAction |
+    UpdateEditProfileAction |
+    SubmitEditProfileAction |
+    ClearEditProfileAction
 
 /******
  * LOAD
  ******/
 
-function performEditProfile(userId, userObject) {
+interface UserObject {
+    fullName?: string
+    uuid?: string
+    bio?: string
+    website?: string
+}
+export interface EditProfileAction extends GenericAction {
+    type: ActionType.EDIT_PROFILE
+    userId: number
+    userObject: UserObject
+}
+function performEditProfile(userId: number, userObject: UserObject): EditProfileAction {
     return {
-        type: ActionTypes.EDIT_PROFILE,
+        type: ActionType.EDIT_PROFILE,
         userId,
         userObject
     }
 }
 
-export function loadEditProfile() {
+export function loadEditProfile(): ThunkAction {
     return (dispatch, getState) => {
-        let currentUser = new CurrentUser(getState())
-        if (!currentUser.isLoggedIn()) {
+        const state = getState()
+        if (!CurrentUser.isLoggedIn(state)) {
             return null;
         }
 
         let userObject = {}
-        if (currentUser.get('hasUpdatedEntity')) {
+        if (CurrentUser.get(state, 'hasUpdatedEntity')) {
             assign(userObject, {
-                fullName: currentUser.get('full_name'),
-                bio: currentUser.get('description'),
-                website: currentUser.get('website_url')
+                fullName: CurrentUser.entity(state).get('full_name'),
+                bio: CurrentUser.entity(state).get('description'),
+                website: CurrentUser.entity(state).get('website_url')
             })
         }
 
-        return dispatch(performEditProfile(currentUser.get('id'), userObject))
+        return dispatch(performEditProfile(CurrentUser.get(state, 'id'), userObject))
     }
 }
 
@@ -42,17 +64,24 @@ export function loadEditProfile() {
  * UPDATE
  ********/
 
-export function updateEditProfile(fields) {
+export interface UpdateEditProfileAction extends GenericAction {
+    type: ActionType.UPDATE_EDIT_PROFILE
+    userObject: UserObject
+}
+export function updateEditProfile(fields: UserObject): UpdateEditProfileAction {
     return {
-        type: ActionTypes.UPDATE_EDIT_PROFILE,
+        type: ActionType.UPDATE_EDIT_PROFILE,
         userObject: fields
     }
 }
 
-function postSubmitEditProfile(userObject) {
+export interface SubmitEditProfileAction extends ApiCallAction {
+    type: ActionType.SUBMIT_EDIT_PROFILE
+}
+function postSubmitEditProfile(userObject: UserObject): SubmitEditProfileAction {
     return {
-        type: ActionTypes.SUBMIT_EDIT_PROFILE,
-        [API_CALL]: {
+        type: ActionType.SUBMIT_EDIT_PROFILE,
+        API_CALL: {
             method: 'PUT',
             endpoint: `users/${userObject.uuid}`,
             body: userObject
@@ -60,10 +89,10 @@ function postSubmitEditProfile(userObject) {
     }
 }
 
-export function submitEditProfile() {
+export function submitEditProfile(): ThunkAction {
     return (dispatch, getState) => {
-        let editProfile = new EditProfile(getState())
-        return dispatch(postSubmitEditProfile(editProfile.userSubmitObject()))
+        let submitObject = EditProfile.userSubmitObject(getState())
+        return dispatch(postSubmitEditProfile(submitObject))
     }
 }
 
@@ -72,11 +101,14 @@ export function submitEditProfile() {
  * CLEAR
  *******/
 
-export function clearEditProfile() {
+export interface ClearEditProfileAction extends ApiCancelAction {
+    type: ActionType.CLEAR_EDIT_PROFILE
+}
+export function clearEditProfile(): ClearEditProfileAction {
     return {
-        type: ActionTypes.CLEAR_EDIT_PROFILE,
-        [API_CANCEL]: {
-            actionTypes: [ActionTypes.SUBMIT_EDIT_PROFILE]
+        type: ActionType.CLEAR_EDIT_PROFILE,
+        API_CANCEL: {
+            actionTypes: [ActionType.SUBMIT_EDIT_PROFILE]
         }
     }
 }

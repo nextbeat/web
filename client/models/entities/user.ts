@@ -5,10 +5,14 @@ import { State } from '@types'
 
 interface UserProps {
     cover_image_url: string
+    description: string
+    full_name: string
     id: number
     profpic_url: string
     subscriber_count: number
     username: string
+    uuid: string
+    website_url: string
 }
 
 export default class User extends EntityModel<UserProps> {

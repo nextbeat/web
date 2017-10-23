@@ -271,6 +271,8 @@ import { RoomActionAll } from './room'
 import { UploadActionAll } from './upload'
 import { UserActionAll } from './user'
 
+import { EditProfileActionAll } from './pages/editProfile'
+import { EditRoomActionAll } from './pages/editRoom'
 import { HomeActionAll } from './pages/home'
 import { ProfileActionAll } from './pages/profile'
 import { RoomPageActionAll } from './pages/room'
@@ -287,6 +289,8 @@ export type Action =
     PushActionAll |
     RoomActionAll |
     UserActionAll |
+    EditProfileActionAll |
+    EditRoomActionAll |
     HomeActionAll |
     ProfileActionAll |
     RoomPageActionAll |

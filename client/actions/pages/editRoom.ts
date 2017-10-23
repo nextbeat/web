@@ -1,23 +1,41 @@
 import { normalize } from 'normalizr'
 import { List } from 'immutable'
 
-import ActionTypes from '../types'
-import Schemas from '../../schemas'
-import { Room, EditRoom, Upload } from '../../models'
-import { API_CALL, API_CANCEL, Status, UploadTypes } from '../types'
-import { syncStacks } from '../user'
-import { clearFileUpload } from '../upload'
+import { 
+    ActionType,
+    ApiCallAction,
+    ApiCancelAction,
+    GenericAction,
+    ThunkAction,
+    Status,
+    UploadType
+} from '@actions/types'
+import { syncStacks } from '@actions/user'
+import { clearFileUpload } from '@actions/upload'
+import Room from '@models/state/room'
+import EditRoom, { RoomFields } from '@models/state/pages/editRoom'
+import * as Schemas from '@schemas'
 
+export type EditRoomActionAll = 
+    EditRoomAction |
+    UpdateEditRoomAction |
+    UpdateTagsAction |
+    UpdateThumbnailAction |
+    UseDefaultThumbnailAction |
+    ClearEditRoomAction 
 
 /**********
  * FETCHING
  **********/
 
-function fetchEditRoom(hid) {
+export interface EditRoomAction extends ApiCallAction {
+    type: ActionType.EDIT_ROOM
+}
+function fetchEditRoom(hid: string): EditRoomAction {
     return {
-        type: ActionTypes.EDIT_ROOM,
-        [API_CALL]: {
-            schema: Schemas.STACK,
+        type: ActionType.EDIT_ROOM,
+        API_CALL: {
+            schema: Schemas.Stack,
             endpoint: `stacks/${hid}`,
             queries: { idAttribute: 'hid' },
         }
@@ -25,20 +43,20 @@ function fetchEditRoom(hid) {
 }
 
 // simulates a successful network call
-function editRoomLoaded(room) {
+function editRoomLoaded(room: any) {
     return {
-        type: ActionTypes.EDIT_ROOM,
+        type: ActionType.EDIT_ROOM,
         status: Status.SUCCESS,
-        response: normalize(room, Schemas.STACK)
+        response: normalize(room, Schemas.Stack)
     }
 }
 
-export function loadEditRoom(hid) {
+export function loadEditRoom(hid: string): ThunkAction {
     return (dispatch, getState) => {
-        let room = Room.roomWithHid(hid, getState())
-        if (room) {
+        let roomId = Room.idForHid(getState(), hid)
+        if (roomId > 0) {
             // room already loaded (e.g. navigated from room page)
-            dispatch(editRoomLoaded(room.entity().entityState().toJS()))
+            dispatch(editRoomLoaded(Room.entity(getState(), roomId).toJS()))
         } else {
             dispatch(fetchEditRoom(hid))
         }
@@ -50,41 +68,48 @@ export function loadEditRoom(hid) {
  * UPDATE
  ********/
 
-export function updateEditRoom(room) {
+export interface UpdateEditRoomAction extends GenericAction {
+    type: ActionType.UPDATE_EDIT_ROOM
+    room: RoomFields
+}
+export function updateEditRoom(room: RoomFields): UpdateEditRoomAction {
     return {
-        type: ActionTypes.UPDATE_EDIT_ROOM,
+        type: ActionType.UPDATE_EDIT_ROOM,
         room
     }
 }
 
-export function submitEditRoom() {
+export function submitEditRoom(): ThunkAction {
     return (dispatch, getState) => {
-        let editRoom = new EditRoom(getState())
-        if (!editRoom.isLoaded()) {
+        const state = getState()
+        if (!EditRoom.isLoaded(state)) {
             return
         }
 
-        let roomId = editRoom.get('id')
+        let roomId = EditRoom.get(state, 'id')
         let upload = new Upload(getState())
 
-        dispatch({ type: ActionTypes.SUBMIT_EDIT_ROOM })
-        dispatch(syncStacks('open', false, editRoom.stackForSubmission()))
+        dispatch({ type: ActionType.SUBMIT_EDIT_ROOM })
+        dispatch(syncStacks('open', false, EditRoom.stackForSubmission(state)))
 
-        dispatch(postUpdateTags(roomId, editRoom.get('roomFields').get('tags', List()).toJS()))
-        if (editRoom.get('useDefaultThumbnail')) {
+        dispatch(postUpdateTags(roomId, EditRoom.get(state, 'roomFields').get('tags', List()).toJS()))
+        if (EditRoom.get(state, 'useDefaultThumbnail')) {
             dispatch(postUpdateThumbnail(roomId, {}))
-        } else if (upload.hasFile(UploadTypes.THUMBNAIL)) {
+        } else if (upload.hasFile(UploadType.Thumbnail)) {
             dispatch(postUpdateThumbnail(roomId, {
-                url: upload.get(UploadTypes.THUMBNAIL, 'url')
+                url: upload.get(UploadType.Thumbnail, 'url')
             }))
         }
     }
 }
 
-function postUpdateTags(roomId, tags) {
+export interface UpdateTagsAction extends ApiCallAction {
+    type: ActionType.UPDATE_TAGS
+}
+function postUpdateTags(roomId: number, tags: string[]): UpdateTagsAction {
     return {
-        type: ActionTypes.UPDATE_TAGS,
-        [API_CALL]: {
+        type: ActionType.UPDATE_TAGS,
+        API_CALL: {
             method: 'POST',
             endpoint: `stacks/${roomId}/tags`,
             authenticated: true,
@@ -93,10 +118,13 @@ function postUpdateTags(roomId, tags) {
     }
 }
 
-function postUpdateThumbnail(roomId, thumbnail) {
+export interface UpdateThumbnailAction extends ApiCallAction {
+    type: ActionType.UPDATE_THUMBNAIL
+}
+function postUpdateThumbnail(roomId: number, thumbnail: any): UpdateThumbnailAction {
     return {
-        type: ActionTypes.UPDATE_THUMBNAIL,
-        [API_CALL]: {
+        type: ActionType.UPDATE_THUMBNAIL,
+        API_CALL: {
             method: 'POST',
             endpoint: `stacks/${roomId}/thumbnail`,
             authenticated: true,
@@ -105,13 +133,16 @@ function postUpdateThumbnail(roomId, thumbnail) {
     }
 }
 
-function fetchUseDefaultThumbnail(roomId) {
+export interface UseDefaultThumbnailAction extends ApiCallAction {
+    type: ActionType.USE_DEFAULT_THUMBNAIL
+}
+function fetchUseDefaultThumbnail(roomId: number): UseDefaultThumbnailAction {
     // Fetches most recent media item, 
     // so we can set it as the thumbnail on display
     return {
-        type: ActionTypes.USE_DEFAULT_THUMBNAIL,
-        [API_CALL]: {
-            schema: Schemas.MEDIA_ITEMS,
+        type: ActionType.USE_DEFAULT_THUMBNAIL,
+        API_CALL: {
+            schema: Schemas.MediaItems,
             endpoint: `stacks/${roomId}/mediaitems`,
             queries: {
                 order: 'desc'
@@ -123,14 +154,14 @@ function fetchUseDefaultThumbnail(roomId) {
     }
 }
 
-export function useDefaultThumbnail() {
+export function useDefaultThumbnail(): ThunkAction {
     return (dispatch, getState) => {
-        let editRoom = new EditRoom(getState())
-        if (!editRoom.get('id')) {
+        let id = EditRoom.get(getState(), 'id')
+        if (!id) {
             return
         }
-        dispatch(clearFileUpload(UploadTypes.THUMBNAIL))
-        dispatch(fetchUseDefaultThumbnail(editRoom.get('id')))
+        dispatch(clearFileUpload(UploadType.Thumbnail))
+        dispatch(fetchUseDefaultThumbnail(id))
     }
 }
 
@@ -139,9 +170,12 @@ export function useDefaultThumbnail() {
  * RESET
  *******/
 
-export function clearEditRoom() {
+export interface ClearEditRoomAction extends ApiCancelAction {
+    type: ActionType.CLEAR_EDIT_ROOM
+}
+export function clearEditRoom(): ClearEditRoomAction {
     return {
-        type: ActionTypes.CLEAR_EDIT_ROOM
+        type: ActionType.CLEAR_EDIT_ROOM
     }
 }
 
