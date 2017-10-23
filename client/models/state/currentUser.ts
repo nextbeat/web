@@ -1,7 +1,7 @@
 import { Map, List, Set } from 'immutable'
 
 import { State } from '@types'
-import { createSelector } from '@models/utils'
+import { createSelector, createEntityListSelector } from '@models/utils'
 import { StateModelFactory } from '@models/state/base'
 import UserEntity from '@models/entities/user'
 import StackEntity from '@models/entities/stack'
@@ -88,23 +88,11 @@ export default class CurrentUser extends StateModelFactory<CurrentUserProps>(key
         return CurrentUser.get(state, 'openBookmarkIds', List()).concat(CurrentUser.get(state, 'closedBookmarkIds', List())) as List<number>
     }
 
-    static openBookmarkedStacks = createSelector(
-        (state: State) => CurrentUser.get(state, 'openBookmarkIds', List()).map(id => new StackEntity(id, state.get('entities')))
-    )(
-        (state: State) => CurrentUser.get(state, 'openBookmarkIds')
-    )
+    static openBookmarkedStacks = createEntityListSelector(CurrentUser, 'openBookmarkIds', StackEntity)
 
-    static closedBookmarkedStacks = createSelector(
-        (state: State) => CurrentUser.get(state, 'closedBookmarkIds', List()).map(id => new StackEntity(id, state.get('entities')))
-    )(
-        (state: State) => CurrentUser.get(state, 'closedBookmarkIds')
-    )
+    static closedBookmarkedStacks = createEntityListSelector(CurrentUser, 'closedBookmarkIds', StackEntity)
 
-    static subscriptions = createSelector(
-        (state: State) => CurrentUser.get(state, 'subscriptionIds', List()).map(id => new UserEntity(id, state.get('entities')))
-    )(
-        (state: State) => CurrentUser.get(state, 'subscriptionIds')
-    )
+    static subscriptions = createEntityListSelector(CurrentUser, 'subscriptionIds', UserEntity)
 
     static openStacks = createSelector(
         (state: State) => CurrentUser.get(state, 'openStackIds', List())

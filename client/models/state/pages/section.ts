@@ -1,14 +1,11 @@
 import { List, Map } from 'immutable'
 
 import { State } from '@types'
-import { createSelector } from '@models/utils'
+import { createEntityListSelector, EntityProps, withEntityMap } from '@models/utils'
 import { StateModelFactory } from '@models/state/base'
 import Stack from '@models/entities/stack'
 
-// todo: merge in common props?
-interface SectionProps {
-    isFetching: boolean
-    error: string
+interface SectionProps extends EntityProps {
     name: string
     slug: string
     description: string
@@ -18,11 +15,8 @@ interface SectionProps {
     stackIds: List<number>
 }
 
-// todo: merge in common keys?
-const keyMap = {
+const keyMap = withEntityMap({
     // meta
-    'isFetching': ['meta', 'isFetching'],
-    'error': ['meta', 'error'],
     'name': ['meta', 'name'],
     'slug': ['meta', 'slug'],
     'description': ['meta', 'description'],
@@ -30,20 +24,13 @@ const keyMap = {
     'stacksFetching': ['pagination', 'stacks', 'isFetching'],
     'stacksError': ['pagination', 'stacks', 'error'],
     'stackIds': ['pagination', 'stacks', 'ids']
-}
+})
 
 const keyMapPrefix = ['pages', 'section']
 
 export default class Section extends StateModelFactory<SectionProps>(keyMap, keyMapPrefix) {
 
-    static stacks = createSelector(
-        (state: State) => {
-            let stackIds = Section.get(state, 'stackIds');
-            return stackIds.map(id => new Stack(id, state.get('entities')))
-        }
-    )(
-        (state: State) => Section.get(state, 'stackIds')
-    )
+    static stacks = createEntityListSelector(Section, 'stackIds', Stack)
 
     static isLoaded(state: State): boolean {
         return !!this.get(state, 'name')

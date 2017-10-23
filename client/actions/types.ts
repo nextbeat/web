@@ -24,6 +24,13 @@ export enum AnalyticsSessionType {
     CHAT = 'CHAT'
 }
 
+export enum UploadType {
+    MediaItem = 'MEDIA_ITEM',
+    Thumbnail = 'THUMBNAIL',
+    ProfilePicture = 'PROFILE_PICTURE',
+    CoverImage = 'COVER_IMAGE'
+}
+
 export interface Pagination {
     page: number
     limit: number | "all"
@@ -157,7 +164,6 @@ export enum ActionType {
     CLEAR_LOGIN_SIGNUP = 'CLEAR_LOGIN_SIGNUP',
     SYNC_STACKS = 'SYNC_STACKS',
     UPDATE_USER = 'UPDATE_USER',
-    CLEAR_EDIT_PROFILE = 'CLEAR_EDIT_PROFILE',
     BOOKMARKED_STACKS = 'BOOKMARKED_STACKS',
     CLEAR_CLOSED_BOOKMARKED_STACKS = 'CLEAR_CLOSED_BOOKMARKED_STACKS',
     SUBSCRIPTIONS = 'SUBSCRIPTIONS',
@@ -170,13 +176,83 @@ export enum ActionType {
     PUSH_UNSUBSCRIBE = 'PUSH_UNSUBSCRIBE',
     PUSH_SYNC_SUBSCRIPTION = 'PUSH_SYNC_SUBSCRIPTION',
 
+    /* UPLOAD */
+    UPLOAD_FILE = 'UPLOAD_FILE',
+    INITIATE_PROCESSING_STAGE = 'INITIATE_PROCESSING_STAGE',
+    UPDATE_PROCESSING_PROGRESS = 'UPDATE_PROCESSING_PROGRESS',
+    STOP_FILE_UPLOAD = 'STOP_FILE_UPLOAD',
+    CLEAR_FILE_UPLOAD = 'CLEAR_FILE_UPLOAD',
+    CLEAR_UPLOAD = 'CLEAR_UPLOAD',
+    SELECT_STACK_FOR_UPLOAD = 'SELECT_STACK_FOR_UPLOAD',
+    UPDATE_NEW_STACK = 'UPDATE_NEW_STACK',
+    UPDATE_NEW_MEDIA_ITEM = 'UPDATE_NEW_MEDIA_ITEM',
+    SUBMIT_STACK_REQUEST = 'SUBMIT_STACK_REQUEST',
+    REFERENCED_COMMENT = 'REFERENCED_COMMENT',
+
     /*********
      * PAGES *
      *********/
 
+    /* EDIT ROOM */
+    EDIT_ROOM = 'EDIT_ROOM',
+    UPDATE_EDIT_ROOM = 'UPDATE_EDIT_ROOM',
+    SUBMIT_EDIT_ROOM = 'SUBMIT_EDIT_ROOM',
+    UPDATE_THUMBNAIL = 'UPDATE_THUMBNAIL',
+    USE_DEFAULT_THUMBNAIL = 'USE_DEFAULT_THUMBNAIL',
+    UPDATE_TAGS = 'UPDATE_TAGS',
+    CLEAR_EDIT_ROOM = 'CLEAR_EDIT_ROOM',
+
+    /* EDIT PROFILE */
+    EDIT_PROFILE = 'EDIT_PROFILE',
+    UPDATE_EDIT_PROFILE = 'UPDATE_EDIT_PROFILE',
+    SUBMIT_EDIT_PROFILE = 'SUBMIT_EDIT_PROFILE',
+    CLEAR_EDIT_PROFILE = 'CLEAR_EDIT_PROFILE',
+
+    /* HOME */
+    HOME = 'HOME',
+    CLEAR_HOME = 'CLEAR_HOME',
+
+    /* PROFILE */
+    USER_STACKS = 'USER_STACKS',
+    USER = 'USER',
+    CLEAR_PROFILE = 'CLEAR_PROFILE',
+
+    /* ROOM PAGE */
+    ROOM_PAGE = 'ROOM_PAGE',
+    MORE_STACKS = 'MORE_STACKS',
+    SEARCH_CHAT = 'SEARCH_CHAT',
+    CLEAR_SEARCH_CHAT = 'CLEAR_SEARCH_CHAT',
+    HIDE_SEARCH_CHAT_RESULTS = 'HIDE_SEARCH_CHAT_RESULTS',
+    SEARCH_SUGGESTIONS = 'SEARCH_SUGGESTIONS',
+    MENTION_USER = 'MENTION_USER',
+    CLEAR_CHAT_MESSAGE = 'CLEAR_CHAT_MESSAGE',
+    PROMPT_CHAT_ACTIONS = 'PROMPT_CHAT_ACTIONS',
+    CLOSE_STACK = 'CLOSE_STACK',
+    DELETE_STACK = 'DELETE_STACK',
+    DELETE_MEDIA_ITEM = 'DELETE_MEDIA_ITEM',
+    SELECT_DETAIL_SECTION = 'SELECT_DETAIL_SECTION',
+    CLOSE_DETAIL_SECTION = 'CLOSE_DETAIL_SECTION',
+    CLEAR_ROOM_PAGE = 'CLEAR_ROOM_PAGE',
+
+    /* SEARCH */
+    SEARCH = 'SEARCH',
+    CLEAR_SEARCH = 'CLEAR_SEARCH',
+
     /* SECTION */
     SECTION = 'SECTION',
     CLEAR_SECTION = 'CLEAR_SECTION',
+
+    /* SUPPORT */
+    VALIDATE_PASSWORD_RESET_TOKEN = 'VALIDATE_PASSWORD_RESET_TOKEN',
+    RESET_PASSWORD = 'RESET_PASSWORD',
+    SEND_PASSWORD_RESET_REQUEST = 'SEND_PASSWORD_RESET_REQUEST',
+    SEND_EMAIL_UNSUBSCRIBE_REQUEST = 'SEND_EMAIL_UNSUBSCRIBE_REQUEST',
+
+    /* TAG */
+    TAG = 'TAG',
+    TAG_STACKS = 'TAG_STACKS',
+    CLEAR_TAG = 'CLEAR_TAG',
+    CLEAR_TAG_STACKS = 'CLEAR_TAG_STACKS',
 
     /*********
      * OTHER *
@@ -192,9 +268,12 @@ import { GAActionAll } from './ga'
 import { NotificationActionAll } from './notifications'
 import { PushActionAll } from './push'
 import { RoomActionAll } from './room'
+import { UploadActionAll } from './upload'
 import { UserActionAll } from './user'
 
 import { SectionActionAll } from './pages/section'
+import { SupportActionAll } from './pages/support'
+import { TagActionAll } from './pages/tag'
 
 export type Action = 
     AppActionAll |
@@ -204,123 +283,8 @@ export type Action =
     PushActionAll |
     RoomActionAll |
     UserActionAll |
-    SectionActionAll 
+    SectionActionAll |
+    SupportActionAll |
+    TagActionAll
 
-
-/* DEPRECATED */
-
-// export const UploadTypes = {
-//     MEDIA_ITEM: 'MEDIA_ITEM',
-//     THUMBNAIL: 'THUMBNAIL',
-//     PROFILE_PICTURE: 'PROFILE_PICTURE',
-//     COVER_IMAGE: 'COVER_IMAGE'
-// }
-
-
-// export default {
-
-//     /******
-//      * HOME
-//      ******/
-
-//     HOME: 'HOME',
-//     CLEAR_HOME: 'CLEAR_HOME',
-
-//     /*********
-//      * SECTION
-//      *********/
-
-//     SECTION: 'SECTION',
-//     CLEAR_SECTION: 'CLEAR_SECTION',
-
-//     /*****
-//      * TAG
-//      *****/
-
-//     TAG: 'TAG',
-//     TAG_STACKS: 'TAG_STACKS',
-//     CLEAR_TAG: 'CLEAR_TAG',
-//     CLEAR_TAG_STACKS: 'CLEAR_TAG_STACKS',
-
-//     /***********
-//      * ROOM PAGE
-//      ***********/
-
-//     ROOM_PAGE: 'ROOM_PAGE',
-//     MORE_STACKS: 'MORE_STACKS',
-//     SEARCH_CHAT: 'SEARCH_CHAT',
-//     CLEAR_SEARCH_CHAT: 'CLEAR_SEARCH_CHAT',
-//     HIDE_SEARCH_CHAT_RESULTS: 'HIDE_SEARCH_CHAT_RESULTS',
-//     SEARCH_SUGGESTIONS: 'SEARCH_SUGGESTIONS',
-//     MENTION_USER: 'MENTION_USER',
-//     CLEAR_CHAT_MESSAGE: 'CLEAR_CHAT_MESSAGE',
-//     PROMPT_CHAT_ACTIONS: 'PROMPT_CHAT_ACTIONS',
-//     CLOSE_STACK: 'CLOSE_STACK',
-//     DELETE_STACK: 'DELETE_STACK',
-//     DELETE_MEDIA_ITEM: 'DELETE_MEDIA_ITEM',
-//     SELECT_DETAIL_SECTION: 'SELECT_DETAIL_SECTION',
-//     CLOSE_DETAIL_SECTION: 'CLOSE_DETAIL_SECTION',
-//     CLEAR_ROOM_PAGE: 'CLEAR_ROOM_PAGE',
-
-//     /***********
-//      * EDIT ROOM
-//      ***********/
-
-//     EDIT_ROOM: 'EDIT_ROOM',
-//     UPDATE_EDIT_ROOM: 'UPDATE_EDIT_ROOM',
-//     SUBMIT_EDIT_ROOM: 'SUBMIT_EDIT_ROOM',
-//     UPDATE_THUMBNAIL: 'UPDATE_THUMBNAIL',
-//     USE_DEFAULT_THUMBNAIL: 'USE_DEFAULT_THUMBNAIL',
-//     UPDATE_TAGS: 'UPDATE_TAGS',
-//     CLEAR_EDIT_ROOM: 'CLEAR_EDIT_ROOM',
-
-//     /*********
-//      * PROFILE
-//      *********/
-
-//     USER_STACKS: 'USER_STACKS',
-//     USER: 'USER',
-//     CLEAR_PROFILE: 'CLEAR_PROFILE',
-
-//     /**************
-//      * EDIT PROFILE
-//      **************/
-
-//     EDIT_PROFILE: 'EDIT_PROFILE',
-//     UPDATE_EDIT_PROFILE: 'UPDATE_EDIT_PROFILE',
-//     SUBMIT_EDIT_PROFILE: 'SUBMIT_EDIT_PROFILE',
-//     CLEAR_EDIT_PROFILE: 'CLEAR_EDIT_PROFILE',
-
-//     /********
-//      * SEARCH
-//      ********/
-
-//     SEARCH: 'SEARCH',
-//     CLEAR_SEARCH: 'CLEAR_SEARCH',
-
-//     /*********
-//      * SUPPORT
-//      *********/
-
-//     VALIDATE_PASSWORD_RESET_TOKEN: 'VALIDATE_PASSWORD_RESET_TOKEN',
-//     RESET_PASSWORD: 'RESET_PASSWORD',
-//     SEND_PASSWORD_RESET_REQUEST: 'SEND_PASSWORD_RESET_REQUEST',
-//     SEND_EMAIL_UNSUBSCRIBE_REQUEST: 'SEND_EMAIL_UNSUBSCRIBE_REQUEST',
-
-//     /********
-//      * UPLOAD
-//      ********/
-
-//     UPLOAD_FILE: 'UPLOAD_FILE',
-//     INITIATE_PROCESSING_STAGE: 'INITIATE_PROCESSING_STAGE',
-//     UPDATE_PROCESSING_PROGRESS: 'UPDATE_PROCESSING_PROGRESS',
-//     STOP_FILE_UPLOAD: 'STOP_FILE_UPLOAD',
-//     CLEAR_FILE_UPLOAD: 'CLEAR_FILE_UPLOAD',
-//     CLEAR_UPLOAD: 'CLEAR_UPLOAD',
-    
-//     SELECT_STACK_FOR_UPLOAD: 'SELECT_STACK_FOR_UPLOAD',
-//     UPDATE_NEW_STACK: 'UPDATE_NEW_STACK',
-//     UPDATE_NEW_MEDIA_ITEM: 'UPDATE_NEW_MEDIA_ITEM',
-//     SUBMIT_STACK_REQUEST: 'SUBMIT_STACK_REQUEST',
-//     REFERENCED_COMMENT: 'REFERENCED_COMMENT',
 

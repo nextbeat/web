@@ -47,9 +47,9 @@ export default class Push extends StateModelFactory<PushProps>(keyMap, keyMapPre
         return this.get(state, 'pushStatus') === PushStatus.UNSUPPORTED
     }
 
-    static formattedPushObject(state: State): PushSubscriptionObject {
+    static formattedPushObject(state: State): PushSubscriptionObject | null {
         if (!this.isSubscribed(state) || !this.has(state, 'pushType') || !this.has(state, 'subscription')) {
-            return {}
+            return null
         }
 
         return {

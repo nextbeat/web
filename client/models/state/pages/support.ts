@@ -1,6 +1,22 @@
-import StateModel from '../base'
+import { StateModelFactory } from '@models/state/base'
 
-const KEY_MAP = {
+interface SupportProps {
+    isValidatingToken: boolean
+    tokenValidated: boolean
+    tokenUsername: string
+    tokenError: string
+    isResettingPassword: boolean
+    passwordReset: boolean
+    passwordResetError: Error
+    isSendingResetRequest: boolean
+    resetRequestSent: boolean
+    resetRequestError: Error
+    isSendingUnsubscribeRequest: boolean
+    unsubscribeRequestSent: boolean
+    unsubscribeRequestError: string
+}
+
+const keyMap = {
     'isValidatingToken': ['isValidatingToken'],
     'tokenValidated': ['tokenValidated'],
     'tokenUsername': ['tokenUsername'],
@@ -16,12 +32,6 @@ const KEY_MAP = {
     'unsubscribeRequestError': ['unsubscribeRequestError']
 }
 
-export default class Support extends StateModel {
+const keyMapPrefix = ['pages', 'support']
 
-    constructor(state) {
-        super(state);
-        this.keyMap = KEY_MAP;
-        this.keyMapPrefix = ['pages', 'support'];
-    }
-    
-}
+export default class Support extends StateModelFactory<SupportProps>(keyMap, keyMapPrefix){}

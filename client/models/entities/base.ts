@@ -25,9 +25,13 @@ export class EntityModel<Props> {
         return this.entity().has(key)
     }
 
-    isEqual(entity: State) {
+    isEqual(entity: State): boolean {
         // test immutable entity state
         return this.entity() === entity
+    }
+
+    isEmpty(): boolean {
+        return this.entity().isEmpty()
     }
 
     toJS() {

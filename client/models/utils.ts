@@ -1,4 +1,32 @@
+import assign from 'lodash-es/assign'
+import { List } from 'immutable'
+
 import { State } from '@types'
+import { EntityModel } from '@models/entities/base'
+
+/**
+ * Key Maps/Props
+ */
+
+export interface EntityProps {
+    id: number
+    isFetching: boolean
+    error: string
+}
+
+const entityKeyMap = {
+    'id': ['meta', 'id'],
+    'isFetching': ['meta', 'boolean'],
+    'error': ['meta', 'error']
+}
+
+export function withEntityMap(keyMap: any): any {
+    return assign({}, entityKeyMap, keyMap)
+}
+
+/**
+ * Selectors
+ */
 
 type Selector<R> = (state: State, ...args: any[]) => R
 type Resolver<R> = (state: State, ...args: any[]) => R
@@ -56,5 +84,21 @@ export function createSelector<R>(func: Selector<R>): OutputSelector<R> {
 
           return selector
       }
-
 }
+
+export function createEntityListSelector(modelClass: any, idKey: string, entityClass: typeof EntityModel | string): Selector<List<any>> {
+    return createSelector(
+        (state: State) => {
+            let stackIds = modelClass.get(state, idKey) as List<number>
+            if (typeof entityClass === 'string') {
+                // Get entity object directly, without class wrapper
+                return stackIds.map(id => state.getIn(['entities', 'foo', id.toString()]))
+            } else {
+                return stackIds.map(id => new entityClass(id, state.get('entities')))
+            }
+        }
+    )(
+        (state: State) => modelClass.get(state, idKey)
+    )
+}
+
