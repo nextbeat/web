@@ -25,7 +25,8 @@ const SEARCH_TYPES = {
 }
 
 export type SearchActionAll = 
-    SearchAction
+    SearchAction |
+    ClearSearchAction
 
 /**********
  * FETCHING
@@ -53,8 +54,7 @@ function fetchSearchResults(query: string, searchType: SearchType, pagination: P
 
 export function loadSearchResults(query: string, searchType: SearchType): ThunkAction {
     return (dispatch, getState) => {
-        const search = new Search(getState())
-        if (searchType !== search.get('searchType')) {
+        if (searchType !== Search.get(getState(), 'searchType')) {
             dispatch(clearSearch())
         }
         loadPaginatedObjects(['pages', 'search', 'pagination', searchType], fetchSearchResults.bind(this, query, searchType), 15)(dispatch, getState)

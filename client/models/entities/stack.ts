@@ -15,7 +15,7 @@ interface StackProps {
 
 export default class Stack extends EntityModel<StackProps> {
 
-    readonly entityName = "stacks"
+    entityName = "stacks"
 
     author() {
         return new User(this.get('author', 0), this.entities)

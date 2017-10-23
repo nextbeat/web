@@ -13,7 +13,7 @@ export type ResourceSizeType = 'small' | 'medium' | 'large' | 'max'
  * of the entire state tree.)
  */
 export class EntityModel<Props> {
-    readonly entityName: string
+    entityName: string
     
     constructor(public id: number, public entities: State) {}
  

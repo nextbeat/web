@@ -13,7 +13,7 @@ interface MediaItemProps {
 
 export default class MediaItem extends EntityModel<MediaItemProps> {
 
-    readonly entityName = "mediaItems"
+    entityName = "mediaItems"
 
     stack(): Stack {
         return new Stack(this.get('stack', 0), this.entities)

@@ -11,8 +11,7 @@ import { State } from '@types'
  */
 export function StateModelFactory<Props>(
     keyMap: {[key in keyof Props]: string[]}, 
-    keyMapPrefix: string[],
-    entityName?: string
+    keyMapPrefix: string[]
 ) {
 
     class StateModel {
@@ -22,14 +21,6 @@ export function StateModelFactory<Props>(
 
         static has<K extends keyof Props>(state: State, key: K): boolean {
             return state.hasIn(this.keyPath(key))
-        }
-
-        static getEntity(state: State): State | null {
-            let id = this.get(state, 'id' as keyof Props)
-            if (!id) {
-                return null
-            }
-            return state.getIn(['entities', entityName as string, id.toString()]) as State
         }
 
         protected static keyPath(key: keyof Props): string[] {

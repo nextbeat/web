@@ -14,7 +14,7 @@ import { State } from '@types'
 
 export type FetchDirection = 'before' | 'after' | 'around' | 'mostRecent'
 
-interface RoomProps {
+export interface RoomProps {
     id: number
     isFetching: boolean
     error: string
@@ -24,7 +24,7 @@ interface RoomProps {
     timerId: NodeJS.Timer // calls room_info every X seconds
 
     selectedMediaItemId: number
-    seenMediaItemIds: List<number>
+    seenMediaItemIds: Set<number>
     mediaItemIds: List<number>
     liveMediaItemIds: List<number>
     mediaItemsFetching: boolean
@@ -215,6 +215,8 @@ export default class Room {
         return Room.entity(state, id).get('closed') ? 'closed' : 'open' 
     }
 
+    /* Media Items */
+
     static indexOfMediaItemId(state: State, id: number, mediaItemId: number): number {
         let ids = Room.get(state, id, 'mediaItemIds').concat(Room.get(state, id, 'liveMediaItemIds')) as List<number>
         return ids.indexOf(mediaItemId)
@@ -225,14 +227,63 @@ export default class Room {
         return ids.get(index) as number
     }
 
+    static indexOfSelectedMediaItem(state: State, id: number): number {
+        let selectedId = this.get(state, id, 'selectedMediaItemId')
+        return this.indexOfMediaItemId(state, id, selectedId)
+    }
+
+    static mediaItemsSize(state: State, id: number): number {
+        const loadedIds = this.get(state, id, 'mediaItemIds', List())
+        const liveIds = this.get(state, id, 'liveMediaItemIds', List())
+        return loadedIds.size + liveIds.size
+    }
+
+    static unseenLiveMediaItemsCount(state: State, id: number): number {
+        const liveIds = Set(this.get(state, id, 'liveMediaItemIds', List()))
+        const seenIds = this.get(state, id, 'seenMediaItemIds', Set())
+        return liveIds.subtract(seenIds).size
+    }
+
+    static isUnseen(state: State, id: number, mediaItemId: number): boolean {
+        return this.get(state, id, 'seenMediaItemIds', Set()).has(mediaItemId)
+    }
+
+    /* Chat */
+
     static hasLoadedComment(state: State, id: number, comment: Comment): boolean {
         let ids = Room.get(state, id, 'commentIds').concat(Room.get(state, id, 'liveCommentIds')) as List<number>
         return (ids.indexOf(comment.get('id')) > -1)
     }
 
+    static mostRecentComment(state: State, id: number) {
+        return this.liveComments(state, id).size > 0 ? this.liveComments(state, id).last() : this.comments(state, id).first()
+    }
+
+    static totalCommentsCount(state: State, id: number): number {
+        return this.liveComments(state, id).size + this.comments(state, id).size
+    }
+
+    static isFetchingDeep(state: State, id: number): boolean {
+        return !this.get(state, id, 'error') && this.mediaItems(state, id).size === 0 && !this.get(state, id, 'mediaItemsError')
+    }
+
+    static isJoining(state: State, id: number): boolean {
+        return !!this.get(state, id, 'isJoining', false)
+    }
+
+    static hasJoined(state: State, id: number): boolean {
+        return !!this.get(state, id, 'joined', false)
+    }
+
+    static hasLoadedChat(state: State, id: number): boolean {
+        return this.get(state, id, 'commentsHasFetched') && this.hasJoined(state, id)
+    }
+
     static isUserBanned(state: State, id: number, username: string): boolean {
         return (Room.get(state, id, 'bannedUsers').indexOf(username) > -1)
     }
+
+    /* Other */
 
     static isCurrentUserAuthor(state: State, id: number): boolean {
         if (!CurrentUser.isLoggedIn(state)) {
@@ -256,79 +307,14 @@ export default class Room {
         }, List())
     }
 
-    // TODO
+    static idForUuid(state: State, uuid: string): number {
+        let stack = state.getIn(['entities', 'stacks'], Map()).find((stack: Map<string, any>) => stack.get('uuid') === uuid)
+        return !!stack ? stack.get('id') as number : -1
+    }
+
+    static idForHid(state: State, hid: string): number {
+        let stack = state.getIn(['entities', 'stacks'], Map()).find((stack: Map<string, any>) => stack.get('hid') === hid)
+        return !!stack ? stack.get('id') as number : -1
+    }
+
 }
-
-
-
-//     indexOfSelectedMediaItem() {
-//         const selectedId = this.get('selectedMediaItemId', -1)
-//         return this.indexOfMediaItem(selectedId)
-//     }
-
-//     indexOfMediaItem(id) {
-//         const paginatedIds = this.get('mediaItemIds', List())
-//         const liveIds = this.get('liveMediaItemIds', List())
-//         const ids = paginatedIds.concat(liveIds)
-//         return ids.indexOf(id)
-//     }
-
-//     mediaItemsSize() {
-//         const paginatedIds = this.get('mediaItemIds', List())
-//         const liveIds = this.get('liveMediaItemIds', List())
-//         return paginatedIds.size + liveIds.size
-//     }
-
-//     unseenLiveMediaItemsCount() {
-//         const liveIds = Set(this.get('liveMediaItemIds', List()))
-//         const seenIds = this.get('seenMediaItemIds', Set())
-//         return liveIds.subtract(seenIds).count()
-//     }
-
-//     isUnseen(id) {
-//         return !this.get('seenMediaItemIds', Set()).has(id)
-//     }
-
-//     mostRecentComment() {
-//         return this.liveComments().size > 0 ? this.liveComments().last() : this.comments().first()
-//     }
-
-//     totalCommentsCount() {
-//         return this.liveComments().size + this.comments().size
-//     }
-
-//     isFetchingDeep() {
-//         // returns true if fetching the stack OR its media items
-//         return !this.get('error') && this.mediaItems().size === 0 && !this.get('mediaItemsError')
-//     }
-
-//     isJoining() {
-//         return !!this.get('isJoining', false)
-//     }
-
-//     hasJoined() {
-//         return !!this.get('joined', false)
-//     }
-
-//     hasLoadedChat() {
-//         return this.get('commentsHasFetched') && this.hasJoined()
-//     }
-
-//     static loadedRooms(state) {
-        // let rooms = state.get('rooms')
-        // return rooms.reduce((res, _, id) => {
-        //     let room = new Room(id, state)
-        //     return room.isLoaded() ? res.push(room) : res;
-        // }, List())
-//     }
-
-//     static roomWithUuid(uuid, state) {
-//         let stack = state.getIn(['entities', 'stacks'], Map()).find(stack => stack.get('uuid') === uuid)
-//         return !!stack ? new Room(stack.get('id'), state) : null
-//     }
-
-//     static roomWithHid(hid, state) {
-//         let stack = state.getIn(['entities', 'stacks'], Map()).find(stack => stack.get('hid') === hid)
-//         return !!stack ? new Room(stack.get('id'), state) : null
-//     }
-// }

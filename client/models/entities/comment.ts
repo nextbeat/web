@@ -14,7 +14,7 @@ interface CommentProps {
 
 export default class Comment extends EntityModel<CommentProps> {
 
-    readonly entityName = "comments"
+    entityName = "comments"
 
     author(): User {
         return new User(this.get('author', 0), this.entities)

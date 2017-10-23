@@ -13,7 +13,7 @@ interface UserProps {
 
 export default class User extends EntityModel<UserProps> {
 
-    readonly entityName = "users"
+    entityName = "users"
 
     thumbnail(preferredType: ResourceSizeType): State {
         // default to the largest thumbnail

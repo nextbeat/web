@@ -271,6 +271,10 @@ import { RoomActionAll } from './room'
 import { UploadActionAll } from './upload'
 import { UserActionAll } from './user'
 
+import { HomeActionAll } from './pages/home'
+import { ProfileActionAll } from './pages/profile'
+import { RoomPageActionAll } from './pages/room'
+import { SearchActionAll } from './pages/search'
 import { SectionActionAll } from './pages/section'
 import { SupportActionAll } from './pages/support'
 import { TagActionAll } from './pages/tag'
@@ -283,6 +287,9 @@ export type Action =
     PushActionAll |
     RoomActionAll |
     UserActionAll |
+    HomeActionAll |
+    ProfileActionAll |
+    RoomPageActionAll |
     SectionActionAll |
     SupportActionAll |
     TagActionAll
