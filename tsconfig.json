@@ -4,7 +4,7 @@
         "baseUrl": "./",
         "experimentalDecorators": true,
         "jsx": "react",
-        "lib": "es2015",
+        "lib": ["es2015", "dom"],
         "module": "commonjs",
         "moduleResolution": "node",
         "noImplicitAny": true,
@@ -20,6 +20,7 @@
             "@reducers/*": ["client/reducers/*"],
             "@schemas": ["client/schemas"],
             "@types": ["client/types"],
+            "@upload": ["client/upload"],
             "@utils": ["client/utils"]
         },
         "sourceMap": true,

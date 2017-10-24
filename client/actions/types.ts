@@ -24,13 +24,6 @@ export enum AnalyticsSessionType {
     CHAT = 'CHAT'
 }
 
-export enum UploadType {
-    MediaItem = 'MEDIA_ITEM',
-    Thumbnail = 'THUMBNAIL',
-    ProfilePicture = 'PROFILE_PICTURE',
-    CoverImage = 'COVER_IMAGE'
-}
-
 export interface Pagination {
     page: number
     limit: number | "all"
@@ -63,7 +56,6 @@ export interface AnalyticsCall {
     userId?: number
     [key: string]: any // metrics and dimensions. todo: keyof
 }
-
 
 export interface GenericAction extends AnyAction {
     type: ActionType

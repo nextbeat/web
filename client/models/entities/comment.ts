@@ -7,9 +7,12 @@ import { State } from '@types'
 interface CommentProps {
     author: number
     created_at: string
+    is_referenced_by: boolean
     id: number
     message: string
     stack: number
+    subtype: string
+    type: string
 }
 
 export default class Comment extends EntityModel<CommentProps> {

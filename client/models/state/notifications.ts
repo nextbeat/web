@@ -1,8 +1,7 @@
-import StateModel from './base'
-import isNumber from 'lodash/isNumber'
-import { Map, Set, List } from 'immutable'
+import { StateModelFactory } from '@models/state/base'
+import { Map, List } from 'immutable'
 
-const KEY_MAP = {
+const keyMap = {
     // notifications
     'activity': ['activity'],
     'isFetching': ['isFetching'],

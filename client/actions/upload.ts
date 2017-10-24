@@ -1,15 +1,15 @@
 import { 
     ActionType,
-    UploadType,
     GenericAction, 
     ThunkAction,
     ApiCallAction,
     Status 
 } from '@actions/types'
+import { UploadType } from '@upload'
 import * as Schemas from '@schemas'
 import Comment from '@models/entities/comment'
 
-// import { generateUuid } from '../utils'
+import { generateUuid } from '@utils'
 
 export type UploadActionAll =
     UploadFileAction |
