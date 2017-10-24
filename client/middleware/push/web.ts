@@ -1,26 +1,31 @@
-import assign from 'lodash/assign'
+import assign from 'lodash-es/assign'
 
-import { PushTypes, pushSyncSubscription, pushSubscribe } from '../../actions'
-import { urlBase64ToUint8Array } from '../../utils'
-import { Push } from '../../models'
+import { pushSyncSubscription, pushSubscribe, PushInitializeAction, PushSubscribeAction } from '@actions/push'
+import { urlBase64ToUint8Array } from '@utils'
+import Push, { PushStatus } from '@models/state/push'
+import { Store, Dispatch } from '@types'
 
-function initializePostRegister(store, next, action) {
+declare var Notification: {
+    readonly permission: NotificationPermission
+}
+
+function initializePostRegister(store: Store, next: Dispatch, action: PushInitializeAction) {
     // Check that necessary APIs are supported in the browser
     if (!('showNotification' in ServiceWorkerRegistration.prototype)) {
         return next(assign({}, action, {
-            pushStatus: PushTypes.UNSUPPORTED,
+            pushStatus: PushStatus.UNSUPPORTED,
             error: 'Notifications are not supported.'
         }))
     } 
     if (Notification.permission === 'denied') {
         return next(assign({}, action, {
-            pushStatus: PushTypes.DENIED,
+            pushStatus: PushStatus.DENIED,
             error: 'User has disabled push notifications.'
         }))
     }
     if (!('PushManager' in window)) {
         return next(assign({}, action, {
-            pushStatus: PushTypes.UNSUPPORTED,
+            pushStatus: PushStatus.UNSUPPORTED,
             error: 'Push messaging is not supported.'
         }))
     }
@@ -34,66 +39,65 @@ function initializePostRegister(store, next, action) {
             store.dispatch(pushSubscribe())
             // Not subscribed yet
             return next(assign({}, action, {
-                pushStatus: PushTypes.UNSUBSCRIBED
+                pushStatus: PushStatus.UNSUBSCRIBED
             }))
         } else {
             // Update subscription on server
             store.dispatch(pushSyncSubscription('web', subscription))
 
             return next(assign({}, action, {
-                pushStatus: PushTypes.SUBSCRIBED,
+                pushStatus: PushStatus.SUBSCRIBED,
                 pushType: 'web',
                 subscription
             }))
         }
     }).catch(e => {
         return next(assign({}, action, {
-            pushStatus: PushTypes.ERROR,
+            pushStatus: PushStatus.ERROR,
             error: e
         }))
     })
 
 }
 
-export function initialize(store, next, action) {
+export function initialize(store: Store, next: Dispatch, action: PushInitializeAction) {
     // Register service worker
     navigator.serviceWorker
         .register('/push-worker.js')
         .then(initializePostRegister.bind(this, store, next, action))
         .catch(e => {
             return next(assign({}, action, {
-                pushStatus: PushTypes.ERROR,
+                pushStatus: PushStatus.ERROR,
                 error: e
             }))
         })
 }
 
-export function subscribe(store, next, action) {
-    const push = new Push(store.getState())
+export function subscribe(store: Store, next: Dispatch, action: PushSubscribeAction) {
 
     navigator.serviceWorker.ready.then(serviceWorkerRegistration => {
         return serviceWorkerRegistration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(push.get('vapidPublicKey'))
+            applicationServerKey: urlBase64ToUint8Array(Push.get(store.getState(), 'vapidPublicKey'))
         }).then(subscription => {
             // Subscription was successful
             // Update subscription on server
-            store.dispatch(pushSyncSubscription(subscription))
+            store.dispatch(pushSyncSubscription('web', subscription))
 
             return next(assign({}, action, {
-                pushStatus: PushTypes.SUBSCRIBED,
+                pushStatus: PushStatus.SUBSCRIBED,
                 subscription
             }))
         }).catch(e => {
             if (Notification.permission === 'denied') {
                 // User manually denied push notifications
                 return next(assign({}, action, {
-                    pushStatus: PushTypes.DENIED,
+                    pushStatus: PushStatus.DENIED,
                     error: 'Notification permission was denied.'
                 }))
             } else {
                 return next(assign({}, action, {
-                    pushStatus: PushTypes.ERROR,
+                    pushStatus: PushStatus.ERROR,
                     error: e
                 }))
             }
