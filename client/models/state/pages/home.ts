@@ -29,7 +29,7 @@ export default class Home extends StateModelFactory<HomeProps>(keyMap, keyMapPre
     static stacks = createKeyedSelector(
         (state: State, index: number) => {
             const stackIds = Home.get(state, 'sections', List()).get(index, Map()).get('stacks', List()) as List<number>
-            return stackIds.map(id => new Stack(id, .state.get('entities')))
+            return stackIds.map(id => new Stack(id, state.get('entities')))
         }
     )(
         (state: State, index: number) => Home.get(state, 'sections', List()).get(index, Map()).get('stacks'),

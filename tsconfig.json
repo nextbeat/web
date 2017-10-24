@@ -8,6 +8,7 @@
         "module": "commonjs",
         "moduleResolution": "node",
         "noImplicitAny": true,
+        "outDir": "./build",
         "paths": {
             "@client/*": ["client/*"],
             "@actions": ["client/actions"],

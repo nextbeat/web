@@ -24,5 +24,5 @@ export function staticImplements<T>() {
 }
 
 export interface ServerRenderingComponent extends Type<React.Component> {
-    fetchData: (store: Store, params: object)
+    fetchData: (store: Store, params: object) => void
 }

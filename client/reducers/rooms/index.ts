@@ -70,7 +70,7 @@ function comments(state=Map<string, any>(), action: Action) {
                     hasReachedLatest
                 })
             } else if (action.fetchType === 'before') {
-                if (action.response.result.length < (action.response.limit as number) {
+                if (action.response.result.length < (action.response.limit as number)) {
                     state = state.set('hasReachedOldest', true)
                 }
                 state = state.update('ids', List(), ids => ids.concat(List((action.response as any).result)))
