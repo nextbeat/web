@@ -36,6 +36,7 @@ interface UploadFileProps {
     status: Status
     error: string
     url: string
+    xhr: XMLHttpRequest
 
     processingProgress: number
     processingTimeLeft: number

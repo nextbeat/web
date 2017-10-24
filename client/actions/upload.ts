@@ -28,7 +28,7 @@ export type UploadActionAll =
  * UPLOAD
  ********/
 
-interface UploadFileAction extends GenericAction {
+export interface UploadFileAction extends GenericAction {
     type: ActionType.UPLOAD_FILE
     uploadType: UploadType
     file: File
@@ -66,7 +66,7 @@ export function uploadCoverImage(file: File): UploadFileAction {
     }
 }
 
-interface InitiateProcessingStageAction extends GenericAction {
+export interface InitiateProcessingStageAction extends GenericAction {
     type: ActionType.INITIATE_PROCESSING_STAGE
     uploadType: UploadType
 }
@@ -82,7 +82,7 @@ interface ProcessingProgress {
     timeLeft: number
     completed: boolean
 }
-interface UpdateProcessingProgressAction extends GenericAction, ProcessingProgress {
+export interface UpdateProcessingProgressAction extends GenericAction, ProcessingProgress {
     type: ActionType.UPDATE_PROCESSING_PROGRESS
     uploadType: UploadType
 }
@@ -96,7 +96,7 @@ export function updateProcessingProgress(uploadType: UploadType, { progress, tim
     }
 }
 
-interface StopFileUploadAction extends GenericAction {
+export interface StopFileUploadAction extends GenericAction {
     type: ActionType.STOP_FILE_UPLOAD
     uploadType: UploadType
     error: Error
@@ -109,7 +109,7 @@ export function stopFileUpload(error: Error, type: UploadType): StopFileUploadAc
     }
 }
 
-interface ClearFileUploadAction extends GenericAction {
+export interface ClearFileUploadAction extends GenericAction {
     type: ActionType.CLEAR_FILE_UPLOAD
     uploadType: UploadType
 }
@@ -125,7 +125,7 @@ export function clearFileUpload(type: UploadType): ClearFileUploadAction {
  * STACK SUBMISSION
  ******************/
 
-interface SelectStackForUploadAction extends GenericAction {
+export interface SelectStackForUploadAction extends GenericAction {
     type: ActionType.SELECT_STACK_FOR_UPLOAD
     id: number
     uuid?: string
@@ -143,7 +143,7 @@ export function selectStackForUpload(stackId: number): SelectStackForUploadActio
     }
 }
 
-interface UpdateNewStackAction extends GenericAction {
+export interface UpdateNewStackAction extends GenericAction {
     type: ActionType.UPDATE_NEW_STACK
     stack: any
 }
@@ -154,7 +154,7 @@ export function updateNewStack(stack: any): UpdateNewStackAction {
     }
 }
 
-interface UpdateNewMediaItemAction extends GenericAction {
+export interface UpdateNewMediaItemAction extends GenericAction {
     type: ActionType.UPDATE_NEW_MEDIA_ITEM
     mediaItem: any
 }
@@ -165,7 +165,7 @@ export function updateNewMediaItem(mediaItem: any): UpdateNewMediaItemAction {
     }
 }
 
-interface SubmitStackRequestAction extends GenericAction {
+export interface SubmitStackRequestAction extends GenericAction {
     type: ActionType.SUBMIT_STACK_REQUEST
 }
 export function submitStackRequest(): SubmitStackRequestAction {
@@ -179,7 +179,7 @@ export function submitStackRequest(): SubmitStackRequestAction {
  * REFERENCING COMMENTS
  **********************/
 
-interface ReferencedCommentAction extends ApiCallAction {
+export interface ReferencedCommentAction extends ApiCallAction {
     type: ActionType.REFERENCED_COMMENT
     commentId: number
 }
@@ -222,7 +222,7 @@ export function loadReferencedComment(commentId: number): ThunkAction {
  * RESET
  *******/
 
-interface ClearUploadAction extends GenericAction {
+export interface ClearUploadAction extends GenericAction {
     type: ActionType.CLEAR_UPLOAD
 }
 export function clearUpload() {

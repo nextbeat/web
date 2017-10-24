@@ -44,7 +44,7 @@ interface SyncStacksAction extends ApiCallAction {
     type: ActionType.SYNC_STACKS
     submitting: boolean
 }
-export function syncStacks(status='all', deep=true, newStack: any): SyncStacksAction {
+export function syncStacks(status='all', deep=true, newStack?: any): SyncStacksAction {
     // to do: grab correct max last modified
     let objectsToSync = newStack ? [newStack] : []
     let maxLastModified = format(0)

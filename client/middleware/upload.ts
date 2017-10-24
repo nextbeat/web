@@ -1,15 +1,28 @@
-import fetch from 'isomorphic-fetch'
-import Promise from 'bluebird'
-import assign from 'lodash/assign'
-import find from 'lodash/find'
+import * as fetch from 'isomorphic-fetch'
+import * as Promise from 'bluebird'
+import assign from 'lodash-es/assign'
+import find from 'lodash-es/find'
+import keys from 'lodash-es/keys'
 
-import { ActionTypes, Status, UploadTypes } from '../actions'
-import { syncStacks, updateUser, updateNewMediaItem, updateProcessingProgress, initiateProcessingStage as _initiateProcessingStage, stopFileUpload } from '../actions'
-import { App, Upload, CurrentUser } from '../models'
-import { generateUuid } from '../utils'
+import { ActionType, Status, GenericAction } from '@actions/types'
+import { 
+    updateNewMediaItem,
+    updateProcessingProgress,
+    stopFileUpload,
+    UploadFileAction, 
+    StopFileUploadAction, 
+    ClearFileUploadAction, 
+    UpdateNewMediaItemAction 
+} from '@actions/upload'
+import { syncStacks } from '@actions/user'
+import CurrentUser from '@models/state/currentUser'
+import Upload from '@models/state/upload'
+import { Store, Dispatch } from '@types'
+import { UploadType, fileType, cloudfrontUrl, bucketUrl, checkFileCompatibility } from '@upload'
+import { generateUuid } from '@utils'
 
-function fetchApi(url, { method = 'GET', body } = {}) {
-     const fetchOptions = {
+function fetchApi(url: string, method = 'GET', body?: any): Promise<any> {
+     const fetchOptions: RequestInit = {
         method,
         body : body ? JSON.stringify(body) : undefined,
         headers: {
@@ -32,17 +45,17 @@ function fetchApi(url, { method = 'GET', body } = {}) {
     })   
 }
 
-function keyName(file, type, uuid) {
+function keyName(file: File, type: string, uuid: string) {
     var ext = file.name.split('.')[file.name.split('.').length-1]
     var prefix = type === 'video' ? 'videos' : 'images'
     return `${prefix}/${uuid}.${ext}`
 }
 
-function uploadFileToS3(store, next, action, policy, key, xhr) {
+function uploadFileToS3(store: Store, next: Dispatch, action: UploadFileAction, policy: any, key: string, xhr: XMLHttpRequest) {
     let fd = new FormData()
     let file = action.file
 
-    function getCondition(cKey) {
+    function getCondition(cKey: string) {
         let condition = find(policy.policy.conditions, c => cKey in c)
         return condition[cKey]
     }
@@ -61,45 +74,41 @@ function uploadFileToS3(store, next, action, policy, key, xhr) {
     // construct and send XMLHttpRequest
 
     return new Promise((resolve, reject) => {
-        xhr.upload.addEventListener("progress", e => {
+        xhr.upload.addEventListener("progress", (event: ProgressEvent) => {
             next(assign({}, action, {
                 status: Status.REQUESTING,
-                progress: e.loaded / e.total
+                progress: event.loaded / event.total
             }))
         })
 
-        xhr.addEventListener("load", e => {
-            if (e.target.status >= 200 && e.target.status < 300) {
+        xhr.addEventListener("load", (event: UIEvent) => {
+            if (xhr.status >= 200 && xhr.status < 300) {
                 resolve();
             } else {
-                reject(new Error(e.target.statusText))
+                reject(new Error(xhr.statusText))
             }
         })
 
-        xhr.addEventListener("error", e => {
+        xhr.addEventListener("error", (event: Event) => {
             reject(new Error("Error during S3 upload."))
         })
 
-        xhr.open("POST", Upload.bucketUrl(store.getState()), true)
+        xhr.open("POST", bucketUrl(), true)
         xhr.send(fd)
 
     })  
 }
 
-function getPolicy() {
+function getPolicy(): Promise<any> {
     return fetchApi('/api/upload/policy')
 }
 
-function initiateProcessingStage(store) {
-    let upload      = new Upload(store.getState())
-    let mediaItem   = upload.get('mediaItem')
+function initiateProcessingStage(store: Store): Promise<string> {
+    let mediaItem = Upload.get(store.getState(), 'mediaItem')
 
-    return fetchApi('/api/upload/process', {
-        method: 'POST',
-        body: {
-            url: mediaItem.get('url'),
-            type: mediaItem.get('type') === 'video' ? 'video' : 'image' // TODO: standardize 'image' over 'photo' across the app
-        }
+    return fetchApi('/api/upload/process', 'POST', {
+        url: mediaItem.get('url'),
+        type: mediaItem.get('type') === 'video' ? 'video' : 'image' // TODO: standardize 'image' over 'photo' across the app
     }).then(res => { 
         store.dispatch(updateNewMediaItem({
             resource_id: res.id
@@ -108,22 +117,17 @@ function initiateProcessingStage(store) {
     })
 }
 
-function checkProcessingProgress(store, job_id) {
-    let upload      = new Upload(store.getState())
-    let mediaItem   = upload.get('mediaItem')
+function checkProcessingProgress(store: Store, job_id: string): Promise<any> {
+    let mediaItem = Upload.get(store.getState(), 'mediaItem')
 
     return new Promise((resolve, reject) => {
 
         let checkProgress = function() {
-            fetchApi('/api/upload/feedback', {
-                method: 'POST',
-                body: {
-                    job: job_id,
-                    type: mediaItem.get('type') === 'video' ? 'video' : 'image'
-                }
+            fetchApi('/api/upload/feedback', 'POST', {
+                job: job_id,
+                type: mediaItem.get('type') === 'video' ? 'video' : 'image'
             }).then(res => {
-                upload = new Upload(store.getState())
-                if (!upload.hasFile()) {
+                if (!Upload.hasFile(store.getState(), UploadType.MediaItem)) {
                     // If user has cleared the upload,
                     // we want to exit early
                     clearInterval(intervalId)
@@ -136,8 +140,7 @@ function checkProcessingProgress(store, job_id) {
                     }))
                 }
 
-                store.dispatch(updateProcessingProgress({
-                    uploadType: UploadTypes.MEDIA_ITEM,
+                store.dispatch(updateProcessingProgress(UploadType.MediaItem, {
                     progress: res.processingProgress.progress,
                     timeLeft: res.processingProgress.timeLeftInSecs,
                     completed: res.initialProcessCompleted
@@ -159,16 +162,15 @@ function checkProcessingProgress(store, job_id) {
     })
 }
 
-function handleProcessingSuccess(store) {
+function handleProcessingSuccess(store: Store) {
     // Trigger sync stacks if requested
-    let upload = new Upload(store.getState())
-    if (upload.get('submitStackRequested')) {
-        store.dispatch(syncStacks('open', true, upload.stackForSubmission()))
+    if (Upload.get(store.getState(), 'submitStackRequested')) {
+        store.dispatch(syncStacks('open', true, Upload.stackForSubmission(store.getState())))
     }
 }
 
-function handleUploadSuccess(store, next, action) {
-    if (action.uploadType === UploadTypes.MEDIA_ITEM) {
+function handleUploadSuccess(store: Store, next: Dispatch, action: UploadFileAction) {
+    if (action.uploadType === UploadType.MediaItem) {
         return Promise.resolve()
         .then(() => {
             return initiateProcessingStage(store)
@@ -180,21 +182,22 @@ function handleUploadSuccess(store, next, action) {
     }
 } 
 
-function checkVideoDuration(store, next, action) {
+function checkVideoDuration(store: Store, next: Dispatch, action: UpdateNewMediaItemAction) {
     let duration = action.mediaItem.duration
     if (duration > 60*15) {
-        store.dispatch(stopFileUpload('Video cannot be longer than 15 minutes.'))
+        store.dispatch(stopFileUpload(new Error('Video cannot be longer than 15 minutes.'), UploadType.MediaItem))
     }
 }
 
-function uploadFile(store, next, action) {
+function uploadFile(store: Store, next: Dispatch, action: UploadFileAction) {
 
-    function callActionWith(data) {
+    function callActionWith(data: any) {
         next(assign({}, action, data))
     }
 
-    let currentUser = new CurrentUser(store.getState())
-    if (!currentUser.isLoggedIn()) {
+    const state = store.getState()
+
+    if (!CurrentUser.isLoggedIn(state)) {
         return callActionWith({
             status: Status.FAILURE,
             error: "User is not logged in."
@@ -202,25 +205,25 @@ function uploadFile(store, next, action) {
     }
 
     // Generate uuid and url for item if not provided
-    const fileType = Upload.fileType(action.file)
+    const type = fileType(action.file)
     const uuid = generateUuid()
-    const key = keyName(action.file, fileType, uuid)
-    const url = `${Upload.cloudfrontUrl(store.getState())}${key}`
+    const key = keyName(action.file, type, uuid)
+    const url = `${cloudfrontUrl()}${key}`
 
     // we keep a reference to the XHR object so we can abort if requested
     let xhr = new XMLHttpRequest() 
 
-    let actionData = {
+    let actionData: any = {
         status: Status.REQUESTING,
         progress: 0,
         xhr,
         url
     }
-    if (action.uploadType === UploadTypes.MEDIA_ITEM) {
+    if (action.uploadType === UploadType.MediaItem) {
         actionData.mediaItem = {
             url,
             uuid,
-            type: fileType === 'image' ? 'photo' : 'video' 
+            type: type === 'image' ? 'photo' : 'video' 
         }
     }
 
@@ -228,10 +231,10 @@ function uploadFile(store, next, action) {
     .then(() => {
 
         // Will throw an error if file type is not supported or file is too large
-        Upload.checkFileCompatibility(action.uploadType, action.file)
+        checkFileCompatibility(action.uploadType, action.file)
 
         // Retrieve open stacks for display on upload page
-        if (action.uploadType === UploadTypes.MEDIA_ITEM) {
+        if (action.uploadType === UploadType.MediaItem) {
             store.dispatch(syncStacks('open', false))
         }
 
@@ -248,10 +251,9 @@ function uploadFile(store, next, action) {
         callActionWith({
             status: Status.SUCCESS
         })
-        handleUploadSuccess(store, next, action, url)
+        handleUploadSuccess(store, next, action)
     })
     .catch(error => {
-        console.log(error)
         callActionWith({
             status: Status.FAILURE,
             error: error.message || 'Unknown error uploading file. Please try again.'
@@ -259,65 +261,65 @@ function uploadFile(store, next, action) {
     })
 }
 
-
 // Middleware function which handles 
 // the upload process to S3
-export default store => next => action => {
+export default (store: Store) => (next: Dispatch) => (action: GenericAction) => {
 
-    if (action.type !== ActionTypes.UPLOAD_FILE 
-        && action.type !== ActionTypes.SUBMIT_STACK_REQUEST
-        && action.type !== ActionTypes.UPDATE_NEW_MEDIA_ITEM
-        && action.type !== ActionTypes.STOP_FILE_UPLOAD
-        && action.type !== ActionTypes.CLEAR_UPLOAD) 
+    if (action.type !== ActionType.UPLOAD_FILE 
+        && action.type !== ActionType.SUBMIT_STACK_REQUEST
+        && action.type !== ActionType.UPDATE_NEW_MEDIA_ITEM
+        && action.type !== ActionType.STOP_FILE_UPLOAD
+        && action.type !== ActionType.CLEAR_FILE_UPLOAD
+        && action.type !== ActionType.CLEAR_UPLOAD) 
     {
         return next(action)
     }
 
-    let uploadType = action.uploadType
-    let upload = new Upload(store.getState())
-
-    if (action.type === ActionTypes.STOP_FILE_UPLOAD || action.type === ActionTypes.CLEAR_FILE_UPLOAD) {
+    const state = store.getState()
+    
+    if (action.type === ActionType.STOP_FILE_UPLOAD || action.type === ActionType.CLEAR_FILE_UPLOAD) {
         // We want to abort the upload request if this
         // action is called.
-        let xhr = upload.get(uploadType, 'xhr')
+        const uploadType = (action as StopFileUploadAction | ClearFileUploadAction).uploadType        
+        let xhr = Upload.getInFile(state, uploadType, 'xhr')
         if (xhr) {
             xhr.abort();
         }
         return next(action)
     }
 
-    if (action.type === ActionTypes.CLEAR_UPLOAD) {
+    if (action.type === ActionType.CLEAR_UPLOAD) {
         // We want to abort ALL upload requests in this case
-        for (var key in UploadTypes) {
-            let xhr = upload.get(key, 'xhr')
+        keys(UploadType).map(k => UploadType[k as any]).forEach((type: UploadType) => {
+            let xhr = Upload.getInFile(state, type, 'xhr')
             if (xhr) {
                 xhr.abort();
             }
-        }
+        })
         return next(action)
     }
 
-    if (action.type === ActionTypes.SUBMIT_STACK_REQUEST) {
+    if (action.type === ActionType.SUBMIT_STACK_REQUEST) {
         // We want to delay syncing the stack until the resource
         // has been uploaded to S3, so we intercept this action
         // here and wait until the resource has completed the
         // upload process before we trigger the sync
-        if (!upload.isDoneProcessing(uploadType)) {
+        if (!Upload.isDoneProcessing(state, UploadType.MediaItem)) {
             return next(action)
         } else {
-            return store.dispatch(syncStacks('open', true, upload.stackForSubmission()))
+            return store.dispatch(syncStacks('open', true, Upload.stackForSubmission(state)))
         }
     }
 
-    if (action.type === ActionTypes.UPDATE_NEW_MEDIA_ITEM) {
-        if (upload.isUploading(uploadType) && upload.fileType(uploadType) === 'video') {
-            checkVideoDuration(store, next, action)
+    if (action.type === ActionType.UPDATE_NEW_MEDIA_ITEM) {
+        if (Upload.isUploading(state, UploadType.MediaItem) && Upload.fileType(state, UploadType.MediaItem) === 'video') {
+            checkVideoDuration(store, next, action as UpdateNewMediaItemAction)
         }
         return next(action)
     }
 
-    if (action.type === ActionTypes.UPLOAD_FILE) {
-        uploadFile(store, next, action)
+    if (action.type === ActionType.UPLOAD_FILE) {
+        uploadFile(store, next, action as UploadFileAction)
     }
 
 }
