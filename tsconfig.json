@@ -21,7 +21,9 @@
             "@schemas": ["client/schemas"],
             "@types": ["client/types"],
             "@upload": ["client/upload"],
-            "@utils": ["client/utils"]
+            "@utils": ["client/utils"],
+            "date-fns/format": ["manual_typings/date-fns/format"],
+            "date-fns/is_before": ["manual_typings/date-fns/is_before"]
         },
         "sourceMap": true,
         "strictNullChecks": true,

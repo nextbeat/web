@@ -9,6 +9,7 @@ interface MediaItemProps {
     references: number
     stack: number
     type: 'video' | 'photo'
+    user_created_at: string
 }
 
 export default class MediaItem extends EntityModel<MediaItemProps> {
