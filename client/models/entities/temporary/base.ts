@@ -1,4 +1,6 @@
-import EntityModel from '../base'
+import { Map } from 'immutable'
+import { EntityModel } from '../base'
+import { State } from '@types'
 
 /**
  * Subclass of EntityModel used for instantiating objects
@@ -8,14 +10,14 @@ import EntityModel from '../base'
  * Used for temporary comments (before an id is
  * established).
  */
-export default class TemporaryEntityModel extends EntityModel {
+export default class TemporaryEntityModel<Props> extends EntityModel<Props> {
 
-    constructor(temporaryEntity) {
-        super();
+    constructor(public temporaryEntity: State) {
+        super(0, Map());
         this.temporaryEntity = temporaryEntity;
     }
 
-    __entity() {
+    entity() {
         return this.temporaryEntity;
     }
 

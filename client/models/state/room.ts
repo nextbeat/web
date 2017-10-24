@@ -7,9 +7,7 @@ import MediaItem from '@models/entities/mediaItem'
 import Comment from '@models/entities/comment'
 import User from '@models/entities/user'
 import CurrentUser from '@models/state/currentUser'
-
-// import TemporaryCommentEntity from '../entities/temporary/comment'
-
+import TemporaryComment from '@models/entities/temporary/comment'
 import { State } from '@types'
 
 export type FetchDirection = 'before' | 'after' | 'around' | 'mostRecent'
@@ -182,7 +180,25 @@ export default class Room {
         (state: State, id: number) => id
     )
 
-    // todo: submitting and failed comments
+    static submittingComments = createKeyedSelector(
+        (state: State, id: number) => {
+            let comments = Room.get(state, id, 'submittingComments', List())
+            return comments.map(comment => new TemporaryComment(comment))
+        } 
+    )(
+        (state: State, id: number) => Room.get(state, id, 'submittingComments'),
+        (state: State, id: number) => id
+    )
+
+    static failedComments = createKeyedSelector(
+        (state: State, id: number) => {
+            let comments = Room.get(state, id, 'failedComments', List())
+            return comments.map(comment => new TemporaryComment(comment))
+        } 
+    )(
+        (state: State, id: number) => Room.get(state, id, 'failedComments'),
+        (state: State, id: number) => id
+    )
 
     static pinnedComment = createSelector(
         (state: State, id: number) => {

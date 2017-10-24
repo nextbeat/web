@@ -19,9 +19,11 @@ import { triggerAuthError } from '@actions/app'
 import { loadPaginatedObjects } from '@actions/utils'
 import { selectDetailSection } from '@actions/pages/room'
 import Comment from '@models/entities/comment'
+import TemporaryComment from '@models/entities/temporary/comment'
 import Room, { FetchDirection } from '@models/state/room'
 import CurrentUser from '@models/state/currentUser'
 import * as Schemas from '@schemas'
+import { generateUuid } from '@utils'
 
 const COMMENTS_PAGE_SIZE = 40;
 
@@ -254,7 +256,7 @@ export function jumpToComment(roomId: number, comment: Comment): ThunkAction {
 
 interface SendCommentOptions {
     roomId: number,
-    temporaryId: number,
+    temporaryId: string,
     message: string,
     username: string,
     createdAt: Date
@@ -297,8 +299,7 @@ export function sendComment(roomId: number, message: string): ThunkAction {
     }
 }
 
-// TODO: define TemporaryComment
-export function resendComment(roomId: number, comment: any): SendCommentAction {
+export function resendComment(roomId: number, comment: TemporaryComment): SendCommentAction {
     let newComment = {
         roomId,
         message: comment.get('message'),
