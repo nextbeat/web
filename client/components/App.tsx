@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as PropTypes from 'prop-types'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import Helmet from 'react-helmet'
@@ -11,15 +11,45 @@ import AppBanner from '../components/shared/AppBanner.react'
 import Login from '../components/shared/Login.react'
 import Signup from '../components/shared/Signup.react'
 
-import { connectToXMPP, connectEddy, postLogin, loadTags, promptModal, 
-        closeModal, clearApp, resizeWindow, onBeforeUnload, 
-        pushInitialize, cleanCache,
-        hasNavigated, closeSidebar } from '../actions'
-import { CurrentUser, App as AppModel, RoomPage } from '../models'
+import { 
+    loadTags,
+    promptModal,
+    closeModal,
+    clearApp,
+    resizeWindow,
+    onBeforeUnload,
+    cleanCache,
+    hasNavigated,
+    closeSidebar
+} from '@actions/app'
+import { connectEddy } from '@actions/eddy'
+import { pushInitialize } from '@actions/push'
+import { postLogin } from '@actions/user'
+import CurrentUser from '@models/state/currentUser'
+import AppModel from '@models/state/app'
+import RoomPage from '@models/state/pages/room'
+import { State, DispatchProps, RouteProps } from '@types'
 
-class App extends React.Component {
+interface Props {
+    isLoggedIn: boolean
+    isSplashTopbarCollapsed: boolean
+    hasAuthError: boolean
+    activeOverlay: string
+    width: string
+    environment: string
+    facebookAppId: string
+    roomUnreadCount: number
+}
 
-    constructor(props) {
+type AllProps = Props & DispatchProps & RouteProps<{}>
+
+class App extends React.Component<AllProps> {
+
+    static contextTypes = {
+        router: PropTypes.object.isRequired
+    }
+
+    constructor(props: AllProps) {
         super(props);
 
         this.isInRoom = this.isInRoom.bind(this);
@@ -36,45 +66,47 @@ class App extends React.Component {
     // Component lifecycle
 
     componentDidMount() {
-        const { user, dispatch } = this.props;
+        const { dispatch, isLoggedIn } = this.props;
         dispatch(connectEddy());
         dispatch(loadTags());
         dispatch(cleanCache());
 
-        if (user.isLoggedIn()) {
+        if (isLoggedIn) {
             dispatch(postLogin());
         }
 
-        $(window).resize(this.resize);
         this.resize();
 
-        $(window).on('beforeunload', this.handleBeforeUnload);
-        $(document).on('touchstart', this.handleTouchstart);
-        $(document).on('mousedown touchstart', this.handleMousedown);
+        window.addEventListener('resize', this.resize);        
+        window.addEventListener('beforeunload', this.handleBeforeUnload);
+        document.addEventListener('touchstart', this.handleTouchstart);
+        document.addEventListener('touchstart', this.handleMousedown);
+        document.addEventListener('mousedown', this.handleMousedown);
 
     }
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.user.get('isLoggingIn') && this.props.user.isLoggedIn()) {
+    componentDidUpdate(prevProps: AllProps) {
+        if (prevProps.isLoggedIn && this.props.isLoggedIn) {
             this.props.dispatch(closeModal())
         }
 
-        if (this.props.app.hasAuthError()) {
+        if (this.props.hasAuthError) {
             this.props.dispatch(promptModal('login'))
         }
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps: AllProps) {
         if (this.props.location !== nextProps.location) {
             this.props.dispatch(hasNavigated(this.props.location))
         }
     }
 
     componentWillUnmount() {
-        $(window).off('beforeunload', this.handleBeforeUnload);
-        $(window).off('resize', this.resize);
-        $(document).off('touchstart', this.handleTouchstart);
-        $(document).off('mousedown touchstart', this.handleMousedown);
+        window.removeEventListener('resize', this.resize);        
+        window.removeEventListener('beforeunload', this.handleBeforeUnload);
+        document.removeEventListener('touchstart', this.handleTouchstart);
+        document.removeEventListener('touchstart', this.handleMousedown);
+        document.removeEventListener('mousedown', this.handleMousedown);
 
         this.props.dispatch(clearApp());
     }
@@ -91,8 +123,8 @@ class App extends React.Component {
 
     // Events
 
-    resize(e) {
-        const width = $('#app-container').width();
+    resize() {
+        const width = $('#app-container').width() as number;
         this.props.dispatch(resizeWindow(width));
     }
 
@@ -100,24 +132,24 @@ class App extends React.Component {
         this.props.dispatch(onBeforeUnload())
     }
 
-    handleTouchstart(e) {
+    handleTouchstart(e: Event) {
         // Dismiss input focus if tap outside of the input element
-        let isTextInput = node => ['INPUT', 'TEXTAREA'].indexOf(node.nodeName) !== -1
-        if (!isTextInput(e.target) && isTextInput(document.activeElement)) {
-            document.activeElement.blur()
+        let isTextInput = (node: Element) => ['INPUT', 'TEXTAREA'].indexOf(node.nodeName) !== -1
+        if (!isTextInput(e.target as Element) && isTextInput(document.activeElement)) {
+            (document.activeElement as any).blur()
         }
     }
 
-    handleMousedown(e) {
+    handleMousedown(e: Event) {
         // Hide sidebar if tapping outside of it or topbar on small screens
-        const sidebar = document.getElementById('sidebar')
-        const topbar = document.getElementById('topbar')
-        const { app, dispatch } = this.props
+        const sidebar = document.getElementById('sidebar') as HTMLElement
+        const topbar = document.getElementById('topbar') as HTMLElement
+        const { activeOverlay, width, dispatch } = this.props
 
-        if (app.get('activeOverlay') === 'sidebar' 
-            && !sidebar.contains(e.target) 
-            && !topbar.contains(e.target) 
-            && app.get('width') === 'small') 
+        if (activeOverlay === 'sidebar' 
+            && !sidebar.contains(e.target as Node) 
+            && !topbar.contains(e.target as Node) 
+            && width === 'small') 
         {
             // e.preventDefault()
             dispatch(closeSidebar())
@@ -127,9 +159,7 @@ class App extends React.Component {
     // Render
 
     setTitle() {
-        const { app, user, roomPage } = this.props;
-        const environment = app.get('environment', 'development');
-        const fbAppId = app.get('facebookAppId');
+        const { environment, facebookAppId, roomUnreadCount } = this.props;
 
         let envLabel = '';
         switch (environment) {
@@ -151,15 +181,15 @@ class App extends React.Component {
         }
 
         let badge = '';
-        if (this.isInRoom() && roomPage.get('unreadCount') > 0) {
-            badge = `(${roomPage.get('unreadCount')}) `
+        if (this.isInRoom() && roomUnreadCount > 0) {
+            badge = `(${roomUnreadCount}) `
         }
 
         let description = "Nextbeat lets you do anything with an audience. Open a room, check in with photos and videos, chat with people hanging out, and build a community that goes where you go."
         let meta = [
             {"property": "og:site_name", "content": "Nextbeat"},
             {"property": "og:description", "content": description},
-            {"property": "fb:app_id", "content": fbAppId},
+            {"property": "fb:app_id", "content": facebookAppId},
             {"property": "al:ios:url", "content": "nextbeat://"},
             {"property": "al:ios:app_store_id", "content": "1101932727"},
             {"property": "al:ios:app_name", "content": "Nextbeat"},
@@ -181,17 +211,17 @@ class App extends React.Component {
     }
 
     render() {
-        const { user, app, children } = this.props
+        const { isLoggedIn, isSplashTopbarCollapsed, activeOverlay, children } = this.props
         const { router } = this.context
         const pathname = router.location.pathname
 
         const inHome = router.isActive('/', true)
-        const showSplashTopbar = inHome && !user.isLoggedIn()
+        const showSplashTopbar = inHome && !isLoggedIn
 
         const inRoomClass = this.isInRoom() ? 'app-container-room' : ''
-        const guestClass = user.isLoggedIn() ? '' : 'no-sidebar'
-        const splashClass = showSplashTopbar ? (!!app.get('splashTopbarCollapsed') ? 'splash splash-collapsed' : 'splash splash-expanded') : ''
-        const sidebarActiveClass = app.get('activeOverlay') === 'sidebar' ? 'app-container-sidebar-active' : ''
+        const guestClass = isSplashTopbarCollapsed ? '' : 'no-sidebar'
+        const splashClass = showSplashTopbar ? (isSplashTopbarCollapsed ? 'splash splash-collapsed' : 'splash splash-expanded') : ''
+        const sidebarActiveClass = activeOverlay === 'sidebar' ? 'app-container-sidebar-active' : ''
 
         return (
             <section className={`app-container ${inRoomClass} ${sidebarActiveClass}`} id="app-container">
@@ -203,7 +233,7 @@ class App extends React.Component {
                 <div className={`main-container ${splashClass}`}>
                     <Sidebar />
                     <div className={`main ${guestClass}`}>
-                        {React.cloneElement(children, { user })}
+                        {children}
                     </div>
                 </div>
             </section>
@@ -211,19 +241,16 @@ class App extends React.Component {
     }
 }
 
-App.contextTypes = {
-    router: PropTypes.object.isRequired
-}
-
-function mapStateToProps(state, props) {
-    const user = new CurrentUser(state)
-    const app = new AppModel(state)
-    const roomPage = new RoomPage(state)
-
+function mapStateToProps(state: State): Props {
     return {
-        user,
-        app,
-        roomPage
+        isLoggedIn: CurrentUser.isLoggedIn(state),
+        isSplashTopbarCollapsed: !!AppModel.get(state, 'splashTopbarCollapsed'),
+        hasAuthError: AppModel.hasAuthError(state),
+        activeOverlay: AppModel.get(state, 'activeOverlay'),
+        width: AppModel.get(state, 'width'),
+        environment: AppModel.get(state, 'environment'),
+        facebookAppId: AppModel.get(state, 'facebookAppId'),
+        roomUnreadCount: RoomPage.get(state, 'unreadCount', 0)
     }
 }
 
