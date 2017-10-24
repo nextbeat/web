@@ -4,18 +4,18 @@ import mapValues from 'lodash-es/mapValues'
 import { Action, ActionType, ApiCallAction, ApiCancelAction, Status } from '@actions/types'
 import { State, Reducer } from '@types'
 
-export function combineReducers(reducers: {[key: string]: Reducer}): Reducer {
+export function combineReducers(reducers: {[key: string]: Reducer<any>}): Reducer<any> {
     return (state, action) => 
-        state.merge(mapValues(reducers, (reducer: Reducer, key: string) => reducer(state.get(key, Map()), action)))
+        state.merge(mapValues(reducers, (reducer: Reducer<any>, key: string) => reducer(state.get(key, Map()), action)))
 }
 
 const defaultPaginationState = Map({
     isFetching: false
 })
 
-export function paginate(type: ActionType, clearType?: ActionType): Reducer {
+export function paginate(type: ActionType, clearType?: ActionType): Reducer<State> {
 
-    return function(state=defaultPaginationState, action: ApiCallAction | ApiCancelAction) {
+    return function(state=defaultPaginationState, action: Action) {
         if (action.type === type) {
             switch (action.status) {
                 case Status.REQUESTING:
@@ -45,9 +45,9 @@ export function paginate(type: ActionType, clearType?: ActionType): Reducer {
     }
 }
 
-export function entity(type: ActionType): Reducer {
+export function entity(type: ActionType): Reducer<State> {
 
-    return function(state: State, action: ApiCallAction) {
+    return function(state: State, action: Action) {
         if (action.type === type) {
             switch (action.status) {
                 case Status.REQUESTING:
@@ -57,7 +57,7 @@ export function entity(type: ActionType): Reducer {
                 case Status.SUCCESS:
                     return state.merge({
                         isFetching: false,
-                        id: action.response.result
+                        id: (action.response as any).result
                     })
                 case Status.FAILURE:
                     return state.merge({

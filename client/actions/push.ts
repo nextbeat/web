@@ -6,7 +6,7 @@ export type PushActionAll =
     PushUnsubscribeAction |
     PushSyncSubscriptionAction
 
-interface PushInitializeAction extends GenericAction {
+export interface PushInitializeAction extends GenericAction {
     type: ActionType.PUSH_INITIALIZE
 }
 export function pushInitialize(): PushInitializeAction {
@@ -15,7 +15,7 @@ export function pushInitialize(): PushInitializeAction {
     }
 }
 
-interface PushSubscribeAction extends GenericAction {
+export interface PushSubscribeAction extends GenericAction {
     type: ActionType.PUSH_SUBSCRIBE
 }
 export function pushSubscribe(): PushSubscribeAction {
@@ -24,7 +24,7 @@ export function pushSubscribe(): PushSubscribeAction {
     }
 }
 
-interface PushUnsubscribeAction extends GenericAction {
+export interface PushUnsubscribeAction extends GenericAction {
     type: ActionType.PUSH_UNSUBSCRIBE
 }
 export function pushUnsubscribe(): PushUnsubscribeAction {
@@ -33,7 +33,7 @@ export function pushUnsubscribe(): PushUnsubscribeAction {
     }
 }
 
-interface PushSyncSubscriptionAction extends GenericAction {
+export interface PushSyncSubscriptionAction extends GenericAction {
     type: ActionType.PUSH_SYNC_SUBSCRIPTION
 }
 export function pushSyncSubscription(clientType: 'web' | 'safari', subscription: any) {

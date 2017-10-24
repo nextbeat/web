@@ -1,4 +1,7 @@
-export default function(state = Map(), action) {
+import { Map } from 'immutable'
+import { Action } from '@actions/types'
+
+export default function(state = Map<string, any>(), action: Action) {
     if (action.pushStatus) {
         state = state.set('pushStatus', action.pushStatus)
     }

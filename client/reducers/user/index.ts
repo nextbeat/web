@@ -1,6 +1,6 @@
 import { Map } from 'immutable'
-import { ActionTypes, Status } from '../../actions'
-import { combineReducers } from '../utils'
+import { ActionType, Action, Status } from '@actions/types'
+import { combineReducers } from '@reducers/utils'
 
 import bookmarks from './bookmarks'
 import meta from './meta'
@@ -16,8 +16,8 @@ const reducers = {
     subscriptions
 }
 
-export default function(state = Map(), action) {
-    if (action.type === ActionTypes.LOGOUT && action.status === Status.SUCCESS) {
+export default function(state = Map(), action: Action) {
+    if (action.type === ActionType.LOGOUT && action.status === Status.SUCCESS) {
         return state.delete('meta').delete('bookmarks').delete('subscriptions').delete('notifications')
     } else {
         return combineReducers(reducers)(state, action)

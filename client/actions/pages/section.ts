@@ -20,7 +20,7 @@ export type SectionActionAll =
  * FETCHING
  **********/
 
-interface SectionAction extends ApiCallAction {
+export interface SectionAction extends ApiCallAction {
     type: ActionType.SECTION
     slug: string
 }
@@ -49,7 +49,7 @@ export function loadSection(slug?: string): ThunkAction {
  * RESET
  *******/
 
-interface ClearSectionAction extends ApiCancelAction {
+export interface ClearSectionAction extends ApiCancelAction {
     type: ActionType.CLEAR_SECTION
     slug: string
 }

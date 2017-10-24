@@ -1,8 +1,32 @@
 import { Map, List, fromJS } from 'immutable'
-import { ActionTypes, Status } from '../../actions'
-import { EddyError } from '../../errors'
+import { ActionType, Status, Action } from '@actions/types'
+import {
+    RoomInfoAction,
+    SendCommentAction,
+    PinCommentAction,
+    UnpinCommentAction,
+    BanUserAction,
+    UnbanUserAction,
+    ClearCommentsAction,
+    CommentsAction
+} from '@actions/room'
+import {
+    DeleteMediaItemAction
+} from '@actions/pages/room'
+import {
+    JoinRoomAction,
+    LeaveRoomAction,
+    StartRoomTimerAction,
+    ReceiveCommentAction,
+    ReceivePinnedCommentAction,
+    ReceiveUnpinnedCommentAction,
+    ReceiveMediaItemAction,
+    ReceiveNotificationCommentAction,
+} from '@actions/eddy'
+import { EddyError } from '@errors'
+import { State } from '@types'
 
-function processRoomInfo(state, action) {
+function processRoomInfo(state: State, action: RoomInfoAction | JoinRoomAction) {
     state = state.merge({
         pinnedCommentId: action.responseData.pinned_chat.id,
         creator: action.responseData.creator,
@@ -14,7 +38,7 @@ function processRoomInfo(state, action) {
     return state;
 }
 
-function joinRoom(state, action) {
+function joinRoom(state: State, action: JoinRoomAction) {
     switch (action.status) {
         case Status.REQUESTING:
             return state.merge({
@@ -43,7 +67,7 @@ function joinRoom(state, action) {
     return state;
 }
 
-function leaveRoom(state, action) {
+function leaveRoom(state: State, action: LeaveRoomAction) {
     switch (action.status) {
         case Status.SUCCESS:
             return state.set('joined', false)
@@ -51,18 +75,18 @@ function leaveRoom(state, action) {
     return state;
 }
 
-function startRoomTimer(state, action) {
+function startRoomTimer(state: State, action: StartRoomTimerAction) {
     return state.set('timerId', action.timerId)
 }
 
-function roomInfo(state, action) {
+function roomInfo(state: State, action: RoomInfoAction) {
     if (action.status === Status.SUCCESS) {
         return processRoomInfo(state, action);
     }
     return state;
 }
 
-function sendComment(state, action) {
+function sendComment(state: State, action: SendCommentAction) {
     if (action.status === Status.REQUESTING && action.username) {
 
         const comment = Map({
@@ -78,20 +102,20 @@ function sendComment(state, action) {
         // Filter comment out of submitting and failed first,
         // in case we are resending a comment.
         return state
-            .update('submittingComments', comments => comments.filter(c => c.get('temporary_id') !== action.temporaryId))
-            .update('failedComments', comments => comments.filter(c => c.get('temporary_id') !== action.temporaryId))
+            .update('submittingComments', comments => comments.filter((c: State) => c.get('temporary_id') !== action.temporaryId))
+            .update('failedComments', comments => comments.filter((c: State) => c.get('temporary_id') !== action.temporaryId))
             .update('submittingComments', subComments => subComments.push(comment))
 
     } else if (action.status === Status.SUCCESS) {
 
         return state
             .update('comments', comments => comments.push(action.responseData.comment_id))
-            .update('submittingComments', comments => comments.filter(c => c.get('temporary_id') !== action.temporaryId))
-            .update('failedComments', comments => comments.filter(c => c.get('temporary_id') !== action.temporaryId))
+            .update('submittingComments', comments => comments.filter((c: State) => c.get('temporary_id') !== action.temporaryId))
+            .update('failedComments', comments => comments.filter((c: State) => c.get('temporary_id') !== action.temporaryId))
 
     } else if (action.status === Status.FAILURE) {
 
-        state = state.update('submittingComments', comments => comments.filter(c => c.get('temporary_id') !== action.temporaryId))
+        state = state.update('submittingComments', comments => comments.filter((c: State) => c.get('temporary_id') !== action.temporaryId))
 
         const comment = Map({
             type: 'message',
@@ -109,35 +133,35 @@ function sendComment(state, action) {
     return state
 }
 
-function pinComment(state, action) {
+function pinComment(state: State, action: PinCommentAction) {
     if (action.status === Status.SUCCESS) {
         return state.set('pinnedCommentId', action.responseData.comment_id)
     }
     return state;
 }
 
-function unpinComment(state, action) {
+function unpinComment(state: State, action: UnpinCommentAction) {
     if (action.status === Status.SUCCESS) {
         return state.set('pinnedCommentId', undefined)
     }
     return state;
 }
 
-function banUser(state, action) {
+function banUser(state: State, action: BanUserAction) {
     if (action.status === Status.SUCCESS) {
         return state.update('bannedUsers', List(), users => users.push(action.username));
     }
     return state;
 }
 
-function unbanUser(state, action) {
+function unbanUser(state: State, action: UnbanUserAction) {
     if (action.status === Status.SUCCESS) {
-        return state.update('bannedUsers', List(), users => users.filterNot(u => u === action.username))
+        return state.update('bannedUsers', List(), users => users.filterNot((u: any) => u === action.username))
     }
     return state;
 }
 
-function clearComments(state, action) {
+function clearComments(state: State) {
     return state.merge({
         comments: List(),
         submittingComments: List(),
@@ -145,36 +169,36 @@ function clearComments(state, action) {
     })
 }
 
-function deleteMediaItem(state, action) {
+function deleteMediaItem(state: State, action: DeleteMediaItemAction) {
     return state.update('mediaItems', mediaItems => mediaItems.filter(mId => mId !== action.id))
 }
 
-function receiveComment(state, action) {
+function receiveComment(state: State, action: ReceiveCommentAction) {
     return state.update('comments', comments => comments.push(action.comment.id));
 }
 
-function receivePinnedComment(state, action) {
+function receivePinnedComment(state: State, action: ReceivePinnedCommentAction) {
     return state.set('pinnedCommentId', action.comment.id)
 }
 
-function receiveUnpinnedComment(state, action) {
+function receiveUnpinnedComment(state: State, action: ReceiveUnpinnedCommentAction) {
     return state.set('pinnedCommentId', undefined)
 }
 
-function receiveMediaItem(state, action) {
+function receiveMediaItem(state: State, action: ReceiveMediaItemAction) {
     return state.update('mediaItems', mediaItems => mediaItems.push(action.mediaItem.id));
 }
 
-function receiveNotificationComment(state, action) {
+function receiveNotificationComment(state: State, action: ReceiveNotificationCommentAction) {
     return state.update('comments', comments => comments.push(action.comment.id));
 }
 
-function loadComments(state, action) {
+function loadComments(state: State, action: CommentsAction) {
     // When refreshing the most recent comments,
     // we need to clear out all old live comments,
     // as they will be fetched from the server.
     if (action.status === Status.REQUESTING && action.fetchType === 'mostRecent') {
-        return clearComments(state, action)
+        return clearComments(state)
     }
     return state
 }
@@ -186,41 +210,41 @@ const initialState = Map({
     mediaItems: List()
 })
 
-export default function live(state = initialState, action) {
+export default function live(state = initialState, action: Action) {
     switch (action.type) {
-        case ActionTypes.JOIN_ROOM:
+        case ActionType.JOIN_ROOM:
             return joinRoom(state, action);
-        case ActionTypes.LEAVE_ROOM:
+        case ActionType.LEAVE_ROOM:
             return leaveRoom(state, action);
-        case ActionTypes.START_ROOM_TIMER:
+        case ActionType.START_ROOM_TIMER:
             return startRoomTimer(state, action);
-        case ActionTypes.ROOM_INFO:
+        case ActionType.ROOM_INFO:
             return roomInfo(state, action);
-        case ActionTypes.SEND_COMMENT:
+        case ActionType.SEND_COMMENT:
             return sendComment(state, action);
-        case ActionTypes.PIN_COMMENT:
+        case ActionType.PIN_COMMENT:
             return pinComment(state, action);
-        case ActionTypes.UNPIN_COMMENT:
+        case ActionType.UNPIN_COMMENT:
             return unpinComment(state, action);
-        case ActionTypes.BAN_USER:
+        case ActionType.BAN_USER:
             return banUser(state, action);
-        case ActionTypes.UNBAN_USER:
+        case ActionType.UNBAN_USER:
             return unbanUser(state, action);
-        case ActionTypes.CLEAR_COMMENTS:
-            return clearComments(state, action);
-        case ActionTypes.DELETE_MEDIA_ITEM:
+        case ActionType.CLEAR_COMMENTS:
+            return clearComments(state);
+        case ActionType.DELETE_MEDIA_ITEM:
             return deleteMediaItem(state, action);
-        case ActionTypes.RECEIVE_COMMENT:
+        case ActionType.RECEIVE_COMMENT:
             return receiveComment(state, action);
-        case ActionTypes.RECEIVE_PINNED_COMMENT:
+        case ActionType.RECEIVE_PINNED_COMMENT:
             return receivePinnedComment(state, action);
-        case ActionTypes.RECEIVE_UNPINNED_COMMENT:
+        case ActionType.RECEIVE_UNPINNED_COMMENT:
             return receiveUnpinnedComment(state, action);
-        case ActionTypes.RECEIVE_MEDIA_ITEM:
+        case ActionType.RECEIVE_MEDIA_ITEM:
             return receiveMediaItem(state, action);
-        case ActionTypes.RECEIVE_NOTIFICATION_COMMENT:
+        case ActionType.RECEIVE_NOTIFICATION_COMMENT:
             return receiveNotificationComment(state, action);
-        case ActionTypes.COMMENTS:
+        case ActionType.COMMENTS:
             return loadComments(state, action);
     }
     return state;

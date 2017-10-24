@@ -1,6 +1,33 @@
 import { Map, fromJS } from 'immutable'
-import { ActionTypes, Status, UploadTypes } from '../../actions'
-import { combineReducers, entity, paginate } from '../utils'
+import { ActionType, Status, Action } from '@actions/types'
+import { 
+    UploadFileAction,
+    UpdateProcessingProgressAction,
+    SelectStackForUploadAction,
+    UpdateNewStackAction,
+    UpdateNewMediaItemAction,
+    SubmitStackRequestAction,
+    StopFileUploadAction,
+    ClearFileUploadAction,
+    ReferencedCommentAction
+} from '@actions/upload'
+import { SyncStacksAction } from '@actions/user'
+import { combineReducers, entity, paginate } from '@reducers/utils'
+import { State } from '@types'
+import { UploadType } from '@upload'
+
+interface UploadStateProps {
+    uploads: { [key: string]: any }
+    submission: {
+        newStack: {
+            title: string
+            tags: string[]
+            privacyStatus: string
+        }
+    }
+}
+
+type UploadState = Map<keyof UploadStateProps, any>
 
 const initialState = fromJS({
     uploads: {},
@@ -21,7 +48,7 @@ const initialState = fromJS({
  * }
  */
 
-function uploadFile(state, action) {
+function uploadFile(state: UploadState, action: UploadFileAction) {
 
     let fileState = state.getIn(['uploads', action.uploadType], Map())
     fileState = fileState.set('status', action.status)
@@ -66,7 +93,7 @@ function uploadFile(state, action) {
     return state.setIn(['uploads', action.uploadType], fileState)
 }
 
-function stopFileUpload(state, action) {
+function stopFileUpload(state: State, action: StopFileUploadAction) {
     return state.updateIn(['uploads', action.uploadType], fileState => {
         return fileState.merge({
             uploadProgress: 0,
@@ -76,9 +103,9 @@ function stopFileUpload(state, action) {
     })
 }
 
-function clearFileUpload(state, action) {
+function clearFileUpload(state: State, action: ClearFileUploadAction) {
     state = state.deleteIn(['uploads', action.uploadType])
-    if (action.uploadType === UploadTypes.MEDIA_ITEM) {
+    if (action.uploadType === UploadType.MediaItem) {
         // also clear stack submission
         state = state.update('submission', sState => 
             Map()
@@ -89,7 +116,7 @@ function clearFileUpload(state, action) {
     return state
 }
 
-function updateProcessingProgress(state, action) {
+function updateProcessingProgress(state: UploadState, action: UpdateProcessingProgressAction) {
     return state.updateIn(['uploads', action.uploadType], fileState => {
         return fileState.merge({
             processingProgress: action.progress,
@@ -105,7 +132,7 @@ function updateProcessingProgress(state, action) {
 
 // id === -1 indicates that the user has selected to create a new stack
 // id === null indicates that the user has deselected all stacks
-function selectStackForUpload(state, action) {
+function selectStackForUpload(state: UploadState, action: SelectStackForUploadAction) {
     if (action.id === null) {
         return state.deleteIn(['submission', 'selectedStackId'])
     } else {
@@ -116,23 +143,23 @@ function selectStackForUpload(state, action) {
     }
 }
 
-function updateNewStack(state, action) {
+function updateNewStack(state: UploadState, action: UpdateNewStackAction) {
     return state.update('submission', sState => {
-        return sState.update('newStack', newStack => newStack.merge(fromJS(action.stack)))
+        return sState.update('newStack', (newStack: State) => newStack.merge(fromJS(action.stack)))
     })
 }
 
-function updateNewMediaItem(state, action) {
+function updateNewMediaItem(state: UploadState, action: UpdateNewMediaItemAction) {
     return state.update('submission', sState => {
-        return sState.update('mediaItem', mediaItem => mediaItem.merge(fromJS(action.mediaItem)))
+        return sState.update('mediaItem', (mediaItem: State) => mediaItem.merge(fromJS(action.mediaItem)))
     })
 }
 
-function submitStackRequest(state, action) {
+function submitStackRequest(state: UploadState, action: SubmitStackRequestAction) {
     return state.setIn(['submission', 'submitStackRequested'], true)
 }
 
-function syncStacks(state, action) {
+function syncStacks(state: UploadState, action: SyncStacksAction) {
     let sState = state.get('submission', Map())
     if (action.submitting) {
         if (action.status === Status.REQUESTING) {
@@ -145,12 +172,12 @@ function syncStacks(state, action) {
             // if we're creating a new stack, we update the selected stack id
             // with the id of the stack returned in the sync process
             if (sState.get('selectedStackId') === -1) {
-                let stacks = action.response.entities.stacks 
+                let stacks = (action.response as any).entities.stacks 
                 let selectedStackId = -1
 
                 for (let stackId in stacks) {
                     if (stacks[stackId].uuid === sState.getIn(['newStack', 'uuid'])) {
-                        selectedStackId = stackId;
+                        selectedStackId = parseInt(stackId, 10);
                         break;
                     }
                 }
@@ -179,7 +206,7 @@ function syncStacks(state, action) {
  * REFERENCING COMMENTS
  **********************/
 
-function referencedComment(state, action) {
+function referencedComment(state: UploadState, action: ReferencedCommentAction) {
     let cState = state.getIn(['submission', 'referencedComment'], Map());
     if (action.status === Status.REQUESTING) {
         cState = cState.merge({
@@ -202,7 +229,7 @@ function referencedComment(state, action) {
     state = state.setIn(['submission', 'referencedComment'], cState);
 
     // Update other submission fields
-    if (action.status === Status.SUCCESS) {
+    if (action.status === Status.SUCCESS && action.response) {
         const stackId = action.response.entities.comments[action.response.result].stack_id
         state = state.setIn(['submission', 'selectedStackId'], stackId)
     }
@@ -210,28 +237,28 @@ function referencedComment(state, action) {
     return state
 }
 
-export default function(state=initialState, action) {
-    if (action.type === ActionTypes.CLEAR_UPLOAD) {
+export default function(state=initialState, action: Action) {
+    if (action.type === ActionType.CLEAR_UPLOAD) {
         return initialState
-    } else if (action.type === ActionTypes.UPLOAD_FILE) {
+    } else if (action.type === ActionType.UPLOAD_FILE) {
         return uploadFile(state, action)
-    } else if (action.type === ActionTypes.UPDATE_PROCESSING_PROGRESS) {
+    } else if (action.type === ActionType.UPDATE_PROCESSING_PROGRESS) {
         return updateProcessingProgress(state, action)
-    } else if (action.type === ActionTypes.SELECT_STACK_FOR_UPLOAD) {
+    } else if (action.type === ActionType.SELECT_STACK_FOR_UPLOAD) {
         return selectStackForUpload(state, action)
-    } else if (action.type === ActionTypes.UPDATE_NEW_STACK) {
+    } else if (action.type === ActionType.UPDATE_NEW_STACK) {
         return updateNewStack(state, action)
-    } else if (action.type === ActionTypes.UPDATE_NEW_MEDIA_ITEM) {
+    } else if (action.type === ActionType.UPDATE_NEW_MEDIA_ITEM) {
         return updateNewMediaItem(state, action)
-    } else if (action.type === ActionTypes.SUBMIT_STACK_REQUEST) {
+    } else if (action.type === ActionType.SUBMIT_STACK_REQUEST) {
         return submitStackRequest(state, action)
-    } else if (action.type === ActionTypes.SYNC_STACKS) {
+    } else if (action.type === ActionType.SYNC_STACKS) {
         return syncStacks(state, action)
-    } else if (action.type === ActionTypes.STOP_FILE_UPLOAD) {
+    } else if (action.type === ActionType.STOP_FILE_UPLOAD) {
         return stopFileUpload(state, action)
-    } else if (action.type === ActionTypes.CLEAR_FILE_UPLOAD) {
+    } else if (action.type === ActionType.CLEAR_FILE_UPLOAD) {
         return clearFileUpload(state, action)
-    } else if (action.type === ActionTypes.REFERENCED_COMMENT) {
+    } else if (action.type === ActionType.REFERENCED_COMMENT) {
         return referencedComment(state, action)
     }
     return state

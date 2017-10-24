@@ -1,7 +1,16 @@
 import { Map } from 'immutable'
-import { ActionTypes, Status } from '../../actions'
+import { ActionType, Status, Action } from '@actions/types'
+import {
+    LoginAction,
+    LogoutAction,
+    SignupAction,
+    ClearLoginSignupAction,
+    BookmarkedStacksAction,
+    SubscriptionsAction
+} from '@actions/user'
+import { State } from '@types'
 
-function login(state, action) {
+function login(state: State, action: LoginAction) {
     switch (action.status) {
         case Status.REQUESTING:
             return state.merge({
@@ -22,7 +31,7 @@ function login(state, action) {
     return state
 }
 
-function logout(state, action) {
+function logout(state: State, action: LogoutAction) {
     switch (action.status) {
         case Status.REQUESTING:
             return state.merge({
@@ -42,7 +51,7 @@ function logout(state, action) {
     return state
 }
 
-function signup(state, action) {
+function signup(state: State, action: SignupAction) {
     switch (action.status) {
         case Status.REQUESTING:
             return state.merge({
@@ -61,7 +70,7 @@ function signup(state, action) {
     return state
 }
 
-function clearLoginSignup(state, action) {
+function clearLoginSignup(state: State, action: ClearLoginSignupAction) {
     return state.merge({
         isSigningUp: false,
         isLoggingIn: false,
@@ -69,7 +78,7 @@ function clearLoginSignup(state, action) {
     }).delete('loginError').delete('signupError');
 }
 
-function entityUpdate(state, action) {
+function entityUpdate(state: State, action: Action) {
     let users = action.response.entities.users
     if (users && state.get('id') > 0 && state.get('id') in users) {
         return state.merge({
@@ -79,34 +88,34 @@ function entityUpdate(state, action) {
     return state
 }
 
-function bookmarkedStacks(state, action) {
+function bookmarkedStacks(state: State, action: BookmarkedStacksAction) {
     if (action.status === Status.SUCCESS && action.stackStatus === 'open') {
         return state.set('loadedBookmarkedStacks', true)
     }
     return state
 }
 
-function subscriptions(state, action) {
+function subscriptions(state: State, action: SubscriptionsAction) {
     if (action.status === Status.SUCCESS) {
         return state.set('loadedSubscriptions', true)
     }
     return state
 }
 
-export default function meta(state=Map(), action) {
-    if (action.type === ActionTypes.LOGIN) {
+export default function meta(state=Map<string, any>(), action: Action) {
+    if (action.type === ActionType.LOGIN) {
         return login(state, action)
-    } else if (action.type === ActionTypes.LOGOUT) {
+    } else if (action.type === ActionType.LOGOUT) {
         return logout(state, action)
-    } else if (action.type === ActionTypes.SIGNUP) {
+    } else if (action.type === ActionType.SIGNUP) {
         return signup(state, action)
-    } else if (action.type === ActionTypes.CLEAR_LOGIN_SIGNUP) {
+    } else if (action.type === ActionType.CLEAR_LOGIN_SIGNUP) {
         return clearLoginSignup(state, action)
-    } else if (action.type === ActionTypes.ENTITY_UPDATE) {
+    } else if (action.type === ActionType.ENTITY_UPDATE) {
         return entityUpdate(state, action)
-    } else if (action.type === ActionTypes.BOOKMARKED_STACKS) {
+    } else if (action.type === ActionType.BOOKMARKED_STACKS) {
         return bookmarkedStacks(state, action)
-    } else if (action.type === ActionTypes.SUBSCRIPTIONS) {
+    } else if (action.type === ActionType.SUBSCRIPTIONS) {
         return subscriptions(state, action)
     }
     return state;

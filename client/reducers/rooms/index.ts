@@ -1,33 +1,34 @@
 import { Map, List } from 'immutable'
-import isNumber from 'lodash/isNumber'
-import { ActionTypes, Status } from '../../actions'
-
+import isNumber from 'lodash-es/isNumber'
+import { RoomAction, CommentsAction } from '@actions/room'
+import { ActionType, Status, Action } from '@actions/types'
 import live from './live'
 import navigation from './navigation'
-import { combineReducers, entity, paginate } from '../utils'
+import { combineReducers, entity, paginate } from '@reducers/utils'
+import { State } from '@types'
 
-let meta = entity(ActionTypes.ROOM)
+let meta = entity(ActionType.ROOM)
 
-function mediaItems(state, action) {
-    if (action.type === ActionTypes.DELETE_MEDIA_ITEM) {
+function mediaItems(state: State, action: Action) {
+    if (action.type === ActionType.DELETE_MEDIA_ITEM) {
         if (state.get('ids').includes(action.id)) {
             state = state
                 .update('total', total => total-1)
-                .update('ids', ids => ids.filter(id => id !== action.id))
+                .update('ids', ids => ids.filter((id: number) => id !== action.id))
         }
         return state
     } else {
-        return paginate(ActionTypes.MEDIA_ITEMS)(state, action)
+        return paginate(ActionType.MEDIA_ITEMS)(state, action)
     }
 }
 
-function _isLatestCommentInResult(state, action) {
+function _isLatestCommentInResult(state: State, action: CommentsAction) {
       const latestCommentId = state.get('latestIds', List()).first() || -1
-      return List(action.response.result).findIndex(id => id === latestCommentId) > -1
+      return List((action.response as any).result).findIndex(id => id === latestCommentId) > -1
 }
 
-function comments(state=Map(), action) {
-    if (action.type === ActionTypes.COMMENTS) {
+function comments(state=Map<string, any>(), action: Action) {
+    if (action.type === ActionType.COMMENTS) {
         if (action.status === Status.REQUESTING) {
             state = state.merge({
                 isFetching: true,
@@ -42,13 +43,13 @@ function comments(state=Map(), action) {
                     hasReachedLatest: false
                 })
             }
-        } else if (action.status === Status.SUCCESS) {
+        } else if (action.status === Status.SUCCESS && action.response) {
             state = state.merge({
                 isFetching: false,
                 hasFetched: true
             })
             if (action.fetchType === 'mostRecent') {
-                const hasReachedOldest = action.response.result.length < action.response.limit
+                const hasReachedOldest = action.response.result.length < (action.response.limit as number)
                 return state.merge({
                     ids: List(action.response.result),
                     latestIds: List(action.response.result).slice(0, 5),
@@ -61,7 +62,7 @@ function comments(state=Map(), action) {
                 // if the client HAS loaded the oldest comment and
                 // fetched the limit though, if older comments are requested
                 // 0 will be returned and hasReachedOldest will be triggered.
-                const hasReachedOldest = action.response.result.size < action.response.limit
+                const hasReachedOldest = action.response.result.size < (action.response.limit as number)
                 const hasReachedLatest = hasReachedOldest || _isLatestCommentInResult(state, action)
                 return state.merge({
                     ids: List(action.response.result),
@@ -69,10 +70,10 @@ function comments(state=Map(), action) {
                     hasReachedLatest
                 })
             } else if (action.fetchType === 'before') {
-                if (action.response.result.length < action.response.limit) {
+                if (action.response.result.length < (action.response.limit as number) {
                     state = state.set('hasReachedOldest', true)
                 }
-                state = state.update('ids', List(), ids => ids.concat(List(action.response.result)))
+                state = state.update('ids', List(), ids => ids.concat(List((action.response as any).result)))
             } else if (action.fetchType === 'after') {
                 let resultIds = List(action.response.result)
                 // If the lastest loaded id is in the
@@ -112,7 +113,7 @@ let roomReducer = combineReducers({
 // Maintains object where keys are room ids and values
 // are state dealing with that room. Allows for multiple
 // rooms at a time.
-export default function (state = Map(), action) {
+export default function (state = Map(), action: Action) {
     if (typeof action.roomId === 'undefined') {
         return state
     }
@@ -121,7 +122,7 @@ export default function (state = Map(), action) {
         action.roomId = parseInt(action.roomId, 10)
     }
 
-    if (action.type === ActionTypes.CLEAR_ROOM) {
+    if (action.type === ActionType.CLEAR_ROOM) {
         return state.delete(action.roomId)
     } else {
         return state.update(action.roomId, Map(), roomState => roomReducer(roomState, action))

@@ -32,7 +32,7 @@ export type SearchActionAll =
  * FETCHING
  **********/
 
-interface SearchAction extends ApiCallAction {
+export interface SearchAction extends ApiCallAction {
     type: ActionType.SEARCH
     searchType: SearchType
     query: string
@@ -65,7 +65,7 @@ export function loadSearchResults(query: string, searchType: SearchType): ThunkA
  * RESET
  *******/
 
-interface ClearSearchAction extends GenericAction {
+export interface ClearSearchAction extends GenericAction {
     type: ActionType.CLEAR_SEARCH
 }
 export function clearSearch() {

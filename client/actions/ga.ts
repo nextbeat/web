@@ -22,7 +22,7 @@ export type GAActionAll =
  * ANALYTICS
  ***********/
 
-interface GAIdentifyAction extends AnalyticsAction {
+export interface GAIdentifyAction extends AnalyticsAction {
     type: ActionType.GA
 }
 export function gaIdentify(userId: number): GAIdentifyAction {
@@ -35,7 +35,7 @@ export function gaIdentify(userId: number): GAIdentifyAction {
     }
 }
 
-interface GAPageAction extends AnalyticsAction {
+export interface GAPageAction extends AnalyticsAction {
     type: ActionType.GA
 }
 export function gaPage(): GAPageAction {
@@ -47,7 +47,7 @@ export function gaPage(): GAPageAction {
     }
 }
 
-interface GAEventAction extends AnalyticsAction {
+export interface GAEventAction extends AnalyticsAction {
     type: ActionType.GA
 }
 interface GAEventData {
@@ -78,7 +78,7 @@ interface LogVideoImpressionData {
     authorId: number
     authorUsername: string
 }
-interface LogVideoImpressionAction extends AnalyticsAction {
+export interface LogVideoImpressionAction extends AnalyticsAction {
     type: ActionType.LOG_VIDEO_IMPRESSION
 }
 function performLogVideoImpression({ 

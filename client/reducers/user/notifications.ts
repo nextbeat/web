@@ -1,7 +1,11 @@
-import { Map, Set, List, Iterable, fromJS } from 'immutable'
-import { ActionTypes, Status } from '../../actions'
+import { Map, Set, List } from 'immutable'
+import { ActionType, Status, Action } from '@actions/types'
+import { ActivityAction, ClearNotificationsAction } from '@actions/notifications'
+import { LoginAction } from '@actions/user'
+import { ReceiveActivityEventAction } from '@actions/eddy'
+import { State } from '@types'
 
-function loadActivity(state, action) {
+function loadActivity(state: State, action: ActivityAction) {
     if (action.status === Status.REQUESTING) {
         return state.merge({
             isFetching: true
@@ -21,14 +25,14 @@ function loadActivity(state, action) {
     return state;
 }
 
-function clearNotifications(state, action) {
+function clearNotifications(state: State, action: ClearNotificationsAction) {
     return state
         .delete('activity')
         .delete('isFetching')
         .delete('error');
 }
 
-function login(state, action) {
+function login(state: State, action: LoginAction) {
     if (action.status === Status.SUCCESS) {
         return state.merge({
             unreadCount: action.user.unread_count
@@ -37,19 +41,19 @@ function login(state, action) {
     return state;
 }
 
-function receiveActivityEvent(state, action) {
+function receiveActivityEvent(state: State, action: ReceiveActivityEventAction) {
     return state.update('unreadCount', 0, count => count+1);
 }
 
-export default function notifications(state=Map(), action) {
+export default function notifications(state=Map<string, any>(), action: Action) {
     switch (action.type) {
-        case ActionTypes.ACTIVITY:
+        case ActionType.ACTIVITY:
             return loadActivity(state, action);
-        case ActionTypes.LOGIN:
+        case ActionType.LOGIN:
             return login(state, action);
-        case ActionTypes.RECEIVE_ACTIVITY_EVENT:
+        case ActionType.RECEIVE_ACTIVITY_EVENT:
             return receiveActivityEvent(state, action);
-        case ActionTypes.CLEAR_NOTIFICATIONS:
+        case ActionType.CLEAR_NOTIFICATIONS:
             return clearNotifications(state, action)
     }
     return state;

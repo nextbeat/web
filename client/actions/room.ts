@@ -17,6 +17,7 @@ import {
 } from '@actions/types'
 import { triggerAuthError } from '@actions/app'
 import { loadPaginatedObjects } from '@actions/utils'
+import { selectDetailSection } from '@actions/pages/room'
 import Comment from '@models/entities/comment'
 import Room, { FetchDirection } from '@models/state/room'
 import CurrentUser from '@models/state/currentUser'
@@ -28,6 +29,8 @@ export type RoomActionAll =
     RoomAction |
     MediaItemsAction |
     RoomInfoAction |
+    DeselectCommentAction |
+    GoToCommentAction |
     CommentsAction |
     SendCommentAction |
     PinCommentAction |
@@ -110,18 +113,35 @@ export function getRoomInfo(roomId: number): RoomInfoAction {
 
 /* Comments */
 
+export interface DeselectCommentAction extends GenericAction {
+    type: ActionType.DESELECT_COMMENT
+    roomId: number
+}
+function deselectComment(roomId: number): DeselectCommentAction {
+    return {
+        type: ActionType.DESELECT_COMMENT,
+        roomId
+    }
+}
+
+export interface GoToCommentAction extends GenericAction {
+    type: ActionType.GO_TO_COMMENT
+    roomId: number
+    comment: any
+}
+function performGoToComment(roomId: number, comment: any): GoToCommentAction {
+    return {
+        type: ActionType.GO_TO_COMMENT,
+        roomId,
+        comment
+    }
+}
+
 function goToComment(roomId: number, comment: object): ThunkAction {
     return dispatch => {
-        dispatch({
-            type: ActionType.DESELECT_COMMENT,
-            roomId
-        })
+        dispatch(deselectComment(roomId))
         process.nextTick(() => {
-            dispatch({
-                type: ActionType.GO_TO_COMMENT,
-                roomId,
-                comment
-            })
+            dispatch(performGoToComment(roomId, comment))
         })
     }
 }
@@ -389,7 +409,7 @@ export function unbanUser(roomId: number, username: string): ThunkAction {
     }
 }
 
-interface UseChatAction extends GenericAction {
+export interface UseChatAction extends GenericAction {
     type: ActionType.USE_CHAT
 }
 export function didUseChat(): UseChatAction {
@@ -462,7 +482,7 @@ export function unbookmark(roomId: number): ThunkAction {
  * PLAYBACK
  **********/
 
-interface DidPlayVideoAction extends GenericAction {
+export interface DidPlayVideoAction extends GenericAction {
     type: ActionType.DID_PLAY_VIDEO
     roomId: number
 }
@@ -482,7 +502,7 @@ export function didPlayVideo(roomId: number) {
  * MEDIA ITEM SELECTION
  **********************/
 
-interface SelectMediaItemAction extends GenericAction {
+export interface SelectMediaItemAction extends GenericAction {
     type: ActionType.SELECT_MEDIA_ITEM
     roomId: number
     id: number
@@ -563,7 +583,7 @@ export function goBackward(roomId: number) {
     return navigate(roomId, false);
 }
 
-interface MarkStackAction extends ApiCallAction {
+export interface MarkStackAction extends ApiCallAction {
     type: ActionType.MARK_STACK
 }
 export function markStack(roomId: number, date: Date): MarkStackAction {
@@ -582,7 +602,7 @@ export function markStack(roomId: number, date: Date): MarkStackAction {
  * RESET
  *******/
 
-interface ClearCommentsAction extends GenericAction {
+export interface ClearCommentsAction extends GenericAction {
     type: ActionType.CLEAR_COMMENTS
     roomId: number
 }

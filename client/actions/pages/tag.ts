@@ -22,7 +22,7 @@ export type TagActionAll =
  * FETCHING
  **********/
 
-interface TagAction extends ApiCallAction {
+export interface TagAction extends ApiCallAction {
     type: ActionType.TAG
 }
 export function loadTag(name: string): TagAction {
@@ -39,7 +39,7 @@ interface TagFilterOptions {
     status: 'open' | 'closed' | 'all'
     time: 'all' | 'month' | 'week'
 }
-interface TagStacksAction extends ApiCallAction {
+export interface TagStacksAction extends ApiCallAction {
     type: ActionType.TAG_STACKS
     options: TagFilterOptions
 }
@@ -56,7 +56,7 @@ function fetchStacksForTag(tagName: string, options: TagFilterOptions, paginatio
     }
 }
 
-interface ClearTagStacksAction extends ApiCancelAction {
+export interface ClearTagStacksAction extends ApiCancelAction {
     type: ActionType.CLEAR_TAG_STACKS
 }
 function clearStacksForTag(): ClearTagStacksAction {
@@ -84,7 +84,7 @@ export function loadStacksForTag(name: string, options: TagFilterOptions): Thunk
  * RESET
  *******/
 
-interface ClearTagAction extends ApiCancelAction {
+export interface ClearTagAction extends ApiCancelAction {
     type: ActionType.CLEAR_TAG
 }
 export function clearTag(): ClearTagAction {

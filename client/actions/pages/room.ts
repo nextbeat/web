@@ -47,7 +47,7 @@ function onRoomPageSuccess(store: Store, next: Dispatch, action: RoomPageAction,
     store.dispatch(recordView(stack.id)); 
 }
 
-interface RoomPageAction extends ApiCallAction {
+export interface RoomPageAction extends ApiCallAction {
     type: ActionType.ROOM_PAGE
     jumpToCommentAtDate?: number
 }
@@ -64,7 +64,7 @@ export function loadRoomPage(hid: string, jumpToCommentAtDate?: number): RoomPag
     }
 }
 
-interface MoreStacksAction extends ApiCallAction {
+export interface MoreStacksAction extends ApiCallAction {
     type: ActionType.MORE_STACKS
     stackId: number
 }
@@ -80,7 +80,7 @@ export function loadMoreStacks(stackId: number): MoreStacksAction {
     }
 }
 
-interface SearchChatAction extends ApiCallAction {
+export interface SearchChatAction extends ApiCallAction {
     type: ActionType.SEARCH_CHAT
     roomId: number
     query: string
@@ -117,7 +117,7 @@ export function searchChat(query?: string, forceUpdate=false): ThunkAction {
     }
 }
 
-interface ClearSearchChatAction extends GenericAction {
+export interface ClearSearchChatAction extends GenericAction {
     type: ActionType.CLEAR_SEARCH_CHAT
 }
 export function clearSearchChat(): ClearSearchChatAction {
@@ -126,7 +126,7 @@ export function clearSearchChat(): ClearSearchChatAction {
     }
 }
 
-interface HideSearchChatResultsAction extends GenericAction {
+export interface HideSearchChatResultsAction extends GenericAction {
     type: ActionType.HIDE_SEARCH_CHAT_RESULTS
 }
 function doHideSearchChatResults(): HideSearchChatResultsAction {
@@ -142,7 +142,7 @@ export function hideSearchChatResults(): ThunkAction {
     }
 }
 
-interface SearchSuggestionsAction extends GenericAction {
+export interface SearchSuggestionsAction extends GenericAction {
     type: ActionType.SEARCH_SUGGESTIONS
     roomId: number
 }
@@ -169,7 +169,7 @@ export function getSearchSuggestions(): ThunkAction {
  * CRUD ACTIONS
  **************/
 
-interface DeleteStackAction extends ApiCallAction {
+export interface DeleteStackAction extends ApiCallAction {
     type: ActionType.DELETE_STACK
 }
 function postDeleteStack(id: number): DeleteStackAction {
@@ -204,7 +204,7 @@ function onCloseStackSuccess(store: Store) {
     })
 }
 
-interface CloseStackAction extends ApiCallAction {
+export interface CloseStackAction extends ApiCallAction {
     type: ActionType.CLOSE_STACK
 }
 function postCloseStack(id: number): CloseStackAction {
@@ -229,7 +229,7 @@ export function closeStack(): ThunkAction {
     }
 }
 
-interface DeleteMediaItemAction extends ApiCallAction {
+export interface DeleteMediaItemAction extends ApiCallAction {
     type: ActionType.DELETE_MEDIA_ITEM
     roomId: number
     id: number
@@ -262,7 +262,7 @@ export function deleteMediaItem(id: number): ThunkAction {
  * CHAT
  ******/
 
-interface PromptChatActionsAction extends GenericAction {
+export interface PromptChatActionsAction extends GenericAction {
     type: ActionType.PROMPT_CHAT_ACTIONS
     username: string
 }
@@ -280,7 +280,7 @@ export function promptChatActionsForUser(username: string): ThunkAction {
     }
 }
 
-interface MentionUserAction extends GenericAction {
+export interface MentionUserAction extends GenericAction {
     type: ActionType.MENTION_USER
     username: string
 }
@@ -291,7 +291,7 @@ export function mentionUser(username: string): MentionUserAction {
     }
 }
 
-interface ClearChatMessageAction extends GenericAction {
+export interface ClearChatMessageAction extends GenericAction {
     type: ActionType.CLEAR_CHAT_MESSAGE
 }
 export function clearChatMessage(): ClearChatMessageAction {
@@ -313,7 +313,7 @@ export function resetChat(): ThunkAction {
  * VIEWS
  *******/
 
-interface RecordViewAction extends ApiCallAction {
+export interface RecordViewAction extends ApiCallAction {
     type: ActionType.RECORD_VIEW
 }
 export function recordView(stackId: number): RecordViewAction {
@@ -332,7 +332,7 @@ export function recordView(stackId: number): RecordViewAction {
  * UI SELECTION
  **************/
 
-interface SelectDetailSectionAction extends GenericAction {
+export interface SelectDetailSectionAction extends GenericAction {
     type: ActionType.SELECT_DETAIL_SECTION
     section: 'chat' | 'activity'
 }
@@ -343,7 +343,7 @@ export function selectDetailSection(section: 'chat' | 'activity'): SelectDetailS
     }
 }
 
-interface CloseDetailSectionAction extends GenericAction {
+export interface CloseDetailSectionAction extends GenericAction {
     type: ActionType.CLOSE_DETAIL_SECTION
 }
 export function closeDetailSection(): CloseDetailSectionAction {
@@ -357,7 +357,7 @@ export function closeDetailSection(): CloseDetailSectionAction {
  * RESET
  *******/
 
-interface ClearRoomPageAction extends ApiCancelAction {
+export interface ClearRoomPageAction extends ApiCancelAction {
     type: ActionType.CLEAR_ROOM_PAGE
 }
 function performClearRoomPage() {

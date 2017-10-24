@@ -11,7 +11,7 @@ import upload from './upload'
 import pages from './pages'
 
 import { combineReducers } from './utils'
-import { Status, ActionTypes } from '../actions'
+import { Status, ActionType, Action } from '@actions/types'
 
 const initialEntities = Map({
     stacks: Map(),
@@ -21,16 +21,16 @@ const initialEntities = Map({
     tags: Map()
 })
 
-function entities(state = initialEntities, action) {
+function entities(state = initialEntities, action: Action) {
     if (action.response && action.response.entities) {
         let entities = action.response.entities
         // we want to merge individual entities, but we don't 
         // want to recursively merge their object properties
-        keys(entities).forEach(entityTypeKey => {
+        keys(entities).forEach((entityTypeKey: string) => {
             state = state.update(entityTypeKey, Map(), entityTypeMap => {
-                keys(entities[entityTypeKey]).forEach(entityIdKey => {
+                keys(entities[entityTypeKey]).forEach((entityIdKey: string) => {
                     entityTypeMap = entityTypeMap.update(entityIdKey, Map(), 
-                        entity => entity.merge(entities[entityTypeKey][entityIdKey]) 
+                        (entity: Map<string, any>) => entity.merge(entities[entityTypeKey][entityIdKey]) 
                     )
                 })
                 return entityTypeMap
@@ -42,7 +42,7 @@ function entities(state = initialEntities, action) {
 
 // keep track of ongoing fetch requests, allowing
 // us to cancel them if need be
-function fetches(state = List(), action) {
+function fetches(state = List(), action: Action) {
     if (action.status && action.fetchPromise) {
         if (action.status === Status.REQUESTING) {
             return state.push(Map({ type: action.type, fetchPromise: action.fetchPromise }))
@@ -50,7 +50,7 @@ function fetches(state = List(), action) {
             return state.filter(f => f.get('fetchPromise') !== action.fetchPromise)
         } 
     }
-    if (action.type === ActionTypes.CLEAR_FETCH) {
+    if (action.type === ActionType.CLEAR_FETCH) {
         return state.filter(f => !includes(action.fetchPromises, f.get('fetchPromise')));
     }
 

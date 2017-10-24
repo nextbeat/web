@@ -10,6 +10,7 @@ import {
     Pagination,
     Status
 } from '@actions/types'
+import App from '@models/state/app'
 import * as Schema from '@schemas'
 
 import { NotLoggedInError } from '@errors'
@@ -36,7 +37,7 @@ export type AppActionAll =
  * FETCHING
  **********/
 
-interface TagsAction extends ApiCallAction {
+export interface TagsAction extends ApiCallAction {
     type: ActionType.TAGS
 }
 function fetchTags(pagination: Pagination): TagsAction {
@@ -61,7 +62,7 @@ export function loadTags() {
  * RESIZE
  ********/
 
-interface ResizeAction extends GenericAction {
+export interface ResizeAction extends GenericAction {
     type: ActionType.RESIZE
     width: number
 }
@@ -76,20 +77,20 @@ export function resizeWindow(width: number): ResizeAction {
  * CLEAR
  *******/
 
-interface TriggerAuthErrorAction extends GenericAction {
+export interface TriggerAuthErrorAction extends GenericAction {
     type: ActionType.TRIGGER_AUTH_ERROR
-    status: StatusType
+    status: Status.FAILURE
     error: NotLoggedInError
 }
 export function triggerAuthError(): TriggerAuthErrorAction {
     return {
         type: ActionType.TRIGGER_AUTH_ERROR,
-        status: "failure",
+        status: Status.FAILURE,
         error: new NotLoggedInError()
     }
 }
 
-interface ClearAppAction extends GenericAction {
+export interface ClearAppAction extends GenericAction {
     type: ActionType.CLEAR_APP
 }
 export function clearApp(): ClearAppAction {
@@ -98,7 +99,7 @@ export function clearApp(): ClearAppAction {
     }
 }
 
-interface CleanCacheAction extends GenericAction {
+export interface CleanCacheAction extends GenericAction {
     type: ActionType.CLEAN_CACHE
 }
 export function cleanCache(): CleanCacheAction {
@@ -111,7 +112,7 @@ export function cleanCache(): CleanCacheAction {
  * USER ACTIONS
  **************/
 
-interface PromptModalAction extends GenericAction {
+export interface PromptModalAction extends GenericAction {
     type: ActionType.PROMPT_MODAL
     modalType: string
 }
@@ -122,7 +123,7 @@ export function promptModal(modalType: string): PromptModalAction {
     }
 }
 
-interface CloseModalAction extends GenericAction {
+export interface CloseModalAction extends GenericAction {
     type: ActionType.CLOSE_MODAL
 }
 export function closeModal(): CloseModalAction {
@@ -131,7 +132,7 @@ export function closeModal(): CloseModalAction {
     }
 }
 
-interface PromptDropdownAction extends GenericAction {
+export interface PromptDropdownAction extends GenericAction {
     type: ActionType.PROMPT_DROPDOWN
     dropdownType: string
 }
@@ -142,7 +143,7 @@ export function promptDropdown(dropdownType: string): PromptDropdownAction {
     }
 }
 
-interface CloseDropdownAction extends GenericAction {
+export interface CloseDropdownAction extends GenericAction {
     type: ActionType.CLOSE_DROPDOWN
     dropdownType: string
 }
@@ -155,8 +156,7 @@ export function closeDropdown(dropdownType: string): CloseDropdownAction {
 
 export function toggleDropdown(dropdownType: string): ThunkAction {
     return (dispatch, getState) => {
-        let app = new App(getState())
-        if (app.isActiveDropdown(dropdownType)) {
+        if (App.isActiveDropdown(getState(), dropdownType)) {
             dispatch(closeDropdown(dropdownType))
         } else {
             dispatch(promptDropdown(dropdownType))
@@ -164,7 +164,7 @@ export function toggleDropdown(dropdownType: string): ThunkAction {
     }
 }
 
-interface SelectSidebarAction extends GenericAction {
+export interface SelectSidebarAction extends GenericAction {
     type: ActionType.SELECT_SIDEBAR
 }
 export function selectSidebar(): SelectSidebarAction {
@@ -173,7 +173,7 @@ export function selectSidebar(): SelectSidebarAction {
     }
 }
 
-interface CloseSidebarAction extends GenericAction {
+export interface CloseSidebarAction extends GenericAction {
     type: ActionType.CLOSE_SIDEBAR
 }
 export function closeSidebar(): CloseSidebarAction {
@@ -182,7 +182,7 @@ export function closeSidebar(): CloseSidebarAction {
     }
 }
 
-interface SetVideoVolumeAction extends GenericAction {
+export interface SetVideoVolumeAction extends GenericAction {
     type: ActionType.SET_VIDEO_VOLUME
     volume: number
 }
@@ -193,7 +193,7 @@ export function setVideoVolume(volume: number): SetVideoVolumeAction {
     }
 }
 
-interface CollapseSplashTopbarAction extends GenericAction {
+export interface CollapseSplashTopbarAction extends GenericAction {
     type: ActionType.COLLAPSE_SPLASH_TOPBAR
 }
 export function collapseSplashTopbar(): CollapseSplashTopbarAction {
@@ -202,7 +202,7 @@ export function collapseSplashTopbar(): CollapseSplashTopbarAction {
     }
 }
 
-interface ExpandSplashTopbarAction extends GenericAction {
+export interface ExpandSplashTopbarAction extends GenericAction {
     type: ActionType.EXPAND_SPLASH_TOPBAR
 }
 export function expandSplashTopbar(): ExpandSplashTopbarAction {
@@ -211,7 +211,7 @@ export function expandSplashTopbar(): ExpandSplashTopbarAction {
     }
 }
 
-interface HasNavigatedAction extends GenericAction {
+export interface HasNavigatedAction extends GenericAction {
     type: ActionType.HAS_NAVIGATED
     location: Location
 }
@@ -226,7 +226,7 @@ export function hasNavigated(location: Location): HasNavigatedAction {
  * EVENTS
  ********/
 
-interface OnBeforeUploadAction extends GenericAction {
+export interface OnBeforeUploadAction extends GenericAction {
     type: ActionType.ON_BEFORE_UNLOAD
 }
 export function onBeforeUnload(): OnBeforeUploadAction {

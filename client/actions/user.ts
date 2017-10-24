@@ -40,7 +40,7 @@ export type UserActionAll =
  * SYNC
  ******/
 
-interface SyncStacksAction extends ApiCallAction {
+export interface SyncStacksAction extends ApiCallAction {
     type: ActionType.SYNC_STACKS
     submitting: boolean
 }
@@ -75,7 +75,7 @@ export function syncStacks(status='all', deep=true, newStack?: any): SyncStacksA
 
 type StackStatus = 'open' | 'closed'
 
-interface BookmarkedStacksAction extends ApiCallAction {
+export interface BookmarkedStacksAction extends ApiCallAction {
     type: ActionType.BOOKMARKED_STACKS
     stackStatus: StackStatus
 }
@@ -103,7 +103,7 @@ export function loadBookmarkedStacks(stackStatus: StackStatus): BookmarkedStacks
     })
 }
 
-interface SubscriptionsAction extends ApiCallAction {
+export interface SubscriptionsAction extends ApiCallAction {
     type: ActionType.SUBSCRIPTIONS
 }
 function fetchSubscriptions(pagination: Pagination): SubscriptionsAction {
@@ -154,7 +154,7 @@ function onLoginSuccess(store: Store) {
     store.dispatch(postLogin())
 }
 
-interface LoginAction extends ApiCallAction {
+export interface LoginAction extends ApiCallAction {
     type: ActionType.LOGIN
 }
 function performLogin(username: string, password: string): LoginAction {
@@ -188,7 +188,7 @@ function onLogoutSuccess(store: Store) {
     store.dispatch(unidentifyEddy());
 }
 
-interface LogoutAction extends ApiCallAction {
+export interface LogoutAction extends ApiCallAction {
     type: ActionType.LOGOUT
 }
 function performLogout(pushObject: PushSubscriptionObject): LogoutAction {
@@ -231,7 +231,7 @@ interface Credentials {
     password: string
     username: string
 }
-interface SignupAction extends ApiCallAction {
+export interface SignupAction extends ApiCallAction {
     type: ActionType.SIGNUP
     credentials: Credentials
 }
@@ -269,7 +269,7 @@ function onSubscribeSuccess(store: Store, next: Dispatch, action: SubscribeActio
     }))
 }
 
-interface SubscribeAction extends ApiCallAction {
+export interface SubscribeAction extends ApiCallAction {
     type: ActionType.SUBSCRIBE,
     id: number
 }
@@ -313,7 +313,7 @@ function onUnsubscribeSuccess(store: Store, next: Dispatch, action: UnsubscribeA
     }))
 }
 
-interface UnsubscribeAction extends ApiCallAction {
+export interface UnsubscribeAction extends ApiCallAction {
     type: ActionType.UNSUBSCRIBE,
     id: number
 }
@@ -344,7 +344,7 @@ export function unsubscribe(user: UserEntity): ThunkAction {
  * RESET
  *******/
 
-interface ClearLoginSignupAction extends GenericAction {
+export interface ClearLoginSignupAction extends GenericAction {
     type: ActionType.CLEAR_LOGIN_SIGNUP
 }
 function clearLoginSignup(): ClearLoginSignupAction {
@@ -361,7 +361,7 @@ export function clearSignup() {
     return clearLoginSignup()
 }
 
-interface ClearClosedBookmarkedStacksAction extends GenericAction {
+export interface ClearClosedBookmarkedStacksAction extends GenericAction {
     type: ActionType.CLEAR_CLOSED_BOOKMARKED_STACKS
     stackStatus: StackStatus
 }

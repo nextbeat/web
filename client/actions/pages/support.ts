@@ -6,7 +6,7 @@ export type SupportActionAll =
     SendPasswordResetRequestAction |
     SendEmailUnsubscribeRequestAction 
 
-interface ValidatePasswordResetTokenAction extends ApiCallAction {
+export interface ValidatePasswordResetTokenAction extends ApiCallAction {
     type: ActionType.VALIDATE_PASSWORD_RESET_TOKEN
 }
 export function validatePasswordResetToken(token: string): ValidatePasswordResetTokenAction {
@@ -20,7 +20,7 @@ export function validatePasswordResetToken(token: string): ValidatePasswordReset
     }
 }
 
-interface ResetPasswordAction extends ApiCallAction {
+export interface ResetPasswordAction extends ApiCallAction {
     type: ActionType.RESET_PASSWORD
 }
 export function resetPassword(password: string, passwordConfirm: string, token: string): ResetPasswordAction {
@@ -38,7 +38,7 @@ export function resetPassword(password: string, passwordConfirm: string, token: 
     }
 }
 
-interface SendPasswordResetRequestAction extends ApiCallAction {
+export interface SendPasswordResetRequestAction extends ApiCallAction {
     type: ActionType.SEND_PASSWORD_RESET_REQUEST
 }
 export function sendPasswordResetRequest(email: string): SendPasswordResetRequestAction {
@@ -52,7 +52,7 @@ export function sendPasswordResetRequest(email: string): SendPasswordResetReques
     }
 }
 
-interface SendEmailUnsubscribeRequestAction extends ApiCallAction {
+export interface SendEmailUnsubscribeRequestAction extends ApiCallAction {
     type: ActionType.SEND_EMAIL_UNSUBSCRIBE_REQUEST
 }
 export function sendEmailUnsubscribeRequest(uuid: string, signature: string): SendEmailUnsubscribeRequestAction {

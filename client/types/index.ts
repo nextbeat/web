@@ -1,12 +1,12 @@
-import { Map } from 'immutable'
+import { Map, List } from 'immutable'
 import * as React from 'react'
 import { Store as ReduxStore, Dispatch as ReduxDispatch } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
 
-import { GenericAction } from '@actions/types'
+import { Action } from '@actions/types'
 
 export type State = Map<string, any>
-export type Reducer = (state: State, action: GenericAction) => State
+export type Reducer<S> = (state: S, action: Action) => S
 export type Store = ReduxStore<State>
 export type Dispatch = ReduxDispatch<State>
 

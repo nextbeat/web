@@ -7,14 +7,14 @@ import {
     ApiCancelAction,
     GenericAction,
     ThunkAction,
-    Status,
-    UploadType
+    Status
 } from '@actions/types'
 import { syncStacks } from '@actions/user'
 import { clearFileUpload } from '@actions/upload'
 import Room from '@models/state/room'
 import EditRoom, { RoomFields } from '@models/state/pages/editRoom'
 import * as Schemas from '@schemas'
+import { UploadType } from '@upload'
 
 export type EditRoomActionAll = 
     EditRoomAction |
@@ -170,7 +170,7 @@ export function useDefaultThumbnail(): ThunkAction {
  * RESET
  *******/
 
-export interface ClearEditRoomAction extends ApiCancelAction {
+export interface ClearEditRoomAction extends GenericAction {
     type: ActionType.CLEAR_EDIT_ROOM
 }
 export function clearEditRoom(): ClearEditRoomAction {

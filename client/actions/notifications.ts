@@ -2,13 +2,13 @@ import { ActionType, ApiCancelAction, ApiCallAction } from './types'
 
 export type NotificationActionAll = 
     ActivityAction |
-    ClearActivityAction
+    ClearNotificationsAction
 
 /*******************
  * FETCHING ACTIVITY
  *******************/
 
-interface ActivityAction extends ApiCallAction {
+export interface ActivityAction extends ApiCallAction {
     type: ActionType.ACTIVITY
 }
 function fetchActivity(): ActivityAction {
@@ -31,7 +31,7 @@ export function loadActivity(): ActivityAction {
  * CLEAR
  *******/
 
-interface ClearActivityAction extends ApiCancelAction {
+export interface ClearNotificationsAction extends ApiCancelAction {
     type: ActionType.CLEAR_NOTIFICATIONS
 }
 export function clearNotifications() {

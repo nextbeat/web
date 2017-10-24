@@ -9,11 +9,11 @@ import {
 } from '@reducers/utils'
 
 
-let meta: Reducer = (state, action) => {
+function meta(state: State, action: Action) {
     state = entity(ActionType.SECTION)(state, action).delete('id')
     // add extra info to meta state
     if (action.type === ActionType.SECTION && action.status === Status.SUCCESS) {
-        return state.merge(action.rawResponse.section)
+        return state.merge((action.rawResponse as any).section)
     }
     return state
 }

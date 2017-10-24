@@ -7,7 +7,7 @@ import search from './search'
 import section from './section'
 import support from './support'
 import tag from './tag'
-import { combineReducers } from '../utils'
+import { combineReducers } from '@reducers/utils'
 
 export default combineReducers({
     editRoom,

@@ -64,7 +64,12 @@ export interface GenericAction extends AnyAction {
 
 export interface ApiCallAction extends GenericAction {
     API_CALL: ApiCall
-    response?: object
+    response?: { 
+        result: any
+        entities: { [key: string]: any }
+        limit?: number
+        page?: number
+    }
     rawResponse?: object
 }
 
@@ -273,6 +278,11 @@ import { SectionActionAll } from './pages/section'
 import { SupportActionAll } from './pages/support'
 import { TagActionAll } from './pages/tag'
 
+interface OtherAction extends GenericAction {
+    type: ActionType.ENTITY_UPDATE | ActionType.CLEAR_FETCH
+}
+
+
 export type Action = 
     AppActionAll |
     EddyActionAll |
@@ -280,6 +290,7 @@ export type Action =
     NotificationActionAll |
     PushActionAll |
     RoomActionAll |
+    UploadActionAll |
     UserActionAll |
     EditProfileActionAll |
     EditRoomActionAll |
@@ -288,6 +299,6 @@ export type Action =
     RoomPageActionAll |
     SectionActionAll |
     SupportActionAll |
-    TagActionAll
-
+    TagActionAll |
+    OtherAction
 

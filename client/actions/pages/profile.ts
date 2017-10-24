@@ -24,7 +24,7 @@ function onProfileSuccess(store: Store, next: Dispatch, action: ProfileAction, r
     store.dispatch(loadStacksForUser(profile.username))
 }
 
-interface ProfileAction extends ApiCallAction {
+export interface ProfileAction extends ApiCallAction {
     type: ActionType.USER
 }
 export function loadProfile(username: string) {

@@ -1,23 +1,23 @@
 import { Map, List } from 'immutable'
-import { ActionTypes, Status } from '../../actions'
-import { paginate } from '../utils'
+import { ActionType, Status, Action } from '@actions/types'
+import { paginate } from '@reducers/utils'
 
-export default function subscriptions(state=Map(), action) {
+export default function subscriptions(state=Map<string, any>(), action: Action) {
 
-    if (action.type === ActionTypes.SUBSCRIPTIONS) {
+    if (action.type === ActionType.SUBSCRIPTIONS) {
 
-        state = paginate(ActionTypes.SUBSCRIPTIONS)(state, action)
+        state = paginate(ActionType.SUBSCRIPTIONS)(state, action)
         // We don't need (or want) the usual pagination metadata here
         return state.delete('beforeDate').delete('limit').delete('page').delete('total');
 
-    } else if (action.type === ActionTypes.SUBSCRIBE && action.status === Status.SUCCESS) {
+    } else if (action.type === ActionType.SUBSCRIBE && action.status === Status.SUCCESS) {
 
         if (state.get('ids', List()).includes(action.id)) {
             return state;
         }
         return state.update('ids', List(), ids => ids.unshift(action.id));
 
-    } else if (action.type === ActionTypes.UNSUBSCRIBE && action.status === Status.SUCCESS) {
+    } else if (action.type === ActionType.UNSUBSCRIBE && action.status === Status.SUCCESS) {
 
         const index = state.get('ids', List()).indexOf(action.id);
         if (index === -1) {
