@@ -1,41 +1,40 @@
-import React from 'react'
+import * as React from 'react'
 import { hydrate } from 'react-dom'
 import { Provider } from 'react-redux'
 import { Router, Route, browserHistory, match } from 'react-router'
-import { AppContainer } from 'react-hot-loader'
 import { Map, fromJS } from 'immutable'
-import Promise from 'bluebird'
-import $ from 'jquery'
-import configureStore from './store'
+import * as Promise from 'bluebird'
+import * as $ from 'jquery'
+
+import { configureStore } from './store'
 import routes from '../routes'
 
 import './layout/main.scss'
 
 // require.ensure shim for server
-if (typeof require.ensure !== "function") require.ensure = (d,c) => c(require)
+if (typeof require.ensure !== "function") require.ensure = (d: any, c: any) => c(require)
 
 // configure bluebird
-global.Promise = Promise
-Promise.config({
-    cancellation: true
-})
+// Promise.config({
+//     cancellation: true
+// })
 
 // expose jQuery globally and add plugins
-window.$ = window.jQuery = $;
+(window as any).$ = (window as any).jQuery = $;
 require('dotdotdot');
 require('jquery-bez');
 
-let initialState = window.__INITIAL_STATE__
-const store = configureStore(fromJS(initialState))
+let initialState = (window as any).__INITIAL_STATE__
 
 // Initialize the command queue in case analytics.js hasn't loaded yet.
-window.ga = window.ga || ((...args) => (ga.q = ga.q || []).push(args));
+(window as any).ga = (window as any).ga || ((...args: any[]) => (ga.q = ga.q || []).push(args));
 // Load rest of analytics module asynchronously
-require.ensure([], (require) => {
+require.ensure([], (require: any) => {
     var analytics = require('./analytics');
     analytics.init(initialState.app.googleAnalyticsId);
 })
 
+let store = configureStore(fromJS(initialState))
 let r = routes(store)
 
 // Since we use async routing, we need to resolve the async behavior

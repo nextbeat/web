@@ -27,6 +27,6 @@ export const Metrics = {
 }
 
 /* Gets number from string like dimensionX or metricY */
-export function getDefinitionIndex(definition) {
-    return parseInt(/\d+$/.exec(definition)[0], 10)
+export function getDefinitionIndex(definition: any) {
+    return parseInt((/\d+$/.exec(definition) as any[])[0], 10)
 }

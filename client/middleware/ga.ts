@@ -1,11 +1,13 @@
-import { GATypes, GA } from '../actions'
-import { Dimensions } from '../analytics/definitions'
-import { createFunctionWithTimeout } from '../utils'
-import assign from 'lodash/assign'
-import get from 'lodash/get'
-import pickBy from 'lodash/pickBy'
+import assign from 'lodash-es/assign'
+import get from 'lodash-es/get'
+import pickBy from 'lodash-es/pickBy'
 import { parse } from 'querystring'
-import fetch from 'isomorphic-fetch'
+import * as fetch from 'isomorphic-fetch'
+
+import { AnalyticsEventType, Action, AnalyticsCall } from '@actions/types'
+import { Dimensions } from '@analytics/definitions'
+import { createFunctionWithTimeout } from '@utils'
+import { Dispatch, Store } from '@types'
 
 /**
  * Middleware which handles Google Analytics session tracking.
@@ -13,7 +15,7 @@ import fetch from 'isomorphic-fetch'
  * function in analytics.js.
  */
 
-const CAMPAIGN_MAP = {
+const CAMPAIGN_MAP: any = {
     'e1': {
         'campaignName': 'july16_followup',
         'campaignSource': 'nextbeat',
@@ -56,9 +58,9 @@ const CAMPAIGN_MAP = {
     }
 }
 
-function parseQuery(queryString) {
+function parseQuery(queryString: string) {
     // search query string for campaign-related parameters
-    const source = get(parse(queryString), 's', '')
+    const source = get(parse(queryString), 's', '') as string
     if (source in CAMPAIGN_MAP) {
         let fields = CAMPAIGN_MAP[source]
         // set campaign-related parameters
@@ -69,13 +71,13 @@ function parseQuery(queryString) {
     
 }
 
-function handleIdentify(data) {
+function handleIdentify(data: AnalyticsCall) {
     const user = data.user
     ga('set', 'userId', user.get('id'))
     ga('set', Dimensions.USER_ID, String(user.get('id')))
 }
 
-function handlePage(data) {
+function handlePage(data: AnalyticsCall) {
     ga('set', 'page', document.location.pathname)
 
     if (document.location.search.length > 0) {
@@ -85,8 +87,8 @@ function handlePage(data) {
     ga('send', 'pageview')
 }
 
-function handleEvent(data) {
-    let eventData = {
+function handleEvent(data: AnalyticsCall) {
+    let eventData: any = {
         eventCategory: data.category,
         eventAction: data.action,
         eventLabel: data.label,
@@ -103,25 +105,25 @@ function handleEvent(data) {
     ga('send', 'event', eventData)
 }
 
-export default store => next => action => {
+export default (store: Store) => (next: Dispatch) => (action: Action) => {
 
-    const data = action[GA]
+    const data = action.GA as AnalyticsCall
     if (typeof data === 'undefined') {
         return next(action)
     }
 
     // send the action without the GA attribute
     let newAction = assign({}, action)
-    delete newAction[GA];
+    delete newAction.GA
     next(newAction);
 
     // trigger the analytics call based on the type
     switch (data.type) {
-        case GATypes.IDENTIFY:
+        case 'event':
             return handleIdentify(data)
-        case GATypes.PAGE:
+        case 'page':
             return handlePage(data)
-        case GATypes.EVENT:
+        case 'identify':
             return handleEvent(data)
     }
 }

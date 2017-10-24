@@ -3,7 +3,7 @@
  * https://philipwalton.com/articles/the-google-analytics-setup-i-use-on-every-site-i-build/
  */
 
-import forOwn from 'lodash/forOwn'
+import forOwn from 'lodash-es/forOwn'
 
 import { Dimensions, Metrics, getDefinitionIndex } from './definitions'
 import { generateUuid } from '../utils'
@@ -26,7 +26,7 @@ const TRACKING_VERSION = '2';
  */
 const NULL_VALUE = '(not set)';
 
-export function init(trackerId) {
+export function init(trackerId: string) {
     createTracker(trackerId)
     trackCustomDimensions()
     requireAutotrackPlugins()
@@ -34,7 +34,7 @@ export function init(trackerId) {
     sendNavigationTimingMetrics()
 }
 
-function createTracker(trackerId) {
+function createTracker(trackerId: string) {
     ga('create', trackerId);
 
     // Ensures all hits are sent via `navigator.sendBeacon()`.
@@ -51,19 +51,17 @@ function trackCustomDimensions() {
     })
 
     // Adds tracking of dimensions known at page load time.
-    ga((tracker) => {
-        tracker.set({
-            [Dimensions.TRACKING_VERSION]: TRACKING_VERSION,
-            [Dimensions.CLIENT_ID]: tracker.get('clientId'),
-            [Dimensions.WINDOW_ID]: generateUuid(),
-        });
+    ga((tracker: UniversalAnalytics.Tracker) => {
+        tracker.set(Dimensions.TRACKING_VERSION, TRACKING_VERSION)
+        tracker.set(Dimensions.CLIENT_ID, tracker.get('clientId'))
+        tracker.set(Dimensions.WINDOW_ID, generateUuid())
     });
 
     // Adds tracking to record each the type, time, uuid, and visibility state
     // of each hit immediately before it's sent.
-    ga((tracker) => {
-        const originalBuildHitTask = tracker.get('buildHitTask');
-        tracker.set('buildHitTask', (model) => {
+    ga((tracker: UniversalAnalytics.Tracker) => {
+        const originalBuildHitTask: any = tracker.get('buildHitTask');
+        tracker.set('buildHitTask', (model: any) => {
             model.set(Dimensions.HIT_ID, generateUuid(), true);
             model.set(Dimensions.HIT_TIME, String(+new Date), true);
             model.set(Dimensions.HIT_TYPE, model.get('hitType'), true);
@@ -85,7 +83,7 @@ function requireAutotrackPlugins() {
         stripQuery: true,
         queryDimensionIndex: getDefinitionIndex(Dimensions.URL_QUERY_PARAMS),
         trailingSlash: 'remove',
-        urlFieldsFilter: ((fieldsObj, parseUrl) => {
+        urlFieldsFilter: ((fieldsObj: any, parseUrl: any) => {
             // Strip media item index from room urls
             // TODO: include as dimension
             fieldsObj.page = parseUrl(fieldsObj.page).pathname
@@ -118,7 +116,7 @@ function sendNavigationTimingMetrics() {
 
     // In some edge cases browsers return very obviously incorrect NT values,
     // e.g. 0, negative, or future times. This validates values before sending.
-    const allValuesAreValid = (...values) => {
+    const allValuesAreValid = (...values: any[]) => {
         return values.every((value) => value > 0 && value < 6e6);
     };
 
