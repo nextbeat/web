@@ -1,7 +1,14 @@
 import { Map } from 'immutable'
-import { ActionTypes, Status } from '../../../actions'
+import { ActionType, Status, Action } from '@actions/types'
+import { 
+    ValidatePasswordResetTokenAction, 
+    ResetPasswordAction, 
+    SendPasswordResetRequestAction, 
+    SendEmailUnsubscribeRequestAction 
+} from '@actions/pages/support'
+import { State } from '@types'
 
-function validatePasswordResetToken(state, action) {
+function validatePasswordResetToken(state: State, action: ValidatePasswordResetTokenAction) {
     switch (action.status) {
         case Status.REQUESTING:
             return state.merge({
@@ -11,7 +18,7 @@ function validatePasswordResetToken(state, action) {
             return state.merge({
                 isValidatingToken: false,
                 tokenValidated: true,
-                tokenUsername: action.response.username
+                tokenUsername: (action.response as any).username
             })
         case Status.FAILURE:
             return state.merge({
@@ -23,7 +30,7 @@ function validatePasswordResetToken(state, action) {
     return state
 }
 
-function resetPassword(state, action) {
+function resetPassword(state: State, action: ResetPasswordAction) {
     switch (action.status) {
         case Status.REQUESTING:
             return state.merge({
@@ -44,7 +51,7 @@ function resetPassword(state, action) {
     return state;
 }
 
-function sendPasswordResetRequest(state, action) {
+function sendPasswordResetRequest(state: State, action: SendPasswordResetRequestAction) {
     switch (action.status) {
         case Status.REQUESTING:
             return state.merge({
@@ -65,7 +72,7 @@ function sendPasswordResetRequest(state, action) {
     return state;
 }
 
-function sendEmailUnsubscribeRequest(state, action) {
+function sendEmailUnsubscribeRequest(state: State, action: SendEmailUnsubscribeRequestAction) {
     switch (action.status) {
         case Status.REQUESTING:
             return state.merge({
@@ -86,15 +93,15 @@ function sendEmailUnsubscribeRequest(state, action) {
     return state;
 }
 
-export default function(state=Map(), action) {
+export default function(state=Map<string, any>(), action: Action) {
     switch (action.type) {
-        case ActionTypes.VALIDATE_PASSWORD_RESET_TOKEN:
+        case ActionType.VALIDATE_PASSWORD_RESET_TOKEN:
             return validatePasswordResetToken(state, action)
-        case ActionTypes.RESET_PASSWORD:
+        case ActionType.RESET_PASSWORD:
             return resetPassword(state, action)
-        case ActionTypes.SEND_PASSWORD_RESET_REQUEST:
+        case ActionType.SEND_PASSWORD_RESET_REQUEST:
             return sendPasswordResetRequest(state, action)
-        case ActionTypes.SEND_EMAIL_UNSUBSCRIBE_REQUEST:
+        case ActionType.SEND_EMAIL_UNSUBSCRIBE_REQUEST:
             return sendEmailUnsubscribeRequest(state, action)
     }
     return state;

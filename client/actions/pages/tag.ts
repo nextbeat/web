@@ -1,5 +1,5 @@
 import assign from 'lodash-es/assign'
-import { Map } from 'immutable'
+import { Map, fromJS } from 'immutable'
 
 import { 
     ActionType, 
@@ -38,6 +38,7 @@ export function loadTag(name: string): TagAction {
 interface TagFilterOptions {
     status: 'open' | 'closed' | 'all'
     time: 'all' | 'month' | 'week'
+    sort: string
 }
 export interface TagStacksAction extends ApiCallAction {
     type: ActionType.TAG_STACKS
@@ -71,7 +72,7 @@ function clearStacksForTag(): ClearTagStacksAction {
 export function loadStacksForTag(name: string, options: TagFilterOptions): ThunkAction {
     return (dispatch, getState) => {
         const filters = Tag.get(getState(), 'filters')
-        let optionsMap = filters.merge(Map(options));
+        let optionsMap = filters.merge(fromJS(options));
         if (!optionsMap.equals(filters)) {
             dispatch(clearStacksForTag())
         }

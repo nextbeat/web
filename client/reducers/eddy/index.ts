@@ -1,7 +1,9 @@
-import { Map } from 'immutable'
-import { ActionTypes, Status } from '../../actions'
+import { Map, fromJS } from 'immutable'
+import { ActionType, Status, Action } from '@actions/types'
+import { ConnectEddyAction, ReconnectEddyAction } from '@actions/eddy'
+import { State } from '@types'
 
-function connectEddy(state, action) {
+function connectEddy(state: State, action: ConnectEddyAction) {
     if (action.client) {
         state = state.set('client', action.client);
     }
@@ -13,7 +15,7 @@ function connectEddy(state, action) {
     return state;
 }
 
-function reconnectEddy(state, action) {
+function reconnectEddy(state: State, action: ReconnectEddyAction) {
     switch (action.status) {
         case Status.REQUESTING:
         case Status.FAILURE:
@@ -24,16 +26,16 @@ function reconnectEddy(state, action) {
     return state;
 }
 
-const initialState = {
+const initialState = fromJS({
     client: null,
     hasLostConnection: false
-}
+})
 
-export default function(state = initialState, action) {
+export default function(state = initialState, action: Action) {
     switch (action.type) {
-        case ActionTypes.CONNECT_EDDY:
+        case ActionType.CONNECT_EDDY:
             return connectEddy(state, action);
-        case ActionTypes.RECONNECT_EDDY:
+        case ActionType.RECONNECT_EDDY:
             return reconnectEddy(state, action);
     }
     return state;

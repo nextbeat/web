@@ -31,6 +31,8 @@ export type AppActionAll =
     CollapseSplashTopbarAction |
     ExpandSplashTopbarAction |
     HasNavigatedAction |
+    AddSidebarAnimationAction |
+    RemoveSidebarAnimationAction |
     OnBeforeUploadAction 
 
 /**********
@@ -219,6 +221,29 @@ export function hasNavigated(location: Location): HasNavigatedAction {
     return {
         type: ActionType.HAS_NAVIGATED,
         location
+    }
+}
+
+
+/************
+ * UI ACTIONS
+ ************/
+
+export interface AddSidebarAnimationAction extends GenericAction {
+    type: ActionType.ADD_SIDEBAR_ANIMATION
+}
+export function addSidebarAnimation(): AddSidebarAnimationAction {
+    return {
+        type: ActionType.ADD_SIDEBAR_ANIMATION
+    }
+}
+
+export interface RemoveSidebarAnimationAction extends GenericAction {
+    type: ActionType.REMOVE_SIDEBAR_ANIMATION
+}
+export function removeSidebarAnimation(): RemoveSidebarAnimationAction {
+    return {
+        type: ActionType.REMOVE_SIDEBAR_ANIMATION
     }
 }
 

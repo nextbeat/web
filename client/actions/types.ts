@@ -297,6 +297,7 @@ export type Action =
     HomeActionAll |
     ProfileActionAll |
     RoomPageActionAll |
+    SearchActionAll |
     SectionActionAll |
     SupportActionAll |
     TagActionAll |

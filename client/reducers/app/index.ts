@@ -1,14 +1,14 @@
 import { Map, List, Set } from 'immutable'
-import inRange from 'lodash/inRange'
-import includes from 'lodash/includes'
-import find from 'lodash/find'
+import inRange from 'lodash-es/inRange'
+import includes from 'lodash-es/includes'
+import find from 'lodash-es/find'
 
-import { ActionTypes, Status } from '../../actions'
-import { combineReducers } from '../utils'
-import { NotLoggedInError } from '../../errors'
+import { ActionType, Status, Action } from '@actions/types'
+import { combineReducers } from '@reducers/utils'
+import { NotLoggedInError } from '@errors'
 
-function tags(state = Map(), action) {
-    if (action.type === ActionTypes.TAGS) {
+function tags(state = Map(), action: Action) {
+    if (action.type === ActionType.TAGS) {
         if (action.status === Status.REQUESTING) {
             return state.merge({
                 isFetching: true
@@ -16,7 +16,7 @@ function tags(state = Map(), action) {
         } else if (action.status === Status.SUCCESS) {
             return state.merge({
                 isFetching: false,
-                ids: List(action.response.result)
+                ids: List((action.response as any).result)
             })
         } else if (action.status === Status.FAILURE) {
             return state.merge({
@@ -28,17 +28,21 @@ function tags(state = Map(), action) {
     return state
 }
 
-function authError(state = false, action) {
+function authError(state = false, action: Action) {
     if (action.status && action.status === Status.FAILURE && action.error instanceof NotLoggedInError) {
         return true;
-    } else if (action.type === ActionTypes.CLEAR_LOGIN_SIGNUP 
-                || action.type === ActionTypes.LOGIN
-                || action.type === ActionTypes.PROMPT_MODAL) {
+    } else if (action.type === ActionType.CLEAR_LOGIN_SIGNUP 
+                || action.type === ActionType.LOGIN
+                || action.type === ActionType.PROMPT_MODAL) {
         return false;
     }
     return state;
 }
 
+interface WidthRange {
+    range: [number, number]
+    type: string
+}
 const WIDTH_RANGES = [
     { range: [0, 501], type: 'small' },
     { range: [501, 801], type: 'medium' },
@@ -46,42 +50,42 @@ const WIDTH_RANGES = [
     { range: [1101, Infinity], type: 'large' } 
 ]
 
-function state(state = Map(), action) {
-    if (action.type === ActionTypes.PROMPT_MODAL) {
+function state(state = Map(), action: Action) {
+    if (action.type === ActionType.PROMPT_MODAL) {
         return state.set('modal', action.modalType)
-    } else if (action.type === ActionTypes.CLOSE_MODAL) {
+    } else if (action.type === ActionType.CLOSE_MODAL) {
         return state.delete('modal')
-    } else if (action.type === ActionTypes.PROMPT_DROPDOWN) {
+    } else if (action.type === ActionType.PROMPT_DROPDOWN) {
         // dropdowns is a Set of active dropdowns (as opposed to modal, which tracks a single modal)
-        return state.update('dropdowns', Set(), d => d.add(action.dropdownType))
-    } else if (action.type === ActionTypes.CLOSE_DROPDOWN) {
-        return state.update('dropdowns', Set(), d => d.remove(action.dropdownType))
-    } else if (action.type === ActionTypes.SELECT_SIDEBAR) {
+        return state.update('dropdowns', Set(), (d: Set<string>) => d.add(action.dropdownType))
+    } else if (action.type === ActionType.CLOSE_DROPDOWN) {
+        return state.update('dropdowns', Set(), (d: Set<string>) => d.remove(action.dropdownType))
+    } else if (action.type === ActionType.SELECT_SIDEBAR) {
         return state.set('overlay', 'sidebar')
-    } else if (action.type === ActionTypes.CLOSE_SIDEBAR) {
+    } else if (action.type === ActionType.CLOSE_SIDEBAR) {
         return state.delete('overlay')
-    } else if (action.type === ActionTypes.ADD_SIDEBAR_ANIMATION) {
+    } else if (action.type === ActionType.ADD_SIDEBAR_ANIMATION) {
         return state.set('sidebarAnimating', true)
-    } else if (action.type === ActionTypes.REMOVE_SIDEBAR_ANIMATION) {
+    } else if (action.type === ActionType.REMOVE_SIDEBAR_ANIMATION) {
         return state.set('sidebarAnimating', false)
-    } else if (action.type === ActionTypes.COLLAPSE_SPLASH_TOPBAR) {
+    } else if (action.type === ActionType.COLLAPSE_SPLASH_TOPBAR) {
         return state.set('splashTopbarCollapsed', true)
-    } else if (action.type === ActionTypes.EXPAND_SPLASH_TOPBAR) {
+    } else if (action.type === ActionType.EXPAND_SPLASH_TOPBAR) {
         return state.set('splashTopbarCollapsed', false)
-    } else if (action.type === ActionTypes.CLEAR_HOME) {
+    } else if (action.type === ActionType.CLEAR_HOME) {
         return state.set('splashTopbarCollapsed', false)
-    } else if (action.type === ActionTypes.SELECT_DETAIL_SECTION) {
+    } else if (action.type === ActionType.SELECT_DETAIL_SECTION) {
         // set as overlay if small or medium screen size
         if (includes(['small', 'medium'], state.get('width'))) {
             return state.set('overlay', action.section)
         }
-    } else if (action.type === ActionTypes.CLOSE_DETAIL_SECTION) {
+    } else if (action.type === ActionType.CLOSE_DETAIL_SECTION) {
         return state.delete('overlay')
-    } else if (action.type === ActionTypes.SET_VIDEO_VOLUME) {
+    } else if (action.type === ActionType.SET_VIDEO_VOLUME) {
         return state.set('volume', action.volume)
-    } else if (action.type === ActionTypes.RESIZE) {
+    } else if (action.type === ActionType.RESIZE) {
         const width = Math.max(action.width, 0)
-        const size = find(WIDTH_RANGES, r => inRange(width, ...r.range))['type'];
+        const size = (find(WIDTH_RANGES, (r: WidthRange) => inRange(width, r.range[0], r.range[1])) as any)['type'];
         state = state.merge({
             width: size
         })
@@ -93,21 +97,22 @@ function state(state = Map(), action) {
     return state
 }
 
-function location(state = null, action) {
-    if (action.type === ActionTypes.HAS_NAVIGATED) {
+function location(state = null, action: Action) {
+    if (action.type === ActionType.HAS_NAVIGATED) {
         return action.location
     }
     return state
 }
 
 const reducers = {
+    location,
     tags,
     authError,
     state
 }
 
-export default function(state = Map(), action) {
-    if (action.type === ActionTypes.CLEAR_APP) {
+export default function(state = Map(), action: Action) {
+    if (action.type === ActionType.CLEAR_APP) {
         return Map()
     } else {
         return combineReducers(reducers)(state, action)

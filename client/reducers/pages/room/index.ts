@@ -1,19 +1,19 @@
-import { Map, List, Set } from 'immutable'
-import mapValues from 'lodash/mapValues'
-import { ActionTypes, Status } from '../../../actions'
-
+import { Map, List, Set, fromJS } from 'immutable'
+import mapValues from 'lodash-es/mapValues'
+import { ActionType, Status, Action } from '@actions/types'
 import chat from './chat'
-import { combineReducers, entity, paginate } from '../../utils'
+import { combineReducers, entity, paginate } from '@reducers/utils'
+import { State } from '@types'
 
-const meta = entity(ActionTypes.ROOM_PAGE);
+const meta = entity(ActionType.ROOM_PAGE);
 
-function more(state = Map(), action) {
-    if (action.type === ActionTypes.MORE_STACKS) {
+function more(state = Map<string, any>(), action: Action) {
+    if (action.type === ActionType.MORE_STACKS) {
         if (action.status === Status.REQUESTING) {
             return state.merge({
                 isFetching: true
             }).delete('error').delete('ids')
-        } else if (action.status === Status.SUCCESS) {
+        } else if (action.status === Status.SUCCESS && action.response) {
             return state.merge({
                 isFetching: false,
                 ids: action.response.result
@@ -28,9 +28,9 @@ function more(state = Map(), action) {
     return state;
 }
 
-const initialUIState = Map({ detailSection: 'chat' })
-function ui(state = initialUIState, action) {
-    if (action.type === ActionTypes.SELECT_DETAIL_SECTION) {
+const initialUIState = fromJS({ detailSection: 'chat' })
+function ui(state = initialUIState, action: Action) {
+    if (action.type === ActionType.SELECT_DETAIL_SECTION) {
         return state.merge({
             detailSection: action.section
         })
@@ -38,8 +38,8 @@ function ui(state = initialUIState, action) {
     return state
 }
 
-function actions(state = Map(), action) {
-    if (action.type === ActionTypes.DELETE_STACK) {
+function actions(state = Map<string, any>(), action: Action) {
+    if (action.type === ActionType.DELETE_STACK) {
         if (action.status === Status.REQUESTING) {
             return state.merge({
                 isDeleting: true,
@@ -57,7 +57,7 @@ function actions(state = Map(), action) {
                 deleteError: action.error.message
             })
         }
-    } else if (action.type === ActionTypes.CLOSE_STACK) {
+    } else if (action.type === ActionType.CLOSE_STACK) {
         if (action.status === Status.REQUESTING) {
             return state.merge({
                 isClosing: true,
@@ -75,7 +75,7 @@ function actions(state = Map(), action) {
                 closeError: action.error.message
             })
         }
-    } else if (action.type === ActionTypes.DELETE_MEDIA_ITEM) {
+    } else if (action.type === ActionType.DELETE_MEDIA_ITEM) {
         if (action.status === Status.REQUESTING) {
             return state.merge({
                 isDeletingMediaItem: true,
@@ -98,25 +98,25 @@ function actions(state = Map(), action) {
     return state
 }
 
-function unread(state=Map(), action) {
-    if (action.type === ActionTypes.ROOM_PAGE && action.status === Status.SUCCESS) {
+function unread(state=Map<string, any>(), action: Action) {
+    if (action.type === ActionType.ROOM_PAGE && action.status === Status.SUCCESS) {
         return state.set('count', 0)
     }
-    if (action.type === ActionTypes.MEDIA_ITEMS && action.status === Status.SUCCESS) {
+    if (action.type === ActionType.MEDIA_ITEMS && action.status === Status.SUCCESS && action.response) {
         const mostRecentMediaItemId = action.response.result[action.response.result.length-1]
         const mostRecentMediaItem = action.response.entities.mediaItems[mostRecentMediaItemId.toString()]
         return state.set('lastRead', new Date(mostRecentMediaItem.user_created_at))
     }
-    if (action.type === ActionTypes.RECEIVE_MEDIA_ITEM) {
-        return state.update('count', 0, c => c+1)
+    if (action.type === ActionType.RECEIVE_MEDIA_ITEM) {
+        return state.update('count', 0, (c: number) => c+1)
     }
-    if (action.type === ActionTypes.SELECT_MEDIA_ITEM && 'unreadCount' in action && 'lastRead' in action) {
+    if (action.type === ActionType.SELECT_MEDIA_ITEM && 'unreadCount' in action && 'lastRead' in action) {
         return state.merge({
             count: action.unreadCount,
             lastRead: action.lastRead
         })
     }
-    if (action.type === ActionTypes.RECEIVE_ROOM_MARKED) {
+    if (action.type === ActionType.RECEIVE_ROOM_MARKED) {
         return state.merge({
             count: action.unreadCount,
             lastRead: action.lastRead
@@ -134,8 +134,8 @@ const reducers = {
     unread
 }
 
-export default function(state = Map(), action) {
-    if (action.type === ActionTypes.CLEAR_ROOM_PAGE) {
+export default function(state = Map<string, any>(), action: Action) {
+    if (action.type === ActionType.CLEAR_ROOM_PAGE) {
         return Map()
     } else {
         return combineReducers(reducers)(state, action)
