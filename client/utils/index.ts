@@ -1,12 +1,14 @@
-import assign from 'lodash/assign'
-import forOwn from 'lodash/forOwn'
-import addSeconds from 'date-fns/add_seconds'
-import isBefore from 'date-fns/is_before'
-import format from 'date-fns/format'
+import assign from 'lodash-es/assign'
+import forOwn from 'lodash-es/forOwn'
+import * as addSeconds from 'date-fns/add_seconds'
+import * as isBefore from 'date-fns/is_before'
+import * as format from 'date-fns/format'
 
 /************
  * FULLSCREEN
  ************/
+
+declare var document: any;
 
 // Code sourced from https://developer.mozilla.org/en-US/Apps/Fundamentals/Audio_and_video_delivery/cross_browser_video_player
 
@@ -18,7 +20,7 @@ export function isFullScreen() {
     return !!(document.fullScreen || document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement || document.fullscreenElement);
 }
 
-export function toggleFullScreen(element, callback) {
+export function toggleFullScreen(element: any, callback: (_: boolean) => void) {
     if (isFullScreen()) {
       if (document.exitFullscreen) document.exitFullscreen();
       else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
@@ -51,7 +53,7 @@ export function toggleFullScreen(element, callback) {
  * collision is even less). Sourced from 
  * http://stackoverflow.com/a/8809472
  */
-export function generateUuid() {
+export function generateUuid(): string {
     var d = new Date().getTime();
     if (window && window.performance && typeof window.performance.now === "function") {
         d += performance.now(); //use high-precision timer if available
@@ -69,8 +71,8 @@ export function generateUuid() {
  * URL
  *****/
 
-export function baseUrl(env, secure=true) {
-    env = env || process.env.NODE_ENV || 'development'
+export function baseUrl(secure=true) {
+    let env = process.env.NODE_ENV || 'development'
     const scheme = secure ? 'https://' : 'http://'
     switch(env) {
         case 'production':
@@ -87,8 +89,8 @@ export function baseUrl(env, secure=true) {
     }
 }
 
-export function baseApiUrl(env, secure=true) {
-    env = env || process.env.NODE_ENV || 'development'
+export function baseApiUrl(secure=true) {
+    let env = process.env.NODE_ENV || 'development'
     const scheme = secure ? 'https://' : 'http://'
     switch(env) {
         case 'production':
@@ -104,17 +106,14 @@ export function baseApiUrl(env, secure=true) {
     }
 }
 
-export function secureUrl(url) {
-  if (!url) {
-    return null
-  }
+export function secureUrl(url: string): string {
   if (!/^https?:\/\//.test(url)) {
     return `https://${url}`
   }
   return url.replace(/http:\/\//, 'https://')
 }
 
-export function isValidUrl(url) {
+export function isValidUrl(url: string): boolean {
   var urlRegexStr = '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$'
   var urlRegex = new RegExp(urlRegexStr, 'i')
   return urlRegex.test(url)
@@ -125,7 +124,7 @@ export function isValidUrl(url) {
  * STORAGE
  *********/
 
-export function storageAvailable(storageType) {
+export function storageAvailable(storageType: 'localStorage' | 'sessionStorage') {
   try {
     var storage = window[storageType],
       x = '__storage_test__';
@@ -143,10 +142,15 @@ const defaultStorageOptions = {
   ttl: 60*60*36 // 36 hours
 }
 
-export function setStorageItem(key, value, options) {
-  options = assign({}, defaultStorageOptions, options)
-  var storage = window[options.type]
-  var storedValue = {
+interface StorageOptions {
+  type: 'localStorage' | 'sessionStorage'
+  ttl: number
+}
+
+export function setStorageItem(key: string, value: any, _options?: StorageOptions) {
+  let options = assign({}, defaultStorageOptions, _options) as StorageOptions
+  var storage = (window as any)[options.type]
+  var storedValue: any = {
     value: value,
   }
 
@@ -159,16 +163,16 @@ export function setStorageItem(key, value, options) {
   }
 }
 
-export function getStorageItem(key, options) {
-  options = assign({}, defaultStorageOptions, options)
+export function getStorageItem(key: string, _options?: StorageOptions) {
+  let options = assign({}, defaultStorageOptions, _options) as StorageOptions
   var value = null;
-  var storage = window[options.type];
+  var storage = window[options.type] as Storage;
 
   if (storageAvailable(options.type)) {
     var storedValueString = storage.getItem(key);
     if (storedValueString !== null) {
       try {
-        var storedValue = JSON.parse(storage.getItem(key));      
+        var storedValue = JSON.parse(storage.getItem(key) as string);      
         if (!('expires' in storedValue && isBefore(storedValue.expires, new Date()))) {
           value = storedValue.value;
         }
@@ -180,16 +184,16 @@ export function getStorageItem(key, options) {
   return value;
 }
 
-export function getStorageItemExpiration(key, options) {
-  options = assign({}, defaultStorageOptions, options)
+export function getStorageItemExpiration(key: string, _options?: StorageOptions) {
+  let options = assign({}, defaultStorageOptions, _options) as StorageOptions
   var expires = null;
-  var storage = window[options.type];
+  var storage = window[options.type] as Storage
 
   if (storageAvailable(options.type)) {
     var storedValueString = storage.getItem(key);
     if (storedValueString !== null) {
       try {
-        var storedValue = JSON.parse(storage.getItem(key));      
+        var storedValue = JSON.parse(storage.getItem(key) as string);      
         if ('expires' in storedValue) {
           expires = storedValue.expires;
         }
@@ -207,7 +211,7 @@ export function getStorageItemExpiration(key, options) {
  *************/
 
 // sourced from https://github.com/web-push-libs/web-push
-export function urlBase64ToUint8Array(base64String) {
+export function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
   const base64 = (base64String + padding)
     .replace(/\-/g, '+')
@@ -227,7 +231,7 @@ export function urlBase64ToUint8Array(base64String) {
  * EQUALITY
  **********/
 
-export function shallowEqual(a, b) {
+export function shallowEqual(a: any, b: any): boolean {
   if (a === b) {
     return true
   }
@@ -264,7 +268,7 @@ export { fromString, fromNowString, timeLeftString, timeString } from './date'
  * OTHER
  *******/
 
-export function createFunctionWithTimeout(fn, timeout=1000) {
+export function createFunctionWithTimeout(fn: () => void, timeout=1000) {
   let called = false
 
   function callFn() {
@@ -278,7 +282,7 @@ export function createFunctionWithTimeout(fn, timeout=1000) {
   return callFn;
 }
 
-export function hashCode(string) {
+export function hashCode(string: string) {
     var hash = 0;
     if (string.length == 0) return hash;
     for (var i = 0; i < string.length; i++) {

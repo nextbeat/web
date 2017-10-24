@@ -1,10 +1,14 @@
-import parse from 'date-fns/parse'
-import format from 'date-fns/format'
-import differenceInMonths from 'date-fns/difference_in_months'
-import differenceInYears from 'date-fns/difference_in_years'
-import distanceInWordsStrict from 'date-fns/distance_in_words_strict'
+import * as parse from 'date-fns/parse'
+import * as format from 'date-fns/format'
+import * as differenceInMonths from 'date-fns/difference_in_months'
+import * as differenceInYears from 'date-fns/difference_in_years'
+import * as distanceInWordsStrict from 'date-fns/distance_in_words_strict'
 
-import assign from 'lodash/assign'
+import assign from 'lodash-es/assign'
+
+interface FormatOptions {
+    format: 'short' | 'long'
+}
 
 const defaultOptions = {
     format: 'long'
@@ -43,17 +47,19 @@ let FORMATS = {
     short: FORMAT_SHORT
 }
 
+type DirtyDate = string | number | Date
+
 // TODO: test time zones!
 // Uses the logic of moment's relative time formatting 
 // but without the 400KB library!
-export function fromString(dirtyDateLeft, dirtyDateRight, options) {
+export function fromString(dirtyDateLeft: DirtyDate, dirtyDateRight: DirtyDate, _options?: FormatOptions) {
     let dateLeft = parse(dirtyDateLeft)
     let dateRight = parse(dirtyDateRight)
 
-    options = assign({}, defaultOptions, options)
+    let options = assign({}, defaultOptions, _options) as FormatOptions
 
-    function format(key, count) {
-        return FORMATS[options.format][key].replace(/\%d/g, count)
+    function format(key: string, count: number) {
+        return (FORMATS[options.format] as any)[key].replace(/\%d/g, count)
     }
 
     let seconds = Math.abs(Math.floor((dateRight.getTime() - dateLeft.getTime())/1000))
@@ -93,11 +99,11 @@ export function fromString(dirtyDateLeft, dirtyDateRight, options) {
     }
 }
 
-export function fromNowString(dirtyDate, options) {
+export function fromNowString(dirtyDate: DirtyDate, options?: FormatOptions) {
     return fromString(dirtyDate, new Date(), options)
 }
 
-export function timeLeftString(dirtyDate, options) {
+export function timeLeftString(dirtyDate: DirtyDate, options?: FormatOptions) {
     let date = parse(dirtyDate)
     let now = new Date()
 
@@ -109,7 +115,7 @@ export function timeLeftString(dirtyDate, options) {
     }
 }
 
-export function timeString(dirtyDate, options) {
+export function timeString(dirtyDate: DirtyDate) {
     let date = parse(dirtyDate)
     return format(date, 'h:mm a')
 }
