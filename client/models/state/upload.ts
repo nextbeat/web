@@ -12,6 +12,8 @@ import { Status } from '@actions/types'
 import { State } from '@types'
 import { UploadType, UploadFileType, isBrowserCompatible, fileType } from '@upload'
 
+export { UploadType }
+
 interface UploadSubmissionProps {
     selectedStackId: number
     newStack: any

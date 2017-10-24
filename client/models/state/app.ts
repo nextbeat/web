@@ -1,11 +1,45 @@
 import { List, Set } from 'immutable'
-import StateModel from './base'
+import { Location } from 'history'
 
-const KEY_MAP = {
+import { StateModelFactory } from '@models/state/base'
+import { createEntityListSelector } from '@models/utils'
+import { State } from '@types'
+
+interface AppProps {
+    tagsFetching: boolean
+    tagsError: string
+    tagIds: List<number>
+
+    authError: string
+
+    environment: string
+
+    os: string
+    osVersion: string
+    device: string
+    deviceType: string
+    browser: string
+    version: string
+
+    facebookAppId: string
+    googleAnalyticsId: string
+
+    activeModal: string
+    activeOverlay: string
+    activeDropdowns: Set<string>
+    sidebarAnimating: boolean
+    splashTopbarCollapsed: boolean
+    volume: number
+    width: 'small' | 'medium' | 'room-medium' | 'large'
+
+    location: Location
+}
+
+const keyMap = {
     // tags
     'tagsFetching': ['tags', 'isFetching'],
     'tagsError': ['tags', 'error'],
-    'tagsIds': ['tags', 'ids'],
+    'tagIds': ['tags', 'ids'],
     // authError
     'authError': ['authError'],
     // environment
@@ -32,49 +66,51 @@ const KEY_MAP = {
     'location': ['location']
 }
 
-export default class App extends StateModel {
+interface DeviceData {
+    os: string
+    os_version: string
+    device: string
+    browser_name: string
+    browser_version: string
+}
 
-    constructor(state) {
-        super(state);
-        this.keyMap = KEY_MAP;
-        this.keyMapPrefix = ['app'];
+const keyMapPrefix = ['app']
+
+export default class App extends StateModelFactory<AppProps>(keyMap, keyMapPrefix) {
+
+    static tags = createEntityListSelector(App, 'tagIds', 'tags')
+
+    static hasAuthError(state: State) {
+        return !!this.get(state, 'authError')
     }
 
-    tags() {
-        return this.get('tagsIds', List()).map(id => this.__getEntity(id, 'tags'))
+    static isIOS(state: State) {
+        return this.get(state, 'os') === 'iOS'
     }
 
-    hasAuthError() {
-        return this.get('authError', true)
+    static isAndroid(state: State) {
+        return this.get(state, 'os') === 'Android'
     }
 
-    isIOS() {
-        return this.get('os') === 'iOS'
+    static isMobile(state: State) {
+        return this.get(state, 'deviceType') === 'mobile'
     }
 
-    isAndroid() {
-        return this.get('os') === 'Android'
+    static isActiveDropdown(state: State, type: string) {
+        return this.get(state, 'activeDropdowns', Set()).includes(type)
     }
 
-    isMobile() {
-        return this.get('deviceType') === 'mobile'
+    static hasNavigated(state: State) {
+        return this.get(state, 'location') !== null
     }
 
-    isActiveDropdown(type) {
-        return this.get('activeDropdowns', Set()).includes(type)
-    }
-
-    hasNavigated() {
-        return this.get('location') !== null
-    }
-
-    deviceData() {
-        var data = {};
-        if (this.get('os')) data.os = this.get('os');
-        if (this.get('osVersion')) data.os_version = this.get('osVersion');
-        if (this.get('device')) data.device = this.get('device');
-        if (this.get('browser')) data.browser_name = this.get('browser');
-        if (this.get('version')) data.browser_version = this.get('version');
+    static deviceData(state: State): Partial<DeviceData> {
+        var data: Partial<DeviceData> = {};
+        if (this.get(state, 'os')) data.os = this.get(state, 'os');
+        if (this.get(state, 'osVersion')) data.os_version = this.get(state, 'osVersion');
+        if (this.get(state, 'device')) data.device = this.get(state, 'device');
+        if (this.get(state, 'browser')) data.browser_name = this.get(state, 'browser');
+        if (this.get(state, 'version')) data.browser_version = this.get(state, 'version');
         return data
     }
 

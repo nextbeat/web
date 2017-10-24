@@ -1,5 +1,14 @@
-import { StateModelFactory } from '@models/state/base'
 import { Map, List } from 'immutable'
+
+import { StateModelFactory } from '@models/state/base'
+import { State } from '@types'
+
+interface NotificationsProps {
+    activity: List<any>
+    isFetching: boolean
+    error: string
+    unreadCount: number
+}
 
 const keyMap = {
     // notifications
@@ -9,22 +18,18 @@ const keyMap = {
     'unreadCount': ['unreadCount']
 }
 
-export default class Notifications extends StateModel {
+const keyMapPrefix = ['user', 'notifications']
 
-    constructor(state) {
-        super(state);
-        this.keyMap = KEY_MAP;
-        this.keyMapPrefix = ['user', 'notifications'];
-    }
+export default class Notifications extends StateModelFactory<NotificationsProps>(keyMap, keyMapPrefix) {
 
-    activity() {
-        return this.get('activity', List())
+    static activity(state: State): List<any> {
+        return this.get(state, 'activity', List())
     }
 
     // Queries
 
-    unreadCount() {
-        return this.get('unreadCount', 0)
+    static unreadCount(state: State): number {
+        return this.get(state, 'unreadCount', 0)
     }
 
 }

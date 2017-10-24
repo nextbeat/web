@@ -1,5 +1,4 @@
 import { State } from '@types'
-import App from '@models/state/app'
 
 export enum UploadType {
     MediaItem = 'MEDIA_ITEM',
@@ -72,18 +71,16 @@ export function fileType(file: File) {
     return this.fileTypeForMimeType(file.type) || this.fileTypeForFileName(file.name)
 }
 
-export function bucketUrl(state: State) {
-    var app = new App(state)
-    if (app.get('environment') === 'production') {
+export function bucketUrl() {
+    if (process.env.NODE_ENV === 'production') {
         return 'https://s3.amazonaws.com/nextbeat.media/'
     } else {
         return 'https://s3.amazonaws.com/nextbeat.dev.media/'
     }
 }
 
-export function cloudfrontUrl(state: State) {
-    var app = new App(state)
-    if (app.get('environment') === 'production') {
+export function cloudfrontUrl() {
+    if (process.env.NODE_ENV === 'production') {
         return 'https://media.nextbeat.co/'
     } else {
         return 'https://media.dev.nextbeat.co/'

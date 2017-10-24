@@ -8,7 +8,7 @@ import {
     ApiCancelAction,
     ThunkAction,
     Pagination,
-    StatusType
+    Status
 } from '@actions/types'
 import * as Schema from '@schemas'
 

@@ -4,9 +4,9 @@ import assign from 'lodash-es/assign'
 import Stack from '@models/entities/stack'
 import MediaItem from '@models/entities/mediaItem'
 import CurrentUser from '@models/state/currentUser'
+import Upload, { UploadType } from '@models/state/upload'
 import { StateModelFactory } from '@models/state/base'
 import { withEntityMap, EntityProps, createSelector } from '@models/utils'
-import { UploadType } from '@actions/types'
 import { State } from '@types'
 
 export interface RoomFields {
@@ -80,10 +80,9 @@ export default class EditRoom extends StateModelFactory<EditRoomProps>(keyMap, k
         return !!this.get(state, 'useDefaultThumbnail') ? this.latestMediaItem(state).thumbnail('small') : this.entity(state).thumbnail('small')
     }
 
-    isProcessingThumbnail() {
+    static isProcessingThumbnail(state: State) {
         // return true if uploading custom thumbnail or fetching default
-        let upload = new Upload(this.state)
-        return this.get('fetchingDefaultThumbnail') || upload.isUploading(UploadType.THUMBNAIL)
+        return this.get(state, 'fetchingDefaultThumbnail') || Upload.isUploading(state, UploadType.Thumbnail)
     }
 
     static canSubmit(state: State) {

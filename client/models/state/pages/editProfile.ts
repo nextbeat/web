@@ -1,9 +1,8 @@
 import { List, Map } from 'immutable'
 
 import { StateModelFactory } from '@models/state/base'
-import Upload from '@models/state/upload'
+import Upload, { UploadType } from '@models/state/upload'
 import CurrentUser from '@models/state/currentUser'
-import { UploadType } from '@actions/types'
 import { State } from '@types'
 
 interface EditProfileProps {
@@ -28,11 +27,21 @@ const keyMap = {
 
 const keyMapPrefix = ['pages', 'editProfile']
 
+interface UserSubmitObject {
+    full_name: string
+    description: string
+    website_url: string
+    uuid: string
+
+    profile_picture?: { url: string }
+    cover_image?: { url: string }
+}
+
 export default class EditProfile extends StateModelFactory<EditProfileProps>(keyMap, keyMapPrefix) {
 
     static userSubmitObject(state: State) {
 
-        let submitObject = {
+        let submitObject: any = {
             full_name: this.get(state, 'fields').get('fullName'),
             description: this.get(state, 'fields').get('bio'),
             website_url: this.get(state, 'fields').get('website'),
@@ -40,16 +49,16 @@ export default class EditProfile extends StateModelFactory<EditProfileProps>(key
         }
 
         // add profile picture if it's been updated
-        if (upload.isDoneUploading(UploadType.PROFILE_PICTURE)) {
+        if (Upload.isDoneUploading(state, UploadType.ProfilePicture)) {
             submitObject['profile_picture'] = {
-                url: upload.get(UploadType.PROFILE_PICTURE, 'url')
+                url: Upload.getInFile(state, UploadType.ProfilePicture, 'url')
             }
         }
 
         // add cover image under similar conditions
-        if (upload.isDoneUploading(UploadType.COVER_IMAGE)) {
+        if (Upload.isDoneUploading(state, UploadType.CoverImage)) {
             submitObject['cover_image'] = {
-                url: upload.get(UploadType.COVER_IMAGE, 'url')
+                url: Upload.getInFile(state, UploadType.CoverImage, 'url')
             }
         }
 
