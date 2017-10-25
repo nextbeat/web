@@ -5,8 +5,6 @@ import { State } from '@types'
 import Stack from './stack'
 import User from './user'
 
-export type ResourceSizeType = 'small' | 'medium' | 'large' | 'max'
-
 /* Helper model for retrieving data from specific 
  * entities in the state. (Compare with the StateModel 
  * base class, which is instantiated with the root 
@@ -49,10 +47,10 @@ export class EntityModel<Props> {
      * associated with the key returned by the defaultKeyFn (or, if that isn't 
      * specified, a random key) is returned.
      */
-    protected getResource(resourceType: string, preferredSize?: ResourceSizeType, defaultSizeFn?: (resources: State) => string | undefined): State {
+    protected getResource(resourceType: string, preferredType?: string, defaultSizeFn?: (resources: State) => string | undefined): State {
         let resources: State = this.entity().get(resourceType, Map())
-        if (preferredSize && resources.has(preferredSize)) {
-            return resources.get(preferredSize).set('type', preferredSize) as State
+        if (preferredType && resources.has(preferredType)) {
+            return resources.get(preferredType).set('type', preferredType) as State
         }
 
         // else default to any resource

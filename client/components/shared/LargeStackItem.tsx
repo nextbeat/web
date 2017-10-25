@@ -10,7 +10,7 @@ import Badge from '@components/shared/Badge'
 
 interface Props {
     stack: Stack
-    static: boolean | number
+    static?: boolean | number
 }
 
 interface State {

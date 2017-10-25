@@ -1,4 +1,4 @@
-import { EntityModel, ResourceSizeType } from './base'
+import { EntityModel } from './base'
 import User from './user'
 import Stack from './stack'
 import Comment from './comment'
@@ -6,6 +6,8 @@ import Comment from './comment'
 import { State } from '@types'
 
 interface MediaItemProps {
+    decoration: State
+    id: number
     references: number
     stack: number
     type: 'video' | 'photo'
@@ -20,21 +22,21 @@ export default class MediaItem extends EntityModel<MediaItemProps> {
         return new Stack(this.get('stack', 0), this.entities)
     }
 
-    video(preferredSize?: ResourceSizeType) {
-        return this.getResource('videos', preferredSize)
+    video(preferredType?: string) {
+        return this.getResource('videos', preferredType)
     }   
 
-    image(preferredSize?: ResourceSizeType) {
-        return this.getResource('images', preferredSize)
+    image(preferredType?: string) {
+        return this.getResource('images', preferredType)
     }
 
-    thumbnail(preferredSize?: ResourceSizeType) {
+    thumbnail(preferredType?: string) {
         // default to the largest thumbnail
         let defaultKeyFn = (thumbnails: State) => {
             let orderedThumbnails = thumbnails.sort((a, b) => a.get('width') > b.get('width') ? 1 : -1)
             return orderedThumbnails.keySeq().first()
         }
-        return this.getResource('thumbnails', preferredSize, defaultKeyFn)
+        return this.getResource('thumbnails', preferredType, defaultKeyFn)
     }
 
     referencedComment() {

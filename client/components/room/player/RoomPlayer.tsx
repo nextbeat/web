@@ -12,6 +12,7 @@ import CounterInner from '@components/room/counter/CounterInner.react'
 
 import { goBackward, goForward } from '@actions/room'
 import { selectDetailSection } from '@actions/pages/room'
+import Room from '@models/state/room'
 import MediaItem from '@models/entities/mediaItem'
 import { State, DispatchProps } from '@types'
 
@@ -24,7 +25,9 @@ interface OwnProps {
 interface ConnectProps {
     hid: string
     mediaItems: List<MediaItem>
-    selectedMediaItem: State
+    mediaItemsError?: string
+    mediaItemsSize: number
+    selectedMediaItem: MediaItem
     indexOfSelectedMediaItem: number
 }
 
@@ -35,7 +38,7 @@ interface RoomPlayerState {
     playerHeight: number
 }
 
-class RoomPlayer extends React.Component<Props> {
+class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
     static defaultProps = {
         isRoomCard: false,
@@ -117,12 +120,13 @@ class RoomPlayer extends React.Component<Props> {
     // Render
 
     render() {
-        const { roomId, children, shouldAutoplayVideo } = this.props;
+        const { roomId, mediaItems, mediaItemsError, mediaItemsSize,
+                selectedMediaItem: item, indexOfSelectedMediaItem,
+                shouldAutoplayVideo, children } = this.props;
         const { playerWidth, playerHeight } = this.state
 
-        const item = room.selectedMediaItem()
-        const leftDisabledClass = room.indexOfSelectedMediaItem() === 0 ? 'disabled' : '';
-        const rightDisabledClass = room.indexOfSelectedMediaItem() === room.mediaItemsSize() - 1 ? 'disabled' : ''; 
+        const leftDisabledClass = indexOfSelectedMediaItem === 0 ? 'disabled' : '';
+        const rightDisabledClass = indexOfSelectedMediaItem === mediaItemsSize - 1 ? 'disabled' : ''; 
 
         let containerProps = {
             containerWidth: playerWidth,
@@ -134,14 +138,14 @@ class RoomPlayer extends React.Component<Props> {
                 { children }
                 <div className="player_media" style={{ height: `${playerHeight}px` }}>
                     <div className="player_media-inner" id="player_media-inner">
-                    { room.mediaItems().size == 0 && !room.get('mediaItemsError') && <Spinner type="large grey"/> }
+                    { mediaItemsSize && !mediaItemsError && <Spinner styles={["large", "grey"]}/> }
                     { item.hasReference() && <ItemReference roomId={roomId} {...containerProps} /> }
                     { !item.isEmpty() && (item.isVideo() ? 
                         <Video 
                             video={item.video('mp4')}
                             alternateVideo={item.video('mp4')}
                             decoration={item.get('decoration')} 
-                            room={room} 
+                            roomId={roomId} 
                             autoplay={shouldAutoplayVideo} 
                             {...containerProps} /> : 
                         <Image 
@@ -163,19 +167,15 @@ class RoomPlayer extends React.Component<Props> {
     }
 }
 
-RoomPlayer.propTypes = {
-    room: PropTypes.object.isRequired,
-    shouldAutoplayVideo: PropTypes.bool.isRequired,
-    isRoomCard: PropTypes.bool.isRequired
+function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
+    return {
+        hid: Room.entity(state, ownProps.roomId).get('hid'),
+        mediaItems: Room.mediaItems(state, ownProps.roomId),
+        mediaItemsError: Room.get(state, ownProps.roomId, 'mediaItemsError'),
+        mediaItemsSize: Room.mediaItemsSize(state, ownProps.roomId),
+        selectedMediaItem: Room.selectedMediaItem(state, ownProps.roomId),
+        indexOfSelectedMediaItem: Room.indexOfSelectedMediaItem(state, ownProps.roomId)
+    }
 }
 
-RoomPlayer.defaultProps = {
-    shouldAutoplayVideo: true,
-    isRoomCard: false,
-}
-
-RoomPlayer.contextTypes = {
-    router: PropTypes.object.isRequired
-}
-
-export default connect()(RoomPlayer);
+export default connect(mapStateToProps)(RoomPlayer);

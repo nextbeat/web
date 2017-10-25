@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Icon from '@components/shared/Icon'
 import { selectDetailSection, hideSearchChatResults } from '@actions/pages/room'
 import { jumpToComment } from '@actions/room'
+import Room from '@models/state/room'
 import MediaItem from '@models/entities/mediaItem'
 import Comment from '@models/entities/comment'
 import { timeString } from '@utils'
@@ -131,4 +132,10 @@ class ItemReference extends React.Component<AllProps, ItemReferenceState> {
     }
 }
 
-export default connect()(ItemReference)
+function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
+    return {
+        selectedMediaItem: Room.selectedMediaItem(state, ownProps.roomId)
+    }
+}
+
+export default connect(mapStateToProps)(ItemReference)

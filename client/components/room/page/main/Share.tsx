@@ -1,14 +1,28 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux' 
 
-import { App } from '../../../../models'
-import Icon from '../../../shared/Icon.react'
-import { baseUrl } from '../../../../utils'
+import App from '@models/state/app'
+import Room from '@models/state/room'
+import RoomPage from '@models/state/pages/room'
+import Icon from '@components/shared/Icon'
+import { baseUrl } from '@utils'
+import { State } from '@types'
 
+interface Props {
+    facebookAppId: string
+    hid: string
+    indexOfSelectedMediaItem: number
+    isClosed: boolean
+}
 
-class Share extends React.Component {
+interface ShareState {
+    showShareModal: boolean
+    includeIndex: boolean
+}
 
-    constructor(props) {
+class Share extends React.Component<Props, ShareState> {
+
+    constructor(props: Props) {
         super(props)
 
         this.shareUrl = this.shareUrl.bind(this)
@@ -27,11 +41,11 @@ class Share extends React.Component {
 
 
     shareUrl(showIndex=true) {
-        const { roomPage } = this.props
+        const { indexOfSelectedMediaItem, hid } = this.props
         const { includeIndex } = this.state
-        const indexPath = (includeIndex && showIndex) ? '/'+(roomPage.indexOfSelectedMediaItem()+1) : ''
+        const indexPath = (includeIndex && showIndex) ? '/'+(indexOfSelectedMediaItem+1) : ''
 
-        return `${baseUrl()}/r/${roomPage.get('hid')}${indexPath}`
+        return `${baseUrl()}/r/${hid}${indexPath}`
     }
 
     // Component lifecycle
@@ -75,16 +89,15 @@ class Share extends React.Component {
     // Render
 
     renderFacebook() {
-        const { app } = this.props
-        const facebookAppId = app.get('facebookAppId')
+        const { facebookAppId } = this.props
         const url = encodeURIComponent(this.shareUrl(false))
-        return <iframe className="share_social-button share_facebook-button" src={`https://www.facebook.com/plugins/share_button.php?href=${url}&layout=button&mobile_iframe=true&appId=${facebookAppId}&width=58&height=20`} width="58" height="20" style={{border: "none", overflow: "hidden"}} scrolling="no" frameBorder="0" allowTransparency="true"></iframe>
+        return <iframe className="share_social-button share_facebook-button" src={`https://www.facebook.com/plugins/share_button.php?href=${url}&layout=button&mobile_iframe=true&appId=${facebookAppId}&width=58&height=20`} width="58" height="20" style={{border: "none", overflow: "hidden"}} scrolling="no" frameBorder="0" allowTransparency={true}></iframe>
     }
 
     renderTwitter() {
-        const { roomPage } = this.props
+        const { isClosed } = this.props
 
-        const text = encodeURIComponent(roomPage.status() === "closed" ? 'Check out my room on Nextbeat!' : 'Posting updates to my room on Nextbeat. Check it out!')
+        const text = encodeURIComponent(isClosed ? 'Check out my room on Nextbeat!' : 'Posting updates to my room on Nextbeat. Check it out!')
         const url = encodeURIComponent(this.shareUrl(false))
         return <iframe className="share_social-button share_twitter-button" src={`https://platform.twitter.com/widgets/tweet_button.html?url=${url}&text=${text}&via=nextbeatTv`} width="130" height="20" scrolling="no" title="Twitter Tweet Button" style={{border: "none", overflow: "hidden"}}></iframe>
     }
@@ -111,9 +124,13 @@ class Share extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: State): Props {
+    let id = RoomPage.get(state, 'id')
     return {
-        app: new App(state)
+        facebookAppId: App.get(state, 'facebookAppId'),
+        hid: Room.entity(state, id).get('hid'),
+        isClosed: Room.status(state, id) === 'closed',
+        indexOfSelectedMediaItem: Room.indexOfSelectedMediaItem(state, id)
     }
 }
 

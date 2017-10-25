@@ -1,12 +1,31 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 
-import { bookmark, unbookmark } from '../../../../actions'
-import Icon from '../../../shared/Icon.react'
+import { bookmark, unbookmark } from '@actions/room'
+import RoomPage from '@models/state/pages/room'
+import Room from '@models/state/room'
+import Icon from '@components/shared/Icon'
+import { State, DispatchProps } from '@types'
 
-class Bookmark extends React.Component {
+interface OwnProps {
+    type?: string
+}
 
-    constructor(props) {
+interface ConnectProps {
+    roomId: number
+    bookmarkCount: number
+    isBookmarked: boolean
+}
+
+type Props = OwnProps & ConnectProps & DispatchProps
+
+interface BookmarkState {
+    hover: boolean
+}
+
+class Bookmark extends React.Component<Props, BookmarkState> {
+
+    constructor(props: Props) {
         super(props);
 
         this.handleBookmark = this.handleBookmark.bind(this);
@@ -21,13 +40,13 @@ class Bookmark extends React.Component {
     }
 
     handleBookmark() {
-        const { dispatch, roomPage } = this.props 
-        dispatch(bookmark(roomPage.get('id')))
+        const { dispatch, roomId } = this.props 
+        dispatch(bookmark(roomId))
     }   
 
     handleUnbookmark() {
-        const { dispatch, roomPage } = this.props 
-        dispatch(unbookmark(roomPage.get('id')))
+        const { dispatch, roomId } = this.props 
+        dispatch(unbookmark(roomId))
     }
 
     renderBookmarked() {
@@ -47,18 +66,27 @@ class Bookmark extends React.Component {
     }
 
     render() {
-        const { roomPage, type } = this.props;
+        const { bookmarkCount, isBookmarked, type } = this.props;
         const typeClass = type ? `btn-bookmark-${type}` : ''
 
         return (
             <div className={`btn-bookmark ${typeClass}`}>
                 <div className="btn-bookmark_inner">
-                    <div className="btn-bookmark_count">{ roomPage.get('bookmark_count') }</div>
-                    { roomPage.isBookmarked() ? this.renderBookmarked() : this.renderUnbookmarked() }
+                    <div className="btn-bookmark_count">{ bookmarkCount }</div>
+                    { isBookmarked ? this.renderBookmarked() : this.renderUnbookmarked() }
                 </div>
             </div>
         );
     }
 }
 
-export default connect()(Bookmark);
+function mapStateToProps(state: State): ConnectProps {
+    const roomId = RoomPage.get(state, 'id')
+    return {
+        roomId,
+        bookmarkCount: Room.entity(state, roomId).get('bookmark_count'),
+        isBookmarked: Room.isBookmarked(state, roomId)
+    }
+}
+
+export default connect(mapStateToProps)(Bookmark);

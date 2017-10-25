@@ -89,7 +89,7 @@ export function createSelector<R>(func: Selector<R>): OutputSelector<R> {
 export function createEntityListSelector(modelClass: any, idKey: string, entityClass: typeof EntityModel | string): Selector<List<any>> {
     return createSelector(
         (state: State) => {
-            let stackIds = modelClass.get(state, idKey) as List<number>
+            let stackIds = modelClass.get(state, idKey, List()) as List<number>
             if (typeof entityClass === 'string') {
                 // Get entity object directly, without class wrapper
                 return stackIds.map(id => state.getIn(['entities', 'foo', id.toString()]))

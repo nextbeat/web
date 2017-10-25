@@ -5,7 +5,6 @@ import { withEntityMap, EntityProps } from '@models/utils'
 import MediaItem from '@models/entities/mediaItem'
 import Stack from '@models/entities/stack'
 import SearchResultComment from '@models/entities/searchResultComment'
-import { ResourceSizeType } from '@models/entities/base'
 import Room, { RoomProps } from '@models/state/room'
 import { createEntityListSelector } from '@models/utils'
 import { State } from '@types'
@@ -141,7 +140,7 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
         return Room.pinnedComment(state, this.get(state, 'id'))
     }
 
-    static thumbnail(state: State, preferredType: ResourceSizeType) {
+    static thumbnail(state: State, preferredType: string) {
         return Room.thumbnail(state, this.get(state, 'id'), preferredType)
     }
     

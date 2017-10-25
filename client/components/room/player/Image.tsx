@@ -12,7 +12,7 @@ interface OwnProps {
     image: State
     containerWidth: number
     containerHeight: number
-    hideControls: boolean
+    hideControls?: boolean
     decoration: State
 }
 
@@ -32,7 +32,7 @@ interface ImageState {
 
 class Image extends React.Component<Props, ImageState> {
 
-    static defaultProps = {
+    static defaultProps: Partial<Props> = {
         hideControls: false
     }
 

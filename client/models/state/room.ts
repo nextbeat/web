@@ -1,7 +1,6 @@
 import { List, Map, Set } from 'immutable'
 import { createKeyedSelector, createSelector } from '@models/utils'
 
-import { ResourceSizeType } from '@models/entities/base'
 import Stack from '@models/entities/stack'
 import MediaItem from '@models/entities/mediaItem'
 import Comment from '@models/entities/comment'
@@ -215,7 +214,7 @@ export default class Room {
         }
     )
 
-    static thumbnail(state: State, id: number, preferredSize: ResourceSizeType): State {
+    static thumbnail(state: State, id: number, preferredSize: string): State {
         return Room.entity(state, id).thumbnail(preferredSize)
     }
 

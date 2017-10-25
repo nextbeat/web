@@ -21,9 +21,10 @@ import { selectDetailSection } from '@actions/pages/room'
 import Comment from '@models/entities/comment'
 import TemporaryComment from '@models/entities/temporary/comment'
 import Room, { FetchDirection } from '@models/state/room'
+import RoomPage from '@models/state/pages/room'
 import CurrentUser from '@models/state/currentUser'
 import * as Schemas from '@schemas'
-import { generateUuid } from '@utils'
+import { generateUuid, setStorageItem } from '@utils'
 
 const COMMENTS_PAGE_SIZE = 40;
 
@@ -520,25 +521,26 @@ interface SelectMediaItemOptions {
     shouldUpdateHistory?: boolean
     shouldReplaceHistory?: boolean
 }
-export function selectMediaItem(roomId: number, mediaItemId: number, { shouldUpdateHistory = true, shouldReplaceHistory = false }: SelectMediaItemOptions): ThunkAction {
+export function selectMediaItem(roomId: number, mediaItemId: number, options?: SelectMediaItemOptions): ThunkAction {
     
     return (dispatch, getState) => {
-
-        const roomPage = new RoomPage(getState())
+        
+        const state = getState()
         /* If we navigate on the room page, we simply want to 
          * update the browser history here. This will trigger 
          * an update on the RoomPage component, which we can then
          * use to properly select the new media item. (TODO: why?)
          */
-        if (roomPage.isActive() && shouldUpdateHistory) {
+        if (RoomPage.isActive(state) && options && options.shouldUpdateHistory) {
             /* We store the last selected media item from each stack
              * in the session in localStorage, so that it persists
              * through multiple sessions.
              */
-            setStorageItem(roomPage.get('hid'), id)
-            var index = roomPage.indexOfMediaItem(id)
-            var url = `/r/${roomPage.get('hid')}/${index+1}`
-            if (shouldReplaceHistory) {
+            const hid = Room.entity(state, RoomPage.get(state, 'id')).get('hid')
+            setStorageItem(hid, mediaItemId)
+            var index = RoomPage.indexOfMediaItemId(state, mediaItemId)
+            var url = `/r/${hid}/${index+1}`
+            if (options.shouldReplaceHistory) {
                 browserHistory.replace(url)
             } else {
                 browserHistory.push(url)

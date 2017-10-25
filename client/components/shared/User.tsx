@@ -9,12 +9,12 @@ import { secureUrl } from '@utils'
 interface Props {
     user: UserEntity
     style?: string
-    showSubscribe: boolean
+    showSubscribe?: boolean
 }
 
 class User extends React.Component<Props> {
 
-    static defaultProps = {
+    static defaultProps: Partial<Props> = {
         showSubscribe: true
     }
 

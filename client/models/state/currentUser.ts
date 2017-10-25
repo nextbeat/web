@@ -5,7 +5,6 @@ import { createSelector, createEntityListSelector } from '@models/utils'
 import { StateModelFactory } from '@models/state/base'
 import UserEntity from '@models/entities/user'
 import StackEntity from '@models/entities/stack'
-import { ResourceSizeType } from '@models/entities/base'
 
 interface CurrentUserProps {
     id: number
@@ -79,7 +78,7 @@ export default class CurrentUser extends StateModelFactory<CurrentUserProps>(key
         return this.entity(state).thumbnail('medium').get('url') as string
     }
 
-    static coverImageUrl(state: State, preferredType?: ResourceSizeType): string {
+    static coverImageUrl(state: State, preferredType?: string): string {
         preferredType = preferredType || 'large'
         return this.entity(state).coverImage(preferredType).get('url') as string
     }
