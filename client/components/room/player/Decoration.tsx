@@ -1,28 +1,41 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as React from 'react'
 
-import escape from 'lodash/escape'
+import escape from 'lodash-es/escape'
 import linkify from 'linkifyjs/html'
 import { shallowEqual } from '../../../utils'
 
-function markupCaption(str) {
+function markupCaption(str: string) {
     const captionHtml = linkify(escape(str), {
         defaultProtocol: 'https',
         target: '_blank',
         attributes: {
             rel: 'nofollow'
         },
-        validate: (value, type) => {
+        validate: (value: any, type: string) => {
             return type !== 'hashtag'
         }
     })
     return { __html: captionHtml }
 }
 
+interface Props {
+    decoration: any
+    width: number
+    height: number
+    barHeight?: number
+}
 
-class Decoration extends React.Component {
+interface State {
+    parentHeight: number
+    captionHeight: number
+    displayCaption: boolean
+}
 
-    constructor(props) {
+class Decoration extends React.PureComponent<Props, State> {
+
+    private _node: HTMLDivElement
+
+    constructor(props: Props) {
         super(props)
 
         this.resize = this.resize.bind(this)
@@ -40,7 +53,7 @@ class Decoration extends React.Component {
     componentDidMount() {
         const node = $(this._node)
         $(window).on('resize.decoration', this.resize.bind(this, node))
-        setTimeout(() => {
+        window.setTimeout(() => {
             this.resize(node)
         })
     }
@@ -49,20 +62,16 @@ class Decoration extends React.Component {
         $(window).off('resize.decoration')
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return !shallowEqual(nextProps, this.props)
-    }
-
 
     // Resize
 
-    resize(node) {
+    resize(node: JQuery<HTMLElement>) {
         const parent = node.parent()
         const caption = node.find('.player_caption')
 
         this.setState({
-            parentHeight: parent.height(),
-            captionHeight: caption.innerHeight(),
+            parentHeight: parent.height() as number,
+            captionHeight: caption.innerHeight() as number,
             displayCaption: true
         })
     }
@@ -104,7 +113,7 @@ class Decoration extends React.Component {
     render() {
         const { decoration } = this.props 
         return (
-            <div className="player_decoration" style={this.containerStyle()} ref={ c => this._node = c }>
+            <div className="player_decoration" style={this.containerStyle()} ref={ c => { if (c) { this._node = c } }}>
                 <div className="player_caption" 
                     id="player_caption" 
                     style={this.captionStyle()}
@@ -113,13 +122,6 @@ class Decoration extends React.Component {
             </div>
         )
     }
-}
-
-Decoration.propTypes = {
-    decoration: PropTypes.object.isRequired,
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
-    barHeight: PropTypes.number
 }
 
 export default Decoration

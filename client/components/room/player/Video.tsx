@@ -1,27 +1,77 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
-import assign from 'lodash/assign'
-import debounce from 'lodash/debounce'
-import Promise from 'bluebird'
-import Hls from 'hls.js'
+import debounce from 'lodash-es/debounce'
+import * as Hls from 'hls.js'
 import { toggleFullScreen, isFullScreen } from '../../../utils'
 
-import Decoration from './Decoration.react'
-import VideoControls from './VideoControls.react'
-import Spinner from '../../shared/Spinner.react'
-import { App } from '../../../models'
-import { setVideoVolume, logVideoImpression, didPlayVideo } from '../../../actions'
+
+import Decoration from './Decoration'
+import VideoControls from './VideoControls'
+import Spinner from '@components/shared/Spinner'
+import { setVideoVolume } from '@actions/app'
+import { logVideoImpression } from '@actions/ga'
+import { didPlayVideo } from '@actions/room'
+import App from '@models/state/app'
+import Room from '@models/state/room'
+import { State, DispatchProps } from '@types'
 
 const START_IMPRESSION_WAIT_TIME = 500;
 
-function canPlayHlsNative(videoElem) {
+function canPlayHlsNative(videoElem: HTMLVideoElement) {
     return videoElem.canPlayType && !!videoElem.canPlayType('application/vnd.apple.mpegURL')
 }
 
-class Video extends React.Component {
+interface OwnProps {
+    video: State
+    autoplay: boolean
+    roomId?: number
+    decoration?: State
+    alternateVideo?: State
 
-    constructor(props) {
+    containerWidth: number
+    containerHeight: number
+}
+
+interface ConnectProps {
+    isIOS: boolean
+    isAndroid: boolean
+    browser: string
+    version: string
+    volume: number
+
+    selectedMediaItemId?: number
+}
+
+type Props = OwnProps & ConnectProps & DispatchProps
+
+interface VideoState {
+    currentTime: number
+    loadedDuration: number
+    duration: number
+    storedVolume: number
+    isPlaying: boolean
+    isLoading: boolean
+    shouldDisplayControls: boolean
+    isFullScreen: boolean
+    isIOSDevice: boolean
+    timeIntervalId: number
+    hoverTimeoutId: number
+    impressionStartTime: number
+    width: number
+    height: number
+    scale: number
+    hls?: Hls
+}
+
+class Video extends React.Component<Props, VideoState> {
+
+    static defaultProps = {
+        autoplay: true
+    }
+
+    private _controls: VideoControls
+
+    constructor(props: Props) {
         super(props);
 
         this.shouldForceVideoRotation = this.shouldForceVideoRotation.bind(this);
@@ -72,15 +122,14 @@ class Video extends React.Component {
             impressionStartTime: -1,
             width: 0,
             height: 0,
-            scale: 1,
-            hls: null
+            scale: 1
         };
     }
 
     // Component lifecycle
 
     componentDidMount() {
-        const video = document.getElementById('video_player');
+        const video = document.getElementById('video_player') as HTMLVideoElement;
 
         video.addEventListener('loadedmetadata', this.didLoadMetadata);
         video.addEventListener('canplay', this.canPlay);
@@ -93,17 +142,17 @@ class Video extends React.Component {
 
         $(window).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
 
-        const { app, autoplay } = this.props
+        const { isIOS, isAndroid, browser, autoplay } = this.props
 
         // iOS does not do custom controls well
         this.setState({
-            isIOSDevice: app.isIOS(),
-            isPlaying: autoplay && !(app.isAndroid() && app.get('browser') === 'Chrome'),
+            isIOSDevice: isIOS,
+            isPlaying: autoplay && !(isAndroid && browser === 'Chrome'),
         })
     }
 
     componentWillUnmount() {        
-        const video = document.getElementById('video_player');
+        const video = document.getElementById('video_player') as HTMLVideoElement;
 
         video.removeEventListener('loadedmetadata', this.didLoadMetadata);
         video.removeEventListener('canplay', this.canPlay);
@@ -121,7 +170,7 @@ class Video extends React.Component {
         $(window).off('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: Props) {
         if (prevProps.video !== this.props.video) 
         {
             this.logImpression();
@@ -138,13 +187,13 @@ class Video extends React.Component {
     // Queries
 
     shouldForceVideoRotation() {
-        const { app } = this.props;
-        return app.get('browser') === 'Firefox' || (app.get('browser') === 'IE' && parseInt(app.get('version')) === 10)
+        const { browser, version } = this.props;
+        return browser === 'Firefox' || (browser === 'IE' && parseInt(version) === 10)
     }
 
     shouldForceVideoResizing() {
-        const { app } = this.props;
-        return app.get('browser') === 'Chrome' && parseInt(app.get('version')) === 52;
+        const { browser, version } = this.props;
+        return browser === 'Chrome' && parseInt(version) === 52;
     }
 
     // Events 
@@ -179,14 +228,14 @@ class Video extends React.Component {
     }
 
     didLoadMetadata() {
-        const video = document.getElementById('video_player');
+        const video = document.getElementById('video_player') as HTMLVideoElement;
         this.setState({
             duration: video.duration
         });
     }
 
     didUpdateTime() {
-        const video = document.getElementById('video_player');
+        const video = document.getElementById('video_player') as HTMLVideoElement;
         this.setState({
             currentTime: video.currentTime
         });
@@ -199,10 +248,10 @@ class Video extends React.Component {
     }
 
     isPlaying() {
-        const video = document.getElementById('video_player');
+        const video = document.getElementById('video_player') as HTMLVideoElement;
 
         clearInterval(this.state.timeIntervalId);
-        const timeIntervalId = setInterval(this.didUpdateTime, 500);
+        const timeIntervalId = window.setInterval(this.didUpdateTime, 500);
 
         this.startNewImpression()
 
@@ -220,14 +269,14 @@ class Video extends React.Component {
         } 
 
         // record that video has been played if in room
-        const { room, dispatch } = this.props
-        if (room) {
-            dispatch(didPlayVideo(room.get('id')))
+        const { roomId, dispatch } = this.props
+        if (roomId) {
+            dispatch(didPlayVideo(roomId))
         }
     }
 
     didPause() {
-        const video = document.getElementById('video_player');
+        const video = document.getElementById('video_player') as HTMLVideoElement;
         clearInterval(this.state.timeIntervalId);
 
         // record video impression if one is active
@@ -250,7 +299,7 @@ class Video extends React.Component {
     }
 
     didProgressDownload() {
-        const video = document.getElementById('video_player');
+        const video = document.getElementById('video_player') as HTMLVideoElement;
         if (video.buffered.length >= 1) {
             this.setState({
                 loadedDuration: video.buffered.end(0),
@@ -270,7 +319,7 @@ class Video extends React.Component {
         clearInterval(this.state.timeIntervalId);
         clearInterval(this.state.hoverTimeoutId);
 
-        let videoPlayer = document.getElementById('video_player');
+        let videoPlayer = document.getElementById('video_player') as HTMLVideoElement;
 
         if (video.get('type') === 'hls') 
         {
@@ -291,7 +340,7 @@ class Video extends React.Component {
                 });
                 this.setState({ hls })
             } 
-            else 
+            else if (alternateVideo)
             {
                 // degrade to alternate mp4 video
                 videoPlayer.src = alternateVideo.get('url')
@@ -308,7 +357,7 @@ class Video extends React.Component {
             })
         }
 
-        videoPlayer.volume = this.props.app.get('volume', 1)
+        videoPlayer.volume = this.props.volume
 
         this.calculateDimensions();
 
@@ -318,8 +367,8 @@ class Video extends React.Component {
             loadedDuration: 0
         });
 
-        setTimeout(() => {
-            let videoPlayer = document.getElementById('video_player');
+        window.setTimeout(() => {
+            let videoPlayer = document.getElementById('video_player') as HTMLVideoElement;
             if (videoPlayer.readyState < 4) {
                 this.setState({ isLoading: true })
             }
@@ -330,12 +379,12 @@ class Video extends React.Component {
         const { hls } = this.state;
         if (hls) {
             hls.destroy();
-            this.setState({ hls: null });
+            this.setState({ hls: undefined });
         }
     }
 
     playPause() {
-        const video = document.getElementById('video_player');
+        const video = document.getElementById('video_player') as HTMLVideoElement;
         if (!this.state.isPlaying) {
             video.play();
         } else {
@@ -346,16 +395,16 @@ class Video extends React.Component {
         }
     }
 
-    seek(time) {
-        const video = document.getElementById('video_player');
+    seek(time: number) {
+        const video = document.getElementById('video_player') as HTMLVideoElement;
         video.currentTime = time;
         this.setState({
             currentTime: video.currentTime
         });
     }
 
-    adjustVolume(volume) {
-        const video = document.getElementById('video_player');
+    adjustVolume(volume: number) {
+        const video = document.getElementById('video_player') as HTMLVideoElement;
         if (volume < 0.05) {
             volume = 0;
         }
@@ -367,9 +416,8 @@ class Video extends React.Component {
     }
 
     mute() {
-        const video = document.getElementById('video_player');
         const { storedVolume } = this.state
-        const volume = this.props.app.get('volume', 1)
+        const volume = this.props.volume
 
         if (volume > 0) {
             // mute and store previous volume
@@ -392,7 +440,7 @@ class Video extends React.Component {
 
     hideControlsAfterDelay(delay=2500) {
         clearTimeout(this.state.hoverTimeoutId);
-        const hoverTimeoutId = setTimeout(() => {
+        const hoverTimeoutId = window.setTimeout(() => {
             if (this.state.isPlaying) {
                 this.setState({
                     shouldDisplayControls: false
@@ -409,15 +457,14 @@ class Video extends React.Component {
 
     logImpression(reset=true) {
         const { impressionStartTime } = this.state
-        const { room, dispatch } = this.props
+        const { selectedMediaItemId, dispatch } = this.props
         // only log impression if one has began and video is associated with a media item
-        if (impressionStartTime < 0 || !room) {
+        if (impressionStartTime < 0 || !selectedMediaItemId) {
             return;
         }
 
-        const video = document.getElementById('video_player')
-        const mediaItemId = room.get('selectedMediaItemId')
-        dispatch(logVideoImpression(mediaItemId, impressionStartTime, video.currentTime))
+        const video = document.getElementById('video_player') as HTMLVideoElement
+        dispatch(logVideoImpression(selectedMediaItemId, impressionStartTime, video.currentTime))
 
         this.setState({
             impressionStartTime: -1
@@ -426,7 +473,7 @@ class Video extends React.Component {
 
     startNewImpression() {
         // debounced function, so called START_IMPRESSION_WAIT_TIME msecs after play begins
-        const video = document.getElementById('video_player')
+        const video = document.getElementById('video_player') as HTMLVideoElement
         if (video) {
             this.setState({
                 impressionStartTime: Math.max(0, video.currentTime - START_IMPRESSION_WAIT_TIME/1000)
@@ -453,22 +500,22 @@ class Video extends React.Component {
         }
     }
 
-    handleOnMouseMove(e) {
+    handleOnMouseMove(e: React.MouseEvent<HTMLElement>) {
         this.setState({
             shouldDisplayControls: true,
         });
         this.hideControlsAfterDelay()
 
         // call event handler on child component
-        this.refs.controls.handleOnMouseMove(e)
+        this._controls.handleOnMouseMove(e)
     }
 
-    handleOnMouseUp(e) {
+    handleOnMouseUp(e: React.MouseEvent<HTMLElement>) {
         // call event handler on child component
-        this.refs.controls.handleOnMouseUp(e)
+        this._controls.handleOnMouseUp(e)
     }
 
-    handleKeyPress(e) {
+    handleKeyPress(e: React.KeyboardEvent<HTMLElement>) {
         if (e.charCode === 32) { // spacebar
             e.preventDefault();
             this.playPause();
@@ -477,10 +524,10 @@ class Video extends React.Component {
 
     // Render
 
-    videoStyle(video, state) {
+    videoStyle(video: State, state: VideoState) {
         const { scale, width, height, isLoading, isIOSDevice } = state
         
-        let style = { display: isLoading && !isIOSDevice ? 'none' : 'block' }
+        let style: any = { display: isLoading && !isIOSDevice ? 'none' : 'block' }
         if (this.shouldForceVideoRotation()) {
             // need to manually rotate video if in Firefox or IE 10 
             if (video.get('orientation') === 90) {
@@ -503,7 +550,7 @@ class Video extends React.Component {
     }
 
     render() {
-        const { video, decoration, app, autoplay } = this.props;
+        const { video, decoration, autoplay, volume } = this.props;
         const { isIOSDevice, shouldDisplayControls, isLoading, width, height } = this.state;
 
         const displayControlsVideoStyle = shouldDisplayControls ? { cursor: 'auto' } : { cursor: 'none' };
@@ -520,7 +567,7 @@ class Video extends React.Component {
             currentTime: this.state.currentTime,
             duration: this.state.duration,
             loadedDuration: this.state.loadedDuration,
-            volume: app.get('volume', 1),
+            volume: volume,
             shouldDisplayControls: this.state.shouldDisplayControls,
             isPlaying: this.state.isPlaying,
             isFullScreen: this.state.isFullScreen,
@@ -538,35 +585,28 @@ class Video extends React.Component {
         }
 
         return (
-            <div className="video_container" id="video_container" tabIndex="-1" style={displayControlsVideoStyle} {...videoContainerEvents}>
+            <div className="video_container" id="video_container" tabIndex={-1} style={displayControlsVideoStyle} {...videoContainerEvents}>
                 <div className="video_player-container">
                     <div className="video_player-background" style={{ backgroundImage: `url(${video.get('poster_url')})`}}></div>
                     <video id="video_player" className="video_player" {...videoAttributes} style={this.videoStyle(video, this.state)}></video>
                     { decoration && <Decoration decoration={decoration} width={width} height={height} barHeight={70} /> }
-                    { isLoading && !isIOSDevice && <Spinner type="white large faded" /> }
+                    { isLoading && !isIOSDevice && <Spinner styles={['white', 'large', 'faded']} /> }
                 </div>
-                { !isIOSDevice && <VideoControls ref="controls" {...videoControlsProps} /> }
+                { !isIOSDevice && <VideoControls ref={(c) => { if (c) { this._controls = c } }} {...videoControlsProps} /> }
             </div>
         );
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     return {
-        app: new App(state)
+        isIOS: App.isIOS(state),
+        isAndroid: App.isAndroid(state),
+        browser: App.get(state, 'browser'),
+        version: App.get(state, 'version'),
+        volume: App.get(state, 'volume', 1),
+        selectedMediaItemId: ownProps.roomId && Room.get(state, ownProps.roomId, 'selectedMediaItemId')
     }
-}
-
-Video.propTypes = {
-    video: PropTypes.object.isRequired,
-    autoplay: PropTypes.bool.isRequired,
-
-    decoration: PropTypes.object,
-    room: PropTypes.object
-}
-
-Video.defaultProps = {
-    autoplay: true
 }
 
 export default connect(mapStateToProps)(Video)

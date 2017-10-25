@@ -20,7 +20,7 @@ export function isFullScreen() {
     return !!(document.fullScreen || document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement || document.fullscreenElement);
 }
 
-export function toggleFullScreen(element: any, callback: (_: boolean) => void) {
+export function toggleFullScreen(element: any, callback?: (_: boolean) => void) {
     if (isFullScreen()) {
       if (document.exitFullscreen) document.exitFullscreen();
       else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
@@ -278,7 +278,7 @@ export function createFunctionWithTimeout(fn: () => void, timeout=1000) {
     }
   }
 
-  setTimeout(callFn, timeout);
+  window.setTimeout(callFn, timeout);
   return callFn;
 }
 

@@ -94,9 +94,9 @@ export function leaveRoom(roomId: number) {
 export interface StartRoomTimerAction extends GenericAction {
     type: ActionType.START_ROOM_TIMER
     roomId: number
-    timerId: NodeJS.Timer
+    timerId: number
 }
-export function startRoomTimer(roomId: number, timerId: NodeJS.Timer): StartRoomTimerAction {
+export function startRoomTimer(roomId: number, timerId: number): StartRoomTimerAction {
     return {
         type: ActionType.START_ROOM_TIMER,
         roomId,

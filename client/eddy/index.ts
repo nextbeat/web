@@ -111,9 +111,9 @@ export default class EddyClient {
     messageQueue: any[];
     client: WebSocket;
 
-    private pingId: NodeJS.Timer;
-    private connectTimeoutId: NodeJS.Timer;
-    private pongTimeoutId: NodeJS.Timer;
+    private pingId: number;
+    private connectTimeoutId: number;
+    private pongTimeoutId: number;
 
     constructor(store: Store) {
         this.dispatch = store.dispatch;
@@ -141,7 +141,7 @@ export default class EddyClient {
                     });
                 }  
 
-                this.pingId = setInterval(() => {
+                this.pingId = window.setInterval(() => {
                     this._sendPing();
                 }, PING_INTERVAL);
 
@@ -160,7 +160,7 @@ export default class EddyClient {
                 this.client.removeEventListener('open', openListener)
             }
 
-            this.connectTimeoutId = setTimeout(() => {
+            this.connectTimeoutId = window.setTimeout(() => {
                 if (!this.isConnected()) {
                     this.client.close();
                     reject(new TimeoutError("Websocket connection timeout."))
@@ -354,7 +354,7 @@ export default class EddyClient {
 
     private _sendPing() {
         var pingPromise = this._send("ping");
-        this.pongTimeoutId = setTimeout(() => {
+        this.pongTimeoutId = window.setTimeout(() => {
             if (!pingPromise.isFulfilled()) {
                 // pong has not responded in a timely manner
                 // we assume the worst, and attempt to reconnect

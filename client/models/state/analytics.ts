@@ -5,7 +5,7 @@ import { AnalyticsType, AnalyticsSessionType } from '@actions/types'
 interface AnalyticsProps {
     userId: number
     activeSessions: List<any>
-    chatTimeoutId: NodeJS.Timer
+    chatTimeoutId: number
 }
 
 const keyMap = {

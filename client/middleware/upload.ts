@@ -158,7 +158,7 @@ function checkProcessingProgress(store: Store, job_id: string): Promise<any> {
         }
 
         checkProgress()
-        let intervalId = setInterval(checkProgress, 2000)
+        let intervalId = window.setInterval(checkProgress, 2000)
     })
 }
 

@@ -1,19 +1,52 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import { fromJS } from 'immutable'
+import * as PropTypes from 'prop-types'
+import * as React from 'react'
+import { List, fromJS } from 'immutable'
 import { connect } from 'react-redux'
 
-import { goBackward, goForward, selectDetailSection } from '../../../actions'
-import Video from './Video.react'
-import Image from './Image.react'
-import ItemReference from './ItemReference.react'
-import Icon from '../../shared/Icon.react'
-import Spinner from '../../shared/Spinner.react'
-import CounterInner from '../counter/CounterInner.react'
+import Video from './Video'
+import Image from './Image'
+import ItemReference from './ItemReference'
+import Icon from '@components/shared/Icon'
+import Spinner from '@components/shared/Spinner'
+import CounterInner from '@components/room/counter/CounterInner.react'
 
-class RoomPlayer extends React.Component {
+import { goBackward, goForward } from '@actions/room'
+import { selectDetailSection } from '@actions/pages/room'
+import MediaItem from '@models/entities/mediaItem'
+import { State, DispatchProps } from '@types'
 
-    constructor(props) {
+interface OwnProps {
+    roomId: number
+    isRoomCard: boolean
+    shouldAutoplayVideo: boolean
+}
+
+interface ConnectProps {
+    hid: string
+    mediaItems: List<MediaItem>
+    selectedMediaItem: State
+    indexOfSelectedMediaItem: number
+}
+
+type Props = OwnProps & ConnectProps & DispatchProps 
+
+interface RoomPlayerState {
+    playerWidth: number
+    playerHeight: number
+}
+
+class RoomPlayer extends React.Component<Props> {
+
+    static defaultProps = {
+        isRoomCard: false,
+        shouldAutoplayVideo: true
+    }
+
+    static contextTypes = {
+        router: PropTypes.object.isRequired
+    }
+
+    constructor(props: Props) {
         super(props);
 
         this.handleBackward = this.handleBackward.bind(this)
@@ -61,22 +94,21 @@ class RoomPlayer extends React.Component {
     // Navigation
 
     handleBackward() {
-        const { dispatch, room } = this.props
-        dispatch(goBackward(room.get('id')))
+        const { dispatch, roomId } = this.props
+        dispatch(goBackward(roomId))
     }
 
     handleForward() {
-        const { dispatch, room } = this.props
-        dispatch(goForward(room.get('id')))
+        const { dispatch, roomId } = this.props
+        dispatch(goForward(roomId))
     }
 
     handleCounterClick() {
-        const { room, isRoomCard, dispatch } = this.props 
+        const { indexOfSelectedMediaItem, hid, isRoomCard, dispatch } = this.props 
         const { router } = this.context
-        const index = room.indexOfSelectedMediaItem() + 1
 
         if (isRoomCard) {
-            router.push({ pathname: `/r/${room.get('hid')}/${index}`, query: { detail: 'activity' }})
+            router.push({ pathname: `/r/${hid}/${indexOfSelectedMediaItem}`, query: { detail: 'activity' }})
         } else {
             dispatch(selectDetailSection('activity'))
         }
@@ -85,7 +117,7 @@ class RoomPlayer extends React.Component {
     // Render
 
     render() {
-        const { room, children, shouldAutoplayVideo } = this.props;
+        const { roomId, children, shouldAutoplayVideo } = this.props;
         const { playerWidth, playerHeight } = this.state
 
         const item = room.selectedMediaItem()
@@ -103,7 +135,7 @@ class RoomPlayer extends React.Component {
                 <div className="player_media" style={{ height: `${playerHeight}px` }}>
                     <div className="player_media-inner" id="player_media-inner">
                     { room.mediaItems().size == 0 && !room.get('mediaItemsError') && <Spinner type="large grey"/> }
-                    { item.hasReference() && <ItemReference room={room} {...containerProps} /> }
+                    { item.hasReference() && <ItemReference roomId={roomId} {...containerProps} /> }
                     { !item.isEmpty() && (item.isVideo() ? 
                         <Video 
                             video={item.video('mp4')}

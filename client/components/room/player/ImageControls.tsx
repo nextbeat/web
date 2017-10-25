@@ -1,11 +1,15 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as React from 'react'
+import Icon from '@components/shared/Icon'
 
-import Icon from '../../shared/Icon.react'
+interface Props {
+    shouldDisplayControls: boolean
+    isFullScreen: boolean
+    fullScreen: () => void
+}
 
-class ImageControls extends React.Component {
+class ImageControls extends React.Component<Props> {
 
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
     }
 
@@ -28,12 +32,6 @@ class ImageControls extends React.Component {
         );
     }
 
-}
-
-ImageControls.propTypes = {
-    shouldDisplayControls: PropTypes.bool,
-    isFullScreen: PropTypes.bool,
-    fullScreen: PropTypes.func
 }
 
 export default ImageControls

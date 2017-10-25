@@ -7,7 +7,7 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
         action.type === ActionType.CLOSE_SIDEBAR)
     {   
         next(addSidebarAnimation())
-        setTimeout(() => {
+        window.setTimeout(() => {
             next(removeSidebarAnimation())
         }, 250)
     }

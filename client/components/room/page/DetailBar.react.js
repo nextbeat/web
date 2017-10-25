@@ -37,7 +37,7 @@ class DetailBar extends React.Component {
     handleResize() {
         // disable animations for small amount of time, so 
         // that resizing does not trigger collapse animation
-        clearTimeout(this.state.disableAnimationsTimeoutId)
+        window.clearTimeout(this.state.disableAnimationsTimeoutId)
 
         const disableAnimationsTimeoutId = setTimeout(() => {
             this.setState({ disableAnimations: false })

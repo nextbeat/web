@@ -19,7 +19,7 @@ export interface RoomProps {
 
     isJoining: boolean
     joined: boolean
-    timerId: NodeJS.Timer // calls room_info every X seconds
+    timerId: number // calls room_info every X seconds
 
     selectedMediaItemId: number
     seenMediaItemIds: Set<number>

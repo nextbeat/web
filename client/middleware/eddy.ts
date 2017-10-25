@@ -183,7 +183,7 @@ function wrapJoin(store: Store, next: Dispatch, action: JoinRoomAction) {
         _roomInfoSuccessCallback(store, next, action)(action, client, responseData)
 
         // set up room info timer
-        let roomInfoIntervalId = setInterval(() => {
+        let roomInfoIntervalId = window.setInterval(() => {
             store.dispatch(getRoomInfo(action.roomId))
         }, 15000)
 

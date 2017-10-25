@@ -1,17 +1,42 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
-import Promise from 'bluebird'
 import { Map } from 'immutable'
 
-import Decoration from './Decoration.react'
-import ImageControls from './ImageControls.react'
-import { App } from '../../../models'
-import { toggleFullScreen, isFullScreen } from '../../../utils'
+import Decoration from './Decoration'
+import ImageControls from './ImageControls'
+import App from '@models/state/app'
+import { toggleFullScreen, isFullScreen } from '@utils'
+import { State } from '@types'
 
-class Image extends React.Component {
+interface OwnProps {
+    image: State
+    containerWidth: number
+    containerHeight: number
+    hideControls: boolean
+    decoration: State
+}
 
-    constructor(props) {
+interface ConnectProps {
+    shouldForceRotation: boolean
+}
+
+type Props = OwnProps & ConnectProps
+
+interface ImageState {
+    width: number
+    height: number
+    scale: number
+    shouldDisplayControls: boolean
+    isFullScreen: boolean
+}
+
+class Image extends React.Component<Props, ImageState> {
+
+    static defaultProps = {
+        hideControls: false
+    }
+
+    constructor(props: Props) {
         super(props)
 
         this.fullScreen = this.fullScreen.bind(this)
@@ -49,7 +74,7 @@ class Image extends React.Component {
         this.calculateDimensions(this.props.image)
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: Props) {
         if (prevProps.image !== this.props.image 
             || prevProps.containerHeight !== this.props.containerHeight 
             || prevProps.containerWidth !== this.props.containerWidth) {
@@ -87,11 +112,7 @@ class Image extends React.Component {
         })
     }
 
-    calculateDimensions(image) {
-        if (!image || !Map.isMap(image)) {
-            image = this.props.image
-        }
-
+    calculateDimensions(image: State) {
         const { containerWidth, containerHeight } = this.props
         const imageRatio = image.get('width')/image.get('height')
         const containerRatio = containerWidth/containerHeight
@@ -120,7 +141,7 @@ class Image extends React.Component {
         const { scale, width, height } = this.state
         const { image, shouldForceRotation } = this.props 
 
-        let style = {
+        let style: any = {
             width: `${width}px`,
             height: `${height}px`
         }
@@ -141,7 +162,7 @@ class Image extends React.Component {
         return style;
     }
 
-    captionStyle(state) {
+    captionStyle(state: ImageState) {
         const { width, height } = state 
         return {
             width: `${width}px`, 
@@ -181,23 +202,9 @@ class Image extends React.Component {
     }
 }
 
-Image.propTypes = {
-    image: PropTypes.object.isRequired,
-    containerWidth: PropTypes.number.isRequired,
-    containerHeight: PropTypes.number.isRequired,
-
-    hideControls: PropTypes.bool,
-    decoration: PropTypes.object,
-}
-
-Image.defaultProps = {
-    hideControls: false
-}
-
-function mapStateToProps(state) {
-    let app = new App(state)
+function mapStateToProps(state: State): ConnectProps {
     return {
-        shouldForceRotation: app.get('browser') === 'Chrome' && parseInt(app.get('version')) === 52
+        shouldForceRotation: App.get(state, 'browser') === 'Chrome' && parseInt(App.get(state, 'version')) === 52
     }
 }
 

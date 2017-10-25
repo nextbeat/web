@@ -1,15 +1,34 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 
-import Icon from '../../shared/Icon.react'
-import { timeString } from '../../../utils'
+import Icon from '@components/shared/Icon'
+import { selectDetailSection, hideSearchChatResults } from '@actions/pages/room'
+import { jumpToComment } from '@actions/room'
+import MediaItem from '@models/entities/mediaItem'
+import Comment from '@models/entities/comment'
+import { timeString } from '@utils'
+import { State, DispatchProps } from '@types'
 
-import { jumpToComment, selectDetailSection, hideSearchChatResults } from '../../../actions'
+interface OwnProps {
+    roomId: number
+    containerWidth: number
+}
 
-class ItemReference extends React.Component {
+interface ConnectProps {
+    selectedMediaItem: MediaItem    
+}
 
-    constructor(props) {
+interface ItemReferenceState {
+    collapsed: boolean
+    animated: boolean
+    compact: boolean
+}
+
+type AllProps = OwnProps & ConnectProps & DispatchProps
+
+class ItemReference extends React.Component<AllProps, ItemReferenceState> {
+
+    constructor(props: AllProps) {
         super(props);
 
         this.handleCollapseClick = this.handleCollapseClick.bind(this)
@@ -26,25 +45,25 @@ class ItemReference extends React.Component {
     // Component lifecycle
 
     componentDidMount() {
-        $(this.refs.text).dotdotdot({
+        ($(this.refs.text) as any).dotdotdot({
             watch: true,
             height: 50
         })
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps: AllProps) {
         this.setState({ compact: nextProps.containerWidth < 500 })
 
-        if (nextProps.room.selectedMediaItem() !== this.props.room.selectedMediaItem()) {
+        if (nextProps.selectedMediaItem !== this.props.selectedMediaItem) {
             $(this.refs.text).trigger('destroy.dot')
             this.setState({ collapsed: false, animated: false })
-            setTimeout(() => this.setState({ animated: true }), 100)
+            window.setTimeout(() => this.setState({ animated: true }), 100)
         }
     }
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.room.selectedMediaItem() !== this.props.room.selectedMediaItem()) {
-            $(this.refs.text).dotdotdot({
+    componentDidUpdate(prevProps: AllProps) {
+        if (prevProps.selectedMediaItem !== this.props.selectedMediaItem) {
+            ($(this.refs.text) as any).dotdotdot({
                 watch: true,
                 height: 50
             })
@@ -59,10 +78,10 @@ class ItemReference extends React.Component {
     }
 
     handleCommentClick() {
-        const { dispatch, room } = this.props
-        const comment = room.selectedMediaItem().referencedComment()
+        const { dispatch, selectedMediaItem, roomId } = this.props
+        const comment = selectedMediaItem.referencedComment() as Comment
 
-        dispatch(jumpToComment(room.id, comment))
+        dispatch(jumpToComment(roomId, comment))
         dispatch(hideSearchChatResults())
         dispatch(selectDetailSection('chat'))
     }
@@ -71,11 +90,10 @@ class ItemReference extends React.Component {
     // Render
 
     render() {
-        const { room } = this.props 
+        const { selectedMediaItem } = this.props 
         const { collapsed, compact, animated } = this.state
 
-        const item = room.selectedMediaItem()
-        const comment = item.referencedComment()
+        const comment = selectedMediaItem.referencedComment()
 
         if (!comment) {
             return null;
@@ -111,10 +129,6 @@ class ItemReference extends React.Component {
             </div>
         )
     }
-}
-
-ItemReference.propTypes = {
-    room: PropTypes.object.isRequired
 }
 
 export default connect()(ItemReference)

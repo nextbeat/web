@@ -1,20 +1,39 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as React from 'react'
+import Icon from '@components/shared/Icon'
 
-import Icon from '../../shared/Icon.react'
-
-function padNumber(num) {
+function padNumber(num: number) {
     const str = num.toString();
     return ('00'+str).substring(str.length);
 }
 
-function timeStr(time) {
+function timeStr(time: number) {
     return `${padNumber(Math.floor(time/60.0))}:${padNumber(Math.floor(time % 60))}`
 }
 
-class VideoControls extends React.Component {
+interface Props {
+    currentTime: number
+    duration: number
+    loadedDuration: number
+    volume: number
+    shouldDisplayControls: boolean
+    isPlaying: boolean
+    isFullScreen: boolean
 
-    constructor(props) {
+    adjustVolume: (volume: number) => void
+    mute: () => void
+    playPause: () => void
+    seek: (time: number) => void
+    fullScreen: () => void
+}
+
+interface State {
+    isDraggingVolume: boolean
+    isDraggingProgressBar: boolean
+}
+
+class VideoControls extends React.Component<Props, State> {
+
+    constructor(props: Props) {
         super(props);
 
         this.handleProgressBarOnMouseOver = this.handleProgressBarOnMouseOver.bind(this);
@@ -35,29 +54,29 @@ class VideoControls extends React.Component {
 
     // Actions
 
-    handleVolume(e) {
-        const offset = e.pageX - $('.video_volume-slider-container').offset().left;
-        const width = $('.video_volume-slider-container').width();
+    handleVolume(e: React.MouseEvent<HTMLElement>) {
+        const offset: number = e.pageX - ($('.video_volume-slider-container').offset() as any).left;
+        const width = $('.video_volume-slider-container').width() as number
         let volume = offset/width;
         this.props.adjustVolume(volume);
     }
 
-    handleSeek(e) {
-        const offset = e.pageX - $('.video_progress-bar').offset().left;
-        const width = $('.video_progress-bar').width();
+    handleSeek(e: React.MouseEvent<HTMLElement>) {
+        const offset: number = e.pageX - ($('.video_progress-bar').offset() as any).left;
+        const width = $('.video_progress-bar').width() as number;
         this.props.seek(offset/width * this.props.duration);
     }
 
 
     // Container events
 
-    handleOnMouseMove(e) {
+    handleOnMouseMove(e: React.MouseEvent<HTMLElement>) {
         if (this.state.isDraggingProgressBar) {
             this.handleSeek(e);
         }
     }
 
-    handleOnMouseUp(e) {
+    handleOnMouseUp(e: React.MouseEvent<HTMLElement>) {
         if (this.state.isDraggingProgressBar) {
             this.handleSeek(e);
             this.setState({
@@ -83,7 +102,7 @@ class VideoControls extends React.Component {
         }
     }
 
-    handleProgressBarOnMouseDown(e) {
+    handleProgressBarOnMouseDown(e: React.MouseEvent<HTMLElement>) {
         this.handleSeek(e);
         this.setState({
             isDraggingProgressBar: true
@@ -93,27 +112,27 @@ class VideoControls extends React.Component {
 
     // Volume events
 
-    handleVolumeOnMouseDown(e) {
+    handleVolumeOnMouseDown(e: React.MouseEvent<HTMLElement>) {
         this.handleVolume(e);
         this.setState({
             isDraggingVolume: true
         })
     }
 
-    handleVolumeOnMouseMove(e) {
+    handleVolumeOnMouseMove(e: React.MouseEvent<HTMLElement>) {
         if (this.state.isDraggingVolume) {
             this.handleVolume(e);
         }
     }
 
-    handleVolumeOnMouseUp(e) {
+    handleVolumeOnMouseUp(e: React.MouseEvent<HTMLElement>) {
         this.handleVolume(e);
         this.setState({
             isDraggingVolume: false
         })
     }
 
-    handleVolumeOnMouseOut(e) {
+    handleVolumeOnMouseOut(e: React.MouseEvent<HTMLElement>) {
         this.setState({
             isDraggingVolume: false
         })
@@ -181,25 +200,6 @@ class VideoControls extends React.Component {
             </div>
         );
     }
-
-}
-
-VideoControls.propTypes = {
-    // Constants
-    currentTime: PropTypes.number,
-    duration: PropTypes.number,
-    loadedDuration: PropTypes.number,
-    volume: PropTypes.number,
-    shouldDisplayControls: PropTypes.bool,
-    isPlaying: PropTypes.bool,
-    isFullScreen: PropTypes.bool,
-
-    // Functions
-    adjustVolume: PropTypes.func,
-    mute: PropTypes.func,
-    playPause: PropTypes.func,
-    seek: PropTypes.func,
-    fullScreen: PropTypes.func
 
 }
 

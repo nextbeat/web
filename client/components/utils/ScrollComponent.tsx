@@ -1,11 +1,30 @@
-import React from 'react'
+import * as React from 'react'
 import hoistStatics from 'hoist-non-react-statics'
+
+interface ScrollOptions<P> {
+    onScrollToTop: (scrollComponent: React.Component) => void
+    onScrollToBottom: (scrollComponent: React.Component) => void
+    onComponentDidMount: (scrollComponent: React.Component, props: P) => void
+    onComponentWillReceiveProps: (scrollComponent: React.Component, props: P) => void
+    onComponentDidUpdate: (scrollComponent: React.Component, props: P) => void
+    onResize: (scrollComponent: React.Component, props: P) => void
+}
+
+interface ScrollComponentState {
+    scrollTop: number
+    scrollHeight: number
+}
+
+export interface ScrollProps {
+    scrollToTop: () => void
+    scrollToBottom: () => void 
+}
 
 /**
  * Higher order component enabling scroll-dependent behavior
  * on the given child component.
  */
-export default function ScrollComponent(domId, scrollOptions={}) {
+export default function ScrollComponent<P>(domId: ((props: P) => string) | string, scrollOptions: Partial<ScrollOptions<P>>) {
 
     const { 
         onScrollToTop,
@@ -16,11 +35,11 @@ export default function ScrollComponent(domId, scrollOptions={}) {
         onResize
     } = scrollOptions
 
-    return function wrapWithScroll(ChildComponent) {
+    return function wrapWithScroll(ChildComponent: typeof React.Component) {
 
-        class ScrollContainer extends React.Component {
+        class ScrollContainer extends React.Component<P, ScrollComponentState> {
 
-            constructor(props) {
+            constructor(props: P) {
                 super(props)
 
                 // Keeps track of the scroll state when the props were last updated
@@ -43,12 +62,12 @@ export default function ScrollComponent(domId, scrollOptions={}) {
                 this.keepScrollPosition = this.keepScrollPosition.bind(this)
             }
 
-            domIdString() {
+            domIdString(): string {
                 return typeof domId === 'function' ? domId(this.props) : domId
             }
 
-            domElement() {
-                return document.getElementById(this.domIdString())
+            domElement(): HTMLElement {
+                return document.getElementById(this.domIdString()) as HTMLElement
             }
 
             // Component lifecycle methods
@@ -62,13 +81,13 @@ export default function ScrollComponent(domId, scrollOptions={}) {
                 }
             }
 
-            componentWillReceiveProps(nextProps) {
+            componentWillReceiveProps(nextProps: P) {
                 if (typeof onComponentWillReceiveProps === 'function') {
                     onComponentWillReceiveProps.call(this.refs.child, this, nextProps)
                 }
             }
 
-            componentDidUpdate(prevProps) {
+            componentDidUpdate(prevProps: P) {
                 if (typeof onComponentDidUpdate === 'function') {
                     onComponentDidUpdate.call(this.refs.child, this, prevProps)
                 }
@@ -102,7 +121,7 @@ export default function ScrollComponent(domId, scrollOptions={}) {
             }
 
             isStateScrolledToTop() {
-                return state.scrollTop === 0;
+                return this.state.scrollTop === 0;
             }
 
             isStateScrolledToBottom() {
@@ -130,7 +149,7 @@ export default function ScrollComponent(domId, scrollOptions={}) {
 
             // Actions
             
-            _doScroll(top, duration) {
+            _doScroll(top: number, duration: number) {
                 const elem = this.domElement();
                 if (duration > 0) {
                     $(elem).animate({ scrollTop: top }, {
@@ -138,7 +157,7 @@ export default function ScrollComponent(domId, scrollOptions={}) {
                         complete: () => {
                             this.setScrollState();
                         },
-                        easing: $.bez([0, 0, 0.2, 1]) // ease in
+                        easing: ($ as any).bez([0, 0, 0.2, 1]) // ease in
                     })
                 } else {
                     elem.scrollTop = top;
@@ -156,12 +175,14 @@ export default function ScrollComponent(domId, scrollOptions={}) {
                 this._doScroll(0, duration);
             }
 
-            scrollToElementWithId(id, duration=0) {
+            scrollToElementWithId(id: string, duration=0) {
                 // sets element in center of scroll container
                 const containerElem = this.domElement();
                 const elem = document.getElementById(id);
-                const newTop = Math.max(1, elem.offsetTop - containerElem.clientHeight/2);
-                this._doScroll(newTop, duration);
+                if (elem) {
+                    const newTop = Math.max(1, elem.offsetTop - containerElem.clientHeight/2);
+                    this._doScroll(newTop, duration);
+                }
             }
 
             scrollToBottomIfPreviouslyAtBottom() {
