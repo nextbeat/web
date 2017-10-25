@@ -1,16 +1,36 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as PropTypes from 'prop-types'
+import * as React from 'react'
 import { Link } from 'react-router'
 import { Map } from 'immutable'
-import without from 'lodash/without'
+import without from 'lodash-es/without'
 
-import Badge from './Badge.react'
-import { EntityModel } from '../../models'
-import { fromNowString } from '../../utils'
+import Badge from './Badge'
+import Stack from '@models/entities/stack'
+import { fromNowString } from '@utils'
 
-class StackItem extends React.Component {
+interface Props {
+    stack: Stack
+    static: boolean
+    showBadge: boolean
+}
 
-    constructor(props) {
+interface State {
+    width: number
+    gridClass: string
+    imageLoaded: boolean
+}
+
+class StackItem extends React.Component<Props, State> {
+
+    static defaultProps = {
+        static: false,
+        showBadge: false
+    }
+
+    private _node: HTMLDivElement
+    private _image: HTMLImageElement
+
+    constructor(props: Props) {
         super(props);
 
         this.resize = this.resize.bind(this);
@@ -23,13 +43,13 @@ class StackItem extends React.Component {
     }
 
     resize() {
-        var parent = $(this._node).parent;
+        var parent = $(this._node).parent();
 
         let gridClass = '';
         if (!this.props.static) {
-            if (parent.width() > 800) {
+            if (parent.width() as number > 800) {
                 gridClass = 'three-across';
-            } else if (parent.width() > 500) {
+            } else if (parent.width() as number > 500) {
                 gridClass = 'two-across';
             } else {
                 gridClass = 'one-across';
@@ -37,7 +57,7 @@ class StackItem extends React.Component {
         }
 
         // resize thumbnail
-        const height = $(this._node).find('.item-room_thumb').height();
+        const height = $(this._node).find('.item-room_thumb').height() as number
         const width = Math.floor(height*4/3);
 
         this.setState({ gridClass, width });
@@ -75,10 +95,10 @@ class StackItem extends React.Component {
         const imageUrl = stack.thumbnail('small').get('url');
 
         return (
-            <div className={`item_container ${gridClass}`} ref={(c) => this._node = c} >
+            <div className={`item_container ${gridClass}`} ref={(c) => { if (c) { this._node = c } } } >
             <Link to={`/r/${stack.get('hid')}`} className="item-room" activeClassName="selected">
                     <div className={`item-room_thumb ${imageLoadedClass}`} style={{ width: `${width}px` }}>
-                        <img className="item-room_thumb_image" ref={(c) => this._image = c} src={imageUrl} />
+                        <img className="item-room_thumb_image" ref={(c) => { if (c) { this._image = c } } } src={imageUrl} />
                     </div>
                     <div className="item-room_main">
                             <div className="item-room_description">{stack.get('description') || "No description."}</div>
@@ -92,21 +112,6 @@ class StackItem extends React.Component {
             </div>
         );
     }
-}
-
-StackItem.propTypes = {
-    stack: (props, propName) => {
-        if (!(props[propName] instanceof EntityModel)) {
-            return new Error('Invalid stack prop supplied to StackItem.')   
-        }
-    },
-    showBadge: PropTypes.bool,
-    static: PropTypes.bool
-}
-
-StackItem.defaultProps = {
-    showBadge: false,
-    static: false
 }
 
 export default StackItem;

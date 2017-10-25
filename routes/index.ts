@@ -1,24 +1,19 @@
-import React from 'react'
+import * as React from 'react'
 import { Route, Redirect } from 'react-router'
-import assign from 'lodash/assign'
-import last from 'lodash/last'
+import assign from 'lodash-es/assign'
+import last from 'lodash-es/last'
 
-import App from '../client/components/App.react'
-import { App as AppModel } from '../client/models'
+import App from '../client/components/App'
+import AppModel from '../client/models/state/app'
 
-import { gaPage } from '../client/actions'
+import { gaPage } from '../client/actions/ga'
 
 // require.ensure shim for server
 if (typeof require.ensure !== "function") require.ensure = (d,c) => c(require)
 
 export default store => {
    
-    function analyticsRoute(path, getComponent) {
-        if (arguments.length === 1) {
-            getComponent = path
-            path = undefined
-        }
-
+    function analyticsRoute(path: string | undefined, getComponent: (cb: any) => void) {
         return {
             path,
             getComponent: (nextState, cb) => { getComponent(cb) },
@@ -34,7 +29,7 @@ export default store => {
         {
             'path': 'internal/access',
             getComponent: (nextState, cb) => {
-                let environment = (new AppModel(store.getState())).get('environment') 
+                let environment = process.env.NODE_ENV || 'development'
                 if (environment !== 'development') {
                     require.ensure([], (require) => {
                         return cb(null, require('../client/components/pages/NoMatch.react').default)
@@ -55,8 +50,8 @@ export default store => {
                     })
                 }),
                 analyticsRoute('s/:slug', cb => {
-                    require.ensure([], (require) => {
-                        return cb(null, require('../client/components/pages/Section.react').default)
+                    import('../client/components/pages/Section').then(component => {
+                        return cb(null, component)
                     })
                 }),
                 {
@@ -64,7 +59,7 @@ export default store => {
                     childRoutes: [
                         {
                             path: ':hid',
-                            indexRoute: analyticsRoute(cb => {
+                            indexRoute: analyticsRoute(undefined, cb => {
                                 require.ensure([], (require) => {
                                     return cb(null, require('../client/components/pages/RoomPage.react').default)
                                 })

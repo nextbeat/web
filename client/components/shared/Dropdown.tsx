@@ -1,14 +1,35 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 
-import { App } from '../../models'
-import { closeDropdown } from '../../actions'
-import Icon from './Icon.react'
+import App from '@models/state/app'
+import { closeDropdown } from '@actions/app'
+import Icon from '@components/shared/Icon'
 
-class Dropdown extends React.Component {
+import { State, DispatchProps } from '@types'
 
-    constructor(props) {
+interface ConnectProps {
+    isActive: boolean
+}
+
+interface OwnProps {
+    type: string
+    shouldForceClose: boolean
+    triangleOnBottom: boolean
+    handleClose?: () => void
+    style?: string
+    triangleMargin?: number
+}
+
+type AllProps = OwnProps & ConnectProps & DispatchProps
+
+class Dropdown extends React.Component<AllProps> {
+
+    static defaultProps = {
+        shouldForceClose: false,
+        triangleOnBottom: false
+    }
+
+    constructor(props: AllProps) {
         super(props)
         
         this.hideDropdown = this.hideDropdown.bind(this)
@@ -16,7 +37,7 @@ class Dropdown extends React.Component {
         this.handleClose = this.handleClose.bind(this)
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps: AllProps) {
         const { type, isActive, shouldForceClose } = this.props
 
         // if shouldForceClose is true, client has to manually 
@@ -34,14 +55,14 @@ class Dropdown extends React.Component {
         }
     }
 
-    handleKeyUp(e) {
+    handleKeyUp(e: JQuery.Event) {
         const { type, dispatch } = this.props
         if (e.which === 27) { // esc
             this.handleClose()
         }
     }
 
-    hideDropdown(e) {
+    hideDropdown(e: JQuery.Event) {
         const { type, dispatch } = this.props
         let $dropdown = $(`#dropdown-${type}`)
         let $toggle = $(`.dropdown-${type}_toggle`)
@@ -49,9 +70,9 @@ class Dropdown extends React.Component {
         // check that target isn't dropdown. note that we DO want to hide 
         // if the target is one of the dropdown's descendants, since all of those 
         // should be links which should, on click, collapse the dropdown
-        if (!($dropdown.is(e.target)
-            || $toggle.is(e.target) 
-            || $toggle.has(e.target).length > 0)) 
+        if (!($dropdown.is(e.target as Element)
+            || $toggle.is(e.target as Element) 
+            || $toggle.has(e.target as Element).length > 0)) 
         {   
             process.nextTick(() => {
                 $(document).off(`mouseup.dropdown-${type}`);
@@ -74,7 +95,7 @@ class Dropdown extends React.Component {
     render() {
         const { type, style, children, isActive, triangleMargin, triangleOnBottom, shouldForceClose } = this.props
 
-        let triangleStyle = {}
+        let triangleStyle: any = {}
         if (typeof triangleMargin !== 'undefined') {
             triangleStyle.right = `${triangleMargin}px`
             if (triangleMargin < 0) {
@@ -100,19 +121,9 @@ class Dropdown extends React.Component {
     }
 }
 
-Dropdown.propTypes = {
-    type: PropTypes.string.isRequired,
-    shouldForceClose: PropTypes.bool.isRequired
-}
-
-Dropdown.defaultProps = {
-    shouldForceClose: false
-}
-
-function mapStateToProps(state, ownProps) {
-    let app = new App(state)
+function mapStateToProps(state: State, ownProps: OwnProps) {
     return {
-        isActive: app.isActiveDropdown(ownProps.type)
+        isActive: App.isActiveDropdown(state, ownProps.type)
     }
 }
 

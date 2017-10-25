@@ -1,14 +1,25 @@
-import React from 'react'
-import { findDOMNode } from 'react-dom'
+import * as React from 'react'
 import { connect } from 'react-redux'
 
-import { promptModal, signup } from '../../actions'
-import { CurrentUser } from '../../models'
-import Modal from './Modal.react'
+import { promptModal } from '@actions/app'
+import { signup } from '@actions/user'
+import CurrentUser from '@models/state/currentUser'
+import Modal from '@components/shared/Modal'
+import { State, DispatchProps } from '@types'
 
-class Signup extends React.Component {
+interface Props {
+    signupError: string
+}
 
-    constructor(props) {
+type AllProps = Props & DispatchProps
+
+class Signup extends React.Component<AllProps> {
+
+    private _signupEmail: HTMLInputElement
+    private _signupUsername: HTMLInputElement
+    private _signupPassword: HTMLInputElement
+
+    constructor(props: AllProps) {
         super(props)
 
         this.handleKeyPress = this.handleKeyPress.bind(this)
@@ -19,21 +30,21 @@ class Signup extends React.Component {
 
     // Events
 
-    handleKeyPress(e) {
+    handleKeyPress(e: React.KeyboardEvent<HTMLElement>) {
         if (e.charCode === 13) {
             this.handleSignupSubmit(e)
         }
     }
 
-    handleSignupSubmit(e) {
+    handleSignupSubmit(e: React.FormEvent<HTMLElement>) {
         e.preventDefault();
-        const email = findDOMNode(this.refs.signup_email).value;
-        const username = findDOMNode(this.refs.signup_username).value;
-        const password = findDOMNode(this.refs.signup_password).value;
+        const email = this._signupEmail.value
+        const username = this._signupUsername.value
+        const password = this._signupPassword.value
         this.props.dispatch(signup({ email, username, password }));
     }   
 
-    handleLoginClick(e) {
+    handleLoginClick(e: React.MouseEvent<HTMLElement>) {
         e.preventDefault();
         this.props.dispatch(promptModal('login'))
     }
@@ -42,20 +53,20 @@ class Signup extends React.Component {
     // Render
 
     render() {
-        const { currentUser } = this.props;
+        const { signupError } = this.props;
         return (
             <Modal name="signup" className="modal-auth">
                 <form className="modal_form" id="signup-form" onKeyPress={this.handleKeyPress} >
                     <input style={{display: "none"}} type="text" name="somefakename" />
                     <input style={{display: "none"}} type="password" name="anotherfakename" />
                     <div className="modal_input-wrapper">
-                        <input type="text" ref="signup_email" name="signup_email" placeholder="Email" />
+                        <input type="text" ref={(c) => { if (c) { this._signupEmail = c } }} name="signup_email" placeholder="Email" />
                     </div>
                     <div className="modal_input-wrapper">
-                        <input type="text" autoComplete="off" ref="signup_username" name="signup_username" placeholder="Username" />
+                        <input type="text" autoComplete="off" ref={(c) => { if (c) { this._signupUsername = c } }} name="signup_username" placeholder="Username" />
                     </div>
                     <div className="modal_input-wrapper">
-                        <input type="password" autoComplete="new-password" ref="signup_password" name="signup_password" placeholder="Password" />
+                        <input type="password" autoComplete="new-password" ref={(c) => { if (c) { this._signupPassword = c } }} name="signup_password" placeholder="Password" />
                     </div>
                     <div className="modal_input-description">
                         By signing up, you indicate that you agree with our <a>Terms of Service</a> and <a>Privacy Policy</a>.
@@ -63,7 +74,7 @@ class Signup extends React.Component {
                     <div className="modal_input-wrapper modal_input-wrapper-submit">
                         <a className="btn modal_form_submit" onClick={this.handleSignupSubmit}>Sign Up</a>
                     </div>
-                    { currentUser.has('signupError') && <div className="modal-auth_error">{currentUser.get('signupError')}</div> }
+                    { !!signupError && <div className="modal-auth_error">{signupError}</div> }
                 </form>
                 <div className="modal_extra">Already have an account? <a onClick={this.handleLoginClick}>Log in!</a></div>
             </Modal>
@@ -71,9 +82,9 @@ class Signup extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: State): Props {
     return {
-        currentUser: new CurrentUser(state)
+        signupError: CurrentUser.get(state, 'signupError')
     }
 }
 

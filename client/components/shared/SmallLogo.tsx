@@ -1,6 +1,10 @@
-import React from 'react';
+import * as React from 'react';
 
-class SmallLogo extends React.Component {
+interface Props {
+    type?: string
+}
+
+class SmallLogo extends React.Component<Props> {
 
     render() {
         let customClassName = this.props.type ? `svg-icon-small-logo-${this.props.type}` : ''

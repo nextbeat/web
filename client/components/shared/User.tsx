@@ -1,10 +1,22 @@
-import React from 'react'
+import * as React from 'react'
 import { Link } from 'react-router'
-import Icon from './Icon.react'
-import Subscribe from './Subscribe.react'
-import { secureUrl } from '../../utils'
 
-class User extends React.Component {
+import UserEntity from '@models/entities/user'
+import Icon from '@components/shared/Icon'
+import Subscribe from '@components/shared/Subscribe'
+import { secureUrl } from '@utils'
+
+interface Props {
+    user: UserEntity
+    style?: string
+    showSubscribe: boolean
+}
+
+class User extends React.Component<Props> {
+
+    static defaultProps = {
+        showSubscribe: true
+    }
 
     render() {
         const { user, style, showSubscribe } = this.props;
@@ -32,11 +44,6 @@ class User extends React.Component {
             </div>
         );
     }
-
-}
-
-User.defaultProps = {
-    showSubscribe: true
 }
 
 export default User;

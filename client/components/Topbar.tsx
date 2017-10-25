@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as PropTypes from 'prop-types'
+import * as React from 'react'
 import { findDOMNode } from 'react-dom'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
@@ -8,9 +8,9 @@ import { selectSidebar, closeSidebar, toggleDropdown, promptModal, logout, markA
 import { Notifications as NotificationsModel, Upload, CurrentUser, App } from '../models'
 
 import Notifications from './pages/Notifications.react'
-import Icon from './shared/Icon.react'
-import Logo from './shared/Logo.react'
-import SmallLogo from './shared/SmallLogo.react'
+import Icon from '@components/shared/Icon'
+import Logo from '@components/shared/Logo'
+import SmallLogo from '@components/shared/SmallLogo'
 import Dropdown from './shared/Dropdown.react'
 import ToggleLink from './shared/ToggleLink.react'
 

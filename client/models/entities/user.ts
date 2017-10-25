@@ -8,6 +8,7 @@ interface UserProps {
     description: string
     full_name: string
     id: number
+    open_stacks: number
     profpic_url: string
     subscriber_count: number
     username: string

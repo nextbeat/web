@@ -1,5 +1,5 @@
-import React from 'react'
-import Icon from './Icon.react'
+import * as React from 'react'
+import Icon from '@components/shared/Icon'
 
 class PageError extends React.Component {
 

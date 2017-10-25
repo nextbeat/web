@@ -1,19 +1,33 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as React from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { Map } from 'immutable'
-import without from 'lodash/without'
-import isNumber from 'lodash/isNumber'
 
-import { fromNowString } from '../../utils'
-import { EntityModel } from '../../models'
-import Icon from './Icon.react'
-import Badge from './Badge.react'
+import { fromNowString } from '@utils'
+import Stack from '@models/entities/stack'
+import Icon from '@components/shared/Icon'
+import Badge from '@components/shared/Badge'
 
-class LargeStackItem extends React.Component {
+interface Props {
+    stack: Stack
+    static: boolean | number
+}
 
-    constructor(props) {
+interface State {
+    imageLoaded: boolean
+    gridClass: string
+}
+
+class LargeStackItem extends React.PureComponent<Props, State> {
+
+    static defaultProps = {
+        static: false
+    }
+
+    private _node: HTMLDivElement
+    private _image: HTMLImageElement
+
+    constructor(props: Props) {
         super(props);
 
         this.resize = this.resize.bind(this);
@@ -30,15 +44,15 @@ class LargeStackItem extends React.Component {
 
         let gridClass = '';
         if (!this.props.static) {
-            if (parent.width() > 1480) {
+            if (parent.width() as number > 1480) {
                 gridClass = 'six-across';
-            } else if (parent.width() > 1180) {
+            } else if (parent.width() as number > 1180) {
                 gridClass = 'five-across';
-            } else if (parent.width() > 880) {
+            } else if (parent.width() as number > 880) {
                 gridClass = 'four-across';
-            } else if (parent.width() > 580) {
+            } else if (parent.width() as number > 580) {
                 gridClass = 'three-across';
-            } else if (parent.width() > 280) {
+            } else if (parent.width() as number > 280) {
                 gridClass = 'two-across';
             } else {
                 gridClass = 'one-across';
@@ -65,26 +79,20 @@ class LargeStackItem extends React.Component {
         $(window).off('resize', this.resize);
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return !this.props.stack.isEqual(nextProps.stack) 
-            || this.props.static !== nextProps.static 
-            || this.state.imageLoaded !== nextState.imageLoaded
-            || this.state.gridClass !== nextState.gridClass
-    }
-
     render() {
         const { stack, static: staticNum } = this.props;
         const { gridClass, imageLoaded } = this.state;
 
         const author = stack.author();
         const bookmarkType = stack.get('bookmarked') ? "bookmark" : "bookmark-outline";
-        const itemWidth = isNumber(staticNum) ? staticNum + "px" : null;
+        const itemWidth = typeof staticNum === 'number' ? staticNum + "px" : null;
 
         const imageLoadedClass = imageLoaded ? 'loaded' : '';
         const imageUrl = stack.thumbnail('medium').get('url');
+        const style = itemWidth ? { width: itemWidth } : {}
 
         return (
-            <div className={`item_container item-room-large_container ${gridClass}`} ref={(c) => this._node = c} style={itemWidth && {width: itemWidth}}>
+            <div className={`item_container item-room-large_container ${gridClass}`} ref={(c) => { if (c) { this._node = c } }} style={style}>
                 <Link to={`/r/${stack.get('hid')}`}>
                 <div className="item-room-large item">
                     <div className="item_inner item-room-large_inner">
@@ -94,7 +102,7 @@ class LargeStackItem extends React.Component {
                         }
                         <div className="item_thumb item-room-large_thumb">
                             <div className={`item-room-large_thumb_image-container ${imageLoadedClass}`}>
-                                <img className="item-room-large_thumb_image" ref={(c) => this._image = c } src={imageUrl} />
+                                <img className="item-room-large_thumb_image" ref={(c) => { if (c) { this._image = c } }} src={imageUrl} />
                             </div>
                             <div className="item-room-large_views">
                                 <span className="item-room-large_view-count">{stack.get('views', 0)}</span> visit{stack.get('views') !== 1 && 's'}
@@ -113,15 +121,6 @@ class LargeStackItem extends React.Component {
             </div>
         );
     }
-}
-
-LargeStackItem.propTypes = {
-    stack: (props, propName) => {
-        if (!(props[propName] instanceof EntityModel)) {
-            return new Error('Invalid stack prop supplied to LargeStackItem.')   
-        }
-    },
-    static: PropTypes.number
 }
 
 export default LargeStackItem;

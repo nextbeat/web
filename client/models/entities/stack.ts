@@ -11,7 +11,11 @@ interface StackProps {
     description: string
     hid: string
     id: number
+    most_recent_post_at: string
+    privacy_status: string
+    unread_count: number
     uuid: string
+    views: number
 }
 
 export default class Stack extends EntityModel<StackProps> {

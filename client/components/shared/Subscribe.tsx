@@ -1,12 +1,28 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 
-import { CurrentUser } from '../../models'
-import { subscribe, unsubscribe } from '../../actions'
+import CurrentUser from '@models/state/currentUser'
+import User from '@models/entities/user'
+import { subscribe, unsubscribe } from '@actions/user'
+import { State, DispatchProps } from '@types'
 
-class Subscribe extends React.Component {
+interface OwnProps {
+    user: User
+}
 
-    constructor(props) {
+interface ConnectProps {
+    isSubscribed: boolean
+}
+
+interface SubscribeState {
+    hover: boolean
+}
+
+type AllProps = OwnProps & ConnectProps & DispatchProps
+
+class Subscribe extends React.Component<AllProps, SubscribeState> {
+
+    constructor(props: AllProps) {
         super(props);
 
         this.handleSubscribe = this.handleSubscribe.bind(this);
@@ -38,11 +54,11 @@ class Subscribe extends React.Component {
     }
 
     render() {
-        const { currentUser, user } = this.props;
+        const { isSubscribed, user } = this.props;
         return (
             <div className="user_subscribe" onMouseOver={() => this.setState({hover: true})} onMouseOut={() => this.setState({hover: false})}>
                 <div className="btn-subscribe">
-                    { currentUser.isSubscribed(user.get('id')) ? this.renderSubscribed() : this.renderUnsubscribed()}
+                    { isSubscribed? this.renderSubscribed() : this.renderUnsubscribed()}
                     <div className="btn-subscribe_count">{user.get('subscriber_count')}</div>
                 </div>
             </div>
@@ -50,9 +66,9 @@ class Subscribe extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     return {
-        currentUser: new CurrentUser(state) 
+        isSubscribed: CurrentUser.isSubscribed(state, ownProps.user.get('id'))
     }
 }
 

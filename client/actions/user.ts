@@ -248,6 +248,16 @@ function performSignup(credentials: Credentials): SignupAction {
     }
 }
 
+export function signup(credentials: Credentials): ThunkAction {
+    return (dispatch, getState) => {
+        // exit early if already logged in
+        if (CurrentUser.isLoggedIn(getState())) {
+            return null;
+        }
+        dispatch(performSignup(credentials))
+    }
+}
+
 /**************
  * SUBSCRIPTION
  **************/

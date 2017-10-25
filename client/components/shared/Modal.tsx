@@ -1,13 +1,25 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 
-import Icon from './Icon.react'
-import { App } from '../../models'
-import { closeModal } from '../../actions'
+import App from '@models/state/app'
+import { closeModal } from '@actions/app'
+import Icon from '@components/shared/Icon'
+import { State, DispatchProps } from '@types'
 
-class Modal extends React.Component {
+interface OwnProps {
+    name: string
+    className?: string
+}
 
-    constructor(props) {
+interface ConnectProps {
+    shouldDisplay: boolean
+}
+
+type AllProps = OwnProps & ConnectProps & DispatchProps
+
+class Modal extends React.Component<AllProps> {
+
+    constructor(props: AllProps) {
         super(props)
 
         this.handleClose = this.handleClose.bind(this)
@@ -31,10 +43,9 @@ class Modal extends React.Component {
     }
 }
 
-function mapStateToProps(state, ownProps) {
-    let app = new App(state)
+function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     return {
-        shouldDisplay: app.get('activeModal') === ownProps.name
+        shouldDisplay: App.get(state, 'activeModal') === ownProps.name
     }
 }
 

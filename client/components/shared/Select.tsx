@@ -1,19 +1,24 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import startCase from 'lodash/startCase'
+import * as React from 'react'
+import startCase from 'lodash-es/startCase'
 
-import Icon from './Icon.react'
+import Icon from '@components/shared/Icon'
 
-class Select extends React.Component {
+interface Props {
+    selected: string
+    values: string[]
+    onChange: (value: string) => void
+    className?: string
+}
+class Select extends React.Component<Props> {
 
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
         
         this.handleChange = this.handleChange.bind(this)
     }
 
-    handleChange(e) {
-        this.props.onChange(e.target.value)
+    handleChange(e: React.FormEvent<HTMLSelectElement>) {
+        this.props.onChange(e.currentTarget.value)
     }
 
     render() {
@@ -29,13 +34,6 @@ class Select extends React.Component {
             </div>
         )
     }
-}
-
-Select.propTypes = {
-    selected: PropTypes.string.isRequired,
-    values: PropTypes.array.isRequired,
-    onChange: PropTypes.func.isRequired,
-    className: PropTypes.string
 }
 
 export default Select

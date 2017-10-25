@@ -1,19 +1,30 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as PropTypes from 'prop-types'
+import * as React from 'react'
 import { findDOMNode } from 'react-dom'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import SmallLogo from './shared/SmallLogo.react'
-import Logo from './shared/Logo.react'
-import Icon from './shared/Icon.react'
+import SmallLogo from '@components/shared/SmallLogo'
+import Logo from '@components/shared/Logo'
+import Icon from '@components/shared/Icon'
 
-import { promptModal, expandSplashTopbar, collapseSplashTopbar } from '../actions'
-import { App } from '../models'
+import { promptModal, expandSplashTopbar, collapseSplashTopbar } from '@actions/app'
+import App from '@models/state/app'
+import { State, DispatchProps } from '@types'
 
-class SplashTopbar extends React.Component {
+interface Props {
+    isSplashTopbarCollapsed: boolean
+}
 
-    constructor(props) {
+class SplashTopbar extends React.Component<Props & DispatchProps> {
+
+    static contextTypes = {
+        router: PropTypes.object.isRequired
+    }
+
+    private _searchBar: HTMLInputElement
+
+    constructor(props: Props & DispatchProps) {
         super(props)
 
         this.handleScroll = this.handleScroll.bind(this)
@@ -41,34 +52,34 @@ class SplashTopbar extends React.Component {
     // Events
 
     handleScroll() {
-        let scrollTop = $('.content').scrollTop()
-        const { splashTopbarCollapsed, dispatch } = this.props
-        if (scrollTop > 0 && !splashTopbarCollapsed) {
+        let scrollTop = $('.content').scrollTop() as number
+        const { isSplashTopbarCollapsed, dispatch } = this.props
+        if (scrollTop > 0 && !isSplashTopbarCollapsed) {
             dispatch(collapseSplashTopbar())
-        } else if (scrollTop <= 0 && splashTopbarCollapsed) {
+        } else if (scrollTop <= 0 && isSplashTopbarCollapsed) {
             dispatch(expandSplashTopbar())
         }
     }
 
-    handleLoginClick(e) {
+    handleLoginClick(e: React.MouseEvent<HTMLElement>) {
         e.preventDefault();
         this.props.dispatch(promptModal('login'));
     }
 
-    handleSignupClick(e) {
+    handleSignupClick(e: React.MouseEvent<HTMLElement>) {
         e.preventDefault();
         this.props.dispatch(promptModal('signup'));
     }
 
-    handleSearchKeyPress(e) {
+    handleSearchKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.charCode === 13) { // enter
-            const query = findDOMNode(this.refs.search_bar).value;
+            const query = this._searchBar.value
             if (query && query.length > 0) {
                 this.context.router.push({
                     pathname: '/search',
                     query: { q: query }
                 })
-                findDOMNode(this.refs.search_bar).value = '';
+                this._searchBar.value = '';
             }
         }
     }
@@ -77,16 +88,16 @@ class SplashTopbar extends React.Component {
     // Render
 
     render() {
-        const { splashTopbarCollapsed } = this.props
+        const { isSplashTopbarCollapsed } = this.props
         return (
-            <div className={`splash-topbar ${splashTopbarCollapsed ? 'collapsed' : ''}`}>
+            <div className={`splash-topbar ${isSplashTopbarCollapsed ? 'collapsed' : ''}`}>
                 <div className="splash-topbar_inner">
                     <div className="splash-topbar_background">
                         <SmallLogo type="splash-topbar" />
                     </div>
                     <div className="splash-topbar_search-container">
                         <div className="splash-topbar_search">
-                            <input className="splash-topbar_search-bar" type="text" placeholder="Search" ref="search_bar" onKeyPress={this.handleSearchKeyPress} /><Icon type="search" />
+                            <input className="splash-topbar_search-bar" type="text" placeholder="Search" ref={(c) => { if (c) { this._searchBar = c } } } onKeyPress={this.handleSearchKeyPress} /><Icon type="search" />
                         </div>
                         <Link className="splash-topbar_search-icon" to="/search"><Icon type="search" /></Link>
                     </div>
@@ -107,15 +118,10 @@ class SplashTopbar extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
-    let app = new App(state) 
+function mapStateToProps(state: State): Props {
     return {
-        splashTopbarCollapsed: !!app.get('splashTopbarCollapsed')
+        isSplashTopbarCollapsed: !!App.get(state, 'splashTopbarCollapsed')
     }
-}
-
-SplashTopbar.contextTypes = {
-    router: PropTypes.object.isRequired
 }
 
 export default connect(mapStateToProps)(SplashTopbar);

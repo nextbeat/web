@@ -1,17 +1,35 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 
-import { App, CurrentUser } from '../../models'
-import { storageAvailable } from '../../utils'
-import { gaEvent } from '../../actions'
-import SmallLogo from './SmallLogo.react'
-import Icon from './Icon.react'
+import SmallLogo from './SmallLogo'
+import Icon from './Icon'
+
+import App from '@models/state/app'
+import CurrentUser from '@models/state/currentUser'
+import { storageAvailable } from '@utils'
+import { gaEvent } from '@actions/ga'
+import { State, DispatchProps } from '@types'
 
 const STORE_URL = "https://itunes.apple.com/us/app/nextbeat/id1101932727?mt=8"
 
-class AppBanner extends React.Component {
+interface Props {
+    url: string
+    isIOS: boolean
+    browser: string
+    version: string
+}
 
-    constructor(props) {
+interface AppBannerState {
+    hideBanner: boolean
+}
+
+class AppBanner extends React.Component<Props & DispatchProps, AppBannerState> {
+
+    static defaultProps = {
+        url: 'nextbeat://'
+    }
+
+    constructor(props: Props & DispatchProps) {
         super(props)
 
         this.handleClick = this.handleClick.bind(this)
@@ -33,18 +51,19 @@ class AppBanner extends React.Component {
         }
 
         if (storageAvailable('sessionStorage')) {
+            // TODO: test app banner is working!
             this.setState({
-                hideBanner: JSON.parse(sessionStorage.getItem('hideAppBanner')) 
+                hideBanner: JSON.parse(sessionStorage.getItem('hideAppBanner') as string) 
             })
         }
     }
 
-    handleClick(e) {
+    handleClick(e: React.MouseEvent<HTMLElement>) {
         e.preventDefault();
 
-        const { app, user, url, dispatch } = this.props
+        const { browser, version, url, dispatch } = this.props
 
-        const isMobileSafari = app.get('browser') === 'Mobile Safari' && parseFloat(app.get('version', 0)) >= 9
+        const isMobileSafari = browser === 'Mobile Safari' && parseFloat(version) >= 9
         // If the delay is too short in Mobile Safari, 
         // it automatically redirects you to the app store
         // because the "open in Nextbeat" prompt is non-blocking.
@@ -52,10 +71,10 @@ class AppBanner extends React.Component {
         const delay = isMobileSafari ? 1800 : 500
 
         function goToApp() {
-             window.location = url;
+             (window as any).location = url;
             // Fallback to App Store url if user does not have the app installed
             setTimeout(() => {
-                window.top.location = STORE_URL;
+                (window.top as any).location = STORE_URL;
             }, delay);
         }
 
@@ -67,12 +86,12 @@ class AppBanner extends React.Component {
 
     }
 
-    handleClose(e) {
+    handleClose(e: React.MouseEvent<HTMLElement>) {
         this.setState({
             hideBanner: true
         })
         if (storageAvailable('sessionStorage')) {
-            sessionStorage.setItem('hideAppBanner', true)
+            sessionStorage.setItem('hideAppBanner', 'true')
         }
     }
 
@@ -105,10 +124,10 @@ class AppBanner extends React.Component {
     }
 
     render() {
-        const { app, user } = this.props
+        const { isIOS } = this.props
         const { hideBanner } = this.state 
 
-        if (!app.isIOS() || hideBanner) {
+        if (!isIOS || hideBanner) {
             return null;
         }
         
@@ -116,14 +135,11 @@ class AppBanner extends React.Component {
     }
 }
 
-AppBanner.defaultProps = {
-    url: 'nextbeat://'
-}
-
-function mapStateToProps(state) {
+function mapStateToProps(state: State) {
     return {
-        app: new App(state),
-        user: new CurrentUser(state)
+        isIOS: App.isIOS(state),
+        browser: App.get(state, 'browser'),
+        version: App.get(state, 'version')
     }
 }
 

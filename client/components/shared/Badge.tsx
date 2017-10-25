@@ -1,6 +1,10 @@
-import React from 'react';
+import * as React from 'react';
 
-class Badge extends React.Component {
+interface Props {
+    type: string
+    elementType: string
+}
+class Badge extends React.Component<Props> {
 
     render() {
         // type is appended to badge (e.g. badge-open)
@@ -9,7 +13,7 @@ class Badge extends React.Component {
         const typeClass = type ? type.split(" ").map(s => `badge-${s}`).join(" ") : "";
         const elementTypeClass = elementType ? elementType.split(" ").map(s => `${s}_badge`).join(" ") : "";
 
-        let text = '';
+        let text: any = '';
         switch (type) {
             case 'open':
                 text = 'OPEN';

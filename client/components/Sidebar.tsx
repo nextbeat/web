@@ -1,28 +1,47 @@
-import React from 'react'
+import * as React from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
+import { List } from 'immutable'
 
-import { CurrentUser, App } from '../models'
-import { selectSidebar, closeSidebar } from '../actions'
-import { secureUrl } from '../utils'
+import CurrentUser from '@models/state/currentUser'
+import App from '@models/state/app'
+import Stack from '@models/entities/stack'
+import User from '@models/entities/user'
+import { selectSidebar, closeSidebar } from '@actions/app'
+import { State, DispatchProps } from '@types'
+import { secureUrl } from '@utils'
 
-import StackItem from './shared/StackItem.react'
-import Icon from './shared/Icon.react'
-import Spinner from './shared/Spinner.react'
-import Logo from './shared/Logo.react'
-import Badge from './shared/Badge.react'
+import StackItem from '@components/shared/StackItem'
+import Icon from '@components/shared/Icon'
+import Spinner from '@components/shared/Spinner'
+import Badge from '@components/shared/Badge'
 
-class Sidebar extends React.Component {
+interface Props {
+    isLoggedIn: boolean
+    username: string
+    profilePictureUrl: string
+    isSidebarDataLoaded: boolean
 
-    constructor(props) {
+    activeOverlay: string
+    isSidebarAnimating: boolean
+
+    openBookmarkedStacks: List<Stack>
+    subscriptions: List<User>
+}
+
+type AllProps = Props & DispatchProps
+
+class Sidebar extends React.Component<AllProps> {
+
+    constructor(props: AllProps) {
         super(props);
 
         this.renderStackItem = this.renderStackItem.bind(this);
     }
 
     componentDidMount() {
-        $('.sidebar').on('click', (e) => {
-            const $section = $(e.target.closest('.sidebar_section'))
+        $('.sidebar').on('click', null, (e) => {
+            const $section = $(e.target).closest('.sidebar_section')
             if ($section.hasClass('sidebar_bookmarks') || $section.hasClass('sidebar_subscriptions') 
                 || $section.hasClass('sidebar_categories') || $section.hasClass('sidebar_topnav')) 
             {
@@ -37,13 +56,13 @@ class Sidebar extends React.Component {
 
     // Render
 
-    renderStackItem(stack) {
+    renderStackItem(stack: Stack) {
         return (
             <StackItem key={`bk${stack.get('id')}`} stack={stack} static={true} showBadge={true} />
         )
     }
 
-    renderSubscription(sub) {
+    renderSubscription(sub: User) {
         const url = secureUrl(sub.thumbnail('small').get('url'))
         const iconStyle = url ? { backgroundImage: `url(${url})`} : {}
         return (
@@ -56,7 +75,7 @@ class Sidebar extends React.Component {
     }
 
     render() {
-        const { isLoggedIn, activeOverlay, sidebarAnimating, sidebarDataIsLoaded,
+        const { isLoggedIn, activeOverlay, isSidebarAnimating, isSidebarDataLoaded,
                 username, profilePictureUrl, openBookmarkedStacks, subscriptions } = this.props;
 
         // hide sidebar if user is not logged in
@@ -64,14 +83,14 @@ class Sidebar extends React.Component {
 
         // display sidebar if selected
         const activeClass = activeOverlay === 'sidebar' ? 'active' : ''
-        const animatingClass = sidebarAnimating ? 'animating' : ''
+        const animatingClass = isSidebarAnimating ? 'animating' : ''
 
         // set style for displaying profile picture
         const profileStyle = { backgroundImage: profilePictureUrl ? `url(${profilePictureUrl})` : ''}
 
         return (
             <div className={`sidebar ${activeClass} ${guestClass} ${animatingClass}`} id='sidebar'>
-                { sidebarDataIsLoaded &&
+                { isSidebarDataLoaded &&
                 <div>
                     <div className="sidebar_section sidebar_topnav">
                         <Link to="/" activeClassName="selected" className="sidebar_item">
@@ -99,20 +118,18 @@ class Sidebar extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
-    let currentUser = new CurrentUser(state)
-    let app = new App(state)
+function mapStateToProps(state: State): Props {
     return {
-        isLoggedIn: currentUser.isLoggedIn(),
-        username: currentUser.get('username'),
-        profilePictureUrl: currentUser.profileThumbnailUrl(),
-        sidebarDataIsLoaded: currentUser.sidebarDataIsLoaded(),
+        isLoggedIn: CurrentUser.isLoggedIn(state),
+        username: CurrentUser.entity(state).get('username'),
+        profilePictureUrl: CurrentUser.profileThumbnailUrl(state),
+        isSidebarDataLoaded: CurrentUser.isSidebarDataLoaded(state),
 
-        activeOverlay: app.get('activeOverlay'),
-        sidebarAnimating: app.get('sidebarAnimating'),
+        activeOverlay: App.get(state, 'activeOverlay'),
+        isSidebarAnimating: App.get(state, 'sidebarAnimating'),
 
-        openBookmarkedStacks: currentUser.openBookmarkedStacks(),
-        subscriptions: currentUser.subscriptions()
+        openBookmarkedStacks: CurrentUser.openBookmarkedStacks(state),
+        subscriptions: CurrentUser.subscriptions(state)
     }
 }
 

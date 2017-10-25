@@ -4,12 +4,12 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import Helmet from 'react-helmet'
 
-import Sidebar from '../components/Sidebar.react'
-import Topbar from '../components/Topbar.react'
-import SplashTopbar from '../components/SplashTopbar.react'
-import AppBanner from '../components/shared/AppBanner.react'
-import Login from '../components/shared/Login.react'
-import Signup from '../components/shared/Signup.react'
+import Sidebar from '@components/Sidebar'
+import Topbar from '@components/Topbar.react'
+import SplashTopbar from '@components/SplashTopbar'
+import AppBanner from '@components/shared/AppBanner.react'
+import Login from '@components/shared/Login.react'
+import Signup from '@components/shared/Signup.react'
 
 import { 
     loadTags,

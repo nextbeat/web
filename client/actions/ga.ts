@@ -53,7 +53,7 @@ export interface GAEventAction extends AnalyticsAction {
 interface GAEventData {
     category: string,
     action: string,
-    label: string | number
+    label?: string | number
 }
 export function gaEvent(data: GAEventData, callback?: () => void): GAEventAction {
     return {

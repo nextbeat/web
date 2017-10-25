@@ -1,14 +1,24 @@
-import React from 'react'
-import { findDOMNode } from 'react-dom'
+import * as React from 'react'
 import { connect } from 'react-redux'
 
-import { promptModal, login } from '../../actions'
-import { CurrentUser } from '../../models'
-import Modal from './Modal.react'
+import { promptModal } from '@actions/app'
+import { login } from '@actions/user'
+import CurrentUser from '@models/state/currentUser'
+import Modal from '@components/shared/Modal'
+import { State, DispatchProps } from '@types'
 
-class Login extends React.Component {
+interface Props {
+    loginError: string
+}
 
-    constructor(props) {
+type AllProps = Props & DispatchProps
+
+class Login extends React.Component<AllProps> {
+
+    private _loginUsername: HTMLInputElement
+    private _loginPassword: HTMLInputElement
+
+    constructor(props: AllProps) {
         super(props)
 
         this.handleKeyPress = this.handleKeyPress.bind(this)
@@ -19,20 +29,20 @@ class Login extends React.Component {
 
     // Events
 
-    handleKeyPress(e) {
+    handleKeyPress(e: React.KeyboardEvent<HTMLElement>) {
         if (e.charCode === 13) {
             this.handleLoginSubmit(e)
         }
     }
 
-    handleLoginSubmit(e) {
+    handleLoginSubmit(e: React.FormEvent<HTMLElement>) {
         e.preventDefault();
-        const username = findDOMNode(this.refs.login_username).value;
-        const password = findDOMNode(this.refs.login_password).value;
+        const username = this._loginUsername.value
+        const password = this._loginPassword.value
         this.props.dispatch(login(username, password));
     }
 
-    handleSignupClick(e) {
+    handleSignupClick(e: React.MouseEvent<HTMLElement>) {
         e.preventDefault();
         this.props.dispatch(promptModal('signup'))
     }
@@ -41,15 +51,15 @@ class Login extends React.Component {
     // Render
 
     render() {
-        const { currentUser } = this.props;
+        const { loginError } = this.props;
         return (
             <Modal name="login" className="modal-auth">
                 <form className="modal_form" id="login-form" onKeyPress={this.handleKeyPress}>
                     <div className="modal_input-wrapper">
-                        <input type="text" ref="login_username" name="login_username" placeholder="Username" />
+                        <input type="text" ref={(c) => { if (c) { this._loginUsername = c } }} name="login_username" placeholder="Username" />
                     </div>
                     <div className="modal_input-wrapper">
-                        <input className="modal-login_password" type="password" ref="login_password" name="login_password" placeholder="Password" />
+                        <input className="modal-login_password" type="password" ref={(c) => { if (c) { this._loginPassword = c } }} name="login_password" placeholder="Password" />
                     </div>
                     <div className="modal_input-description">
                         <a href="/support/password-reset-request">Forgot your password?</a>
@@ -57,7 +67,7 @@ class Login extends React.Component {
                     <div className="modal_input-wrapper modal_input-wrapper-submit">
                         <a className="btn modal_form_submit" onClick={this.handleLoginSubmit}>Log In</a>
                     </div>
-                    { currentUser.has('loginError') && <div className="modal-auth_error">{currentUser.get('loginError')}</div> }
+                    { !!loginError && <div className="modal-auth_error">{loginError}</div> }
                 </form>
                 <div className="modal_extra">Don't have an account? <a onClick={this.handleSignupClick}>Sign up!</a></div>
             </Modal>
@@ -67,9 +77,9 @@ class Login extends React.Component {
   
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: State): Props {
     return {
-        currentUser: new CurrentUser(state)
+        loginError: CurrentUser.get(state, 'loginError')
     }
 }
 

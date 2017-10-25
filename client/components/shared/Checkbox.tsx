@@ -1,20 +1,24 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as React from 'react'
+import Icon from './Icon'
 
-import Icon from './Icon.react'
+interface Props {
+    checked: boolean
+    label: string    
+    onChange?: (checked: boolean) => void
+}
 
-class Checkbox extends React.Component {
+class Checkbox extends React.Component<Props> {
 
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
 
         this.handleChange = this.handleChange.bind(this)
     }
 
-    handleChange(e) {
+    handleChange(e: React.FormEvent<HTMLInputElement>) {
         const { onChange } = this.props 
         if (typeof onChange === 'function') {
-            onChange(e.target.checked)
+            onChange((e.target as HTMLInputElement).checked)
         }
     }
 
@@ -31,12 +35,6 @@ class Checkbox extends React.Component {
         )
     }
 
-}
-
-Checkbox.propTypes = {
-    checked: PropTypes.bool.isRequired,
-    onChange: PropTypes.func,
-    label: PropTypes.string
 }
 
 export default Checkbox;

@@ -1,7 +1,46 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as PropTypes from 'prop-types'
+import * as React from 'react'
 
-const ICONS = {
+type IconType = 
+    'activity' |
+    'add' |
+    'arrow-back' |
+    'arrow-drop-down' |
+    'arrow-forward' |
+    'bookmark' |
+    'bookmark-outline' |
+    'cancel' |
+    'chat' |
+    'check' |
+    'check-box' |
+    'check-box-outline' |
+    'chevron-left' |
+    'chevron-right' |
+    'close' |
+    'delete' |
+    'expand-more' |
+    'file-upload' |
+    'fullscreen' |
+    'fullscreen-exit' |
+    'home' |
+    'menu' |
+    'more-vert' |
+    'notifications' |
+    'pause' |
+    'person' |
+    'pin' |
+    'play' |
+    'reply' |
+    'sad-face' |
+    'search' |
+    'share' |
+    'video' |
+    'volume-down' |
+    'volume-up' |
+    'volume-mute' |
+    'whatshot'
+
+const ICONS: {[key in IconType]: any} = {
       'activity': <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path d="M40 26H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h34c1.1 0 2-.9 2-2V28c0-1.1-.9-2-2-2zm0-20H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h34c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg>
     , 'add': <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path d="M38 26H26v12h-4V26H10v-4h12V10h4v12h12v4z"/></svg>
     , 'arrow-back': <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path d="M40 22H15.66l11.17-11.17L24 8 8 24l16 16 2.83-2.83L15.66 26H40v-4z"/></svg>
@@ -41,13 +80,17 @@ const ICONS = {
     , 'whatshot': <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path d="M27 1.34s1.48 5.3 1.48 9.6c0 4.12-2.7 7.47-6.83 7.47s-7.25-3.34-7.25-7.47l.05-.72C10.43 15.03 8 21.23 8 28c0 8.84 7.16 16 16 16s16-7.16 16-16c0-10.79-5.19-20.41-13-26.66zM23.42 38c-3.56 0-6.45-2.81-6.45-6.28 0-3.25 2.09-5.53 5.63-6.24s7.2-2.41 9.23-5.15c.78 2.58 1.19 5.3 1.19 8.07 0 5.29-4.3 9.6-9.6 9.6z"/></svg>
 }
 
-class Icon extends React.Component {
+interface Props {
+    type: IconType
+}
 
-    shouldComponentUpdate(nextProps, nextState) {
+class Icon extends React.Component<Props> {
+
+    shouldComponentUpdate(nextProps: Props) {
         return nextProps.type !== this.props.type
     }
 
-    renderSvg(type) {
+    renderSvg(type: IconType) {
         return ICONS[type] ? ICONS[type] : <svg></svg>
     }
 
@@ -55,10 +98,6 @@ class Icon extends React.Component {
         const typeClass = `svg-icon-${this.props.type}`
         return <span className={`svg-icon ${typeClass}`}>{ this.renderSvg(this.props.type) }</span>;
     }
-}
-
-Icon.propTypes = {
-    type: PropTypes.string.isRequired
 }
 
 export default Icon;
