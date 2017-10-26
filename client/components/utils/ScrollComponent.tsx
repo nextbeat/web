@@ -35,7 +35,7 @@ export default function ScrollComponent<P>(domId: ((props: P) => string) | strin
         onResize
     } = scrollOptions
 
-    return function wrapWithScroll(ChildComponent: typeof React.Component) {
+    return function wrapWithScroll(ChildComponent: React.ComponentType<any>) {
 
         class ScrollContainer extends React.Component<P, ScrollComponentState> {
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 import { Map } from 'immutable'
@@ -7,15 +7,36 @@ import EditCoverImage from './edit/EditCoverImage.react'
 import EditCoverImageModal from './edit/EditCoverImageModal.react'
 import EditProfilePicture from './edit/EditProfilePicture.react'
 import EditProfilePictureModal from './edit/EditProfilePictureModal.react'
-import Spinner from '../shared/Spinner.react'
-import Icon from '../shared/Icon.react'
+import Spinner from '@components/shared/Spinner'
+import Icon from '@components/shared/Icon'
 
-import { CurrentUser, App, Upload, EditProfile as EditProfileModel } from '../../models'
-import { UploadTypes, triggerAuthError, loadEditProfile, updateEditProfile, submitEditProfile, clearEditProfile, clearFileUpload } from '../../actions'
+import CurrentUser from '@models/state/currentUser'
+import EditProfileModel from '@models/state/pages/editProfile'
+import App from '@models/state/app'
+import { triggerAuthError } from '@actions/app'
+import { loadEditProfile, updateEditProfile, submitEditProfile, clearEditProfile } from '@actions/pages/editProfile' 
+import { clearFileUpload } from '@actions/upload'
+import { State, DispatchProps } from '@types'
+import { UploadType } from '@upload'
 
-class EditProfile extends React.Component {
+interface Props {
+    isLoggedIn: boolean
+    isLoggingIn: boolean
+    hasAuthError: boolean
+    username: string
+    
+    hasChanged: boolean
+    profileFields: State
+    isUpdatingUser: boolean
+    hasUpdatedUser: boolean
+    updateUserError: string
+}
 
-    constructor(props) {
+type AllProps = Props & DispatchProps
+
+class EditProfile extends React.Component<AllProps> {
+
+    constructor(props: AllProps) {
         super(props)
 
         this.handleBackClick = this.handleBackClick.bind(this)
@@ -32,41 +53,40 @@ class EditProfile extends React.Component {
         this.props.dispatch(loadEditProfile())
     }   
 
-    componentWillReceiveProps(nextProps) {
-        if (!this.props.currentUser.isLoggedIn() && !this.props.currentUser.get('isLoggingIn') && !this.props.app.hasAuthError()) {
+    componentWillReceiveProps(nextProps: AllProps) {
+        if (!this.props.isLoggedIn && !this.props.isLoggingIn && !this.props.hasAuthError) {
             this.props.dispatch(triggerAuthError())
-            this.clearState()
         }
     }
 
     componentWillUnmount() {
         this.props.dispatch(clearEditProfile())
-        this.props.dispatch(clearFileUpload(UploadTypes.PROFILE_PICTURE))
-        this.props.dispatch(clearFileUpload(UploadTypes.COVER_IMAGE))
+        this.props.dispatch(clearFileUpload(UploadType.ProfilePicture))
+        this.props.dispatch(clearFileUpload(UploadType.CoverImage))
     }
 
     // Event handlers
 
     handleBackClick() {
-        const { currentUser } = this.props
-        browserHistory.push(`/u/${currentUser.get('username')}`)
+        const { username } = this.props
+        browserHistory.push(`/u/${username}`)
     }   
 
-    handleFullNameChange(e) {
-        this.props.dispatch(updateEditProfile({ fullName: e.target.value.substring(0, 50) }))
+    handleFullNameChange(e: React.FormEvent<HTMLInputElement>) {
+        this.props.dispatch(updateEditProfile({ fullName: e.currentTarget.value.substring(0, 50) }))
     }
 
-    handleWebsiteChange(e) {
-        this.props.dispatch(updateEditProfile({ website: e.target.value.substring(0, 100) }))
+    handleWebsiteChange(e: React.FormEvent<HTMLInputElement>) {
+        this.props.dispatch(updateEditProfile({ website: e.currentTarget.value.substring(0, 100) }))
     }
 
-    handleBioChange(e) {        
-        this.props.dispatch(updateEditProfile({ bio: e.target.value.substring(0, 120) }))
+    handleBioChange(e: React.FormEvent<HTMLTextAreaElement>) {        
+        this.props.dispatch(updateEditProfile({ bio: e.currentTarget.value.substring(0, 120) }))
     }
 
     handleSubmit() {
-        const { dispatch, editProfile } = this.props
-        if (editProfile.get('hasChanged')) {
+        const { dispatch, hasChanged } = this.props
+        if (hasChanged) {
             dispatch(submitEditProfile())
         }
     }
@@ -74,10 +94,10 @@ class EditProfile extends React.Component {
     // Render
 
     render() {
-        const { editProfile, currentUser } = this.props 
+        const { hasChanged, profileFields, username,
+                isUpdatingUser, hasUpdatedUser, updateUserError } = this.props 
 
-        let profileFields = editProfile.get('fields', Map())
-        let shouldDisableSubmit = !editProfile.get('hasChanged')
+        let shouldDisableSubmit = !hasChanged
 
         return (
             <div className="edit edit-profile content">
@@ -90,7 +110,7 @@ class EditProfile extends React.Component {
                     <EditCoverImage />
                     <div className="edit-profile_user">
                         <EditProfilePicture />
-                        <div className="edit-profile_username">{currentUser.get('username')}</div>
+                        <div className="edit-profile_username">{username}</div>
                     </div>
                     <div className="edit_form">
                         <div className="edit_form-item">
@@ -106,9 +126,9 @@ class EditProfile extends React.Component {
                         <div className="edit_submit">
                             <div className="edit_submit-btn"><a className={`btn ${shouldDisableSubmit ? 'btn-gray btn-disabled' : ''}`} onClick={this.handleSubmit}>Submit</a></div>
                             <div className="edit_submit-result">
-                                { editProfile.get('isUpdatingUser') && <Spinner type="grey small" /> } 
-                                { editProfile.get('hasUpdatedUser') && "Changes saved." }
-                                { editProfile.get('updateUserError') && <div className="error">{editProfile.get('updateUserError')}</div> }
+                                { isUpdatingUser && <Spinner styles={["grey", "small"]} /> } 
+                                { hasUpdatedUser && "Changes saved." }
+                                { updateUserError && <div className="error">{updateUserError}</div> }
                             </div>
                         </div>
                     </div>
@@ -119,12 +139,18 @@ class EditProfile extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: State): Props {
     return {
-        app: new App(state),
-        currentUser: new CurrentUser(state),
-        upload: new Upload(state),
-        editProfile: new EditProfileModel(state)
+        isLoggedIn: CurrentUser.isLoggedIn(state),
+        isLoggingIn: CurrentUser.get(state, 'isLoggingIn'),
+        hasAuthError: App.hasAuthError(state),
+        username: CurrentUser.entity(state).get('username'),
+        
+        hasChanged: EditProfileModel.get(state, 'hasChanged'),
+        profileFields: EditProfileModel.get(state, 'fields', Map()),
+        isUpdatingUser: EditProfileModel.get(state, 'isUpdatingUser'),
+        hasUpdatedUser: EditProfileModel.get(state, 'hasUpdatedUser'),
+        updateUserError: EditProfileModel.get(state, 'updateUserError')
     }
 }
 
