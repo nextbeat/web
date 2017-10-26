@@ -1,3 +1,5 @@
+import { List } from 'immutable'
+
 import { EntityModel } from './base'
 import User from './user'
 import Stack from './stack'
@@ -10,12 +12,17 @@ interface CommentProps {
     is_referenced_by: boolean
     id: number
     message: string
+    result_indices: List<List<number>>
     stack: number
     subtype: string
     type: string
+    user_mentions: List<State>
 }
 
 export default class Comment extends EntityModel<CommentProps> {
+
+    __count__?: number
+    __no_header__?: boolean
 
     entityName = "comments"
 

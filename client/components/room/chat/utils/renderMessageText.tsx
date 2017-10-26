@@ -1,13 +1,45 @@
-import React from 'react'
-import inRange from 'lodash/inRange'
-import assign from 'lodash/assign'
+import * as React from 'react'
+import inRange from 'lodash-es/inRange'
+import assign from 'lodash-es/assign'
 import { List } from 'immutable'
-import { hashCode } from '../../../../utils'
 
-function getLinkData(comment) {
+import Comment from '@models/entities/comment'
+import { hashCode } from '@utils'
+
+type AnnotationType = 'link' | 'hashtag' | 'mention' | 'highlight'
+
+interface GenericAnnotation {
+    type: AnnotationType
+    start: number
+    end: number
+}
+
+interface LinkAnnotation extends GenericAnnotation {
+    type: 'link'
+    displayText: string
+    url: string
+}
+
+interface MentionAnnotation extends GenericAnnotation {
+    type: 'mention'
+    username: string
+}
+
+interface HashtagAnnotation extends GenericAnnotation {
+    type: 'hashtag'
+    text: string
+}
+
+interface HighlightAnnotation extends GenericAnnotation {
+    type: 'highlight'
+}
+
+type Annotation = LinkAnnotation | MentionAnnotation | HashtagAnnotation | HighlightAnnotation
+
+function getLinkData(comment: Comment): List<LinkAnnotation> {
     var re = /\[(.+)\]\((.+)\)/g 
 
-    let links = []
+    let links = List<LinkAnnotation>()
     let result
 
     while (result = re.exec(comment.get('message'))) {
@@ -17,10 +49,10 @@ function getLinkData(comment) {
     return links
 }
 
-function getHashtagData(comment) {
+function getHashtagData(comment: Comment): List<Annotation> {
     var re = /(^|\s)#(\w+)/g
 
-    let hashtags = []
+    let hashtags = List<Annotation>()
     let result
 
     while (result = re.exec(comment.get('message'))) {
@@ -31,18 +63,18 @@ function getHashtagData(comment) {
     return hashtags
 }
 
-function preprocessAnnotations(comment, { includeLinks=false }) {
+function preprocessAnnotations(comment: Comment, options: RenderMessageOptions): List<Annotation> {
     let mentions = comment.get('user_mentions') || List();
     let highlights = comment.get('result_indices') || List();
-    let links = includeLinks ? getLinkData(comment) : List();
+    let links = options.includeLinks ? getLinkData(comment) : List<LinkAnnotation>();
     let hashtags = getHashtagData(comment);
 
-    let annotations = List();
+    let annotations = List<Annotation>();
     mentions.forEach(m => {
         annotations = annotations.push({ type: 'mention', start: m.get('indices').get(0), end: m.get('indices').get(1), username: m.get('username') })
     })
     highlights.forEach(h => {
-        annotations = annotations.push({ type: 'highlight', start: h.get(0), end: h.get(1) })
+        annotations = annotations.push({ type: 'highlight', start: h.get(0) as number, end: h.get(1) as number })
     })
     links.forEach(l => {
         annotations = annotations.push(l)
@@ -54,8 +86,8 @@ function preprocessAnnotations(comment, { includeLinks=false }) {
     return annotations.sort((a1, a2) => a1.start - a2.start || a2.end - a1.end)
 }
 
-function elementForAnnotation(annotation, annotations, message, options) {
-    let type;
+function elementForAnnotation(annotation: Annotation, annotations: List<Annotation>, message: string, options: RenderMessageOptions): React.ReactElement<any> {
+    let type = '';
     let props = { 
         className: `chat_item_${annotation.type}`, 
         key: `${annotation.type},${annotation.start},${annotation.end}`
@@ -92,13 +124,16 @@ function elementForAnnotation(annotation, annotations, message, options) {
     );
 }
 
-function recursiveCreateElement(start, end, annotations, message, options) {
+interface RecursiveElementArray {
+    [index: number]: string | React.ReactElement<any> | RecursiveElementArray
+}
+function recursiveCreateElement(start: number, end: number, annotations: List<Annotation>, message: string, options: RenderMessageOptions): RecursiveElementArray | string {
 
     if (annotations.size === 0) {
         return message.substring(start, end);
     }
 
-    let annotation = annotations.get(0);
+    let annotation = annotations.get(0) as Annotation;
     annotations = annotations.shift();
 
     return [
@@ -108,14 +143,15 @@ function recursiveCreateElement(start, end, annotations, message, options) {
     ]
 }  
 
-function doRenderMessageText(comment, options) {
+function doRenderMessageText(comment: Comment, options: RenderMessageOptions): JSX.Element {
     let annotations = preprocessAnnotations(comment, options)
     let message     = comment.get('message')
     return <span>{recursiveCreateElement(0, message.length, annotations, message, options)}</span>
 }
 
-let cache = {}
-function memoizedRenderMessageText(comment, options) {
+let cache: {[key: number]: JSX.Element} = {}
+
+function memoizedRenderMessageText(comment: Comment, options: RenderMessageOptions) {
     let key = hashCode(comment.get('message') + JSON.stringify(comment.get('user_mentions')) + JSON.stringify(comment.get('result_indices')) + JSON.stringify(options))
     if (!cache[key]) {
         cache[key] = doRenderMessageText(comment, options);
@@ -123,10 +159,16 @@ function memoizedRenderMessageText(comment, options) {
     return cache[key]
 }
 
-export default function renderMessageText(comment, options={}) {
+interface RenderMessageOptions {
+    onMentionClick?: () => void
+    onHashtagClick?: () => void
+    includeLinks?: boolean
+}
+
+export default function renderMessageText(comment: Comment, options?: RenderMessageOptions) {
     if (!comment.get('message')) {
         return null;
     }
     
-    return memoizedRenderMessageText(comment, options)
+    return memoizedRenderMessageText(comment, options || {})
 }
