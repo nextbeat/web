@@ -4,6 +4,7 @@ import assign from 'lodash-es/assign'
 import { List } from 'immutable'
 
 import Comment from '@models/entities/comment'
+import TemporaryComment from '@models/entities/temporary/comment'
 import { hashCode } from '@utils'
 
 type AnnotationType = 'link' | 'hashtag' | 'mention' | 'highlight'
@@ -36,7 +37,7 @@ interface HighlightAnnotation extends GenericAnnotation {
 
 type Annotation = LinkAnnotation | MentionAnnotation | HashtagAnnotation | HighlightAnnotation
 
-function getLinkData(comment: Comment): List<LinkAnnotation> {
+function getLinkData(comment: Comment | TemporaryComment): List<LinkAnnotation> {
     var re = /\[(.+)\]\((.+)\)/g 
 
     let links = List<LinkAnnotation>()
@@ -49,7 +50,7 @@ function getLinkData(comment: Comment): List<LinkAnnotation> {
     return links
 }
 
-function getHashtagData(comment: Comment): List<Annotation> {
+function getHashtagData(comment: Comment | TemporaryComment): List<Annotation> {
     var re = /(^|\s)#(\w+)/g
 
     let hashtags = List<Annotation>()
@@ -63,7 +64,7 @@ function getHashtagData(comment: Comment): List<Annotation> {
     return hashtags
 }
 
-function preprocessAnnotations(comment: Comment, options: RenderMessageOptions): List<Annotation> {
+function preprocessAnnotations(comment: Comment | TemporaryComment, options: RenderMessageOptions): List<Annotation> {
     let mentions = comment.get('user_mentions') || List();
     let highlights = comment.get('result_indices') || List();
     let links = options.includeLinks ? getLinkData(comment) : List<LinkAnnotation>();
@@ -143,7 +144,7 @@ function recursiveCreateElement(start: number, end: number, annotations: List<An
     ]
 }  
 
-function doRenderMessageText(comment: Comment, options: RenderMessageOptions): JSX.Element {
+function doRenderMessageText(comment: Comment | TemporaryComment, options: RenderMessageOptions): JSX.Element {
     let annotations = preprocessAnnotations(comment, options)
     let message     = comment.get('message')
     return <span>{recursiveCreateElement(0, message.length, annotations, message, options)}</span>
@@ -151,7 +152,7 @@ function doRenderMessageText(comment: Comment, options: RenderMessageOptions): J
 
 let cache: {[key: number]: JSX.Element} = {}
 
-function memoizedRenderMessageText(comment: Comment, options: RenderMessageOptions) {
+function memoizedRenderMessageText(comment: Comment | TemporaryComment, options: RenderMessageOptions) {
     let key = hashCode(comment.get('message') + JSON.stringify(comment.get('user_mentions')) + JSON.stringify(comment.get('result_indices')) + JSON.stringify(options))
     if (!cache[key]) {
         cache[key] = doRenderMessageText(comment, options);
@@ -160,12 +161,12 @@ function memoizedRenderMessageText(comment: Comment, options: RenderMessageOptio
 }
 
 interface RenderMessageOptions {
-    onMentionClick?: () => void
-    onHashtagClick?: () => void
+    onMentionClick?: (username: string) => void
+    onHashtagClick?: (text: string) => void
     includeLinks?: boolean
 }
 
-export default function renderMessageText(comment: Comment, options?: RenderMessageOptions) {
+export default function renderMessageText(comment: Comment | TemporaryComment, options?: RenderMessageOptions) {
     if (!comment.get('message')) {
         return null;
     }

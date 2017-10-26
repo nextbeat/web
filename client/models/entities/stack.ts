@@ -13,6 +13,7 @@ interface StackProps {
     description: string
     hid: string
     id: number
+    mediaitem_count: number
     most_recent_post_at: string
     privacy_status: string
     tags: List<string>

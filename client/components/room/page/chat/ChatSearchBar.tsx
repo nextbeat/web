@@ -1,13 +1,30 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 
-import Icon from '../../../shared/Icon.react'
-import ChatSearchSuggestions from './ChatSearchSuggestions.react'
-import { searchChat, hideSearchChatResults, promptDropdown, closeDropdown } from '../../../../actions'
+import Icon from '@components/shared/Icon'
+import ChatSearchSuggestions from './ChatSearchSuggestions'
+import { promptDropdown, closeDropdown } from '@actions/app'
+import { searchChat, hideSearchChatResults } from '@actions/pages/room'
+import { DispatchProps } from '@types'
 
-class ChatSearchBar extends React.Component {
+interface Props {
+    query?: string
+    closeable?: boolean
+}
 
-    constructor(props) {
+type AllProps = Props & DispatchProps
+
+interface State {
+    query: string
+}
+
+class ChatSearchBar extends React.Component<AllProps, State> {
+
+    static defaultProps: Partial<AllProps> = {
+        closeable: false
+    }
+
+    constructor(props: AllProps) {
         super(props);
 
         this.handleKeyPress = this.handleKeyPress.bind(this);
@@ -26,7 +43,7 @@ class ChatSearchBar extends React.Component {
         }
     }
 
-    handleKeyPress(e) {
+    handleKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
         const { dispatch } = this.props
         if (e.charCode === 13) { // enter
             const { query } = this.state
@@ -37,8 +54,8 @@ class ChatSearchBar extends React.Component {
         }
     }
 
-    handleChange(e) {
-        this.setState({ query: e.target.value })
+    handleChange(e: React.FormEvent<HTMLInputElement>) {
+        this.setState({ query: e.currentTarget.value })
     }
 
     handleFocus() {

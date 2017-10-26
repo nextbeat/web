@@ -1,20 +1,51 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as React from 'react'
 import { Link } from 'react-router'
 import { Map } from 'immutable'
-import { timeString } from '../../../utils'
+import { timeString } from '@utils'
 
 import renderMessageText from './utils/renderMessageText'
-import Icon from '../../shared/Icon.react'
-import Dropdown from '../../shared/Dropdown.react'
+import Icon from '@components/shared/Icon'
+import Dropdown from '@components/shared/Dropdown'
+import Comment from '@models/entities/comment'
+import TemporaryComment from '@models/entities/temporary/comment'
 
 if (typeof window !== 'undefined') {
     var robot = require('../../../public/images/robot_64px.png');
 }
 
-class ChatItem extends React.Component {
+interface Props {
+    id?: string
+    comment: Comment | TemporaryComment
+    isCreator: boolean
 
-    constructor(props) {
+    isCollapsed?: boolean
+    isSelected?: boolean
+    isSearchResult?: boolean
+    isDropdownActive?: boolean
+    showHeader?: boolean
+    showOptions?: boolean
+
+    handleSelectUsername?: (username: string) => void
+    handleSelectHashtag?: (hashtag: string) => void
+    handleResend?: (comment: TemporaryComment) => void
+    handleSelectMediaItem?: (id: number) => void
+    handleRespond?: (comment: Comment) => void
+    handleSelectOptions?: (componentId: string) => void
+    handleJump?: (comment: Comment) => void
+}
+
+class ChatItem extends React.PureComponent<Props> {
+
+    static defaultProps: Partial<Props> = {
+        isCollapsed: false,
+        isSelected: false,
+        isSearchResult: false,
+        isDropdownActive: false,
+        showHeader: true,
+        showOptions: true
+    }
+
+    constructor(props: Props) {
         super(props)
 
         this.renderMessage = this.renderMessage.bind(this)
@@ -27,23 +58,15 @@ class ChatItem extends React.Component {
 
     componentDidMount() {
         if (this.props.isCollapsed) {
-            $(this.refs.chat).dotdotdot({
+            ($(this.refs.chat) as any).dotdotdot({
                 height: 45, 
                 watch: true
             })
         }
     }
 
-    shouldComponentUpdate(nextProps) {
-        return !(typeof this.props.comment.isEqual === "function" && this.props.comment.isEqual(nextProps.comment)) 
-                || this.props.isCollapsed !== nextProps.isCollapsed
-                || this.props.isDropdownActive !== nextProps.isDropdownActive
-                || this.props.showOptions !== nextProps.showOptions
-                || this.props.isSelected !== nextProps.isSelected
-    }
-
-    componentDidUpdate(prevProps) {
-        if (prevProps.isCollapsed && !prevProps.comment.isEqual(this.props.comment)) {
+    componentDidUpdate(prevProps: Props) {
+        if (prevProps.isCollapsed && prevProps.comment !== this.props.comment) {
             $(this.refs.chat).trigger('update.dot')
         }
 
@@ -66,9 +89,9 @@ class ChatItem extends React.Component {
                 handleJump, handleSelectUsername, handleSelectMediaItem } = this.props;
 
         const creatorClass  = isCreator ? "creator" : ""
-        const username      = comment.author().get('username')
+        const username      = comment instanceof Comment ? comment.author().get('username') as string : comment.author().get('username') as string
         const timestamp     = timeString(comment.get('created_at'))
-        const isBot         = comment.author().get('is_bot')
+        const isBot         = comment instanceof Comment ? !!comment.author().get('is_bot'): !!comment.author().get('username')
         const isPrivate     = comment.get('subtype') === 'private'
         const isReferenced  = !!comment.get('is_referenced_by')
 
@@ -78,7 +101,7 @@ class ChatItem extends React.Component {
                     { isBot && <img className="chat_item_emoji" src={robot} /> }
                     <div className="chat_item_header_info">
                         <span 
-                            onClick={() => { !isBot && handleSelectUsername(username) }} 
+                            onClick={() => { !isBot && handleSelectUsername && handleSelectUsername(username) }} 
                             className={`chat_item_username ${creatorClass}`}>
                             {username}
                         </span>
@@ -88,14 +111,14 @@ class ChatItem extends React.Component {
                 </div>
                 <div className="chat_item_header_right">
                     { isReferenced && 
-                        <div className="chat_item_referenced" onClick={() => { handleSelectMediaItem(comment.get('is_referenced_by')) }}>
+                        <div className="chat_item_referenced" onClick={() => { handleSelectMediaItem && handleSelectMediaItem(comment.get('is_referenced_by')) }}>
                         { isSearchResult ? 
                             <span className="chat_item_referenced_inner">Response</span> : 
                             <span className="chat_item_referenced_inner"><Icon type="reply" />See response</span> }
                         </div>
                     }
                     { isReferenced && isSearchResult && <span className="chat_item_header_right_divider">•</span>}
-                    { isSearchResult &&
+                    { isSearchResult && comment instanceof Comment && typeof handleJump === 'function' &&
                         <div className="chat_item-search_jump" onClick={() => { handleJump(comment) }}>
                             Jump
                         </div>
@@ -108,16 +131,20 @@ class ChatItem extends React.Component {
     renderDropdown() {
         const { id, handleRespond, comment } = this.props;
 
+        if (comment instanceof TemporaryComment) {
+            return null
+        }
+
         return (
             <Dropdown type={`${id}-options`} triangleMargin={-1}>
-                <a className="dropdown-option" onClick={() => { handleRespond(comment) }}>Respond</a>
+                <a className="dropdown-option" onClick={() => { handleRespond && handleRespond(comment) }}>Respond</a>
             </Dropdown>
         )
     }
 
     render() {
         const { id, comment, isCreator, isSelected, isDropdownActive, isSearchResult, 
-                handleSelectOptions, showHeader, showOptions } = this.props;
+                handleSelectOptions, handleResend, showHeader, showOptions } = this.props;
 
 
         const isReferenced      = !!comment.get('is_referenced_by')
@@ -129,10 +156,10 @@ class ChatItem extends React.Component {
         const headerClass       = showHeader ? "" : "chat_item-no-header"
         const isPrivate         = comment.get('subtype') === 'private'
         const privateClass      = isPrivate ? 'chat_item_body-private' : ''
-        const isBot             = comment.author().get('is_bot')
+        const isBot             = comment instanceof Comment ? !!comment.author().get('is_bot') : !!comment.author().get('is_bot') // Typescript wackiness
         const isBotClass        = isBot ? 'chat_item-chatbot' : ''
 
-        const submitStatus      = comment.get('submit_status')
+        const submitStatus      = comment instanceof TemporaryComment ? comment.get('submit_status') : ""
         const submitClass       = submitStatus ? `chat_item-${submitStatus}` : ''
 
         const showOptionsClass  = showOptions && !isBot && !isReferenced ? "show-options" : ""
@@ -145,48 +172,19 @@ class ChatItem extends React.Component {
                 <div className="chat_item_inner">
                     { this.renderDropdown() }
                     { showHeader && this.renderHeader() }
-                    <div className={`chat_item_options ${dropdownActiveClass}`} onClick={() => { handleSelectOptions(id) }}>
+                    <div className={`chat_item_options ${dropdownActiveClass}`} onClick={() => { id && handleSelectOptions && handleSelectOptions(id) }}>
                         <Icon type="more-vert" />
                     </div>
                     <div className={`chat_item_body ${privateClass}`}>
                         {this.renderMessage(isBot)}
-                        { submitStatus === "failed" && 
-                            <a className="btn chat_item-failed_retry" onClick={ () => { handleResend(comment) } }>Retry</a>
+                        { submitStatus === "failed" && comment instanceof TemporaryComment && 
+                            <a className="btn chat_item-failed_retry" onClick={ () => { handleResend && handleResend(comment) } }>Retry</a>
                         }
                     </div>
                 </div>
             </li>
         );
     }
-}
-
-ChatItem.propTypes = {
-    comment: PropTypes.object.isRequired,
-
-    isCreator: PropTypes.bool,
-    isCollapsed: PropTypes.bool,
-    isSelected: PropTypes.bool,
-    isSearchResult: PropTypes.bool,
-    handleSelectUsername: PropTypes.func,
-    handleSelectHashtag: PropTypes.func,
-    handleResend: PropTypes.func,
-    handleSelectMediaItem: PropTypes.func,
-    handleRespond: PropTypes.func,
-    handleSelectOptions: PropTypes.func,
-    handleJump: PropTypes.func,
-    showHeader: PropTypes.bool,
-    showOptions: PropTypes.bool,
-    isDropdownActive: PropTypes.bool
-}
-
-ChatItem.defaultProps = {
-    isCollapsed: false,
-    isSelected: false,
-    showHeader: true,
-    showOptions: false,
-    isDropdownActive: false,
-    isSearchResult: false,
-    isSelected: false
 }
 
 export default ChatItem;

@@ -1,24 +1,46 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import { List } from 'immutable'
-import ScrollComponent from '../../utils/ScrollComponent.react'
+import ScrollComponent, { ScrollComponentProps } from '@components/utils/ScrollComponent'
 
-import ChatItem from './ChatItem.react'
-import NotificationChatItem from './NotificationChatItem.react'
-import Spinner from '../../shared/Spinner.react'
+import ChatItem from './ChatItem'
+import NotificationChatItem from './NotificationChatItem'
+import Spinner from '@components/shared/Spinner'
 import commentReducer from './utils/commentReducer'
 
-import { loadComments, promptChatActionsForUser, resendComment } from '../../../actions'
-import { Room, CurrentUser, App } from '../../../models'
+import { loadComments, resendComment } from '@actions/room'
+import { promptChatActionsForUser } from '@actions/pages/room'
+import Room from '@models/state/room'
+import Comment from '@models/entities/comment'
+import { State, DispatchProps } from '@types'
 
-function scrollComponentId(props) {
+interface OwnProps {
+    roomId: number
+}
+
+interface ConnectProps {
+    authorUsername: string
+
+    comments: List<Comment>
+    liveComments: List<Comment>
+
+    hasLoadedChat: boolean
+    commentsFetching: boolean
+}
+
+type Props = OwnProps & ConnectProps & DispatchProps & ScrollComponentProps
+
+interface ChatState {
+    hasUnseenLiveMessages: boolean
+}
+
+function scrollComponentId(props: Props) {
     return `history-${props.roomId}-'no-scroll'`
 }
 
-class SmallFixedChatHistory extends React.Component {
+class SmallFixedChatHistory extends React.Component<Props, ChatState> {
 
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
 
         this.renderComment = this.renderComment.bind(this)
@@ -29,9 +51,32 @@ class SmallFixedChatHistory extends React.Component {
         }
     }
 
+    componentDidMount() {
+        this.props.scrollToBottom()
+    }
+
+    componentDidUpdate(prevProps: Props) {
+        if (prevProps.comments.size < this.props.comments.size) {
+            this.props.scrollToBottom()
+        }
+
+        if (prevProps.liveComments.size < this.props.liveComments.size) {
+            // for some reason, on mobile browsers the dom doesn't properly 
+            // update until the next cycle
+            process.nextTick(() => {
+                this.props.scrollToBottom()
+            })
+        }
+    }
+
+    handleResize() {
+        // want to always keep static chat history at bottom of element
+        this.props.scrollToBottom();
+    }
+
     // Render
 
-    renderComment(comment, idx) {
+    renderComment(comment: Comment, idx: number) {
         const { authorUsername, roomId } = this.props;
         const isCreator = comment.author().get('username') === authorUsername;
 
@@ -40,13 +85,11 @@ class SmallFixedChatHistory extends React.Component {
                         key={comment.get('id')} 
                         comment={comment}
                         isCreator={isCreator} 
-                        handleSelectUsername={this.handleSelectUsername}
                         isCollapsed={true}
                     />
         } else if (comment.get('type') === 'notification') {
             return <NotificationChatItem 
                         key={comment.get('id')} 
-                        roomId={roomId}
                         comment={comment} 
                         username={authorUsername}
                         count={comment.__count__}
@@ -54,7 +97,7 @@ class SmallFixedChatHistory extends React.Component {
         }
     }
 
-    renderLiveComment(comment, idx) {
+    renderLiveComment(comment: Comment, idx: number) {
         const { authorUsername, comments, roomId } = this.props;
         const key = `l${idx}`;
         const isCreator = (authorUsername === comment.author().get('username'));
@@ -64,13 +107,11 @@ class SmallFixedChatHistory extends React.Component {
                         key={key} 
                         comment={comment} 
                         isCreator={isCreator} 
-                        handleSelectUsername={this.handleSelectUsername}
                         isCollapsed={true}
                     />
         } else if (comment.get('type') === 'notification') {
             return <NotificationChatItem 
                         key={key} 
-                        roomId={roomId}
                         comment={comment} 
                         username={authorUsername}
                         count={comment.__count__}
@@ -88,11 +129,11 @@ class SmallFixedChatHistory extends React.Component {
             <div className="chat_history_container">
                 {!hasLoadedChat &&
                     <div className="chat_history_overlay">
-                        <Spinner type="grey" />
+                        <Spinner styles={["grey"]} />
                     </div>
                 }
                 <div id={scrollComponentId(this.props)} className="chat_history chat_history-small-fixed">
-                    { commentsFetching && <Spinner type="grey" />}
+                    { commentsFetching && <Spinner styles={["grey"]} />}
                     <ul className="chat_items">
                         {comments.reverse().reduce(commentReducer, List()).map((comment, idx) => this.renderComment(comment, idx))}
                         {liveComments.reduce(commentReducer, List()).map((comment, idx) => this.renderLiveComment(comment, idx))}
@@ -103,48 +144,17 @@ class SmallFixedChatHistory extends React.Component {
     }
 }
 
-SmallFixedChatHistory.propTypes = {
-    roomId: PropTypes.number.isRequired,
-}
-
-const scrollOptions = {
-
-    onComponentDidMount: function(scrollComponent, props) {
-        scrollComponent.scrollToBottom();
-    },
-
-    onComponentDidUpdate: function(scrollComponent, prevProps) {
-
-        if (prevProps.comments.size < this.props.comments.size) {
-            scrollComponent.scrollToBottom()
-        }
-
-        if (prevProps.liveComments.size < this.props.liveComments.size) {
-            // for some reason, on mobile browsers the dom doesn't properly 
-            // update until the next cycle
-            process.nextTick(() => {
-                scrollComponent.scrollToBottom()
-            })
-        }
-    },
-
-    onResize: function(scrollComponent, props) {
-        // want to always keep static chat history at bottom of element
-        scrollComponent.scrollToBottom();
-    }
-}
-
-function mapStateToProps(state, ownProps) {
-    let room = new Room(ownProps.roomId, state)
+function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
+    let id = ownProps.roomId
     return {
-        authorUsername: room.author().get('username'),
+        authorUsername: Room.author(state, id).get('username'),
 
-        comments: room.latestComments(),
-        liveComments: room.liveComments(),
+        comments: Room.latestComments(state, id),
+        liveComments: Room.liveComments(state, id),
 
-        hasLoadedChat: room.hasLoadedChat(),
-        commentsFetching: room.get('commentsFetching')
+        hasLoadedChat: Room.hasLoadedChat(state, id),
+        commentsFetching: Room.get(state, id, 'commentsFetching')
     }
 }
 
-export default connect(mapStateToProps)(ScrollComponent(scrollComponentId, scrollOptions)(SmallFixedChatHistory));
+export default connect(mapStateToProps)(ScrollComponent(scrollComponentId)(SmallFixedChatHistory));

@@ -1,15 +1,26 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 
-import Icon from '../../shared/Icon.react'
 import renderMessageText from './utils/renderMessageText'
-import { timeString } from '../../../utils'
-import { jumpToComment, hideSearchChatResults } from '../../../actions'
+import Icon from '@components/shared/Icon'
+import { jumpToComment } from '@actions/room'
+import { hideSearchChatResults } from '@actions/pages/room'
+import SearchResultComment from '@models/entities/searchResultComment'
+import { DispatchProps } from '@types'
+import { timeString } from '@utils'
 
-class SearchResultChatItem extends React.Component {
+interface Props {
+    comment: SearchResultComment
+    roomId: number
 
-    constructor(props) {
+    isCreator: boolean
+    showOptions: boolean
+    handleSelectMediaItem: (id: number) => void
+}
+
+class SearchResultChatItem extends React.Component<Props & DispatchProps> {
+
+    constructor(props: Props & DispatchProps) {
         super(props);
 
         this.handleJumpClick = this.handleJumpClick.bind(this);
@@ -22,7 +33,7 @@ class SearchResultChatItem extends React.Component {
     }
 
     render() {
-        const { comment, showOptions } = this.props;
+        const { comment, showOptions, handleSelectMediaItem } = this.props;
 
         const isReferenced = !!comment.get('is_referenced_by')
         const highlightClass = isReferenced ? "chat_item-highlighted" : ""
@@ -55,14 +66,6 @@ class SearchResultChatItem extends React.Component {
             </li>
         )
     }
-}
-
-SearchResultChatItem.propTypes = {
-    comment: PropTypes.object.isRequired,
-    roomId: PropTypes.number.isRequired,
-
-    isCreator: PropTypes.bool,
-    showOptions: PropTypes.bool
 }
 
 export default connect()(SearchResultChatItem);

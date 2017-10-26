@@ -1,13 +1,24 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 
 import renderMessageText from './utils/renderMessageText'
-import { RoomPage } from '../../../models'
-import { unpinComment } from '../../../actions'
+import { unpinComment } from '@actions/room'
+import RoomPage from '@models/state/pages/room'
+import Room from '@models/state/room'
+import Comment from '@models/entities/comment'
+import { State, DispatchProps } from '@types'
 
-class PinnedChatItem extends React.Component {
+interface Props {
+    pinnedComment: Comment | null
+    
+    roomId: number
+    isCreator: boolean
+    isCurrentUserAuthor: boolean
+}
 
-    constructor(props) {
+class PinnedChatItem extends React.Component<Props & DispatchProps> {
+
+    constructor(props: Props & DispatchProps) {
         super(props);
 
         this.handleUnpin = this.handleUnpin.bind(this)
@@ -19,8 +30,12 @@ class PinnedChatItem extends React.Component {
     }
 
     render() {
-        const { pinnedComment, isCreator, currentUserIsAuthor } = this.props 
+        const { pinnedComment, isCreator, isCurrentUserAuthor } = this.props 
         const creatorClass = isCreator ? 'creator' : ''
+
+        if (!pinnedComment) {
+            return null;
+        }
 
         return (
             <div className="chat_pinned-comment">
@@ -32,10 +47,10 @@ class PinnedChatItem extends React.Component {
                        { renderMessageText(pinnedComment) }
                     </div>
                 </div>
-                { currentUserIsAuthor &&
+                { isCurrentUserAuthor &&
                     <div className="btn btn-gray chat_pinned-comment_unpin" onClick={this.handleUnpin}>Remove</div>
                 }
-                { !currentUserIsAuthor && 
+                { !isCurrentUserAuthor && 
                     <div className="chat_item-pinned-comment_pinned">Pinned</div>
                 }
             </div>
@@ -44,12 +59,13 @@ class PinnedChatItem extends React.Component {
 
 }
 
-function mapStateToProps(state, ownProps) {
-    let roomPage = new RoomPage(state)
+function mapStateToProps(state: State): Props {
+    const pinnedComment = RoomPage.pinnedComment(state)
     return {
-        roomId: roomPage.get('id'),
-        isCreator: roomPage.author().get('username') === ownProps.pinnedComment.author().get('username'),
-        currentUserIsAuthor: roomPage.currentUserIsAuthor()
+        pinnedComment,
+        roomId: RoomPage.get(state, 'id'),
+        isCreator: !!pinnedComment && RoomPage.author(state).get('username') === pinnedComment.author().get('username'),
+        isCurrentUserAuthor: RoomPage.isCurrentUserAuthor(state)
     }
 }
 

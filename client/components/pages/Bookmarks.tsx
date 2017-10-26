@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { List } from 'immutable'
 
-import ScrollComponent from '@components/utils/ScrollComponent'
+import ScrollComponent, { ScrollComponentProps } from '@components/utils/ScrollComponent'
 import LargeStackItem from '@components/shared/LargeStackItem'
 import User from '@components/shared/User'
 import Spinner from '@components/shared/Spinner'
@@ -25,7 +25,7 @@ interface Props {
     isLoggedIn: boolean
 }
 
-type AllProps = Props & DispatchProps
+type AllProps = Props & DispatchProps & ScrollComponentProps
 
 class Bookmarks extends React.Component<AllProps> {
 

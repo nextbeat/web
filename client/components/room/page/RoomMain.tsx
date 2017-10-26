@@ -1,18 +1,22 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 
-import { RoomPage, App } from '../../../models'
-import { selectDetailSection, goBackward, goForward } from '../../../actions'
+import App from '@models/state/app'
+import RoomPage from '@models/state/pages/room'
+import { goBackward, goForward } from '@actions/room'
+import { selectDetailSection } from '@actions/pages/room'
 
 import RoomPlayer from '../player/RoomPlayer.react'
 import Counter from '../counter/Counter.react'
 import ActivityCounter from '../counter/ActivityCounter.react'
 import SmallChat from './chat/SmallChat.react'
-import Info from './main/Info.react'
-import More from './main/More.react'
-import Spinner from '../../shared/Spinner.react'
-import PageError from '../../shared/PageError.react'
-import AppBanner from '../../shared/AppBanner.react'
+import Info from './main/Info'
+import More from './main/More'
+import Spinner from '@components/shared/Spinner'
+import PageError from '@components/shared/PageError'
+import AppBanner from '@components/shared/AppBanner'
+
+import { State, DispatchProps } from '@types'
 
 class RoomMain extends React.Component {
 
@@ -94,7 +98,7 @@ class RoomMain extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: State) {
     return {
         roomPage: new RoomPage(state),
         app: new App(state)

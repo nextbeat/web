@@ -88,14 +88,6 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
 
     static readonly NUM_SEARCH_SUGGESTIONS = 4
 
-    static get<K extends keyof RoomPageProps>(state: State, key: K, defaultValue?: RoomPageProps[K]): RoomPageProps[K] {
-            let value = super.get(state, key)
-            if (typeof value === 'undefined') {
-                value = Room.get(state, this.get(state, 'id'), key as keyof RoomProps, defaultValue)
-            }
-            return value
-        }
-
     static isActive(state: State) {
         return !!this.get(state, 'isFetching') || this.get(state, 'id') > 0
     }
@@ -107,6 +99,10 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
     /**
      * Wrapped properties
      */
+
+    static entity(state: State) {
+        return Room.entity(state, this.get(state, 'id'))
+    }
 
     static author(state: State) {
         return Room.author(state, this.get(state, 'id'))

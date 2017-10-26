@@ -1,14 +1,25 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 
-import Icon from '../../../shared/Icon.react'
-import { searchChat, closeDetailSection } from '../../../../actions'
-import { App } from '../../../../models'
+import Icon from '@components/shared/Icon'
+import { searchChat, closeDetailSection } from '@actions/pages/room'
+import App from '@models/state/app'
+import { State, DispatchProps } from '@types'
 
-class ChatHeader extends React.Component {
+interface ConnectProps {
+    isOverlayActive: boolean
+    tags: string[]
+}   
 
-    constructor(props) {
+type Props = ConnectProps & DispatchProps
+
+class ChatHeader extends React.Component<Props> {
+    
+    static defaultProps: Partial<Props> = {
+        tags: []
+    }
+
+    constructor(props: Props) {
         super(props)
 
         this.handleClose = this.handleClose.bind(this)
@@ -19,7 +30,7 @@ class ChatHeader extends React.Component {
         this.props.dispatch(closeDetailSection())
     }
 
-    renderTag(tag) {
+    renderTag(tag: string) {
         const { dispatch } = this.props
         let handleClick = () => {
             dispatch(searchChat(tag, true))
@@ -30,8 +41,7 @@ class ChatHeader extends React.Component {
     }
 
     render() {
-        const { tags, app } = this.props
-        let isOverlayActive = app.get('activeOverlay') === 'chat'
+        const { tags, isOverlayActive } = this.props
 
         return (
             <div className="chat_header_container">
@@ -53,17 +63,9 @@ class ChatHeader extends React.Component {
     }
 }
 
-ChatHeader.propTypes = {
-    tags: PropTypes.object
-}
-
-ChatHeader.defaultProps = {
-    tags: []
-}
-
-function mapStateToProps(state) {
+function mapStateToProps(state: State) {
     return {
-        app: new App(state)
+        isOverlayActive: App.get(state, 'activeOverlay') === 'chat'
     }
 }
 

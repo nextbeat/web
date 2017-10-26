@@ -9,12 +9,15 @@ import { State } from '@types'
 interface CommentProps {
     author: number
     created_at: string
-    is_referenced_by: boolean
+    is_referenced_by: number
     id: number
+    mediaitem_id: number
+    mediaitem_url: string
     message: string
     result_indices: List<List<number>>
     stack: number
     subtype: string
+    temporary_id: string
     type: string
     user_mentions: List<State>
 }

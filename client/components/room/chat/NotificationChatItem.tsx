@@ -1,13 +1,21 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as React from 'react'
 import { Link } from 'react-router'
 
-import { timeString } from '../../../utils'
+import Comment from '@models/entities/comment'
+import { timeString } from '@utils'
 
-class NotificationChatItem extends React.Component {
+interface Props {
+    comment: Comment
+    username: string
+    count?: number
 
-    constructor(props) {
-        super(props);
+    handleSelectMediaItem?: (id: number) => void
+}
+
+class NotificationChatItem extends React.Component<Props> {
+
+    static defaultProps: Partial<Props> = {
+        count: 1
     }
 
     render() {
@@ -17,7 +25,7 @@ class NotificationChatItem extends React.Component {
         const countStr = count === 1 ? "a post" : `${count} posts`;
 
         return (
-            <li className="chat_item chat_item-highlighted chat_item-notification" onClick={() => { handleSelectMediaItem(mediaItemId) }}>
+            <li className="chat_item chat_item-highlighted chat_item-notification" onClick={() => { handleSelectMediaItem && handleSelectMediaItem(mediaItemId) }}>
                 <div className="chat_item-notification_thumb" style={{ backgroundImage: `url(${url})`}}></div>
                 <div className="chat_item-notification_text">
                     <span className="chat_item_username">{username}</span> added {countStr} to the room.
@@ -26,19 +34,6 @@ class NotificationChatItem extends React.Component {
             </li>
         );
     }
-}
-
-NotificationChatItem.propTypes = {
-    comment: PropTypes.object.isRequired,
-    roomId: PropTypes.number.isRequired,
-    username: PropTypes.string.isRequired,
-    count: PropTypes.number,
-
-    handleSelectMediaItem: PropTypes.func
-}
-
-NotificationChatItem.defaultProps = {
-    count: 1
 }
 
 export default NotificationChatItem;

@@ -1,7 +1,11 @@
-import React from 'react'
-import Dropdown from '../../../shared/Dropdown.react'
+import * as React from 'react'
+import Dropdown from '@components/shared/Dropdown.react'
 
-class ChatPinInfoDropdown extends React.Component {
+interface Props {
+    handleClose: () => void
+}
+
+class ChatPinInfoDropdown extends React.Component<Props> {
 
     render() {
         return (

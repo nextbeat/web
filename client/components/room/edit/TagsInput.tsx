@@ -1,12 +1,21 @@
-import PropTypes from 'prop-types'
-import React from 'react'
-import Icon from '../../shared/Icon.react'
+import * as React from 'react'
+import { List } from 'immutable'
+import Icon from '@components/shared/Icon'
 
 const MAX_TAG_COUNT = 5;
 
-class TagsInput extends React.Component {
+interface Props {
+    tags: List<string>
+    onChange: (tags: List<string>) => void
+}
 
-    constructor(props) {
+interface State {
+    currentTagString: string
+}
+
+class TagsInput extends React.Component<Props, State> {
+
+    constructor(props: Props) {
         super(props)
 
         this.handleTagClose = this.handleTagClose.bind(this)
@@ -25,18 +34,18 @@ class TagsInput extends React.Component {
 
     // Events
 
-      handleTagClose(idx) {
+      handleTagClose(idx: number) {
         const { tags, onChange } = this.props 
         onChange(tags.delete(idx))
     }
 
-    handleTagChange(e) {
+    handleTagChange(e: React.FormEvent<HTMLInputElement>) {
         const { tags, onChange } = this.props 
         if (tags.size >= MAX_TAG_COUNT) {
             return;
         }
 
-        const value = e.target.value
+        const value = e.currentTarget.value
         if ([',', ' '].indexOf(value[value.length-1]) !== -1) {
             const tag = value.substr(0, value.length-1)
             if (tag.length > 0) {
@@ -47,12 +56,12 @@ class TagsInput extends React.Component {
             }
         } else {
             this.setState({ 
-                currentTagString: e.target.value 
+                currentTagString: e.currentTarget.value 
             })
         }
     }
 
-    handleTagKeyDown(e) {
+    handleTagKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
         // key press doesn't register backspace for some reason
         const { currentTagString } = this.state 
         const { tags, onChange } = this.props 
@@ -61,11 +70,11 @@ class TagsInput extends React.Component {
             e.preventDefault()
 
             this.setState({
-                currentTagString: tags.last()
+                currentTagString: tags.last() || ''
             })
             onChange(tags.pop())
             process.nextTick(() => {
-                e.target.select()
+                e.currentTarget.select()
             })
         }
     }
@@ -88,7 +97,7 @@ class TagsInput extends React.Component {
 
     // Render
 
-    renderTag(tag, index) {
+    renderTag(tag: string, index: number) {
         return (
             <div className="edit-room_tag" key={index}>
                 <span>{tag}</span>
@@ -115,11 +124,6 @@ class TagsInput extends React.Component {
             </div>
         )
     }
-}
-
-TagsInput.propTypes = {
-    tags: PropTypes.object.isRequired, // Immutable List
-    onChange: PropTypes.func.isRequired
 }
 
 export default TagsInput

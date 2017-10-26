@@ -1,13 +1,20 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 
-import CounterInner from './CounterInner.react'
+import CounterInner from './CounterInner'
 
-import { selectDetailSection } from '../../../actions'
+import { selectDetailSection } from '@actions/pages/room'
+import { DispatchProps } from '@types'
 
-class ActivityCounter extends React.Component {
+interface Props {
+    roomId: number
+}
 
-    constructor(props) {
+type AllProps = Props & DispatchProps
+
+class ActivityCounter extends React.Component<AllProps> {
+
+    constructor(props: AllProps) {
         super(props);
         
         this.handleClick = this.handleClick.bind(this)
@@ -18,10 +25,10 @@ class ActivityCounter extends React.Component {
     }
 
     render() {
-        const { room } = this.props;
+        const { roomId } = this.props;
         return (
             <div className="player_hover-button player_counter active" onClick={this.handleClick}>
-                <CounterInner room={room} />
+                <CounterInner roomId={roomId} />
             </div>
         )
     }

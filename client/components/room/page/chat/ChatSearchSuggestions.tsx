@@ -1,30 +1,43 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import { List } from 'immutable'
-import range from 'lodash/range'
+import range from 'lodash-es/range'
 
-import Dropdown from '../../../shared/Dropdown.react'
-import Spinner from '../../../shared/Spinner.react'
-import { App, RoomPage } from '../../../../models'
-import { getSearchSuggestions, searchChat, closeDropdown } from '../../../../actions'
+import Dropdown from '@components/shared/Dropdown'
+import Spinner from '@components/shared/Spinner'
+import App from '@models/state/app'
+import RoomPage from '@models/state/pages/room'
+import { getSearchSuggestions, searchChat } from '@actions/pages/room'
+import { closeDropdown } from '@actions/app'
+import { State, DispatchProps } from '@types'
 
 const numSearchSuggestions = RoomPage.NUM_SEARCH_SUGGESTIONS;
 
-class ChatSearchSuggestions extends React.Component {
+interface ConnectProps {
+    isActive: boolean
+    terms: List<string>
+    isFetching: boolean
+    hasFetched: boolean
+    history: List<string>
+}
 
-    constructor(props) {
+type Props = ConnectProps & DispatchProps
+
+class ChatSearchSuggestions extends React.Component<Props> {
+
+    constructor(props: Props) {
         super(props);
 
         this.handleClick = this.handleClick.bind(this)
     }
 
-    handleClick(term) {
+    handleClick(term: string) {
         const { dispatch } = this.props
         dispatch(searchChat(term, true));
         dispatch(closeDropdown('chat-search-suggestions'));
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps: Props) {
         if (!this.props.isActive && nextProps.isActive) {
             this.props.dispatch(getSearchSuggestions())
         }
@@ -59,7 +72,7 @@ class ChatSearchSuggestions extends React.Component {
                         </div>
                         { isFetching &&
                             [
-                            <Spinner key="spinner" type="grey" />,
+                            <Spinner key="spinner" styles={["grey"]} />,
                             <ul key="list" className="chat_search-suggestions_list">
                                 { /* Fills out section to proper height */ }
                                 { range(numSearchSuggestions).map(idx => <li key={idx} className="chat_search-suggestions_term chat_search-suggestions_term-dummy">foo</li>) }
@@ -105,15 +118,13 @@ class ChatSearchSuggestions extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
-    let app = new App(state);
-    let roomPage = new RoomPage(state);
+function mapStateToProps(state: State): ConnectProps {
     return {    
-        isActive: app.isActiveDropdown("chat-search-suggestions"),
-        terms: roomPage.get('searchSuggestions'),
-        isFetching: roomPage.get('searchSuggestionsFetching'),
-        hasFetched: roomPage.get('searchSuggestionsHasFetched'),
-        history: roomPage.get('searchHistory') || List(),
+        isActive: App.isActiveDropdown(state, "chat-search-suggestions"),
+        terms: RoomPage.get(state, 'searchSuggestions'),
+        isFetching: RoomPage.get(state, 'searchSuggestionsFetching'),
+        hasFetched: RoomPage.get(state, 'searchSuggestionsHasFetched'),
+        history: RoomPage.get(state, 'searchHistory', List())
     }
 }
 

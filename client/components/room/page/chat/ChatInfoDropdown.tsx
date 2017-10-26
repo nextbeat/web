@@ -1,12 +1,15 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import Dropdown from '../../../shared/Dropdown.react'
-import { RoomPage } from '../../../../models'
-import { promptModal } from '../../../../actions'
+import Dropdown from '@components/shared/Dropdown'
 
-class ChatInfoDropdown extends React.Component {
+interface Props {
+    handleClose: () => void
+    username: string
+}
+
+class ChatInfoDropdown extends React.Component<Props> {
 
     render() {
         const { username } = this.props

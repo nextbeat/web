@@ -1,7 +1,11 @@
-import React from 'react'
-import Dropdown from '../../../shared/Dropdown.react'
+import * as React from 'react'
+import Dropdown from '@components/shared/Dropdown'
 
-class ChatPinOverMaxLengthDropdown extends React.Component {
+interface Props {
+    maxLength: number
+}
+
+class ChatPinOverMaxLengthDropdown extends React.Component<Props> {
 
     render() {
         const { maxLength } = this.props

@@ -36,9 +36,9 @@ export interface RoomProps {
     hasReachedLatestComment: boolean
     latestCommentIds: List<number>
     liveCommentIds: List<number>
-    submittingComments: List<any> // todo: update to temporary comment entity
-    failedComments: List<any>
-    selectedComment: any
+    submittingComments: List<State> 
+    failedComments: List<State>
+    selectedComment: number
 
     bannedUsers: List<string>
     pinnedCommentId: number

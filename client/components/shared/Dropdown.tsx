@@ -13,8 +13,8 @@ interface ConnectProps {
 
 interface OwnProps {
     type: string
-    shouldForceClose: boolean
-    triangleOnBottom: boolean
+    shouldForceClose?: boolean
+    triangleOnBottom?: boolean
     handleClose?: () => void
     style?: string
     triangleMargin?: number

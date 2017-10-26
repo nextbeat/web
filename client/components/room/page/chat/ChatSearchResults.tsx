@@ -1,20 +1,47 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as PropTypes from 'prop-types'
+import * as React from 'react'
 import { connect } from 'react-redux'
-import { Set } from 'immutable'
+import { Set, List } from 'immutable'
 
-import ChatItem from '../../chat/ChatItem.react'
-import ChatSearchBar from './ChatSearchBar.react'
-import Spinner from '../../../shared/Spinner.react'
-import Icon from '../../../shared/Icon.react'
-import ScrollComponent from '../../../utils/ScrollComponent.react'
-import { RoomPage, App } from '../../../../models'
+import ChatItem from '@components/room/chat/ChatItem'
+import ChatSearchBar from './ChatSearchBar'
+import Spinner from '@components/shared/Spinner'
+import Icon from '@components/shared/Icon'
+import ScrollComponent, { ScrollComponentProps } from '@components/utils/ScrollComponent'
+import App from '@models/state/app'
+import RoomPage from '@models/state/pages/room'
+import SearchResultComment from '@models/entities/searchResultComment'
 
-import { hideSearchChatResults, searchChat, selectMediaItem, closeDetailSection, toggleDropdown, jumpToComment } from '../../../../actions'
+import { selectMediaItem, jumpToComment } from '@actions/room'
+import { hideSearchChatResults, searchChat, closeDetailSection } from '@actions/pages/room'
+import { toggleDropdown } from '@actions/app'
+import { State, DispatchProps } from '@types'
 
-class ChatSearchResults extends React.Component {
+interface ConnectProps {
+    roomId: number
+    hid: string
+    authorUsername: string
+    isClosed: boolean
+    isCurrentUserAuthor: boolean
 
-    constructor(props) {
+    searchResults: List<SearchResultComment>
+    isFetching: boolean
+    hasFetched: boolean
+    error: string
+    query: string
+
+    activeDropdowns: Set<string>
+}
+
+type Props = ConnectProps & DispatchProps & ScrollComponentProps
+
+class ChatSearchResults extends React.Component<Props> {
+
+    static contextTypes = {
+        router: PropTypes.object.isRequired
+    }
+
+    constructor(props: Props) {
         super(props);
 
         this.handleClose = this.handleClose.bind(this)
@@ -30,43 +57,45 @@ class ChatSearchResults extends React.Component {
         this.props.dispatch(hideSearchChatResults());
     }
 
-    handleSelectMediaItem(mediaItemId) {
+    handleSelectMediaItem(mediaItemId: number) {
         const { dispatch, roomId } = this.props
         dispatch(selectMediaItem(roomId, mediaItemId));
         // dispatch(hideSearchChatResults())
         dispatch(closeDetailSection())
     }
 
-    handleSelectChatOptions(chatId) {
+    handleSelectChatOptions(chatId: string) {
         const { dispatch } = this.props
         dispatch(toggleDropdown(`${chatId}-options`))
     }
 
-    handleRespond(comment) {
+    handleRespond(comment: SearchResultComment) {
         const { hid } = this.props;
         this.context.router.push({
             pathname: `/r/${hid}/upload/${comment.get('id')}`
         })
     }
 
-    handleJump(comment) {
+    handleJump(comment: SearchResultComment) {
         const { dispatch, roomId } = this.props;
         dispatch(hideSearchChatResults());
         dispatch(jumpToComment(roomId, comment));
     }
 
 
-    renderComment(comment, idx) {
-        const { currentUserIsAuthor, hasClosed, activeDropdowns, roomId } = this.props
+    renderComment(comment: SearchResultComment, idx: number) {
+        const { isCurrentUserAuthor, isClosed, activeDropdowns, roomId, authorUsername } = this.props
 
         const componentId = `comment-search-result-${roomId}-${comment.get('id')}`
         const isDropdownActive = activeDropdowns.includes(`${componentId}-options`)
+        const isCreator = authorUsername === comment.author().get('username')
 
         return <ChatItem
                     id={componentId}
                     key={idx} 
                     comment={comment} 
-                    showOptions={currentUserIsAuthor && !hasClosed}
+                    isCreator={isCreator}
+                    showOptions={isCurrentUserAuthor && !isClosed}
                     isSearchResult={true}
                     isDropdownActive={isDropdownActive}
                     handleSelectOptions={this.handleSelectChatOptions}
@@ -82,7 +111,7 @@ class ChatSearchResults extends React.Component {
         return (
             <div className="chat_search-results">
                 <div className="chat_search-results_header">
-                    {query} { isFetching && <Spinner type="grey small chat-search" />}
+                    {query} { isFetching && <Spinner styles={["grey", "small"]} type="chat-search" />}
                     <div className="chat_search-results_close" onClick={this.handleClose}><Icon type="close" /></div>
                 </div>
                 <div className="chat_search-results_body" id="chat_search-results_body">
@@ -101,12 +130,8 @@ class ChatSearchResults extends React.Component {
 
 }
 
-ChatSearchResults.contextTypes = {
-    router: PropTypes.object.isRequired
-}
-
 const scrollOptions = {
-    onScrollToBottom: function() {
+    onScrollToBottom: function(this: ChatSearchResults) {
         const { searchResults, hasFetched, dispatch } = this.props 
         if (hasFetched && searchResults.size > 0) {
             dispatch(searchChat())
@@ -114,22 +139,21 @@ const scrollOptions = {
     }  
 }
 
-function mapStateToProps(state) {
-    let roomPage = new RoomPage(state)
-    let app = new App(state)
+function mapStateToProps(state: State): ConnectProps {
     return {
-        roomId: roomPage.get('id'),
-        hid: roomPage.get('hid'),
-        isClosed: roomPage.get('closed'),
-        currentUserIsAuthor: roomPage.currentUserIsAuthor(),
+        roomId: RoomPage.get(state, 'id'),
+        hid: RoomPage.entity(state).get('hid'),
+        authorUsername: RoomPage.entity(state).author().get('username'),
+        isClosed: RoomPage.status(state) === 'closed',
+        isCurrentUserAuthor: RoomPage.isCurrentUserAuthor(state),
 
-        searchResults: roomPage.searchResults(),
-        isFetching: roomPage.get('searchResultsFetching'),
-        hasFetched: roomPage.get('searchResultsHasFetched'),
-        error: roomPage.get('searchResultsError'),
-        query: roomPage.get('searchQuery'),
+        searchResults: RoomPage.searchResults(state),
+        isFetching: RoomPage.get(state, 'searchResultsFetching'),
+        hasFetched: RoomPage.get(state, 'searchResultsHasFetched'),
+        error: RoomPage.get(state, 'searchResultsError'),
+        query: RoomPage.get(state, 'searchQuery'),
 
-        activeDropdowns: app.get('activeDropdowns', Set())
+        activeDropdowns: App.get(state, 'activeDropdowns', Set())
     }
 }
 

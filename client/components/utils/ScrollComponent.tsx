@@ -1,13 +1,9 @@
 import * as React from 'react'
 import hoistStatics from 'hoist-non-react-statics'
 
-interface ScrollOptions<P> {
-    onScrollToTop: (scrollComponent: React.Component) => void
-    onScrollToBottom: (scrollComponent: React.Component) => void
-    onComponentDidMount: (scrollComponent: React.Component, props: P) => void
-    onComponentWillReceiveProps: (scrollComponent: React.Component, props: P) => void
-    onComponentDidUpdate: (scrollComponent: React.Component, props: P) => void
-    onResize: (scrollComponent: React.Component, props: P) => void
+interface ScrollOptions {
+    onScrollToTop: () => void
+    onScrollToBottom: () => void
 }
 
 interface ScrollComponentState {
@@ -15,31 +11,40 @@ interface ScrollComponentState {
     scrollHeight: number
 }
 
-export interface ScrollProps {
-    scrollToTop: () => void
-    scrollToBottom: () => void 
+export interface ScrollComponentProps {    
+    scrollTop: number
+    scrollHeight: number
+
+    isScrolledToTop: () => boolean
+    isScrolledToBottom: () => boolean
+
+    keepScrollPosition: () => void
+    setScrollState: () => void
+
+    scrollToTop: (duration?: number) => void
+    scrollToBottom: (duration?: number) => void 
+    scrollToBottomIfPreviouslyAtBottom: () => void    
+    scrollToElementWithId: (id: string, duration?: number) => void
 }
 
 /**
  * Higher order component enabling scroll-dependent behavior
  * on the given child component.
  */
-export default function ScrollComponent<P>(domId: ((props: P) => string) | string, scrollOptions: Partial<ScrollOptions<P>>) {
+export default function ScrollComponent<OriginalProps extends {}>(domId: ((props: OriginalProps) => string) | string, scrollOptions: Partial<ScrollOptions> = {}) {
 
     const { 
         onScrollToTop,
         onScrollToBottom,
-        onComponentDidMount,
-        onComponentWillReceiveProps,
-        onComponentDidUpdate,
-        onResize
     } = scrollOptions
 
-    return function wrapWithScroll(ChildComponent: React.ComponentType<any>) {
+    // to do: make external props?
 
-        class ScrollContainer extends React.Component<P, ScrollComponentState> {
+    return function wrapWithScroll(ChildComponent: React.ComponentClass<ScrollComponentProps & OriginalProps>) {
 
-            constructor(props: P) {
+        class ScrollContainer extends React.Component<OriginalProps, ScrollComponentState> {
+
+            constructor(props: OriginalProps) {
                 super(props)
 
                 // Keeps track of the scroll state when the props were last updated
@@ -51,7 +56,6 @@ export default function ScrollComponent<P>(domId: ((props: P) => string) | strin
                 this.domElement = this.domElement.bind(this)
 
                 this.handleScroll = this.handleScroll.bind(this)
-                this.handleResize = this.handleResize.bind(this)
 
                 this._doScroll = this._doScroll.bind(this)
                 this.scrollToTop = this.scrollToTop.bind(this)
@@ -74,38 +78,10 @@ export default function ScrollComponent<P>(domId: ((props: P) => string) | strin
 
             componentDidMount() {
                 $(this.domElement()).on('scroll', this.handleScroll)
-                $(window).on(`resize.${this.domIdString()}`, this.handleResize)
-
-                if (typeof onComponentDidMount === 'function') {
-                    onComponentDidMount.call(this.refs.child, this, this.props)
-                }
-            }
-
-            componentWillReceiveProps(nextProps: P) {
-                if (typeof onComponentWillReceiveProps === 'function') {
-                    onComponentWillReceiveProps.call(this.refs.child, this, nextProps)
-                }
-            }
-
-            componentDidUpdate(prevProps: P) {
-                if (typeof onComponentDidUpdate === 'function') {
-                    onComponentDidUpdate.call(this.refs.child, this, prevProps)
-                }
             }
 
             componentWillUnmount() {
                 $(this.domElement()).off('scroll', this.handleScroll)
-                $(window).off(`resize.${this.domIdString()}`)
-            }
-
-            // Other events
-
-            handleResize() {
-                // child unmounts before parent, so we need to 
-                // check that the child is still around
-                if (typeof onResize === 'function' && this.refs.child) {
-                    onResize.call(this.refs.child, this, this.props)
-                }
             }
 
             // Scroll UI logic
@@ -140,10 +116,10 @@ export default function ScrollComponent<P>(domId: ((props: P) => string) | strin
             handleScroll() {
                 this.setScrollState()
                 if (this.isScrolledToTop() && typeof onScrollToTop === "function") {
-                    onScrollToTop.call(this.refs.child, this)
+                    onScrollToTop.call(this.refs.child)
                 }
                 if (this.isScrolledToBottom() && typeof onScrollToBottom === "function") {
-                    onScrollToBottom.call(this.refs.child, this)
+                    onScrollToBottom.call(this.refs.child)
                 }
             }
 
@@ -208,11 +184,22 @@ export default function ScrollComponent<P>(domId: ((props: P) => string) | strin
             // Render
 
             render() {
-                const scrollProps = {
+                const scrollProps: ScrollComponentProps = {
                     scrollToTop: this.scrollToTop,
-                    scrollToBottom: this.scrollToBottom
+                    scrollToBottom: this.scrollToBottom,
+
+                    scrollHeight: this.state.scrollHeight,
+                    scrollTop: this.state.scrollTop,
+
+                    isScrolledToTop: this.isScrolledToTop,
+                    isScrolledToBottom: this.isScrolledToBottom,
+                    keepScrollPosition: this.keepScrollPosition,
+                    setScrollState: this.setScrollState,
+                    scrollToBottomIfPreviouslyAtBottom: this.scrollToBottomIfPreviouslyAtBottom,
+                    scrollToElementWithId: this.scrollToElementWithId
                 }
-                return <ChildComponent {...this.props} {...this.state} {...scrollProps} ref='child' />
+
+                return <ChildComponent {...scrollProps as any} {...this.props} />
             }
 
         }
