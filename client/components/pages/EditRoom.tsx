@@ -1,22 +1,43 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 import { List } from 'immutable'
 import Helmet from 'react-helmet'
 
-import Icon from '../shared/Icon.react'
-import Spinner from '../shared/Spinner.react'
-import TagsInput from '../room/edit/TagsInput.react'
-import Select from '../shared/Select.react'
-import EditThumbnailModal from './upload/EditThumbnailModal.react'
-import EditRoomThumbnail from './edit/EditRoomThumbnail.react'
+import Icon from '@components/shared/Icon'
+import Spinner from '@components/shared/Spinner'
+import TagsInput from '@components/room/edit/TagsInput'
+import Select from '@components/shared/Select'
+import EditThumbnailModal from './upload/EditThumbnailModal'
+import EditRoomThumbnail from './edit/EditRoomThumbnail'
 
-import { EditRoom as EditRoomModel } from '../../models'
-import { loadEditRoom, clearEditRoom, updateEditRoom, submitEditRoom, useDefaultThumbnail, clearFileUpload, UploadTypes } from '../../actions'
+import EditRoomModel from '@models/state/pages/editRoom'
+import { loadEditRoom, clearEditRoom, updateEditRoom, submitEditRoom, useDefaultThumbnail } from '@actions/pages/editRoom'
+import { clearFileUpload } from '@actions/upload'
+import { UploadType } from '@upload'
+import { State, DispatchProps, RouteProps } from '@types'
 
-class EditRoom extends React.Component {
+interface ConnectProps {
+    roomFields: State
 
-    constructor(props) {
+    isLoaded: boolean
+    isAuthorized: boolean
+
+    canSubmit: boolean
+    isSubmitting: boolean
+    hasSubmitted: boolean
+    submitError: string
+}
+
+interface Params {
+    hid: string
+}
+
+type Props = ConnectProps & DispatchProps & RouteProps<Params>
+
+class EditRoom extends React.Component<Props> {
+
+    constructor(props: Props) {
         super(props)
 
         this.handleBackClick = this.handleBackClick.bind(this)
@@ -35,7 +56,7 @@ class EditRoom extends React.Component {
 
     componentWillUnmount() {
         this.props.dispatch(clearEditRoom())
-        this.props.dispatch(clearFileUpload(UploadTypes.THUMBNAIL))
+        this.props.dispatch(clearFileUpload(UploadType.Thumbnail))
     }
 
     // Events
@@ -45,21 +66,21 @@ class EditRoom extends React.Component {
         browserHistory.push(`/r/${params.hid}`)
     }
 
-    handleTitleChange(e) {
-        this.props.dispatch(updateEditRoom({ description: e.target.value.substring(0, 60) }))
+    handleTitleChange(e: React.FormEvent<HTMLInputElement>) {
+        this.props.dispatch(updateEditRoom({ description: e.currentTarget.value.substring(0, 60) }))
     }
 
-    handleTagsChange(tags) {
+    handleTagsChange(tags: List<string>) {
         this.props.dispatch(updateEditRoom({ tags }))
     }
 
-    handleStatusChange(status) {
+    handleStatusChange(status: string) {
         this.props.dispatch(updateEditRoom({ privacy_status: status }))
     }
 
     handleSubmit() {
-        const { dispatch, editRoom } = this.props
-        if (editRoom.canSubmit()) {
+        const { dispatch, canSubmit } = this.props
+        if (canSubmit) {
             this.props.dispatch(submitEditRoom())
         }
     }
@@ -72,10 +93,9 @@ class EditRoom extends React.Component {
     // Render
 
     render() {
-        const { editRoom } = this.props 
-        let room = editRoom.get('roomFields')
+        const { roomFields, isAuthorized, isLoaded, canSubmit,
+                isSubmitting, hasSubmitted, submitError } = this.props 
 
-        // todo: error message if not authorized
         return (
             <div className="edit edit-room content">
                 <Helmet title="Edit Room" />
@@ -84,39 +104,39 @@ class EditRoom extends React.Component {
                     <div className="content_header">
                          <div className="content_back" onClick={this.handleBackClick}><Icon type="arrow-back" /></div> Edit Room
                     </div>
-                    { editRoom.isAuthorized() &&
+                    { isAuthorized &&
                     <div className="edit_form">
                         <EditRoomThumbnail />
                         <div className="edit_form-item">
-                            <label>Title</label><input type="text" onChange={this.handleTitleChange} value={room.get('description')} />
+                            <label>Title</label><input type="text" onChange={this.handleTitleChange} value={roomFields.get('description')} />
                         </div>
                         <div className="edit_form-item">
                             <label>Tags</label>
                             <div className="edit-room_tags-container">
-                                <TagsInput tags={room.get('tags', List())} onChange={this.handleTagsChange} />
+                                <TagsInput tags={roomFields.get('tags', List())} onChange={this.handleTagsChange} />
                             </div>
                         </div>
                         <div className="edit_form-item">
                             <label>Status</label>
                             <Select 
                                 className="edit_select"
-                                selected={room.get('privacy_status')} 
+                                selected={roomFields.get('privacy_status')} 
                                 values={['public', 'unlisted']} 
                                 onChange={this.handleStatusChange} 
                             />
                         </div>
                         <div className="edit_separator"></div>
                         <div className="edit_submit">
-                            <div className="edit_submit-btn"><a className={`btn ${!editRoom.canSubmit() ? 'btn-gray btn-disabled' : ''}`} onClick={this.handleSubmit}>Submit</a></div>
+                            <div className="edit_submit-btn"><a className={`btn ${!canSubmit ? 'btn-gray btn-disabled' : ''}`} onClick={this.handleSubmit}>Submit</a></div>
                             <div className="edit_submit-result">
-                                { editRoom.isSubmitting() && <Spinner type="grey small" /> } 
-                                { editRoom.hasSubmitted() && "Changes saved." }
-                                { editRoom.submitError() && <div className="error">Unknown error. Please try again.</div> }
+                                { isSubmitting && <Spinner styles={["grey", "small"]} /> } 
+                                { hasSubmitted && "Changes saved." }
+                                { submitError && <div className="error">Unknown error. Please try again.</div> }
                             </div>
                         </div>
                     </div>
                     }
-                    { editRoom.isLoaded() && !editRoom.isAuthorized() &&
+                    { isAuthorized) && !isAuthorized &&
                     <div className="edit-room_error">
                         You do not have permission to edit this room.
                     </div>
@@ -127,9 +147,15 @@ class EditRoom extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: State): ConnectProps {
     return {
-        editRoom: new EditRoomModel(state)
+        roomFields: EditRoomModel.get(state, 'roomFields'),
+        isLoaded: EditRoomModel.isLoaded(state),
+        isAuthorized: EditRoomModel.isAuthorized(state),
+        canSubmit: EditRoomModel.canSubmit(state),
+        isSubmitting: EditRoomModel.isSubmitting(state),
+        hasSubmitted: EditRoomModel.hasSubmitted(state),
+        submitError: EditRoomModel.submitError(state)
     }
 }
 

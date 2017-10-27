@@ -2,21 +2,20 @@ import * as Promise from 'bluebird'
 import * as React from 'react'
 import { connect, Dispatch, DispatchProp } from 'react-redux'
 import Helmet from 'react-helmet'
-import ScrollComponent from '../utils/ScrollComponent.react'
 import { List } from 'immutable'
 
+import ScrollComponent, { ScrollComponentProps } from '@components/utils/ScrollComponent'
+import LargeStackItem from '@components/shared/LargeStackItem'
+import Spinner from '@components/shared/Spinner'
+import AppBanner from '@components/shared/AppBanner'
+
 import { loadSection, clearSection } from '@actions/pages/section'
+import Section from '@models/state/pages/section'
+import Stack from '@models/entities/stack'
 import { Store, State, DispatchProps, RouteProps, ServerRenderingComponent, staticImplements } from '@types'
 
-import Section from '@models/state/pages/section'
-import StackEntity from '@models/entities/stack'
-
-import LargeStackItem from '@components/shared/LargeStackItem.react'
-import Spinner from '@components/shared/Spinner.react'
-import AppBanner from '@components/shared/AppBanner.react'
-
-interface Props {
-    stacks: List<StackEntity>
+interface ConnectProps {
+    stacks: List<Stack>
     name: string
     description: string
     isFetching: boolean
@@ -26,8 +25,10 @@ interface Params {
     slug: string
 }
 
+type Props = ConnectProps & DispatchProps & RouteProps<Params> & ScrollComponentProps
+
 @staticImplements<ServerRenderingComponent>()
-class SectionComponent extends React.Component<Props & DispatchProps & RouteProps<Params>> {
+class SectionComponent extends React.Component<Props> {
 
     static fetchData(store: Store, params: { slug: string }) {
         return new Promise((resolve, reject) => {
@@ -96,7 +97,7 @@ const scrollOptions = {
     }
 }
 
-function mapStateToProps(state: State): Props {
+function mapStateToProps(state: State): ConnectProps {
     return {
         stacks: Section.stacks(state),
         name: Section.get(state, 'name'),

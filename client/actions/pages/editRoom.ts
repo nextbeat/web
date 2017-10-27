@@ -70,9 +70,9 @@ export function loadEditRoom(hid: string): ThunkAction {
 
 export interface UpdateEditRoomAction extends GenericAction {
     type: ActionType.UPDATE_EDIT_ROOM
-    room: RoomFields
+    room: Partial<RoomFields>
 }
-export function updateEditRoom(room: RoomFields): UpdateEditRoomAction {
+export function updateEditRoom(room: Partial<RoomFields>): UpdateEditRoomAction {
     return {
         type: ActionType.UPDATE_EDIT_ROOM,
         room
