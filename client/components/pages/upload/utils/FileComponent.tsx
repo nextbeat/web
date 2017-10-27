@@ -1,11 +1,31 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as React from 'react'
 import hoistStatics from 'hoist-non-react-statics'
-import assign from 'lodash/assign'
+import assign from 'lodash-es/assign'
 
-import { Upload } from '../../../../models'
+import { isBrowserCompatible, fileType } from '@upload'
 
-export default function FileComponent(parentId, options={}) {
+interface FileComponentOptions {
+    onImageLoad: (url: string, element: HTMLImageElement) => void
+    onVideoLoad: (url: string, element: HTMLVideoElement) => void
+}
+
+interface ExternalProps {
+    file: File
+}
+
+export interface FileComponentProps {
+    resourceLoaded: boolean
+    resourceType: null | 'image' | 'video' | 'incompatible'
+    resourceWidth: number
+    resourceHeight: number
+    resourceDuration?: number
+    width: number
+    height: number
+    offsetX: number
+    offsetY: number
+}
+
+export default function FileComponent(parentId: string, options: Partial<FileComponentOptions> = {}) {
 
     const {
         onImageLoad,
@@ -15,10 +35,10 @@ export default function FileComponent(parentId, options={}) {
     // Calculate size and offset of resource based on
     // its intrinsic width and height and the dimensions
     // of its parent element
-    function resourceDimensions(rWidth, rHeight) {
-        const parent = $(document.getElementById(parentId))
-        const pWidth = parent.width()
-        const pHeight = parent.height()
+    function resourceDimensions(rWidth: number, rHeight: number) {
+        const parent = $(document.getElementById(parentId) as HTMLElement)
+        const pWidth = parent.width() || 0
+        const pHeight = parent.height() || 1
 
         const rRatio = rWidth/rHeight
         const pRatio = pWidth/pHeight
@@ -41,11 +61,14 @@ export default function FileComponent(parentId, options={}) {
         return { width, height, offsetX, offsetY }
     }
 
-    return function wrap(ChildComponent) {
+    return function wrap<OriginalProps>(ChildComponent: React.ComponentClass<FileComponentProps & OriginalProps>) {
 
-        class FileContainer extends React.Component {
+        type FileContainerState = FileComponentProps
+        type FileContainerProps = OriginalProps & ExternalProps
 
-            constructor(props) {
+        class FileContainer extends React.Component<FileContainerProps, FileContainerState> {
+
+            constructor(props: FileContainerProps) {
                 super(props)
 
                 this.loadResource = this.loadResource.bind(this)
@@ -54,7 +77,7 @@ export default function FileComponent(parentId, options={}) {
 
                 this.state = {
                     resourceLoaded: false,
-                    resourceType: '',
+                    resourceType: null,
                     resourceWidth: 0,
                     resourceHeight: 0,
                     resourceDuration: 0,
@@ -72,7 +95,7 @@ export default function FileComponent(parentId, options={}) {
                 this.loadResource(this.props.file)
             }
 
-            componentWillReceiveProps(nextProps) {
+            componentWillReceiveProps(nextProps: Readonly<FileContainerProps>) {
                 if (this.props.file !== nextProps.file && !this.state.resourceLoaded) {
                     this.loadResource(nextProps.file)
                 }
@@ -88,33 +111,34 @@ export default function FileComponent(parentId, options={}) {
 
             // Load
 
-            loadResource(file) {
+            loadResource(file: File) {
                 if (!file) {
                     return
                 }
 
-                if (!Upload.isBrowserCompatible(file)) {
+                if (!isBrowserCompatible(file)) {
                     this.setState({ resourceType: 'incompatible' })
                     return
                 }
                 
-                let fileType = Upload.fileType(file)
+                let type = fileType(file)
                 
-                if (fileType === 'image') {
+                if (type === 'image') {
                     this.setState({ resourceType: 'image' })
                     this.loadImage(file)
-                } else if (fileType === 'video') {
+                } else if (type === 'video') {
                     this.setState({ resourceType: 'video' })
                     this.loadVideo(file)
                 }
             }
 
-            loadImage(file) {
+            loadImage(file: File) {
                 const image = document.createElement('img')
 
                 image.addEventListener('load', e => {
-                    const width = e.target.width 
-                    const height = e.target.height 
+                    const imageTarget = e.target as HTMLImageElement
+                    const width = imageTarget.width 
+                    const height = imageTarget.height 
 
                     this.setState(assign({}, resourceDimensions(width, height), {
                         resourceLoaded: true,
@@ -124,22 +148,23 @@ export default function FileComponent(parentId, options={}) {
 
                     if (typeof onImageLoad === 'function') {
                         // set timeout?
-                        onImageLoad.call(this.refs.child, e.target.src, image)
+                        onImageLoad.call(this.refs.child, imageTarget.src, image)
                     }
 
-                    URL.revokeObjectURL(file)
+                    URL.revokeObjectURL(imageTarget.src)
                 })
 
                 image.src = URL.createObjectURL(file)
             }
 
-            loadVideo(file) {
+            loadVideo(file: File) {
                 const video = document.createElement('video')
 
                 video.addEventListener('loadeddata', e => {
-                    const width = e.target.videoWidth 
-                    const height = e.target.videoHeight 
-                    const duration = e.target.duration
+                    let videoTarget = e.target as HTMLVideoElement
+                    const width = videoTarget.videoWidth 
+                    const height = videoTarget.videoHeight 
+                    const duration = videoTarget.duration
 
                     this.setState(assign({}, resourceDimensions(width, height), {
                         resourceLoaded: true,
@@ -150,10 +175,10 @@ export default function FileComponent(parentId, options={}) {
 
                     if (typeof onVideoLoad === 'function') {
                         // set timeout?
-                        onVideoLoad.call(this.refs.child, e.target.src, video)
+                        onVideoLoad.call(this.refs.child, videoTarget.src, video)
                     }
 
-                    URL.revokeObjectURL(file)
+                    URL.revokeObjectURL(video.src)
                 })
 
                 video.src = URL.createObjectURL(file)
@@ -163,14 +188,9 @@ export default function FileComponent(parentId, options={}) {
             // Render
 
             render() {
-                return <ChildComponent {...this.props} {...this.state} ref="child" />
+                return <ChildComponent {...this.props} {...this.state as any} ref="child" />
             }
 
-        }
-
-
-        FileContainer.propTypes = {
-            file: PropTypes.object
         }
 
         return hoistStatics(FileContainer, ChildComponent);

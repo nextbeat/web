@@ -209,8 +209,8 @@ export default class Upload extends StateModelFactory<UploadSubmissionProps>(sub
         return this.get(state, 'selectedStackId') > 0 || (this.hasSelectedNewStack(state) && this.get(state, 'newStack', Map()).get('title', '').length > 0) 
     }
 
-    static isInSubmitProcess(state: State) {
-        return this.get(state, 'submitStackRequested') || this.get(state, 'isSubmittingStack') || this.get(state, 'stackSubmitted') || this.get(state, 'submitStackError')
+    static isInSubmitProcess(state: State): boolean {
+        return !!this.get(state, 'submitStackRequested') || !!this.get(state, 'isSubmittingStack') || !!this.get(state, 'stackSubmitted') || !!this.get(state, 'submitStackError')
     }
 
     static selectedStack = createSelector(
