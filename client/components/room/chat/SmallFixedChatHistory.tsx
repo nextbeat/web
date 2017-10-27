@@ -46,6 +46,8 @@ class SmallFixedChatHistory extends React.Component<Props, ChatState> {
         this.renderComment = this.renderComment.bind(this)
         this.renderLiveComment = this.renderLiveComment.bind(this)
 
+        this.handleResize = this.handleResize.bind(this)
+
         this.state = {
             hasUnseenLiveMessages: false
         }
@@ -53,6 +55,8 @@ class SmallFixedChatHistory extends React.Component<Props, ChatState> {
 
     componentDidMount() {
         this.props.scrollToBottom()
+
+        $(window).on(`resize.${scrollComponentId(this.props)}`, this.handleResize)
     }
 
     componentDidUpdate(prevProps: Props) {
@@ -67,6 +71,10 @@ class SmallFixedChatHistory extends React.Component<Props, ChatState> {
                 this.props.scrollToBottom()
             })
         }
+    }
+
+    componentWillUnmount() {
+        $(window).off(`resize.${scrollComponentId(this.props)}`)
     }
 
     handleResize() {

@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { List } from 'immutable'
 
 import Icon from '@components/shared/Icon'
 import { searchChat, closeDetailSection } from '@actions/pages/room'
@@ -8,7 +9,7 @@ import { State, DispatchProps } from '@types'
 
 interface ConnectProps {
     isOverlayActive: boolean
-    tags: string[]
+    tags: List<string>
 }   
 
 type Props = ConnectProps & DispatchProps
@@ -16,7 +17,7 @@ type Props = ConnectProps & DispatchProps
 class ChatHeader extends React.Component<Props> {
     
     static defaultProps: Partial<Props> = {
-        tags: []
+        tags: List()
     }
 
     constructor(props: Props) {

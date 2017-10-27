@@ -6,7 +6,7 @@ import { List } from 'immutable'
 import User from '@components/shared/User'
 import Icon from '@components/shared/Icon'
 import Bookmark from './Bookmark'
-import Share from './Share.react'
+import Share from './Share'
 import Badge from '@components/shared/Badge'
 import ActionsDropdown from '@components/room/page/ActionsDropdown.react'
 
@@ -139,4 +139,4 @@ function mapStateToProps(state: State): Props {
     }
 }
 
-export default connect()(Info);
+export default connect(mapStateToProps)(Info);

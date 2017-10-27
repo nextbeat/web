@@ -1,21 +1,36 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 
-import Modal from '../../../shared/Modal.react'
-import { CurrentUser, Stack, RoomPage } from '../../../../models'
-import { closeModal, mentionUser, banUser, unbanUser } from '../../../../actions'
+import Modal from '@components/shared/Modal'
+import CurrentUser from '@models/state/currentUser'
+import App from '@models/state/app'
+import RoomPage from '@models/state/pages/room'
+import { banUser, unbanUser } from '@actions/room'
+import { mentionUser } from '@actions/pages/room'
+import { closeModal } from '@actions/app'
+import { State, DispatchProps } from '@types'
 
-class UserActions extends React.Component {
+interface ConnectProps {
+    username: string
+    roomId: number
+    isCurrentUserAuthor: boolean
+    isUserBanned: boolean
+    isUserCurrentUser: boolean
+}
 
-    constructor(props) {
+type Props = ConnectProps & DispatchProps
+
+class UserActions extends React.Component<Props> {
+
+    constructor(props: Props) {
         super(props)
 
         this.handleGoToProfile = this.handleGoToProfile.bind(this);
         this.handleMention = this.handleMention.bind(this);
         this.handleUpdateBanStatus = this.handleUpdateBanStatus.bind(this);
     }
-
+    
 
     // Actions
 
@@ -32,12 +47,12 @@ class UserActions extends React.Component {
     }
 
     handleUpdateBanStatus() {
-        const { dispatch, username, roomPage } = this.props 
+        const { dispatch, username, roomId, isUserBanned } = this.props 
         dispatch(closeModal())
-        if (roomPage.userIsBanned(username)) {
-            dispatch(unbanUser(roomPage.get('id'), username))
+        if (isUserBanned) {
+            dispatch(unbanUser(roomId, username))
         } else {
-            dispatch(banUser(roomPage.get('id'), username))
+            dispatch(banUser(roomId, username))
         }
     }
 
@@ -45,7 +60,7 @@ class UserActions extends React.Component {
     // Render
 
     render() {
-        const { currentUser, username, roomPage } = this.props
+        const { isCurrentUserAuthor, isUserBanned, isUserCurrentUser, username } = this.props
 
         return (
             <Modal name="chat-user-actions" className="modal-action">
@@ -58,9 +73,9 @@ class UserActions extends React.Component {
                 <div className="modal-action_btn btn btn-gray" onClick={this.handleMention}>
                     Mention
                 </div>
-                { roomPage.currentUserIsAuthor() && currentUser.get('username') !== username && 
+                { isCurrentUserAuthor && !isUserCurrentUser && 
                     <div className="modal-action_btn btn" onClick={this.handleUpdateBanStatus}>
-                    { roomPage.userIsBanned(username) ? "Unban" : "Ban" }
+                    { isUserBanned ? "Unban" : "Ban" }
                     </div>
                 }
             </Modal>
@@ -68,12 +83,14 @@ class UserActions extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
-    let roomPage = new RoomPage(state)
+function mapStateToProps(state: State): ConnectProps {
+    const username = RoomPage.get(state, 'selectedChatUsername')
     return {
-        currentUser: new CurrentUser(state),
-        roomPage,
-        username: roomPage.get('selectedChatUsername')
+        username,
+        roomId: RoomPage.get(state, 'id'),
+        isCurrentUserAuthor: RoomPage.isCurrentUserAuthor(state),
+        isUserBanned: RoomPage.isUserBanned(state, username),
+        isUserCurrentUser: CurrentUser.entity(state).get('username') === username
     }
 }
 

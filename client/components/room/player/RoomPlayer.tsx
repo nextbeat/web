@@ -8,7 +8,7 @@ import Image from './Image'
 import ItemReference from './ItemReference'
 import Icon from '@components/shared/Icon'
 import Spinner from '@components/shared/Spinner'
-import CounterInner from '@components/room/counter/CounterInner.react'
+import CounterInner from '@components/room/counter/CounterInne'
 
 import { goBackward, goForward } from '@actions/room'
 import { selectDetailSection } from '@actions/pages/room'
@@ -18,8 +18,8 @@ import { State, DispatchProps } from '@types'
 
 interface OwnProps {
     roomId: number
-    isRoomCard: boolean
-    shouldAutoplayVideo: boolean
+    isRoomCard?: boolean
+    shouldAutoplayVideo?: boolean
 }
 
 interface ConnectProps {

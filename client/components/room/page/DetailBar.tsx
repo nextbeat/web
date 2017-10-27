@@ -1,18 +1,39 @@
-import React from 'react'
-
+import * as React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import { RoomPage, App } from '../../../models'
-import { selectDetailSection, closeDetailSection, toggleDropdown, promptModal } from '../../../actions'
 
-import Chat from './chat/Chat.react'
-import Activity from './activity/Activity.react'
-import Icon from '../../shared/Icon.react'
-import ActionsDropdown from './ActionsDropdown.react'
+import Chat from './chat/Chat'
+import Activity from './activity/Activity'
+import Icon from '@components/shared/Icon'
+import ActionsDropdown from './ActionsDropdown'
 
-class DetailBar extends React.Component {
+import RoomPage from '@models/state/pages/room'
+import App from '@models/state/app'
+import { selectDetailSection, closeDetailSection } from '@actions/pages/room'
+import { toggleDropdown, promptModal } from '@actions/app'
+import { State, DispatchProps } from '@types'
 
-    constructor(props) {
+interface ConnectProps {
+    width: string
+    activeOverlay: string
+    selectedDetailSection: 'chat' | 'activity'
+
+    isFetching: boolean
+    error: string
+    isCurrentUserAuthor: boolean
+    unseenLiveMediaItemsCount: number
+}
+
+type Props = ConnectProps & DispatchProps
+
+interface DetailBarState {
+    disableAnimations: boolean
+    disableAnimationsTimeoutId: number
+}
+
+class DetailBar extends React.Component<Props, DetailBarState> {
+
+    constructor(props: Props) {
         super(props);
 
         this.toggleDropdown = this.toggleDropdown.bind(this)
@@ -39,7 +60,7 @@ class DetailBar extends React.Component {
         // that resizing does not trigger collapse animation
         window.clearTimeout(this.state.disableAnimationsTimeoutId)
 
-        const disableAnimationsTimeoutId = setTimeout(() => {
+        const disableAnimationsTimeoutId = window.setTimeout(() => {
             this.setState({ disableAnimations: false })
         }, 300)
 
@@ -51,7 +72,7 @@ class DetailBar extends React.Component {
 
     // Actions
 
-    setSelected(selected) {
+    setSelected(selected: 'chat' | 'activity') {
         this.props.dispatch(selectDetailSection(selected))
     }
 
@@ -76,10 +97,10 @@ class DetailBar extends React.Component {
 
     render() {
         const { selectedDetailSection, width, activeOverlay, 
-                currentUserIsAuthor, isFetchingPage, pageError } = this.props;
+                isCurrentUserAuthor, isFetching, error, } = this.props;
         const { disableAnimations } = this.state;
 
-        const selected = type => selectedDetailSection === type ? "selected" : "";
+        const selected = (type: 'chat' | 'activity') => selectedDetailSection === type ? "selected" : "";
 
         // collapse detail bar if window width below threshold
         const collapsedClass = width === 'small' || width === 'medium' ? 'collapsed' : ''
@@ -91,7 +112,7 @@ class DetailBar extends React.Component {
         return (
             <div className={`detail-bar ${collapsedClass} ${activeClass} ${disableAnimationsClass}`}>
                 <div className="detail-bar_header">
-                    { currentUserIsAuthor && 
+                    { isCurrentUserAuthor && 
                         <div className="detail-bar_toggle-edit dropdown-detail-bar_toggle" onClick={this.toggleDropdown}><Icon type="more-vert" /></div> 
                     }
                     <ActionsDropdown type="detail-bar" />
@@ -101,25 +122,23 @@ class DetailBar extends React.Component {
                     </div>
                 </div>
                 <div className="detail-bar_main">
-                    { !isFetchingPage && !pageError && <Chat display={selectedDetailSection === "chat"} /> }
-                    { !isFetchingPage && !pageError && <Activity display={selectedDetailSection === "activity"} /> }
+                    { !isFetching && !error && <Chat display={selectedDetailSection === "chat"} /> }
+                    { !isFetching && !error && <Activity display={selectedDetailSection === "activity"} /> }
                 </div>
             </div>
         );
     }
 }
 
-function mapStateToProps(state) {
-    let roomPage = new RoomPage(state)
-    let app = new App(state)
+function mapStateToProps(state: State): ConnectProps {
     return {
-        selectedDetailSection: roomPage.get('selectedDetailSection', 'chat'),
-        width: app.get('width'),
-        activeOverlay: app.get('activeOverlay'),
-        currentUserIsAuthor: roomPage.currentUserIsAuthor(),
-        isFetchingPage: roomPage.get('isFetching'),
-        pageError: roomPage.get('error'),
-        unseenLiveMediaItemsCount: roomPage.get('unseenLiveMediaItemsCount', 0)
+        selectedDetailSection: RoomPage.get(state, 'selectedDetailSection', 'chat'),
+        width: App.get(state, 'width'),
+        activeOverlay: App.get(state, 'activeOverlay'),
+        isCurrentUserAuthor: RoomPage.isCurrentUserAuthor(state),
+        isFetching: RoomPage.get(state, 'isFetching'),
+        error: RoomPage.get(state, 'error'),
+        unseenLiveMediaItemsCount: RoomPage.unseenLiveMediaItemsCount(state)
     }
 }
 

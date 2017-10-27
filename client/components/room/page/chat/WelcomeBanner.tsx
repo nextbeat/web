@@ -1,11 +1,20 @@
-import React from 'react'
+import * as React from 'react'
 
-import { storageAvailable } from '../../../../utils'
-import Icon from '../../../shared/Icon.react'
+import { storageAvailable } from '@utils'
+import Icon from '@components/shared/Icon'
 
-class WelcomeBanner extends React.Component {
+interface Props {
+    username: string
+    closed: boolean
+}
 
-    constructor(props) {
+interface State {
+    hideBanner: boolean
+}
+
+class WelcomeBanner extends React.Component<Props, State> {
+
+    constructor(props: Props) {
         super(props)
 
         this.handleClose = this.handleClose.bind(this)
@@ -18,17 +27,17 @@ class WelcomeBanner extends React.Component {
     componentDidMount() {
         if (storageAvailable('localStorage')) {
             this.setState({
-                hideBanner: JSON.parse(localStorage.getItem('hideWelcomeBanner')) 
+                hideBanner: JSON.parse(localStorage.getItem('hideWelcomeBanner') || 'false') 
             })
         }
     }
 
-    handleClose(e) {
+    handleClose() {
         this.setState({
             hideBanner: true
         })
         if (storageAvailable('localStorage')) {
-            localStorage.setItem('hideWelcomeBanner', true)
+            localStorage.setItem('hideWelcomeBanner', 'true')
         }
     }
 

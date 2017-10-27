@@ -9,8 +9,10 @@ interface StackProps {
     bookmarked: boolean
     bookmark_count: number
     closed: boolean
+    created_at: string
     deleted: boolean
     description: string
+    expires: string
     hid: string
     id: number
     mediaitem_count: number

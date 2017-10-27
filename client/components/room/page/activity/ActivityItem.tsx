@@ -1,18 +1,50 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
-import format from 'date-fns/format'
+import * as format from 'date-fns/format'
 
-import Icon from '../../../shared/Icon.react'
-import Spinner from '../../../shared/Spinner.react'
-import Dropdown from '../../../shared/Dropdown.react'
-import Modal from '../../../shared/Modal.react'
-import { RoomPage } from '../../../../models'
-import { selectMediaItem, closeDetailSection, toggleDropdown, promptModal, closeModal, deleteMediaItem, goForward, goBackward } from '../../../../actions'
+import Icon from '@components/shared/Icon'
+import Spinner from '@components/shared/Spinner'
+import Dropdown from '@components/shared/Dropdown'
+import Modal from '@components/shared/Modal'
+import RoomPage from '@models/state/pages/room'
+import Room from '@models/state/room'
+import MediaItem from '@models/entities/mediaItem'
+import { toggleDropdown, promptModal, closeModal } from '@actions/app'
+import { closeDetailSection,  deleteMediaItem, } from '@actions/pages/room'
+import { selectMediaItem, goForward, goBackward } from '@actions/room'
+import { State, DispatchProps } from '@types'
 
-class ActivityItem extends React.Component {
+interface OwnProps {
+    mediaItem: MediaItem
+    index: number
+    live?: boolean
+}
 
-     constructor(props) {
+interface ConnectProps {
+    roomId: number
+    authorUsername: string
+    isCurrentUserAuthor: boolean
+    selectedDetailSection: string
+
+    isUnseen: boolean
+    selectedMediaItemId: number
+
+    isDeletingMediaItem: boolean
+    hasDeletedMediaItem: boolean
+    deleteMediaItemError: string
+    deletedMediaItemId: number
+    postDeletionSelectedMediaItemId: number
+}
+
+type Props = OwnProps & ConnectProps & DispatchProps
+
+class ActivityItem extends React.Component<Props> {
+
+    static defaultProps: Partial<Props> = {
+        live: false
+    }
+
+    constructor(props: Props) {
         super(props);
 
         this.handleClick = this.handleClick.bind(this);
@@ -25,7 +57,7 @@ class ActivityItem extends React.Component {
     }
 
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps: Props) {
         if (!this.props.hasDeletedMediaItem && nextProps.hasDeletedMediaItem) {
             this.props.dispatch(closeModal())
             if (nextProps.selectedMediaItemId === nextProps.deletedMediaItemId) {
@@ -43,19 +75,19 @@ class ActivityItem extends React.Component {
         this.props.dispatch(closeDetailSection())
     }
 
-    handleOptionsClick(e) {
+    handleOptionsClick(e: React.MouseEvent<HTMLElement>) {
         const { dispatch, mediaItem } = this.props
         e.stopPropagation()
         dispatch(toggleDropdown(`item-options-${mediaItem.get('id')}`))
     }
 
-    handleDropdownDeleteClick(e) {
+    handleDropdownDeleteClick(e: React.MouseEvent<HTMLElement>) {
         const { dispatch, mediaItem } = this.props
         e.stopPropagation()
         dispatch(promptModal(`delete-item-${mediaItem.get('id')}`))
     }
 
-    handleDeleteMediaItemClick(e) {
+    handleDeleteMediaItemClick(e: React.MouseEvent<HTMLElement>) {
         const { dispatch, mediaItem } = this.props
         e.stopPropagation()
         dispatch(deleteMediaItem(mediaItem.get('id')))
@@ -87,7 +119,7 @@ class ActivityItem extends React.Component {
                     <div className="modal-alert_error">There was an error processing your request. Please try again.</div>
                 }
                 <a className="modal-alert_btn btn" onClick={this.handleDeleteMediaItemClick}>
-                    { isDeletingMediaItem ? <Spinner type="white" /> : 'Delete post' }
+                    { isDeletingMediaItem ? <Spinner styles={["white"]} /> : 'Delete post' }
                 </a>
                 <a className="modal-alert_btn btn btn-gray" onClick={() => {dispatch(closeModal())}}>
                     Cancel
@@ -97,7 +129,7 @@ class ActivityItem extends React.Component {
     }
 
     render() {
-        const { mediaItem, live, index, isUnseen, username, currentUserIsAuthor, selectedMediaItemId } = this.props;
+        const { mediaItem, live, index, isUnseen, authorUsername, isCurrentUserAuthor, selectedMediaItemId } = this.props;
 
         let selected = mediaItem.get('id') === selectedMediaItemId
 
@@ -105,25 +137,26 @@ class ActivityItem extends React.Component {
         const selectedClass = selected ? "selected" : "";
         const liveClass = live && isUnseen ? "live" : "";
         const typeString = mediaItem.get('type') === 'video' ? "a video" : "an image"
-        const currentUserClass = currentUserIsAuthor ? "current-user" : ""
+        const currentUserClass = isCurrentUserAuthor ? "current-user" : ""
+        const referencedComment = mediaItem.hasReference() && mediaItem.referencedComment()
         
         return (
-            <div className={`activity-item ${selectedClass} ${liveClass} ${currentUserClass}`} onClick={this.handleClick} ref={(c) => this._node = c}>
+            <div className={`activity-item ${selectedClass} ${liveClass} ${currentUserClass}`} onClick={this.handleClick}>
                 <div className="activity-item_inner">
                     <div className="activity-item_main">
                         <div className="activity-item_thumb" style={{ backgroundImage: `url(${url})`}} />
                         <div className="activity-item_text">
-                            {username} added {typeString}. 
+                            {authorUsername} added {typeString}. 
                             <span className="activity-item_text-timestamp">{format(mediaItem.get('user_created_at'), 'h:mm a')}</span>
                         </div>
                     </div>
-                    { mediaItem.hasReference() &&
+                    { referencedComment &&
                     <div className="activity-item_comment">
-                        { mediaItem.referencedComment().get('message') }
+                        { referencedComment.get('message') }
                     </div>
                     }
                 </div>
-                { currentUserIsAuthor && 
+                { isCurrentUserAuthor && 
                     <div className="activity-item_options" onClick={this.handleOptionsClick}><Icon type="more-vert" /></div>
                 }
                 { this.renderDropdown() }
@@ -133,37 +166,25 @@ class ActivityItem extends React.Component {
     }
 }
 
-ActivityItem.propTypes = {
-    mediaItem: PropTypes.object.isRequired,
-    index: PropTypes.number.isRequired,
-    live: PropTypes.bool
-}
-
-function mapStateToProps(state, ownProps) {
-    let roomPage = new RoomPage(state)
-    let postDeletionSelectedMediaItem = roomPage.mediaItems().first() || roomPage.liveMediaItems().first()
-
+function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
+    let postDeletionSelectedMediaItem = RoomPage.mediaItems(state).first() || RoomPage.liveMediaItems(state).first() as MediaItem
+    
     return {
-        roomId: roomPage.get('id'),
-        username: roomPage.author().get('username'),
-        currentUserIsAuthor: roomPage.currentUserIsAuthor(),
+        roomId: RoomPage.get(state, 'id'),
+        authorUsername: RoomPage.entity(state).author().get('username'),
+        isCurrentUserAuthor: RoomPage.isCurrentUserAuthor(state),
         // triggers componentDidUpdate when user switches detail section, which prompts resize call
-        selectedDetailSection: roomPage.get('selectedDetailSection'),
+        selectedDetailSection: RoomPage.get(state, 'selectedDetailSection'),
 
-        isUnseen: roomPage.isUnseen(ownProps.mediaItem.get('id')),
-        selectedMediaItemId: roomPage.get('selectedMediaItemId'),
+        isUnseen: RoomPage.isUnseen(state, ownProps.mediaItem.get('id')),
+        selectedMediaItemId: Room.get(state, RoomPage.get(state, 'id'), 'selectedMediaItemId'),
 
-        isDeletingMediaItem: roomPage.get('isDeletingMediaItem'),
-        hasDeletedMediaItem: roomPage.get('hasDeletedMediaItem'),
-        deletedMediaItemId: roomPage.get('deletedMediaItemId'),
+        isDeletingMediaItem: RoomPage.get(state, 'isDeletingMediaItem'),
+        hasDeletedMediaItem: RoomPage.get(state, 'hasDeletedMediaItem'),
+        deleteMediaItemError: RoomPage.get(state, 'deleteMediaItemError'),
+        deletedMediaItemId: RoomPage.get(state, 'deletedMediaItemId'),
         postDeletionSelectedMediaItemId: postDeletionSelectedMediaItem.get('id')
     }
 }
 
-function areOwnPropsEqual(prevProps, nextProps) {
-    return prevProps.mediaItem.isEqual(nextProps.mediaItem) 
-        && prevProps.index === nextProps.index 
-        && prevProps.live === nextProps.live
-}
-
-export default connect(mapStateToProps, null, null, { areOwnPropsEqual })(ActivityItem);
+export default connect(mapStateToProps)(ActivityItem);

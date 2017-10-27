@@ -1,12 +1,24 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import Dropdown from '../../shared/Dropdown.react'
-import { RoomPage } from '../../../models'
-import { promptModal } from '../../../actions'
+import Dropdown from '@components/shared/Dropdown'
+import RoomPage from '@models/state/pages/room'
+import { promptModal } from '@actions/app'
+import { State, DispatchProps } from '@types'
 
-class ActionsDropdown extends React.Component {
+interface OwnProps {
+    type: string
+}
+
+interface ConnectProps {
+    hid: string
+    closed: boolean
+}
+
+type Props = OwnProps & ConnectProps & DispatchProps
+
+class ActionsDropdown extends React.Component<Props> {
 
     render() {
         const { dispatch, hid, closed, type } = this.props
@@ -21,11 +33,10 @@ class ActionsDropdown extends React.Component {
 
 }
 
-function mapStateToProps(state) {
-    let roomPage = new RoomPage(state)
+function mapStateToProps(state: State): ConnectProps { 
     return {
-        hid: roomPage.get('hid'),
-        closed: roomPage.get('closed')
+        hid: RoomPage.entity(state).get('hid'),
+        closed: RoomPage.status(state) === 'closed'
     }
 }
 

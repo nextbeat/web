@@ -1,28 +1,49 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import { List } from 'immutable'
-import TransitionGroup from 'react-transition-group/TransitionGroup'
-import CSSTransition from 'react-transition-group/CSSTransition'
+import * as TransitionGroup from 'react-transition-group/TransitionGroup'
+import * as CSSTransition from 'react-transition-group/CSSTransition'
 
-import ChatInfoDropdown from './ChatInfoDropdown.react'
-import ChatPinInfoDropdown from './ChatPinInfoDropdown.react'
-import ChatPinOverMaxLengthDropdown from './ChatPinOverMaxLengthDropdown.react'
-import Checkbox from '../../../shared/Checkbox.react'
+import ChatInfoDropdown from './ChatInfoDropdown'
+import ChatPinInfoDropdown from './ChatPinInfoDropdown'
+import ChatPinOverMaxLengthDropdown from './ChatPinOverMaxLengthDropdown'
+import Checkbox from '@components/shared/Checkbox'
 
-import { promptModal, clearChatMessage, sendComment, pinComment,
-         didUseChat, promptDropdown, closeDropdown } from '../../../../actions'
-import { CurrentUser, RoomPage } from '../../../../models'
-import { storageAvailable } from '../../../../utils'
+import { sendComment, pinComment, didUseChat } from '@actions/room'
+import { promptModal, promptDropdown, closeDropdown } from '@actions/app'
+import { clearChatMessage } from '@actions/pages/room'
+import CurrentUser from '@models/state/currentUser'
+import RoomPage from '@models/state/pages/room'
+import { storageAvailable } from '@utils'
+import { State, DispatchProps } from '@types'
 
-function length(message) {
+function length(message: string) {
     return message.trim().length
 }
 
 const MAX_MESSAGE_LENGTH = 120
 
-class Compose extends React.Component {
+interface ConnectProps {
+    roomId: number
+    mentions: List<string>
+    authorUsername: string
+    isCurrentUserAuthor: boolean
 
-    constructor(props) {
+    isLoggedIn: boolean
+}
+
+type Props = ConnectProps & DispatchProps
+
+interface ComposeState {
+    message: string
+    isPinned: boolean
+}
+
+class Compose extends React.Component<Props, ComposeState> {
+
+    private _textarea: HTMLTextAreaElement
+
+    constructor(props: Props) {
         super(props);
 
         this.shouldPromptChatInfoDropdown = this.shouldPromptChatInfoDropdown.bind(this);
@@ -33,7 +54,6 @@ class Compose extends React.Component {
         this.handleFocus = this.handleFocus.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handlePinnedChange = this.handlePinnedChange.bind(this);
-        this.handleLoginClick = this.handleLoginClick.bind(this);
         this.handleChatInfoDropdownClose = this.handleChatInfoDropdownClose.bind(this);
         this.handleChatPinInfoDropdownClose = this.handleChatPinInfoDropdownClose.bind(this);
 
@@ -48,11 +68,10 @@ class Compose extends React.Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        let mentions = (props) => props.roomPage.get('mentions', List())
-        if (mentions(nextProps).size > mentions(this.props).size) {
+    componentWillReceiveProps(nextProps: Props) {
+        if (nextProps.mentions.size > this.props.mentions.size) {
             let message = this.state.message
-            let username = mentions(nextProps).last()
+            let username = nextProps.mentions.last() as string
             if (length(message) === 0 || /\s$/.test(message)) {
                 // don't add whitespace
                 message = `${message}@${username}`
@@ -64,35 +83,35 @@ class Compose extends React.Component {
     }
 
     shouldPromptChatInfoDropdown() {
-        const { currentUser } = this.props 
-        return currentUser.isLoggedIn() && storageAvailable('localStorage') && !JSON.parse(localStorage.getItem('hideChatInfoDropdown')) 
+        const { isLoggedIn } = this.props 
+        return isLoggedIn && storageAvailable('localStorage') && !JSON.parse(localStorage.getItem('hideChatInfoDropdown') || '') 
     }
 
     shouldPromptChatPinInfoDropdown() {
-        return storageAvailable('localStorage') && !JSON.parse(localStorage.getItem('hideChatPinInfoDropdown')) 
+        return storageAvailable('localStorage') && !JSON.parse(localStorage.getItem('hideChatPinInfoDropdown') || '') 
     }
 
-    handleChange(e) {
-        this.setState({ message: e.target.value })
+    handleChange(e: React.FormEvent<HTMLTextAreaElement>) {
+        this.setState({ message: e.currentTarget.value })
     }
 
-    handlePinnedChange(checked) {
+    handlePinnedChange(checked: boolean) {
         if (checked && this.shouldPromptChatPinInfoDropdown()) {
             this.props.dispatch(promptDropdown('chat-pin-info'))
         }
         this.setState({ isPinned: checked })
     }
 
-    handleFocus(e) {
-        const { dispatch, currentUser } = this.props
+    handleFocus(e: React.FocusEvent<HTMLTextAreaElement>) {
+        const { dispatch } = this.props
         dispatch(didUseChat())
         if (this.shouldPromptChatInfoDropdown()) {
             dispatch(promptDropdown('chat-info'))
         } 
     }
 
-    handleSubmit(e) {
-        const { currentUser, roomPage, dispatch } = this.props
+    handleSubmit() {
+        const { roomId, isLoggedIn, dispatch } = this.props
         const { isPinned, message } = this.state 
 
         if (isPinned) {
@@ -100,14 +119,14 @@ class Compose extends React.Component {
                 dispatch(promptDropdown('chat-pin-over-max-length'))
                 return;
             } else {
-                dispatch(pinComment(roomPage.get('id'), message))
+                dispatch(pinComment(roomId, message))
                 this.setState({ isPinned: false })
             }
         } else {
-            dispatch(sendComment(roomPage.get('id'), message))
+            dispatch(sendComment(roomId, message))
         }
 
-        if (currentUser.isLoggedIn()) {
+        if (isLoggedIn) {
             this.handleChatInfoDropdownClose()
             // If the user isn't logged in, they will be prompted to do so
             // during the sendChat action. We don't want to clear the
@@ -117,31 +136,26 @@ class Compose extends React.Component {
         }
 
         // keep focus on textarea so that keyboard doesn't dismiss on mobile
-        this.refs.textarea.focus()
+        this._textarea.focus()
     }
 
-    handleKeyPress(e) {
+    handleKeyPress(e: React.KeyboardEvent<HTMLTextAreaElement>) {
         if (e.charCode === 13 && !e.shiftKey) { // Enter
             e.preventDefault();
             this.handleSubmit();
         }
     }
 
-    handleLoginClick(e) {
-        e.preventDefault();
-        this.props.dispatch(promptModal('login'))
-    }
-
     handleChatInfoDropdownClose() {
         if (storageAvailable('localStorage')) {
-            localStorage.setItem('hideChatInfoDropdown', true)
+            localStorage.setItem('hideChatInfoDropdown', 'true')
         }
         this.props.dispatch(closeDropdown('chat-info'))
     }
 
     handleChatPinInfoDropdownClose() {
         if (storageAvailable('localStorage')) {
-            localStorage.setItem('hideChatPinInfoDropdown', true)
+            localStorage.setItem('hideChatPinInfoDropdown', 'true')
         }
         this.props.dispatch(closeDropdown('chat-pin-info'))
     }
@@ -167,15 +181,15 @@ class Compose extends React.Component {
     }
 
     render() {
-        const { roomPage } = this.props
+        const { authorUsername, isCurrentUserAuthor } = this.props
         const { message, isPinned } = this.state
         return (
             <div className="chat_compose">
-                <ChatInfoDropdown username={roomPage.author().get('username')} handleClose={this.handleChatInfoDropdownClose} />
+                <ChatInfoDropdown username={authorUsername} handleClose={this.handleChatInfoDropdownClose} />
                 <ChatPinInfoDropdown handleClose={this.handleChatPinInfoDropdownClose} />
                 <ChatPinOverMaxLengthDropdown maxLength={MAX_MESSAGE_LENGTH} />
                 <div className="chat_compose-inner">
-                    <textarea ref="textarea" onChange={this.handleChange} onFocus={this.handleFocus} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={message}></textarea>
+                    <textarea ref={ (c) => { if (c) { this._textarea = c } }} onChange={this.handleChange} onFocus={this.handleFocus} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={message}></textarea>
                     <div className="chat_compose_controls">
                         <input type="submit" 
                            className={`chat_compose_submit btn ${isPinned && length(message) > MAX_MESSAGE_LENGTH ? 'chat_compose_submit-over-max' : ''}`} 
@@ -183,7 +197,7 @@ class Compose extends React.Component {
                            disabled={length(message) === 0} 
                            onClick={this.handleSubmit} 
                         />
-                        { roomPage.currentUserIsAuthor() && this.renderPinControl() }
+                        { isCurrentUserAuthor && this.renderPinControl() }
                     </div>
                 </div>
             </div>
@@ -191,10 +205,14 @@ class Compose extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: State): ConnectProps {
     return {
-        currentUser: new CurrentUser(state),
-        roomPage: new RoomPage(state)
+        roomId: RoomPage.get(state, 'id'),
+        mentions: RoomPage.get(state, 'mentions', List()),
+        authorUsername: RoomPage.entity(state).author().get('username'),
+        isCurrentUserAuthor: RoomPage.isCurrentUserAuthor(state),
+
+        isLoggedIn: CurrentUser.isLoggedIn(state)
     }
 }
 

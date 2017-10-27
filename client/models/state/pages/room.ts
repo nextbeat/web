@@ -38,7 +38,7 @@ interface RoomPageProps extends EntityProps {
     closeError: string
     isDeletingMediaItem: boolean
     deletedMediaItemId: number
-    hasDeletedMediaItem: number
+    hasDeletedMediaItem: boolean
     deleteMediaItemError: string
 }
 
