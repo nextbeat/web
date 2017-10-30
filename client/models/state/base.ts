@@ -30,6 +30,10 @@ export function StateModelFactory<Props>(
             }
             return path
         }
+
+        static isLoaded(state: State): boolean {
+            return state.getIn(this.keyPath('id' as any)) > 0
+        }
     }
 
     return StateModel

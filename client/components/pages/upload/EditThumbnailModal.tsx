@@ -1,15 +1,22 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 
-import Modal from '../../shared/Modal.react'
-import { uploadThumbnail, clearFileUpload, closeModal, UploadTypes } from '../../../actions'
-import { generateUuid } from '../../../utils'
+import Modal from '@components/shared/Modal'
+import { uploadThumbnail, clearFileUpload } from '@actions/upload'
+import { closeModal } from '@actions/app'
+import Upload, { UploadType } from '@models/state/upload'
+import { DispatchProps } from '@types'
+import { generateUuid } from '@utils'
 
+interface OwnProps {
+    defaultFn?: () => void // function called when selecting 'use default thumbnail'
+}
 
-class EditThumbnailModal extends React.Component {
+type Props = OwnProps & DispatchProps
 
-    constructor(props) {
+class EditThumbnailModal extends React.Component<Props> {
+
+    constructor(props: Props) {
         super(props)
 
         this.handleInputChange = this.handleInputChange.bind(this)
@@ -17,9 +24,9 @@ class EditThumbnailModal extends React.Component {
         this.handleDefaultClick = this.handleDefaultClick.bind(this)
     }
 
-    handleInputChange(e) {
-        if (e.target.files.length > 0) {
-            const file = e.target.files[0]
+    handleInputChange(e: React.FormEvent<HTMLInputElement>) {
+        if (e.currentTarget.files && e.currentTarget.files.length > 0) {
+            const file = e.currentTarget.files[0]
             if (['image/jpeg', 'image/png', 'image/gif'].indexOf(file.type) !== -1) {
                 // todo: show alert
                 this.props.dispatch(uploadThumbnail(file))
@@ -34,7 +41,7 @@ class EditThumbnailModal extends React.Component {
 
     handleDefaultClick() {
         const { dispatch, defaultFn } = this.props
-        dispatch(clearFileUpload(UploadTypes.THUMBNAIL))
+        dispatch(clearFileUpload(UploadType.Thumbnail))
         dispatch(closeModal())
         
         if (typeof defaultFn === "function") {
@@ -58,10 +65,6 @@ class EditThumbnailModal extends React.Component {
             </Modal>
         );
     }
-}
-
-EditThumbnailModal.propTypes = {
-    defaultFn: PropTypes.func // function called when selecting 'use default thumbnail'
 }
 
 export default connect()(EditThumbnailModal);

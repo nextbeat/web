@@ -1,15 +1,18 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
-import { Map } from 'immutable'
+import { Map, List } from 'immutable'
 
-import ScrollComponent from '../utils/ScrollComponent.react'
-import { Tag } from '../../models'
-import { loadTag, clearTag, loadStacksForTag } from '../../actions'
-import LargeStackItem from '../shared/LargeStackItem.react'
-import Spinner from '../shared/Spinner.react'
-import Icon from '../shared/Icon.react'
-import AppBanner from '../shared/AppBanner.react'
+import ScrollComponent, { ScrollComponentProps } from '@components/utils/ScrollComponent'
+import LargeStackItem from '@components/shared/LargeStackItem'
+import Spinner from '@components/shared/Spinner'
+import Icon from '@components/shared/Icon'
+import AppBanner from '@components/shared/AppBanner'
+
+import Tag from '@models/state/pages/tag'
+import Stack from '@models/entities/stack'
+import { loadTag, clearTag, loadStacksForTag, TagFilterOptions } from '@actions/pages/tag'
+import { Store, State, DispatchProps, RouteProps, ServerRenderingComponent, staticImplements } from '@types'
 
 const SORT_TYPES = [
     { name: "hot", display: "Hot" },
@@ -25,9 +28,40 @@ const FILTER_TYPES = [
     { query: {status: "all", time: "all"}, display: "All Time"}
 ]
 
-class TagComponent extends React.Component {
+interface ConnectProps {
+    stacksFetching: boolean
+    stacks: List<Stack>
+    sort: string
+    filters: State
+}
 
-    constructor(props) {
+interface Params {
+    name: string
+}
+
+type Props = ConnectProps & DispatchProps & RouteProps<Params> & ScrollComponentProps
+
+@staticImplements<ServerRenderingComponent>()
+class TagComponent extends React.Component<Props> {
+
+    static fetchData(store: Store, params: Params) {
+        return new Promise((resolve, reject) => {
+    
+            const unsubscribe = store.subscribe(() => {
+                    if (Tag.isLoaded(store.getState())) {
+                        unsubscribe()
+                        resolve(store)
+                    }
+                    if (!!Tag.get(store.getState(), 'error')) {
+                        unsubscribe()
+                        reject(new Error('Tag does not exist.'))
+                    }
+                })
+            store.dispatch(loadTag(params.name))
+        })
+    }
+
+    constructor(props: Props) {
         super(props)
 
         this.load = this.load.bind(this);
@@ -35,6 +69,7 @@ class TagComponent extends React.Component {
         this.setTimeFilter = this.setTimeFilter.bind(this)
         this.renderTag = this.renderTag.bind(this)
         this.renderFilters = this.renderFilters.bind(this)
+        this.renderRooms = this.renderRooms.bind(this)
     }
 
     componentDidMount() {
@@ -45,7 +80,7 @@ class TagComponent extends React.Component {
         this.props.dispatch(clearTag())
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: Props) {
         if (prevProps.params.name !== this.props.params.name) {
             this.props.dispatch(clearTag())
             this.load();
@@ -60,12 +95,12 @@ class TagComponent extends React.Component {
         this.setSort("hot");
     }
 
-    setSort(type) {
+    setSort(type: string) {
         const { dispatch, params: { name }} = this.props
         dispatch(loadStacksForTag(name, { sort: type }))
     }
 
-    setTimeFilter(options) {
+    setTimeFilter(options: TagFilterOptions) {
         const { dispatch, params: { name }} = this.props
         dispatch(loadStacksForTag(name, options))
         $('.tag_dropdown').hide()
@@ -73,16 +108,17 @@ class TagComponent extends React.Component {
 
     // Render
 
-    renderRooms(tag) {
-        if (!tag.get('stacksFetching') && tag.stacks().size === 0) {
+    renderRooms() {
+        const { stacksFetching, stacks } = this.props
+        if (!stacksFetching && stacks.size === 0) {
             return <div className="tag_no-content">Looks like we couldn't find any rooms here!</div>
         }
-        return tag.stacks().map(stack => <LargeStackItem key={`s${stack.get('id')}`} stack={stack} />) 
+        return stacks.map(stack => <LargeStackItem key={`s${stack.get('id')}`} stack={stack} />) 
     }
 
     renderTag() {
-        const { tag } = this.props
-        const selectedSort = type => tag.get('sort') === type ? "selected" : ""
+        const { sort, stacksFetching } = this.props
+        const selectedSort = (type: string) => sort === type ? "selected" : ""
         return (
             <div>   
                 <div className="filters">
@@ -91,20 +127,20 @@ class TagComponent extends React.Component {
                     )}
                 </div>
                 <div className="tag_stacks">
-                    { this.renderRooms(tag) }
-                    { tag.get('stacksFetching') && <Spinner type="grey tag-rooms" /> }
+                    { this.renderRooms() }
+                    { stacksFetching && <Spinner styles={["grey"]} type="tag-rooms" /> }
                 </div>
             </div>
         )
     }
 
     renderFilters() {
-        const { tag } = this.props 
-        const selectedFilter = FILTER_TYPES.filter(filter => Map(filter.query).isSubset(tag.get('filters'))).shift()
+        const { filters } = this.props 
+        const selectedFilter = FILTER_TYPES.filter(filter => Map(filter.query).isSubset(filters as any)).shift()
         const otherFilters = FILTER_TYPES.filter(filter => filter !== selectedFilter)
         return (
             <div className="tag_times">
-                <a onClick={() => { $('.tag_dropdown').toggle() }}>{ selectedFilter.display } <Icon type="arrow-drop-down" /></a>
+                <a onClick={() => { $('.tag_dropdown').toggle() }}>{ selectedFilter && selectedFilter.display } <Icon type="arrow-drop-down" /></a>
                 <div className="tag_dropdown">
                     <ul>
                         { otherFilters.map(filter => <li key={`filter${filter.display}`} onClick={this.setTimeFilter.bind(this, filter.query)}>{filter.display}</li>) }
@@ -115,7 +151,7 @@ class TagComponent extends React.Component {
     }
 
     render() {
-        const { tag, params: { name } } = this.props
+        const { params: { name } } = this.props
         return (
             <div className="tag content" id="tag">
                 <Helmet 
@@ -138,9 +174,12 @@ class TagComponent extends React.Component {
 
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: State): ConnectProps {
     return {
-        tag: new Tag(state)
+        stacksFetching: Tag.get(state, 'stacksFetching'),
+        stacks: Tag.stacks(state),
+        sort: Tag.get(state, 'sort'),
+        filters: Tag.get(state, 'filters')
     }
 }
 
@@ -153,24 +192,5 @@ const scrollOptions = {
         }
     }
 }
-
-TagComponent.fetchData = (store, params) => {
-    return new Promise((resolve, reject) => {
-
-        const unsubscribe = store.subscribe(() => {
-            const tag = new Tag(store.getState())
-                if (tag.isLoaded()) {
-                    unsubscribe()
-                    resolve(store)
-                }
-                if (tag.get('error')) {
-                    unsubscribe()
-                    reject(new Error('Tag does not exist.'))
-                }
-            })
-        store.dispatch(loadTag(params.name))
-    })
-}
-
 
 export default connect(mapStateToProps)(ScrollComponent('tag', scrollOptions)(TagComponent));

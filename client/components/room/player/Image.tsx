@@ -13,7 +13,7 @@ interface OwnProps {
     containerWidth: number
     containerHeight: number
     hideControls?: boolean
-    decoration: State
+    decoration?: State
 }
 
 interface ConnectProps {

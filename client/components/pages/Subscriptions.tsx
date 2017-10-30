@@ -1,23 +1,31 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
+import { List } from 'immutable'
 
-import PageError from '../shared/PageError.react'
-import User from '../shared/User.react'
-import Badge from '../shared/Badge.react'
-import { CurrentUser } from '../../models'
+import PageError from '@components/shared/PageError'
+import User from '@components/shared/User'
+import Badge from '@components/shared/Badge'
+import CurrentUser from '@models/state/currentUser'
+import UserModel from '@models/entities/user'
+import { State } from '@types'
 
-class Subscriptions extends React.Component {
+interface Props {
+    isLoggedIn: boolean
+    subscriptionsFetching: boolean
+    subscriptions: List<UserModel>
+}
+
+class Subscriptions extends React.Component<Props> {
 
     render() {
-        const { currentUser } = this.props
-        let subscriptions = currentUser.subscriptions()
+        const { subscriptions, subscriptionsFetching, isLoggedIn } = this.props
 
         return (
             <div className="subscriptions">
                 <Helmet title="Subscriptions" />
-                { !currentUser.isLoggedIn() && <PageError>Must be logged in.</PageError> }
-                { currentUser.isLoggedIn() && 
+                { !isLoggedIn && <PageError>Must be logged in.</PageError> }
+                { isLoggedIn && 
                     <div className="content_inner">
                         <div className="content_header">
                             Subscriptions
@@ -30,7 +38,7 @@ class Subscriptions extends React.Component {
                                 </div>
                             )
                         }
-                        { subscriptions.size === 0 && !currentUser.get('subscriptionsFetching') && 
+                        { subscriptions.size === 0 && !subscriptionsFetching && 
                             <span className="search_no-content">You have not subscribed to any people.</span>
                         }
                     </div>
@@ -40,9 +48,11 @@ class Subscriptions extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: State): Props {
     return {
-        currentUser: new CurrentUser(state)
+        isLoggedIn: CurrentUser.isLoggedIn(state),
+        subscriptionsFetching: CurrentUser.get(state, 'subscriptionsFetching'),
+        subscriptions: CurrentUser.subscriptions(state)
     }
 }
 

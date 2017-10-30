@@ -1,11 +1,7 @@
-import React from 'react';
+import * as React from 'react';
 
 class NoMatch extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
-
+    
     render() {
         return (
         <div className="no-match content">

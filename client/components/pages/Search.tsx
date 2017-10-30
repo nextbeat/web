@@ -1,15 +1,20 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
 import Helmet from 'react-helmet'
+import { List } from 'immutable'
 
-import { Search } from '../../models'
-import { loadSearchResults, clearSearch } from '../../actions'
-import Spinner from '../shared/Spinner.react'
-import Icon from '../shared/Icon.react'
-import User from '../shared/User.react'
-import LargeStackItem from '../shared/LargeStackItem.react'
-import Badge from '../shared/Badge.react'
+import Spinner from '@components/shared/Spinner'
+import Icon from '@components/shared/Icon'
+import User from '@components/shared/User'
+import LargeStackItem from '@components/shared/LargeStackItem'
+import Badge from '@components/shared/Badge'
+
+import Search, { SearchType } from '@models/state/pages/search'
+import Stack from '@models/entities/stack'
+import UserModel from '@models/entities/user'
+import { loadSearchResults, clearSearch } from '@actions/pages/search'
+import { State, DispatchProps, RouteProps } from '@types'
 
 const SEARCH_FILTERS = [
     {
@@ -26,9 +31,27 @@ const SEARCH_FILTERS = [
     }
 ]
 
-class SearchComponent extends React.Component {
+interface ConnectProps {
+    query: string
+    searchType: SearchType
 
-    constructor(props) {
+    stacksFetching: boolean
+    stacks: List<Stack>
+    usersFetching: boolean
+    users: List<UserModel>
+    tagsFetching: boolean
+    tags: List<State>
+}
+
+type Props = ConnectProps & DispatchProps & RouteProps<{}>
+
+interface ComponentState {
+    query: string
+}
+
+class SearchComponent extends React.Component<Props, ComponentState> {
+
+    constructor(props: Props) {
         super(props)
 
         this.selectSearchType = this.selectSearchType.bind(this)
@@ -59,10 +82,10 @@ class SearchComponent extends React.Component {
         this.props.dispatch(clearSearch())
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: Props) {
         const { dispatch, location } = this.props
         const query = location.query.q
-        if (query && prevProps.search.get('query') !== query) {
+        if (query && prevProps.query !== query) {
             dispatch(clearSearch())
             this.setState({ query })
             dispatch(loadSearchResults(query, 'stacks'))
@@ -71,7 +94,7 @@ class SearchComponent extends React.Component {
 
     // Actions
 
-    selectSearchType(searchType) {
+    selectSearchType(searchType: SearchType) {
         const { dispatch, location } = this.props
         const query = location.query.q
         dispatch(loadSearchResults(query, searchType))
@@ -96,25 +119,25 @@ class SearchComponent extends React.Component {
     // Render
 
     renderStacks() {
-        const { search } = this.props
+        const { stacksFetching, stacks } = this.props
         return (
             <div className="search_results">
-                { search.get('stacksFetching') && <Spinner type="grey search-results" />}
-                { !search.get('stacksFetching') && search.stacks().size === 0 && <span className="search_no-content">No rooms found.</span>}
+                { stacksFetching && <Spinner type="search-results" styles={["grey"]} />}
+                { !stacksFetching && stacks.size === 0 && <span className="search_no-content">No rooms found.</span>}
                 <div className="rooms-list_rooms">
-                    { search.stacks().map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
+                    { stacks.map(stack => <LargeStackItem key={stack.get('id')} stack={stack} />)}
                 </div>
             </div>
         )
     }
 
     renderUsers() {
-        const { search } = this.props
+        const { usersFetching, users } = this.props
         return (
             <div className="search_results">
-            { search.get('usersFetching') && <Spinner type="grey search-results" />}
-            { !search.get('usersFetching') && search.users().size === 0 && <span className="search_no-content">No people found.</span>}
-            { search.users().map(u => 
+            { usersFetching && <Spinner type="search-results" styles={["grey"]} />}
+            { !usersFetching && users.size === 0 && <span className="search_no-content">No people found.</span>}
+            { users.map(u => 
                 <div key={`search-u-${u.get('id')}`} className="search_result search_result-user">
                     <User user={u} />
                     { u.get('open_stacks', 0) > 0 && <Badge type="open" elementType="search_result-user">OPEN ROOM</Badge> }
@@ -125,12 +148,12 @@ class SearchComponent extends React.Component {
     }
 
     renderTags() {
-        const { search } = this.props 
+        const { tagsFetching, tags } = this.props 
         return (
             <div className="search_results">
-            { search.get('tagsFetching') && <Spinner type="grey search-results" />}
-            { !search.get('tagsFetching') && search.tags().size === 0 && <span className="search_no-content">No tags found.</span>}
-            { search.tags().map(t => 
+            { tagsFetching && <Spinner type="search-results" styles={["grey"]} />}
+            { !tagsFetching && tags.size === 0 && <span className="search_no-content">No tags found.</span>}
+            { tags.map(t => 
                 <div key={`search-t-${t.get('name')}`} className="search_result search_result-tag">
                     <Link to={`/t/${t.get('name')}`}>{t.get('name')}</Link>
                 </div>
@@ -140,8 +163,8 @@ class SearchComponent extends React.Component {
     }
 
     renderResults() {
-        const { search } = this.props 
-        const selectedFilterClass = f => f.searchType === search.get('searchType') ? 'selected' : ''
+        const { searchType } = this.props 
+        const selectedFilterClass = (f: any) => f.searchType === searchType ? 'selected' : ''
 
         return [
             <div className="filters">
@@ -149,32 +172,40 @@ class SearchComponent extends React.Component {
                     <span key={f.searchType} className={`filter ${selectedFilterClass(f)}`} onClick={this.selectSearchType.bind(this, f.searchType)}>{f.name}</span>
                 )}
             </div>,
-            <div>{ search.get('searchType') === 'stacks' && this.renderStacks() }</div>,
-            <div>{ search.get('searchType') === 'users' && this.renderUsers() }</div>,
-            <div>{ search.get('searchType') === 'tags' && this.renderTags() }</div>
+            <div>{ searchType === 'stacks' && this.renderStacks() }</div>,
+            <div>{ searchType === 'users' && this.renderUsers() }</div>,
+            <div>{ searchType === 'tags' && this.renderTags() }</div>
         ]
     }
 
     render() {
-        const { search } = this.props
+        const { query } = this.props
         return (
             <div className="search content" id="search">
-                <Helmet title={search.get('query')} />
-                <form action="#" onsubmit="return false;">
+                <Helmet title={query} />
+                <form action="#" onSubmit={() => false}>
                 <div className="search_header">
                     <input type="search" placeholder="Search" value={this.state.query} onChange={this.handleInputChange} onKeyPress={this.handleInputKeyPress} className="search_header_input" />
                     <Icon type="search" />
                 </div>
                 </form>
-                { search.get('query', '').length > 0 && this.renderResults() }
+                { query.length > 0 && this.renderResults() }
             </div>
         );
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: State): ConnectProps {
     return {
-        search: new Search(state)
+        query: Search.get(state, 'query', ''),
+        searchType: Search.get(state, 'searchType'),
+
+        stacksFetching: Search.get(state, 'stacksFetching'),
+        stacks: Search.stacks(state),
+        usersFetching: Search.get(state, 'usersFetching'),
+        users: Search.users(state),
+        tagsFetching: Search.get(state, 'tagsFetching'),
+        tags: Search.tags(state)
     }
 }
 

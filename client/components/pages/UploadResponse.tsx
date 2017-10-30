@@ -1,24 +1,57 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import * as PropTypes from 'prop-types'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import Helmet from 'react-helmet'
 
-import FileSelect from './upload/FileSelect.react'
-import UploadBar from './upload/UploadBar.react'
+import FileSelect from './upload/FileSelect'
+import UploadBar from './upload/UploadBar'
+import Icon from '@components/shared/Icon'
+import Spinner from '@components/shared/Spinner'
+import PageError from '@components/shared/PageError'
+import renderMessageText from '@components/room/chat/utils/renderMessageText'
 
-import Icon from '../shared/Icon.react'
-import Spinner from '../shared/Spinner.react'
-import PageError from '../shared/PageError.react'
-import { timeString, baseUrl } from '../../utils'
-import renderMessageText from '../room/chat/utils/renderMessageText'
+import { loadReferencedComment, submitStackRequest, clearUpload, clearFileUpload } from '@actions/upload'
+import Upload, { UploadType } from '@models/state/upload'
+import App from '@models/state/app'
+import Comment from '@models/entities/comment'
+import Stack from '@models/entities/stack'
+import { timeString, baseUrl } from '@utils'
+import { State, DispatchProps, RouteProps } from '@types'
 
-import { Upload, App } from '../../models'
-import { UploadTypes, loadReferencedComment, submitStackRequest, clearUpload, clearFileUpload } from '../../actions'
+interface ConnectProps {
+    referencedComment: Comment
+    hasLoadedComment: boolean
+    isCommentValid: boolean
+    invalidCommentError: string
 
-class UploadResponse extends React.Component {
+    hasFile: boolean
+    file?: File
+    fileType: 'image' | 'video' | null
 
-    constructor(props) {
+    selectedStack: Stack
+    selectedStackId: number
+    isInSubmitProcess: boolean
+    submitStackRequested: boolean
+    isSubmittingStack: boolean
+    stackSubmitted: boolean
+    submitStackError: string
+}
+
+interface Params {
+    hid: string
+    comment: number
+}
+
+type Props = ConnectProps & DispatchProps & RouteProps<Params>
+
+class UploadResponse extends React.Component<Props> {
+
+    static contextTypes = {
+        router: PropTypes.object.isRequired
+    }
+
+    constructor(props: Props) {
         super(props);
         
         this.handleBackClick = this.handleBackClick.bind(this)
@@ -52,13 +85,13 @@ class UploadResponse extends React.Component {
     }
 
     handleRestart() {
-        this.props.dispatch(clearFileUpload(UploadTypes.MEDIA_ITEM))
+        this.props.dispatch(clearFileUpload(UploadType.MediaItem))
     }
 
 
     // Render
     
-    renderNoComment(message) {
+    renderNoComment(message: string) {
         return (
             <div className="upload-response_comment_container">
                 <PageError>
@@ -69,9 +102,8 @@ class UploadResponse extends React.Component {
     }
 
     renderComment() {
-        const { upload } = this.props;
+        const { referencedComment: comment } = this.props;
 
-        const comment = upload.referencedComment()
         const isCreator = comment.stack().author().get('username') === comment.author().get('username')
         const isCreatorClass = isCreator ? "creator" : ""
 
@@ -108,32 +140,35 @@ class UploadResponse extends React.Component {
     }
 
     renderSubmitRequested() {
-        const { upload } = this.props
+        const { selectedStackId, selectedStack, submitStackRequested, 
+                isSubmittingStack, stackSubmitted, submitStackError, fileType } = this.props
 
-        if (upload.get('selectedStackId') > 0) {
-            var fullStackUrl = `${baseUrl()}/r/${upload.selectedStack().get('hid')}/latest`
-            var stackUrl = `/r/${upload.selectedStack().get('hid')}/latest`
+        let fullStackUrl = ''
+        let stackUrl = ''
+        if (selectedStackId > 0) {
+            fullStackUrl = `${baseUrl()}/r/${selectedStack.get('hid')}/latest`
+            stackUrl = `/r/${selectedStack.get('hid')}/latest`
         }
 
         return (
             <div className="upload_submit-requested">
-                { upload.get('submitStackRequested') && 
+                { submitStackRequested && 
                     <div>
-                        Your { upload.fileType() } is still uploading. Please leave this page open until it finishes.
+                        Your {fileType} is still uploading. Please leave this page open until it finishes.
                     </div>
                 }
-                { upload.get('isSubmittingStack') && <Spinner type="grey large upload-submit" /> }
-                { upload.get('stackSubmitted') && 
+                { isSubmittingStack && <Spinner styles={["grey", "large"]} type="upload-submit" /> }
+                { stackSubmitted && 
                     <div>
                         <Icon type="check" />
                         <div className="upload_success-message">
-                            Your {upload.fileType()} has been submitted! See it live at <Link to={stackUrl}>{fullStackUrl}</Link>
+                            Your {fileType} has been submitted! See it live at <Link to={stackUrl}>{fullStackUrl}</Link>
                         </div>
                     </div> 
                 }
-                { upload.get('submitStackError') && 
+                { submitStackError && 
                     <div>
-                        There was an error submitting your {upload.fileType()}. Please try again.
+                        There was an error submitting your {fileType}. Please try again.
                         <div><a className="btn upload_restart" onClick={this.handleRestart}>Upload another file</a></div>
                     </div> }
             </div>
@@ -141,22 +176,22 @@ class UploadResponse extends React.Component {
     }
 
     renderBody() {
-        const { upload, app, params } = this.props 
+        const { isCommentValid, invalidCommentError, hasFile, file, isInSubmitProcess } = this.props 
 
-        try {
-            upload.checkReferencedCommentValidity({ hid: params.hid })
-        } catch (e) {
-            return this.renderNoComment(e.message);
+        
+
+        if (!isCommentValid) {
+            return this.renderNoComment(invalidCommentError)
         }
 
         return (
             <div>
                 { this.renderComment() }
-                <FileSelect upload={upload} app={app} file={upload.get(UploadTypes.MEDIA_ITEM, 'file')} />
-                { upload.hasFile(UploadTypes.MEDIA_ITEM) && 
+                <FileSelect file={file} />
+                { hasFile&& 
                     <div className="upload_post-upload">
-                        <UploadBar upload={upload} /> 
-                        { upload.isInSubmitProcess() ? this.renderSubmitRequested() : this.renderSubmitForms() }
+                        <UploadBar /> 
+                        { isInSubmitProcess ? this.renderSubmitRequested() : this.renderSubmitForms() }
                     </div>
                 }
             </div>
@@ -164,10 +199,9 @@ class UploadResponse extends React.Component {
     }
 
     render() {
-        const { upload } = this.props 
-        const hasLoadedComment = upload.referencedCommentIsLoaded()
+        const { hasLoadedComment } = this.props 
 
-        const defaultDragFn = e => { e.preventDefault() }
+        const defaultDragFn = (e: React.DragEvent<HTMLElement>) => { e.preventDefault() }
         const dragEvents = {
             onDragEnter: defaultDragFn,
             onDragOver: defaultDragFn,
@@ -196,14 +230,33 @@ class UploadResponse extends React.Component {
 
 }
 
-UploadResponse.contextTypes = {
-    router: PropTypes.object.isRequired
-}
+function mapStateToProps(state: State, ownProps: RouteProps<Params>): ConnectProps {
+    let isCommentValid = true
+    let invalidCommentError = ''
+    try {
+        Upload.checkReferencedCommentValidity(state, ownProps.params.hid)
+    } catch (e) {
+        isCommentValid = false
+        invalidCommentError = e.messge
+    }
 
-function mapStateToProps(state) {
     return {
-        upload: new Upload(state),
-        app: new App(state)
+        referencedComment: Upload.referencedComment(state),
+        hasLoadedComment: Upload.referencedCommentIsLoaded(state),
+        isCommentValid,
+        invalidCommentError,
+
+        hasFile: Upload.hasFile(state, UploadType.MediaItem),
+        file: Upload.getInFile(state, UploadType.MediaItem, 'file'),
+        fileType: Upload.fileType(state, UploadType.MediaItem),
+ 
+        isInSubmitProcess: Upload.isInSubmitProcess(state),
+        selectedStack: Upload.selectedStack(state),
+        selectedStackId: Upload.get(state, 'selectedStackId'),
+        submitStackRequested: Upload.get(state, 'submitStackRequested'),
+        isSubmittingStack: Upload.get(state, 'isSubmittingStack'),
+        stackSubmitted: Upload.get(state, 'stackSubmitted'),
+        submitStackError: Upload.get(state, 'submitStackError')
     }
 }
 

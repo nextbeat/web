@@ -1,12 +1,18 @@
-import React from 'react'
-import fetch from 'isomorphic-fetch'
+import * as React from 'react'
+import * as fetch from 'isomorphic-fetch'
 import { browserHistory } from 'react-router'
 
-import Logo from '../shared/Logo.react'
+import Logo from '@components/shared/Logo'
 
-class InternalAccess extends React.Component {
+interface State {
+    error: boolean
+}
 
-    constructor(props) {
+class InternalAccess extends React.Component<{}, State> {
+
+    private _password: HTMLInputElement
+
+    constructor(props: {}) {
         super(props);
 
         this.submit = this.submit.bind(this)
@@ -17,10 +23,10 @@ class InternalAccess extends React.Component {
     }
 
     componentDidMount() {
-        this.refs.password.focus();
+        this._password.focus();
     }
 
-    submit(e) {
+    submit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
         let self = this;
@@ -29,7 +35,7 @@ class InternalAccess extends React.Component {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ 'password': this.refs.password.value }),
+            body: JSON.stringify({ 'password': this._password.value }),
             credentials: 'same-origin'
         })
         .then(res => {
@@ -56,7 +62,7 @@ class InternalAccess extends React.Component {
                         For internal eyes only.
                     </div>
                     <form onSubmit={this.submit}>
-                        <input className="internal-access_password" type="password" name="password" ref="password" placeholder="Enter secret passphrase." />
+                        <input className="internal-access_password" type="password" name="password" ref={(c) => { if (c) { this._password = c } }} placeholder="Enter secret passphrase." />
                         <input className="btn internal-access_submit" type="submit" value="Access" />
                     </form> 
                     {this.state.error && <div className="internal-access_error">Incorrect passphrase.</div>}

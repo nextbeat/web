@@ -2,7 +2,7 @@ import * as React from 'react'
 import { connect } from 'react-redux' 
 
 import FileComponent, { FileComponentProps } from './utils/FileComponent'
-import AddCaption from './AddCaption.react'
+import AddCaption from './AddCaption'
 import Icon from '@components/shared/Icon'
 import Spinner from '@components/shared/Spinner'
 import { uploadMediaItemFile, updateNewMediaItem } from '@actions/upload'
@@ -12,7 +12,7 @@ import Upload, { UploadType } from '@models/state/upload'
 import { State, DispatchProps } from '@types'
 
 interface OwnProps {
-    file: File 
+    file?: File 
 }
 
 interface ConnectProps {
@@ -187,7 +187,7 @@ class FileSelect extends React.Component<Props, FileSelectState> {
 
         return (
             <div className="upload_file-select" id="upload_file-select">
-                <AddCaption  width={resourceWidth} height={resourceHeight} />
+                <AddCaption width={resourceWidth} height={resourceHeight} />
                 { fileIsCompatible ? this.renderCompatibleFile() : this.renderIncompatibleFile() }
                 { shouldDisplayPrompt && 
                     <div className="upload_caption-btn" onClick={this.handleAddCaptionClick}>{hasDecoration ? 'Edit' : 'Add'} Caption</div>
@@ -231,15 +231,6 @@ const fileOptions = {
     }
 }
 
-// isMobile: boolean
-
-//     hasFile: boolean
-//     fileType: 'image' | 'video' 
-//     mediaItem: State
-//     isInSubmitProcess: boolean
-//     isDoneProcessing: boolean
-//     processedImageUrl: string
-
 function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     return {
         isMobile: App.isMobile(state),
@@ -252,4 +243,4 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     }
 }
 
-export default connect()(FileComponent('upload_file-select', fileOptions)(FileSelect));
+export default connect(mapStateToProps)(FileComponent('upload_file-select', fileOptions)(FileSelect));

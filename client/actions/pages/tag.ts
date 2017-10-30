@@ -35,16 +35,16 @@ export function loadTag(name: string): TagAction {
     }
 }
 
-interface TagFilterOptions {
+export interface TagFilterOptions {
     status: 'open' | 'closed' | 'all'
     time: 'all' | 'month' | 'week'
     sort: string
 }
 export interface TagStacksAction extends ApiCallAction {
     type: ActionType.TAG_STACKS
-    options: TagFilterOptions
+    options: Partial<TagFilterOptions>
 }
-function fetchStacksForTag(tagName: string, options: TagFilterOptions, pagination: Pagination): TagStacksAction {
+function fetchStacksForTag(tagName: string, options: Partial<TagFilterOptions>, pagination: Pagination): TagStacksAction {
     return {
         type: ActionType.TAG_STACKS,
         options,
@@ -69,7 +69,7 @@ function clearStacksForTag(): ClearTagStacksAction {
     }
 }
 
-export function loadStacksForTag(name: string, options: TagFilterOptions): ThunkAction {
+export function loadStacksForTag(name: string, options: Partial<TagFilterOptions> = {}): ThunkAction {
     return (dispatch, getState) => {
         const filters = Tag.get(getState(), 'filters')
         let optionsMap = filters.merge(fromJS(options));

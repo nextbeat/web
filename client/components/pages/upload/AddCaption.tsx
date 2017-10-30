@@ -1,21 +1,52 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import { Map } from 'immutable'
-import assign from 'lodash/assign'
+import assign from 'lodash-es/assign'
 
-import Video from '../../room/player/Video.react'
-import Image from '../../room/player/Image.react'
-import Modal from '../../shared/Modal.react'
+import Video from '@components/room/player/Video'
+import Image from '@components/room/player/Image'
+import Modal from '@components/shared/Modal'
 
-import { closeModal, updateNewMediaItem, UploadTypes } from '../../../actions'
+import { updateNewMediaItem } from '@actions/upload'
+import { closeModal } from '@actions/app'
+import Upload, { UploadType } from '@models/state/upload'
+import App from '@models/state/app'
+import { isBrowserCompatible } from '@upload'
+import { State, DispatchProps } from '@types'
+
+interface OwnProps {
+    width: number
+    height: number
+}
+
+interface ConnectProps {
+    isActiveModal: boolean
+
+    file: File
+    mediaItem: State
+    isDoneProcessing: boolean
+    fileType: 'image' | 'video' | null
+}
+
+type Props = OwnProps & ConnectProps & DispatchProps
+
+interface ComponentState {
+    resource: State
+    savedDecoration: State
+    isDraggingCaption: boolean
+    containerWidth: number
+    containerHeight: number
+    offsetY: number
+    startY: number
+}
 
 // extract relevant position data from touch event
-function processEventData(evt) {
+function processEventData(evt: JQuery.Event) {
     if ('touches' in evt.originalEvent) {
-        if (evt.originalEvent.touches.length !== 1) {
+        if ((evt.originalEvent as any).touches.length !== 1) {
             return null; 
         }
-        let touch = evt.originalEvent.touches[0]
+        let touch = (evt.originalEvent as any).touches[0]
         let rect = touch.target.getBoundingClientRect()
         return assign(touch, { offsetY: touch.clientY - rect.top })
     } else {
@@ -23,9 +54,9 @@ function processEventData(evt) {
     }
 }
 
-class AddCaption extends React.Component {
+class AddCaption extends React.Component<Props, ComponentState> {
 
-    constructor(props) {
+    constructor(props: Props) {
         super(props)
 
         this.resourceObject = this.resourceObject.bind(this)
@@ -42,10 +73,12 @@ class AddCaption extends React.Component {
 
         this.state = {
             resource: Map(),
-            savedDecoration: null,
+            savedDecoration: Map(),
             isDraggingCaption: false,
             containerWidth: 0,
-            containerHeight: 0
+            containerHeight: 0,
+            offsetY: 0,
+            startY: 0
         }
     }
 
@@ -58,19 +91,19 @@ class AddCaption extends React.Component {
         this.handleResize()
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.app.get('activeModal') !== 'add-caption' && nextProps.app.get('activeModal') === 'add-caption') {
+    componentWillReceiveProps(nextProps: Props) {
+        if (!this.props.isActiveModal && nextProps.isActiveModal) {
             // (re)opening the modal, so we save the current
             // caption here so we can reset on cancel
             this.setState({
-                savedDecoration: this.props.upload.get('mediaItem').get('decoration', Map()),
+                savedDecoration: this.props.mediaItem.get('decoration', Map()),
                 resource: this.resourceObject(nextProps)
             })
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.app.get('activeModal') !== 'add-caption' && this.props.app.get('activeModal') === 'add-caption') {
+    componentDidUpdate(prevProps: Props) {
+        if (!prevProps.isActiveModal && this.props.isActiveModal) {
             this.handleResize()
         }
     }
@@ -85,36 +118,37 @@ class AddCaption extends React.Component {
 
     // Getters
 
-    resourceObject(props) {
-        const { width, height, upload } = props 
-        let object = {};
+    resourceObject(props: Props): State {
+        const { width, height, file, isDoneProcessing, mediaItem } = props 
+        let object = 
+        Map<string, any>()
 
-        if (upload.isBrowserCompatible(UploadTypes.MEDIA_ITEM)) {
+        if (isBrowserCompatible(file)) {
             object = Map({
-                url: URL.createObjectURL(upload.get(UploadTypes.MEDIA_ITEM, 'file')),
+                url: URL.createObjectURL(file),
                 type: 'objectURL',
                 width,
                 height
             })
-        } else if (upload.isDoneProcessing()) {
-            object = upload.get('mediaItem').get('processedItem').delete('item_type')
+        } else if (isDoneProcessing) {
+            object = mediaItem.get('processedItem').delete('item_type')
         }
 
         return object
 
     }
 
-    decorationObject() {
-        const { upload } = this.props
-        const decoration = upload.get('mediaItem').get('decoration', Map())
+    decorationObject(): State | undefined {
+        const { mediaItem } = this.props
+        const decoration = mediaItem.get('decoration', Map())
 
-        return decoration.get('caption_text', '').length > 0 ? decoration : null
+        return decoration.get('caption_text', '').length > 0 ? decoration : undefined
     }
 
 
     // Event handlers
 
-    handleResize(e) {
+    handleResize() {
         const containerWidth = parseInt($('.player_media-inner').css('width'));
         const containerHeight = Math.min(340, Math.floor(containerWidth * 9 / 16));
         this.setState({
@@ -123,7 +157,7 @@ class AddCaption extends React.Component {
         })
     }
 
-    handleMouseDown(e) {
+    handleMouseDown(e: JQuery.Event) {
         var caption = document.getElementById('player_caption')
         if (!caption) {
             return;
@@ -131,47 +165,47 @@ class AddCaption extends React.Component {
 
         e = processEventData(e);
 
-        if (e && (e.target === caption || caption.contains(e.target))) {
+        if (e && (e.target === caption || caption.contains(e.target as any))) {
             this.setState({
                 isDraggingCaption: true,
-                offsetY: e.offsetY,
-                startY: e.clientY
+                offsetY: e.offsetY || 0,
+                startY: e.clientY || 0
             })
             e.stopPropagation();
             e.preventDefault();
         }
     }
 
-    handleMouseMove(e) {
+    handleMouseMove(e: JQuery.Event) {
         const { isDraggingCaption, offsetY, startY } = this.state 
-        const { upload, dispatch } = this.props 
+        const { fileType, mediaItem, dispatch } = this.props 
 
         e = processEventData(e);
 
         if (e && isDraggingCaption) {
-            var parent = document.getElementById('upload_add-caption_media-container')
-            var caption = document.getElementById('player_caption')
+            var parent = document.getElementById('upload_add-caption_media-container') as HTMLElement
+            var caption = document.getElementById('player_caption') as HTMLElement
 
             const parentY = parent.getBoundingClientRect().top
             const parentHeight = parent.getBoundingClientRect().height
             const captionHeight = caption.getBoundingClientRect().height
 
             var maxY = parentHeight-captionHeight;
-            if (upload.fileType() === 'video') {
+            if (fileType === 'video') {
                 // restrain position over video controls
                 maxY -= 75
             }
-            var newOffset = Math.max(0, Math.min(maxY/parentHeight, (e.clientY - offsetY - parentY)/parentHeight))
+            var newOffset = Math.max(0, Math.min(maxY/parentHeight, ((e.clientY || 0) - offsetY - parentY)/parentHeight))
             dispatch(updateNewMediaItem({
                 decoration: {
-                    caption_text: upload.get('mediaItem').getIn(['decoration', 'caption_text'], ''),
+                    caption_text: mediaItem.getIn(['decoration', 'caption_text'], ''),
                     caption_offset: newOffset
                 }
             }))
         }
     }
 
-    handleMouseUp(e) {
+    handleMouseUp(e: JQuery.Event) {
         this.setState({
             isDraggingCaption: false
         })
@@ -192,12 +226,12 @@ class AddCaption extends React.Component {
         this.props.dispatch(closeModal())
     }
 
-    handleInputChange(e) {
-        const { upload, dispatch } = this.props
+    handleInputChange(e: React.FormEvent<HTMLInputElement>) {
+        const { mediaItem, dispatch } = this.props
         dispatch(updateNewMediaItem({
             decoration: {
-                caption_text: e.target.value.substr(0, 140),
-                caption_offset: upload.get('mediaItem').getIn(['decoration', 'caption_offset'], 0.5)
+                caption_text: e.currentTarget.value.substr(0, 140),
+                caption_offset: mediaItem.getIn(['decoration', 'caption_offset'], 0.5)
             }
         }))
     }
@@ -206,13 +240,13 @@ class AddCaption extends React.Component {
     // Render
 
     render() {
-        const { upload } = this.props 
+        const { fileType, mediaItem } = this.props 
         const { resource, containerWidth, containerHeight } = this.state
 
-        const isVideo = upload.fileType() === 'video'
-        const isImage = upload.fileType() === 'image'
+        const isVideo = fileType === 'video'
+        const isImage = fileType === 'image'
 
-        const captionText = upload.get('mediaItem').getIn(['decoration', 'caption_text'], '')
+        const captionText = mediaItem.getIn(['decoration', 'caption_text'], '')
 
         const containerProps = { containerWidth, containerHeight }
 
@@ -240,11 +274,21 @@ class AddCaption extends React.Component {
                     </div>
                 </div>
                 <div className="upload_add-caption_info">
-                    Drag the caption to adjust its position on the {upload.fileType()}.
+                    Drag the caption to adjust its position on the {fileType}.
                 </div>
             </Modal>
         );
     }
 }
 
-export default connect()(AddCaption);
+function mapStateToProps(state: State): ConnectProps {
+    return {
+        isActiveModal: App.get(state, 'activeModal') === 'add-caption',
+        file: Upload.getInFile(state, UploadType.MediaItem, 'file'),
+        mediaItem: Upload.get(state, 'mediaItem', Map()),
+        isDoneProcessing: Upload.isDoneProcessing(state, UploadType.MediaItem),
+        fileType: Upload.fileType(state, UploadType.MediaItem)
+    }
+}
+
+export default connect(mapStateToProps)(AddCaption);

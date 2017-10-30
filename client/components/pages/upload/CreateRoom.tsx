@@ -1,17 +1,30 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
+import { List } from 'immutable'
 
-import EditThumbnailModal from './EditThumbnailModal.react'
-import CreateRoomThumbnail from './CreateRoomThumbnail.react'
-import Icon from '../../shared/Icon.react'
-import Select from '../../shared/Select.react'
-import TagsInput from '../../room/edit/TagsInput.react'
+import EditThumbnailModal from './EditThumbnailModal'
+import CreateRoomThumbnail from './CreateRoomThumbnail'
+import Icon from '@components/shared/Icon'
+import Select from '@components/shared/Select'
+import TagsInput from '@components/room/edit/TagsInput'
 
-import { selectStackForUpload, updateNewStack, promptModal, UploadTypes } from '../../../actions'
+import { selectStackForUpload, updateNewStack } from '@actions/upload'
+import { promptModal } from '@actions/app'
+import Upload from '@models/state/upload'
+import CurrentUser from '@models/state/currentUser'
+import Stack from '@models/entities/stack'
+import { State, DispatchProps } from '@types'
 
-class CreateRoom extends React.Component {
+interface ConnectProps {
+    openStacks: List<Stack>
+    newStack: State
+}
 
-    constructor(props) {
+type Props = ConnectProps & DispatchProps
+
+class CreateRoom extends React.Component<Props> {
+
+    constructor(props: Props) {
         super(props)
 
         this.handleClose = this.handleClose.bind(this)
@@ -25,28 +38,28 @@ class CreateRoom extends React.Component {
 
     // Event handlers
 
-    updateTags(tags) {
+    updateTags(tags: List<string>) {
         this.props.dispatch(updateNewStack({ tags }))
     }
 
     handleClose() {
         // deselects new stack item
-        this.props.dispatch(selectStackForUpload(null))
+        this.props.dispatch(selectStackForUpload(-1))
     }
 
-    handleTitleChange(e) {
+    handleTitleChange(e: React.FormEvent<HTMLInputElement>) {
         this.props.dispatch(updateNewStack({ 
-            title: e.target.value.substring(0, 60)
+            title: e.currentTarget.value.substring(0, 60)
         }))
     }
 
-    handleStatusChange(value) {
+    handleStatusChange(value: string) {
         this.props.dispatch(updateNewStack({
             privacyStatus: value
         }))
     }
 
-    handleEditThumbnailClick(e) {
+    handleEditThumbnailClick() {
         this.props.dispatch(promptModal('edit-thumbnail'))
     }
 
@@ -54,21 +67,18 @@ class CreateRoom extends React.Component {
     // Render
 
     render() {
-        const { upload, stacks } = this.props
-
-        const newStack = upload.get('newStack')
+        const { newStack, openStacks } = this.props
 
         return (
             <div className="upload_create-room">
                 <EditThumbnailModal />
                 <div className="upload_subheader">
                     Make new room
-                    { stacks.size > 0 && <div onClick={this.handleClose}><Icon type="close" /></div> }
+                    { openStacks.size > 0 && <div onClick={this.handleClose}><Icon type="close" /></div> }
                 </div>
                 <div className="upload_create-room_form">
                     <div className="upload_create-room_left">
                         <div className="upload_create-room_thumb">
-                            <CreateRoomThumbnail upload={upload} file={upload.get(UploadTypes.MEDIA_ITEM, 'file')} />
                             <div className="upload_create-room_thumb_prompt" onClick={this.handleEditThumbnailClick}>
                                 Edit thumbnail
                             </div>
@@ -87,4 +97,11 @@ class CreateRoom extends React.Component {
     }
 }
 
-export default connect()(CreateRoom);
+function mapStateToProps(state: State): ConnectProps {
+    return {
+        openStacks: CurrentUser.openStacks(state),
+        newStack: Upload.get(state, 'newStack')
+    }
+}
+
+export default connect(mapStateToProps)(CreateRoom);

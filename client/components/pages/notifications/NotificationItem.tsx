@@ -1,16 +1,34 @@
-import React from 'react'
+import * as React from 'react'
 import { Link } from 'react-router'
 
-import { fromString } from '../../../utils'
-import Icon from '../../shared/Icon.react'
+import { fromString } from '@utils'
+import Icon from '@components/shared/Icon'
+import { State } from '@types'
 
-class NotificationItem extends React.Component {
+interface Props {
+    notification: State
+}
 
-    constructor(props) {
+interface ComponentState {
+    mountDate: Date
+}
+
+interface NotificationObject {
+    type: string
+    thumbnail_url: string
+    timestamp: number
+    stack: any
+    user: any
+    comment: any
+}
+
+class NotificationItem extends React.Component<Props, ComponentState> {
+
+    constructor(props: Props) {
         super(props);
         
         this.state = {
-            mountDate: null
+            mountDate: new Date()
         }
     }
 
@@ -21,7 +39,7 @@ class NotificationItem extends React.Component {
         });
     }
 
-    url(notification) {
+    url(notification: NotificationObject) {
         switch (notification.type) {
             case 'new_stack':
             case 'mentions':
@@ -31,11 +49,11 @@ class NotificationItem extends React.Component {
             case 'subscriptions':
                 return `/u/${notification.user.username}`
             default:
-                return null;
+                return '';
         }
     }
 
-    renderMessage(notification) {
+    renderMessage(notification: NotificationObject) {
         if (notification.type === 'new_stack') {
             return <span><strong>{notification.user.username}</strong>{` opened a new room: ${notification.stack.description}`}</span>
         } else if (notification.type === 'new_mediaitem') {
@@ -51,7 +69,7 @@ class NotificationItem extends React.Component {
     }
 
     render() {
-        const notification = this.props.notification.toJS()
+        const notification = this.props.notification.toJS() as NotificationObject
         const thumbStyle = { backgroundImage: notification.thumbnail_url ? `url(${notification.thumbnail_url})` : '' }
         return (
             <Link className="notification-item" to={this.url(notification)}> 

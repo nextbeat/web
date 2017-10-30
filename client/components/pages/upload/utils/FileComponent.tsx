@@ -10,7 +10,7 @@ interface FileComponentOptions {
 }
 
 interface ExternalProps {
-    file: File
+    file?: File
 }
 
 export interface FileComponentProps {

@@ -7,10 +7,10 @@ interface SupportProps {
     tokenError: string
     isResettingPassword: boolean
     passwordReset: boolean
-    passwordResetError: Error
+    passwordResetError: string
     isSendingResetRequest: boolean
     resetRequestSent: boolean
-    resetRequestError: Error
+    resetRequestError: string
     isSendingUnsubscribeRequest: boolean
     unsubscribeRequestSent: boolean
     unsubscribeRequestError: string

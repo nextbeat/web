@@ -1,12 +1,24 @@
-import React from 'react'
+import * as React from 'react'
 
-import Spinner from '../../shared/Spinner.react'
-import FileComponent from './utils/FileComponent.react'
-import { UploadTypes } from '../../../actions'
+import Spinner from '@components/shared/Spinner'
+import FileComponent, { FileComponentProps } from './utils/FileComponent'
+import Upload, { UploadType } from '@models/state/upload'
+import { State, DispatchProps } from '@types'
 
-class CreateRoomThumbnail extends React.Component {
+interface ConnectProps {
+    hasFile: boolean
+    isUploading: boolean
+    isDoneUploading: boolean
+    isDoneProcessing: boolean
+    thumbnailUrl: string
+    processedImageUrl: string
+}
 
-    constructor(props) {
+type Props = ConnectProps & DispatchProps & FileComponentProps
+
+class CreateRoomThumbnail extends React.Component<Props> {
+
+    constructor(props: Props) {
         super(props)
 
         this.renderDefaultCompatibleThumbnail = this.renderDefaultCompatibleThumbnail.bind(this)
@@ -44,13 +56,12 @@ class CreateRoomThumbnail extends React.Component {
     }
 
     renderDefaultIncompatibleThumbnail() {
-        const { upload } = this.props
-        var url = upload.processedImageUrl()
+        const { processedImageUrl, isDoneProcessing } = this.props
 
-        if (upload.isDoneProcessing()) {
-            return <div className="upload_create-room_thumb-custom-img" style={{ backgroundImage: `url(${url})`}}></div>
+        if (isDoneProcessing) {
+            return <div className="upload_create-room_thumb-custom-img" style={{ backgroundImage: `url(${processedImageUrl})`}}></div>
         } else {
-            return <Spinner type="grey" />
+            return <Spinner styles={["grey"]} />
         }
     }
 
@@ -60,26 +71,25 @@ class CreateRoomThumbnail extends React.Component {
     }
 
     renderCustomThumbnail() {
-        const { upload } = this.props 
+        const { isUploading, isDoneUploading, thumbnailUrl } = this.props 
 
-        if (upload.isUploading(UploadTypes.THUMBNAIL)) {
-            return <Spinner type="grey" />
-        } else if (upload.isDoneUploading(UploadTypes.THUMBNAIL)) {
+        if (isUploading) {
+            return <Spinner styles={["grey"]} />
+        } else if (isDoneUploading) {
             return <div 
                         className="upload_create-room_thumb-custom-img"
-                        style={{ backgroundImage: `url(${upload.get(UploadTypes.THUMBNAIL, 'url')})` }}
+                        style={{ backgroundImage: `url(${thumbnailUrl})` }}
                     ></div>
         }
         return null;
     }
 
     render() {
-        const { upload } = this.props
-        const isCustom = upload.hasFile(UploadTypes.THUMBNAIL)
+        const { hasFile } = this.props
 
         return (
             <div className="upload_create-room_thumb-inner" id="upload_create-room_thumb-inner">
-                { isCustom ? this.renderCustomThumbnail() : this.renderDefaultThumbnail() }
+                { hasFile ? this.renderCustomThumbnail() : this.renderDefaultThumbnail() }
             </div>
         )
     }
@@ -87,12 +97,14 @@ class CreateRoomThumbnail extends React.Component {
 
 const fileOptions = {
 
-    onImageLoad: function(src) {
-        document.getElementById('upload_create-room_thumb-image').src = src
+    onImageLoad: function(src: string) {
+        let imageElement = document.getElementById('upload_create-room_thumb-image') as HTMLImageElement
+        imageElement.src = src
     },
 
-    onVideoLoad: function(src, video) {
-        document.getElementById('upload_create-room_thumb-video').src = src
+    onVideoLoad: function(src: string) {
+        let videoElement = document.getElementById('upload_create-room_thumb-video') as HTMLVideoElement
+        videoElement.src = src
     }
 }
 

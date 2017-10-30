@@ -1,7 +1,7 @@
 import { List, Map } from 'immutable'
 
 import { State } from '@types'
-import { createPaginationSelector, EntityProps, withEntityMap } from '@models/utils'
+import { createEntityListSelector, EntityProps, withEntityMap } from '@models/utils'
 import { StateModelFactory } from '@models/state/base'
 import Stack from '@models/entities/stack'
 
@@ -38,6 +38,6 @@ const keyMapPrefix = ['pages', 'tag']
 
 export default class Tag extends StateModelFactory<TagProps>(keyMap, keyMapPrefix) {
 
-    static stacks = createPaginationSelector(Tag, 'stackIds', Stack)
+    static stacks = createEntityListSelector(Tag, 'stackIds', Stack)
 
 }

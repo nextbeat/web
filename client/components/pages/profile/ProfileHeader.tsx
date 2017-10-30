@@ -1,20 +1,29 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import { secureUrl } from '../../../utils'
-import { CurrentUser, App } from '../../../models'
+import Subscribe from '@components/shared/Subscribe'
+import Icon from '@components/shared/Icon'
 
-import Subscribe from '../../shared/Subscribe.react'
-import Icon from '../../shared/Icon.react'
+import CurrentUser from '@models/state/currentUser'
+import App from '@models/state/app'
+import User from '@models/entities/user'
+import { secureUrl } from '@utils'
+import { State } from '@types'
 
-class ProfileHeader extends React.Component {
+interface OwnProps {
+    user: User
+}
 
-    constructor(props) {
-        super(props)
-    }
+interface ConnectProps {
+    isCurrentUser: boolean
+}
 
-    renderBio(user) {
+type Props = OwnProps & ConnectProps
+
+class ProfileHeader extends React.Component<Props> {
+
+    renderBio(user: User) {
         let userHasInfo = user.get('website_url') || user.get('full_name') || user.get('description')
         let secureWebsiteUrl = secureUrl(user.get('website_url'))
 
@@ -32,14 +41,15 @@ class ProfileHeader extends React.Component {
     }
 
     render() {
-        const { user, currentUser } = this.props 
+        const { user, isCurrentUser } = this.props 
 
         let profpicUrl = user.thumbnail('large').get('url')
         let profpicStyle = { backgroundImage: profpicUrl ? `url(${profpicUrl})` : ''}
 
         let coverUrl = user.coverImage('large').get('url')
+        let coverStyle: any = {}
         if (coverUrl) {
-            var coverStyle = {
+            coverStyle = {
                 background: `url(${coverUrl})`,
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'cover',
@@ -58,7 +68,7 @@ class ProfileHeader extends React.Component {
 
                     <div className="profile_info">
                         <div className="profile_username profile_info-item">
-                            { user.get('username') } { currentUser.isUser(user) ? <Link className="btn btn-gray btn-edit-profile" to="/edit-profile">Edit Profile</Link> : <Subscribe user={user} /> }
+                            { user.get('username') } { isCurrentUser ? <Link className="btn btn-gray btn-edit-profile" to="/edit-profile">Edit Profile</Link> : <Subscribe user={user} /> }
                         </div>
                         <div className="profile_subscribers profile_info-item">
                             <span className="profile_subscriber-count">{`${user.get('subscriber_count')}`}</span> {`subscriber${user.get('subscriber_count') !== 1 ? 's' : ''}` } 
@@ -72,10 +82,9 @@ class ProfileHeader extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     return {
-        currentUser: new CurrentUser(state),
-        app: new App(state)
+        isCurrentUser: CurrentUser.isUser(state, ownProps.user)
     }
 }
 

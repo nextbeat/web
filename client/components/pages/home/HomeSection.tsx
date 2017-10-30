@@ -1,26 +1,55 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import { List, Map } from 'immutable'
 
-import LargeStackItem from '../../shared/LargeStackItem.react'
-import Icon from '../../shared/Icon.react'
-import { App, CurrentUser } from '../../../models'
+import LargeStackItem from '@components/shared/LargeStackItem'
+import Icon from '@components/shared/Icon'
+
+import App from '@models/state/app'
+import CurrentUser from '@models/state/currentUser'
+import Home from '@models/state/pages/home'
+import Stack from '@models/entities/stack'
+import { State } from '@types'
 
 const DEFAULT_ITEM_WIDTH = 220;
 const MARGIN_WIDTH = 10;
 const BADGE_OFFSET_LEFT = 5;
 const BADGE_OFFSET_TOP = 5;
 
-class HomeSection extends React.Component {
+interface OwnProps {
+    index: number
+}
 
-    constructor(props) {
+interface ConnectProps {
+    width: string
+    isLoggedIn: boolean
+
+    stacks: List<Stack>
+    section: State
+}
+
+type Props = OwnProps & ConnectProps
+
+interface ComponentState {
+    leftIndex: number // index of the current leftmost visible stack
+    numAcross: number // number of visible stacks
+    itemWidth: number // width of a stack item
+    shouldAnimate: boolean // boolean determining whether the stacks list should animate a shift in stack index
+}
+
+class HomeSection extends React.Component<Props, ComponentState> {
+
+    private _node: HTMLDivElement
+
+    constructor(props: Props) {
         super(props);
 
         this.state = {
-            leftIndex: 0, // index of the current leftmost visible stack
-            numAcross: 0, // number of visible stacks
-            itemWidth: DEFAULT_ITEM_WIDTH, // width of a stack item
-            shouldAnimate: true, // boolean determining whether the stacks list should animate a shift in stack index
+            leftIndex: 0, 
+            numAcross: 0, 
+            itemWidth: DEFAULT_ITEM_WIDTH, 
+            shouldAnimate: true
         }
 
         this.navLeft = this.navLeft.bind(this)
@@ -35,8 +64,8 @@ class HomeSection extends React.Component {
         this.resize(node, content);
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (this.props.currentUser.isLoggedIn() !== prevProps.currentUser.isLoggedIn()) {
+    componentDidUpdate(prevProps: Props) {
+        if (this.props.isLoggedIn !== prevProps.isLoggedIn) {
             // recalculate sizes to account for sidebar
             const node = $(this._node);
             const content = node.parent();
@@ -50,12 +79,12 @@ class HomeSection extends React.Component {
 
     // Resize
 
-    resize(node, parent) {
+    resize(node: JQuery<HTMLElement>, parent: JQuery<HTMLElement>) {
         const { leftIndex: oldLeftIndex } = this.state 
-        const { stacks, app } = this.props 
+        const { stacks, width } = this.props 
 
-        const parentWidth = parent.width()
-        const appWidth = app.get('width')
+        const parentWidth = parent.width() || 0
+        const appWidth = width
         let sectionWidth = parentWidth - 40;
 
         /**
@@ -120,7 +149,7 @@ class HomeSection extends React.Component {
         const listStyle = shouldAnimate ? { left: leftOffset, transitionDuration: "0.5s" } : { left: leftOffset }
 
         return (
-            <div className={`home_section ${highlightedKlass}`} ref={c => this._node = c}>
+            <div className={`home_section ${highlightedKlass}`} ref={c => { if (c) { this._node = c } }}>
                 <div className="home_section_inner" style={{width: innerWidth }} >
                     <div className="home_section_header">
                         <div className="home_section_name"><Link to={sectionUrl}>{section.get('name')}</Link></div>
@@ -142,10 +171,12 @@ class HomeSection extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     return {
-        app: new App(state),
-        currentUser: new CurrentUser(state)
+        width: App.get(state, 'width'),
+        isLoggedIn: CurrentUser.isLoggedIn(state),
+        stacks: Home.stacks(state, ownProps.index),
+        section: Home.get(state, 'sections', List()).get(ownProps.index, Map<string, any>())
     }
 }
 

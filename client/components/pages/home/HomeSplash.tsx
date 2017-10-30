@@ -1,10 +1,6 @@
-import React from 'react';
+import * as React from 'react';
 
 class HomeSplash extends React.Component {
-
-    constructor(props) {
-        super(props)
-    }
 
     render() {
         return (

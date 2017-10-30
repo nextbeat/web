@@ -1,15 +1,23 @@
-import React from 'react'
+import * as React from 'react'
 import { findDOMNode } from 'react-dom'
 import { connect } from 'react-redux'
 import { parse } from 'querystring'
-import get from 'lodash/get'
+import get from 'lodash-es/get'
 
-import { Support } from '../../../models'
-import { sendEmailUnsubscribeRequest } from '../../../actions'
+import Support from '@models/state/pages/support'
+import { sendEmailUnsubscribeRequest } from '@actions/pages/support'
+import { State, DispatchProps, RouteProps } from '@types'
 
-class PasswordResetRequest extends React.Component {
+interface ConnectProps {
+    unsubscribeRequestSent: boolean
+    unsubscribeRequestError: string
+}
 
-    constructor(props) {
+type Props = ConnectProps & DispatchProps & RouteProps<{}>
+
+class PasswordResetRequest extends React.Component<Props> {
+
+    constructor(props: Props) {
         super(props);
         
         this.submitRequest = this.submitRequest.bind(this);
@@ -18,17 +26,17 @@ class PasswordResetRequest extends React.Component {
 
     // Actions
 
-    submitRequest(e) {
+    submitRequest() {
         const queryString = this.props.location.search.substring(1);
-        const uuid = get(parse(queryString), 'uuid', '')
-        const signature = get(parse(queryString), 'sig', '')
+        const uuid = get(parse(queryString), 'uuid', '') as string
+        const signature = get(parse(queryString), 'sig', '') as string
 
         this.props.dispatch(sendEmailUnsubscribeRequest(uuid, signature))
     }
 
     // Render
 
-    renderRequestError(error) {
+    renderRequestError() {
         return <p className="has-error">There was an error processing your request. Please try again in a few minutes.</p>
     }
 
@@ -37,7 +45,6 @@ class PasswordResetRequest extends React.Component {
     }
 
     renderRequest() {
-        const { support } = this.props;
         return (
             <div>
                 <p>Click the button below to unsubscribe from all Nextbeat email notifications.</p>
@@ -47,15 +54,15 @@ class PasswordResetRequest extends React.Component {
     }
 
     render() {
-        const { support } = this.props;
+        const { unsubscribeRequestError, unsubscribeRequestSent } = this.props;
         return (
             <div className="support content">
                 <div className="content_inner">
                     <div className="content_header">
                         Unsubscribe
                     </div>
-                { support.get('unsubscribeRequestSent') ? this.renderRequestSent() : 
-                    ( support.get('unsubscribeRequestError') ? this.renderRequestError() : this.renderRequest() ) 
+                { unsubscribeRequestSent ? this.renderRequestSent() : 
+                    ( unsubscribeRequestError ? this.renderRequestError() : this.renderRequest() ) 
                 }
                 </div>
             </div>
@@ -64,9 +71,10 @@ class PasswordResetRequest extends React.Component {
 
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: State): ConnectProps {
     return {
-        support: new Support(state)
+        unsubscribeRequestError: Support.get(state, 'unsubscribeRequestError'),
+        unsubscribeRequestSent: Support.get(state, 'unsubscribeRequestSent')
     }
 }
 
