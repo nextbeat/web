@@ -1,17 +1,21 @@
-import React from 'react'
+import * as React from 'react'
 import { connect } from 'react-redux'
 import { List } from 'immutable'
 
-import { Notifications as NotificationsModel } from '../../models'
-import { loadActivity, clearNotifications } from '../../actions'
-import Spinner from '../shared/Spinner.react' 
-import NotificationItem from './notifications/NotificationItem.react'
+import NotificationsModel from '@models/state/notifications'
+import { loadActivity, clearNotifications } from '@actions/notifications'
+import Spinner from '@components/shared/Spinner' 
+import NotificationItem from './notifications/NotificationItem'
+import { State, DispatchProps } from '@types'
 
-class Notifications extends React.Component {
+interface ConnectProps {
+    activity: List<State>
+    isFetching: boolean
+}
 
-    constructor(props) {
-        super(props);
-    }
+type Props = ConnectProps & DispatchProps
+
+class Notifications extends React.Component<Props> {
 
     componentDidMount() {
         this.props.dispatch(loadActivity())
@@ -27,7 +31,7 @@ class Notifications extends React.Component {
         return (
             <div className="notifications content" id="notifications">
                 <div className="content_inner">
-                    { isFetching && <Spinner type="grey" /> }
+                    { isFetching && <Spinner styles={["grey"]} /> }
                     { !isFetching &&
                         <div className="notifications_list">
                             { activity.map((notification, idx) => 
@@ -46,11 +50,10 @@ class Notifications extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
-    const notifications = new NotificationsModel(state)
+function mapStateToProps(state: State) {
     return {
-        activity: notifications.activity(),
-        isFetching: notifications.get('isFetching')
+        activity: NotificationsModel.activity(state),
+        isFetching: NotificationsModel.get(state, 'isFetching')
     }
 }
 

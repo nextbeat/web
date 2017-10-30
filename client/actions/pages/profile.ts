@@ -53,7 +53,7 @@ function fetchStacksForUser(username: string, pagination: Pagination) {
     }
 }
 
-export function loadStacksForUser(username: string): ThunkAction {
+export function loadStacksForUser(username?: string): ThunkAction {
      return (dispatch, getState) => {
         if (!username) {
             username = Profile.entity(getState()).get('username')

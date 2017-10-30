@@ -1,7 +1,7 @@
 import { List } from 'immutable'
 
 import { StateModelFactory } from '@models/state/base'
-import { EntityProps, withEntityMap, createEntityListSelector } from '@models/utils'
+import { EntityProps, withEntityMap, createEntityListSelector, createSelector } from '@models/utils'
 import UserEntity from '@models/entities/user'
 import StackEntity from '@models/entities/stack'
 import { State } from '@types'
@@ -24,14 +24,12 @@ const keyMapPrefix = ['pages', 'profile']
 
 export default class Profile extends StateModelFactory<ProfileProps>(keyMap, keyMapPrefix) {
 
-    static entity(state: State) {
-        return new UserEntity(this.get(state, 'id'), state.get('entities'))
-    }
+    static user = createSelector(
+        (state: State) => new UserEntity(Profile.get(state, 'id'), state.get('entities'))
+    )(
+        (state: State) => Profile.get(state, 'id')
+    )
 
-    static thumbnail(state: State) {
-        return this.entity(state).thumbnail('medium')
-    }
-
-    static stack = createEntityListSelector(Profile, 'stackIds', StackEntity)
+    static stacks = createEntityListSelector(Profile, 'stackIds', StackEntity)
 
 }
