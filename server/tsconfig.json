@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "rootDir": "../"
+    },
+    "extends": "../config/tsconfig.base",
+    "include": [
+        "../server",
+        "../routes",
+        "../client"
+    ]
+}

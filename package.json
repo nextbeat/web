@@ -9,7 +9,8 @@
     "build:app": "webpack --config config/webpack.config.development",
     "build:dll": "webpack --config config/webpack.dll.development",
     "build": "npm run clean && npm run build:dll && npm run build:app",
-    "server": "gulp server"
+    "build-server": "tsc -p server",
+    "server": "nodemon dist/server.js"
   },
   "dependencies": {
     "autotrack": "^2.0.1",

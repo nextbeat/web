@@ -30,9 +30,5 @@
         "types": [
             "bluebird-global", "node"
         ]
-    },
-    "include": [
-        "./client/",
-        "./routes/"
-    ]
+    }
 }

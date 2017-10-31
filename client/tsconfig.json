@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "rootDir": "../"
+    },
+    "extends": "../config/tsconfig.base",
+    "include": [
+        "../client/",
+        "../routes/"
+    ]
+}
