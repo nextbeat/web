@@ -41,7 +41,7 @@ interface ComponentState {
 }
 
 // extract relevant position data from touch event
-function processEventData(evt: JQuery.Event) {
+function processEventData(evt: JQueryMouseEventObject) {
     if ('touches' in evt.originalEvent) {
         if ((evt.originalEvent as any).touches.length !== 1) {
             return null; 
@@ -157,7 +157,7 @@ class AddCaption extends React.Component<Props, ComponentState> {
         })
     }
 
-    handleMouseDown(e: JQuery.Event) {
+    handleMouseDown(e: JQueryMouseEventObject) {
         var caption = document.getElementById('player_caption')
         if (!caption) {
             return;
@@ -176,7 +176,7 @@ class AddCaption extends React.Component<Props, ComponentState> {
         }
     }
 
-    handleMouseMove(e: JQuery.Event) {
+    handleMouseMove(e: JQueryMouseEventObject) {
         const { isDraggingCaption, offsetY, startY } = this.state 
         const { fileType, mediaItem, dispatch } = this.props 
 
@@ -205,7 +205,7 @@ class AddCaption extends React.Component<Props, ComponentState> {
         }
     }
 
-    handleMouseUp(e: JQuery.Event) {
+    handleMouseUp(e: JQueryMouseEventObject) {
         this.setState({
             isDraggingCaption: false
         })

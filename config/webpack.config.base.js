@@ -17,15 +17,15 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(j|t)sx?$/,
+                test: /\.tsx?$/,
                 exclude: /node_modules\/(?!(autotrack|dom-utils))/,
-                loader: 'awesome-typescript-loader',
+                loader: 'ts-loader',
             },
             {
                 test: /\.scss$/,
                 exclude: /node_modules/,
                 loader: ExtractTextPlugin.extract({
-                    loader: [
+                    use: [
                         {
                             loader: 'css-loader',
                             query: { importLoaders: 2 }
@@ -41,6 +41,24 @@ module.exports = {
                 exclude: /node_modules/
             }
         ]
+    },
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js', '.json'],
+        alias: {
+            "@client": absolutePath(''),
+            "@actions": absolutePath('actions'),
+            "@analytics": absolutePath('analytics'),
+            "@components": absolutePath('components'),
+            "@eddy": absolutePath('eddy'),
+            "@errors": absolutePath('errors'),
+            "@models": absolutePath('models'),
+            "@reducers": absolutePath('reducers'),
+            "@schemas": absolutePath('schemas'),
+            "@types": absolutePath('types'),
+            "@upload": absolutePath('upload'),
+            "@utils": absolutePath('utils')
+        },
+        symlinks: false
     },
     plugins: [
         new DllReferencePlugin({

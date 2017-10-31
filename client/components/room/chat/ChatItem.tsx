@@ -98,7 +98,7 @@ class ChatItem extends React.PureComponent<Props> {
         return (
             <div className="chat_item_header">
                 <div className="chat_item_header_main">
-                    { isBot && <img className="chat_item_emoji" src={robot} /> }
+                    { isBot && <img className="chat_item_emoji" src={robot as any} /> }
                     <div className="chat_item_header_info">
                         <span 
                             onClick={() => { !isBot && handleSelectUsername && handleSelectUsername(username) }} 

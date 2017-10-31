@@ -55,14 +55,14 @@ class Dropdown extends React.Component<AllProps> {
         }
     }
 
-    handleKeyUp(e: JQuery.Event) {
+    handleKeyUp(e: JQueryEventObject) {
         const { type, dispatch } = this.props
         if (e.which === 27) { // esc
             this.handleClose()
         }
     }
 
-    hideDropdown(e: JQuery.Event) {
+    hideDropdown(e: JQueryEventObject) {
         const { type, dispatch } = this.props
         let $dropdown = $(`#dropdown-${type}`)
         let $toggle = $(`.dropdown-${type}_toggle`)

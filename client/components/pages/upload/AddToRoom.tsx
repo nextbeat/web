@@ -49,7 +49,7 @@ class AddToRoom extends React.Component<Props, ComponentState> {
 
     // Resize
 
-    resize(node: JQuery<HTMLElement>) {
+    resize(node: JQuery) {
         const { stacks } = this.props 
 
         const nodeWidth = node.width() || 0

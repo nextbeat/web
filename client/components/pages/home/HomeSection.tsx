@@ -79,7 +79,7 @@ class HomeSection extends React.Component<Props, ComponentState> {
 
     // Resize
 
-    resize(node: JQuery<HTMLElement>, parent: JQuery<HTMLElement>) {
+    resize(node: JQuery, parent: JQuery) {
         const { leftIndex: oldLeftIndex } = this.state 
         const { stacks, width } = this.props 
 

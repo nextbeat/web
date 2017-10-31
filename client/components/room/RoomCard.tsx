@@ -100,7 +100,7 @@ class RoomCard extends React.Component<AllProps, RoomCardState> {
         $(window).off(`resize.room-card-${id}`, this.handleResize)
     }
 
-    handleFullScreenChange(e: JQuery.Event) {
+    handleFullScreenChange(e: JQueryEventObject) {
         if (isFullScreen()) {
             $(document).on('keydown.room_card', this.handleKeyDown)
         } else {
@@ -108,7 +108,7 @@ class RoomCard extends React.Component<AllProps, RoomCardState> {
         }
     }
 
-    handleKeyDown(e: JQuery.Event) {
+    handleKeyDown(e: JQueryEventObject) {
         const { indexOfSelectedMediaItem, mediaItemsSize, id, dispatch } = this.props 
 
         if (e.keyCode === 37) { // left arrow

@@ -65,7 +65,7 @@ class Decoration extends React.PureComponent<Props, State> {
 
     // Resize
 
-    resize(node: JQuery<HTMLElement>) {
+    resize(node: JQuery) {
         const parent = node.parent()
         const caption = node.find('.player_caption')
 

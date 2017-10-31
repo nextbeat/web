@@ -90,7 +90,7 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
     componentDidMount() {
         // Prevents document from scrolling when inside chat history element
         // Sourced from http://stackoverflow.com/a/20520619
-        $(`#${scrollComponentId(this.props)}`).on('mousewheel DOMMouseScroll', function(e: JQuery.Event) {
+        $(`#${scrollComponentId(this.props)}`).on('mousewheel DOMMouseScroll', function(e: JQueryEventObject) {
             var direction = (e.originalEvent as MouseWheelEvent).wheelDelta || -(e.originalEvent as MouseWheelEvent).detail;
             if ((direction > 0 && this.scrollTop === 0
                 || direction <= 0 && this.scrollTop == this.scrollHeight-this.offsetHeight)

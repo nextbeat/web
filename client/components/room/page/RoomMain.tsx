@@ -50,7 +50,7 @@ class RoomMain extends React.Component<Props> {
         $(document).off('keydown', this.handleKeyDown);
     }
 
-    handleKeyDown(e: JQuery.Event) {
+    handleKeyDown(e: JQueryKeyEventObject) {
         const { dispatch, roomId, indexOfSelectedMediaItem, mediaItemsSize } = this.props 
 
         if (['textarea', 'input'].indexOf((e.target as any).tagName.toLowerCase()) !== -1) {
