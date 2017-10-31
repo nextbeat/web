@@ -8,7 +8,7 @@ import Image from './Image'
 import ItemReference from './ItemReference'
 import Icon from '@components/shared/Icon'
 import Spinner from '@components/shared/Spinner'
-import CounterInner from '@components/room/counter/CounterInne'
+import CounterInner from '@components/room/counter/CounterInner'
 
 import { goBackward, goForward } from '@actions/room'
 import { selectDetailSection } from '@actions/pages/room'
@@ -158,7 +158,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                 <div className="player_navigation">
                     <div style={{ display: 'flex', width: '100%', alignItems: 'stretch' }}>
                         <div className={`player_nav-button player_nav-backward ${leftDisabledClass}`} onClick={this.handleBackward}><Icon type="arrow-back" /></div>
-                        <div className="player_nav-counter" onClick={this.handleCounterClick}><CounterInner room={room} /></div>
+                        <div className="player_nav-counter" onClick={this.handleCounterClick}><CounterInner roomId={roomId} /></div>
                         <div className={`player_nav-button player_nav-forward ${rightDisabledClass}`} onClick={this.handleForward}><Icon type="arrow-forward" /></div>
                     </div>
                 </div>

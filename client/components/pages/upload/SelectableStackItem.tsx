@@ -53,7 +53,7 @@ class SelectableStackItem extends React.Component<Props> {
                     </div>
                 </div>
                 <div className="item-room-large_info">
-                    <div className="item-room-large_description item-room-large-new_description">Make a new room with this {upload.fileType()}.</div>
+                    <div className="item-room-large_description item-room-large-new_description">Make a new room with this {fileType}.</div>
                 </div>
             </div>
         )

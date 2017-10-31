@@ -6,8 +6,8 @@
     "clean": "rimraf client/public/js/*",
     "prestart": "webpack --config config/webpack.dll.development",
     "start": "webpack-dev-server --progress --colors --port 9090 --config config/webpack.config.development",
-    "build:app": "webpack --config config/webpack.config.production",
-    "build:dll": "webpack --config config/webpack.dll.production",
+    "build:app": "webpack --config config/webpack.config.development",
+    "build:dll": "webpack --config config/webpack.dll.development",
     "build": "npm run clean && npm run build:dll && npm run build:app",
     "server": "gulp server"
   },

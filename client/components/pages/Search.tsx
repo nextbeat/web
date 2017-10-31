@@ -102,11 +102,11 @@ class SearchComponent extends React.Component<Props, ComponentState> {
 
     // Events
 
-    handleInputChange(e) {
-        this.setState({ query: e.target.value })
+    handleInputChange(e: React.FormEvent<HTMLInputElement>) {
+        this.setState({ query: e.currentTarget.value })
     }
 
-    handleInputKeyPress(e) {
+    handleInputKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.charCode === 13) {
             e.preventDefault();
             browserHistory.replace({

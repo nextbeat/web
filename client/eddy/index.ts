@@ -16,7 +16,8 @@ import {
     identifyEddy, 
     joinRoom
 } from '@actions/eddy'
-import { Room, CurrentUser } from '@models'
+import Room from '@models/state/room'
+import CurrentUser from '@models/state/currentUser'
 import { EddyError, TimeoutError } from '@errors'
 import { State, Store, Dispatch } from '@types'
 
@@ -377,7 +378,7 @@ export default class EddyClient {
                 }
 
                 let loadedRooms = Room.loadedRoomIds(this.getState())
-                loadedRooms.forEach((roomId) => {
+                loadedRooms.forEach((roomId: number) => {
                     this.dispatch(joinRoom(roomId))
                 });
             })

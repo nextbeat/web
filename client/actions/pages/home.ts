@@ -14,7 +14,7 @@ export type HomeActionAll =
  **********/
 
 function onHomeSuccess(store: Store, next: Dispatch, action: HomeAction, response: any) {
-    const stacks = response.sections.map(s => s.stacks)
+    const stacks = response.sections.map((s: any) => s.stacks)
     next({
         type: ActionType.ENTITY_UPDATE,
         response: normalize(flatten(stacks), Schemas.STACKS)

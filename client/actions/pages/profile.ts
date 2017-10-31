@@ -56,7 +56,7 @@ function fetchStacksForUser(username: string, pagination: Pagination) {
 export function loadStacksForUser(username?: string): ThunkAction {
      return (dispatch, getState) => {
         if (!username) {
-            username = Profile.entity(getState()).get('username')
+            username = Profile.user(getState()).get('username')
         }
         const fetchFn = fetchStacksForUser.bind(this, username)
         loadPaginatedObjects(['pages', 'profile', 'pagination', 'stacks'], fetchFn, 24)(dispatch, getState);

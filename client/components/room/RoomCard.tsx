@@ -4,9 +4,9 @@ import { Link } from 'react-router'
 import { List } from 'immutable'
 
 import RoomPlayer from './player/RoomPlayer'
-import ScrollableChatHistory from './chat/ScrollableChatHistory.react'
-import Counter from './counter/Counter.react'
-import RoomCardHeader from './card/RoomCardHeader.react'
+import ScrollableChatHistory from './chat/ScrollableChatHistory'
+import Counter from './counter/Counter'
+import RoomCardHeader from './card/RoomCardHeader'
 
 import { loadRoom, clearRoom, selectMediaItem, goForward, goBackward } from '@actions/room'
 import Room from '@models/state/room'
@@ -154,7 +154,7 @@ class RoomCard extends React.Component<AllProps, RoomCardState> {
                     { title }
                 </Link>
                 }
-                <RoomCardHeader roomId={id} />
+                <RoomCardHeader id={id} />
                 <div className="room-card_main">
                     <RoomPlayer roomId={id} shouldAutoplayVideo={shouldAutoplayVideo} isRoomCard={true} />
                     <ScrollableChatHistory roomId={id} style='compact' />

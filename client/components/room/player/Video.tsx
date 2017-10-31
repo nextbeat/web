@@ -23,7 +23,7 @@ function canPlayHlsNative(videoElem: HTMLVideoElement) {
 
 interface OwnProps {
     video: State
-    autoplay: boolean
+    autoplay?: boolean
     roomId?: number
     decoration?: State
     alternateVideo?: State
@@ -147,7 +147,7 @@ class Video extends React.Component<Props, VideoState> {
         // iOS does not do custom controls well
         this.setState({
             isIOSDevice: isIOS,
-            isPlaying: autoplay && !(isAndroid && browser === 'Chrome'),
+            isPlaying: (autoplay && !(isAndroid && browser === 'Chrome')) || false,
         })
     }
 
@@ -335,7 +335,7 @@ class Video extends React.Component<Props, VideoState> {
                 hls.on(Hls.Events.MEDIA_ATTACHED, function () {
                     hls.loadSource(video.get('url'));
                     hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-                        video.play();
+                        videoPlayer.play();
                     });
                 });
                 this.setState({ hls })

@@ -560,11 +560,12 @@ function navigate(roomId: number, isForward: boolean): ThunkAction {
         }
 
         let selectedIndex = Room.indexOfMediaItemId(state, roomId, selectedId)
+        let numIds = Room.mediaItemsSize(state, roomId)
 
         if (selectedIndex == -1) {
             return null;
         }
-        if (isForward && selectedIndex === ids.size-1) {
+        if (isForward && selectedIndex === numIds-1) {
             return null;
         }
         if (!isForward && selectedIndex === 0) {

@@ -10,7 +10,7 @@ import {
 } from '@actions/types'
 import * as Schema from '@schemas'
 import { loadPaginatedObjects } from '@actions/utils'
-import { Section } from '@models'
+import Section from '@models/state/pages/section'
 
 export type SectionActionAll = 
     SectionAction |

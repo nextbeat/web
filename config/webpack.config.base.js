@@ -5,11 +5,11 @@ const ManifestPlugin        = require('webpack-manifest-plugin');
 const CommonsChunkPlugin    = webpack.optimize.CommonsChunkPlugin;
 const DllReferencePlugin    = webpack.DllReferencePlugin;
 
-let absolutePath(p) => path.resolve(__dirname, '../client', p) 
+let absolutePath = (p) => path.resolve(__dirname, '../client', p) 
 
 module.exports = {
     entry: {
-        app: './client/app.js'
+        app: './client/app.tsx'
     },
     output: {
         path: absolutePath('public')
@@ -17,7 +17,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(j|t)s$/,
+                test: /\.(j|t)sx?$/,
                 exclude: /node_modules\/(?!(autotrack|dom-utils))/,
                 loader: 'awesome-typescript-loader',
             },
@@ -42,16 +42,6 @@ module.exports = {
             }
         ]
     },
-    resolve: {
-        alias: {
-            '@client': absolutePath('')
-            '@actions': absolutePath('actions'),
-            '@components': absolutePath('components'),
-            '@models': absolutePath('models'),
-            '@reducers': absolutePath('reducers'),
-            '@schemas': absolutePath('schemas')
-        }
-    }
     plugins: [
         new DllReferencePlugin({
             context: process.cwd(),

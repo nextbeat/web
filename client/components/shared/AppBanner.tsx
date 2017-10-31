@@ -13,7 +13,7 @@ import { State, DispatchProps } from '@types'
 const STORE_URL = "https://itunes.apple.com/us/app/nextbeat/id1101932727?mt=8"
 
 interface Props {
-    url: string
+    url?: string
     isIOS: boolean
     browser: string
     version: string

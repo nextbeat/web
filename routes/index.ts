@@ -1,23 +1,20 @@
 import * as React from 'react'
 import { Route, Redirect } from 'react-router'
-import assign from 'lodash-es/assign'
-import last from 'lodash-es/last'
 
 import App from '../client/components/App'
-import AppModel from '../client/models/state/app'
-
 import { gaPage } from '../client/actions/ga'
+import { Store } from '../client/types'
 
 // require.ensure shim for server
-if (typeof require.ensure !== "function") require.ensure = (d,c) => c(require)
+if (typeof require.ensure !== "function") require.ensure = (d: any, c: any) => c(require)
 
-export default store => {
+export default (store: Store) => {
    
     function analyticsRoute(path: string | undefined, getComponent: (cb: any) => void) {
         return {
             path,
-            getComponent: (nextState, cb) => { getComponent(cb) },
-            onEnter: function(nextState, replace) {
+            getComponent: (nextState: any, cb: any) => { getComponent(cb) },
+            onEnter: function(nextState: any, replace: any) {
                 if (typeof window !== 'undefined') { 
                     store.dispatch(gaPage())
                 }
@@ -28,15 +25,15 @@ export default store => {
     return [
         {
             'path': 'internal/access',
-            getComponent: (nextState, cb) => {
+            getComponent: (nextState: any, cb: any) => {
                 let environment = process.env.NODE_ENV || 'development'
                 if (environment !== 'development') {
-                    require.ensure([], (require) => {
-                        return cb(null, require('../client/components/pages/NoMatch.react').default)
+                    import('../client/components/pages/NoMatch').then(component => {
+                        return cb(null, component.default)
                     })
                 } else {
-                    require.ensure([], (require) => {
-                        return cb(null, require('../client/components/pages/InternalAccess.react').default)
+                    import('../client/components/pages/InternalAccess').then(component => {
+                        return cb(null, component.default)
                     })
                 }
             }
@@ -45,13 +42,13 @@ export default store => {
             component: App,
             childRoutes: [
                 analyticsRoute('/', cb => {
-                    require.ensure([], (require) => {
-                        return cb(null, require('../client/components/pages/Home.react').default)
+                    import(/* webpackChunkName: 'home' */ '../client/components/pages/Home').then(component => {
+                        return cb(null, component.default)
                     })
                 }),
                 analyticsRoute('s/:slug', cb => {
-                    import('../client/components/pages/Section').then(component => {
-                        return cb(null, component)
+                    import(/* webpackChunkName: 'section' */ '../client/components/pages/Section').then(component => {
+                        return cb(null, component.default)
                     })
                 }),
                 {
@@ -60,24 +57,24 @@ export default store => {
                         {
                             path: ':hid',
                             indexRoute: analyticsRoute(undefined, cb => {
-                                require.ensure([], (require) => {
-                                    return cb(null, require('../client/components/pages/RoomPage.react').default)
+                                import(/* webpackChunkName: 'room' */ '../client/components/pages/RoomPage').then(component => {
+                                    return cb(null, component.default)
                                 })
                             }),
                             childRoutes: [
                                 analyticsRoute('edit', cb => {
-                                    require.ensure([], (require) => {
-                                        return cb(null, require('../client/components/pages/EditRoom.react').default)
+                                    import(/* webpackChunkName: 'edit-room' */ '../client/components/pages/EditRoom').then(component => {
+                                        return cb(null, component.default)
                                     })
                                 }),
                                 analyticsRoute('upload/:comment', cb => {
-                                    require.ensure([], (require) => {
-                                        return cb(null, require('../client/components/pages/UploadResponse.react').default)
+                                    import(/* webpackChunkName: 'edit-room' */ '../client/components/pages/UploadResponse').then(component => {
+                                        return cb(null, component.default)
                                     })
                                 }),
                                 analyticsRoute(':index', cb => {
-                                    require.ensure([], (require) => {
-                                        return cb(null, require('../client/components/pages/RoomPage.react').default)
+                                    import('../client/components/pages/RoomPage').then(component => {
+                                        return cb(null, component.default)
                                     })
                                 }),
                             ]
@@ -85,68 +82,68 @@ export default store => {
                     ]
                 },
                 analyticsRoute('u/:username', cb => {
-                    require.ensure([], (require) => {
-                        return cb(null, require('../client/components/pages/Profile.react').default)
+                    import(/* webpackChunkName: 'profile' */ '../client/components/pages/Profile').then(component => {
+                        return cb(null, component.default)
                     })
                 }),
                 analyticsRoute('t/:name', cb => {
-                    require.ensure([], (require) => {
-                        return cb(null, require('../client/components/pages/Tag.react').default)
+                    import(/* webpackChunkName: 'tag' */ '../client/components/pages/Tag').then(component => {
+                        return cb(null, component.default)
                     })
                 }),
                 analyticsRoute('search', cb => {
-                    require.ensure([], (require) => {
-                        return cb(null, require('../client/components/pages/Search.react').default)
+                    import(/* webpackChunkName: 'search' */ '../client/components/pages/Search').then(component => {
+                        return cb(null, component.default)
                     })
                 }),
                 analyticsRoute('bookmarks', cb => {
-                    require.ensure([], (require) => {
-                        return cb(null, require('../client/components/pages/Bookmarks.react').default)
+                    import(/* webpackChunkName: 'bookmarks' */ '../client/components/pages/Bookmarks').then(component => {
+                        return cb(null, component.default)
                     })
                 }),
                 analyticsRoute('subscriptions', cb => {
-                    require.ensure([], (require) => {
-                        return cb(null, require('../client/components/pages/Subscriptions.react').default)
+                    import(/* webpackChunkName: 'subscriptions' */ '../client/components/pages/Subscriptions').then(component => {
+                        return cb(null, component.default)
                     })
                 }),
                 analyticsRoute('upload', cb => {
-                    require.ensure([], (require) => {
-                        return cb(null, require('../client/components/pages/Upload.react').default)
+                    import(/* webpackChunkName: 'upload' */ '../client/components/pages/Upload').then(component => {
+                        return cb(null, component.default)
                     })
                 }),
                 analyticsRoute('notifications', cb => {
-                    require.ensure([], (require) => {
-                        return cb(null, require('../client/components/pages/Notifications.react').default)
+                    import(/* webpackChunkName: 'notifications' */ '../client/components/pages/Notifications').then(component => {
+                        return cb(null, component.default)
                     })
                 }),
                 analyticsRoute('edit-profile', cb => {
-                    require.ensure([], (require) => {
-                        return cb(null, require('../client/components/pages/EditProfile.react').default)
+                    import(/* webpackChunkName: 'edit-profile' */ '../client/components/pages/EditProfile').then(component => {
+                        return cb(null, component.default)
                     })
                 }),
                 {
                     path: 'support',
                     childRoutes: [
                         analyticsRoute('password-reset-request', cb => {
-                            require.ensure([], (require) => {
-                                return cb(null, require('../client/components/pages/support/PasswordResetRequest.react').default)
+                            import('../client/components/pages/support/PasswordResetRequest').then(component => {
+                                return cb(null, component.default)
                             })
                         }),
                         analyticsRoute('password-reset', cb => {
-                            require.ensure([], (require) => {
-                                return cb(null, require('../client/components/pages/support/PasswordReset.react').default)
+                            import('../client/components/pages/support/PasswordReset').then(component => {
+                                return cb(null, component.default)
                             })
                         }),
                         analyticsRoute('unsubscribe', cb => {
-                            require.ensure([], (require) => {
-                                return cb(null, require('../client/components/pages/support/Unsubscribe.react').default)
+                            import('../client/components/pages/support/Unsubscribe').then(component => {
+                                return cb(null, component.default)
                             })
                         }),
                     ]
                 },
                 analyticsRoute('*', cb => {
-                    require.ensure([], (require) => {
-                        return cb(null, require('../client/components/pages/NoMatch.react').default)
+                    import('../client/components/pages/NoMatch').then(component => {
+                        return cb(null, component.default)
                     })
                 })
             ]

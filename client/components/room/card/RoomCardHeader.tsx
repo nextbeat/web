@@ -60,5 +60,5 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     }
 }
 
-export default RoomCardHeader;
+export default connect(mapStateToProps)(RoomCardHeader);
 

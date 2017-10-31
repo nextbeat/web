@@ -18,7 +18,7 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
     // and check current notification permissions
     function initialize() {
         if (isWeb) {
-            return web.initialize(store, next, action)
+            return web.initialize(store, next, action as PushInitializeAction)
         } else if (isSafari) {
             return safari.initialize(store, next, action as PushInitializeAction)
         } else {
@@ -36,7 +36,7 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
         }
 
         if (isWeb) {
-            return web.subscribe(store, next, action)
+            return web.subscribe(store, next, action as PushSubscribeAction)
         } else if (isSafari) {
             return safari.subscribe(store, next, action as PushSubscribeAction)
         }

@@ -8,7 +8,7 @@ import Icon from '@components/shared/Icon'
 import Bookmark from './Bookmark'
 import Share from './Share'
 import Badge from '@components/shared/Badge'
-import ActionsDropdown from '@components/room/page/ActionsDropdown.react'
+import ActionsDropdown from '@components/room/page/ActionsDropdown'
 
 import { toggleDropdown } from '@actions/app'
 import UserEntity from '@models/entities/user'

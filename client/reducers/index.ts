@@ -1,6 +1,6 @@
 import { Map, List, fromJS } from 'immutable'
-import includes from 'lodash/includes'
-import keys from 'lodash/keys'
+import includes from 'lodash-es/includes'
+import keys from 'lodash-es/keys'
 
 import app from './app'
 import user from './user'

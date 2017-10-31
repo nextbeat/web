@@ -170,7 +170,7 @@ function clearComments(state: State) {
 }
 
 function deleteMediaItem(state: State, action: DeleteMediaItemAction) {
-    return state.update('mediaItems', mediaItems => mediaItems.filter(mId => mId !== action.id))
+    return state.update('mediaItems', mediaItems => mediaItems.filter((mId: number) => mId !== action.id))
 }
 
 function receiveComment(state: State, action: ReceiveCommentAction) {

@@ -1,22 +1,51 @@
 import * as PropTypes from 'prop-types'
 import * as React from 'react'
-import { findDOMNode } from 'react-dom'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 
-import { selectSidebar, closeSidebar, toggleDropdown, promptModal, logout, markAllAsRead, loadActivity, clearUpload } from '../actions'
-import { Notifications as NotificationsModel, Upload, CurrentUser, App } from '../models'
-
-import Notifications from './pages/Notifications.react'
+import Notifications from './pages/Notifications'
 import Icon from '@components/shared/Icon'
 import Logo from '@components/shared/Logo'
 import SmallLogo from '@components/shared/SmallLogo'
-import Dropdown from './shared/Dropdown.react'
-import ToggleLink from './shared/ToggleLink.react'
+import Dropdown from '@components/shared/Dropdown'
+import ToggleLink from '@components/shared/ToggleLink'
 
-class Topbar extends React.Component {
+import { selectSidebar, closeSidebar, toggleDropdown, promptModal } from '@actions/app'
+import { logout } from '@actions/user'
+import { loadActivity } from '@actions/notifications'
+import { clearUpload } from '@actions/upload'
+import NotificationsModel from '@models/state/notifications'
+import CurrentUser from '@models/state/currentUser'
+import App from '@models/state/app'
+import Upload from '@models/state/upload'
+import { State, DispatchProps, RouteProps } from '@types'
 
-    constructor(props) {
+interface ConnectProps {
+    isLoggedIn: boolean
+    username: string
+    profilePictureUrl: string
+
+    width: string
+    hasNavigated: boolean
+    activeOverlay: string
+
+    isNotificationsActiveDropdown: boolean
+    unreadCount: number
+
+    uploadStackSubmitted: boolean
+}
+
+type Props = ConnectProps & DispatchProps & RouteProps<{}>
+
+class Topbar extends React.Component<Props> {
+
+    private _searchBar: HTMLInputElement
+
+    static contextTypes = {
+        router: PropTypes.object.isRequired
+    }
+
+    constructor(props: Props) {
         super(props);
 
         this.toggleSidebar = this.toggleSidebar.bind(this);
@@ -78,35 +107,35 @@ class Topbar extends React.Component {
         }
     }
 
-    handleSearchKeyPress(e) {
+    handleSearchKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.charCode === 13) { // enter
-            const query = findDOMNode(this.refs.search_bar).value;
+            const query = this._searchBar.value;
             if (query && query.length > 0) {
                 this.context.router.push({
                     pathname: '/search',
                     query: { q: query }
                 })
-                findDOMNode(this.refs.search_bar).value = '';
+                this._searchBar.value = '';
             }
         }
     }
 
-    handleLoginClick(e) {
+    handleLoginClick(e: React.MouseEvent<HTMLElement>) {
         e.preventDefault()
         this.props.dispatch(promptModal('login'))
     }
 
-    handleSignupClick(e) {
+    handleSignupClick(e: React.MouseEvent<HTMLElement>) {
         e.preventDefault()
         this.props.dispatch(promptModal('signup'))
     }           
 
-    handleLogoutClick(e) {
+    handleLogoutClick(e: React.MouseEvent<HTMLElement>) {
         e.preventDefault()
         this.props.dispatch(logout())
     }
 
-    handleUploadClick(e) {
+    handleUploadClick(e: React.MouseEvent<HTMLElement>) {
         this.hideSidebar()
         // If user is on upload page and a submission
         // has completed, reset the upload process
@@ -120,7 +149,7 @@ class Topbar extends React.Component {
 
     // Render
 
-    renderLoggedIn(includeSmallClass) {
+    renderLoggedIn(includeSmallClass: boolean) {
         const { unreadCount, profilePictureUrl, width, uploadStackSubmitted } = this.props;
 
         const profpicStyle = { backgroundImage: profilePictureUrl ? `url(${profilePictureUrl})` : '' }
@@ -147,7 +176,7 @@ class Topbar extends React.Component {
         ]
     }
 
-    renderGuest(includeSmallClass) {
+    renderGuest(includeSmallClass: boolean) {
         const smallClass = includeSmallClass ? 'topbar_icon-small' : '';
 
         return [
@@ -188,7 +217,7 @@ class Topbar extends React.Component {
                 <div className="topbar_inner">
                     <div className="topbar_search-container">
                         <div className="topbar_search">
-                            <input className="topbar_search-bar" type="text" placeholder="Search" ref="search_bar" onKeyPress={this.handleSearchKeyPress} /><Icon type="search" />
+                            <input className="topbar_search-bar" type="text" placeholder="Search" ref={(c) => { if (c) { this._searchBar = c } }} onKeyPress={this.handleSearchKeyPress} /><Icon type="search" />
                         </div>
                     </div>
 
@@ -220,30 +249,21 @@ class Topbar extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
-    let notifications = new NotificationsModel(state)
-    let upload = new Upload(state)
-    let app = new App(state)
-    let currentUser = new CurrentUser(state)
-
+function mapStateToProps(state: State): ConnectProps {
     return {
-        isLoggedIn: currentUser.isLoggedIn(),
-        username: currentUser.get('username'),
-        profilePictureUrl: currentUser.profileThumbnailUrl(),
+        isLoggedIn: CurrentUser.isLoggedIn(state),
+        username: CurrentUser.entity(state).get('username'),
+        profilePictureUrl: CurrentUser.profileThumbnailUrl(state),
 
-        width: app.get('width'),
-        hasNavigated: app.hasNavigated(),
-        activeOverlay: app.get('activeOverlay'),
+        width: App.get(state, 'width'),
+        hasNavigated: App.hasNavigated(state),
+        activeOverlay: App.get(state, 'activeOverlay'),
 
-        isNotificationsActiveDropdown: app.isActiveDropdown('notifications'),
-        unreadCount: notifications.unreadCount(),
+        isNotificationsActiveDropdown: App.isActiveDropdown(state, 'notifications'),
+        unreadCount: NotificationsModel.unreadCount(state),
 
-        uploadStackSubmitted: upload.get('stackSubmitted')
+        uploadStackSubmitted: Upload.get(state, 'stackSubmitted')
     }
-}
-
-Topbar.contextTypes = {
-    router: PropTypes.object.isRequired
 }
 
 export default connect(mapStateToProps)(Topbar);

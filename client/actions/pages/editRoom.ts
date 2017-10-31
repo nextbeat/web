@@ -12,9 +12,9 @@ import {
 import { syncStacks } from '@actions/user'
 import { clearFileUpload } from '@actions/upload'
 import Room from '@models/state/room'
+import Upload, { UploadType } from '@models/state/upload'
 import EditRoom, { RoomFields } from '@models/state/pages/editRoom'
 import * as Schemas from '@schemas'
-import { UploadType } from '@upload'
 
 export type EditRoomActionAll = 
     EditRoomAction |
@@ -87,7 +87,6 @@ export function submitEditRoom(): ThunkAction {
         }
 
         let roomId = EditRoom.get(state, 'id')
-        let upload = new Upload(getState())
 
         dispatch({ type: ActionType.SUBMIT_EDIT_ROOM })
         dispatch(syncStacks('open', false, EditRoom.stackForSubmission(state)))
@@ -95,9 +94,9 @@ export function submitEditRoom(): ThunkAction {
         dispatch(postUpdateTags(roomId, EditRoom.get(state, 'roomFields').get('tags', List()).toJS()))
         if (EditRoom.get(state, 'useDefaultThumbnail')) {
             dispatch(postUpdateThumbnail(roomId, {}))
-        } else if (upload.hasFile(UploadType.Thumbnail)) {
+        } else if (Upload.hasFile(state, UploadType.Thumbnail)) {
             dispatch(postUpdateThumbnail(roomId, {
-                url: upload.get(UploadType.Thumbnail, 'url')
+                url: Upload.getInFile(state, UploadType.Thumbnail, 'url')
             }))
         }
     }

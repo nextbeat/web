@@ -191,7 +191,7 @@ function onLogoutSuccess(store: Store) {
 export interface LogoutAction extends ApiCallAction {
     type: ActionType.LOGOUT
 }
-function performLogout(pushObject: PushSubscriptionObject): LogoutAction {
+function performLogout(pushObject?: PushSubscriptionObject): LogoutAction {
     return {
         type: ActionType.LOGOUT,
         API_CALL: {
@@ -210,7 +210,7 @@ export function logout(): ThunkAction {
             return null;
         }
 
-        let pushObject = Push.formattedPushObject(getState())
+        let pushObject = Push.formattedPushObject(getState()) || undefined
         dispatch(performLogout(pushObject))
     }
 }

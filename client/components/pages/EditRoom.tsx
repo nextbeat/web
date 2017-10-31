@@ -136,7 +136,7 @@ class EditRoom extends React.Component<Props> {
                         </div>
                     </div>
                     }
-                    { isAuthorized) && !isAuthorized &&
+                    { isLoaded && !isAuthorized &&
                     <div className="edit-room_error">
                         You do not have permission to edit this room.
                     </div>

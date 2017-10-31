@@ -111,7 +111,7 @@ export default function FileComponent(parentId: string, options: Partial<FileCom
 
             // Load
 
-            loadResource(file: File) {
+            loadResource(file?: File) {
                 if (!file) {
                     return
                 }

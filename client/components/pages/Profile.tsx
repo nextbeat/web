@@ -149,7 +149,7 @@ class ProfileComponent extends React.Component<Props> {
                         </div>
                     }
 
-                    { stacksFetching && <Spinner type="grey rooms-list" /> }
+                    { stacksFetching && <Spinner styles={["grey"]} type="rooms-list" /> }
                     { shouldDisplayNoContent && 
                         <div className="profile_no-content">There's nothing here.</div>
                     }

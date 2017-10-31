@@ -143,7 +143,7 @@ class Upload extends React.Component<Props> {
 
         return (
             <div className="upload_submit-requested">
-                { submitStackRequested) && 
+                { submitStackRequested && 
                     <div>
                         Your {fileType} is still uploading. Please leave this page open until it finishes.
                     </div>

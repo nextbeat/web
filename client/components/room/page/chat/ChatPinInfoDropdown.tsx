@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Dropdown from '@components/shared/Dropdown.react'
+import Dropdown from '@components/shared/Dropdown'
 
 interface Props {
     handleClose: () => void

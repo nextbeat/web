@@ -12,7 +12,7 @@ import routes from '../routes'
 import './layout/main.scss'
 
 // require.ensure shim for server
-if (typeof require.ensure !== "function") require.ensure = (d: any, c: any) => c(require)
+// if (typeof require.ensure !== "function") require.ensure = (d: any, c: any) => c(require)
 
 // configure bluebird
 // Promise.config({
@@ -29,8 +29,7 @@ let initialState = (window as any).__INITIAL_STATE__
 // Initialize the command queue in case analytics.js hasn't loaded yet.
 (window as any).ga = (window as any).ga || ((...args: any[]) => (ga.q = ga.q || []).push(args));
 // Load rest of analytics module asynchronously
-require.ensure([], (require: any) => {
-    var analytics = require('./analytics');
+import('./analytics').then(analytics=> {
     analytics.init(initialState.app.googleAnalyticsId);
 })
 

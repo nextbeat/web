@@ -30,8 +30,9 @@ class EditCoverImage extends React.Component<Props> {
     render() {
         const { coverImageUrl, isUploading } = this.props 
 
+        let coverStyle: any = {}
         if (coverImageUrl && !isUploading) {
-            var coverStyle = {
+            coverStyle = {
                 background: `url(${coverImageUrl})`,
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'cover',

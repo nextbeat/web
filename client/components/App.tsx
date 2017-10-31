@@ -5,11 +5,11 @@ import { Link } from 'react-router'
 import Helmet from 'react-helmet'
 
 import Sidebar from '@components/Sidebar'
-import Topbar from '@components/Topbar.react'
+import Topbar from '@components/Topbar'
 import SplashTopbar from '@components/SplashTopbar'
-import AppBanner from '@components/shared/AppBanner.react'
-import Login from '@components/shared/Login.react'
-import Signup from '@components/shared/Signup.react'
+import AppBanner from '@components/shared/AppBanner'
+import Login from '@components/shared/Login'
+import Signup from '@components/shared/Signup'
 
 import { 
     loadTags,
@@ -229,7 +229,7 @@ class App extends React.Component<AllProps> {
                 {this.setTitle()}
                 <Login />
                 <Signup />
-                { showSplashTopbar ? <SplashTopbar /> : <Topbar /> }
+                { showSplashTopbar ? <SplashTopbar /> : <Topbar {...this.props} /> }
                 <div className={`main-container ${splashClass}`}>
                     <Sidebar />
                     <div className={`main ${guestClass}`}>
