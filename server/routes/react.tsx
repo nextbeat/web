@@ -1,19 +1,19 @@
 import routes from '../../routes'
-import React from 'react'
+import * as React from 'react'
 import { match, RouterContext } from 'react-router'
 import { renderToString } from 'react-dom/server'
 import { Provider } from 'react-redux'
 import uaParser from 'ua-parser-js'
 
-import configureStore from '../../client/store'
+import { configureStore } from '../../client/store'
 import { Map, fromJS } from 'immutable'
-import assign from 'lodash/assign'
-import has from 'lodash/has'
-import last from 'lodash/last'
+import assign from 'lodash-es/assign'
+import has from 'lodash-es/has'
+import last from 'lodash-es/last'
 import Helmet from 'react-helmet'
 
-import vendorsManifest from '../../client/public/js/vendors.cache.manifest'
-import appManifest from '../../client/public/js/app.cache.manifest'
+var vendorsManifest = require('../../client/public/js/vendors.cache.manifest.json')
+var appManifest = require('../../client/public/js/app.cache.manifest.json');
 
 function getInitialState(req) {
     const ua = uaParser(req.headers['user-agent']);
@@ -125,7 +125,7 @@ export function handleReactRender(req, res) {
         } else if (redirectLocation) {
             res.redirect(302, redirectLocation.pathname + redirectLocation.search)
         } else if (renderProps) {
-            const component = last(renderProps.components)
+            const component = last(renderProps.components) as any
             // Load data before displaying page
             if (typeof component.fetchData === "function") {
                 component.fetchData(store, renderProps.params).then((newStore)=> {

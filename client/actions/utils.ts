@@ -17,7 +17,7 @@ export function loadPaginatedObjects(keyPath: string[], action: ActionFn, defaul
             limit = defaultLimit, 
             total = -1,
             beforeDate = Date.now(),
-            ids = []
+            ids = [] as number[]
         } = getState().getIn(keyPath, Map()).toJS()
 
         if (total >= 0 && total <= ids.length) {

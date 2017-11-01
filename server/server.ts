@@ -1,5 +1,3 @@
-require("babel-core/register");
-
 var express         = require('express'),
     web             = express(),
     api             = require('./lib/api'),

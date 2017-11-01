@@ -97,7 +97,7 @@ function state(state = Map(), action: Action) {
     return state
 }
 
-function location(state = null, action: Action) {
+function location(state: Location | null = null, action: Action) {
     if (action.type === ActionType.HAS_NAVIGATED) {
         return action.location
     }

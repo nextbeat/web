@@ -1,8 +1,10 @@
-var request = require('request-promise'),
-    Promise = require('bluebird'),
-    _       = require('lodash'),
+var request = require('request-promise');
+import * as Promise from 'bluebird'
 
-    baseUrl,
+import assign from 'lodash-es/assign'
+import omit from 'lodash-es/omit'
+
+var baseUrl,
     clientToken;
 
 var MAX_CONNECTION_RETRIES  = 10,
@@ -23,10 +25,10 @@ function _request(method, url, body, options) {
         auth = { bearer: auth }
     }
 
-    options = _.omit(options, ['auth']);
+    options = omit(options, ['auth']);
 
     return Promise.resolve().then(function() {
-        return request(_.assign({}, {
+        return request(assign({}, {
             method: method,
             url: url,
             baseUrl: baseUrl,

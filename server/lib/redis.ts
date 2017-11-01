@@ -10,7 +10,7 @@ module.exports = {
     client: function() {
 
         var node_env = process.env.NODE_ENV || 'development';
-        var options = {
+        var options: any = {
             port: 6379
         };
 

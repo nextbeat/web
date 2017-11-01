@@ -1,12 +1,42 @@
 {
     "compilerOptions": {
         "allowJs": true,
-        "rootDir": "../"
+        "baseUrl": "./",
+        "experimentalDecorators": true,
+        "jsx": "react",
+        "lib": ["es2015", "dom"],
+        "module": "esnext",
+        "moduleResolution": "node",
+        "outDir": "../dist",
+        "paths": {
+            "@client/*": ["../client/*"],
+            "@actions": ["../client/actions"],
+            "@actions/*": ["../client/actions/*"],
+            "@analytics/*": ["../client/analytics/*"],
+            "@components/*": ["../client/components/*"],
+            "@eddy": ["../client/eddy"],
+            "@errors": ["../client/errors"],
+            "@models": ["../client/models"],
+            "@models/*": ["../client/models/*"],
+            "@reducers/*": ["../client/reducers/*"],
+            "@schemas": ["../client/schemas"],
+            "@types": ["../client/types"],
+            "@upload": ["../client/upload"],
+            "@utils": ["../client/utils"]
+        },
+        "strictNullChecks": false,
+        "target": "es2015",
+        "types": [
+            "bluebird-global", "node"
+        ]
     },
-    "extends": "../config/tsconfig.base",
+    "exclude": [
+        "../node_modules"
+    ],
     "include": [
         "../server",
         "../routes",
         "../client"
     ]
 }
+

@@ -1,12 +1,11 @@
-// TODO: finish transition to ES6
 var express         = require('express'),
 
     api             = require('../lib/api'),
     passportLib     = require('../lib/passport'),
     universalLinks  = require('../conf/universal-links');
 
-import has from 'lodash/has'
-import assign from 'lodash/assign'
+import has from 'lodash-es/has'
+import assign from 'lodash-es/assign'
 import { handleReactRender } from './react'
 
 var INTERNAL_COOKIE_KEY = 'nb__int';
