@@ -45,7 +45,7 @@ class Info extends React.Component<AllProps> {
     }
 
     renderSmall() {
-        const { author, views, description, privacyStatus, isCurrentUserAuthor, tags } = this.props 
+        const { author, views, description, privacyStatus, isCurrentUserAuthor, tags, closed } = this.props 
 
         return (
             <section className="player_info-small">

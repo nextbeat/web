@@ -48,6 +48,10 @@ export function createKeyedSelector<R>(func: Selector<R>): KeyedOutputSelector<R
         let selector = function memoize(state: State, ...args: any[]): R {
             let key = keyResolver(state, ...args)
             let hash = hashResolver(state, ...args)
+            if (typeof hash === 'undefined') {
+                // Need to store some kind of value in hashes
+                hash = null
+            }
             if (hashes[key] !== hash) {
                 results[key] = func(state, ...args)
             }
@@ -75,6 +79,9 @@ export function createSelector<R>(func: Selector<R>): OutputSelector<R> {
 
           let selector = function memoize(state: State, ...args: any[]): R {
               let hash = hashResolver(state, ...args)
+              if (typeof hash === 'undefined') {
+                  hash = null
+              }
               if (hash !== lastHash) {
                   lastResult = func(state, ...args)
               }
@@ -89,12 +96,12 @@ export function createSelector<R>(func: Selector<R>): OutputSelector<R> {
 export function createEntityListSelector(modelClass: any, idKey: string, entityClass: typeof EntityModel | string): Selector<List<any>> {
     return createSelector(
         (state: State) => {
-            let stackIds = modelClass.get(state, idKey, List()) as List<number>
+            let ids = modelClass.get(state, idKey, List()) as List<number>
             if (typeof entityClass === 'string') {
                 // Get entity object directly, without class wrapper
-                return stackIds.map(id => state.getIn(['entities', 'foo', id.toString()]))
+                return ids.map(id => state.getIn(['entities', entityClass, id.toString()]))
             } else {
-                return stackIds.map(id => new entityClass(id, state.get('entities')))
+                return ids.map(id => new entityClass(id, state.get('entities')))
             }
         }
     )(

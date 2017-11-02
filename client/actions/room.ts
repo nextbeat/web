@@ -88,7 +88,7 @@ function fetchMediaItems(roomId: number, pagination: Pagination): MediaItemsActi
         type: ActionType.MEDIA_ITEMS,
         roomId,
         API_CALL: {
-            schema: Schemas.MediaItem,
+            schema: Schemas.MediaItems,
             endpoint: `stacks/${roomId}/mediaitems`,
             pagination
         }
@@ -96,7 +96,7 @@ function fetchMediaItems(roomId: number, pagination: Pagination): MediaItemsActi
 }
 
 export function loadMediaItems(roomId: number) {
-    let keyPath = ['rooms', roomId.toString(), 'pagination', 'mediaItems']
+    let keyPath = ['rooms', roomId, 'pagination', 'mediaItems']
     let fetchFn = (pagination: Pagination) => fetchMediaItems(roomId, pagination)
 
     return loadPaginatedObjects(keyPath, fetchFn, "all");

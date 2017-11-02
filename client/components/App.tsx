@@ -219,7 +219,7 @@ class App extends React.Component<AllProps> {
         const showSplashTopbar = inHome && !isLoggedIn
 
         const inRoomClass = this.isInRoom() ? 'app-container-room' : ''
-        const guestClass = isSplashTopbarCollapsed ? '' : 'no-sidebar'
+        const guestClass = isLoggedIn ? '' : 'no-sidebar'
         const splashClass = showSplashTopbar ? (isSplashTopbarCollapsed ? 'splash splash-collapsed' : 'splash splash-expanded') : ''
         const sidebarActiveClass = activeOverlay === 'sidebar' ? 'app-container-sidebar-active' : ''
 

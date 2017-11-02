@@ -9,7 +9,7 @@ import { Dispatch } from '@types'
 type ActionFn = (pagination: Pagination) => Action
 type PaginationThunk = (dispatch: Dispatch, getState: () => Map<string, any>) => void 
 
-export function loadPaginatedObjects(keyPath: string[], action: ActionFn, defaultLimit: number | "all" = 20): PaginationThunk {
+export function loadPaginatedObjects(keyPath: any[], action: ActionFn, defaultLimit: number | "all" = 20): PaginationThunk {
     return (dispatch, getState) => {
 
         const { 

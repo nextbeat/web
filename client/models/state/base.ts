@@ -1,6 +1,5 @@
 import { Map, List } from 'immutable'
 import { createSelector } from 'reselect'
-import { entityClass } from '@models/entities/base'
 
 import { State } from '@types'
 

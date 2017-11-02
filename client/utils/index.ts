@@ -149,6 +149,9 @@ interface StorageOptions {
 
 export function setStorageItem(key: string, value: any, _options?: StorageOptions) {
   let options = assign({}, defaultStorageOptions, _options) as StorageOptions
+  if (typeof window === 'undefined') {
+    return
+  }
   var storage = (window as any)[options.type]
   var storedValue: any = {
     value: value,
@@ -166,6 +169,9 @@ export function setStorageItem(key: string, value: any, _options?: StorageOption
 export function getStorageItem(key: string, _options?: StorageOptions) {
   let options = assign({}, defaultStorageOptions, _options) as StorageOptions
   var value = null;
+  if (typeof window === 'undefined') {
+    return value;
+  }
   var storage = window[options.type] as Storage;
 
   if (storageAvailable(options.type)) {

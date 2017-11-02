@@ -102,15 +102,16 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
     }
 
     componentDidUpdate(prevProps: Props) {    
-        if (this.props.commentsFetchType === 'around' && this.props.commentsFetching) {
+
+        if (this.props.commentsFetchType === 'around' && this.props.commentsFetching && !this.state.inScrollToCommentWindow) {
             this.setState({ inScrollToCommentWindow: true })
         }
 
-        if (this.props.comments.size > 0 && !this.props.hasReachedLatestComment) {
+        if (this.props.comments.size > 0 && !this.props.hasReachedLatestComment && !this.state.inMessageArchive) {
             this.setState({ inMessageArchive: true });
         }
 
-        if (this.props.commentsFetchType === 'mostRecent' && this.props.commentsFetching) {
+        if (this.props.commentsFetchType === 'mostRecent' && this.props.commentsFetching && this.state.inMessageArchive) {
             this.setState({ inMessageArchive: false });
         }
 
@@ -140,7 +141,7 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
                 let lastComment = this.props.liveComments.last()
                 if (lastComment && !lastComment.has('temporary_id')) {
                     // we want to ignore user-submitted comments
-                    if (!this.props.isScrolledToBottom()) {
+                    if (!this.props.isScrolledToBottom() && !this.state.hasUnseenLiveMessages) {
                         this.setState({ hasUnseenLiveMessages: true })
                     }
                 }

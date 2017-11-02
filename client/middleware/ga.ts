@@ -72,9 +72,9 @@ function parseQuery(queryString: string) {
 }
 
 function handleIdentify(data: AnalyticsCall) {
-    const user = data.user
-    ga('set', 'userId', user.get('id'))
-    ga('set', Dimensions.USER_ID, String(user.get('id')))
+    const userId = data.userId
+    ga('set', 'userId', userId)
+    ga('set', Dimensions.USER_ID, String(userId))
 }
 
 function handlePage(data: AnalyticsCall) {
@@ -120,10 +120,10 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
     // trigger the analytics call based on the type
     switch (data.type) {
         case 'event':
-            return handleIdentify(data)
+            return handleEvent(data)
         case 'page':
             return handlePage(data)
         case 'identify':
-            return handleEvent(data)
+            return handleIdentify(data)
     }
 }

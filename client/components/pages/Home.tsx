@@ -26,7 +26,7 @@ class HomeComponent extends React.Component<Props> {
 
     componentDidMount() {
         const { isLoaded, dispatch } = this.props 
-        if (isLoaded) {
+        if (!isLoaded) {
             dispatch(loadHome())
         }
     }

@@ -218,7 +218,7 @@ function mapStateToProps(state: State, ownProps: RouteProps<Params>): ConnectPro
         lastSeenMediaItemId = mediaItemId
     }
 
-    let currIndex = parseInt(this.props.params.index || "0");
+    let currIndex = parseInt(ownProps.params.index || "0");
     if (currIndex > 0) {
         let mediaItem = RoomPage.allMediaItems(state).get(currIndex-1)
         if (mediaItem) {

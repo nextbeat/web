@@ -88,8 +88,8 @@ const keyMap: {[key in keyof RoomProps]: string[]} = {
 
 export default class Room {
 
-    protected static keyPath(id: number, key: keyof RoomProps): string[] {
-        return ['rooms', id.toString()].concat(keyMap[key])
+    protected static keyPath(id: number, key: keyof RoomProps): any[] {
+        return ['rooms', id].concat(keyMap[key])
     }
 
     static get<K extends keyof RoomProps>(state: State, id: number, key: K, defaultValue?: RoomProps[K]): RoomProps[K] {
@@ -233,12 +233,12 @@ export default class Room {
     /* Media Items */
 
     static indexOfMediaItemId(state: State, id: number, mediaItemId: number): number {
-        let ids = Room.get(state, id, 'mediaItemIds').concat(Room.get(state, id, 'liveMediaItemIds')) as List<number>
+        let ids = Room.get(state, id, 'mediaItemIds', List()).concat(Room.get(state, id, 'liveMediaItemIds', List())) as List<number>
         return ids.indexOf(mediaItemId)
     }
 
     static mediaItemIdAtIndex(state: State, id: number, index: number): number {
-        let ids = Room.get(state, id, 'mediaItemIds').concat(Room.get(state, id, 'liveMediaItemIds')) as List<number>
+        let ids = Room.get(state, id, 'mediaItemIds', List()).concat(Room.get(state, id, 'liveMediaItemIds', List())) as List<number>
         return ids.get(index) as number
     }
 
@@ -291,11 +291,11 @@ export default class Room {
     }
 
     static hasLoadedChat(state: State, id: number): boolean {
-        return this.get(state, id, 'commentsHasFetched') && this.hasJoined(state, id)
+        return !!this.get(state, id, 'commentsHasFetched') && this.hasJoined(state, id)
     }
 
     static isUserBanned(state: State, id: number, username: string): boolean {
-        return (Room.get(state, id, 'bannedUsers').indexOf(username) > -1)
+        return (Room.get(state, id, 'bannedUsers', List()).indexOf(username) > -1)
     }
 
     /* Other */

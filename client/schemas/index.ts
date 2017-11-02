@@ -1,17 +1,17 @@
 import { schema } from 'normalizr'
 
-const Tag = new schema.Entity('Tags');
-const User = new schema.Entity('Users');
-const MediaItem = new schema.Entity('MediaItems');
-const Stack = new schema.Entity('Stacks', { author: User, mediaItems: [ MediaItem ] });
-const Comment = new schema.Entity('Comments', { author: User, recipient: User, stack: Stack })
+const Tag = new schema.Entity('tags');
+const User = new schema.Entity('users');
+const MediaItem = new schema.Entity('mediaItems');
+const Stack = new schema.Entity('stacks', { author: User, mediaItems: [ MediaItem ] });
+const Comment = new schema.Entity('comments', { author: User, recipient: User, stack: Stack })
 MediaItem.define({ references: Comment }); // handles circular reference
 
 // Search results have an extra result_indices
 // attribute, so we create a new schema to store
 // them so that normal Comments aren't polluted
 // with that attribute (which could affect rendering)
-const SearchResultComment = new schema.Entity('SearchResultComments', { author: User, recipient: User });
+const SearchResultComment = new schema.Entity('searchResultComments', { author: User, recipient: User });
 
 const Tags = [Tag]
 const Users = [User]

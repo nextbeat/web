@@ -24,7 +24,7 @@ import './layout/main.scss'
 require('dotdotdot');
 require('jquery-bez');
 
-let initialState = (window as any).__INITIAL_STATE__
+let initialState = (window as any).__INITIAL_STATE__;
 
 // Initialize the command queue in case analytics.js hasn't loaded yet.
 (window as any).ga = (window as any).ga || ((...args: any[]) => (ga.q = ga.q || []).push(args));

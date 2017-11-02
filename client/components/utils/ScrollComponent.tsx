@@ -56,6 +56,10 @@ export default function ScrollComponent<OriginalProps extends {}>(domId: ((props
                 this.domElement = this.domElement.bind(this)
 
                 this.handleScroll = this.handleScroll.bind(this)
+                this.setScrollState = this.setScrollState.bind(this)    
+                
+                this.isScrolledToTop = this.isScrolledToTop.bind(this)
+                this.isScrolledToBottom = this.isScrolledToBottom.bind(this)
 
                 this._doScroll = this._doScroll.bind(this)
                 this.scrollToTop = this.scrollToTop.bind(this)
@@ -199,7 +203,7 @@ export default function ScrollComponent<OriginalProps extends {}>(domId: ((props
                     scrollToElementWithId: this.scrollToElementWithId
                 }
 
-                return <ChildComponent {...scrollProps as any} {...this.props} />
+                return <ChildComponent {...scrollProps as any} {...this.props} ref="child" />
             }
 
         }

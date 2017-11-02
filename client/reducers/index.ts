@@ -28,9 +28,10 @@ function entities(state = initialEntities, action: Action) {
         // want to recursively merge their object properties
         keys(entities).forEach((entityTypeKey: string) => {
             state = state.update(entityTypeKey, Map(), entityTypeMap => {
+                // keys(entities[entityTypeKey]) == ids of individual entities
                 keys(entities[entityTypeKey]).forEach((entityIdKey: string) => {
                     entityTypeMap = entityTypeMap.update(entityIdKey, Map(), 
-                        (entity: Map<string, any>) => entity.merge(entities[entityTypeKey][entityIdKey]) 
+                        (entity: Map<string, any>) => entity.merge(fromJS(entities[entityTypeKey][entityIdKey]))
                     )
                 })
                 return entityTypeMap

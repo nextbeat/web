@@ -5,8 +5,8 @@ import { Action, ActionType, ApiCallAction, ApiCancelAction, Status } from '@act
 import { State, Reducer } from '@types'
 
 export function combineReducers(reducers: {[key: string]: Reducer<any>}): Reducer<any> {
-    return (state, action) => 
-        state.merge(mapValues(reducers, (reducer: Reducer<any>, key: string) => reducer(state.get(key, Map()), action)))
+    return (state = Map(), action) => 
+        state.merge(mapValues(reducers, (reducer: Reducer<any>, key: string) => reducer(state.get(key), action)))
 }
 
 const defaultPaginationState = Map({
@@ -47,7 +47,7 @@ export function paginate(type: ActionType, clearType?: ActionType): Reducer<Stat
 
 export function entity(type: ActionType): Reducer<State> {
 
-    return function(state: State, action: Action) {
+    return function(state: State = Map(), action: Action) {
         if (action.type === type) {
             switch (action.status) {
                 case Status.REQUESTING:

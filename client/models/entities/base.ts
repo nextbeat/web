@@ -2,9 +2,6 @@ import { Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { State } from '@types'
 
-import Stack from './stack'
-import User from './user'
-
 /* Helper model for retrieving data from specific 
  * entities in the state. (Compare with the StateModel 
  * base class, which is instantiated with the root 
@@ -37,7 +34,8 @@ export class EntityModel<Props> {
     }
 
     entity(): State {
-        return this.entities.getIn([this.entityName, this.id.toString()], Map())
+        let idString = this.id ? this.id.toString() : '-1'
+        return this.entities.getIn([this.entityName, idString], Map())
     }
 
     /* Resources (images, videos, thumbnails, etc) are represented as objects, 
@@ -63,15 +61,3 @@ export class EntityModel<Props> {
         return Map()
     } 
 }
-
-export function entityClass(entityName: string): typeof EntityModel {
-    switch (entityName) {
-        case "stacks":
-            return Stack
-        case "users":
-            return User
-        default:
-            return EntityModel
-    }
-}
-

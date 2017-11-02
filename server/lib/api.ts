@@ -1,4 +1,4 @@
-var request = require('request-promise');
+var request = require('request-promise')
 import * as Promise from 'bluebird'
 
 import assign from 'lodash-es/assign'
@@ -40,7 +40,6 @@ function _request(method, url, body, options) {
 }
 
 function _tryInitialRequest(baseUrl, triesAttempted, triesLeft, baseDelayInMsec, cb) {
-    console.log("api connection attempt");
     if (triesLeft === 0) {
         cb(new Error("Exceeded maximum connection retries."));
     }
@@ -75,48 +74,43 @@ function tryInitialRequest(baseUrl) {
     });
 }
 
-module.exports = {
-
-    init: function() {
-
-        var node_env = process.env.NODE_ENV || "development";
-
-        if (node_env === 'local') {
-            baseUrl = 'http://api/v1/';
-        } else if (node_env === 'development') {
-            baseUrl = 'http://api.dev.nextbeat.int/v1/';
-        } else if (node_env === 'production') {
-            baseUrl = 'http://api.nextbeat.int/v1/';
-        } else if (node_env === 'mac') {
-            baseUrl = 'http://localhost:8000/v1/';
-        } else if (node_env === 'mac-dev') {
-            baseUrl = 'http://api.dev.nextbeat.co/v1/';
-        }
-
-        request = request.defaults({
-            json: true
-        });
-
-        return tryInitialRequest(baseUrl).then(function(token) {
-            clientToken = token;
-            return null;
-        });
-    },
-
-    get: function(url, body, options) {
-        return _request('GET', url, body, options);
-    },
-
-    post: function(url, body, options) {
-        return _request('POST', url, body, options);
-    },
-
-    put: function(url, body, options) {
-        return _request('PUT', url, body, options);
-    },
-
-    delete: function(url, body, options) {
-        return _request('DELETE', url, body, options);
+export function init() {
+    var node_env = process.env.NODE_ENV || "development";
+    
+    if (node_env === 'local') {
+        baseUrl = 'http://api/v1/';
+    } else if (node_env === 'development') {
+        baseUrl = 'http://api.dev.nextbeat.int/v1/';
+    } else if (node_env === 'production') {
+        baseUrl = 'http://api.nextbeat.int/v1/';
+    } else if (node_env === 'mac') {
+        baseUrl = 'http://localhost:8000/v1/';
+    } else if (node_env === 'mac-dev') {
+        baseUrl = 'http://api.dev.nextbeat.co/v1/';
     }
 
-};
+    request = request.defaults({
+        json: true
+    });
+
+    return tryInitialRequest(baseUrl).then(function(token) {
+        clientToken = token;
+        return null;
+    });
+}
+
+export function get(url: string, body, options) {
+    return _request('GET', url, body, options)
+}
+
+export function post(url: string, body, options) {
+    return _request('POST', url, body, options)
+}
+
+export function put(url: string, body, options) {
+    return _request('PUT', url, body, options)
+}
+
+export function del(url: string, body, options) {
+    return _request('GET', url, body, options)
+}

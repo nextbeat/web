@@ -14,7 +14,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
-        filename: 'js/bundle.js',
+        filename: 'bundle.js',
         chunkFilename: 'js/[id].bundle.js',
         publicPath: 'http://localhost:9090/'
     },
@@ -39,6 +39,17 @@ module.exports = {
                         'transform-object-rest-spread'
                     ]
                 }              
+            },
+            {
+                test: /\.js$/,
+                include: /node_modules\/lodash/,
+                loader: 'babel-loader',
+                query: {
+                    babelrc: false,
+                    plugins: [
+                        'babel-plugin-transform-es2015-modules-commonjs'
+                    ]
+                }
             },
             {
                 test: /\.scss$/,
@@ -80,7 +91,13 @@ module.exports = {
         symlinks: false
     },
     target: 'node',
-    externals: [ nodeExternals() ],    
+    node: {
+        __dirname: false,
+        process: false
+    },
+    externals: [ nodeExternals({
+        whitelist: [/^lodash/]
+    }) ],    
     plugins: [
         new CommonsChunkPlugin({
             name: 'server',

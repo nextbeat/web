@@ -19,6 +19,7 @@ module.exports = merge(config, {
             }
         ]
     },
+    devtool: 'eval-source-map',
     devServer: {
         inline: true
     },

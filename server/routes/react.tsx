@@ -69,7 +69,7 @@ function renderFullPage(html, head, initialState) {
         return (process.env.NODE_ENV === "mac" || process.env.NODE_ENV === "mac-dev") ? local : prod
     }
 
-    let jsPath = envPath('http://localhost:9090/bundle.js', `/${appManifest['app.js']}`)
+    let jsPath = envPath('http://localhost:9090/js/bundle.js', `/${appManifest['app.js']}`)
     let vendorsPath = envPath(`http://localhost:3000/js/vendors.dll.js`, `/js/${vendorsManifest['vendors.js']}`)
     let cssPath = envPath('http://localhost:9090/css/main.css', `/${appManifest['app.css']}`)
 

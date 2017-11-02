@@ -68,9 +68,9 @@ gulp.task('routes-compile', function() {
 
 gulp.task('server', function() {
     nodemon({
-        script: 'server/server.js',
+        script: 'dist/bundle.js',
         ext: 'html js',
-        watch: ['server/*', 'routes/*'],
+        // watch: ['server/*', 'routes/*'],
         env: MAC_ENV
     });
 });
