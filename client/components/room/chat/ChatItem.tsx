@@ -42,7 +42,7 @@ class ChatItem extends React.PureComponent<Props> {
         isSearchResult: false,
         isDropdownActive: false,
         showHeader: true,
-        showOptions: true
+        showOptions: false
     }
 
     constructor(props: Props) {
