@@ -68,7 +68,7 @@ export function fileTypeForFileName(name: string) {
 }
 
 export function fileType(file: File) {
-    return this.fileTypeForMimeType(file.type) || this.fileTypeForFileName(file.name)
+    return fileTypeForMimeType(file.type) || fileTypeForFileName(file.name)
 }
 
 export function bucketUrl() {
@@ -96,11 +96,11 @@ export function isBrowserCompatible(file: File) {
 
 export function checkFileCompatibility(type: UploadType, file: File) {
     const ext = fileExtension(file.name)
-    const fileType = this.fileType(file)
+    const fType = fileType(file)
 
     if (type === UploadType.MediaItem) {
         // Uploading media item resource
-        if (['image', 'video'].indexOf(fileType as string) < 0 || COMPATIBLE_FILE_FORMATS.indexOf(ext) < 0) {
+        if (!fType || COMPATIBLE_FILE_FORMATS.indexOf(ext) < 0) {
             throw new Error('Incompatible file type. We currently accept most video and image formats.')
         }
         if (file.size > 500*1024*1024) {

@@ -521,7 +521,7 @@ interface SelectMediaItemOptions {
     shouldUpdateHistory?: boolean
     shouldReplaceHistory?: boolean
 }
-export function selectMediaItem(roomId: number, mediaItemId: number, options?: SelectMediaItemOptions): ThunkAction {
+export function selectMediaItem(roomId: number, mediaItemId: number, options: SelectMediaItemOptions = {}): ThunkAction {
     
     return (dispatch, getState) => {
         
@@ -531,7 +531,8 @@ export function selectMediaItem(roomId: number, mediaItemId: number, options?: S
          * an update on the RoomPage component, which we can then
          * use to properly select the new media item. (TODO: why?)
          */
-        if (RoomPage.isActive(state) && options && options.shouldUpdateHistory) {
+        options.shouldUpdateHistory = options.shouldUpdateHistory || true
+        if (RoomPage.isActive(state) && options.shouldUpdateHistory) {
             /* We store the last selected media item from each stack
              * in the session in localStorage, so that it persists
              * through multiple sessions.
@@ -543,6 +544,7 @@ export function selectMediaItem(roomId: number, mediaItemId: number, options?: S
             if (options.shouldReplaceHistory) {
                 browserHistory.replace(url)
             } else {
+                console.log(browserHistory, browserHistory.push)
                 browserHistory.push(url)
             }
         }

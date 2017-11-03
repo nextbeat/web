@@ -12,7 +12,7 @@ import Search, { SearchType } from '@models/state/pages/search'
 const SEARCH_TYPES = {
     'tags': {
         endpoint: 'tags',
-        schema: Schemas.Tag
+        schema: Schemas.Tags
     },
     'users': {
         endpoint: 'users',
@@ -20,7 +20,7 @@ const SEARCH_TYPES = {
     },
     'stacks': {
         endpoint: 'stacks',
-        schema: Schemas.Stack
+        schema: Schemas.Stacks
     }
 }
 

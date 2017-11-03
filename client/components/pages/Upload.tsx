@@ -52,8 +52,8 @@ interface ConnectProps {
 
 type Props = ConnectProps & DispatchProps
 
-const UploadComponentTransition: React.SFC<{}> = () => (
-    <CSSTransition timeout={{ enter: 300, exit: 150 }} classNames="upload" />
+const UploadComponentTransition: React.SFC<{}> = (props: any) => (
+    <CSSTransition {...props} timeout={{ enter: 300, exit: 150 }} classNames="upload" />
 )
 
 class Upload extends React.Component<Props> {

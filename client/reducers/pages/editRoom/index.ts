@@ -11,7 +11,7 @@ function roomFields(state=Map(), action: Action) {
     if (action.type === ActionType.EDIT_ROOM && action.status === Status.SUCCESS && action.response) {
         let stack = action.response.entities.stacks[action.response.result]
         stack = pick(stack, ['description', 'tags', 'privacy_status'])
-        return state.merge(stack)
+        return state.merge(fromJS(stack))
     } else if (action.type === ActionType.UPDATE_EDIT_ROOM) {
         return state.merge(fromJS(action.room))
     }

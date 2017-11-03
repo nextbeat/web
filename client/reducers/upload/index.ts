@@ -59,6 +59,7 @@ function uploadFile(state: UploadState, action: UploadFileAction) {
             file: action.file,
             uploadProgress: action.progress,
             uploadComplete: false,
+            processingProgress: 0
         }).delete('error')
 
         if (action.xhr) {

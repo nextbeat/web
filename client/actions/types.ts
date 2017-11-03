@@ -32,6 +32,7 @@ export interface Pagination {
 
 export interface ApiCall {
     endpoint: string
+    auth?: object
     authenticated?: boolean
     body?: object
     clientOnly?: boolean

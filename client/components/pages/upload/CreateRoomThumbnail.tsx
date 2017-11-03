@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
 
 import Spinner from '@components/shared/Spinner'
 import FileComponent, { FileComponentProps } from './utils/FileComponent'
@@ -6,11 +7,14 @@ import Upload, { UploadType } from '@models/state/upload'
 import { State, DispatchProps } from '@types'
 
 interface ConnectProps {
-    hasFile: boolean
-    isUploading: boolean
-    isDoneUploading: boolean
-    isDoneProcessing: boolean
-    thumbnailUrl: string
+    file: File
+
+    isCustom: boolean    
+    isUploadingCustom: boolean
+    isDoneUploadingCustom: boolean
+    customThumbnailUrl: string
+
+    isDoneProcessing: boolean    
     processedImageUrl: string
 }
 
@@ -71,25 +75,25 @@ class CreateRoomThumbnail extends React.Component<Props> {
     }
 
     renderCustomThumbnail() {
-        const { isUploading, isDoneUploading, thumbnailUrl } = this.props 
+        const { isUploadingCustom, isDoneUploadingCustom, customThumbnailUrl } = this.props 
 
-        if (isUploading) {
+        if (isUploadingCustom) {
             return <Spinner styles={["grey"]} />
-        } else if (isDoneUploading) {
+        } else if (isDoneUploadingCustom) {
             return <div 
                         className="upload_create-room_thumb-custom-img"
-                        style={{ backgroundImage: `url(${thumbnailUrl})` }}
+                        style={{ backgroundImage: `url(${customThumbnailUrl})` }}
                     ></div>
         }
         return null;
     }
 
     render() {
-        const { hasFile } = this.props
+        const { isCustom } = this.props
 
         return (
             <div className="upload_create-room_thumb-inner" id="upload_create-room_thumb-inner">
-                { hasFile ? this.renderCustomThumbnail() : this.renderDefaultThumbnail() }
+                { isCustom ? this.renderCustomThumbnail() : this.renderDefaultThumbnail() }
             </div>
         )
     }
@@ -108,4 +112,16 @@ const fileOptions = {
     }
 }
 
-export default FileComponent('upload_create-room_thumb-inner', fileOptions)(CreateRoomThumbnail);
+function mapStateToProps(state: State): ConnectProps {
+    return {
+        file: Upload.getInFile(state, UploadType.MediaItem, 'file'),
+        isCustom: Upload.hasFile(state, UploadType.Thumbnail),
+        isUploadingCustom: Upload.isUploading(state, UploadType.Thumbnail),
+        isDoneUploadingCustom: Upload.isDoneUploading(state, UploadType.Thumbnail),
+        customThumbnailUrl: Upload.getInFile(state, UploadType.Thumbnail, 'url'),
+        isDoneProcessing: Upload.isDoneProcessing(state, UploadType.MediaItem),
+        processedImageUrl: Upload.processedImageUrl(state) || ''
+    }
+}
+
+export default connect(mapStateToProps)(FileComponent('upload_create-room_thumb-inner', fileOptions)(CreateRoomThumbnail));

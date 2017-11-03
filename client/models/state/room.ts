@@ -304,7 +304,7 @@ export default class Room {
         if (!CurrentUser.isLoggedIn(state)) {
             return false
         }
-        return this.author(state).get('username') === CurrentUser.entity(state).get('username')
+        return this.author(state, id).get('username') === CurrentUser.entity(state).get('username')
     }
 
     static isBookmarked(state: State, id: number): boolean {

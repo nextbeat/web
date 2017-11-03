@@ -18,8 +18,8 @@ export default function stacks(state=Map<string, any>(), action: Action) {
             // todo: merge stack ids
             return state.merge({
                 isFetching: false,
-                openStackIds: openStackIds(action.response),
-                closedStackIds: difference((action.response as any).result, openStackIds(action.response))
+                openStackIds: List(openStackIds(action.response)),
+                closedStackIds: List(difference((action.response as any).result, openStackIds(action.response)))
             })
         } else if (action.status === Status.FAILURE) {
             return state.merge({

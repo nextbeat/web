@@ -19,13 +19,13 @@ function login(state: State, action: LoginAction) {
         case Status.SUCCESS:
             return state.merge({
                 isLoggingIn: false,
-                id: action.user.id,
-                token: action.user.token,
+                id: (action.response as any).id,
+                token: (action.response as any).token,
             })
         case Status.FAILURE:
             return state.merge({
                 isLoggingIn: false,
-                loginError: action.error.message
+                loginError: (action.response as any).error.message
             })
     }
     return state

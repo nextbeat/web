@@ -16,7 +16,10 @@ import { NotLoggedInError } from '@errors'
 const API_ROOT = '/api/';
 
 function urlWithParams(endpoint: string, pagination: Pagination, queries: any): string {
-    let url = join(API_ROOT, endpoint);
+    let url = endpoint
+    if (url[0] !== '/') {
+        url = join(API_ROOT, endpoint);
+    }
     queries = queries || {};
 
     if (typeof pagination !== 'undefined') {
@@ -46,7 +49,7 @@ interface FetchInit {
 function fetchOptions(options: ApiCall): FetchInit {
     let { 
         method="GET", 
-        body={}
+        body={},
     } = options
 
     return {
@@ -64,7 +67,7 @@ function callApi(options: ApiCall, store: Store, action: ApiCallAction): Promise
     const { endpoint, schema, pagination, authenticated, queries } = options;
     const url = urlWithParams(endpoint, pagination, queries);
 
-    if (authenticated && CurrentUser.isLoggedIn(store.getState())) {
+    if (authenticated && !CurrentUser.isLoggedIn(store.getState())) {
         return Promise.reject(new NotLoggedInError());
     }
 
@@ -74,7 +77,9 @@ function callApi(options: ApiCall, store: Store, action: ApiCallAction): Promise
         return fetch(url, fetchOptions(options))
     })
     .then(response => {
-        return response.json().then( json => ({ json, response }))
+        return response.json()
+            .then( json => ({ json, response }))
+            .catch( err => ({ json: {}, response }))
     })
     // .delay(1000) // FOR DEBUG
     .then(({ json, response }) => {
@@ -138,6 +143,7 @@ export default (store: Store) => (next: Dispatch) => (action: ApiCallAction) => 
 
         })
         .catch(error => {
+            console.log(error);
             return next(actionWith({
                 status: Status.FAILURE,
                 error: error

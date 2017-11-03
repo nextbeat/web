@@ -1,4 +1,4 @@
-import { Map, Set, List } from 'immutable'
+import { Map, Set, List, fromJS } from 'immutable'
 import { ActionType, Status, Action } from '@actions/types'
 import { ActivityAction, ClearNotificationsAction } from '@actions/notifications'
 import { LoginAction } from '@actions/user'
@@ -13,7 +13,7 @@ function loadActivity(state: State, action: ActivityAction) {
     } else if (action.status === Status.SUCCESS) {
         return state.merge({
             isFetching: false,
-            activity: action.response,
+            activity: fromJS(action.response),
             unreadCount: 0
         })
     } else if (action.status === Status.FAILURE) {
@@ -35,7 +35,7 @@ function clearNotifications(state: State, action: ClearNotificationsAction) {
 function login(state: State, action: LoginAction) {
     if (action.status === Status.SUCCESS) {
         return state.merge({
-            unreadCount: action.user.unread_count
+            unreadCount: (action.response as any).unread_count
         });
     }
     return state;

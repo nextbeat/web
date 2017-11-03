@@ -161,7 +161,7 @@ function performLogin(username: string, password: string): LoginAction {
     return {
         type: ActionType.LOGIN,
         API_CALL: {
-            endpoint: 'login',
+            endpoint: '/login',
             method: 'POST',
             body: {
                 username,
@@ -195,7 +195,7 @@ function performLogout(pushObject?: PushSubscriptionObject): LogoutAction {
     return {
         type: ActionType.LOGOUT,
         API_CALL: {
-            endpoint: 'logout',
+            endpoint: '/logout',
             method: 'POST',
             body: pushObject,
             onSuccess: onLogoutSuccess
@@ -240,7 +240,7 @@ function performSignup(credentials: Credentials): SignupAction {
         type: ActionType.SIGNUP,
         credentials,
         API_CALL: {
-            endpoint: 'signup',
+            endpoint: '/signup',
             method: 'POST',
             body: credentials,
             onSuccess: onSignupSuccess 

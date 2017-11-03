@@ -1,8 +1,8 @@
-var express         = require('express'),
+var universalLinks  = require('../conf/universal-links');
 
-    api             = require('../lib/api'),
-    passportLib     = require('../lib/passport'),
-    universalLinks  = require('../conf/universal-links');
+import { Router } from 'express'
+import * as api from '../lib/api'
+import * as passportLib from '../lib/passport'
 
 import has from 'lodash-es/has'
 import assign from 'lodash-es/assign'
@@ -16,7 +16,7 @@ export function init(web) {
 
     // API calls
 
-    var apiRouter = express.Router();
+    var apiRouter = Router();
     web.use('/api', apiRouter);
 
     // matches any requests with the prefix api/
@@ -51,7 +51,7 @@ export function init(web) {
 
     // Client-side app
 
-    var router = express.Router();
+    var router = Router();
     web.use('/', router);
 
     // Internal checks 

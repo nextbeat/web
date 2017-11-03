@@ -206,6 +206,12 @@ function uploadFile(store: Store, next: Dispatch, action: UploadFileAction) {
 
     // Generate uuid and url for item if not provided
     const type = fileType(action.file)
+    if (!type) {
+        return callActionWith({
+            status: Status.FAILURE,
+            error: "Incompatible file type."
+        })
+    }
     const uuid = generateUuid()
     const key = keyName(action.file, type, uuid)
     const url = `${cloudfrontUrl()}${key}`

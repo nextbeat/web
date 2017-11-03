@@ -60,7 +60,9 @@ class ToggleLink extends React.Component<AllProps> {
     render() {
         let linkProps = {
             to: this.props.to,
-            onlyActiveOnIndex: this.props.onlyActiveOnIndex
+            onlyActiveOnIndex: this.props.onlyActiveOnIndex,
+            children: this.props.children,
+            className: this.props.className
         }
         return <span onClick={this.handleClick}><Link {...linkProps} ref={(c: any) => { if (c) { this._child = c } }} /></span>
     }

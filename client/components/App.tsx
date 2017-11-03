@@ -30,7 +30,8 @@ import AppModel from '@models/state/app'
 import RoomPage from '@models/state/pages/room'
 import { State, DispatchProps, RouteProps } from '@types'
 
-interface Props {
+interface ConnectProps {
+    isLoggingIn: boolean
     isLoggedIn: boolean
     isSplashTopbarCollapsed: boolean
     hasAuthError: boolean
@@ -41,15 +42,15 @@ interface Props {
     roomUnreadCount: number
 }
 
-type AllProps = Props & DispatchProps & RouteProps<{}>
+type Props = ConnectProps & DispatchProps & RouteProps<{}>
 
-class App extends React.Component<AllProps> {
+class App extends React.Component<Props> {
 
     static contextTypes = {
         router: PropTypes.object.isRequired
     }
 
-    constructor(props: AllProps) {
+    constructor(props: Props) {
         super(props);
 
         this.isInRoom = this.isInRoom.bind(this);
@@ -85,8 +86,8 @@ class App extends React.Component<AllProps> {
 
     }
 
-    componentDidUpdate(prevProps: AllProps) {
-        if (prevProps.isLoggedIn && this.props.isLoggedIn) {
+    componentDidUpdate(prevProps: Props) {
+        if (prevProps.isLoggingIn && this.props.isLoggedIn) {
             this.props.dispatch(closeModal())
         }
 
@@ -95,7 +96,7 @@ class App extends React.Component<AllProps> {
         }
     }
 
-    componentWillReceiveProps(nextProps: AllProps) {
+    componentWillReceiveProps(nextProps: Props) {
         if (this.props.location !== nextProps.location) {
             this.props.dispatch(hasNavigated(this.props.location))
         }
@@ -241,8 +242,9 @@ class App extends React.Component<AllProps> {
     }
 }
 
-function mapStateToProps(state: State): Props {
+function mapStateToProps(state: State): ConnectProps {
     return {
+        isLoggingIn: CurrentUser.get(state, 'isLoggingIn'),
         isLoggedIn: CurrentUser.isLoggedIn(state),
         isSplashTopbarCollapsed: !!AppModel.get(state, 'splashTopbarCollapsed'),
         hasAuthError: AppModel.hasAuthError(state),

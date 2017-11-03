@@ -44,7 +44,7 @@ class CreateRoom extends React.Component<Props> {
 
     handleClose() {
         // deselects new stack item
-        this.props.dispatch(selectStackForUpload(-1))
+        this.props.dispatch(selectStackForUpload(0))
     }
 
     handleTitleChange(e: React.FormEvent<HTMLInputElement>) {
@@ -79,6 +79,7 @@ class CreateRoom extends React.Component<Props> {
                 <div className="upload_create-room_form">
                     <div className="upload_create-room_left">
                         <div className="upload_create-room_thumb">
+                            <CreateRoomThumbnail />
                             <div className="upload_create-room_thumb_prompt" onClick={this.handleEditThumbnailClick}>
                                 Edit thumbnail
                             </div>
