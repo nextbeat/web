@@ -52,11 +52,14 @@ export function entity(type: ActionType): Reducer<State> {
             switch (action.status) {
                 case Status.REQUESTING:
                     return state.merge({
-                        isFetching: true
+                        isFetching: true,
+                        hasFetched: false
                     })
+                    .delete('error')
                 case Status.SUCCESS:
                     return state.merge({
                         isFetching: false,
+                        hasFetched: true,
                         id: (action.response as any).result
                     })
                 case Status.FAILURE:

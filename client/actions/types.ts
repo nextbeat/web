@@ -71,7 +71,7 @@ export interface ApiCallAction extends GenericAction {
         limit?: number
         page?: number
     }
-    rawResponse?: object
+    rawResponse?: any
 }
 
 export interface ApiCancelAction extends GenericAction {
@@ -210,6 +210,12 @@ export enum ActionType {
     HOME = 'HOME',
     CLEAR_HOME = 'CLEAR_HOME',
 
+    /* PARTNER */
+    PARTNER = 'PARTNER',
+    CAMPAIGN = 'CAMPAIGN',
+    CAMPAIGN_ROOM = 'CAMPAIGN_ROOM',
+    CLEAR_PARTNER = 'CLEAR_PARTNER',
+
     /* PROFILE */
     USER_STACKS = 'USER_STACKS',
     USER = 'USER',
@@ -272,6 +278,7 @@ import { UserActionAll } from './user'
 import { EditProfileActionAll } from './pages/editProfile'
 import { EditRoomActionAll } from './pages/editRoom'
 import { HomeActionAll } from './pages/home'
+import { PartnerActionAll } from './pages/partner'
 import { ProfileActionAll } from './pages/profile'
 import { RoomPageActionAll } from './pages/room'
 import { SearchActionAll } from './pages/search'
@@ -296,6 +303,7 @@ export type Action =
     EditProfileActionAll |
     EditRoomActionAll |
     HomeActionAll |
+    PartnerActionAll |
     ProfileActionAll |
     RoomPageActionAll |
     SearchActionAll |
