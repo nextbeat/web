@@ -17,7 +17,7 @@ function fetchPartner(partnerId: number): PartnerAction {
     return {
         type: ActionType.PARTNER,
         API_CALL: {
-            endpoint: `ads/advertiser/${partnerId}`,
+            endpoint: `ads/advertisers/${partnerId}`,
             schema: Schemas.Campaigns
         }
     }
