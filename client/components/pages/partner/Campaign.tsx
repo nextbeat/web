@@ -27,15 +27,22 @@ type Props = ConnectProps & DispatchProps & RouteProps<Params>
 
 class CampaignComponent extends React.Component<Props> {
 
+    constructor(props: Props) {
+        super(props);
+
+        this.renderCampaignStack = this.renderCampaignStack.bind(this);
+    }
+
     componentDidMount() {
         this.props.dispatch(loadCampaign(this.props.params.id))
     }
 
     renderCampaignStack(s: CampaignStack) {
+        const url = `/studio/campaigns/${this.props.campaign.get('id')}/rooms/${s.get('hid')}`
         return (
             <tr className="studio_campaign_stack" key={s.get('id')}>
                 <td>{s.get('username')}</td>
-                <td>{s.get('description')}</td>
+                <td><Link to={url}>{s.get('description')}</Link></td>
                 <td>{s.get('session_count') || <span className="studio_not-available">n/a</span>}</td> 
                 <td>{s.get('session_duration') || <span className="studio_not-available">n/a</span>}</td>
             </tr>

@@ -1,11 +1,13 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
 import { List } from 'immutable'
 
 import Spinner from '@components/shared/Spinner.tsx'
 
 import { loadCampaignRoom } from '@actions/pages/partner'
 import Partner from '@models/state/pages/partner'
+import Campaign from '@models/entities/campaign'
 import CampaignStack from '@models/entities/campaignStack'
 import { State, DispatchProps, RouteProps } from '@types'
 
@@ -13,6 +15,7 @@ interface ConnectProps {
     isFetching: boolean
     hasFetched: boolean
     error: string
+    campaign: Campaign
     campaignStack: CampaignStack
 }
 
@@ -30,13 +33,21 @@ class CampaignRoom extends React.Component<Props> {
     }
 
     render() {
-        const { campaignStack, isFetching, hasFetched, error } = this.props
+        const { campaign, campaignStack, isFetching, hasFetched, error } = this.props
+        const campaignUrl = `/studio/campaigns/${campaign.get('id')}`
+        const roomUrl = `/r/${campaignStack.get('hid')}`
         return (
             <div>
-                { isFetching && <Spinner styles={["grey"]} />}
                 { hasFetched && 
-                    <div className="studio_campaign_room">
-                        {campaignStack.get('hid')}
+                    <div>
+                        <div className="studio_header">
+                            <div className="studio_title">
+                                <Link to="/studio">Campaigns</Link> > <Link to={campaignUrl}>{campaign.get('name')}</Link> > <span className="studio_title-selected">{campaignStack.get('description')}</span>
+                            </div>
+                            <div className="studio_header_right">
+                                <Link to={roomUrl}>View room</Link>
+                            </div>
+                        </div>
                     </div>
                 }
             </div>
@@ -49,6 +60,7 @@ function mapStateToProps(state: State): ConnectProps {
         isFetching: Partner.get(state, 'isFetchingCampaign'),
         hasFetched: Partner.get(state, 'hasFetchedCampaign'),
         error: Partner.get(state, 'campaignError'),
+        campaign: Partner.selectedCampaign(state),
         campaignStack: Partner.selectedCampaignStack(state),
     }
 }

@@ -1,9 +1,21 @@
 import * as React from 'react'
-import { createPortal } from 'react-dom'
+import { connect } from 'react-redux'
+import { browserHistory } from 'react-router'
 
-// TODO: componentWillReceiveProps check for authorized user
+import CurrentUser from '@models/state/currentUser'
+import { State } from '@types'
 
-class StudioContainer extends React.Component {
+interface Props {
+    isLoggedIn: boolean
+}
+
+class StudioContainer extends React.Component<Props> {
+
+    componentWillReceiveProps(nextProps: Props) {
+        if (this.props.isLoggedIn && !nextProps.isLoggedIn) {
+            browserHistory.push('/');
+        }
+    }
 
     render() {
         return (
@@ -14,4 +26,10 @@ class StudioContainer extends React.Component {
     }
 }
 
-export default StudioContainer
+function mapStateToProps(state: State): Props {
+    return {
+        isLoggedIn: CurrentUser.isLoggedIn(state)
+    }
+}
+
+export default connect(mapStateToProps)(StudioContainer)
