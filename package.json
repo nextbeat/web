@@ -11,7 +11,7 @@
     "build:client": "npm run clean && npm run build:dll && npm run build:app",
     "build:server": "webpack --config config/webpack.server.base",    
     "build": "npm run build:client && npm run build:server",
-    "server": "nom run build:server && gulp server"
+    "server": "npm run build:server && gulp server"
   },
   "dependencies": {
     "autotrack": "^2.0.1",

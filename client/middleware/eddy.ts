@@ -54,11 +54,15 @@ import EddyClient from '@eddy'
 import * as Schemas from '@schemas'
 
 interface WrapOptions {
-    successCallback?: WrapCallback
-    failureCallback?: WrapCallback
+    updateAction?: UpdateActionCallback
+    successCallback?: SuccessCallback
 }
 
-interface WrapCallback {
+interface UpdateActionCallback {
+    (action: GenericAction): GenericAction
+}
+
+interface SuccessCallback {
     (action: GenericAction, client: EddyClient, data: any): void
 }
 
@@ -88,35 +92,33 @@ function wrapAction(store: Store, next: Dispatch, action: Action): Wrap {
 
         fn(action, client)
             .then((responseData) => { 
-                next(actionWith(Status.SUCCESS, { responseData }));
+                let successAction = actionWith(Status.SUCCESS, { responseData })
+                if (options && typeof options.updateAction === "function") {
+                    successAction = options.updateAction(successAction)
+                }
+                next(successAction)
+
                 if (options && typeof options.successCallback === "function") {
-                    options.successCallback(action, client, responseData);
+                    options.successCallback(successAction, client, responseData)
                 }
             })
             .catch((error) => { 
                 next(actionWith(Status.FAILURE, { error }));
-                if (options && typeof options.failureCallback === "function") {
-                    options.failureCallback(action, client, error);
-                }
             })
     }
 }
 
-function _roomInfoSuccessCallback(store: Store, next: Dispatch, action: GenericAction) {
+function _roomInfoUpdateAction(action: GenericAction) {
     // Separate function since used both in roomJoin and roomInfo
-    return (action: GenericAction, client: EddyClient, responseData: any) => {
-        if ('id' in responseData.pinned_chat) {
-            // normalize pinned comment
-            let pinnedComment = assign({}, responseData.pinned_chat, {
-                type: "message"
-            })
-            const response = normalize(pinnedComment, Schemas.Comment)
-            store.dispatch({
-                type: ActionType.ENTITY_UPDATE,
-                response
-            })
-        }
+    if ('id' in action.responseData.pinned_chat) {
+        // normalize pinned comment
+        let pinnedComment = assign({}, action.responseData.pinned_chat, {
+            type: "message"
+        })
+        const response = normalize(pinnedComment, Schemas.Comment)
+        return assign({}, action, { response })
     }
+    return action
 }
 
 function connect(store: Store, next: Dispatch, action: ConnectEddyAction) {
@@ -160,7 +162,7 @@ function identify(action: IdentifyEddyAction, client: EddyClient) {
 }
 
 function wrapIdentify(store: Store, next: Dispatch, action: IdentifyEddyAction) {
-    let successCallback: WrapCallback = function(action, client, responseData) {
+    let successCallback: SuccessCallback = function(action, client, responseData) {
         let rooms = Room.loadedRoomIds(store.getState())
         rooms.forEach(roomId => {
             store.dispatch(getRoomInfo(roomId))
@@ -179,9 +181,6 @@ function join(action: JoinRoomAction, client: EddyClient) {
 
 function wrapJoin(store: Store, next: Dispatch, action: JoinRoomAction) {
     let successCallback = function(action: JoinRoomAction, client: EddyClient, responseData: any) {
-        // call room info success callback
-        _roomInfoSuccessCallback(store, next, action)(action, client, responseData)
-
         // set up room info timer
         let roomInfoIntervalId = window.setInterval(() => {
             store.dispatch(getRoomInfo(action.roomId))
@@ -189,7 +188,7 @@ function wrapJoin(store: Store, next: Dispatch, action: JoinRoomAction) {
 
         store.dispatch(startRoomTimer(action.roomId, roomInfoIntervalId))
     }
-    return wrapAction(store, next, action)(join, { successCallback })
+    return wrapAction(store, next, action)(join, { successCallback, updateAction: _roomInfoUpdateAction })
 }
 
 function leave(action: LeaveRoomAction, client:EddyClient) {
@@ -209,8 +208,7 @@ function roomInfo(action: RoomInfoAction, client: EddyClient) {
 }
 
 function wrapRoomInfo(store: Store, next: Dispatch, action: RoomInfoAction) {
-    let successCallback = _roomInfoSuccessCallback(store, next, action)
-    return wrapAction(store, next, action)(roomInfo, { successCallback })
+    return wrapAction(store, next, action)(roomInfo, { updateAction: _roomInfoUpdateAction })
 }
 
 function bookmark(action: BookmarkAction, client: EddyClient) {
@@ -219,20 +217,17 @@ function bookmark(action: BookmarkAction, client: EddyClient) {
 
 function wrapBookmark(store: Store, next: Dispatch, action: BookmarkAction) {
 
-    let successCallback = function(action: BookmarkAction, client: EddyClient, responseData: any) {
+    let updateAction = function(action: BookmarkAction) {
         const newStack = {
             id: action.roomId,
-            bookmark_count: responseData.count,
+            bookmark_count: action.responseData.count,
             bookmarked: true
         }
         const response = normalize(newStack, Schemas.Stack)
-        store.dispatch({
-            type: ActionType.ENTITY_UPDATE,
-            response
-        })
+        return assign({}, action, { response })
     }
 
-    return wrapAction(store, next, action)(bookmark, { successCallback })
+    return wrapAction(store, next, action)(bookmark, { updateAction })
 }
 
 function unbookmark(action: UnbookmarkAction, client: EddyClient) {
@@ -241,20 +236,17 @@ function unbookmark(action: UnbookmarkAction, client: EddyClient) {
 
 function wrapUnbookmark(store: Store, next: Dispatch, action: UnbookmarkAction) {
 
-    let successCallback = function(action: UnbookmarkAction, client: EddyClient, responseData: any) {
+    let updateAction = function(action: UnbookmarkAction,) {
         const newStack = {
             id: action.roomId,
-            bookmark_count: responseData.count,
+            bookmark_count: action.responseData.count,
             bookmarked: false
         }
         const response = normalize(newStack, Schemas.Stack)
-        store.dispatch({
-            type: ActionType.ENTITY_UPDATE,
-            response
-        })
+        return assign({}, action, { response })
     }
 
-    return wrapAction(store, next, action)(unbookmark, { successCallback })
+    return wrapAction(store, next, action)(unbookmark, { updateAction })
 }
 
 function ban(action: BanUserAction, client: EddyClient) {
@@ -271,15 +263,15 @@ function sendComment(action: SendCommentAction, client: EddyClient) {
 
 function wrapSendComment(store: Store, next: Dispatch, action: SendCommentAction) {
 
-    let successCallback = function(action: SendCommentAction, client: EddyClient, responseData: any) {
+    let updateAction = function(action: SendCommentAction) {
         // save comment into entities, now that we have the id
         // todo: private comment support
         const comment = {
             message: action.message,
             type: "message",
             subtype: "public",
-            id: responseData.comment_id,
-            user_mentions: responseData.user_mentions,
+            id: action.responseData.comment_id,
+            user_mentions: action.responseData.user_mentions,
             stack_id: action.roomId,
             created_at: format(new Date()),
             author: {
@@ -287,13 +279,10 @@ function wrapSendComment(store: Store, next: Dispatch, action: SendCommentAction
             }
         }
         const response = normalize(comment, Schemas.Comment)
-        store.dispatch({
-            type: ActionType.ENTITY_UPDATE,
-            response
-        })
+        return assign({}, action, { response })
     }
 
-    return wrapAction(store, next, action)(sendComment, { successCallback })
+    return wrapAction(store, next, action)(sendComment, { updateAction })
 }
 
 function pinComment(action: PinCommentAction, client: EddyClient) {
@@ -302,26 +291,23 @@ function pinComment(action: PinCommentAction, client: EddyClient) {
 
 function wrapPinComment(store: Store, next: Dispatch, action: PinCommentAction) {
 
-    let successCallback = function(action: PinCommentAction, client: EddyClient, responseData: any) {
+    let updateAction = function(action: PinCommentAction) {
         const comment = {
             message: action.message,
             type: "message",
             subtype: "pinned",
-            id: responseData.comment_id,
+            id: action.responseData.comment_id,
             stack_id: action.roomId,
-            user_mentions: responseData.user_mentions,
+            user_mentions: action.responseData.user_mentions,
             author: {
                 id: CurrentUser.get(store.getState(), 'id')
             }
         }
         const response = normalize(comment, Schemas.Comment)
-        store.dispatch({
-            type: ActionType.ENTITY_UPDATE,
-            response
-        })
+        return assign({}, action, { response })
     }
 
-    return wrapAction(store, next, action)(pinComment, { successCallback })
+    return wrapAction(store, next, action)(pinComment, { updateAction })
 }
 
 function unpinComment(action: UnpinCommentAction, client: EddyClient) {
