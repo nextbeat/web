@@ -17,9 +17,9 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
+                test: /\.(j|t)sx?$/,
                 exclude: /node_modules\/(?!(autotrack|dom-utils))/,
-                loader: 'ts-loader',
+                loader: 'ts-loader'
             },
             {
                 test: /\.scss$/,

@@ -6,14 +6,16 @@
     "clean": "rimraf client/public/js/*",
     "prestart": "webpack --config config/webpack.dll.development",
     "start": "webpack-dev-server --progress --colors --port 9090 --config config/webpack.config.development",
-    "build:app": "webpack --config config/webpack.config.development",
-    "build:dll": "webpack --config config/webpack.dll.development",
-    "build": "npm run clean && npm run build:dll && npm run build:app",
-    "server": "webpack --config config/webpack.server.base"
+    "build:app": "webpack --config config/webpack.config.production",
+    "build:dll": "webpack --config config/webpack.dll.production",
+    "build:client": "npm run clean && npm run build:dll && npm run build:app",
+    "build:server": "webpack --config config/webpack.server.base",    
+    "build": "npm run build:client && npm run build:server",
+    "server": "nom run build:server && gulp server"
   },
   "dependencies": {
     "autotrack": "^2.0.1",
-    "bluebird": "*",
+    "bluebird": "^3.5.1",
     "body-parser": "^1.14.2",
     "connect-flash": "^0.1.1",
     "connect-redis": "^3.0.2",
@@ -59,6 +61,7 @@
     "ua-parser-js": "0.7.10"
   },
   "devDependencies": {
+    "@types/bluebird": "3.5.12",
     "@types/bluebird-global": "^3.5.3",
     "@types/google.analytics": "0.0.35",
     "@types/hls.js": "^0.7.7",

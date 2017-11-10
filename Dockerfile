@@ -1,9 +1,4 @@
-FROM node:5.11
-
-ADD docker/scripts/start.sh /sbin/start.sh
-RUN chmod +x /sbin/start.sh
-
-CMD ["/sbin/start.sh"]
+FROM node:8.6
 
 RUN npm install -g gulp
 
@@ -13,3 +8,6 @@ RUN cd /tmp && npm install
 RUN mkdir -p /home/app/web && cp -a /tmp/node_modules /home/app/web
 
 ADD . /home/app/web
+WORKDIR /home/app/web
+RUN npm run build
+CMD node dist/bundle.js
