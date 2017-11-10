@@ -2,4 +2,4 @@
 
 cd /home/app/web
 npm run build
-node server/server.js
+node dist/bundle.js

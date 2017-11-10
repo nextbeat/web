@@ -80,10 +80,10 @@
     }
 }
 
-.chat_lost-connection-leave {
+.chat_lost-connection-exit {
     transform: translateY(0);
 
-    &.chat_lost-connection-leave-active {
+    &.chat_lost-connection-exit-active {
         transform: translateY(-30px);
         transition: transform 0.2s;
     }

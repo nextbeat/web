@@ -5,35 +5,27 @@ const ManifestPlugin        = require('webpack-manifest-plugin');
 const CommonsChunkPlugin    = webpack.optimize.CommonsChunkPlugin;
 const DllReferencePlugin    = webpack.DllReferencePlugin;
 
+let absolutePath = (p) => path.resolve(__dirname, '../client', p) 
+
 module.exports = {
     entry: {
-        app: './client/app.js'
+        app: './client/app.tsx'
     },
     output: {
-        path: path.join(__dirname, '../client/public/')
+        path: absolutePath('public')
     },
     module: {
         rules: [
             {
-                test: /\.js$/,
+                test: /\.(j|t)sx?$/,
                 exclude: /node_modules\/(?!(autotrack|dom-utils))/,
-                loader: 'babel-loader',
-                query: {
-                    babelrc: false,
-                    presets: [
-                        ['es2015'],
-                        'react'
-                    ],
-                    plugins: [
-                        'transform-object-rest-spread'
-                    ]
-                }
+                loader: 'ts-loader'
             },
             {
                 test: /\.scss$/,
                 exclude: /node_modules/,
                 loader: ExtractTextPlugin.extract({
-                    loader: [
+                    use: [
                         {
                             loader: 'css-loader',
                             query: { importLoaders: 2 }
@@ -49,6 +41,24 @@ module.exports = {
                 exclude: /node_modules/
             }
         ]
+    },
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js', '.json'],
+        alias: {
+            "@client": absolutePath(''),
+            "@actions": absolutePath('actions'),
+            "@analytics": absolutePath('analytics'),
+            "@components": absolutePath('components'),
+            "@eddy": absolutePath('eddy'),
+            "@errors": absolutePath('errors'),
+            "@models": absolutePath('models'),
+            "@reducers": absolutePath('reducers'),
+            "@schemas": absolutePath('schemas'),
+            "@types": absolutePath('types'),
+            "@upload": absolutePath('upload'),
+            "@utils": absolutePath('utils')
+        },
+        symlinks: false
     },
     plugins: [
         new DllReferencePlugin({

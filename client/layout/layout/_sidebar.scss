@@ -50,6 +50,7 @@ a.sidebar_item {
     margin-bottom: 12px;
     font-size: 14px;
     align-items: center;
+    height: 29px;
 
     &:hover {
         color: $primary-color;
@@ -165,6 +166,12 @@ a.sidebar_item {
     @include media('<=room-medium') {
         @include collapsed-sidebar;
     }
+}
+
+// When displaying the studio banner, we need to offset the positioning
+// of the sidebar
+.with-studio-banner .sidebar {
+    top: 35px;
 }
 
 

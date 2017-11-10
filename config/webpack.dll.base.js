@@ -7,6 +7,7 @@ module.exports = {
         vendors: [ 
             'jquery',
             'hls.js',
+            'prop-types',
             'react',
             'react-dom',
             'react-router',
