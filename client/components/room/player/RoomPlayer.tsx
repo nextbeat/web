@@ -138,7 +138,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                 { children }
                 <div className="player_media" style={{ height: `${playerHeight}px` }}>
                     <div className="player_media-inner" id="player_media-inner">
-                    { mediaItemsSize && !mediaItemsError && <Spinner styles={["large", "grey"]}/> }
+                    { mediaItemsSize === 0 && !mediaItemsError && <Spinner styles={["large", "grey"]}/> }
                     { item.hasReference() && <ItemReference roomId={roomId} {...containerProps} /> }
                     { !item.isEmpty() && (item.isVideo() ? 
                         <Video 

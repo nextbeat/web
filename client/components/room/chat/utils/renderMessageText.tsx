@@ -147,7 +147,6 @@ function recursiveCreateElement(start: number, end: number, annotations: List<An
 function doRenderMessageText(comment: Comment | TemporaryComment, options: RenderMessageOptions): JSX.Element {
     let annotations = preprocessAnnotations(comment, options)
     let message     = comment.get('message')
-    console.log(annotations.toJS())
     return <span>{recursiveCreateElement(0, message.length, annotations, message, options)}</span>
 }
 

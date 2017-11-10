@@ -21,8 +21,8 @@ class User extends React.Component<Props> {
     render() {
         const { user, style, showSubscribe } = this.props;
 
-        let profpicUrl = secureUrl(user.thumbnail('small').get('url'))
-        let profpicStyle = profpicUrl ? { backgroundImage: `url(${profpicUrl})`} : {}
+        let profpicUrl = user.thumbnail('small').get('url')
+        let profpicStyle = profpicUrl ? { backgroundImage: `url(${secureUrl(profpicUrl)})`} : {}
 
         const styleClass = style ? `user-${style}` : "";
         const subscriberCount = user.get('subscriber_count', 0)
