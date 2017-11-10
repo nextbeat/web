@@ -8,6 +8,7 @@ interface UserProps {
     description: string
     full_name: string
     id: number
+    is_advertiser: boolean
     is_bot: boolean
     open_stacks: number
     profpic_url: string

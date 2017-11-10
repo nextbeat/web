@@ -53,7 +53,7 @@ export function loadCampaign(campaignId: number): CampaignAction {
         type: ActionType.CAMPAIGN,
         campaignId,
         API_CALL: {
-            endpoint: `ads/campaign/${campaignId}`,
+            endpoint: `ads/campaigns/${campaignId}`,
             onSuccessImmediate: onCampaignSuccessImmediate
         }
     }
@@ -62,15 +62,15 @@ export function loadCampaign(campaignId: number): CampaignAction {
 export interface CampaignRoomAction extends ApiCallAction {
     type: ActionType.CAMPAIGN_ROOM
     campaignId: number
-    roomId: number
+    roomHid: string
 }
-export function loadCampaignRoom(campaignId: number, roomId: number): CampaignRoomAction {
+export function loadCampaignRoom(campaignId: number, roomHid: string): CampaignRoomAction {
     return {
         type: ActionType.CAMPAIGN_ROOM,
         campaignId,
-        roomId,
+        roomHid,
         API_CALL: {
-            endpoint: `ads/campaign/${campaignId}/stacks/${roomId}`,
+            endpoint: `ads/campaigns/${campaignId}/stacks/${roomHid}`,
             schema: Schemas.CampaignStack
         }
     }

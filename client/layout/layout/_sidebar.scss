@@ -167,4 +167,10 @@ a.sidebar_item {
     }
 }
 
+// When displaying the studio banner, we need to offset the positioning
+// of the sidebar
+.with-studio-banner .sidebar {
+    top: 35px;
+}
+
 

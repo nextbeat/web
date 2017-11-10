@@ -4,9 +4,7 @@ import { Route, Redirect } from 'react-router'
 import App from '../client/components/App'
 import { gaPage } from '../client/actions/ga'
 import { Store } from '../client/types'
-
-// require.ensure shim for server
-if (typeof require.ensure !== "function") require.ensure = (d: any, c: any) => c(require)
+import CurrentUser from '../client/models/state/currentUser'
 
 export default (store: Store) => {
    
@@ -139,6 +137,37 @@ export default (store: Store) => {
                                 return cb(null, component.default)
                             })
                         }),
+                    ]
+                },
+                {
+                    path: 'studio',
+                    getComponent: (nextState: any, cb: any) => {
+                        if (!CurrentUser.isPartner(store.getState())) {
+                            import('../client/components/pages/NoMatch').then(component => {
+                                return cb(null, component.default)
+                            })
+                        } else {
+                            import ('../client/components/pages/partner/StudioContainer').then(component => {
+                                return cb(null, component.default)
+                            })
+                        }
+                    },
+                    indexRoute: analyticsRoute(undefined, cb => {
+                        import ('../client/components/pages/partner/Studio').then(component => {
+                            return cb(null, component.default)
+                        })
+                    }),
+                    childRoutes: [
+                        analyticsRoute('campaigns/:id', cb => {
+                            import('../client/components/pages/partner/Campaign').then(component => {
+                                return cb(null, component.default)
+                            })
+                        }),
+                        analyticsRoute('campaigns/:campaignId/rooms/:roomHid', cb => {
+                            import('../client/components/pages/partner/CampaignRoom').then(component => {
+                                return cb(null, component.default)
+                            })
+                        })
                     ]
                 },
                 analyticsRoute('*', cb => {

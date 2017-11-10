@@ -2,7 +2,7 @@ import flatten from 'lodash-es/flatten'
 import { normalize } from 'normalizr'
 
 import { ActionType, ApiCallAction, ApiCancelAction } from '@actions/types'
-import Schemas from '@schemas'
+import * as Schemas from '@schemas'
 import { Store, Dispatch } from '@types'
 
 export type HomeActionAll = 
@@ -17,11 +17,11 @@ function onHomeSuccess(store: Store, next: Dispatch, action: HomeAction, respons
     const stacks = response.sections.map((s: any) => s.stacks)
     next({
         type: ActionType.ENTITY_UPDATE,
-        response: normalize(flatten(stacks), Schemas.STACKS)
+        response: normalize(flatten(stacks), Schemas.Stacks)
     })
     next({
         type: ActionType.ENTITY_UPDATE,
-        response: normalize(response.main_card, Schemas.STACK)
+        response: normalize(response.main_card, Schemas.Stack)
     })
 }
 

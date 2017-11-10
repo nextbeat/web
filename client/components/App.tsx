@@ -33,6 +33,8 @@ import { State, DispatchProps, RouteProps } from '@types'
 interface ConnectProps {
     isLoggingIn: boolean
     isLoggedIn: boolean
+    isPartner: boolean
+
     isSplashTopbarCollapsed: boolean
     hasAuthError: boolean
     activeOverlay: string
@@ -212,16 +214,18 @@ class App extends React.Component<Props> {
     }
 
     render() {
-        const { isLoggedIn, isSplashTopbarCollapsed, activeOverlay, children } = this.props
+        const { isLoggedIn, isPartner, isSplashTopbarCollapsed, activeOverlay, children } = this.props
         const { router } = this.context
         const pathname = router.location.pathname
 
         const inHome = router.isActive('/', true)
+        const inStudio = router.isActive('/studio') && isPartner
         const showSplashTopbar = inHome && !isLoggedIn
 
         const inRoomClass = this.isInRoom() ? 'app-container-room' : ''
         const guestClass = isLoggedIn ? '' : 'no-sidebar'
         const splashClass = showSplashTopbar ? (isSplashTopbarCollapsed ? 'splash splash-collapsed' : 'splash splash-expanded') : ''
+        const studioClass = inStudio ? 'with-studio-banner' : ''
         const sidebarActiveClass = activeOverlay === 'sidebar' ? 'app-container-sidebar-active' : ''
 
         return (
@@ -231,7 +235,8 @@ class App extends React.Component<Props> {
                 <Login />
                 <Signup />
                 { showSplashTopbar ? <SplashTopbar /> : <Topbar {...this.props} /> }
-                <div className={`main-container ${splashClass}`}>
+                <div className={`main-container ${splashClass} ${studioClass}`}>
+                    { inStudio && <div className="studio_banner">PARTNER STUDIO</div> }
                     <Sidebar />
                     <div className={`main ${guestClass}`}>
                         {children}
@@ -246,6 +251,8 @@ function mapStateToProps(state: State): ConnectProps {
     return {
         isLoggingIn: CurrentUser.get(state, 'isLoggingIn'),
         isLoggedIn: CurrentUser.isLoggedIn(state),
+        isPartner: CurrentUser.isPartner(state),
+
         isSplashTopbarCollapsed: !!AppModel.get(state, 'splashTopbarCollapsed'),
         hasAuthError: AppModel.hasAuthError(state),
         activeOverlay: AppModel.get(state, 'activeOverlay'),

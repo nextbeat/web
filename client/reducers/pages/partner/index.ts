@@ -41,7 +41,7 @@ function campaign(state: State = Map(), action: Action) {
             return state.merge({
                 isFetching: false,
                 hasFetched: true,
-                id: action.rawResponse.id,
+                id: action.rawResponse.campaign.id,
                 stackIds: fromJS(action.rawResponse.stacks.map((s: any) => s.id))
             })
         } else if (action.status === Status.FAILURE) {
@@ -53,15 +53,16 @@ function campaign(state: State = Map(), action: Action) {
         }
     } else if (action.type === ActionType.CAMPAIGN_ROOM) {
         return state.merge({
-            room: entity(ActionType.CAMPAIGN_ROOM)(state, action)
+            stack: entity(ActionType.CAMPAIGN_ROOM)(state, action)
         })
     }
+    return state
 }
 
 export default function(state: State = Map(), action: Action) {
     if (action.type === ActionType.CLEAR_PARTNER) {
         return Map()
     } else {
-        return combineReducers({ meta, campaign })
+        return combineReducers({ meta, campaign })(state, action)
     }
 }
