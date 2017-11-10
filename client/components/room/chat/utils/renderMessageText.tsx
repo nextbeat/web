@@ -44,7 +44,7 @@ function getLinkData(comment: Comment | TemporaryComment): List<LinkAnnotation> 
     let result
 
     while (result = re.exec(comment.get('message'))) {
-        links.push({ type: 'link', start: result.index, end: result.index+result[0].length, displayText: result[1], url: result[2] })
+        links = links.push({ type: 'link', start: result.index, end: result.index+result[0].length, displayText: result[1], url: result[2] })
     }
 
     return links
@@ -58,7 +58,7 @@ function getHashtagData(comment: Comment | TemporaryComment): List<Annotation> {
 
     while (result = re.exec(comment.get('message'))) {
         let start = result[0].indexOf('#')+result.index
-        hashtags.push({ type: 'hashtag', start: start, end: start+result[2].length+1, text: `#${result[2]}`})
+        hashtags = hashtags.push({ type: 'hashtag', start: start, end: start+result[2].length+1, text: `#${result[2]}`})
     }
 
     return hashtags
@@ -147,6 +147,7 @@ function recursiveCreateElement(start: number, end: number, annotations: List<An
 function doRenderMessageText(comment: Comment | TemporaryComment, options: RenderMessageOptions): JSX.Element {
     let annotations = preprocessAnnotations(comment, options)
     let message     = comment.get('message')
+    console.log(annotations.toJS())
     return <span>{recursiveCreateElement(0, message.length, annotations, message, options)}</span>
 }
 

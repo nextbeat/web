@@ -10,7 +10,7 @@ interface Props {
 class Spinner extends React.Component<Props> {
 
     render() {
-        const stylesClass = `${this.props.styles.map(s => `spinner-${s}`).join(" ")} ${this.props.type ? this.props.type : ''}`
+        const stylesClass = `${this.props.styles.map(s => `spinner-${s}`).join(" ")} ${this.props.type ? `spinner-${this.props.type}` : ''}`
         return (<div className={`spinner ${stylesClass}`}>
             <div><div></div></div>
             <div><div></div></div>
