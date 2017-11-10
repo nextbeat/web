@@ -4,7 +4,9 @@ import TemporaryEntityModel from './base'
 interface TemporaryCommentProps {
     message: string
     submit_status: string
+    subtype: string
     temporary_id: string
+    type: string
     username: string    
 }
 

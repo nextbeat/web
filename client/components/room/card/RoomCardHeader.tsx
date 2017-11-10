@@ -25,8 +25,8 @@ class RoomCardHeader extends React.Component<OwnProps & ConnectProps> {
 
     render() {
         const { author, description, hid, most_recent_post_at, views, indexOfSelectedMediaItem } = this.props;
-        let thumbUrl = secureUrl(author.thumbnail('medium').get('url'))
-        let thumbStyle = { backgroundImage: thumbUrl ? `url(${thumbUrl})` : '' }
+        let thumbUrl = author.thumbnail('medium').get('url')
+        let thumbStyle = { backgroundImage: thumbUrl ? `url(${secureUrl(thumbUrl)})` : '' }
         let index = indexOfSelectedMediaItem + 1
 
         return (
