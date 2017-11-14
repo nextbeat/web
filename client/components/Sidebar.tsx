@@ -64,8 +64,8 @@ class Sidebar extends React.Component<AllProps> {
     }
 
     renderSubscription(sub: User) {
-        const url = secureUrl(sub.thumbnail('small').get('url'))
-        const iconStyle = url ? { backgroundImage: `url(${url})`} : {}
+        const url = sub.thumbnail('small').get('url')
+        const iconStyle = url ? { backgroundImage: `url(${secureUrl(url)})`} : {}
         return (
             <Link key={`sub${sub.get('id')}`} to={`/u/${sub.get('username')}`} activeClassName="selected" className="sidebar_item">
                 <div className="sidebar_icon" style={iconStyle}>{ !url && <Icon type="person" /> }</div>
