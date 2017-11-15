@@ -7,6 +7,7 @@ interface UserProps {
     cover_image_url: string
     description: string
     full_name: string
+    gaid: string
     id: number
     is_advertiser: boolean
     is_bot: boolean

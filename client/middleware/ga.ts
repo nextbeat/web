@@ -72,9 +72,9 @@ function parseQuery(queryString: string) {
 }
 
 function handleIdentify(data: AnalyticsCall) {
-    const userId = data.userId
-    ga('set', 'userId', userId)
-    ga('set', Dimensions.USER_ID, String(userId))
+    const gaid = data.gaid
+    ga('set', 'userId', gaid)
+    ga('set', Dimensions.USER_ID, gaid)
 }
 
 function handlePage(data: AnalyticsCall) {

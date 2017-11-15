@@ -25,12 +25,12 @@ export type GAActionAll =
 export interface GAIdentifyAction extends AnalyticsAction {
     type: ActionType.GA
 }
-export function gaIdentify(userId: number): GAIdentifyAction {
+export function gaIdentify(gaid: string): GAIdentifyAction {
     return {
         type: ActionType.GA,
         GA: {
             type: 'identify',
-            userId
+            gaid
         }
     }
 }
@@ -100,7 +100,7 @@ function performLogVideoImpression({
             [Metrics.START_TIME]: startTime,
             [Metrics.END_TIME]: endTime,
             [Metrics.DURATION]: duration,
-            [Metrics.VIDEO_DURATION]: videoDuration,
+            [Metrics.MEDIAITEM_DURATION]: videoDuration,
             [Dimensions.MEDIAITEM_ID]: mediaItemId,
             [Dimensions.STACK_ID]: stackId,
             [Dimensions.AUTHOR_ID]: authorId,
