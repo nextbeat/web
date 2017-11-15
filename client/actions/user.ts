@@ -130,12 +130,10 @@ export function loadSubscriptions(): SubscriptionsAction {
  * AUTH
  ******/
 
-// TODO: test api middleware integration!
-
 export function postLogin(): ThunkAction {
     return (dispatch, getState) => {
         const state = getState()
-        dispatch(gaIdentify(CurrentUser.get(state, 'id')))
+        dispatch(gaIdentify(CurrentUser.entity(state).get('gaid')))
         dispatch(loadBookmarkedStacks("open"))
         dispatch(loadSubscriptions())
         dispatch(pushInitialize())

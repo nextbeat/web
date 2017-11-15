@@ -40,7 +40,7 @@ interface ConnectProps {
 
 interface Params {
     hid: string
-    comment: number
+    comment: string
 }
 
 type Props = ConnectProps & DispatchProps & RouteProps<Params>
@@ -65,7 +65,7 @@ class UploadResponse extends React.Component<Props> {
 
     componentDidMount() {
         const { dispatch, params } = this.props
-        dispatch(loadReferencedComment(params.comment))
+        dispatch(loadReferencedComment(parseInt(params.comment, 10)))
     }
 
     componentWillUnmount() {
@@ -177,8 +177,6 @@ class UploadResponse extends React.Component<Props> {
 
     renderBody() {
         const { isCommentValid, invalidCommentError, hasFile, file, isInSubmitProcess } = this.props 
-
-        
 
         if (!isCommentValid) {
             return this.renderNoComment(invalidCommentError)

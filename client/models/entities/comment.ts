@@ -16,6 +16,7 @@ interface CommentProps {
     message: string
     result_indices: List<List<number>>
     stack: number
+    stack_id: number
     subtype: string
     temporary_id: string
     type: string

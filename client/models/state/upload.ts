@@ -167,7 +167,7 @@ export default class Upload extends StateModelFactory<UploadSubmissionProps>(sub
     static referencedComment = createSelector(
         (state: State) => new Comment(Upload.get(state, 'referencedCommentId'), state.get('entities'))
     )(
-        (state: State) => state.getIn(['entities', 'comments', Upload.get(state, 'referencedCommentId').toString()])
+        (state: State) => state.getIn(['entities', 'comments', Upload.get(state, 'referencedCommentId')])
     )
 
     static checkReferencedCommentValidity(state: State, hid: string) {
@@ -182,7 +182,7 @@ export default class Upload extends StateModelFactory<UploadSubmissionProps>(sub
         if (!(comment.get('type') === 'message' && comment.get('subtype') === 'public')) {
             throw new Error("Chat message not found.")
         }
-        if (roomId && comment.get('stack') !== roomId) {
+        if (roomId && comment.get('stack_id') !== roomId) {
             throw new Error("Chat message not found.")
         }
         if (roomId && Room.entity(state, roomId).get('closed')) {
