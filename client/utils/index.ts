@@ -267,7 +267,7 @@ export function shallowEqual(a: any, b: any): boolean {
  * DATE FORMATTING
  *****************/
 
-export { fromString, fromNowString, timeLeftString, timeString } from './date'
+export { fromString, fromNowString, timeLeftString, timeOfDayString, timeString } from './date'
 
 
 /*******

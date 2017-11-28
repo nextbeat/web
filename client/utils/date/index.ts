@@ -115,7 +115,23 @@ export function timeLeftString(dirtyDate: DirtyDate, options?: FormatOptions) {
     }
 }
 
-export function timeString(dirtyDate: DirtyDate) {
+export function timeOfDayString(dirtyDate: DirtyDate) {
     let date = parse(dirtyDate)
     return format(date, 'h:mm a')
+}
+
+function pad(num: number, amt: number): string {
+    let str = num.toString()
+    while (str.length < amt) {
+        str = '0' + str
+    }
+    return str
+}
+
+export function timeString(numSeconds: number) {
+    if (numSeconds > 3600) {
+        return `${pad(Math.floor(numSeconds/3600), 2)}:${pad(Math.floor(numSeconds/60)%60, 2)}:${pad(numSeconds%60, 2)}`        
+    } else {
+        return `${pad(Math.floor(numSeconds/60), 2)}:${pad(numSeconds%60, 2)}`
+    }
 }

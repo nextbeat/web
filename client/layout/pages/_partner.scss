@@ -39,6 +39,32 @@
     color: #777;
 }
 
+.studio_marquee {
+    background: #f3f3f3;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.studio_marquee_item {
+    margin-right: 50px;
+    display: flex;
+    flex-direction: column;
+}
+
+.studio_marquee_item_title {
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 8px;
+}
+
+.studio_marquee_item_text {
+    font-size: 25px;
+    font-weight: 300;
+}
+
 .studio_table {
     border-collapse: collapse;
     border-spacing: 0;

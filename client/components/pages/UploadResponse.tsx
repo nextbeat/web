@@ -16,7 +16,7 @@ import Upload, { UploadType } from '@models/state/upload'
 import App from '@models/state/app'
 import Comment from '@models/entities/comment'
 import Stack from '@models/entities/stack'
-import { timeString, baseUrl } from '@utils'
+import { timeOfDayString, baseUrl } from '@utils'
 import { State, DispatchProps, RouteProps } from '@types'
 
 interface ConnectProps {
@@ -119,7 +119,7 @@ class UploadResponse extends React.Component<Props> {
                                 { comment.author().get('username') }
                             </span>
                             <span className="upload-response_comment_timestamp">
-                                { timeString(comment.get('created_at')) }
+                                { timeOfDayString(comment.get('created_at')) }
                             </span>
                         </div>
                         <div className="upload-response_comment_body">

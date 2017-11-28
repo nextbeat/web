@@ -7,7 +7,7 @@ import { jumpToComment } from '@actions/room'
 import Room from '@models/state/room'
 import MediaItem from '@models/entities/mediaItem'
 import Comment from '@models/entities/comment'
-import { timeString } from '@utils'
+import { timeOfDayString } from '@utils'
 import { State, DispatchProps } from '@types'
 
 interface OwnProps {
@@ -116,7 +116,7 @@ class ItemReference extends React.Component<AllProps, ItemReferenceState> {
                         <div className="player_reference_comment" onClick={this.handleCommentClick}>
                             <div className="player_reference_comment_info">
                                 <span className="player_reference_comment_username">{comment.author().get('username')}</span>
-                                <span className="player_reference_comment_timestamp">{timeString(comment.get('created_at'))}</span>
+                                <span className="player_reference_comment_timestamp">{timeOfDayString(comment.get('created_at'))}</span>
                             </div>
                             <div ref="text" className="player_reference_comment_body">
                                 {comment.get('message')}

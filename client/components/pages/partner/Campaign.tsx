@@ -63,6 +63,16 @@ class CampaignComponent extends React.Component<Props> {
                                 {format(campaign.get('start_date'), 'MMM D, YYYY')} – {format(campaign.get('end_date'), 'MMM D, YYYY')}
                             </div>
                         </div>
+                        <div className="studio_marquee">
+                            <div className="studio_marquee_item">
+                                <div className="studio_marquee_item_title">
+                                    TOTAL SESSION TIME (MINUTES)
+                                </div>
+                                <div className="studio_marquee_item_text">
+                                    {campaign.get('total_session_duration')}
+                                </div>
+                            </div>
+                        </div>
                         <table className="studio_table studio_campaign-stacks">
                             <thead>
                                 <tr>

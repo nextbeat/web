@@ -9,6 +9,7 @@ interface CampaignProps {
     goal: number
     name: string 
     start_date: string
+    total_session_duration: number
 }
 
 export default class Campaign extends EntityModel<CampaignProps> {

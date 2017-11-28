@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router'
 import { Map } from 'immutable'
-import { timeString } from '@utils'
+import { timeOfDayString } from '@utils'
 
 import renderMessageText from './utils/renderMessageText'
 import Icon from '@components/shared/Icon'
@@ -90,7 +90,7 @@ class ChatItem extends React.PureComponent<Props> {
 
         const creatorClass  = isCreator ? "creator" : ""
         const username      = comment instanceof Comment ? comment.author().get('username') as string : comment.author().get('username') as string
-        const timestamp     = timeString(comment.get('created_at'))
+        const timestamp     = timeOfDayString(comment.get('created_at'))
         const isBot         = comment instanceof Comment ? !!comment.author().get('is_bot'): !!comment.author().get('is_bot')
         const isPrivate     = comment.get('subtype') === 'private'
         const isReferenced  = !!comment.get('is_referenced_by')

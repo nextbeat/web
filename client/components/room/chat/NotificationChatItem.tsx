@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Link } from 'react-router'
 
 import Comment from '@models/entities/comment'
-import { timeString } from '@utils'
+import { timeOfDayString } from '@utils'
 
 interface Props {
     comment: Comment
@@ -29,7 +29,7 @@ class NotificationChatItem extends React.Component<Props> {
                 <div className="chat_item-notification_thumb" style={{ backgroundImage: `url(${url})`}}></div>
                 <div className="chat_item-notification_text">
                     <span className="chat_item_username">{username}</span> added {countStr} to the room.
-                    <span className="chat_item_timestamp">{timeString(comment.get('created_at'))}</span>
+                    <span className="chat_item_timestamp">{timeOfDayString(comment.get('created_at'))}</span>
                 </div>
             </li>
         );

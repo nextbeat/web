@@ -7,7 +7,7 @@ import { jumpToComment } from '@actions/room'
 import { hideSearchChatResults } from '@actions/pages/room'
 import SearchResultComment from '@models/entities/searchResultComment'
 import { DispatchProps } from '@types'
-import { timeString } from '@utils'
+import { timeOfDayString } from '@utils'
 
 interface Props {
     comment: SearchResultComment
@@ -56,7 +56,7 @@ class SearchResultChatItem extends React.Component<Props & DispatchProps> {
                             {comment.author().get('username')}
                         </span>
                         <span className="chat_item-search_time">
-                            at {timeString(comment.get('created_at'))}
+                            at {timeOfDayString(comment.get('created_at'))}
                         </span>
                     </div>
                     <div className="chat_item-search_body">
