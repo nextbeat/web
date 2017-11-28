@@ -25,7 +25,7 @@ function login(state: State, action: LoginAction) {
         case Status.FAILURE:
             return state.merge({
                 isLoggingIn: false,
-                loginError: (action.response as any).error.message
+                loginError: action.error.message
             })
     }
     return state
