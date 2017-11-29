@@ -9,7 +9,7 @@ interface MediaItemProps {
     decoration: State
     id: number
     references: number
-    stack: number
+    stack_id: number
     type: 'video' | 'photo'
     user_created_at: string
 }
@@ -19,7 +19,7 @@ export default class MediaItem extends EntityModel<MediaItemProps> {
     entityName = "mediaItems"
 
     stack(): Stack {
-        return new Stack(this.get('stack', 0), this.entities)
+        return new Stack(this.get('stack_id', 0), this.entities)
     }
 
     video(preferredType?: string) {

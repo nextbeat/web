@@ -115,7 +115,7 @@ export function logVideoImpression(mediaItemId: number, startTime: number, endTi
         let stack = mediaItem.stack()
         let author = stack.author()
 
-        dispatch(performLogVideoImpression({
+        const logObject = {
             startTime,
             endTime,
             duration: endTime - startTime,
@@ -124,6 +124,8 @@ export function logVideoImpression(mediaItemId: number, startTime: number, endTi
             stackId: stack.get('id'),
             authorId: author.get('id'),
             authorUsername: author.get('username')
-        }))
+        }
+
+        dispatch(performLogVideoImpression(logObject))
     }
 }
