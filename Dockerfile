@@ -9,5 +9,7 @@ RUN mkdir -p /home/app/web && cp -a /tmp/node_modules /home/app/web
 
 ADD . /home/app/web
 WORKDIR /home/app/web
-RUN npm run build
+
+ARG env
+RUN NODE_ENV=${env} npm run build
 CMD node dist/bundle.js
