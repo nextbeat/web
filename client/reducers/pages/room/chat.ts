@@ -58,7 +58,7 @@ function searchSuggestions(state: State, action: SearchSuggestionsAction) {
         );
     } else if (action.status === Status.SUCCESS) {
          return state.update('searchSuggestions', Map(), s => s.merge({
-                terms: action.response,
+                terms: List(action.response),
                 isFetching: false,
                 hasFetched: true
             })

@@ -30,7 +30,7 @@ function processRoomInfo(state: State, action: RoomInfoAction | JoinRoomAction) 
     state = state.merge({
         pinnedCommentId: action.responseData.pinned_chat.id,
         creator: action.responseData.creator,
-        tags: action.responseData.tags
+        tags: fromJS(action.responseData.tags)
     })
     if ('banned_users' in action.responseData) {
         state = state.set('bannedUsers', fromJS(action.responseData.banned_users));
