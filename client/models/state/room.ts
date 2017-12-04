@@ -133,7 +133,7 @@ export default class Room {
 
     static liveMediaItems = createKeyedSelector(
         (state: State, id: number) => {
-            let liveMediaItemIds = Room.get(state, id, 'mediaItemIds', List());
+            let liveMediaItemIds = Room.get(state, id, 'liveMediaItemIds', List());
             return liveMediaItemIds.map(id => new MediaItem(id, state.get('entities')))
         }
     )(
