@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import renderMessageText from './utils/renderMessageText'
 import { unpinComment } from '@actions/room'
+import { searchChat } from '@actions/pages/room'
 import RoomPage from '@models/state/pages/room'
 import Room from '@models/state/room'
 import Comment from '@models/entities/comment'
@@ -22,11 +23,16 @@ class PinnedChatItem extends React.Component<Props & DispatchProps> {
         super(props);
 
         this.handleUnpin = this.handleUnpin.bind(this)
+        this.handleSelectHashtag = this.handleSelectHashtag.bind(this)
     }
 
     handleUnpin() {
         const { dispatch, roomId } = this.props
         dispatch(unpinComment(roomId))
+    }
+
+    handleSelectHashtag(tag: string) {
+        this.props.dispatch(searchChat(tag))
     }
 
     render() {
@@ -44,7 +50,7 @@ class PinnedChatItem extends React.Component<Props & DispatchProps> {
                         <span className={`chat_item_username chat_item-pinned-comment_username ${creatorClass}`}>{pinnedComment.author().get('username')}</span>
                     </div>
                     <div className="chat_item-pinned-comment_body">
-                       { renderMessageText(pinnedComment) }
+                       { renderMessageText(pinnedComment, { onHashtagClick: this.handleSelectHashtag }) }
                     </div>
                 </div>
                 { isCurrentUserAuthor &&
