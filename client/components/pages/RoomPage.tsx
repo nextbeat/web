@@ -24,9 +24,9 @@ interface Params {
 }
 
 interface ConnectProps {
-    isLoaded: boolean
     id: number
     error: string
+    isLoadedDeep: boolean
 
     hid: string
     author: User
@@ -49,11 +49,11 @@ class RoomPageComponent extends React.Component<Props> {
     
             const unsubscribe = store.subscribe(() => {
                 const state = store.getState()
-                if (RoomPage.isLoaded(state)) {
+                if (RoomPage.isLoadedDeep(state)) {
                     unsubscribe()
                     resolve(store)
                 }
-                if (RoomPage.get(state, 'error')) {
+                if (RoomPage.hasErrorDeep(state)) {
                     unsubscribe()
                     reject(new Error('Room does not exist.'))
                 }
@@ -67,6 +67,7 @@ class RoomPageComponent extends React.Component<Props> {
         super(props);
 
         this.loadRoom = this.loadRoom.bind(this)
+        this.selectMediaItemOnLoad = this.selectMediaItemOnLoad.bind(this)
         this.renderDocumentHead = this.renderDocumentHead.bind(this);
     }
 
@@ -84,9 +85,11 @@ class RoomPageComponent extends React.Component<Props> {
     }
 
     componentDidMount() {
-        const { dispatch, location, isLoaded } = this.props
-        if (!isLoaded) {
-              this.loadRoom()
+        const { dispatch, location, isLoadedDeep } = this.props
+        this.loadRoom()
+
+        if (isLoadedDeep) {
+            this.selectMediaItemOnLoad()
         }
 
         let detailSection = location.query.detail
@@ -101,7 +104,7 @@ class RoomPageComponent extends React.Component<Props> {
 
     componentDidUpdate(prevProps: Props) {
         const { params, dispatch, mediaItems, id: roomId, 
-               lastSeenMediaItemId, mediaItemIdAtParamIndex } = this.props
+                mediaItemIdAtParamIndex } = this.props
 
         if (prevProps.params.hid !== params.hid) {
             // new room, reload
@@ -111,27 +114,7 @@ class RoomPageComponent extends React.Component<Props> {
 
         if (prevProps.mediaItemsFetching && mediaItems.size > 0) {
             // first page of media items has loaded, select the first
-            let id = (mediaItems.first() as MediaItem).get('id')
-
-            // unless last seen media item id stored in localStorage
-            if (lastSeenMediaItemId) {
-                id = lastSeenMediaItemId
-            }
-
-            // or if index is specified
-            if (params.index) {
-                if (params.index === 'latest') {
-                    id = (mediaItems.get(mediaItems.size-1) as MediaItem).get('id')
-                } else {
-                    const idx = parseInt(params.index) - 1
-                    if (idx >= 0 && idx < mediaItems.size) {
-                        id = (mediaItems.get(idx) as MediaItem).get('id')
-                    }
-                }
-            }
-
-            dispatch(selectMediaItem(roomId, id, { shouldReplaceHistory: true }))
-            dispatch(closeDetailSection())
+            this.selectMediaItemOnLoad()
         }
 
         // if we're navigating by updating the url (i.e. using 
@@ -145,6 +128,34 @@ class RoomPageComponent extends React.Component<Props> {
         if (prevIndex > 0 && currIndex > 0 && prevIndex !== currIndex && mediaItemIdAtParamIndex ) {
             dispatch(selectMediaItem(roomId, mediaItemIdAtParamIndex, { shouldUpdateHistory: false }))
         }
+    }
+
+    // SELECTION
+
+    selectMediaItemOnLoad() {
+        const { mediaItems, lastSeenMediaItemId, params, id: roomId, dispatch } = this.props
+
+        let id = (mediaItems.first() as MediaItem).get('id')
+        
+        // unless last seen media item id stored in localStorage
+        if (lastSeenMediaItemId) {
+            id = lastSeenMediaItemId
+        }
+
+        // or if index is specified
+        if (params.index) {
+            if (params.index === 'latest') {
+                id = (mediaItems.get(mediaItems.size-1) as MediaItem).get('id')
+            } else {
+                const idx = parseInt(params.index) - 1
+                if (idx >= 0 && idx < mediaItems.size) {
+                    id = (mediaItems.get(idx) as MediaItem).get('id')
+                }
+            }
+        }
+
+        dispatch(selectMediaItem(roomId, id, { shouldReplaceHistory: true }))
+        dispatch(closeDetailSection())
     }
 
     // RENDER
@@ -227,9 +238,9 @@ function mapStateToProps(state: State, ownProps: RouteProps<Params>): ConnectPro
     }
 
     return {
-        isLoaded: RoomPage.isLoaded(state),
         id,
         error: RoomPage.get(state, 'error'),
+        isLoadedDeep: RoomPage.isLoadedDeep(state),
 
         hid: RoomPage.entity(state).get('hid'),
         author: RoomPage.author(state),

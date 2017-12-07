@@ -46,6 +46,7 @@ export type RoomActionAll =
     DidPlayVideoAction |
     SelectMediaItemAction |
     MarkStackAction |
+    RoomAdsAction |
     ClearCommentsAction |
     ClearRoomAction
 
@@ -55,12 +56,14 @@ export type RoomActionAll =
 
 export interface RoomAction extends ApiCallAction {
     type: ActionType.ROOM,
-    roomId: number
+    roomId: number,
+    skipAds: boolean
 }
-function fetchRoom(id: number): RoomAction {
+function fetchRoom(id: number, options: LoadRoomOptions): RoomAction {
     return {
         type: ActionType.ROOM,
         roomId: id,
+        skipAds: options.skipAds || false,
         API_CALL: {
             schema: Schemas.Stack,
             endpoint: `stacks/${id}`
@@ -70,12 +73,16 @@ function fetchRoom(id: number): RoomAction {
 
 interface LoadRoomOptions {
     jumpToCommentAtDate?: number // date in seconds
+    skipAds?: boolean
 }
 export function loadRoom(id: number, options: LoadRoomOptions = {}): ThunkAction {
     return dispatch => {
-        dispatch(fetchRoom(id))
+        dispatch(fetchRoom(id, options))
         dispatch(loadMediaItems(id));
         dispatch(loadComments(id, 'mostRecent', { jumpTo: options.jumpToCommentAtDate }));
+        if (!options.skipAds) {
+            dispatch(loadAds(id))
+        }
     }
 }
 
@@ -544,7 +551,6 @@ export function selectMediaItem(roomId: number, mediaItemId: number, options: Se
             if (options.shouldReplaceHistory) {
                 browserHistory.replace(url)
             } else {
-                console.log(browserHistory, browserHistory.push)
                 browserHistory.push(url)
             }
         }
@@ -600,6 +606,27 @@ export function markStack(roomId: number, date: Date): MarkStackAction {
             endpoint: `stacks/${roomId}/mark`,
             queries: { ts: date.getTime().toString() },
             authenticated: true
+        }
+    }
+}
+
+/*****
+ * ADS
+ *****/
+
+ export interface RoomAdsAction extends ApiCallAction {
+     type: ActionType.ROOM_ADS
+     roomId: number
+ }
+function loadAds(roomId: number): RoomAdsAction {
+    return {
+        type: ActionType.ROOM_ADS,
+        roomId,
+        API_CALL: {
+            method: 'GET',
+            endpoint: `stacks/${roomId}/ads`,
+            schema: Schemas.Ads,
+            queries: { force_preroll: 'true' } // for development
         }
     }
 }

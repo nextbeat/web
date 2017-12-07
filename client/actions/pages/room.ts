@@ -11,6 +11,7 @@ import {
 } from '@actions/types'
 import { promptModal } from '@actions/app'
 import { loadRoom, loadComments,  clearComments, clearRoom } from '@actions/room'
+import { joinRoom } from '@actions/eddy'
 import { loadPaginatedObjects } from '@actions/utils'
 import RoomPage from '@models/state/pages/room'
 import * as Schemas from '@schemas'
@@ -51,7 +52,7 @@ export interface RoomPageAction extends ApiCallAction {
     type: ActionType.ROOM_PAGE
     jumpToCommentAtDate?: number
 }
-export function loadRoomPage(hid: string, jumpToCommentAtDate?: number): RoomPageAction {
+function fetchRoomPage(hid: string, jumpToCommentAtDate?: number): RoomPageAction {
     return {
         type: ActionType.ROOM_PAGE,
         jumpToCommentAtDate,
@@ -60,6 +61,20 @@ export function loadRoomPage(hid: string, jumpToCommentAtDate?: number): RoomPag
             endpoint: `stacks/${hid}`,
             queries: { idAttribute: 'hid' },
             onSuccess: onRoomPageSuccess
+        }
+    }
+}
+
+export function loadRoomPage(hid: string, jumpToCommentAtDate?: number): ThunkAction {
+    return (dispatch, getState) => {
+        const state = getState()
+        if (RoomPage.isLoadedDeep(state)) {
+            // Join Eddy room and record view
+            const roomId = RoomPage.get(state, 'id')
+            dispatch(recordView(roomId))
+            dispatch(joinRoom(roomId))
+        } else {
+            dispatch(fetchRoomPage(hid, jumpToCommentAtDate))
         }
     }
 }

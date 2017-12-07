@@ -5,6 +5,7 @@ import Stack from '@models/entities/stack'
 import MediaItem from '@models/entities/mediaItem'
 import Comment from '@models/entities/comment'
 import User from '@models/entities/user'
+import Ad from '@models/entities/ad'
 import CurrentUser from '@models/state/currentUser'
 import TemporaryComment from '@models/entities/temporary/comment'
 import { State } from '@types'
@@ -14,6 +15,7 @@ export type FetchDirection = 'before' | 'after' | 'around' | 'mostRecent'
 export interface RoomProps {
     id: number
     isFetching: boolean
+    hasFetched: boolean
     error: string
 
     isJoining: boolean
@@ -25,6 +27,7 @@ export interface RoomProps {
     mediaItemIds: List<number>
     liveMediaItemIds: List<number>
     mediaItemsFetching: boolean
+    mediaItemsHasFetched: boolean
     mediaItemsError: string
 
     commentIds: List<number>
@@ -45,6 +48,12 @@ export interface RoomProps {
     creator: string
     chatTags: List<string>
 
+    shouldDisplayAds: boolean
+    adIds: List<number>
+    adsFetching: boolean
+    adsHasFetched: boolean
+    adsError: string
+
     videoDidPlay: boolean
 }
 
@@ -52,6 +61,7 @@ const keyMap: {[key in keyof RoomProps]: string[]} = {
     // meta 
     'id': ['meta', 'id'],
     'isFetching': ['meta', 'isFetching'],
+    'hasFetched': ['meta', 'hasFetched'],
     'error': ['meta', 'error'],
     // live
     'isJoining': ['live', 'isJoining'],
@@ -63,6 +73,7 @@ const keyMap: {[key in keyof RoomProps]: string[]} = {
     'mediaItemIds': ['pagination', 'mediaItems', 'ids'],
     'liveMediaItemIds': ['live', 'mediaItems'],
     'mediaItemsFetching': ['pagination', 'mediaItems', 'isFetching'],
+    'mediaItemsHasFetched': ['pagination', 'mediaItems', 'hasFetched'],
     'mediaItemsError': ['pagination', 'mediaItems', 'error'],
     // comments
     'commentIds': ['pagination', 'comments', 'ids'],
@@ -82,6 +93,12 @@ const keyMap: {[key in keyof RoomProps]: string[]} = {
     'pinnedCommentId': ['live', 'pinnedCommentId'],
     'creator': ['live', 'creator'],
     'chatTags': ['live', 'tags'],
+    // ads
+    'shouldDisplayAds': ['ads', 'shouldDisplay'],
+    'adIds': ['ads', 'ids'],
+    'adsFetching': ['ads', 'isFetching'],
+    'adsHasFetched': ['ads', 'hasFetched'],
+    'adsError': ['ads', 'error'],
     // playback
     'videoDidPlay': ['navigation', 'videoDidPlay']
 }
@@ -89,7 +106,7 @@ const keyMap: {[key in keyof RoomProps]: string[]} = {
 export default class Room {
 
     protected static keyPath(id: number, key: keyof RoomProps): any[] {
-        return ['rooms', id].concat(keyMap[key])
+        return ['rooms', `${id}`].concat(keyMap[key])
     }
 
     static get<K extends keyof RoomProps>(state: State, id: number, key: K, defaultValue?: RoomProps[K]): RoomProps[K] {
@@ -218,6 +235,16 @@ export default class Room {
         return Room.entity(state, id).thumbnail(preferredSize)
     }
 
+    static ads = createKeyedSelector(
+        (state: State, id: number) => {
+            let adIds = Room.get(state, id, 'adIds', List())
+            return adIds.map(id => new Ad(id, state.get('entities')))
+        }
+    )(
+        (state: State, id: number) => Room.get(state, id, 'adIds'),
+        (state: State, id: number) => id
+    )
+
 
     /**
      * Queries
@@ -226,8 +253,27 @@ export default class Room {
     static isLoaded(state: State, id: number): boolean {
         return (Room.get(state, id, 'id', 0) > 0)
     }
+
     static status(state: State, id: number) {
         return Room.entity(state, id).get('closed') ? 'closed' : 'open' 
+    }
+
+    static isLoadedDeep(state: State, id: number): boolean {
+        return Room.get(state, id, 'hasFetched') 
+            && Room.get(state, id, 'mediaItemsHasFetched')
+            && Room.get(state, id, 'commentsHasFetched')
+            && (!Room.get(state, id, 'shouldDisplayAds') || Room.get(state, id, 'adsHasFetched'))
+    }
+
+    static hasErrorDeep(state: State, id: number): boolean {
+        return !!Room.get(state, id, 'error')
+            || !!Room.get(state, id, 'mediaItemsError')
+            || !!Room.get(state, id, 'commentsError')
+            || (Room.get(state, id, 'shouldDisplayAds') && !!Room.get(state, id, 'adsError'))
+    }
+
+    static isFetchingDeep(state: State, id: number): boolean {
+        return !this.isLoadedDeep(state, id) && !this.hasErrorDeep(state, id)
     }
 
     /* Media Items */
@@ -276,10 +322,6 @@ export default class Room {
 
     static totalCommentsCount(state: State, id: number): number {
         return this.liveComments(state, id).size + this.comments(state, id).size
-    }
-
-    static isFetchingDeep(state: State, id: number): boolean {
-        return !this.get(state, id, 'error') && this.mediaItems(state, id).size === 0 && !this.get(state, id, 'mediaItemsError')
     }
 
     static isJoining(state: State, id: number): boolean {

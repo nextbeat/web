@@ -68,9 +68,14 @@ class App extends React.Component<Props> {
 
     // Component lifecycle
 
+    componentWillMount() {
+        if (typeof window !== 'undefined') {
+            this.props.dispatch(connectEddy());            
+        }
+    }
+
     componentDidMount() {
         const { dispatch, isLoggedIn } = this.props;
-        dispatch(connectEddy());
         dispatch(loadTags());
         dispatch(cleanCache());
 

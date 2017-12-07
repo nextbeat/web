@@ -2,10 +2,12 @@ import { Map, List } from 'immutable'
 import isNumber from 'lodash-es/isNumber'
 import { RoomAction, CommentsAction } from '@actions/room'
 import { ActionType, Status, Action } from '@actions/types'
-import live from './live'
-import navigation from './navigation'
 import { combineReducers, entity, paginate } from '@reducers/utils'
 import { State } from '@types'
+
+import ads from './ads'
+import live from './live'
+import navigation from './navigation'
 
 let meta = entity(ActionType.ROOM)
 
@@ -105,6 +107,7 @@ let pagination = combineReducers({
 
 let roomReducer = combineReducers({
     meta,
+    ads,
     pagination,
     live,
     navigation
@@ -123,8 +126,8 @@ export default function (state = Map(), action: Action) {
     }
 
     if (action.type === ActionType.CLEAR_ROOM) {
-        return state.delete(action.roomId)
+        return state.delete(`${action.roomId}`)
     } else {
-        return state.update(action.roomId, Map(), roomState => roomReducer(roomState, action))
+        return state.update(`${action.roomId}`, Map(), roomState => roomReducer(roomState, action))
     }
 }

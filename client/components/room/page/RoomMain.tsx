@@ -88,7 +88,6 @@ class RoomMain extends React.Component<Props> {
         // display welcome banner here on small screen resolutions 
         // so that it scrolls with rest of content
         const shouldDisplayBanner = width === 'small' && authorUsername === 'safiya'
-        const shouldDisplaySmallChat = ['small', 'medium'].indexOf(width) !== -1
 
         return (
             <section className="player-container">
@@ -101,7 +100,7 @@ class RoomMain extends React.Component<Props> {
                     <div className="player_inner">
                         <Counter roomId={roomId} />
                         <RoomPlayer roomId={roomId} />
-                        { shouldDisplaySmallChat && <SmallChat /> }
+                        <SmallChat />
                         <Info />
                         <More />
                     </div>

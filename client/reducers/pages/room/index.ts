@@ -11,11 +11,13 @@ function more(state = Map<string, any>(), action: Action) {
     if (action.type === ActionType.MORE_STACKS) {
         if (action.status === Status.REQUESTING) {
             return state.merge({
-                isFetching: true
+                isFetching: true,
+                hasFetched: false
             }).delete('error').delete('ids')
         } else if (action.status === Status.SUCCESS && action.response) {
             return state.merge({
                 isFetching: false,
+                hasFetched: true,
                 ids: action.response.result
             })
         } else if (action.status === Status.FAILURE) {

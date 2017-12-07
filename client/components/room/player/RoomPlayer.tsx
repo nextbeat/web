@@ -38,6 +38,29 @@ interface RoomPlayerState {
     playerHeight: number
 }
 
+/* When rendering the room page directly from the
+ * server, we want the media player to display at the
+ * proper ratio when the page is first presented,
+ * before the server HTML is replaced by the React-generated
+ * DOM. In order to do this, we insert this function
+ * into a script tag so that it runs immediately upon
+ * the first DOM load. It's hacky but it works.
+ */
+function resizePlayerOnLoad() {
+    var elems = document.getElementsByClassName('player_media')
+    if  (elems.length > 0) {
+        var player = elems[0] as HTMLElement
+        var width = parseInt(window.getComputedStyle(player).width || '0', 10)
+        var height = Math.min(500, Math.floor(width * 9 / 16))
+        player.style.height = `${height}px`
+    }
+}
+
+function getScript(fn: Function) {
+    let fnText = `(${fn.toString()})()`
+    return { __html: fnText }
+}
+
 class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
     static defaultProps = {
@@ -86,7 +109,8 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
     resize() {
         const playerWidth = parseInt($('.player_main').css('width'));
-        const playerHeight = Math.min(500, Math.floor(playerWidth * 9 / 16));
+        const playerHeight = Math.min(500, Math.floor(playerWidth * 9 / 16))
+
         this.setState({
             playerWidth,
             playerHeight
@@ -133,10 +157,12 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
             containerHeight: playerHeight
         }
 
+        let playerStyle = playerHeight > 0 ? { height: `${playerHeight}px` } : {}
+
         return (
             <div className="player_main">
                 { children }
-                <div className="player_media" style={{ height: `${playerHeight}px` }}>
+                <div className="player_media" style={playerStyle}>
                     <div className="player_media-inner" id="player_media-inner">
                     { mediaItemsSize === 0 && !mediaItemsError && <Spinner styles={["large", "grey"]}/> }
                     { item.hasReference() && <ItemReference roomId={roomId} {...containerProps} /> }
@@ -162,6 +188,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                         <div className={`player_nav-button player_nav-forward ${rightDisabledClass}`} onClick={this.handleForward}><Icon type="arrow-forward" /></div>
                     </div>
                 </div>
+                <script dangerouslySetInnerHTML={getScript(resizePlayerOnLoad)} />
             </div>
         );
     }

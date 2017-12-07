@@ -29,6 +29,9 @@ interface RoomPageProps extends EntityProps {
     selectedDetailSection: 'chat' | 'activity'
 
     moreStackIds: List<number>
+    moreStacksIsFetching: boolean
+    moreStacksHasFetched: boolean
+    moreStacksError: boolean
 
     isDeleting: boolean
     hasDeleted: boolean
@@ -63,6 +66,9 @@ const keyMap = withEntityMap({
     'selectedDetailSection': ['ui', 'detailSection'],
     // more
     'moreStackIds': ['more', 'ids'],
+    'moreStacksFetching': ['more', 'isFetching'],
+    'moreStacksHasFetched': ['more', 'hasFetched'],
+    'moreStacksError': ['more', 'error'],
     // actions
     'isDeleting': ['actions', 'isDeleting'],
     'hasDeleted': ['actions', 'hasDeleted'],
@@ -152,6 +158,20 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
         return Room.status(state, this.get(state, 'id'))
     }
 
+    static isLoadedDeep(state: State) {
+        return Room.isLoadedDeep(state, this.get(state, 'id'))
+            && this.get(state, 'moreStacksHasFetched')
+    }
+
+    static hasErrorDeep(state: State) {
+        return Room.hasErrorDeep(state, this.get(state, 'id'))
+            || !!this.get(state, 'moreStacksError')
+    }
+
+    static isFetchingDeep(state: State) {
+        return !(this.isLoadedDeep(state) || this.hasErrorDeep(state))
+    }
+
     static isBookmarked(state: State) {
         return Room.isBookmarked(state, this.get(state, 'id'))
     }
@@ -182,10 +202,6 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
 
     static mostRecentComment(state: State) {
         return Room.mostRecentComment(state, this.get(state, 'id'))
-    }
-
-    static isFetchingDeep(state: State) {
-        return Room.isFetchingDeep(state, this.get(state, 'id'))
     }
 
     static isUserBanned(state: State, username: string) {
