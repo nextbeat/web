@@ -145,12 +145,12 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
     render() {
         const { roomId, mediaItems, mediaItemsError, mediaItemsSize,
-                selectedMediaItem: item, indexOfSelectedMediaItem,
+                selectedMediaItem: item, indexOfSelectedMediaItem: index,
                 shouldAutoplayVideo, children } = this.props;
         const { playerWidth, playerHeight } = this.state
 
-        const leftDisabledClass = indexOfSelectedMediaItem === 0 ? 'disabled' : '';
-        const rightDisabledClass = indexOfSelectedMediaItem === mediaItemsSize - 1 ? 'disabled' : ''; 
+        const leftDisabledClass = index === 0 || index === -1 ? 'disabled' : '';
+        const rightDisabledClass = index === mediaItemsSize - 1 || index === -1 ? 'disabled' : ''; 
 
         let containerProps = {
             containerWidth: playerWidth,

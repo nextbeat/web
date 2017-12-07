@@ -77,7 +77,7 @@ interface Wrap {
 function wrapAction(store: Store, next: Dispatch, action: Action): Wrap {
     let client = Eddy.client(store.getState())
 
-    function actionWith (status: Status, data?: {[key: string]: any}): GenericAction {
+    function actionWith(status: Status, data?: {[key: string]: any}): GenericAction {
         return assign({}, action, { status }, data)
     }
 
