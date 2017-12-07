@@ -12,8 +12,6 @@ import ActivityCounter from '../counter/ActivityCounter'
 import SmallChat from './chat/SmallChat'
 import Info from './main/Info'
 import More from './main/More'
-import Spinner from '@components/shared/Spinner'
-import PageError from '@components/shared/PageError'
 import AppBanner from '@components/shared/AppBanner'
 
 import { State, DispatchProps } from '@types'
@@ -25,8 +23,7 @@ interface ConnectProps {
     indexOfSelectedMediaItem: number
     mediaItemsSize: number
 
-    isFetchingDeep: boolean
-    error: string
+    isLoadedDeep: boolean
 
     width: string
 }
@@ -83,7 +80,8 @@ class RoomMain extends React.Component<Props> {
     }
 
     render() {
-        const { roomId, isFetchingDeep, error, hid, width, authorUsername, indexOfSelectedMediaItem } = this.props;
+        const { roomId, isLoadedDeep, hid, width, 
+                authorUsername, indexOfSelectedMediaItem } = this.props;
 
         // display welcome banner here on small screen resolutions 
         // so that it scrolls with rest of content
@@ -101,9 +99,7 @@ class RoomMain extends React.Component<Props> {
                 <section className="player content" id="player">
                     <AppBanner url={`nextbeat://rooms/${hid}`} />
                     {/* we only display once the room has loaded */}
-                    { isFetchingDeep &&  <Spinner styles={["large", "grey"]} type="player" />}
-                    { error && <PageError>The room could not be found, or it has been deleted by its owner.</PageError>}
-                    { !isFetchingDeep && !error &&
+                    { isLoadedDeep &&
                     <div className="player_inner">
                         { shouldDisplayCounter && <Counter roomId={roomId} /> }
                         <RoomPlayer roomId={roomId} />
@@ -126,8 +122,7 @@ function mapStateToProps(state: State): ConnectProps {
         indexOfSelectedMediaItem: RoomPage.indexOfSelectedMediaItem(state),
         mediaItemsSize: RoomPage.mediaItemsSize(state),
 
-        isFetchingDeep: RoomPage.isFetchingDeep(state),
-        error: RoomPage.get(state, 'error'),
+        isLoadedDeep: RoomPage.isLoadedDeep(state),
 
         width: App.get(state, 'width')
     }

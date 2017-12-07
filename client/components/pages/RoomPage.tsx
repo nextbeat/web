@@ -8,6 +8,8 @@ import { List } from 'immutable'
 import RoomMain from '@components/room/page/RoomMain'
 import DetailBar from '@components/room/page/DetailBar'
 import StackActions from '@components/room/page/StackActions'
+import Spinner from '@components/shared/Spinner'
+import PageError from '@components/shared/PageError'
 
 import { loadRoomPage, clearRoomPage, closeDetailSection, selectDetailSection } from '@actions/pages/room'
 import { selectMediaItem, getRoomInfo } from '@actions/room'
@@ -25,8 +27,9 @@ interface Params {
 
 interface ConnectProps {
     id: number
-    error: string
+    isFetchingDeep: boolean
     isLoadedDeep: boolean
+    hasErrorDeep: boolean
 
     hid: string
     author: User
@@ -161,14 +164,14 @@ class RoomPageComponent extends React.Component<Props> {
     // RENDER
 
     renderDocumentHead() {
-        const { hid, error, author, description: title, thumbnailUrl } = this.props
+        const { hid, hasErrorDeep, author, description: title, thumbnailUrl } = this.props
         const url = `${baseUrl()}${this.props.location.pathname}`
         let meta = [
             {"property": "og:url", "content": url},
             {"property": "twitter:site", "content": "@nextbeatblog"},
             {"property": "al:ios:url", "content": `nextbeat://rooms/${hid}`},
         ]
-        if (!error) {
+        if (!hasErrorDeep) {
             let creator = author.get('full_name') || author.get('username')
             const description = `Hang out in this room and chat with ${creator}. Watch updates live and be there while it happens!`
 
@@ -206,14 +209,19 @@ class RoomPageComponent extends React.Component<Props> {
     }
 
     render() {
+        const { isLoadedDeep, isFetchingDeep, hasErrorDeep } = this.props 
         return (
         <section className="room">
             {this.renderDocumentHead()}
             <StackActions />
-            <div className="room_inner"> 
-                <RoomMain />
-                <DetailBar />
-            </div>
+            { isFetchingDeep && <Spinner styles={["grey", "large"]} /> }
+            { hasErrorDeep && <PageError>The room could not be found, or it has been deleted by its owner.</PageError> }
+            { isLoadedDeep && 
+                <div className="room_inner"> 
+                    <RoomMain />
+                    <DetailBar />
+                </div>
+            }
         </section>
         );
     }
@@ -239,8 +247,10 @@ function mapStateToProps(state: State, ownProps: RouteProps<Params>): ConnectPro
 
     return {
         id,
-        error: RoomPage.get(state, 'error'),
+        hasErrorDeep: RoomPage.hasErrorDeep(state),
         isLoadedDeep: RoomPage.isLoadedDeep(state),
+        isFetchingDeep: RoomPage.isFetchingDeep(state),
+
 
         hid: RoomPage.entity(state).get('hid'),
         author: RoomPage.author(state),

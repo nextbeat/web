@@ -166,6 +166,7 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
     static hasErrorDeep(state: State) {
         return Room.hasErrorDeep(state, this.get(state, 'id'))
             || !!this.get(state, 'moreStacksError')
+            || !!this.get(state, 'error')
     }
 
     static isFetchingDeep(state: State) {

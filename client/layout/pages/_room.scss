@@ -3,6 +3,10 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+
+    .spinner {
+        margin: 20px auto;
+    }
 }
 
 .room_inner {

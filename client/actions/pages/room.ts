@@ -73,7 +73,7 @@ export function loadRoomPage(hid: string, jumpToCommentAtDate?: number): ThunkAc
             const roomId = RoomPage.get(state, 'id')
             dispatch(recordView(roomId))
             dispatch(joinRoom(roomId))
-        } else {
+        } else if (!RoomPage.hasErrorDeep(state)) {
             dispatch(fetchRoomPage(hid, jumpToCommentAtDate))
         }
     }
