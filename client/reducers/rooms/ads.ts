@@ -20,6 +20,10 @@ export default function ads(state = Map(), action: Action) {
                 error: action.error
             })
         }
+    } else if (action.type === ActionType.DID_FINISH_VIDEO_AD) {
+        return state.merge({
+            hasPlayedPrerollAd: true 
+        })
     } else if (action.type === ActionType.ROOM) {
         return state.merge({
             shouldDisplay: !action.skipAds

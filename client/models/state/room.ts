@@ -5,7 +5,7 @@ import Stack from '@models/entities/stack'
 import MediaItem from '@models/entities/mediaItem'
 import Comment from '@models/entities/comment'
 import User from '@models/entities/user'
-import Ad from '@models/entities/ad'
+import Ad, { AdType } from '@models/entities/ad'
 import CurrentUser from '@models/state/currentUser'
 import TemporaryComment from '@models/entities/temporary/comment'
 import { State } from '@types'
@@ -53,6 +53,7 @@ export interface RoomProps {
     adsFetching: boolean
     adsHasFetched: boolean
     adsError: string
+    hasPlayedPrerollAd: boolean
 
     videoDidPlay: boolean
 }
@@ -99,6 +100,7 @@ const keyMap: {[key in keyof RoomProps]: string[]} = {
     'adsFetching': ['ads', 'isFetching'],
     'adsHasFetched': ['ads', 'hasFetched'],
     'adsError': ['ads', 'error'],
+    'hasPlayedPrerollAd': ['ads', 'hasPlayedPrerollAd'],
     // playback
     'videoDidPlay': ['navigation', 'videoDidPlay']
 }
@@ -244,6 +246,10 @@ export default class Room {
         (state: State, id: number) => Room.get(state, id, 'adIds'),
         (state: State, id: number) => id
     )
+
+    static ad(state: State, id: number, type: AdType): Ad | null {
+        return this.ads(state, id).find(ad => ad.get('type') === type) || null
+    }
 
 
     /**

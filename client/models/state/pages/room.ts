@@ -5,6 +5,7 @@ import { withEntityMap, EntityProps } from '@models/utils'
 import MediaItem from '@models/entities/mediaItem'
 import Stack from '@models/entities/stack'
 import SearchResultComment from '@models/entities/searchResultComment'
+import { AdType } from '@models/entities/ad'
 import Room, { RoomProps } from '@models/state/room'
 import { createEntityListSelector } from '@models/utils'
 import { State } from '@types'
@@ -144,6 +145,10 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
 
     static thumbnail(state: State, preferredType: string) {
         return Room.thumbnail(state, this.get(state, 'id'), preferredType)
+    }
+
+    static ad(state: State, type: AdType) {
+        return Room.ad(state, this.get(state, 'id'), type)
     }
     
     /**

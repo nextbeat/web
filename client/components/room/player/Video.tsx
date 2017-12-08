@@ -4,7 +4,6 @@ import debounce from 'lodash-es/debounce'
 import * as Hls from 'hls.js'
 import { toggleFullScreen, isFullScreen } from '../../../utils'
 
-
 import Decoration from './Decoration'
 import VideoControls from './VideoControls'
 import Spinner from '@components/shared/Spinner'
@@ -23,10 +22,12 @@ function canPlayHlsNative(videoElem: HTMLVideoElement) {
 
 interface OwnProps {
     video: State
-    autoplay?: boolean
     roomId?: number
     decoration?: State
     alternateVideo?: State
+
+    autoplay?: boolean
+    isScrubbable?: boolean
 
     containerWidth: number
     containerHeight: number
@@ -66,7 +67,8 @@ interface VideoState {
 class Video extends React.Component<Props, VideoState> {
 
     static defaultProps = {
-        autoplay: true
+        autoplay: true,
+        isScrubbable: true
     }
 
     private _controls: VideoControls
@@ -550,7 +552,7 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     render() {
-        const { video, decoration, autoplay, volume } = this.props;
+        const { video, decoration, autoplay, volume, isScrubbable } = this.props;
         const { isIOSDevice, shouldDisplayControls, isLoading, width, height } = this.state;
 
         const displayControlsVideoStyle = shouldDisplayControls ? { cursor: 'auto' } : { cursor: 'none' };
@@ -575,7 +577,8 @@ class Video extends React.Component<Props, VideoState> {
             mute: this.mute,
             playPause: this.playPause,
             seek: this.seek,
-            fullScreen: this.fullScreen
+            fullScreen: this.fullScreen,
+            isScrubbable: isScrubbable || false
         }
 
         let videoAttributes = {

@@ -47,6 +47,7 @@ export type RoomActionAll =
     SelectMediaItemAction |
     MarkStackAction |
     RoomAdsAction |
+    DidFinishVideoAdAction |
     ClearCommentsAction |
     ClearRoomAction
 
@@ -614,10 +615,10 @@ export function markStack(roomId: number, date: Date): MarkStackAction {
  * ADS
  *****/
 
- export interface RoomAdsAction extends ApiCallAction {
-     type: ActionType.ROOM_ADS
-     roomId: number
- }
+export interface RoomAdsAction extends ApiCallAction {
+    type: ActionType.ROOM_ADS
+    roomId: number
+}
 function loadAds(roomId: number): RoomAdsAction {
     return {
         type: ActionType.ROOM_ADS,
@@ -628,6 +629,19 @@ function loadAds(roomId: number): RoomAdsAction {
             schema: Schemas.Ads,
             queries: { force_preroll: 'true' } // for development
         }
+    }
+}
+
+export interface DidFinishVideoAdAction extends GenericAction {
+    type: ActionType.DID_FINISH_VIDEO_AD,
+    roomId: number,
+    adId: number
+}
+export function didFinishVideoAd(roomId: number, adId: number): DidFinishVideoAdAction {
+    return {
+        type: ActionType.DID_FINISH_VIDEO_AD,
+        roomId,
+        adId
     }
 }
 

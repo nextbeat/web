@@ -4,11 +4,13 @@ import { Link } from 'react-router'
 
 import Chat from './chat/Chat'
 import Activity from './activity/Activity'
+import BannerAd from '@components/room/ads/BannerAd'
 import Icon from '@components/shared/Icon'
 import ActionsDropdown from './ActionsDropdown'
 
 import RoomPage from '@models/state/pages/room'
 import App from '@models/state/app'
+import Ad from '@models/entities/ad'
 import { selectDetailSection, closeDetailSection } from '@actions/pages/room'
 import { toggleDropdown, promptModal } from '@actions/app'
 import { State, DispatchProps } from '@types'
@@ -17,11 +19,11 @@ interface ConnectProps {
     width: string
     activeOverlay: string
     selectedDetailSection: 'chat' | 'activity'
-
-    isFetching: boolean
-    error: string
+    
     isCurrentUserAuthor: boolean
     unseenLiveMediaItemsCount: number
+
+    bannerAd: Ad | null
 }
 
 type Props = ConnectProps & DispatchProps
@@ -97,7 +99,7 @@ class DetailBar extends React.Component<Props, DetailBarState> {
 
     render() {
         const { selectedDetailSection, width, activeOverlay, 
-                isCurrentUserAuthor, isFetching, error, } = this.props;
+                isCurrentUserAuthor, bannerAd } = this.props;
         const { disableAnimations } = this.state;
 
         const selected = (type: 'chat' | 'activity') => selectedDetailSection === type ? "selected" : "";
@@ -111,6 +113,7 @@ class DetailBar extends React.Component<Props, DetailBarState> {
 
         return (
             <div className={`detail-bar ${collapsedClass} ${activeClass} ${disableAnimationsClass}`}>
+                { bannerAd && <BannerAd ad={bannerAd} /> }
                 <div className="detail-bar_header">
                     { isCurrentUserAuthor && 
                         <div className="detail-bar_toggle-edit dropdown-detail-bar_toggle" onClick={this.toggleDropdown}><Icon type="more-vert" /></div> 
@@ -122,8 +125,8 @@ class DetailBar extends React.Component<Props, DetailBarState> {
                     </div>
                 </div>
                 <div className="detail-bar_main">
-                    { !isFetching && !error && <Chat display={selectedDetailSection === "chat"} /> }
-                    { !isFetching && !error && <Activity display={selectedDetailSection === "activity"} /> }
+                    { <Chat display={selectedDetailSection === "chat"} /> }
+                    { <Activity display={selectedDetailSection === "activity"} /> }
                 </div>
             </div>
         );
@@ -136,9 +139,8 @@ function mapStateToProps(state: State): ConnectProps {
         width: App.get(state, 'width'),
         activeOverlay: App.get(state, 'activeOverlay'),
         isCurrentUserAuthor: RoomPage.isCurrentUserAuthor(state),
-        isFetching: RoomPage.get(state, 'isFetching'),
-        error: RoomPage.get(state, 'error'),
-        unseenLiveMediaItemsCount: RoomPage.unseenLiveMediaItemsCount(state)
+        unseenLiveMediaItemsCount: RoomPage.unseenLiveMediaItemsCount(state),
+        bannerAd: RoomPage.ad(state, 'banner')
     }
 }
 

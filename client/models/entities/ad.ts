@@ -3,7 +3,7 @@ import { List } from 'immutable'
 import { EntityModel } from './base'
 import { State } from '@types'
 
-type AdType = 'banner' | 'preroll'
+export type AdType = 'banner' | 'preroll'
 
 interface AdProps {
     id: number

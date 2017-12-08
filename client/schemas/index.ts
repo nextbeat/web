@@ -7,7 +7,7 @@ const Stack = new schema.Entity('stacks', { author: User, mediaItems: [ MediaIte
 const Comment = new schema.Entity('comments', { author: User, recipient: User, stack: Stack })
 const CampaignStack = new schema.Entity('campaignStacks')
 const Campaign = new schema.Entity('campaigns', { stacks: [ CampaignStack ] })
-const Ad = new schema.Entity('ad')
+const Ad = new schema.Entity('ads')
 MediaItem.define({ references: Comment }); // handles circular reference
 
 // Search results have an extra result_indices

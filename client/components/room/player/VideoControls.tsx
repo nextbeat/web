@@ -18,6 +18,7 @@ interface Props {
     shouldDisplayControls: boolean
     isPlaying: boolean
     isFullScreen: boolean
+    isScrubbable: boolean
 
     adjustVolume: (volume: number) => void
     mute: () => void
@@ -142,9 +143,9 @@ class VideoControls extends React.Component<Props, State> {
 
         const { currentTime, duration, loadedDuration, volume,
                 shouldDisplayControls, isPlaying, isFullScreen,
-                mute, playPause, fullScreen } = this.props
+                isScrubbable, mute, playPause, fullScreen } = this.props
 
-        const progressBarEvents = {
+        const progressBarEvents = !isScrubbable ? {} : {
             onMouseOver: this.handleProgressBarOnMouseOver,
             onMouseOut: this.handleProgressBarOnMouseOut,
             onMouseDown: this.handleProgressBarOnMouseDown,
@@ -157,14 +158,14 @@ class VideoControls extends React.Component<Props, State> {
             onMouseOut: this.handleVolumeOnMouseOut
         }
 
+        const notScrubbableClass = isScrubbable ? "" : "not-scrubbable";
         const displayControlsClass = shouldDisplayControls ? "display-controls" : "";
         const displayControlsVideoStyle = shouldDisplayControls ? { cursor: 'auto' } : { cursor: 'none' };
         const volumeIcon = volume === 0 ? "volume-mute" : (volume < 0.4 ? "volume-down" : "volume-up");
         const fullScreenIcon = isFullScreen ? "fullscreen-exit" : "fullscreen";
 
-
         return (
-            <div className={`video_bottom ${displayControlsClass}`}>
+            <div className={`video_bottom ${displayControlsClass} ${notScrubbableClass}`}>
                 <div className="video_gradient-bottom"></div>
                 <div className="video_progress-bar-container">
                     <div className="video_progress-bar-padding" {...progressBarEvents}></div>

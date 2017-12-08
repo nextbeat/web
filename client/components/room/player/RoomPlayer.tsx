@@ -9,11 +9,13 @@ import ItemReference from './ItemReference'
 import Icon from '@components/shared/Icon'
 import Spinner from '@components/shared/Spinner'
 import CounterInner from '@components/room/counter/CounterInner'
+import VideoAd from '@components/room/ads/VideoAd'
 
 import { goBackward, goForward } from '@actions/room'
 import { selectDetailSection } from '@actions/pages/room'
 import Room from '@models/state/room'
 import MediaItem from '@models/entities/mediaItem'
+import Ad from '@models/entities/ad'
 import { State, DispatchProps } from '@types'
 
 interface OwnProps {
@@ -24,11 +26,12 @@ interface OwnProps {
 
 interface ConnectProps {
     hid: string
-    mediaItems: List<MediaItem>
-    mediaItemsError?: string
     mediaItemsSize: number
     selectedMediaItem: MediaItem
     indexOfSelectedMediaItem: number
+
+    prerollAd: Ad | null
+    hasPlayedPrerollAd: boolean
 }
 
 type Props = OwnProps & ConnectProps & DispatchProps 
@@ -80,6 +83,8 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         this.handleCounterClick = this.handleCounterClick.bind(this)
         
         this.resize = this.resize.bind(this)
+
+        this.renderItem = this.renderItem.bind(this)
 
         this.state = {
             playerWidth: 0,
@@ -143,14 +148,44 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
     // Render
 
+    renderItem() {
+        const { selectedMediaItem: item, roomId, shouldAutoplayVideo  } = this.props
+        const { playerWidth, playerHeight } = this.state
+
+        let containerProps = {
+            containerWidth: playerWidth,
+            containerHeight: playerHeight
+        }
+
+        return (
+            <div style={{ width: '100%', height: '100%' }}>
+                { item.hasReference() && <ItemReference roomId={roomId} {...containerProps} /> }
+                { !item.isEmpty() && (item.isVideo() ? 
+                    <Video 
+                        video={item.video('mp4')}
+                        alternateVideo={item.video('mp4')}
+                        decoration={item.get('decoration')} 
+                        roomId={roomId} 
+                        autoplay={shouldAutoplayVideo} 
+                        {...containerProps} /> : 
+                    <Image 
+                        image={item.image()} 
+                        decoration={item.get('decoration')} 
+                        {...containerProps} /> ) 
+                }
+            </div>
+        )
+    }
+
     render() {
-        const { roomId, mediaItems, mediaItemsError, mediaItemsSize,
-                selectedMediaItem: item, indexOfSelectedMediaItem: index,
-                shouldAutoplayVideo, children } = this.props;
+        const { children, roomId, mediaItemsSize, 
+                indexOfSelectedMediaItem: index,
+                prerollAd, hasPlayedPrerollAd } = this.props;
         const { playerWidth, playerHeight } = this.state
 
         const leftDisabledClass = index === 0 || index === -1 ? 'disabled' : '';
-        const rightDisabledClass = index === mediaItemsSize - 1 || index === -1 ? 'disabled' : ''; 
+        const rightDisabledClass = index === mediaItemsSize - 1 || index === -1
+         ? 'disabled' : ''; 
 
         let containerProps = {
             containerWidth: playerWidth,
@@ -164,21 +199,10 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                 { children }
                 <div className="player_media" style={playerStyle}>
                     <div className="player_media-inner" id="player_media-inner">
-                    { mediaItemsSize === 0 && !mediaItemsError && <Spinner styles={["large", "grey"]}/> }
-                    { item.hasReference() && <ItemReference roomId={roomId} {...containerProps} /> }
-                    { !item.isEmpty() && (item.isVideo() ? 
-                        <Video 
-                            video={item.video('mp4')}
-                            alternateVideo={item.video('mp4')}
-                            decoration={item.get('decoration')} 
-                            roomId={roomId} 
-                            autoplay={shouldAutoplayVideo} 
-                            {...containerProps} /> : 
-                        <Image 
-                            image={item.image()} 
-                            decoration={item.get('decoration')} 
-                            {...containerProps} /> ) 
-                    }
+                        { prerollAd && !hasPlayedPrerollAd ? 
+                            <VideoAd ad={prerollAd} roomId={roomId} {...containerProps} /> :
+                            this.renderItem()
+                        }
                     </div>
                 </div>
                 <div className="player_navigation">
@@ -197,11 +221,11 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     return {
         hid: Room.entity(state, ownProps.roomId).get('hid'),
-        mediaItems: Room.mediaItems(state, ownProps.roomId),
-        mediaItemsError: Room.get(state, ownProps.roomId, 'mediaItemsError'),
         mediaItemsSize: Room.mediaItemsSize(state, ownProps.roomId),
         selectedMediaItem: Room.selectedMediaItem(state, ownProps.roomId),
-        indexOfSelectedMediaItem: Room.indexOfSelectedMediaItem(state, ownProps.roomId)
+        indexOfSelectedMediaItem: Room.indexOfSelectedMediaItem(state, ownProps.roomId),
+        prerollAd: Room.ad(state, ownProps.roomId, 'preroll'),
+        hasPlayedPrerollAd: Room.get(state, ownProps.roomId, 'hasPlayedPrerollAd')
     }
 }
 
