@@ -2,14 +2,14 @@
     height: 80px;
     position: relative;
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     background: #ffe49d;
 }
 
 .ad-banner_sponsor {
     position: absolute;
     right: 5px;
-    top: 5px;
+    bottom: 5px;
     color: #777;
     font-size: 11px;
     text-align: right;
@@ -18,7 +18,7 @@
 .ad-banner_title {
     font-size: 18px;
     font-weight: 300;
-    margin: 0 0 8px 10px;
+    margin: 8px 0 0 10px;
 }
 
 .ad-video {
@@ -34,6 +34,10 @@
         height: 40px;
         content: '';
         background: linear-gradient(to bottom, rgba(#000,0.3) 0%, rgba(#000,0) 100%);
+    }
+
+    .video_progress-play {
+        background: #ffd159;
     }
 }
 

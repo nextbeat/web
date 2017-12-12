@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import App from '@models/state/app'
 import RoomPage from '@models/state/pages/room'
+import Room from '@models/state/room'
 import { goBackward, goForward } from '@actions/room'
 import { selectDetailSection } from '@actions/pages/room'
 
@@ -24,6 +25,7 @@ interface ConnectProps {
     mediaItemsSize: number
 
     isLoadedDeep: boolean
+    isPlayingPrerollAd: boolean
 
     width: string
 }
@@ -80,7 +82,7 @@ class RoomMain extends React.Component<Props> {
     }
 
     render() {
-        const { roomId, isLoadedDeep, hid, width, 
+        const { roomId, isLoadedDeep, hid, width, isPlayingPrerollAd, 
                 authorUsername, indexOfSelectedMediaItem } = this.props;
 
         // display welcome banner here on small screen resolutions 
@@ -92,7 +94,7 @@ class RoomMain extends React.Component<Props> {
         // storage on the browser to find the last visited media
         // item). We don't want to display the counter until 
         // a media item has been selected.
-        const shouldDisplayCounter = indexOfSelectedMediaItem > -1
+        const shouldDisplayCounter = indexOfSelectedMediaItem > -1 && !isPlayingPrerollAd
 
         return (
             <section className="player-container">
@@ -115,14 +117,16 @@ class RoomMain extends React.Component<Props> {
 }
 
 function mapStateToProps(state: State): ConnectProps {
+    const roomId = RoomPage.get(state, 'id')
     return {
-        roomId: RoomPage.get(state, 'id'),
+        roomId,
         hid: RoomPage.entity(state).get('hid'),
         authorUsername: RoomPage.entity(state).author().get('username'),
         indexOfSelectedMediaItem: RoomPage.indexOfSelectedMediaItem(state),
         mediaItemsSize: RoomPage.mediaItemsSize(state),
 
         isLoadedDeep: RoomPage.isLoadedDeep(state),
+        isPlayingPrerollAd: !!RoomPage.ad(state, 'preroll') && !Room.get(state, roomId, 'hasPlayedPrerollAd'),
 
         width: App.get(state, 'width')
     }
