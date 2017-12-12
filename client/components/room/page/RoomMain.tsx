@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import App from '@models/state/app'
 import RoomPage from '@models/state/pages/room'
 import Room from '@models/state/room'
+import Ad from '@models/entities/ad'
 import { goBackward, goForward } from '@actions/room'
 import { selectDetailSection } from '@actions/pages/room'
 
@@ -13,6 +14,7 @@ import ActivityCounter from '../counter/ActivityCounter'
 import SmallChat from './chat/SmallChat'
 import Info from './main/Info'
 import More from './main/More'
+import BannerAd from '../ads/BannerAd'
 import AppBanner from '@components/shared/AppBanner'
 
 import { State, DispatchProps } from '@types'
@@ -23,6 +25,7 @@ interface ConnectProps {
     authorUsername: string
     indexOfSelectedMediaItem: number
     mediaItemsSize: number
+    bannerAd: Ad | null
 
     isLoadedDeep: boolean
     isPlayingPrerollAd: boolean
@@ -83,7 +86,7 @@ class RoomMain extends React.Component<Props> {
 
     render() {
         const { roomId, isLoadedDeep, hid, width, isPlayingPrerollAd, 
-                authorUsername, indexOfSelectedMediaItem } = this.props;
+                authorUsername, indexOfSelectedMediaItem, bannerAd } = this.props;
 
         // display welcome banner here on small screen resolutions 
         // so that it scrolls with rest of content
@@ -103,8 +106,10 @@ class RoomMain extends React.Component<Props> {
                     {/* we only display once the room has loaded */}
                     { isLoadedDeep &&
                     <div className="player_inner">
-                        { shouldDisplayCounter && <Counter roomId={roomId} /> }
-                        <RoomPlayer roomId={roomId} />
+                        { bannerAd && <BannerAd ad={bannerAd} />}
+                        <RoomPlayer roomId={roomId}>
+                            { shouldDisplayCounter && <Counter roomId={roomId} /> }
+                        </RoomPlayer>
                         <SmallChat />
                         <Info />
                         <More />
@@ -124,6 +129,7 @@ function mapStateToProps(state: State): ConnectProps {
         authorUsername: RoomPage.entity(state).author().get('username'),
         indexOfSelectedMediaItem: RoomPage.indexOfSelectedMediaItem(state),
         mediaItemsSize: RoomPage.mediaItemsSize(state),
+        bannerAd: RoomPage.ad(state, 'banner'),
 
         isLoadedDeep: RoomPage.isLoadedDeep(state),
         isPlayingPrerollAd: !!RoomPage.ad(state, 'preroll') && !Room.get(state, roomId, 'hasPlayedPrerollAd'),

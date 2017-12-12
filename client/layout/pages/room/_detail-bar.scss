@@ -48,6 +48,10 @@
         .detail-bar_main {
             height: 100%;
         }
+
+        .ad-banner {
+            display: none;
+        }
     }
 
     @include media('<=small') {

@@ -22,6 +22,12 @@
     .spinner-player {
         margin: 100px auto 0 auto;
     }
+
+    @include media('>medium') {
+        .ad-banner {
+            display: none;
+        }
+    }
 }
 
 .player_header {
@@ -33,6 +39,7 @@
 
 .player_main {
     display: flex;
+    position: relative;
     flex-shrink: 0;
     flex-direction: column;
     height: 100%;
