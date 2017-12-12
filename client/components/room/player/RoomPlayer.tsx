@@ -29,7 +29,6 @@ interface ConnectProps {
     mediaItemsSize: number
     selectedMediaItem: MediaItem
     indexOfSelectedMediaItem: number
-    initialImageUrl: string | null
 
     prerollAd: Ad | null
     hasPlayedPrerollAd: boolean
@@ -198,7 +197,8 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
     render() {
         const { children, roomId, mediaItemsSize, 
                 indexOfSelectedMediaItem: index,
-                initialImageUrl, prerollAd, hasPlayedPrerollAd } = this.props;
+                selectedMediaItem: item,
+                prerollAd, hasPlayedPrerollAd } = this.props;
         const { playerWidth, playerHeight } = this.state
 
         const isPlayingPrerollAd = !!prerollAd && !hasPlayedPrerollAd
@@ -210,12 +210,17 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
         let playerStyle = playerHeight > 0 ? { height: `${playerHeight}px` } : {}
 
+        let preloadedImageUrl = null
+        if (item) {
+            preloadedImageUrl = item.isVideo() ? item.video().get('poster_url') : item.image().get('url')
+        }
+
         return (
             <div className="player_main">
                 { children }
                 <div className="player_media" style={playerStyle}>
                     { /* Preload the first post's image to prevent load hiccup after ad closes. */ }
-                    { !!initialImageUrl && <link rel="preload" as="image" href={initialImageUrl} /> }
+                    { !!preloadedImageUrl && <link rel="preload" as="image" href={preloadedImageUrl} /> }
                     <div className="player_media-inner" id="player_media-inner">
                         { isPlayingPrerollAd ? this.renderAd() : this.renderItem() }
                     </div>
@@ -234,19 +239,11 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 }
 
 function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
-    let initialImageUrl = null
-    const initialMediaItem = Room.mediaItems(state, ownProps.roomId).get(0)
-
-    if (initialMediaItem) {
-        initialImageUrl = initialMediaItem.isVideo() ? initialMediaItem.video().get('poster_url') : initialMediaItem.image().get('url')
-    }
-
     return {
         hid: Room.entity(state, ownProps.roomId).get('hid'),
         mediaItemsSize: Room.mediaItemsSize(state, ownProps.roomId),
         selectedMediaItem: Room.selectedMediaItem(state, ownProps.roomId),
         indexOfSelectedMediaItem: Room.indexOfSelectedMediaItem(state, ownProps.roomId),
-        initialImageUrl,
         prerollAd: Room.ad(state, ownProps.roomId, 'preroll'),
         hasPlayedPrerollAd: Room.get(state, ownProps.roomId, 'hasPlayedPrerollAd')
     }
