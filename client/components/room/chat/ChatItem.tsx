@@ -9,9 +9,7 @@ import Dropdown from '@components/shared/Dropdown'
 import Comment from '@models/entities/comment'
 import TemporaryComment from '@models/entities/temporary/comment'
 
-if (typeof window !== 'undefined') {
-    var robot = require('../../../public/images/robot_64px.png');
-}
+import robot from '../../../public/images/robot_64px.png';
 
 interface Props {
     id?: string
