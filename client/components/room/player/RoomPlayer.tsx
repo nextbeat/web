@@ -29,6 +29,7 @@ interface ConnectProps {
     mediaItemsSize: number
     selectedMediaItem: MediaItem
     indexOfSelectedMediaItem: number
+    initialImageUrl: string | null
 
     prerollAd: Ad | null
     hasPlayedPrerollAd: boolean
@@ -85,6 +86,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         this.resize = this.resize.bind(this)
 
         this.renderItem = this.renderItem.bind(this)
+        this.renderAd = this.renderAd.bind(this)
 
         this.state = {
             playerWidth: 0,
@@ -177,20 +179,34 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         )
     }
 
-    render() {
-        const { children, roomId, mediaItemsSize, 
-                indexOfSelectedMediaItem: index,
-                prerollAd, hasPlayedPrerollAd } = this.props;
+    renderAd() {
+        const { prerollAd, roomId } = this.props
         const { playerWidth, playerHeight } = this.state
 
-        const leftDisabledClass = index === 0 || index === -1 ? 'disabled' : '';
-        const rightDisabledClass = index === mediaItemsSize - 1 || index === -1
-         ? 'disabled' : ''; 
+        if (!prerollAd) {
+            return null;
+        }
 
         let containerProps = {
             containerWidth: playerWidth,
             containerHeight: playerHeight
         }
+
+        return <VideoAd ad={prerollAd} roomId={roomId} {...containerProps} /> 
+    }
+
+    render() {
+        const { children, roomId, mediaItemsSize, 
+                indexOfSelectedMediaItem: index,
+                initialImageUrl, prerollAd, hasPlayedPrerollAd } = this.props;
+        const { playerWidth, playerHeight } = this.state
+
+        const isPlayingPrerollAd = !!prerollAd && !hasPlayedPrerollAd
+
+        const leftDisabledClass = index === 0 || index === -1 || isPlayingPrerollAd 
+            ? 'disabled' : '';
+        const rightDisabledClass = index === mediaItemsSize - 1 || index === -1 || isPlayingPrerollAd
+            ? 'disabled' : ''; 
 
         let playerStyle = playerHeight > 0 ? { height: `${playerHeight}px` } : {}
 
@@ -198,11 +214,10 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
             <div className="player_main">
                 { children }
                 <div className="player_media" style={playerStyle}>
+                    { /* Preload the first post's image to prevent load hiccup after ad closes. */ }
+                    { !!initialImageUrl && <link rel="preload" as="image" href={initialImageUrl} /> }
                     <div className="player_media-inner" id="player_media-inner">
-                        { prerollAd && !hasPlayedPrerollAd ? 
-                            <VideoAd ad={prerollAd} roomId={roomId} {...containerProps} /> :
-                            this.renderItem()
-                        }
+                        { isPlayingPrerollAd ? this.renderAd() : this.renderItem() }
                     </div>
                 </div>
                 <div className="player_navigation">
@@ -219,11 +234,19 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 }
 
 function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
+    let initialImageUrl = null
+    const initialMediaItem = Room.mediaItems(state, ownProps.roomId).get(0)
+
+    if (initialMediaItem) {
+        initialImageUrl = initialMediaItem.isVideo() ? initialMediaItem.video().get('poster_url') : initialMediaItem.image().get('url')
+    }
+
     return {
         hid: Room.entity(state, ownProps.roomId).get('hid'),
         mediaItemsSize: Room.mediaItemsSize(state, ownProps.roomId),
         selectedMediaItem: Room.selectedMediaItem(state, ownProps.roomId),
         indexOfSelectedMediaItem: Room.indexOfSelectedMediaItem(state, ownProps.roomId),
+        initialImageUrl,
         prerollAd: Room.ad(state, ownProps.roomId, 'preroll'),
         hasPlayedPrerollAd: Room.get(state, ownProps.roomId, 'hasPlayedPrerollAd')
     }
