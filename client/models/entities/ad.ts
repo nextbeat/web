@@ -7,6 +7,7 @@ export type AdType = 'banner' | 'preroll'
 
 interface AdProps {
     id: number
+    link_url: string
     sponsor: string
     title: string
     type: AdType

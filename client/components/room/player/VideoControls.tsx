@@ -165,7 +165,7 @@ class VideoControls extends React.Component<Props, State> {
         const fullScreenIcon = isFullScreen ? "fullscreen-exit" : "fullscreen";
 
         return (
-            <div className={`video_bottom ${displayControlsClass} ${notScrubbableClass}`}>
+            <div className={`video_bottom ${displayControlsClass} ${notScrubbableClass}`} onClick={(e: React.MouseEvent<HTMLElement>) => {e.stopPropagation()}}>
                 <div className="video_gradient-bottom"></div>
                 <div className="video_progress-bar-container">
                     <div className="video_progress-bar-padding" {...progressBarEvents}></div>

@@ -20,14 +20,44 @@
         @include media('>medium') {
             padding-top: 25%;            
         }
-
-        
+  
     }
 
     &::after {
         content: "";
         clear: both;
         display: table;
+    }
+}
+
+.ad-banner_image {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-color: #fff;
+    z-index: 1;
+}
+
+.ad-banner_image-large {
+    @include media('>medium') {
+        z-index: 50;
+    }
+}
+
+.ad-banner_image-medium {
+    @include media('>small', '<=medium') {
+        z-index: 50;
+    }
+}
+
+.ad-banner_image-small {
+    @include media('<=small') {
+        z-index: 50;
     }
 }
 
@@ -64,6 +94,10 @@
     .video_progress-play {
         background: #ffd159;
     }
+}
+
+.ad-video-clickable .video_player-container {
+    cursor: pointer;
 }
 
 .ad-video_sponsor {

@@ -27,6 +27,7 @@ class VideoAd extends React.Component<Props> {
         super(props)
 
         this.didEnd = this.didEnd.bind(this)
+        this.handleClick = this.handleClick.bind(this)
     }
 
     componentDidMount() {
@@ -39,6 +40,15 @@ class VideoAd extends React.Component<Props> {
         video.addEventListener('ended', this.didEnd);
     }
 
+    handleClick() {
+        const { ad } = this.props
+        if (!ad.get('link_url')) {
+            return
+        }
+
+        window.location.href = ad.get('link_url')
+    }
+
     didEnd() {
         const { roomId, ad, dispatch } = this.props
         dispatch(didFinishVideoAd(roomId, ad.get('id')));
@@ -46,8 +56,9 @@ class VideoAd extends React.Component<Props> {
 
     render() {
         const { ad, authorUsername } = this.props
+        const clickableClass = ad.get('link_url') ? "ad-video-clickable" : ""
         return (
-            <div className="ad-video">
+            <div className={`ad-video ${clickableClass}`} onClick={this.handleClick}>
                 <Video video={ad.video()} {...this.props} isScrubbable={false} />
                 <div className="ad-video_sponsor">This ad sponsors { authorUsername }</div>
             </div>
