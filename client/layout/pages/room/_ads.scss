@@ -1,4 +1,4 @@
-.ad-banner {
+.ad-banner-nb {
     position: relative;
     display: flex;
     align-items: flex-start;
@@ -30,7 +30,7 @@
     }
 }
 
-.ad-banner_image {
+.ad-banner-nb_image {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -43,25 +43,25 @@
     z-index: 1;
 }
 
-.ad-banner_image-large {
+.ad-banner-nb_image-large {
     @include media('>medium') {
         z-index: 50;
     }
 }
 
-.ad-banner_image-medium {
+.ad-banner-nb_image-medium {
     @include media('>small', '<=medium') {
         z-index: 50;
     }
 }
 
-.ad-banner_image-small {
+.ad-banner-nb_image-small {
     @include media('<=small') {
         z-index: 50;
     }
 }
 
-.ad-banner_sponsor {
+.ad-banner-nb_sponsor {
     position: absolute;
     right: 5px;
     bottom: 5px;
@@ -70,7 +70,7 @@
     text-align: right;
 }
 
-.ad-banner_title {
+.ad-banner-nb_title {
     font-size: 18px;
     font-weight: 300;
     margin: 8px 0 0 10px;

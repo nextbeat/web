@@ -26,7 +26,7 @@ class BannerAd extends React.Component<Props> {
 
         let maybeAddImage = (type: string) => {
             if (ad.image(type).get('type') === type) {
-                let className = `ad-banner_image ad-banner_image-${type}`
+                let className = `ad-banner-nb_image ad-banner-nb_image-${type}`
                 let style = { backgroundImage: `url(${ad.image(type).get('url')})` }
                 divs.push(<div key={type} className={className} style={style} />)
             }
@@ -47,10 +47,10 @@ class BannerAd extends React.Component<Props> {
         let elemAttrs = url ? { href: url } : {}
 
         return (
-            <Elem className="ad-banner" {...elemAttrs} >
+            <Elem className="ad-banner-nb" {...elemAttrs} >
                 { this.renderImages() }
-                { ad.get('sponsor') && <div className="ad-banner_sponsor">Sponsored by {ad.get('sponsor')}</div> }
-                { ad.get('title') && <div className="ad-banner_title">{ad.get('title')}</div> }
+                { ad.get('sponsor') && <div className="ad-banner-nb_sponsor">Sponsored by {ad.get('sponsor')}</div> }
+                { ad.get('title') && <div className="ad-banner-nb_title">{ad.get('title')}</div> }
             </Elem>
         )
     }

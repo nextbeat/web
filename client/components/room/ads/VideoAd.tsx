@@ -35,9 +35,9 @@ class VideoAd extends React.Component<Props> {
         video.addEventListener('ended', this.didEnd);
     }
 
-    componentDidUnmount() {
+    componentWillUnmount() {
         const video = document.getElementById('video_player') as HTMLVideoElement;
-        video.addEventListener('ended', this.didEnd);
+        video.removeEventListener('ended', this.didEnd);
     }
 
     handleClick() {

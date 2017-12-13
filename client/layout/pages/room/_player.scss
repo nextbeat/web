@@ -24,7 +24,7 @@
     }
 
     @include media('>medium') {
-        .ad-banner {
+        .ad-banner-nb {
             display: none;
         }
     }
