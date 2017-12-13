@@ -315,7 +315,7 @@ class Video extends React.Component<Props, VideoState> {
 
     loadVideo() {
         const { video, alternateVideo } = this.props;
-
+        
         this.unloadVideo();
 
         clearInterval(this.state.timeIntervalId);

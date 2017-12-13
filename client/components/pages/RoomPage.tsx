@@ -251,7 +251,6 @@ function mapStateToProps(state: State, ownProps: RouteProps<Params>): ConnectPro
         isLoadedDeep: RoomPage.isLoadedDeep(state),
         isFetchingDeep: RoomPage.isFetchingDeep(state),
 
-
         hid: RoomPage.entity(state).get('hid'),
         author: RoomPage.author(state),
         description: RoomPage.entity(state).get('description'),

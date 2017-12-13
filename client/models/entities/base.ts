@@ -2,6 +2,8 @@ import { Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { State } from '@types'
 
+const emptyMap = Map<string, any>()
+
 /* Helper model for retrieving data from specific 
  * entities in the state. (Compare with the StateModel 
  * base class, which is instantiated with the root 
@@ -10,7 +12,9 @@ import { State } from '@types'
 export class EntityModel<Props> {
     entityName: string
     
-    constructor(public id: number, public entities: State) {}
+    constructor(public id: number, public entities: State) {
+        this.resourceCache = {}
+    }
  
     get<K extends keyof Props>(key: K, defaultValue?: Props[K]): Props[K] {
         return this.entity().get(key, defaultValue)
@@ -45,19 +49,27 @@ export class EntityModel<Props> {
      * associated with the key returned by the defaultKeyFn (or, if that isn't 
      * specified, a random key) is returned.
      */
+    protected resourceCache: any 
+
     protected getResource(resourceType: string, preferredType?: string, defaultSizeFn?: (resources: State) => string | undefined): State {
+        this.resourceCache[resourceType] = this.resourceCache[resourceType] || {}
+
         let resources: State = this.entity().get(resourceType, Map())
+
+        let getFromCache = (type: string) =>
+            (this.resourceCache[resourceType][type] = this.resourceCache[resourceType][type] || resources.get(type).set('type', type) as State)
+
         if (preferredType && resources.has(preferredType)) {
-            return resources.get(preferredType).set('type', preferredType) as State
+            return getFromCache(preferredType)
         }
 
         // else default to any resource
         defaultSizeFn = defaultSizeFn || (resources => resources.keySeq().first() )
         let key = defaultSizeFn(resources)
         if (key) {
-            return resources.get(key).set('type', key)
+            return getFromCache(key)
         }
 
-        return Map()
+        return emptyMap
     } 
 }
