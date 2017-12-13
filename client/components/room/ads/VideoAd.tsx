@@ -46,7 +46,7 @@ class VideoAd extends React.Component<Props> {
             return
         }
 
-        window.location.href = ad.get('link_url')
+        window.open(ad.get('link_url'), '_blank')
     }
 
     didEnd() {
