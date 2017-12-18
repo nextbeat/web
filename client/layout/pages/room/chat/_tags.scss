@@ -1,0 +1,33 @@
+.chat_tags {
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+
+    .svg-icon-whatshot {
+        width: 16px; 
+        height: 16px;
+        fill: $primary-color;
+        margin-right: 6px;
+        flex-shrink: 0;
+    }
+}
+
+.chat_tags_list {
+    overflow: auto;
+    display: flex;
+    align-items: center;
+}
+
+.chat_tag {
+    color: $primary-color;
+    font-size: 12px;
+    font-weight: 300px;
+    display: inline;
+    margin-right: 6px;
+    cursor: pointer;
+
+    &:hover {
+        color: $light-primary-color;
+    }
+}

@@ -78,9 +78,6 @@ class Chat extends React.Component<Props> {
         <div className="chat" onWheel={debounce(this.handleOnWheel, 200)} style={{ display: (display ? "flex" : "none") }}>
             <UserActions />
             <WelcomeBanner username={authorUsername} closed={isClosed} />
-            { (chatTags.size > 0 || isOverlayActive) && 
-                <ChatHeader tags={chatTags} />
-            }
             { hasPinnedComment && 
                 <PinnedChatItem />
             }

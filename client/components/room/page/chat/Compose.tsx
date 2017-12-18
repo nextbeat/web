@@ -8,12 +8,15 @@ import ChatInfoDropdown from './ChatInfoDropdown'
 import ChatPinInfoDropdown from './ChatPinInfoDropdown'
 import ChatPinOverMaxLengthDropdown from './ChatPinOverMaxLengthDropdown'
 import Checkbox from '@components/shared/Checkbox'
+import Icon from '@components/shared/Icon'
 
 import { sendComment, pinComment, didUseChat } from '@actions/room'
+import { searchChat } from '@actions/pages/room'
 import { promptModal, promptDropdown, closeDropdown } from '@actions/app'
 import { clearChatMessage } from '@actions/pages/room'
 import CurrentUser from '@models/state/currentUser'
 import RoomPage from '@models/state/pages/room'
+import Room from '@models/state/room'
 import { storageAvailable } from '@utils'
 import { State, DispatchProps } from '@types'
 
@@ -28,7 +31,7 @@ interface ConnectProps {
     mentions: List<string>
     authorUsername: string
     isCurrentUserAuthor: boolean
-
+    chatTags: List<string>
     isLoggedIn: boolean
 }
 
@@ -180,6 +183,33 @@ class Compose extends React.Component<Props, ComposeState> {
         )
     }
 
+    renderTag(tag: string) {
+        const { dispatch } = this.props
+        let handleClick = () => {
+            dispatch(searchChat(tag, true))
+        }
+        return (
+            <div onClick={handleClick} className="chat_tag" key={tag}>{tag}</div>
+        )
+    }
+
+    renderTags() {
+        const { chatTags } = this.props
+
+        if (chatTags.size === 0 ) {
+            return null;
+        }
+
+        return (
+            <div className="chat_tags">
+                <Icon type="whatshot" />
+                <div className="chat_tags_list">
+                    { chatTags.map(tag => this.renderTag(tag)) }
+                </div>
+            </div>
+        )
+    }
+
     render() {
         const { authorUsername, isCurrentUserAuthor } = this.props
         const { message, isPinned } = this.state
@@ -189,6 +219,7 @@ class Compose extends React.Component<Props, ComposeState> {
                 <ChatPinInfoDropdown handleClose={this.handleChatPinInfoDropdownClose} />
                 <ChatPinOverMaxLengthDropdown maxLength={MAX_MESSAGE_LENGTH} />
                 <div className="chat_compose-inner">
+                    { this.renderTags() }
                     <textarea ref={ (c) => { if (c) { this._textarea = c } }} onChange={this.handleChange} onFocus={this.handleFocus} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={message}></textarea>
                     <div className="chat_compose_controls">
                         <input type="submit" 
@@ -211,6 +242,7 @@ function mapStateToProps(state: State): ConnectProps {
         mentions: RoomPage.get(state, 'mentions', List()),
         authorUsername: RoomPage.entity(state).author().get('username'),
         isCurrentUserAuthor: RoomPage.isCurrentUserAuthor(state),
+        chatTags: Room.get(state, RoomPage.get(state, 'id'), 'chatTags', List()),
 
         isLoggedIn: CurrentUser.isLoggedIn(state)
     }
