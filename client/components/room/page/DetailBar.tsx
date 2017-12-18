@@ -44,6 +44,7 @@ class DetailBar extends React.Component<Props, DetailBarState> {
         this.renderBadge = this.renderBadge.bind(this)
 
         this.handleResize = this.handleResize.bind(this)
+        this.handleClose = this.handleClose.bind(this)
 
         this.state = {
             disableAnimations: false,
@@ -84,6 +85,10 @@ class DetailBar extends React.Component<Props, DetailBarState> {
         this.props.dispatch(toggleDropdown('stack-actions-detail-bar'))
     }
 
+    handleClose() {
+        this.props.dispatch(closeDetailSection())
+    }
+
 
     // Render
 
@@ -110,7 +115,7 @@ class DetailBar extends React.Component<Props, DetailBarState> {
         const collapsedClass = width === 'small' || width === 'medium' ? 'collapsed' : ''
         const disableAnimationsClass = disableAnimations ? 'detail-bar-disable-animations' : ''
 
-        const detailOverlayActive = activeOverlay === 'chat' || activeOverlay === 'activity'
+        const detailOverlayActive = activeOverlay === 'chat' || activeOverlay === 'activity' || activeOverlay === 'shop'
         const activeClass = detailOverlayActive ? 'active' : ''
 
         return (
@@ -119,6 +124,9 @@ class DetailBar extends React.Component<Props, DetailBarState> {
                 <div className="detail-bar_header">
                     { isCurrentUserAuthor && 
                         <div className="detail-bar_toggle-edit dropdown-detail-bar_toggle" onClick={this.toggleDropdown}><Icon type="more-vert" /></div> 
+                    }
+                    { detailOverlayActive &&
+                        <div className="detail-bar_close" onClick={this.handleClose}><Icon type="expand-more" /></div>
                     }
                     <ActionsDropdown type="detail-bar" />
                     <div className="detail-bar_tab-container">

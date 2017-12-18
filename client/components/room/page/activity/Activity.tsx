@@ -30,7 +30,6 @@ interface ConnectProps {
     mediaItems: List<MediaItem>
     liveMediaItems: List<MediaItem>
     selectedMediaItem: MediaItem
-    isActiveOverlay: boolean
 }
 
 type Props = OwnProps & ConnectProps & DispatchProps & ScrollComponentProps
@@ -45,7 +44,6 @@ class Activity extends React.Component<Props, ActivityState> {
         super(props);
 
         this.handleNewMediaClick = this.handleNewMediaClick.bind(this);
-        this.handleClose = this.handleClose.bind(this);
 
         this.state = {
             displayNewItem: false
@@ -110,15 +108,11 @@ class Activity extends React.Component<Props, ActivityState> {
         });
     }
 
-    handleClose() {
-        this.props.dispatch(closeDetailSection())
-    }
-
 
     // Render
 
     render() {
-        const { display, isActiveOverlay, mediaItemsFetching,
+        const { display, mediaItemsFetching,
                 isClosed, createdAt, expires, selectedMediaItem,
                 mediaItems, liveMediaItems } = this.props;
         const { displayNewItem } = this.state;
@@ -126,11 +120,6 @@ class Activity extends React.Component<Props, ActivityState> {
         return (
         <section className="activity" style={{ display: (display ? "flex" : "none") }}>
             <div className="activity_header">
-                { isActiveOverlay &&
-                    <div className="activity_close" onClick={this.handleClose}>
-                        <Icon type="expand-more" />
-                    </div>
-                }
                 <div className="activity_time">
                     { isClosed && format(createdAt, 'MMMM D, YYYY') }
                     { !isClosed && timeLeftString(expires) }
@@ -182,8 +171,7 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
         mediaItemsFetching: Room.get(state, roomId, 'mediaItemsFetching'),
         mediaItems: RoomPage.mediaItems(state),
         liveMediaItems: RoomPage.liveMediaItems(state),
-        selectedMediaItem: RoomPage.selectedMediaItem(state),
-        isActiveOverlay: App.get(state, 'activeOverlay') === 'activity'
+        selectedMediaItem: RoomPage.selectedMediaItem(state)
     }
 }
 

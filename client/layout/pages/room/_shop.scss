@@ -14,12 +14,17 @@
 .shop-product_thumbnail {
     width: 90px;
     height: 90px;
-    flex: 1 0 auto;
+    flex: 0 0 auto;
 
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
     background-color: #ddd;
+
+    @include media('<300px') {
+        width: 75px;
+        height: 75px;
+    }
 }
 
 .shop-product_main {

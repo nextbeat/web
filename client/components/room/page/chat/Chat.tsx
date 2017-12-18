@@ -6,7 +6,6 @@ import * as TransitionGroup from 'react-transition-group/TransitionGroup'
 import * as CSSTransition from 'react-transition-group/CSSTransition'
 
 import Compose from './Compose'
-import ChatHeader from './ChatHeader'
 import ChatSearchResults from './ChatSearchResults'
 import UserActions from './UserActions'
 import WelcomeBanner from './WelcomeBanner'
@@ -36,7 +35,6 @@ interface ConnectProps {
     authorUsername: string
     hasPinnedComment: boolean
     showSearchResults: boolean
-    chatTags: List<string>
 }
 
 type Props = OwnProps & ConnectProps & DispatchProps
@@ -71,7 +69,7 @@ class Chat extends React.Component<Props> {
 
     render() {
         const { display, hasLostConnection, isOverlayActive, 
-                chatTags, hasPinnedComment, showSearchResults, 
+                hasPinnedComment, showSearchResults, 
                 isClosed, authorUsername, roomId } = this.props;
 
         return (
@@ -111,7 +109,6 @@ function mapStateToProps(state: State): ConnectProps {
         authorUsername: RoomPage.entity(state).author().get('username'),
         hasPinnedComment: !!RoomPage.pinnedComment(state),
         showSearchResults: RoomPage.get(state, 'showSearchResults'),
-        chatTags: Room.get(state, RoomPage.get(state, 'id'), 'chatTags', List())
     }
 }
 
