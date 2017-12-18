@@ -48,7 +48,7 @@ export interface RoomProps {
     creator: string
     chatTags: List<string>
 
-    shouldDisplayAds: boolean
+    shouldSkipAds: boolean
     adIds: List<number>
     adsFetching: boolean
     adsHasFetched: boolean
@@ -95,7 +95,7 @@ const keyMap: {[key in keyof RoomProps]: string[]} = {
     'creator': ['live', 'creator'],
     'chatTags': ['live', 'tags'],
     // ads
-    'shouldDisplayAds': ['ads', 'shouldDisplay'],
+    'shouldSkipAds': ['ads', 'shouldSkip'],
     'adIds': ['ads', 'ids'],
     'adsFetching': ['ads', 'isFetching'],
     'adsHasFetched': ['ads', 'hasFetched'],
@@ -264,18 +264,22 @@ export default class Room {
         return Room.entity(state, id).get('closed') ? 'closed' : 'open' 
     }
 
+    static shouldDisplayAds(state: State, id: number) {
+        return !Room.get(state, id, 'shouldSkipAds') && Room.entity(state, id).get('is_ad_supported')
+    }
+
     static isLoadedDeep(state: State, id: number): boolean {
         return Room.get(state, id, 'hasFetched') 
             && Room.get(state, id, 'mediaItemsHasFetched')
             && Room.get(state, id, 'commentsHasFetched')
-            && (!Room.get(state, id, 'shouldDisplayAds') || Room.get(state, id, 'adsHasFetched'))
+            && (!Room.shouldDisplayAds(state, id) || Room.get(state, id, 'adsHasFetched'))
     }
 
     static hasErrorDeep(state: State, id: number): boolean {
         return !!Room.get(state, id, 'error')
             || !!Room.get(state, id, 'mediaItemsError')
             || !!Room.get(state, id, 'commentsError')
-            || (Room.get(state, id, 'shouldDisplayAds') && !!Room.get(state, id, 'adsError'))
+            || (Room.shouldDisplayAds(state, id) && !!Room.get(state, id, 'adsError'))
     }
 
     static isFetchingDeep(state: State, id: number): boolean {

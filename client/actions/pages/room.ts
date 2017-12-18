@@ -13,7 +13,7 @@ import { promptModal } from '@actions/app'
 import { loadRoom, loadComments,  clearComments, clearRoom } from '@actions/room'
 import { joinRoom } from '@actions/eddy'
 import { loadPaginatedObjects } from '@actions/utils'
-import RoomPage from '@models/state/pages/room'
+import RoomPage, { DetailSection } from '@models/state/pages/room'
 import * as Schemas from '@schemas'
 import { Store, Dispatch } from '@types'
 
@@ -33,6 +33,7 @@ export type RoomPageActionAll =
     RecordViewAction |
     SelectDetailSectionAction |
     CloseDetailSectionAction |
+    RoomShopAction |
     ClearRoomPageAction 
 
 
@@ -46,6 +47,11 @@ function onRoomPageSuccess(store: Store, next: Dispatch, action: RoomPageAction,
     store.dispatch(loadRoom(stack.id, { jumpToCommentAtDate: action.jumpToCommentAtDate }));
     store.dispatch(loadMoreStacks(stack.id))
     store.dispatch(recordView(stack.id)); 
+
+    // TODO: move to room page actions
+    if (stack.has_shop_tab) {
+        store.dispatch(loadShop(stack.id))
+    }
 }
 
 export interface RoomPageAction extends ApiCallAction {
@@ -347,11 +353,12 @@ export function recordView(stackId: number): RecordViewAction {
  * UI SELECTION
  **************/
 
+
 export interface SelectDetailSectionAction extends GenericAction {
     type: ActionType.SELECT_DETAIL_SECTION
-    section: 'chat' | 'activity'
+    section: DetailSection
 }
-export function selectDetailSection(section: 'chat' | 'activity'): SelectDetailSectionAction {
+export function selectDetailSection(section: DetailSection): SelectDetailSectionAction {
     return {
         type: ActionType.SELECT_DETAIL_SECTION,
         section
@@ -366,6 +373,25 @@ export function closeDetailSection(): CloseDetailSectionAction {
         type: ActionType.CLOSE_DETAIL_SECTION
     }
 }
+
+
+/******
+ * SHOP
+ ******/
+
+export interface RoomShopAction extends ApiCallAction {
+    type: ActionType.ROOM_SHOP
+}
+function loadShop(stackId: number): RoomShopAction {
+    return {
+        type: ActionType.ROOM_SHOP,
+        API_CALL: {
+            method: 'GET',
+            endpoint: `stacks/${stackId}/shop`,
+            schema: Schemas.Shop
+        }
+    }
+} 
 
 
 /*******

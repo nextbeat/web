@@ -50,7 +50,6 @@ export class EntityModel<Props> {
      * specified, a random key) is returned.
      */
     protected resourceCache: any 
-
     protected getResource(resourceType: string, preferredType?: string, defaultSizeFn?: (resources: State) => string | undefined): State {
         this.resourceCache[resourceType] = this.resourceCache[resourceType] || {}
 

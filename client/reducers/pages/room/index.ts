@@ -1,9 +1,11 @@
 import { Map, List, Set, fromJS } from 'immutable'
 import mapValues from 'lodash-es/mapValues'
 import { ActionType, Status, Action } from '@actions/types'
-import chat from './chat'
 import { combineReducers, entity, paginate } from '@reducers/utils'
 import { State } from '@types'
+
+import chat from './chat'
+import shop from './shop'
 
 const meta = entity(ActionType.ROOM_PAGE);
 
@@ -130,6 +132,7 @@ function unread(state=Map<string, any>(), action: Action) {
 const reducers = {
     meta, 
     chat,
+    shop,
     ui,
     more,
     actions,

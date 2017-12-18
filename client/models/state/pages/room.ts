@@ -6,9 +6,12 @@ import MediaItem from '@models/entities/mediaItem'
 import Stack from '@models/entities/stack'
 import SearchResultComment from '@models/entities/searchResultComment'
 import { AdType } from '@models/entities/ad'
+import ShopProduct from '@models/entities/shopProduct'
 import Room, { RoomProps } from '@models/state/room'
 import { createEntityListSelector } from '@models/utils'
 import { State } from '@types'
+
+export type DetailSection = 'chat' | 'activity' | 'shop'
 
 interface RoomPageProps extends EntityProps {
     unreadCount: number
@@ -27,12 +30,19 @@ interface RoomPageProps extends EntityProps {
     searchSuggestions: List<string>
     searchHistory: List<string>
 
-    selectedDetailSection: 'chat' | 'activity'
+    selectedDetailSection: DetailSection
 
     moreStackIds: List<number>
     moreStacksIsFetching: boolean
     moreStacksHasFetched: boolean
     moreStacksError: boolean
+
+    productIds: List<number>
+    sponsoredProductsSponsor: string
+    sponsoredProductIds: List<number>
+    shopFetching: boolean
+    shopHasFetched: boolean
+    shopError: string
 
     isDeleting: boolean
     hasDeleted: boolean
@@ -70,6 +80,13 @@ const keyMap = withEntityMap({
     'moreStacksFetching': ['more', 'isFetching'],
     'moreStacksHasFetched': ['more', 'hasFetched'],
     'moreStacksError': ['more', 'error'],
+    // shop
+    'productIds': ['shop', 'productIds'],
+    'sponsoredProductsSponsor': ['shop', 'sponsor'],
+    'sponsoredProductIds': ['shop', 'sponsoredProductIds'],
+    'shopFetching': ['shop', 'isFetching'],
+    'shopHasFetched': ['shop', 'hasFetched'],
+    'shopError': ['shop', 'error'],
     // actions
     'isDeleting': ['actions', 'isDeleting'],
     'hasDeleted': ['actions', 'hasDeleted'],
@@ -150,6 +167,9 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
     static ad(state: State, type: AdType) {
         return Room.ad(state, this.get(state, 'id'), type)
     }
+
+    static products = createEntityListSelector(RoomPage, 'productIds', ShopProduct)
+    static sponsoredProducts = createEntityListSelector(RoomPage, 'sponsoredProductIds', ShopProduct)
     
     /**
      * Wrapped queries
@@ -163,15 +183,25 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
         return Room.status(state, this.get(state, 'id'))
     }
 
+    static shouldDisplayAds(state: State) {
+        return Room.shouldDisplayAds(state, this.get(state, 'id'))
+    }
+
+    static shouldDisplayShop(state: State) {
+        return RoomPage.entity(state).get('has_shop_tab')
+    }
+
     static isLoadedDeep(state: State) {
         return Room.isLoadedDeep(state, this.get(state, 'id'))
             && this.get(state, 'moreStacksHasFetched')
+            && (!this.shouldDisplayShop(state) || this.get(state, 'shopHasFetched'))
     }
 
     static hasErrorDeep(state: State) {
         return Room.hasErrorDeep(state, this.get(state, 'id'))
             || !!this.get(state, 'moreStacksError')
             || !!this.get(state, 'error')
+            || (this.shouldDisplayShop(state) && !!this.get(state, 'shopError'))
     }
 
     static isFetchingDeep(state: State) {

@@ -13,8 +13,10 @@ interface StackProps {
     deleted: boolean
     description: string
     expires: string
+    has_shop_tab: boolean
     hid: string
     id: number
+    is_ad_supported: boolean
     mediaitem_count: number
     most_recent_post_at: string
     privacy_status: string

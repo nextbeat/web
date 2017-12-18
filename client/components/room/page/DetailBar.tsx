@@ -4,11 +4,12 @@ import { Link } from 'react-router'
 
 import Chat from './chat/Chat'
 import Activity from './activity/Activity'
+import Shop from './shop/Shop'
 import BannerAd from '@components/room/ads/BannerAd'
 import Icon from '@components/shared/Icon'
 import ActionsDropdown from './ActionsDropdown'
 
-import RoomPage from '@models/state/pages/room'
+import RoomPage, { DetailSection } from '@models/state/pages/room'
 import App from '@models/state/app'
 import Ad from '@models/entities/ad'
 import { selectDetailSection, closeDetailSection } from '@actions/pages/room'
@@ -18,7 +19,8 @@ import { State, DispatchProps } from '@types'
 interface ConnectProps {
     width: string
     activeOverlay: string
-    selectedDetailSection: 'chat' | 'activity'
+    selectedDetailSection: DetailSection
+    shouldDisplayShop: boolean
     
     isCurrentUserAuthor: boolean
     unseenLiveMediaItemsCount: number
@@ -74,7 +76,7 @@ class DetailBar extends React.Component<Props, DetailBarState> {
 
     // Actions
 
-    setSelected(selected: 'chat' | 'activity') {
+    setSelected(selected: DetailSection) {
         this.props.dispatch(selectDetailSection(selected))
     }
 
@@ -99,10 +101,10 @@ class DetailBar extends React.Component<Props, DetailBarState> {
 
     render() {
         const { selectedDetailSection, width, activeOverlay, 
-                isCurrentUserAuthor, bannerAd } = this.props;
+                isCurrentUserAuthor, bannerAd, shouldDisplayShop } = this.props;
         const { disableAnimations } = this.state;
 
-        const selected = (type: 'chat' | 'activity') => selectedDetailSection === type ? "selected" : "";
+        const selected = (type: DetailSection) => selectedDetailSection === type ? "selected" : "";
 
         // collapse detail bar if window width below threshold
         const collapsedClass = width === 'small' || width === 'medium' ? 'collapsed' : ''
@@ -122,11 +124,13 @@ class DetailBar extends React.Component<Props, DetailBarState> {
                     <div className="detail-bar_tab-container">
                         <span className={`detail-bar_tab ${selected("chat")}`} onClick={this.setSelected.bind(this, "chat")}>Chat</span>
                         <span className={`detail-bar_tab ${selected("activity")}`} onClick={this.setSelected.bind(this, "activity")}>Activity{this.renderBadge()}</span>
+                        { shouldDisplayShop && <span className={`detail-bar_tab ${selected("shop")}`} onClick={this.setSelected.bind(this, "shop")}>Shop</span>}
                     </div>
                 </div>
                 <div className="detail-bar_main">
                     { <Chat display={selectedDetailSection === "chat"} /> }
                     { <Activity display={selectedDetailSection === "activity"} /> }
+                    { <Shop display={selectedDetailSection === "shop"} /> }
                 </div>
             </div>
         );
@@ -136,6 +140,7 @@ class DetailBar extends React.Component<Props, DetailBarState> {
 function mapStateToProps(state: State): ConnectProps {
     return {
         selectedDetailSection: RoomPage.get(state, 'selectedDetailSection', 'chat'),
+        shouldDisplayShop: RoomPage.shouldDisplayShop(state),
         width: App.get(state, 'width'),
         activeOverlay: App.get(state, 'activeOverlay'),
         isCurrentUserAuthor: RoomPage.isCurrentUserAuthor(state),

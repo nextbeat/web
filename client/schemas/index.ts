@@ -8,6 +8,8 @@ const Comment = new schema.Entity('comments', { author: User, recipient: User, s
 const CampaignStack = new schema.Entity('campaignStacks')
 const Campaign = new schema.Entity('campaigns', { stacks: [ CampaignStack ] })
 const Ad = new schema.Entity('ads')
+const ShopProduct = new schema.Entity('shopProducts')
+
 MediaItem.define({ references: Comment }); // handles circular reference
 
 // Search results have an extra result_indices
@@ -15,6 +17,17 @@ MediaItem.define({ references: Comment }); // handles circular reference
 // them so that normal Comments aren't polluted
 // with that attribute (which could affect rendering)
 const SearchResultComment = new schema.Entity('searchResultComments', { author: User, recipient: User });
+
+// The shop schema does not directly map to an
+// entity, but is used for normalizing the result
+// of the ROOM_SHOP request.
+const SponsoredProducts = new schema.Object({
+    products: [ShopProduct]
+})
+const Shop = new schema.Object({
+    sponsored_products: [SponsoredProducts],
+    products: [ShopProduct]
+})
 
 const Tags = [Tag]
 const Users = [User]
@@ -25,6 +38,7 @@ const CampaignStacks = [CampaignStack]
 const Campaigns = [Campaign]
 const SearchResultComments = [SearchResultComment]
 const Ads = [Ad]
+const ShopProducts = [ShopProduct]
 
 export { 
     Comment,
@@ -44,5 +58,8 @@ export {
     CampaignStack,
     CampaignStacks,
     Ad,
-    Ads
+    Ads,
+    ShopProduct,
+    ShopProducts,
+    Shop
 }

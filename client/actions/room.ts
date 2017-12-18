@@ -48,6 +48,7 @@ export type RoomActionAll =
     MarkStackAction |
     RoomAdsAction |
     DidFinishVideoAdAction |
+    RoomShopAction |
     ClearCommentsAction |
     ClearRoomAction
 
@@ -55,20 +56,18 @@ export type RoomActionAll =
  * FETCHING
  **********/
 
-export interface RoomAction extends ApiCallAction {
-    type: ActionType.ROOM,
-    roomId: number,
-    skipAds: boolean
-}
-function fetchRoom(id: number, options: LoadRoomOptions): RoomAction {
-    return {
-        type: ActionType.ROOM,
-        roomId: id,
-        skipAds: options.skipAds || false,
-        API_CALL: {
-            schema: Schemas.Stack,
-            endpoint: `stacks/${id}`
-        }
+function onLoadRoomSuccess(store: Store, next: Dispatch, action: RoomAction, response: any) {
+    const stack = Room.entity(store.getState(), action.roomId)
+    store.dispatch(loadMediaItems(action.roomId))
+    store.dispatch(loadComments(action.roomId, 'mostRecent', { jumpTo: action.options.jumpToCommentAtDate }))
+
+    if (!action.options.skipAds && stack.get('is_ad_supported')) {
+        store.dispatch(loadAds(action.roomId))
+    }
+
+    // TODO: move to room page actions
+    if (stack.get('has_shop_tab')) {
+        store.dispatch(loadShop(action.roomId))
     }
 }
 
@@ -76,13 +75,21 @@ interface LoadRoomOptions {
     jumpToCommentAtDate?: number // date in seconds
     skipAds?: boolean
 }
-export function loadRoom(id: number, options: LoadRoomOptions = {}): ThunkAction {
-    return dispatch => {
-        dispatch(fetchRoom(id, options))
-        dispatch(loadMediaItems(id));
-        dispatch(loadComments(id, 'mostRecent', { jumpTo: options.jumpToCommentAtDate }));
-        if (!options.skipAds) {
-            dispatch(loadAds(id))
+export interface RoomAction extends ApiCallAction {
+    type: ActionType.ROOM,
+    roomId: number,
+    options: LoadRoomOptions
+}
+export function loadRoom(id: number, options: LoadRoomOptions = {}): RoomAction {
+    // TODO: just call success block if room is already loaded (from loadRoomPage)
+    return {
+        type: ActionType.ROOM,
+        roomId: id,
+        options,
+        API_CALL: {
+            schema: Schemas.Stack,
+            endpoint: `stacks/${id}`,
+            onSuccess: onLoadRoomSuccess
         }
     }
 }
@@ -644,6 +651,22 @@ export function didFinishVideoAd(roomId: number, adId: number): DidFinishVideoAd
         adId
     }
 }
+
+export interface RoomShopAction extends ApiCallAction {
+    type: ActionType.ROOM_SHOP
+    roomId: number
+}
+function loadShop(roomId: number): RoomShopAction {
+    return {
+        type: ActionType.ROOM_SHOP,
+        roomId,
+        API_CALL: {
+            method: 'GET',
+            endpoint: `stacks/${roomId}/shop`,
+            schema: Schemas.Shop
+        }
+    }
+} 
 
 /*******
  * RESET

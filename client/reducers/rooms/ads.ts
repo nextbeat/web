@@ -26,7 +26,7 @@ export default function ads(state = Map(), action: Action) {
         })
     } else if (action.type === ActionType.ROOM) {
         return state.merge({
-            shouldDisplay: !action.skipAds
+            shouldSkip: action.options.skipAds
         })
     }
     return state
