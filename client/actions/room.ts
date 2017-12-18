@@ -48,7 +48,6 @@ export type RoomActionAll =
     MarkStackAction |
     RoomAdsAction |
     DidFinishVideoAdAction |
-    RoomShopAction |
     ClearCommentsAction |
     ClearRoomAction
 
@@ -63,11 +62,6 @@ function onLoadRoomSuccess(store: Store, next: Dispatch, action: RoomAction, res
 
     if (!action.options.skipAds && stack.get('is_ad_supported')) {
         store.dispatch(loadAds(action.roomId))
-    }
-
-    // TODO: move to room page actions
-    if (stack.get('has_shop_tab')) {
-        store.dispatch(loadShop(action.roomId))
     }
 }
 
@@ -651,22 +645,6 @@ export function didFinishVideoAd(roomId: number, adId: number): DidFinishVideoAd
         adId
     }
 }
-
-export interface RoomShopAction extends ApiCallAction {
-    type: ActionType.ROOM_SHOP
-    roomId: number
-}
-function loadShop(roomId: number): RoomShopAction {
-    return {
-        type: ActionType.ROOM_SHOP,
-        roomId,
-        API_CALL: {
-            method: 'GET',
-            endpoint: `stacks/${roomId}/shop`,
-            schema: Schemas.Shop
-        }
-    }
-} 
 
 /*******
  * RESET

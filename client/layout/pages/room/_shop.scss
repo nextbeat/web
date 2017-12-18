@@ -1,6 +1,5 @@
 .shop {
-    display: flex;
-    flex-direction: column;
+    overflow: auto;
 }
 
 .shop_products {
@@ -42,4 +41,57 @@
     font-size: 12px;
     margin-top: 5px;
     font-weight: 300;
+}
+
+/* Sponsored section */
+
+.shop_sponsor {
+    background: $secondary-color;
+    padding: 8px 12px;
+    overflow: hidden;
+
+    .shop-product_title {
+        color: $secondary-color;
+    }
+}
+
+.shop_sponsor_detail {
+    width: 100%;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 300;
+    text-align: right;
+}
+
+.shop_sponsor_products {
+    margin-top: 10px;
+    background: #fff;
+    box-shadow: 0px 5px 25px 1px rgba(0, 0, 0, 0.2); 
+}
+
+.shop_sponsor_expand {
+    text-align: center;
+    margin-top: 6px;
+}
+
+.shop_sponsor_expand_button {
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    color: #fff;
+    cursor: pointer;
+
+    .svg-icon {
+        width: 20px;
+        height: 20px;
+        fill: #fff;
+    }
+
+    &:hover {
+        color: mix(white, $secondary-color, 80%);
+
+        .svg-icon {
+            fill:  mix(white, $secondary-color, 80%);
+        }
+    }
 }
