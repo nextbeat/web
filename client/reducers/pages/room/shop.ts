@@ -24,7 +24,7 @@ export default function shop(state = Map(), action: Action) {
                 // returned result from the sponsored_products list
                 state = state.merge({
                     sponsor: sponsoredProducts.sponsor,
-                    sponsoredProductIds: fromJS([1, 1, 1, 1]) //fromJS(sponsoredProducts.products)
+                    sponsoredProductIds: fromJS(sponsoredProducts.products)
                 })
             }
         } else if (action.status === Status.FAILURE) {

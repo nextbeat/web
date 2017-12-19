@@ -9,6 +9,11 @@
 .shop-product {
     display: flex;
     padding: 10px;
+    cursor: pointer;
+
+    &:hover .shop-product_title {
+        color: $light-primary-color;
+    }
 }
 
 .shop-product_thumbnail {
@@ -58,6 +63,10 @@
     .shop-product_title {
         color: $secondary-color;
     }
+
+    &:hover .shop-product_title {
+        color: $light-secondary-color;
+    }
 }
 
 .shop_sponsor_detail {
@@ -72,6 +81,10 @@
     margin-top: 10px;
     background: #fff;
     box-shadow: 0px 5px 25px 1px rgba(0, 0, 0, 0.2); 
+
+    &:last-child {
+        margin-bottom: 4px;
+    }
 }
 
 .shop_sponsor_expand {

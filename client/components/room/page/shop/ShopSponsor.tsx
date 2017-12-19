@@ -54,12 +54,14 @@ class ShopSponsor extends React.Component<Props, ComponentState> {
                 <div className="shop_sponsor_products">
                     { productsSlice.map(product => <ShopProduct key={product.get('id')} product={product} />) }
                 </div>
+                { products.size > 1 && 
                 <div className="shop_sponsor_expand">
                     <div className="shop_sponsor_expand_button" onClick={this.handleExpand} >
                         { expanded ? "show less" : "show more" }
                         <Icon type={ expanded ? "expand-less" : "expand-more" } />
                     </div>
                 </div>
+                }
             </div>
         )
     }
