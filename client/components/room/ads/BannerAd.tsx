@@ -43,7 +43,7 @@ class BannerAd extends React.Component<Props> {
         const { ad } = this.props
 
         let url = ad.get('link_url')
-        let Elem = url  ? 'a' : 'div'
+        let Elem = url ? 'a' : 'div'
         let elemAttrs = url ? { href: url, target: '_blank' } : {}
 
         return (

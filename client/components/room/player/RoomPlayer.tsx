@@ -167,7 +167,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                         alternateVideo={item.video('mp4')}
                         decoration={item.get('decoration')} 
                         roomId={roomId} 
-                        autoplay={shouldAutoplayVideo} 
+                        shouldAutoplay={shouldAutoplayVideo} 
                         {...containerProps} /> : 
                     <Image 
                         image={item.image()} 
@@ -179,7 +179,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
     }
 
     renderAd() {
-        const { prerollAd, roomId } = this.props
+        const { prerollAd, roomId, selectedMediaItem: item } = this.props
         const { playerWidth, playerHeight } = this.state
 
         if (!prerollAd) {
@@ -191,7 +191,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
             containerHeight: playerHeight
         }
 
-        return <VideoAd ad={prerollAd} roomId={roomId} {...containerProps} /> 
+        return <VideoAd ad={prerollAd} roomId={roomId} posterUrl={item.video().get('poster_url')} {...containerProps} /> 
     }
 
     render() {

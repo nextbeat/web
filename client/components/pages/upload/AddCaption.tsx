@@ -256,7 +256,7 @@ class AddCaption extends React.Component<Props, ComponentState> {
                     <div className="upload_add-caption_media" >
                         <div className="player_media-inner" style={{ height: `${containerHeight}px` }}>
                             { isImage && <Image image={resource} decoration={this.decorationObject()} hideControls={true} {...containerProps} /> }
-                            { isVideo && <Video video={resource} decoration={this.decorationObject()} autoplay={false} {...containerProps} /> }
+                            { isVideo && <Video video={resource} decoration={this.decorationObject()} shouldAutoplay={false} {...containerProps} /> }
                         </div>
                     </div>
                 </div>

@@ -25,8 +25,9 @@ interface OwnProps {
     roomId?: number
     decoration?: State
     alternateVideo?: State
+    posterUrl?: string
 
-    autoplay?: boolean
+    shouldAutoplay?: boolean
     isScrubbable?: boolean
 
     containerWidth: number
@@ -54,7 +55,6 @@ interface VideoState {
     isLoading: boolean
     shouldDisplayControls: boolean
     isFullScreen: boolean
-    isIOSDevice: boolean
     timeIntervalId: number
     hoverTimeoutId: number
     impressionStartTime: number
@@ -67,7 +67,7 @@ interface VideoState {
 class Video extends React.Component<Props, VideoState> {
 
     static defaultProps = {
-        autoplay: true,
+        shouldAutoplay: true,
         isScrubbable: true
     }
 
@@ -78,6 +78,7 @@ class Video extends React.Component<Props, VideoState> {
 
         this.shouldForceVideoRotation = this.shouldForceVideoRotation.bind(this);
         this.shouldForceVideoResizing = this.shouldForceVideoResizing.bind(this);
+        this.shouldAutoplay = this.shouldAutoplay.bind(this);
         this.calculateDimensions = this.calculateDimensions.bind(this);
 
         this.didLoadMetadata = this.didLoadMetadata.bind(this);
@@ -97,6 +98,7 @@ class Video extends React.Component<Props, VideoState> {
 
         this.loadVideo = this.loadVideo.bind(this);
         this.unloadVideo = this.unloadVideo.bind(this);
+        this.loadPosterImage = this.loadPosterImage.bind(this);
         this.playPause = this.playPause.bind(this);
         this.seek = this.seek.bind(this);
         this.adjustVolume = this.adjustVolume.bind(this);
@@ -118,7 +120,6 @@ class Video extends React.Component<Props, VideoState> {
             isLoading: true,
             shouldDisplayControls: true,
             isFullScreen: false,
-            isIOSDevice: false,
             timeIntervalId: -1,
             hoverTimeoutId: -1,
             impressionStartTime: -1,
@@ -144,12 +145,13 @@ class Video extends React.Component<Props, VideoState> {
 
         $(window).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
 
-        const { isIOS, isAndroid, browser, autoplay } = this.props
+        const { isIOS, isAndroid, browser, shouldAutoplay } = this.props
+
+        console.log('is ios', isIOS)
 
         // iOS does not do custom controls well
         this.setState({
-            isIOSDevice: isIOS,
-            isPlaying: (autoplay && !(isAndroid && browser === 'Chrome')) || false,
+            isPlaying: (shouldAutoplay && !(isAndroid && browser === 'Chrome')) || false,
         })
     }
 
@@ -184,6 +186,10 @@ class Video extends React.Component<Props, VideoState> {
         {
             this.calculateDimensions();
         }   
+
+        if (prevProps.posterUrl !== this.props.posterUrl) {
+            this.loadPosterImage();
+        }
     }
 
     // Queries
@@ -196,6 +202,10 @@ class Video extends React.Component<Props, VideoState> {
     shouldForceVideoResizing() {
         const { browser, version } = this.props;
         return browser === 'Chrome' && parseInt(version) === 52;
+    }
+
+    shouldAutoplay() {
+        return this.props.shouldAutoplay && !this.props.isIOS
     }
 
     // Events 
@@ -314,7 +324,7 @@ class Video extends React.Component<Props, VideoState> {
     // Actions
 
     loadVideo() {
-        const { video, alternateVideo } = this.props;
+        const { video, alternateVideo, posterUrl } = this.props;
         
         this.unloadVideo();
 
@@ -359,6 +369,8 @@ class Video extends React.Component<Props, VideoState> {
             })
         }
 
+        this.loadPosterImage();
+
         videoPlayer.volume = this.props.volume
 
         this.calculateDimensions();
@@ -382,6 +394,16 @@ class Video extends React.Component<Props, VideoState> {
         if (hls) {
             hls.destroy();
             this.setState({ hls: undefined });
+        }
+    }
+
+    loadPosterImage() {
+        console.log('loading poster image')
+        const { posterUrl } = this.props;
+        if (!this.shouldAutoplay() && posterUrl ) {
+            console.log(posterUrl);
+            let videoPlayer = document.getElementById('video_player') as HTMLVideoElement;
+            videoPlayer.poster = posterUrl;
         }
     }
 
@@ -526,10 +548,11 @@ class Video extends React.Component<Props, VideoState> {
 
     // Render
 
-    videoStyle(video: State, state: VideoState) {
-        const { scale, width, height, isLoading, isIOSDevice } = state
+    videoStyle(video: State) {
+        const { scale, width, height, isLoading } = this.state
+        const { isIOS } = this.props
         
-        let style: any = { display: isLoading && !isIOSDevice ? 'none' : 'block' }
+        let style: any = { display: isLoading && !isIOS ? 'none' : 'block' }
         if (this.shouldForceVideoRotation()) {
             // need to manually rotate video if in Firefox or IE 10 
             if (video.get('orientation') === 90) {
@@ -552,8 +575,8 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     render() {
-        const { video, decoration, autoplay, volume, isScrubbable } = this.props;
-        const { isIOSDevice, shouldDisplayControls, isLoading, width, height } = this.state;
+        const { video, decoration, volume, isScrubbable, posterUrl, isIOS } = this.props;
+        const { shouldDisplayControls, isLoading, width, height } = this.state;
 
         const displayControlsVideoStyle = shouldDisplayControls ? { cursor: 'auto' } : { cursor: 'none' };
 
@@ -581,21 +604,23 @@ class Video extends React.Component<Props, VideoState> {
             isScrubbable: isScrubbable || false
         }
 
-        let videoAttributes = {
-            preload: "auto",
-            controls: isIOSDevice,
-            autoPlay: autoplay !== false && !isIOSDevice // by default, autoplay is undefined 
+        let videoAttributes: any = {
+            preload: "none",
+            controls: isIOS,
+            autoPlay: this.shouldAutoplay()
         }
+
+        const backgroundImageUrl = !this.shouldAutoplay() && posterUrl ? posterUrl : video.get('poster_url');
 
         return (
             <div className="video_container" id="video_container" tabIndex={-1} style={displayControlsVideoStyle} {...videoContainerEvents}>
                 <div className="video_player-container">
-                    <div className="video_player-background" style={{ backgroundImage: `url(${video.get('poster_url')})`}}></div>
-                    <video id="video_player" className="video_player" {...videoAttributes} style={this.videoStyle(video, this.state)}></video>
+                    <div className="video_player-background" style={{ backgroundImage: `url(${backgroundImageUrl})`}}></div>
+                    <video id="video_player" className="video_player" {...videoAttributes} style={this.videoStyle(video)}></video>
                     { decoration && <Decoration decoration={decoration} width={width} height={height} barHeight={70} /> }
-                    { isLoading && !isIOSDevice && <Spinner styles={['white', 'large', 'faded']} /> }
+                    { isLoading && !isIOS && <Spinner styles={['white', 'large', 'faded']} /> }
                 </div>
-                { !isIOSDevice && <VideoControls ref={(c) => { if (c) { this._controls = c } }} {...videoControlsProps} /> }
+                { !isIOS && <VideoControls ref={(c) => { if (c) { this._controls = c } }} {...videoControlsProps} /> }
             </div>
         );
     }
