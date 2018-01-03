@@ -63,7 +63,9 @@ interface VideoState {
     width: number
     height: number
     scale: number
-    hls?: Hls
+    hls?: Hls,
+    isAutoplayEnabled: boolean
+    posterUrl?: string
 }
 
 class Video extends React.Component<Props, VideoState> {
@@ -99,8 +101,10 @@ class Video extends React.Component<Props, VideoState> {
         this.handleOnMouseUp = this.handleOnMouseUp.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleFullScreenChange = this.handleFullScreenChange.bind(this);
+        this.handleClick = this.handleClick.bind(this)
 
         this.loadVideo = this.loadVideo.bind(this);
+        this.setLoadState = this.setLoadState.bind(this);
         this.unloadVideo = this.unloadVideo.bind(this);
         this.playPause = this.playPause.bind(this);
         this.seek = this.seek.bind(this);
@@ -119,7 +123,7 @@ class Video extends React.Component<Props, VideoState> {
             loadedDuration: 0,
             duration: 0.5, // not zero to avoid divide by zero bugs
             storedVolume: 1, // stores last set volume when volume = 0 due to muting
-            isPlaying: true,
+            isPlaying: false,
             isLoading: true,
             shouldDisplayControls: true,
             isFullScreen: false,
@@ -128,7 +132,8 @@ class Video extends React.Component<Props, VideoState> {
             impressionStartTime: -1,
             width: 0,
             height: 0,
-            scale: 1
+            scale: 1,
+            isAutoplayEnabled: false
         };
     }
 
@@ -396,23 +401,41 @@ class Video extends React.Component<Props, VideoState> {
                 this.setState({ isLoading: true })
             }
         }, 100)
-
+        
         if (this.props.shouldAutoplay) {
             const playPromise = videoPlayer.play()
+            // This method returns a promise in Chrome and Safari.
+            // This can be used to determine whether or not autoplay
+            // is supported (it is not on most mobile devices).
             if (typeof playPromise !== 'undefined') {
                 playPromise
                 .then(() => {
-                    this.setState({ isPlaying: true })
+                    this.setLoadState(true)
                 })
                 .catch((e) => {
-                    // cannot autoplay
-                    this.setState({ isPlaying: false })
+                    // Cannot autoplay
+                    this.setLoadState(false)
                 })
             } else {
-                this.setState({ isPlaying: true })
+                this.setLoadState(true)
             }
+        } else {
+            // Require user to manually start playback
+            this.setLoadState(false)
         }
-        
+    }
+
+    setLoadState(canAutoplay: boolean) {
+        // If the preroll ad is playing, display the 
+        // preroll poster only if autoplay is enabled
+        const { prerollAd, video } = this.props
+        const posterUrl = prerollAd && canAutoplay ? prerollAd.video().get('poster_url') : video.get('poster_url')
+
+        this.setState({
+            isPlaying: canAutoplay,
+            isAutoplayEnabled: canAutoplay,
+            posterUrl
+        })
     }
 
     unloadVideo() {
@@ -421,6 +444,7 @@ class Video extends React.Component<Props, VideoState> {
             hls.destroy();
             this.setState({ hls: undefined });
         }
+        this.setState({ posterUrl: undefined })
     }
 
     playPause() {
@@ -562,6 +586,15 @@ class Video extends React.Component<Props, VideoState> {
         }
     }
 
+    handleClick(e: React.MouseEvent<HTMLElement>) {
+        const { prerollAd } = this.props
+        if (!prerollAd || !prerollAd.get('link_url')) {
+            return;
+        }
+
+        window.open(prerollAd.get('link_url'), '_blank');
+    }
+
     // Render
 
     videoStyle(video: State) {
@@ -592,7 +625,7 @@ class Video extends React.Component<Props, VideoState> {
 
     render() {
         const { video, decoration, volume, isScrubbable, isIOS, prerollAd, authorUsername } = this.props;
-        const { shouldDisplayControls, isLoading, width, height } = this.state;
+        const { shouldDisplayControls, isLoading, isPlaying, width, height, isAutoplayEnabled, posterUrl } = this.state;
 
         const videoContainerStyle = {
             display: video.isEmpty() ? 'none' : 'block',
@@ -629,17 +662,19 @@ class Video extends React.Component<Props, VideoState> {
         }
 
         const adClass = !!prerollAd ? 'video_container-ad' : ''
+        // If autoplay is not enabled, we don't want to display ad text if the video has not begun
+        const shouldDisplayAdText = prerollAd && (isAutoplayEnabled || isPlaying)
 
         return (
             <div className={`video_container ${adClass}`} id="video_container" tabIndex={-1} style={videoContainerStyle} {...videoContainerEvents}>
                 <div className="video_player-container">
-                    <div className="video_player-background" style={{ backgroundImage: `url(${video.get('poster_url')})`}} />
+                    <div className="video_player-background" style={{ backgroundImage: `url(${posterUrl})`}} />
                     <video id="video_player" className="video_player" {...videoAttributes} style={this.videoStyle(video)} />
                     { !prerollAd && decoration && <Decoration decoration={decoration} width={width} height={height} barHeight={70} /> }
                     { isLoading && !isIOS && <Spinner styles={['white', 'large', 'faded']} /> }
                 </div>
                 { !isIOS && <VideoControls ref={(c) => { if (c) { this._controls = c } }} {...videoControlsProps} /> }
-                { !!prerollAd && <div className="ad-video_sponsor">This ad sponsors { authorUsername }</div> }
+                { shouldDisplayAdText && <div className="ad-video_sponsor">This ad sponsors { authorUsername }</div> }
             </div>
         );
     }
