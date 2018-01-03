@@ -37,7 +37,6 @@ interface OwnProps {
 
 interface ConnectProps {
     isIOS: boolean
-    isAndroid: boolean
     browser: string
     version: string
     volume: number
@@ -82,7 +81,6 @@ class Video extends React.Component<Props, VideoState> {
 
         this.shouldForceVideoRotation = this.shouldForceVideoRotation.bind(this);
         this.shouldForceVideoResizing = this.shouldForceVideoResizing.bind(this);
-        this.shouldAutoplay = this.shouldAutoplay.bind(this);
         this.displayedVideo = this.displayedVideo.bind(this);
         this.calculateDimensions = this.calculateDimensions.bind(this);
 
@@ -153,8 +151,6 @@ class Video extends React.Component<Props, VideoState> {
         this.loadVideo();
 
         $(window).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
-
-        const { isIOS, isAndroid, browser, shouldAutoplay } = this.props
     }
 
     componentWillUnmount() {        
@@ -201,10 +197,6 @@ class Video extends React.Component<Props, VideoState> {
     shouldForceVideoResizing() {
         const { browser, version } = this.props;
         return browser === 'Chrome' && parseInt(version) === 52;
-    }
-
-    shouldAutoplay() {
-        return this.props.shouldAutoplay && !this.props.isIOS
     }
 
     displayedVideo(props?: Props): State {
@@ -430,6 +422,7 @@ class Video extends React.Component<Props, VideoState> {
         // preroll poster only if autoplay is enabled
         const { prerollAd, video } = this.props
         const posterUrl = prerollAd && canAutoplay ? prerollAd.video().get('poster_url') : video.get('poster_url')
+        console.log('setting load state', posterUrl, canAutoplay)
 
         this.setState({
             isPlaying: canAutoplay,
@@ -683,7 +676,6 @@ class Video extends React.Component<Props, VideoState> {
 function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     return {
         isIOS: App.isIOS(state),
-        isAndroid: App.isAndroid(state),
         browser: App.get(state, 'browser'),
         version: App.get(state, 'version'),
         volume: App.get(state, 'volume', 1),
