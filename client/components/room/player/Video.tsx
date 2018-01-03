@@ -9,9 +9,10 @@ import VideoControls from './VideoControls'
 import Spinner from '@components/shared/Spinner'
 import { setVideoVolume } from '@actions/app'
 import { logVideoImpression } from '@actions/ga'
-import { didPlayVideo } from '@actions/room'
+import { didPlayVideo, didFinishVideoAd } from '@actions/room'
 import App from '@models/state/app'
 import Room from '@models/state/room'
+import Ad from '@models/entities/ad'
 import { State, DispatchProps } from '@types'
 
 const START_IMPRESSION_WAIT_TIME = 500;
@@ -25,7 +26,7 @@ interface OwnProps {
     roomId?: number
     decoration?: State
     alternateVideo?: State
-    posterUrl?: string
+    prerollAd?: Ad
 
     shouldAutoplay?: boolean
     isScrubbable?: boolean
@@ -42,6 +43,7 @@ interface ConnectProps {
     volume: number
 
     selectedMediaItemId?: number
+    authorUsername?: string
 }
 
 type Props = OwnProps & ConnectProps & DispatchProps
@@ -79,6 +81,7 @@ class Video extends React.Component<Props, VideoState> {
         this.shouldForceVideoRotation = this.shouldForceVideoRotation.bind(this);
         this.shouldForceVideoResizing = this.shouldForceVideoResizing.bind(this);
         this.shouldAutoplay = this.shouldAutoplay.bind(this);
+        this.displayedVideo = this.displayedVideo.bind(this);
         this.calculateDimensions = this.calculateDimensions.bind(this);
 
         this.didLoadMetadata = this.didLoadMetadata.bind(this);
@@ -86,6 +89,7 @@ class Video extends React.Component<Props, VideoState> {
         this.isPlaying = this.isPlaying.bind(this);
         this.canPlay = this.canPlay.bind(this);
         this.didPause = this.didPause.bind(this);
+        this.didEnd = this.didEnd.bind(this);
         this.isWaiting = this.isWaiting.bind(this);
         this.didProgressDownload = this.didProgressDownload.bind(this);
 
@@ -98,7 +102,6 @@ class Video extends React.Component<Props, VideoState> {
 
         this.loadVideo = this.loadVideo.bind(this);
         this.unloadVideo = this.unloadVideo.bind(this);
-        this.loadPosterImage = this.loadPosterImage.bind(this);
         this.playPause = this.playPause.bind(this);
         this.seek = this.seek.bind(this);
         this.adjustVolume = this.adjustVolume.bind(this);
@@ -140,19 +143,13 @@ class Video extends React.Component<Props, VideoState> {
         video.addEventListener('pause', this.didPause);
         video.addEventListener('waiting', this.isWaiting);
         video.addEventListener('progress', this.didProgressDownload);
+        video.addEventListener('ended', this.didEnd);
 
         this.loadVideo();
 
         $(window).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
 
         const { isIOS, isAndroid, browser, shouldAutoplay } = this.props
-
-        console.log('is ios', isIOS)
-
-        // iOS does not do custom controls well
-        this.setState({
-            isPlaying: (shouldAutoplay && !(isAndroid && browser === 'Chrome')) || false,
-        })
     }
 
     componentWillUnmount() {        
@@ -164,6 +161,7 @@ class Video extends React.Component<Props, VideoState> {
         video.removeEventListener('pause', this.didPause);
         video.removeEventListener('waiting', this.isWaiting);
         video.removeEventListener('progress', this.didProgressDownload);
+        video.removeEventListener('ended', this.didEnd);
 
         clearInterval(this.state.timeIntervalId);
         clearInterval(this.state.hoverTimeoutId);
@@ -175,7 +173,7 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     componentDidUpdate(prevProps: Props) {
-        if (prevProps.video !== this.props.video) 
+        if (this.displayedVideo(prevProps) !== this.displayedVideo(this.props)) 
         {
             this.logImpression();
             this.loadVideo();
@@ -186,10 +184,6 @@ class Video extends React.Component<Props, VideoState> {
         {
             this.calculateDimensions();
         }   
-
-        if (prevProps.posterUrl !== this.props.posterUrl) {
-            this.loadPosterImage();
-        }
     }
 
     // Queries
@@ -208,6 +202,21 @@ class Video extends React.Component<Props, VideoState> {
         return this.props.shouldAutoplay && !this.props.isIOS
     }
 
+    displayedVideo(props?: Props): State {
+        props = props || this.props
+        const { prerollAd, video, alternateVideo } = props;
+
+        const videoPlayer = document.getElementById('video_player') as HTMLVideoElement;
+
+        if (prerollAd) {
+            return prerollAd.video();
+        } else if (video.get('type') === 'hls' && !(canPlayHlsNative(videoPlayer) || Hls.isSupported()) && alternateVideo) {
+            return alternateVideo;
+        } else {
+            return video;
+        }
+    }
+
     // Events 
 
     handleFullScreenChange() {
@@ -217,9 +226,9 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     calculateDimensions() {
-        const { video, containerWidth, containerHeight } = this.props
+        const { containerWidth, containerHeight } = this.props
 
-        const videoRatio = video.get('width')/video.get('height')
+        const videoRatio = this.displayedVideo().get('width')/this.displayedVideo().get('height')
         const containerRatio = containerWidth/containerHeight
 
         if (videoRatio > containerRatio) {
@@ -301,6 +310,13 @@ class Video extends React.Component<Props, VideoState> {
         });
     }
 
+    didEnd() {
+        const { roomId, prerollAd, dispatch } = this.props
+        if (roomId && prerollAd) {
+            dispatch(didFinishVideoAd(roomId, prerollAd.get('id')))
+        }
+    }
+
     isWaiting() {
         const video = document.getElementById('video_player');
         clearInterval(this.state.timeIntervalId);
@@ -324,8 +340,8 @@ class Video extends React.Component<Props, VideoState> {
     // Actions
 
     loadVideo() {
-        const { video, alternateVideo, posterUrl } = this.props;
-        
+        const video = this.displayedVideo();
+
         this.unloadVideo();
 
         clearInterval(this.state.timeIntervalId);
@@ -352,11 +368,6 @@ class Video extends React.Component<Props, VideoState> {
                 });
                 this.setState({ hls })
             } 
-            else if (alternateVideo)
-            {
-                // degrade to alternate mp4 video
-                videoPlayer.src = alternateVideo.get('url')
-            }  
         } 
         else 
         {
@@ -368,8 +379,6 @@ class Video extends React.Component<Props, VideoState> {
                 URL.revokeObjectURL(video.get('url'))
             })
         }
-
-        this.loadPosterImage();
 
         videoPlayer.volume = this.props.volume
 
@@ -387,6 +396,23 @@ class Video extends React.Component<Props, VideoState> {
                 this.setState({ isLoading: true })
             }
         }, 100)
+
+        if (this.props.shouldAutoplay) {
+            const playPromise = videoPlayer.play()
+            if (typeof playPromise !== 'undefined') {
+                playPromise
+                .then(() => {
+                    this.setState({ isPlaying: true })
+                })
+                .catch((e) => {
+                    // cannot autoplay
+                    this.setState({ isPlaying: false })
+                })
+            } else {
+                this.setState({ isPlaying: true })
+            }
+        }
+        
     }
 
     unloadVideo() {
@@ -394,16 +420,6 @@ class Video extends React.Component<Props, VideoState> {
         if (hls) {
             hls.destroy();
             this.setState({ hls: undefined });
-        }
-    }
-
-    loadPosterImage() {
-        console.log('loading poster image')
-        const { posterUrl } = this.props;
-        if (!this.shouldAutoplay() && posterUrl ) {
-            console.log(posterUrl);
-            let videoPlayer = document.getElementById('video_player') as HTMLVideoElement;
-            videoPlayer.poster = posterUrl;
         }
     }
 
@@ -575,10 +591,13 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     render() {
-        const { video, decoration, volume, isScrubbable, posterUrl, isIOS } = this.props;
+        const { video, decoration, volume, isScrubbable, isIOS, prerollAd, authorUsername } = this.props;
         const { shouldDisplayControls, isLoading, width, height } = this.state;
 
-        const displayControlsVideoStyle = shouldDisplayControls ? { cursor: 'auto' } : { cursor: 'none' };
+        const videoContainerStyle = {
+            display: video.isEmpty() ? 'none' : 'block',
+            cursor: shouldDisplayControls ? 'auto' : 'none'
+        }
 
         const videoContainerEvents = {
             onMouseOver: this.handleOnMouseOver,
@@ -606,21 +625,21 @@ class Video extends React.Component<Props, VideoState> {
 
         let videoAttributes: any = {
             preload: "none",
-            controls: isIOS,
-            autoPlay: this.shouldAutoplay()
+            controls: isIOS
         }
 
-        const backgroundImageUrl = !this.shouldAutoplay() && posterUrl ? posterUrl : video.get('poster_url');
+        const adClass = !!prerollAd ? 'video_container-ad' : ''
 
         return (
-            <div className="video_container" id="video_container" tabIndex={-1} style={displayControlsVideoStyle} {...videoContainerEvents}>
+            <div className={`video_container ${adClass}`} id="video_container" tabIndex={-1} style={videoContainerStyle} {...videoContainerEvents}>
                 <div className="video_player-container">
-                    <div className="video_player-background" style={{ backgroundImage: `url(${backgroundImageUrl})`}}></div>
-                    <video id="video_player" className="video_player" {...videoAttributes} style={this.videoStyle(video)}></video>
-                    { decoration && <Decoration decoration={decoration} width={width} height={height} barHeight={70} /> }
+                    <div className="video_player-background" style={{ backgroundImage: `url(${video.get('poster_url')})`}} />
+                    <video id="video_player" className="video_player" {...videoAttributes} style={this.videoStyle(video)} />
+                    { !prerollAd && decoration && <Decoration decoration={decoration} width={width} height={height} barHeight={70} /> }
                     { isLoading && !isIOS && <Spinner styles={['white', 'large', 'faded']} /> }
                 </div>
                 { !isIOS && <VideoControls ref={(c) => { if (c) { this._controls = c } }} {...videoControlsProps} /> }
+                { !!prerollAd && <div className="ad-video_sponsor">This ad sponsors { authorUsername }</div> }
             </div>
         );
     }
@@ -633,7 +652,8 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
         browser: App.get(state, 'browser'),
         version: App.get(state, 'version'),
         volume: App.get(state, 'volume', 1),
-        selectedMediaItemId: ownProps.roomId && Room.get(state, ownProps.roomId, 'selectedMediaItemId')
+        selectedMediaItemId: ownProps.roomId && Room.get(state, ownProps.roomId, 'selectedMediaItemId'),
+        authorUsername: ownProps.roomId ? Room.author(state, ownProps.roomId).get('username') : undefined
     }
 }
 

@@ -174,6 +174,10 @@ class Image extends React.Component<Props, ImageState> {
         let { image, decoration, hideControls } = this.props
         let { width, height, shouldDisplayControls, isFullScreen } = this.state
 
+        const imageStyle = {
+            display: image.isEmpty() ? 'none' : 'block'
+        }
+
         const photoContainerEvents = {
             onMouseOver: this.handleOnMouseOver,
             onMouseOut: this.handleOnMouseOut
@@ -193,7 +197,7 @@ class Image extends React.Component<Props, ImageState> {
          * sluggish for the end user.
          */
         return (
-            <div className="player_photo-container" {...photoContainerEvents}>
+            <div className="player_photo-container" style={imageStyle} {...photoContainerEvents}>
                 <img key={image.get('url')} src={image.get('url')} id="player_photo" className="player_photo" style={this.imageStyle()} />
                 { decoration && <Decoration decoration={decoration} width={width} height={height} /> }
                 { !hideControls && <ImageControls {...imageControlsProps} /> }

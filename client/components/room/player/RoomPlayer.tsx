@@ -78,6 +78,8 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
     constructor(props: Props) {
         super(props);
 
+        this.isDisplayingPrerollAd = this.isDisplayingPrerollAd.bind(this)
+
         this.handleBackward = this.handleBackward.bind(this)
         this.handleForward = this.handleForward.bind(this)
         this.handleCounterClick = this.handleCounterClick.bind(this)
@@ -108,6 +110,13 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
     componentWillUnmount() {
         $(window).off("resize", this.resize);
+    }
+
+
+    // Queries
+
+    isDisplayingPrerollAd() {
+        return !!this.props.prerollAd && !this.props.hasPlayedPrerollAd
     }
 
 
@@ -150,7 +159,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
     // Render
 
     renderItem() {
-        const { selectedMediaItem: item, roomId, shouldAutoplayVideo  } = this.props
+        const { selectedMediaItem: item, roomId, shouldAutoplayVideo, prerollAd } = this.props
         const { playerWidth, playerHeight } = this.state
 
         let containerProps = {
@@ -158,22 +167,23 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
             containerHeight: playerHeight
         }
 
+        let ad = this.isDisplayingPrerollAd() && prerollAd ? prerollAd : undefined
+
         return (
             <div style={{ width: '100%', height: '100%' }}>
-                { item.hasReference() && <ItemReference roomId={roomId} {...containerProps} /> }
-                { !item.isEmpty() && (item.isVideo() ? 
-                    <Video 
-                        video={item.video('mp4')}
-                        alternateVideo={item.video('mp4')}
-                        decoration={item.get('decoration')} 
-                        roomId={roomId} 
-                        shouldAutoplay={shouldAutoplayVideo} 
-                        {...containerProps} /> : 
-                    <Image 
-                        image={item.image()} 
-                        decoration={item.get('decoration')} 
-                        {...containerProps} /> ) 
-                }
+                { !this.isDisplayingPrerollAd() && item.hasReference() && <ItemReference roomId={roomId} {...containerProps} /> } 
+                <Video 
+                    video={item.video('mp4')}
+                    alternateVideo={item.video('mp4')}
+                    decoration={item.get('decoration')} 
+                    roomId={roomId} 
+                    shouldAutoplay={shouldAutoplayVideo} 
+                    prerollAd={ad}
+                    {...containerProps} />
+                <Image 
+                    image={item.image()} 
+                    decoration={item.get('decoration')} 
+                    {...containerProps} />
             </div>
         )
     }
@@ -201,11 +211,10 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                 prerollAd, hasPlayedPrerollAd } = this.props;
         const { playerWidth, playerHeight } = this.state
 
-        const isPlayingPrerollAd = !!prerollAd && !hasPlayedPrerollAd
 
-        const leftDisabledClass = index === 0 || index === -1 || isPlayingPrerollAd 
+        const leftDisabledClass = index === 0 || index === -1 || this.isDisplayingPrerollAd()
             ? 'disabled' : '';
-        const rightDisabledClass = index === mediaItemsSize - 1 || index === -1 || isPlayingPrerollAd
+        const rightDisabledClass = index === mediaItemsSize - 1 || index === -1 || this.isDisplayingPrerollAd()
             ? 'disabled' : ''; 
 
         let playerStyle = playerHeight > 0 ? { height: `${playerHeight}px` } : {}
@@ -222,7 +231,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                     { /* Preload the first post's image to prevent load hiccup after ad closes. */ }
                     { !!preloadedImageUrl && <link rel="preload" as="image" href={preloadedImageUrl} /> }
                     <div className="player_media-inner" id="player_media-inner">
-                        { isPlayingPrerollAd ? this.renderAd() : this.renderItem() }
+                        { this.renderItem() }
                     </div>
                 </div>
                 <div className="player_navigation">
