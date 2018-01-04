@@ -7,6 +7,7 @@ type IconType =
     'arrow-back' |
     'arrow-drop-down' |
     'arrow-forward' |
+    'autoplay' |
     'bookmark' |
     'bookmark-outline' |
     'cancel' |
@@ -47,6 +48,7 @@ const ICONS: {[key in IconType]: any} = {
     , 'arrow-back': <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path d="M40 22H15.66l11.17-11.17L24 8 8 24l16 16 2.83-2.83L15.66 26H40v-4z"/></svg>
     , 'arrow-drop-down': <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path d="M14 20l10 10 10-10z"/></svg>
     , 'arrow-forward': <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path d="M24 8l-2.83 2.83L32.34 22H8v4h24.34L21.17 37.17 24 40l16-16z"/></svg>
+    , 'autoplay': <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><rect className="cls-1" x="7.67" y="7.08" width="32.67" height="32.67" rx="8.17" ry="8.17"/><path className="cls-2" d="M16.49,30.18l5.42-12.24a2.11,2.11,0,0,1,2-1.36h0.2a2.08,2.08,0,0,1,2,1.36l5.42,12.24a1.67,1.67,0,0,1,.18.69,1.62,1.62,0,0,1-1.62,1.64,1.74,1.74,0,0,1-1.64-1.18l-1-2.44H20.54l-1.09,2.55a1.68,1.68,0,0,1-1.58,1.07,1.57,1.57,0,0,1-1.58-1.6A1.82,1.82,0,0,1,16.49,30.18Zm9.62-4.31L24,20.74,21.8,25.87h4.31Z" transform="translate(0 -0.59)"/></svg>
     , 'bookmark': <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path d="M34 6H14c-2.21 0-3.98 1.79-3.98 4L10 42l14-6 14 6V10a4 4 0 0 0-4-4z"/></svg>
     , 'bookmark-outline': <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path d="M34 6H14c-2.21 0-3.98 1.79-3.98 4L10 42l14-6 14 6V10a4 4 0 0 0-4-4zm0 30l-10-4.35L14 36V10h20v26z"/></svg>
     , 'cancel': <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4zm10 27.17L31.17 34 24 26.83 16.83 34 14 31.17 21.17 24 14 16.83 16.83 14 24 21.17 31.17 14 34 16.83 26.83 24 34 31.17z"/></svg>

@@ -29,7 +29,6 @@ interface OwnProps {
     prerollAd?: Ad
 
     shouldAutoplay?: boolean
-    isScrubbable?: boolean
 
     containerWidth: number
     containerHeight: number
@@ -72,8 +71,7 @@ interface VideoState {
 class Video extends React.Component<Props, VideoState> {
 
     static defaultProps = {
-        shouldAutoplay: true,
-        isScrubbable: true
+        shouldAutoplay: true
     }
 
     private _controls: VideoControls
@@ -635,7 +633,7 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     render() {
-        const { video, decoration, volume, isScrubbable, isIOS, prerollAd, authorUsername } = this.props;
+        const { video, decoration, volume, isIOS, prerollAd, authorUsername } = this.props;
         const { shouldDisplayControls, isLoading, isPlaying, width, height, isAutoplayEnabled, posterUrl } = this.state;
 
         const videoContainerStyle = {
@@ -666,7 +664,7 @@ class Video extends React.Component<Props, VideoState> {
             seek: this.seek,
             fullScreen: this.fullScreen,
             toggleContinuousPlay: this.toggleContinuousPlay,
-            isScrubbable: isScrubbable || false
+            isScrubbable: !prerollAd
         }
 
         let videoAttributes: any = {

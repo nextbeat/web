@@ -29,7 +29,7 @@
     @include center;
 }
 
-.video_bottom {
+.player_bottom {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -46,8 +46,8 @@
     }
 }
 
-.video_gradient-bottom {
-    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.12) 60%, rgba(0,0,0,0.25) 100%);
+.player_gradient-bottom {
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.4) 100%);
     height: 70px;
     width: 100%;
     position: absolute;
@@ -56,16 +56,16 @@
     z-index: 10;
 }
 
-.video_progress-bar-container {
+.player_progress-bar-container {
     position: absolute;
-    bottom: 40px;
+    bottom: 38px;
     left: 0;
-    width: 100%;
-    // padding: 0 10px;
+    width: calc(100% - 26px);
+    margin: 0 13px;
     z-index: 15;
 }
 
-.video_progress-bar-padding {
+.player_progress-bar-padding {
     position: absolute;
     bottom: 0;
     width: 100%;
@@ -74,11 +74,11 @@
     cursor: pointer;
 }
 
-.video_progress-bar {
+.player_progress-bar {
     position: relative;
     height: 6px;
     background: rgba(white, 0.6);
-    transform: scaleY(0.6);
+    transform: scaleY(0.6667);
     transition: transform 0.1s;
 
     &.active {
@@ -86,7 +86,7 @@
     }
 }
 
-.video_progress-play {
+.player_progress-play {
     position: absolute;
     height: 100%;
     width: 100%;
@@ -95,7 +95,7 @@
     z-index: 20;
 }
 
-.video_progress-buffer {
+.player_progress-buffer {
     position: absolute;
     height: 100%;
     width: 100%;
@@ -104,7 +104,7 @@
     z-index: 19;
 }
 
-.video_progress-scrubber {
+.player_progress-scrubber {
     position: absolute;
     left: 0;
     margin-left: -3px;
@@ -121,23 +121,20 @@
     }
 }
 
-.video_controls {
+.player_controls {
     width: 100%;
     color: white;
     z-index: 20;
     position: absolute;
     bottom: 0;
     left: 0;
-    // padding: 0 10px;
-    height: 40px;
-    line-height: 40px;
+    height: 38px;
     user-select: none;
 
     .svg-icon {
         fill: #f6f6f6;
-        width: 30px;
-        height: 30px;
-        margin-top: 5px;
+        width: 28px;
+        height: 28px;
         transition: fill 0.1s;
 
         &:hover {
@@ -147,76 +144,83 @@
     }
 }
 
-.video_controls-left {
-    & > * {
-        float: left;
-    }
-
+.player_controls-left {
     height: 100%;
     float: left;
-    margin-left: 5px;
+    margin-left: 14px;
+    display: flex;
+    align-items: center;
 }
 
-.video_control-play-pause {
+.player_control-play-pause {
     margin-right: 5px;
 }
 
-.video_control-time {
-    text-shadow: 1px 1px 0 rgba(0,0,0,0.17);
-    font-size: 15px;
+.player_control-time {
+    font-size: 14px;
     font-family: 'Roboto', sans-serif;
 }
 
-.video_time-separator {
+.player_time-separator {
     margin: 0 4px;
 }
 
-.video_controls-right {
-    & > * {
-        float: right;
-    }
-
-    height: 100%;
-    float: right;
-    @include clearfix;
-    margin-right: 5px;
+.player_control-volume {
+    padding-right: 10px;
+    display: flex;
+    align-items: center;
 }
 
-.video_volume-icon {
-
+.player_volume-icon {
     .svg-icon {
-        margin-top: 7px;
-        width: 26px;
-        height: 26px;
+        width: 24px;
+        height: 24px;
     }
 }
 
-.video_volume-slider-container {
-    width: 50px;
-    height: 40px;
-    vertical-align: top;
+.player_volume-slider-container {
+    width: 0px;
+    height: 38px;
     margin-left: 5px;
     position: relative;
-    display: inline-block;
+    cursor: pointer;
+    transition: width 0.15s;
 
-    &:hover {
-        cursor: pointer;
+    .player_control-volume.active & {
+        width: 50px;
     }
 }
 
-.video_volume-slider-backdrop {
+.player_volume-slider-backdrop {
     @include centerY;
+    width: 100%;
     height: 6px;
     background: rgba(white, 0.6);
 }
 
-.video_volume-slider {
+.player_volume-slider {
     @include centerY;
     height: 6px;
     background: white;
     transform-origin: 0 50%;
 }
 
-.video_control-fullscreen {
-    margin-left: 12px;
+.player_controls-right {
+    height: 100%;
+    float: right;
+    @include clearfix;
+    margin-right: 17px;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+.player_control-autoplay-selected {
+    .svg-icon-autoplay .cls-1 {
+        fill: $light-primary-color;
+    }
+}
+
+.player_control-fullscreen {
+    margin-left: 8px;
 }
