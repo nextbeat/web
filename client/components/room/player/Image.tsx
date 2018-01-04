@@ -4,9 +4,12 @@ import { Map } from 'immutable'
 
 import Decoration from './Decoration'
 import ImageControls from './ImageControls'
+
+import { setContinuousPlay } from '@actions/room'
 import App from '@models/state/app'
+import Room from '@models/state/room'
 import { toggleFullScreen, isFullScreen } from '@utils'
-import { State } from '@types'
+import { State, DispatchProps } from '@types'
 
 interface OwnProps {
     image: State
@@ -14,13 +17,15 @@ interface OwnProps {
     containerHeight: number
     hideControls?: boolean
     decoration?: State
+    roomId?: number
 }
 
 interface ConnectProps {
     shouldForceRotation: boolean
+    isContinuousPlayEnabled: boolean
 }
 
-type Props = OwnProps & ConnectProps
+type Props = OwnProps & ConnectProps & DispatchProps
 
 interface ImageState {
     width: number
@@ -40,6 +45,7 @@ class Image extends React.Component<Props, ImageState> {
         super(props)
 
         this.fullScreen = this.fullScreen.bind(this)
+        this.toggleContinuousPlay = this.toggleContinuousPlay.bind(this)
 
         this.calculateDimensions = this.calculateDimensions.bind(this)
         this.handleFullScreenChange = this.handleFullScreenChange.bind(this)
@@ -90,6 +96,15 @@ class Image extends React.Component<Props, ImageState> {
 
     fullScreen() {
         toggleFullScreen(document.getElementById('player_media-inner'))
+    }
+
+    toggleContinuousPlay() {
+        const { dispatch, roomId, isContinuousPlayEnabled } = this.props
+        if (!roomId) {
+            return
+        }
+
+        dispatch(setContinuousPlay(roomId, !isContinuousPlayEnabled))
     }
 
     // Events
@@ -171,7 +186,7 @@ class Image extends React.Component<Props, ImageState> {
     }
 
     render() {
-        let { image, decoration, hideControls } = this.props
+        let { image, decoration, hideControls, isContinuousPlayEnabled } = this.props
         let { width, height, shouldDisplayControls, isFullScreen } = this.state
 
         const imageStyle = {
@@ -185,7 +200,9 @@ class Image extends React.Component<Props, ImageState> {
 
         const imageControlsProps = {
             fullScreen: this.fullScreen,
+            toggleContinuousPlay: this.toggleContinuousPlay,
             isFullScreen,
+            isContinuousPlayEnabled,
             shouldDisplayControls
         }
 
@@ -206,9 +223,10 @@ class Image extends React.Component<Props, ImageState> {
     }
 }
 
-function mapStateToProps(state: State): ConnectProps {
+function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     return {
-        shouldForceRotation: App.get(state, 'browser') === 'Chrome' && parseInt(App.get(state, 'version')) === 52
+        shouldForceRotation: App.get(state, 'browser') === 'Chrome' && parseInt(App.get(state, 'version')) === 52,
+        isContinuousPlayEnabled: !!ownProps.roomId && Room.get(state, ownProps.roomId, 'isContinuousPlayEnabled', false),
     }
 }
 

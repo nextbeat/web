@@ -427,7 +427,6 @@ class Video extends React.Component<Props, VideoState> {
         // preroll poster only if autoplay is enabled
         const { prerollAd, video } = this.props
         const posterUrl = prerollAd && canAutoplay ? prerollAd.video().get('poster_url') : video.get('poster_url')
-        console.log('setting load state', posterUrl, canAutoplay)
 
         this.setState({
             isPlaying: canAutoplay,
@@ -637,7 +636,7 @@ class Video extends React.Component<Props, VideoState> {
         const { shouldDisplayControls, isLoading, isPlaying, width, height, isAutoplayEnabled, posterUrl } = this.state;
 
         const videoContainerStyle = {
-            display: video.isEmpty() ? 'none' : 'block',
+            display: video.isEmpty() && !prerollAd ? 'none' : 'block',
             cursor: shouldDisplayControls ? 'auto' : 'none'
         }
 

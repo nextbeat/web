@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { hydrate } from 'react-dom'
+import { hydrate, render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { Router, Route, browserHistory, match } from 'react-router'
 import { Map, fromJS } from 'immutable'
@@ -10,14 +10,6 @@ import { configureStore } from './store'
 import routes from '../routes'
 
 import './layout/main.scss'
-
-// require.ensure shim for server
-// if (typeof require.ensure !== "function") require.ensure = (d: any, c: any) => c(require)
-
-// configure bluebird
-// Promise.config({
-//     cancellation: true
-// })
 
 // expose jQuery globally and add plugins
 (window as any).$ = (window as any).jQuery = $;
@@ -39,8 +31,14 @@ let r = routes(store)
 // Since we use async routing, we need to resolve the async behavior
 // before rendering so that the client-side markup initially matches 
 // the server-side markup.
+
+// hydrate() is the correct method to use for SSR as of React 16,
+// but because it doesn't update mismatched attributes it's
+// inconvenient to use for local development
+const renderMethod = initialState.app.environment === 'mac' ? render : hydrate;
+
 match({ history: browserHistory, routes: r }, (error, redirectLocation, renderProps) => {
-    hydrate(
+    renderMethod(
         <Provider store={store}>
             <Router {...renderProps}>
                 { r }

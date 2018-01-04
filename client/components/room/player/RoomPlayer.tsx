@@ -170,6 +170,11 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         return (
             <div style={{ width: '100%', height: '100%' }}>
                 { !this.isDisplayingPrerollAd() && item.hasReference() && <ItemReference roomId={roomId} {...containerProps} /> } 
+                <Image 
+                    image={item.image()} 
+                    decoration={item.get('decoration')} 
+                    roomId={roomId}
+                    {...containerProps} />
                 <Video 
                     video={item.video('mp4')}
                     alternateVideo={item.video('mp4')}
@@ -177,10 +182,6 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                     roomId={roomId} 
                     shouldAutoplay={shouldAutoplayVideo} 
                     prerollAd={ad}
-                    {...containerProps} />
-                <Image 
-                    image={item.image()} 
-                    decoration={item.get('decoration')} 
                     {...containerProps} />
             </div>
         )

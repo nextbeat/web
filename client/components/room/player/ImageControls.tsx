@@ -4,7 +4,10 @@ import Icon from '@components/shared/Icon'
 interface Props {
     shouldDisplayControls: boolean
     isFullScreen: boolean
+    isContinuousPlayEnabled: boolean
+    
     fullScreen: () => void
+    toggleContinuousPlay: () => void
 }
 
 class ImageControls extends React.Component<Props> {
@@ -15,17 +18,20 @@ class ImageControls extends React.Component<Props> {
 
     render() {
 
-        const { shouldDisplayControls, isFullScreen, fullScreen } = this.props
+        const { shouldDisplayControls, isFullScreen, isContinuousPlayEnabled,
+                fullScreen, toggleContinuousPlay } = this.props
 
         const displayControlsClass = shouldDisplayControls ? "display-controls" : "";
         const fullScreenIcon = isFullScreen ? "fullscreen-exit" : "fullscreen";
+        const autoplaySelectedClass = isContinuousPlayEnabled ? "player_control-autoplay-selected" : "";
 
         return (
-            <div className={`video_bottom ${displayControlsClass}`}>
-                <div className="video_gradient-bottom"></div>
-                <div className="video_controls" id="video_controls">
-                    <div className="video_controls-right">
-                        <a className="video_control video_control-fullscreen" onClick={fullScreen}><Icon type={fullScreenIcon} /></a>
+            <div className={`player_bottom ${displayControlsClass}`}>
+                <div className="player_gradient-bottom"></div>
+                <div className="player_controls" id="player_controls">
+                    <div className="player_controls-right">
+                        <a className="player_control player_control-fullscreen" onClick={fullScreen}><Icon type={fullScreenIcon} /></a>
+                        <a className={`player_control player_control-autoplay ${autoplaySelectedClass}`} onClick={toggleContinuousPlay}><Icon type="autoplay" /></a>
                     </div>
                 </div>
             </div>
