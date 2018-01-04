@@ -19,12 +19,14 @@ interface Props {
     isPlaying: boolean
     isFullScreen: boolean
     isScrubbable: boolean
+    isContinuousPlayEnabled: boolean
 
     adjustVolume: (volume: number) => void
     mute: () => void
     playPause: () => void
     seek: (time: number) => void
     fullScreen: () => void
+    toggleContinuousPlay: () => void
 }
 
 interface State {
@@ -143,6 +145,7 @@ class VideoControls extends React.Component<Props, State> {
 
         const { currentTime, duration, loadedDuration, volume,
                 shouldDisplayControls, isPlaying, isFullScreen,
+                isContinuousPlayEnabled, toggleContinuousPlay,
                 isScrubbable, mute, playPause, fullScreen } = this.props
 
         const progressBarEvents = !isScrubbable ? {} : {
@@ -189,6 +192,7 @@ class VideoControls extends React.Component<Props, State> {
                     </div>
                     <div className="video_controls-right">
                         <a className="video_control video_control-fullscreen" onClick={fullScreen}><Icon type={fullScreenIcon} /></a>
+                        <input className="video_control video_control-autoplay" onClick={toggleContinuousPlay} type="checkbox" checked={isContinuousPlayEnabled} />
                         <div className="video_control video_control-volume">
                             <span className="video_volume-icon" onClick={mute}><Icon type={volumeIcon} /></span>
                             <div className="video_volume-slider-container" {...volumeEvents} >

@@ -9,7 +9,6 @@ import ItemReference from './ItemReference'
 import Icon from '@components/shared/Icon'
 import Spinner from '@components/shared/Spinner'
 import CounterInner from '@components/room/counter/CounterInner'
-import VideoAd from '@components/room/ads/VideoAd'
 
 import { goBackward, goForward } from '@actions/room'
 import { selectDetailSection } from '@actions/pages/room'
@@ -87,7 +86,6 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         this.resize = this.resize.bind(this)
 
         this.renderItem = this.renderItem.bind(this)
-        this.renderAd = this.renderAd.bind(this)
 
         this.state = {
             playerWidth: 0,
@@ -186,22 +184,6 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                     {...containerProps} />
             </div>
         )
-    }
-
-    renderAd() {
-        const { prerollAd, roomId, selectedMediaItem: item } = this.props
-        const { playerWidth, playerHeight } = this.state
-
-        if (!prerollAd) {
-            return null;
-        }
-
-        let containerProps = {
-            containerWidth: playerWidth,
-            containerHeight: playerHeight
-        }
-
-        return <VideoAd ad={prerollAd} roomId={roomId} posterUrl={item.video().get('poster_url')} {...containerProps} /> 
     }
 
     render() {

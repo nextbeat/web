@@ -1,9 +1,10 @@
 import debounce from 'lodash-es/debounce'
 import assign from 'lodash-es/assign'
 import { ActionType, Action } from '@actions/types'
-import { markStack } from '@actions/room'
+import { markStack, goForward } from '@actions/room'
 import CurrentUser from '@models/state/currentUser'
 import RoomPage from '@models/state/pages/room'
+import Room from '@models/state/room'
 import MediaItem from '@models/entities/mediaItem'
 import { Store, Dispatch } from '@types'
 
@@ -61,6 +62,12 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
                     lastRead: new Date(lastReadMediaItem.get('user_created_at'))
                 }))
             }
+        }
+    }
+    else if (action.type === ActionType.PLAYBACK_DID_END && action.itemType === 'mediaItem') {
+        if (Room.get(state, action.roomId, 'isContinuousPlayEnabled')) {
+            // Automatically select next media item
+            store.dispatch(goForward(action.roomId))
         }
     }
     else

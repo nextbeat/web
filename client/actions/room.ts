@@ -44,10 +44,11 @@ export type RoomActionAll =
     BookmarkAction |
     UnbookmarkAction |
     DidPlayVideoAction |
+    PlaybackDidEndAction |
+    SetContinuousPlayAction |
     SelectMediaItemAction |
     MarkStackAction |
     RoomAdsAction |
-    DidFinishVideoAdAction |
     ClearCommentsAction |
     ClearRoomAction
 
@@ -508,6 +509,34 @@ export function didPlayVideo(roomId: number) {
     }
 }
 
+export interface PlaybackDidEndAction extends GenericAction {
+    type: ActionType.PLAYBACK_DID_END
+    roomId: number
+    itemId: number
+    itemType: 'mediaItem' | 'ad'
+}
+export function playbackDidEnd(roomId: number, itemId: number, itemType: 'mediaItem' | 'ad'): PlaybackDidEndAction {
+    return {
+        type: ActionType.PLAYBACK_DID_END,
+        roomId,
+        itemId,
+        itemType
+    }
+}
+
+export interface SetContinuousPlayAction extends GenericAction {
+    type: ActionType.SET_CONTINUOUS_PLAY
+    roomId: number
+    enabled: boolean
+}
+export function setContinuousPlay(roomId: number, enabled: boolean): SetContinuousPlayAction {
+    return {
+        type: ActionType.SET_CONTINUOUS_PLAY,
+        roomId,
+        enabled
+    }
+}
+
 
 /**********************
  * MEDIA ITEM SELECTION
@@ -630,19 +659,6 @@ function loadAds(roomId: number): RoomAdsAction {
             schema: Schemas.Ads,
             queries: { force_preroll: 'true' } // for development
         }
-    }
-}
-
-export interface DidFinishVideoAdAction extends GenericAction {
-    type: ActionType.DID_FINISH_VIDEO_AD,
-    roomId: number,
-    adId: number
-}
-export function didFinishVideoAd(roomId: number, adId: number): DidFinishVideoAdAction {
-    return {
-        type: ActionType.DID_FINISH_VIDEO_AD,
-        roomId,
-        adId
     }
 }
 

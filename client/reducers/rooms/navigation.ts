@@ -12,6 +12,8 @@ export default function(state = Map(), action: Action) {
         return state.delete('selectedComment')
     } else if (action.type === ActionType.GO_TO_COMMENT) {
         return state.set('selectedComment', action.comment.get('id'))
+    } else if (action.type === ActionType.SET_CONTINUOUS_PLAY) {
+        return state.set('isContinuousPlayEnabled', action.enabled)
     }
     return state
 }

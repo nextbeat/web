@@ -20,7 +20,7 @@ export default function ads(state = Map(), action: Action) {
                 error: action.error
             })
         }
-    } else if (action.type === ActionType.DID_FINISH_VIDEO_AD) {
+    } else if (action.type === ActionType.PLAYBACK_DID_END && action.itemType === 'ad') {
         return state.merge({
             hasPlayedPrerollAd: true 
         })

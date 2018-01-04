@@ -9,7 +9,7 @@ import VideoControls from './VideoControls'
 import Spinner from '@components/shared/Spinner'
 import { setVideoVolume } from '@actions/app'
 import { logVideoImpression } from '@actions/ga'
-import { didPlayVideo, didFinishVideoAd } from '@actions/room'
+import { didPlayVideo, playbackDidEnd, setContinuousPlay } from '@actions/room'
 import App from '@models/state/app'
 import Room from '@models/state/room'
 import Ad from '@models/entities/ad'
@@ -39,7 +39,9 @@ interface ConnectProps {
     isIOS: boolean
     browser: string
     version: string
+
     volume: number
+    isContinuousPlayEnabled: boolean
 
     selectedMediaItemId?: number
     authorUsername?: string
@@ -109,6 +111,7 @@ class Video extends React.Component<Props, VideoState> {
         this.adjustVolume = this.adjustVolume.bind(this);
         this.mute = this.mute.bind(this);
         this.fullScreen = this.fullScreen.bind(this);
+        this.toggleContinuousPlay = this.toggleContinuousPlay.bind(this);
         this.hideControlsAfterDelay = this.hideControlsAfterDelay.bind(this);
 
         this.startNewImpression = debounce(this.startNewImpression.bind(this), START_IMPRESSION_WAIT_TIME);
@@ -308,9 +311,13 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     didEnd() {
-        const { roomId, prerollAd, dispatch } = this.props
-        if (roomId && prerollAd) {
-            dispatch(didFinishVideoAd(roomId, prerollAd.get('id')))
+        const { roomId, selectedMediaItemId, prerollAd, video, dispatch } = this.props
+        if (roomId) {
+            if (prerollAd) {
+                dispatch(playbackDidEnd(roomId, prerollAd.get('id'), 'ad'))
+            } else if (selectedMediaItemId) {
+                dispatch(playbackDidEnd(roomId, selectedMediaItemId, 'mediaItem'))
+            }
         }
     }
 
@@ -495,6 +502,15 @@ class Video extends React.Component<Props, VideoState> {
         toggleFullScreen(document.getElementById('player_media-inner'));
     }
 
+    toggleContinuousPlay() {
+        const { dispatch, roomId, isContinuousPlayEnabled } = this.props
+        if (!roomId) {
+            return
+        }
+
+        dispatch(setContinuousPlay(roomId, !isContinuousPlayEnabled))
+    }
+
     hideControlsAfterDelay(delay=2500) {
         clearTimeout(this.state.hoverTimeoutId);
         const hoverTimeoutId = window.setTimeout(() => {
@@ -508,6 +524,8 @@ class Video extends React.Component<Props, VideoState> {
             hoverTimeoutId
         });
     }
+
+
 
 
     // Analytics
@@ -641,11 +659,13 @@ class Video extends React.Component<Props, VideoState> {
             shouldDisplayControls: this.state.shouldDisplayControls,
             isPlaying: this.state.isPlaying,
             isFullScreen: this.state.isFullScreen,
+            isContinuousPlayEnabled: this.props.isContinuousPlayEnabled,
             adjustVolume: this.adjustVolume,
             mute: this.mute,
             playPause: this.playPause,
             seek: this.seek,
             fullScreen: this.fullScreen,
+            toggleContinuousPlay: this.toggleContinuousPlay,
             isScrubbable: isScrubbable || false
         }
 
@@ -679,6 +699,7 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
         browser: App.get(state, 'browser'),
         version: App.get(state, 'version'),
         volume: App.get(state, 'volume', 1),
+        isContinuousPlayEnabled: !!ownProps.roomId && Room.get(state, ownProps.roomId, 'isContinuousPlayEnabled', false),
         selectedMediaItemId: ownProps.roomId && Room.get(state, ownProps.roomId, 'selectedMediaItemId'),
         authorUsername: ownProps.roomId ? Room.author(state, ownProps.roomId).get('username') : undefined
     }

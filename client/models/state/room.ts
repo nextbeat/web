@@ -56,6 +56,7 @@ export interface RoomProps {
     hasPlayedPrerollAd: boolean
 
     videoDidPlay: boolean
+    isContinuousPlayEnabled: boolean
 }
 
 const keyMap: {[key in keyof RoomProps]: string[]} = {
@@ -102,7 +103,8 @@ const keyMap: {[key in keyof RoomProps]: string[]} = {
     'adsError': ['ads', 'error'],
     'hasPlayedPrerollAd': ['ads', 'hasPlayedPrerollAd'],
     // playback
-    'videoDidPlay': ['navigation', 'videoDidPlay']
+    'videoDidPlay': ['navigation', 'videoDidPlay'],
+    'isContinuousPlayEnabled': ['navigation', 'isContinuousPlayEnabled']
 }
 
 export default class Room {
