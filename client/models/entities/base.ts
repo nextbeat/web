@@ -53,7 +53,7 @@ export class EntityModel<Props> {
     protected getResource(resourceType: string, preferredType?: string, defaultSizeFn?: (resources: State) => string | undefined): State {
         this.resourceCache[resourceType] = this.resourceCache[resourceType] || {}
 
-        let resources: State = this.entity().get(resourceType, Map())
+        let resources: State = this.entity().get(resourceType, emptyMap)
 
         let getFromCache = (type: string) =>
             (this.resourceCache[resourceType][type] = this.resourceCache[resourceType][type] || resources.get(type).set('type', type) as State)
@@ -65,7 +65,7 @@ export class EntityModel<Props> {
         // else default to any resource
         defaultSizeFn = defaultSizeFn || (resources => resources.keySeq().first() )
         let key = defaultSizeFn(resources)
-        if (key) {
+        if (key && resources.has(key)) {
             return getFromCache(key)
         }
 

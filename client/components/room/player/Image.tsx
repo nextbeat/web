@@ -5,7 +5,7 @@ import { Map } from 'immutable'
 import Decoration from './Decoration'
 import ImageControls from './ImageControls'
 
-import { setContinuousPlay } from '@actions/room'
+import { setContinuousPlay, playbackDidEnd } from '@actions/room'
 import App from '@models/state/app'
 import Room from '@models/state/room'
 import { toggleFullScreen, isFullScreen } from '@utils'
@@ -23,6 +23,7 @@ interface OwnProps {
 interface ConnectProps {
     shouldForceRotation: boolean
     isContinuousPlayEnabled: boolean
+    selectedMediaItemId?: number
 }
 
 type Props = OwnProps & ConnectProps & DispatchProps
@@ -33,6 +34,9 @@ interface ImageState {
     scale: number
     shouldDisplayControls: boolean
     isFullScreen: boolean
+
+    continuousPlayTimerId: number
+    continuousPlayTimeLeft: number
 }
 
 class Image extends React.Component<Props, ImageState> {
@@ -43,6 +47,10 @@ class Image extends React.Component<Props, ImageState> {
 
     constructor(props: Props) {
         super(props)
+
+        this.startContinuousPlayTimer = this.startContinuousPlayTimer.bind(this)
+        this.runTimer = this.runTimer.bind(this)
+        this.clearTimer = this.clearTimer.bind(this)
 
         this.fullScreen = this.fullScreen.bind(this)
         this.toggleContinuousPlay = this.toggleContinuousPlay.bind(this)
@@ -59,7 +67,9 @@ class Image extends React.Component<Props, ImageState> {
             height: 0,
             scale: 1,
             shouldDisplayControls: false,
-            isFullScreen: false
+            isFullScreen: false,
+            continuousPlayTimerId: -1,
+            continuousPlayTimeLeft: 0
         }
     }
 
@@ -78,18 +88,64 @@ class Image extends React.Component<Props, ImageState> {
         $(window).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
 
         this.calculateDimensions(this.props.image)
+        this.startContinuousPlayTimer()
     }
 
     componentDidUpdate(prevProps: Props) {
         if (prevProps.image !== this.props.image 
             || prevProps.containerHeight !== this.props.containerHeight 
-            || prevProps.containerWidth !== this.props.containerWidth) {
+            || prevProps.containerWidth !== this.props.containerWidth) 
+        {
             this.calculateDimensions(this.props.image)
+        }
+
+        if (prevProps.image !== this.props.image
+            || prevProps.isContinuousPlayEnabled !== this.props.isContinuousPlayEnabled) 
+        {
+            this.startContinuousPlayTimer()
         }
     }
 
     componentWillUnmount() {
         $(window).off('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
+        this.clearTimer()
+    }
+
+    // Continuous play
+
+    startContinuousPlayTimer() {
+        const { isContinuousPlayEnabled, image } = this.props
+        if (!isContinuousPlayEnabled || image.isEmpty()) {
+            return;
+        }
+        this.clearTimer()
+        this.runTimer(3, 500)
+    }
+
+    clearTimer() {
+        if (this.state.continuousPlayTimerId > 0) {
+            window.clearTimeout(this.state.continuousPlayTimerId)
+        }
+    }
+
+    runTimer(secondsLeft: number, delay: number) {
+        if (secondsLeft <= 0) {
+            const { dispatch, roomId, selectedMediaItemId: itemId } = this.props
+            if (roomId && itemId) {
+                dispatch(playbackDidEnd(roomId, itemId, 'mediaItem'))
+            }
+            return;
+        }
+
+        let continuousPlayTimerId = window.setTimeout(() => {
+            this.runTimer(secondsLeft-(delay/1000), delay)
+        }, delay)
+
+        console.log(secondsLeft);
+        this.setState({ 
+            continuousPlayTimerId,
+            continuousPlayTimeLeft: secondsLeft
+        })
     }
 
     // Actions
@@ -227,6 +283,7 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     return {
         shouldForceRotation: App.get(state, 'browser') === 'Chrome' && parseInt(App.get(state, 'version')) === 52,
         isContinuousPlayEnabled: !!ownProps.roomId && Room.get(state, ownProps.roomId, 'isContinuousPlayEnabled', false),
+        selectedMediaItemId: ownProps.roomId && Room.get(state, ownProps.roomId, 'selectedMediaItemId'),
     }
 }
 

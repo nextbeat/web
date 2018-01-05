@@ -85,7 +85,7 @@ export function createSelector<R>(func: Selector<R>): OutputSelector<R> {
               if (hash !== lastHash) {
                   lastResult = func(state, ...args)
               }
-              hash = lastHash
+              lastHash = hash
               return lastResult as R
           }
 
