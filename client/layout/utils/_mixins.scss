@@ -25,11 +25,28 @@
     transform: translateX(-50%);
 }
 
-
 @mixin clearfix {
     &::after {
         content: '';
         display: table;
         clear: both;
+    }
+}
+
+@mixin triangle($color, $percent, $size) {
+    position: relative;
+
+    &::after {
+        top: 100%;
+        left: $percent;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+        border-top-color: $color;
+        border-width: $size;
+        margin-left: -$size;
     }
 }

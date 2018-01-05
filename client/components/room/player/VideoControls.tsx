@@ -19,6 +19,7 @@ interface Props {
     isPlaying: boolean
     isFullScreen: boolean
     isScrubbable: boolean
+    shouldDisplayContinuousPlay: boolean
     isContinuousPlayEnabled: boolean
 
     adjustVolume: (volume: number) => void
@@ -159,6 +160,7 @@ class VideoControls extends React.Component<Props, State> {
         const { currentTime, duration, loadedDuration, volume,
                 shouldDisplayControls, isPlaying, isFullScreen,
                 isContinuousPlayEnabled, toggleContinuousPlay,
+                shouldDisplayContinuousPlay,
                 isScrubbable, mute, playPause, fullScreen } = this.props
 
         const { isProgressBarActive, isVolumeActive } = this.state
@@ -222,8 +224,14 @@ class VideoControls extends React.Component<Props, State> {
                         </div>
                     </div>
                     <div className="player_controls-right">
-                        <a className="player_control player_control-fullscreen" onClick={fullScreen}><Icon type={fullScreenIcon} /></a>
-                        <a className={`player_control player_control-autoplay ${autoplaySelectedClass}`} onClick={toggleContinuousPlay}><Icon type="autoplay" /></a>
+                    <a className="player_control player_control-fullscreen" onClick={fullScreen}>
+                            <Icon type={fullScreenIcon} />
+                            <div className="player_tooltip">Fullscreen</div>
+                        </a>
+                        { shouldDisplayContinuousPlay && <a className={`player_control player_control-autoplay ${autoplaySelectedClass}`} onClick={toggleContinuousPlay}>
+                            <Icon type="autoplay" />
+                            <div className="player_tooltip">Autoplay</div>
+                        </a> }
                     </div>
                 </div>
             </div>

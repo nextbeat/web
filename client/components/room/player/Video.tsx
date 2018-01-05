@@ -663,7 +663,8 @@ class Video extends React.Component<Props, VideoState> {
             seek: this.seek,
             fullScreen: this.fullScreen,
             toggleContinuousPlay: this.toggleContinuousPlay,
-            isScrubbable: !prerollAd
+            isScrubbable: !prerollAd,
+            shouldDisplayContinuousPlay: !prerollAd
         }
 
         let videoAttributes: any = {

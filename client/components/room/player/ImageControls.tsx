@@ -32,8 +32,14 @@ class ImageControls extends React.Component<Props> {
                 <div className="player_gradient-bottom"></div>
                 <div className="player_controls" id="player_controls">
                     <div className="player_controls-right">
-                        <a className="player_control player_control-fullscreen" onClick={fullScreen}><Icon type={fullScreenIcon} /></a>
-                        <a className={`player_control player_control-autoplay ${autoplaySelectedClass}`} onClick={toggleContinuousPlay}><Icon type="autoplay" /></a>
+                        <a className="player_control player_control-fullscreen" onClick={fullScreen}>
+                            <Icon type={fullScreenIcon} />
+                            <div className="player_tooltip">Fullscreen</div>
+                        </a>
+                        <a className={`player_control player_control-autoplay ${autoplaySelectedClass}`} onClick={toggleContinuousPlay}>
+                            <Icon type="autoplay" />
+                            <div className="player_tooltip">Autoplay</div>
+                        </a>
                         { isContinuousPlayEnabled && <div className="player_control player_control-autoplay-timer">{timeLeft}</div> }
                     </div>
                 </div>
