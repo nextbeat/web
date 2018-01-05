@@ -53,10 +53,15 @@ class RoomMain extends React.Component<Props> {
     }
 
     handleKeyDown(e: JQueryKeyEventObject) {
-        const { dispatch, roomId, indexOfSelectedMediaItem, mediaItemsSize } = this.props 
+        const { dispatch, roomId, indexOfSelectedMediaItem, mediaItemsSize, isPlayingPrerollAd } = this.props 
 
         if (['textarea', 'input'].indexOf((e.target as any).tagName.toLowerCase()) !== -1) {
             // don't navigate if inside text field
+            return;
+        }
+
+        // Disable navigation if ad is playing
+        if (isPlayingPrerollAd) {
             return;
         }
 

@@ -102,8 +102,6 @@
     margin: auto;
     position: relative;
     width: 100%; 
-    background-color: #eee;  
-    // height set in javascript
 }
 
 .player_media-inner {
@@ -125,6 +123,7 @@
     position: absolute;
     top: 0;
     left: 0;
+    background: #eee;
 }
 
 .player_photo {
@@ -144,6 +143,7 @@
     position: absolute;
     top: 0;
     left: 0;
+    background: #eee;
 }
 
 .video_player-background {
@@ -162,6 +162,31 @@
     max-height: 100%;
     max-width: 100%;
     @include center;
+}
+
+.player_media-fullscreen {
+    .player_photo-container, .video_player-container {
+        background: #000;
+    }
+}
+
+.player_media-fullscreen_tooltip {
+    @include centerX;
+    top: auto;
+    bottom: 80px;
+    color: #fff;
+    background: rgba(#333, 0.7);
+    padding: 15px;
+    width: 300px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 1.5;
+
+    &.show {
+        opacity: 1;
+    }
 }
 
 .player_caption {

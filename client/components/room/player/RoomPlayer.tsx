@@ -16,6 +16,7 @@ import Room from '@models/state/room'
 import MediaItem from '@models/entities/mediaItem'
 import Ad from '@models/entities/ad'
 import { State, DispatchProps } from '@types'
+import { isFullScreen, storageAvailable } from '@utils'
 
 interface OwnProps {
     roomId: number
@@ -38,6 +39,10 @@ type Props = OwnProps & ConnectProps & DispatchProps
 interface RoomPlayerState {
     playerWidth: number
     playerHeight: number
+    isFullScreen: boolean
+    isDisplayingFullScreenTooltip: boolean
+    tooltipShowTimeoutId: number
+    tooltipHideTimeoutId: number
 }
 
 /* When rendering the room page directly from the
@@ -63,6 +68,8 @@ function getScript(fn: Function) {
     return { __html: fnText }
 }
 
+const fullScreenEvents = 'fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange'
+
 class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
     static defaultProps = {
@@ -84,19 +91,26 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         this.handleCounterClick = this.handleCounterClick.bind(this)
         
         this.resize = this.resize.bind(this)
+        this.handleFullScreen = this.handleFullScreen.bind(this)
+        this.dismissFullScreenTooltip = this.dismissFullScreenTooltip.bind(this)
 
         this.renderItem = this.renderItem.bind(this)
 
         this.state = {
             playerWidth: 0,
-            playerHeight: 0
+            playerHeight: 0,
+            isFullScreen: false,
+            isDisplayingFullScreenTooltip: false,
+            tooltipShowTimeoutId: -1,
+            tooltipHideTimeoutId: -1
         }
     }
 
     // Lifecycle
 
     componentDidMount() {
-        $(window).on('resize', this.resize);
+        $(window).on(`resize ${fullScreenEvents}`, this.resize);
+        $(window).on(fullScreenEvents, this.handleFullScreen)
 
         this.setState({
             playerWidth: parseInt($('.player_main').css('width')),
@@ -107,7 +121,10 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
     }
 
     componentWillUnmount() {
-        $(window).off("resize", this.resize);
+        $(window).off(`resize ${fullScreenEvents}`, this.resize);
+        $(window).off(fullScreenEvents, this.handleFullScreen)
+
+        this.dismissFullScreenTooltip()
     }
 
 
@@ -121,13 +138,53 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
     // Resize
 
     resize() {
-        const playerWidth = parseInt($('.player_main').css('width'));
-        const playerHeight = Math.min(500, Math.floor(playerWidth * 9 / 16))
+        const playerWidth = parseInt($('.player_media-inner').css('width'));
+        let playerHeight = Math.min(500, Math.floor(playerWidth * 9 / 16))
+
+        if (isFullScreen()) {
+            playerHeight = parseInt($('.player_media-inner').css('height'));
+        }
 
         this.setState({
             playerWidth,
-            playerHeight
+            playerHeight,
         })
+    }
+
+    // Full screen
+
+    handleFullScreen() {
+        this.setState({ isFullScreen: isFullScreen() })
+
+        if (isFullScreen() && storageAvailable('localStorage')) {
+            const isDisplayingFullScreenTooltip = !JSON.parse(localStorage.getItem('hideFullScreenTooltip') || 'false')
+            if (isDisplayingFullScreenTooltip) {
+
+                const tooltipHideTimeoutId = window.setTimeout(() => {
+                    this.setState({ isDisplayingFullScreenTooltip: false })
+                }, 5500)
+
+                localStorage.setItem('hideFullScreenTooltip', 'true')
+
+                const tooltipShowTimeoutId = window.setTimeout(() => {
+                    this.setState({ isDisplayingFullScreenTooltip: true })
+                }, 500)
+                
+                this.setState({
+                    tooltipHideTimeoutId,
+                    tooltipShowTimeoutId
+                })
+            }
+        } else {
+            this.dismissFullScreenTooltip()
+        }
+    }
+
+    dismissFullScreenTooltip() {
+        this.setState({ isDisplayingFullScreenTooltip: false })
+        const { tooltipHideTimeoutId, tooltipShowTimeoutId } = this.state
+        window.clearTimeout(tooltipHideTimeoutId)
+        window.clearTimeout(tooltipShowTimeoutId)
     }
 
 
@@ -192,8 +249,9 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                 indexOfSelectedMediaItem: index,
                 selectedMediaItem: item,
                 prerollAd, hasPlayedPrerollAd } = this.props;
-        const { playerWidth, playerHeight } = this.state
 
+        const { playerWidth, playerHeight, isFullScreen, 
+                isDisplayingFullScreenTooltip } = this.state;
 
         const leftDisabledClass = index === 0 || index === -1 || this.isDisplayingPrerollAd()
             ? 'disabled' : '';
@@ -207,14 +265,20 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
             preloadedImageUrl = item.isVideo() ? item.video().get('poster_url') : item.image().get('url')
         }
 
+        const fullScreenClass = isFullScreen ? 'player_media-fullscreen' : '';
+        const tooltipClass = isDisplayingFullScreenTooltip ? 'show' : 'hide';
+        
         return (
             <div className="player_main">
                 { children }
-                <div className="player_media" style={playerStyle}>
+                <div className={`player_media ${fullScreenClass}`} style={playerStyle}>
                     { /* Preload the first post's image to prevent load hiccup after ad closes. */ }
-                    { !!preloadedImageUrl && <link rel="preload" as="image" href={preloadedImageUrl} /> }
+                { !!preloadedImageUrl && <link rel="preload" as="image" href={preloadedImageUrl} /> }
                     <div className="player_media-inner" id="player_media-inner">
                         { this.renderItem() }
+                        <div className={`player_media-fullscreen_tooltip ${tooltipClass}`}>
+                            Use the arrow keys to navigate between posts while in full screen.
+                        </div>
                     </div>
                 </div>
                 <div className="player_navigation">
