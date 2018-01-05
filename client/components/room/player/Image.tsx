@@ -119,7 +119,7 @@ class Image extends React.Component<Props, ImageState> {
             return;
         }
         this.clearTimer()
-        this.runTimer(3, 500)
+        this.runTimer(9, 500)
     }
 
     clearTimer() {
@@ -141,7 +141,6 @@ class Image extends React.Component<Props, ImageState> {
             this.runTimer(secondsLeft-(delay/1000), delay)
         }, delay)
 
-        console.log(secondsLeft);
         this.setState({ 
             continuousPlayTimerId,
             continuousPlayTimeLeft: secondsLeft
@@ -243,7 +242,7 @@ class Image extends React.Component<Props, ImageState> {
 
     render() {
         let { image, decoration, hideControls, isContinuousPlayEnabled } = this.props
-        let { width, height, shouldDisplayControls, isFullScreen } = this.state
+        let { width, height, shouldDisplayControls, isFullScreen, continuousPlayTimeLeft } = this.state
 
         const imageStyle = {
             display: image.isEmpty() ? 'none' : 'block'
@@ -259,6 +258,7 @@ class Image extends React.Component<Props, ImageState> {
             toggleContinuousPlay: this.toggleContinuousPlay,
             isFullScreen,
             isContinuousPlayEnabled,
+            continuousPlayTimeLeft,
             shouldDisplayControls
         }
 
