@@ -21,11 +21,11 @@ class Advertising extends React.Component {
                             <div className="advertising_users_stats_title">MINUTES SPENT IN ROOM PER USER</div>
                             <div className="advertising_users_stats_body">
                                 <div className="advertising_users_stat">
-                                    <div className="advertising_users_stat_time">X:XX</div>
+                                    <div className="advertising_users_stat_time">7:58</div>
                                     <div className="advertising_users_stat_label">AVERAGE</div>
                                 </div>
                                 <div className="advertising_users_stat">
-                                    <div className="advertising_users_stat_time">XX:XX</div>
+                                    <div className="advertising_users_stat_time">54:29</div>
                                     <div className="advertising_users_stat_label">TOP 10%</div>
                                 </div>
                             </div>
