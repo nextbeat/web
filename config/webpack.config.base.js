@@ -39,6 +39,18 @@ module.exports = {
                 test: /\.(gif|png|jpe?g)$/,
                 loader: 'file-loader?name=./images/[hash:16].[ext]',
                 exclude: /node_modules/
+            },
+            {
+                test: /\.md$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'html-loader'
+                    },
+                    {
+                        loader: 'markdown-loader'
+                    }
+                ]
             }
         ]
     },

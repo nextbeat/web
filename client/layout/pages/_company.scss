@@ -1,0 +1,96 @@
+/* Layout */
+
+.topbar-company_link {
+    font-size: 15px;
+    font-weight: 600;
+    color: #47546e;
+    margin-left: 20px;
+
+    @include media("<400px") {
+        margin-left: 15px;
+        font-size: 14px;
+    }
+
+    &:hover {
+        color: #47546e;
+        text-decoration: underline;
+    }
+
+    &:visited {
+        color: #47546e;
+    }
+}
+
+.topbar-company {
+    @include media("<=medium") {
+        .topbar_logo {
+            display: block;
+        }
+
+        .topbar_logo-small {
+            display: none;
+        }
+    }
+
+    @include media("<=small") {
+        .topbar-company_right {
+            display: flex;
+        }
+
+        .topbar_logo {
+            display: none;
+        }
+
+        .topbar_logo-small {
+            display: block;
+        }
+    }
+}
+
+.company_main {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-top: $topbar-height;
+    background: #fbfbfb;
+    overflow: auto;
+}
+
+.company_footer {
+    background: #35373a;
+    padding: 23px 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 300;
+
+    @include media("<=small") {
+        padding: 18px 30px;
+    }
+
+    @include media("<400px") {
+        flex-direction: column;
+        .company_footer_copyright {
+            margin-bottom: 10px;
+        }
+    }
+}
+
+.company_footer_copyright {
+    color: #a6a7ab;
+}
+
+a.company_footer_link {
+    color: #fff;
+    font-weight: 300;
+    margin-left: 12px;
+
+    &:hover {
+        color: #a6a7ab;
+    }
+}
+
+@import 'company/legal';

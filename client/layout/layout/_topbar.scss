@@ -210,7 +210,7 @@ input.topbar_search-bar {
     }
 }
 
-.app-container-room .topbar_icon-menu {
+.main-container-room .topbar_icon-menu {
     @include media('<=room-medium') {
         visibility: visible;
     }

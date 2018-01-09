@@ -163,7 +163,7 @@ a.sidebar_item {
 
 // For sidebar within room, we want to collapse when screen is < 1100px
 // which accounts for the detail bar
-.app-container-room .sidebar {
+.main-container-room .sidebar {
     @include media('<=room-medium') {
         @include collapsed-sidebar;
     }
