@@ -29,7 +29,7 @@ class Company extends React.Component<{}, State> {
                         <div className="topbar_right topbar-company_right">
                             <Link className="topbar-company_link" to="/company/team">TEAM</Link>
                             <Link className="topbar-company_link" to="/company/legal/terms">LEGAL</Link>
-                            <Link className="topbar-company_link" to="/company/advertising">PARTNERS</Link>
+                            <Link className="topbar-company_link" to="/company/advertise">ADVERTISE</Link>
                         </div>
                     </div>
                 </div>

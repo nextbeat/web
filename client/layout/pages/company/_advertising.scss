@@ -1,0 +1,244 @@
+.advertising {
+    p, h1 {
+        margin: 0;
+    }
+}
+
+.advertising_text {
+    letter-spacing: 0.02em;
+    h1 {
+        font-weight: 500;
+        font-size: 20px;
+        margin-bottom: 20px;
+        letter-spacing: 0.03em;
+    }
+    p {
+        margin-bottom: 15px;
+        font-weight: 300;
+    }
+    a {
+        font-weight: 300;
+        text-decoration: underline;
+    }
+}
+
+.advertising_content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 900px;
+}
+
+/* Specific panel styles */
+
+.advertising_intro {
+    background: #f2f4f8;
+    color: #5c5c5c;
+    height: 310px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.advertising_intro_text {
+    margin-left: 95px;
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    z-index: 11;
+    p {
+        margin-top: 8px;
+    }
+}
+
+.advertising_intro_text-downtime {
+    font-size: 29px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+.advertising_intro_shape1 {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    background: $primary-color;
+    width: 240px;
+    height: 560px;
+    transform: translateY(270px) translateX(-72px) rotateZ(64deg);
+    z-index: 10;
+}
+
+.advertising_intro_shape2 {
+    background: #fca469;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 250px;
+    height: 120px;
+    transform: translateX(45px) translateY(-57px) rotateZ(31deg);
+    z-index: 9;
+}
+
+.advertising_users {
+    color: #424242;
+    padding: 60px 50px;
+}
+
+.advertising_users_stats {
+    flex: 0 1 390px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.advertising_users_stats_title {
+    color: #7588ae;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.advertising_users_stats_body {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.advertising_users_stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: $primary-color;
+
+    &:first-child {
+        margin-right: 12px;
+    }
+}
+
+.advertising_users_stat_time {
+    font-size: 57px;
+    font-weight: 700;
+}
+
+.advertising_users_stat_label {
+    font-size: 18px;
+    font-weight: 300;
+}
+
+.advertising_users_text {
+    flex: 0 1 390px;
+    margin-left: 10px;
+}
+
+.advertising_store {
+    padding: 60px 50px;
+    background: linear-gradient(to right, $primary-color, #fca469);
+    color: #fff;
+}
+
+.advertising_store_text {
+    flex: 0 1 475px;
+}
+
+.advertising_store_graphic {
+    flex: 0 1 200px;
+    text-align: center;
+}
+
+.advertising_action {
+    background: #f2f4f8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 30px 55px 30px;
+}
+
+.advertising_action_text {
+    max-width: 475px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+a.advertising_action_button {
+    font-weight: 300;
+    background: $primary-color;
+    color: #fff;
+    padding: 18px 23px;
+    border-radius: 10px;
+    box-shadow: 0 5px 0 rgba(#204fb8, 0.11);
+
+    &:hover {
+        color: #fff;
+        background: $light-primary-color;
+    }
+}
+
+@include media("<=medium") {
+
+    .advertising_intro_shape1, .advertising_intro_shape2 {
+        display: none;
+    }
+
+    .advertising_intro {
+        height: auto;
+        min-height: 250px;
+        padding: 10px;
+    }
+
+    .advertising_users {
+        padding: 35px 30px;
+    }
+
+    .advertising_content {
+        flex-direction: column;
+    }
+
+    .advertising_users_stats {
+        order: 2;
+        flex: 0 1 auto;
+        margin: 0;
+    }
+
+    .advertising_users_text {
+        order: 1;
+        flex: 0 1 auto;
+        max-width: 500px;
+        margin-bottom: 30px;
+    }
+
+    .advertising_store_text {
+        flex: 0 1 auto;
+        margin-bottom: 30px;
+        max-width: 600px;
+    }
+
+    .advertising_store_graphic {
+        flex: 0 1 auto;
+        width: 100%;
+    }
+}
+
+@include media("<=small") {
+
+    .advertising_intro_text {
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    .advertising_users_stats_title {
+        font-size: 16px;
+    }
+
+    .advertising_users_stat_time {
+        font-size: 44px;
+    }
+
+    .advertising_users_stat_label {
+        font-size: 16px;
+    }
+
+}
