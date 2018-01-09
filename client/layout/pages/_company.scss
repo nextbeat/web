@@ -1,3 +1,8 @@
+/* Variables */
+
+$company-light-background: #f2f4f8;
+$company-drop-shadow: rgba(#204fb8, 0.11);
+
 /* Layout */
 
 .topbar-company_link {
@@ -66,6 +71,7 @@
     justify-content: space-between;
     font-size: 13px;
     font-weight: 300;
+    box-shadow: 0 500px 0 500px #35373a; // extends footer to bottom of screen if necessary
 
     @include media("<=small") {
         padding: 18px 30px;
@@ -93,5 +99,6 @@ a.company_footer_link {
     }
 }
 
-@import 'company/legal';
 @import 'company/advertising';
+@import 'company/contact';
+@import 'company/legal';

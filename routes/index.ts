@@ -72,6 +72,11 @@ export default (store: Store) => {
                             import(/* webpackChunkName: 'advertising' */ '../client/components/pages/company/Advertising').then(component => {
                                 return cb(null, component.default)
                             })
+                        }),
+                        analyticsRoute('contact', cb => {
+                            import(/* webpackChunkName: contact' */ '../client/components/pages/company/Contact').then(component => {
+                                return cb(null, component.default)
+                            })
                         })
                     ]
                 },

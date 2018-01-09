@@ -1,0 +1,131 @@
+.contact_main {
+    margin: 20px auto 30px auto;
+    max-width: 650px;
+    padding: 0 20px;
+}
+
+.contact_title {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.contact_text {
+    font-size: 14px;
+    font-weight: 300;
+}
+
+.contact_form {
+    margin-top: 25px;
+
+    label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: #5a5a5a;
+        margin-bottom: 10px;
+    }
+    input {
+        font-size: 14px;
+        font-weight: 300;
+        padding: 15px;
+        border-radius: 5px;
+        width: 100%;
+    }
+    textarea {
+        width: 100%;
+        margin: 0;
+        height: 100px;
+        padding: 15px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+}
+
+.contact_form_fields {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.contact_form_field {
+    flex: 0 1 48%;
+    margin-bottom: 15px;
+}
+
+.contact_form_submit_wrapper {
+    margin-top: 30px;
+    text-align: right;
+}
+
+a.contact_form_submit {
+    font-weight: 300;
+    text-align: center;
+    display: inline-block;
+    background: $primary-color;
+    color: #fff;
+    padding: 18px 23px;
+    border-radius: 10px;
+    box-shadow: 0 5px 0 $company-drop-shadow;
+
+    &:hover {
+        color: #fff;
+        background: $light-primary-color;
+    }
+}
+
+.contact_direct {
+    background: $company-light-background;
+    padding: 35px 50px;
+}
+
+.contact_direct_title {
+    color: #6d6d6d;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.contact_direct_options {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    width: 100%;
+    height: 140px;
+}
+
+.contact_direct_option {
+    flex: 0 0 auto;
+    margin-bottom: 20px;
+    width: 200px;
+}
+
+.contact_direct_option_label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #a7a9ab;
+    margin-bottom: 6px;
+}
+
+.contact_direct_option_value {
+    font-weight: 300;
+    font-size: 15px;
+}
+
+a.contact_direct_option_value {
+    display: block;
+    font-weight: 300;
+    color: #333;
+    &:hover {
+        text-decoration: underline;
+        color: #333;
+    }
+}
+
+@include media("<=small") {
+    .contact_direct_options {
+        height: auto;
+    }
+}
