@@ -1,19 +1,38 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import { Location } from 'history'
 
 import Logo from '@components/shared/Logo'
 import SmallLogo from '@components/shared/SmallLogo'
+import App from '@models/state/app'
+import { State } from '@types'
 
-interface State {
+interface ComponentState {
     year: number
 }
 
-class Company extends React.Component<{}, State> {
-    constructor() {
-        super()
+interface ConnectProps {
+    location: Location
+}
+
+type Props = ConnectProps
+
+class Company extends React.Component<Props, ComponentState> {
+    constructor(props: Props) {
+        super(props)
 
         this.state = {
             year: (new Date()).getUTCFullYear()
+        }
+    }
+
+    componentDidUpdate(prevProps: Props) {
+        if (prevProps.location !== this.props.location) {
+            let scrollElem = document.getElementById('company_main')
+            if (scrollElem) {
+                scrollElem.scrollTo(0, 0)
+            }
         }
     }
 
@@ -33,7 +52,7 @@ class Company extends React.Component<{}, State> {
                         </div>
                     </div>
                 </div>
-                <div className="company_main">
+                <div className="company_main" id="company_main">
                     { this.props.children }
                     <footer className="company_footer">
                         <div className="company_footer_copyright">
@@ -48,6 +67,12 @@ class Company extends React.Component<{}, State> {
                 </div>
             </div>
         )
+    }
+}
+
+function mapStateToProps(state: State): ConnectProps {
+    return {
+        location: App.get(state, 'location')
     }
 }
 

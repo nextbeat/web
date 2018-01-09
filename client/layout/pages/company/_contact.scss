@@ -125,6 +125,14 @@ a.contact_direct_option_value {
 }
 
 @include media("<=small") {
+    .contact_form_field {
+        flex-basis: 100%;
+    }
+
+    a.contact_form_submit {
+        width: 100%;
+    }
+    
     .contact_direct_options {
         height: auto;
     }
