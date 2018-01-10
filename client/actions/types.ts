@@ -194,6 +194,10 @@ export enum ActionType {
      * PAGES *
      *********/
 
+    /* COMPANY */
+    SUBMIT_CONTACT_MESSAGE = 'SUBMIT_CONTACT_MESSAGE',
+    CLEAR_COMPANY = 'CLEAR_COMPANY',
+
     /* EDIT ROOM */
     EDIT_ROOM = 'EDIT_ROOM',
     UPDATE_EDIT_ROOM = 'UPDATE_EDIT_ROOM',
@@ -279,6 +283,7 @@ import { RoomActionAll } from './room'
 import { UploadActionAll } from './upload'
 import { UserActionAll } from './user'
 
+import { CompanyActionAll } from './pages/company'
 import { EditProfileActionAll } from './pages/editProfile'
 import { EditRoomActionAll } from './pages/editRoom'
 import { HomeActionAll } from './pages/home'
@@ -304,6 +309,7 @@ export type Action =
     RoomActionAll |
     UploadActionAll |
     UserActionAll |
+    CompanyActionAll |
     EditProfileActionAll |
     EditRoomActionAll |
     HomeActionAll |

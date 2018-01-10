@@ -39,7 +39,6 @@ export default (store: Store) => {
         {
             component: App,
             childRoutes: [
-                
                 { 
                     path: 'company',
                     getComponent: (nextState: any, cb: any) => {
@@ -68,16 +67,31 @@ export default (store: Store) => {
                                 }),
                             ]
                         },
+                        {
+                            path: 'contact',
+                            getComponent: (nextState: any, cb: any) => {
+                                import(/* webpackChunkName: contact' */ '../client/components/pages/company/contact/Contact').then(component => {
+                                    return cb(null, component.default)
+                                })
+                            },
+                            indexRoute: analyticsRoute(undefined, cb => {
+                                import('../client/components/pages/company/contact/ContactForm').then(component => {
+                                    return cb(null, component.default)
+                                })
+                            }),
+                            childRoutes: [
+                                analyticsRoute('success', cb => {
+                                    import('../client/components/pages/company/contact/ContactSuccess').then(component => {
+                                        return cb(null, component.default)
+                                    })
+                                })
+                            ]
+                        },
                         analyticsRoute('advertise', cb => {
                             import(/* webpackChunkName: 'advertising' */ '../client/components/pages/company/Advertising').then(component => {
                                 return cb(null, component.default)
                             })
                         }),
-                        analyticsRoute('contact', cb => {
-                            import(/* webpackChunkName: contact' */ '../client/components/pages/company/Contact').then(component => {
-                                return cb(null, component.default)
-                            })
-                        })
                     ]
                 },
                 {
