@@ -41,6 +41,7 @@ export default (store: Store) => {
             childRoutes: [
                 { 
                     path: 'company',
+                    indexRoute: { onEnter: (nextState: any, replace: any) => replace('/company/contact') },
                     getComponent: (nextState: any, cb: any) => {
                         import('../client/components/pages/company/Company').then(component => {
                             return cb(null, component.default)
@@ -49,6 +50,7 @@ export default (store: Store) => {
                     childRoutes: [
                         {
                             path: 'legal',
+                            indexRoute: { onEnter: (nextState: any, replace: any) => replace('/company/legal/terms') },
                             getComponent: (nextState: any, cb: any) => {
                                 import('../client/components/pages/company/legal/Legal').then(component => {
                                     return cb(null, component.default)
