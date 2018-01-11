@@ -37,6 +37,7 @@ interface ImageState {
 
     continuousPlayTimerId: number
     continuousPlayTimeLeft: number
+    continuousPlayDuration: number
 }
 
 class Image extends React.Component<Props, ImageState> {
@@ -69,7 +70,8 @@ class Image extends React.Component<Props, ImageState> {
             shouldDisplayControls: false,
             isFullScreen: false,
             continuousPlayTimerId: -1,
-            continuousPlayTimeLeft: 0
+            continuousPlayTimeLeft: 0,
+            continuousPlayDuration: 9
         }
     }
 
@@ -119,7 +121,7 @@ class Image extends React.Component<Props, ImageState> {
             return;
         }
         this.clearTimer()
-        this.runTimer(9, 500)
+        this.runTimer(this.state.continuousPlayDuration, 500)
     }
 
     clearTimer() {
@@ -242,7 +244,8 @@ class Image extends React.Component<Props, ImageState> {
 
     render() {
         let { image, decoration, hideControls, isContinuousPlayEnabled } = this.props
-        let { width, height, shouldDisplayControls, isFullScreen, continuousPlayTimeLeft } = this.state
+        let { width, height, shouldDisplayControls, isFullScreen, 
+              continuousPlayTimeLeft, continuousPlayDuration } = this.state
 
         const imageStyle = {
             display: image.isEmpty() ? 'none' : 'block'
@@ -259,6 +262,7 @@ class Image extends React.Component<Props, ImageState> {
             isFullScreen,
             isContinuousPlayEnabled,
             continuousPlayTimeLeft,
+            continuousPlayDuration,
             shouldDisplayControls
         }
 

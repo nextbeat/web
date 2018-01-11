@@ -184,7 +184,7 @@ class VideoControls extends React.Component<Props, State> {
         }
 
         const notScrubbableClass = isScrubbable ? "" : "not-scrubbable";
-        const displayControlsClass = shouldDisplayControls ? "display-controls" : "";
+        const displayControlsClass = shouldDisplayControls ? "display-controls-video" : "";
         const displayControlsVideoStyle = shouldDisplayControls ? { cursor: 'auto' } : { cursor: 'none' };
         const volumeIcon = volume === 0 ? "volume-mute" : (volume < 0.4 ? "volume-down" : "volume-up");
         const fullScreenIcon = isFullScreen ? "fullscreen-exit" : "fullscreen";
@@ -193,7 +193,7 @@ class VideoControls extends React.Component<Props, State> {
         const volumeActiveClass = isVolumeActive ? "active" : "";
 
         return (
-            <div className={`player_bottom ${displayControlsClass} ${notScrubbableClass}`} onClick={(e: React.MouseEvent<HTMLElement>) => {e.stopPropagation()}}>
+            <div className={`player_bottom player_bottom-video ${displayControlsClass} ${notScrubbableClass}`} onClick={(e: React.MouseEvent<HTMLElement>) => {e.stopPropagation()}}>
                 <div className="player_gradient-bottom"></div>
                 <div className="player_progress-bar-container">
                     <div className="player_progress-bar-padding" {...progressBarEvents}></div>

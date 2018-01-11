@@ -6,6 +6,7 @@ interface Props {
     isFullScreen: boolean
     isContinuousPlayEnabled: boolean
     continuousPlayTimeLeft: number
+    continuousPlayDuration: number
     
     fullScreen: () => void
     toggleContinuousPlay: () => void
@@ -19,17 +20,26 @@ class ImageControls extends React.Component<Props> {
 
     render() {
 
-        const { shouldDisplayControls, isFullScreen, isContinuousPlayEnabled,
-                fullScreen, toggleContinuousPlay, continuousPlayTimeLeft } = this.props
+        const { shouldDisplayControls, isFullScreen, isContinuousPlayEnabled, fullScreen, 
+                toggleContinuousPlay, continuousPlayTimeLeft, continuousPlayDuration } = this.props
 
-        const displayControlsClass = shouldDisplayControls ? "display-controls" : "";
+        const displayControlsClass = shouldDisplayControls ? "display-controls-image" : "";
         const fullScreenIcon = isFullScreen ? "fullscreen-exit" : "fullscreen";
         const autoplaySelectedClass = isContinuousPlayEnabled ? "player_control-autoplay-selected" : "";
         const timeLeft = Math.ceil(continuousPlayTimeLeft)
 
         return (
-            <div className={`player_bottom ${displayControlsClass}`}>
+            <div className={`player_bottom player_bottom-image not-scrubbable ${displayControlsClass}`}>
                 <div className="player_gradient-bottom"></div>
+                { isContinuousPlayEnabled &&
+                <div className="player_progress-bar-container">
+                    <div className="player_progress-bar-padding"></div>
+                    <div className="player_progress-bar">
+                        <div className="player_progress-play" style={{ transform: `scaleX(${ continuousPlayTimeLeft/continuousPlayDuration })` }}></div>
+                        <div className="player_progress-buffer" style={{ transform: `scaleX(${ continuousPlayTimeLeft/continuousPlayDuration })` }}></div>
+                    </div>
+                </div>
+                }
                 <div className="player_controls" id="player_controls">
                     <div className="player_controls-right">
                         <a className="player_control player_control-fullscreen" onClick={fullScreen}>
