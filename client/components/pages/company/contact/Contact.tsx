@@ -20,7 +20,7 @@ class Contact extends React.Component {
                         <div className="contact_direct_option">
                             <div className="contact_direct_option_label">ADDRESS</div>
                             <div className="contact_direct_option_value">
-                                3238 Casitas Ave <br />
+                                3249 Casitas Ave, Suite 210C<br />
                                 Los Angeles, CA 90039
                             </div>
                         </div>
