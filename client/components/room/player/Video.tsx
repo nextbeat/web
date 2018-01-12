@@ -54,6 +54,7 @@ interface VideoState {
     duration: number
     storedVolume: number
     isPlaying: boolean
+    hasPlayed: boolean
     isLoading: boolean
     shouldDisplayControls: boolean
     isFullScreen: boolean
@@ -123,6 +124,7 @@ class Video extends React.Component<Props, VideoState> {
             duration: 0.5, // not zero to avoid divide by zero bugs
             storedVolume: 1, // stores last set volume when volume = 0 due to muting
             isPlaying: false,
+            hasPlayed: false,
             isLoading: true,
             shouldDisplayControls: true,
             isFullScreen: false,
@@ -278,6 +280,7 @@ class Video extends React.Component<Props, VideoState> {
             currentTime: video.currentTime,
             timeIntervalId,
             isPlaying: true,
+            hasPlayed: true
         });
 
         if (video.currentTime === 0) {
@@ -441,7 +444,10 @@ class Video extends React.Component<Props, VideoState> {
             hls.destroy();
             this.setState({ hls: undefined });
         }
-        this.setState({ posterUrl: undefined })
+        this.setState({ 
+            posterUrl: undefined,
+            hasPlayed: false
+        })
     }
 
     playPause() {
@@ -521,8 +527,6 @@ class Video extends React.Component<Props, VideoState> {
             hoverTimeoutId
         });
     }
-
-
 
 
     // Analytics
@@ -633,7 +637,8 @@ class Video extends React.Component<Props, VideoState> {
 
     render() {
         const { video, decoration, volume, isIOS, prerollAd, authorUsername } = this.props;
-        const { shouldDisplayControls, isLoading, isPlaying, width, height, isAutoplayEnabled, posterUrl } = this.state;
+        const { shouldDisplayControls, isLoading, isPlaying, hasPlayed,
+                width, height, isAutoplayEnabled, posterUrl } = this.state;
 
         const videoContainerStyle = {
             display: video.isEmpty() && !prerollAd ? 'none' : 'block',
@@ -669,12 +674,14 @@ class Video extends React.Component<Props, VideoState> {
 
         let videoAttributes: any = {
             preload: "none",
-            controls: isIOS
+            playsInline: true,
+            controls: isIOS,
+            poster: posterUrl
         }
 
         const adClass = !!prerollAd ? 'video_container-ad' : ''
         // If autoplay is not enabled, we don't want to display ad text if the video has not begun
-        const shouldDisplayAdText = prerollAd && (isAutoplayEnabled || isPlaying)
+        const shouldDisplayAdText = prerollAd && (isAutoplayEnabled || hasPlayed)
 
         return (
             <div className={`video_container ${adClass}`} id="video_container" tabIndex={-1} style={videoContainerStyle} {...videoContainerEvents}>

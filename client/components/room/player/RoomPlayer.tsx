@@ -8,11 +8,13 @@ import Image from './Image'
 import ItemReference from './ItemReference'
 import Icon from '@components/shared/Icon'
 import Spinner from '@components/shared/Spinner'
+import Switch from '@components/shared/Switch'
 import CounterInner from '@components/room/counter/CounterInner'
 
-import { goBackward, goForward } from '@actions/room'
+import { goBackward, goForward, setContinuousPlay } from '@actions/room'
 import { selectDetailSection } from '@actions/pages/room'
 import Room from '@models/state/room'
+import App from '@models/state/app'
 import MediaItem from '@models/entities/mediaItem'
 import Ad from '@models/entities/ad'
 import { State, DispatchProps } from '@types'
@@ -29,9 +31,11 @@ interface ConnectProps {
     mediaItemsSize: number
     selectedMediaItem: MediaItem
     indexOfSelectedMediaItem: number
+    isIOS: boolean
 
     prerollAd: Ad | null
     hasPlayedPrerollAd: boolean
+    isContinuousPlayEnabled: boolean
 }
 
 type Props = OwnProps & ConnectProps & DispatchProps 
@@ -89,6 +93,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         this.handleBackward = this.handleBackward.bind(this)
         this.handleForward = this.handleForward.bind(this)
         this.handleCounterClick = this.handleCounterClick.bind(this)
+        this.toggleContinuousPlay = this.toggleContinuousPlay.bind(this)
         
         this.resize = this.resize.bind(this)
         this.handleFullScreen = this.handleFullScreen.bind(this)
@@ -211,6 +216,11 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         }
     }
 
+    toggleContinuousPlay() {
+        const { dispatch, isContinuousPlayEnabled, roomId } = this.props
+        dispatch(setContinuousPlay(roomId, !isContinuousPlayEnabled));
+    }
+
     // Render
 
     renderItem() {
@@ -248,7 +258,8 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         const { children, roomId, mediaItemsSize, 
                 indexOfSelectedMediaItem: index,
                 selectedMediaItem: item,
-                prerollAd, hasPlayedPrerollAd } = this.props;
+                prerollAd, hasPlayedPrerollAd, isIOS,
+                isContinuousPlayEnabled } = this.props;
 
         const { playerWidth, playerHeight, isFullScreen, 
                 isDisplayingFullScreenTooltip } = this.state;
@@ -267,7 +278,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
         const fullScreenClass = isFullScreen ? 'player_media-fullscreen' : '';
         const tooltipClass = isDisplayingFullScreenTooltip ? 'show' : 'hide';
-        
+        const navigationIOSClass = isIOS ? 'player_navigation-ios' : '';
         return (
             <div className="player_main">
                 { children }
@@ -281,11 +292,15 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                         </div>
                     </div>
                 </div>
-                <div className="player_navigation">
-                    <div style={{ display: 'flex', width: '100%', alignItems: 'stretch' }}>
+                <div className={`player_navigation ${navigationIOSClass}`}>
+                    <div className="player_navigation_inner">
                         <div className={`player_nav-button player_nav-backward ${leftDisabledClass}`} onClick={this.handleBackward}><Icon type="arrow-back" /></div>
                         <div className="player_nav-counter" onClick={this.handleCounterClick}><CounterInner roomId={roomId} /></div>
                         <div className={`player_nav-button player_nav-forward ${rightDisabledClass}`} onClick={this.handleForward}><Icon type="arrow-forward" /></div>
+                        <div className="player_nav-autoplay" onClick={this.toggleContinuousPlay}>
+                            <div className="player_nav-autoplay_title">AUTOPLAY</div>
+                            <Switch enabled={isContinuousPlayEnabled} className="player_nav-autoplay_switch" />
+                        </div>
                     </div>
                 </div>
                 <script dangerouslySetInnerHTML={getScript(resizePlayerOnLoad)} />
@@ -301,7 +316,9 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
         selectedMediaItem: Room.selectedMediaItem(state, ownProps.roomId),
         indexOfSelectedMediaItem: Room.indexOfSelectedMediaItem(state, ownProps.roomId),
         prerollAd: Room.ad(state, ownProps.roomId, 'preroll'),
-        hasPlayedPrerollAd: Room.get(state, ownProps.roomId, 'hasPlayedPrerollAd')
+        hasPlayedPrerollAd: Room.get(state, ownProps.roomId, 'hasPlayedPrerollAd'),
+        isContinuousPlayEnabled: Room.get(state, ownProps.roomId, 'isContinuousPlayEnabled', false),
+        isIOS: App.isIOS(state)
     }
 }
 

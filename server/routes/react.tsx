@@ -69,9 +69,11 @@ function renderFullPage(html, head, initialState) {
         return (process.env.NODE_ENV === "mac" || process.env.NODE_ENV === "mac-dev") ? local : prod
     }
 
-    let jsPath = envPath('http://localhost:9090/js/bundle.js', `/${appManifest['app.js']}`)
-    let vendorsPath = envPath(`http://localhost:3000/js/vendors.dll.js`, `/js/${vendorsManifest['vendors.js']}`)
-    let cssPath = envPath('http://localhost:9090/css/main.css', `/${appManifest['app.css']}`)
+    let localHost = 'localhost'
+
+    let jsPath = envPath(`http://${localHost}:9090/js/bundle.js`, `/${appManifest['app.js']}`)
+    let vendorsPath = envPath(`http://${localHost}:3000/js/vendors.dll.js`, `/js/${vendorsManifest['vendors.js']}`)
+    let cssPath = envPath(`http://${localHost}:9090/css/main.css`, `/${appManifest['app.css']}`)
 
     // Note: initial pageview is removed from the GA snippet because it is handled in middleware
 

@@ -55,12 +55,6 @@
         margin: 0;
         transform: translateY(1px);
     }
-
-    // .player_bottom-image.display-controls-image & {
-    //     transform: translateY(-38px);
-    //     width: calc(100% - 26px);
-    //     margin: 0 13px;
-    // }
 }
 
 .player_progress-bar-padding {
@@ -143,11 +137,14 @@
 
     .player_bottom-image & {
         opacity: 0;
-        transition: opacity 0.1s ease-in;
+        visibility: hidden;
+        transition: visibility 0s linear 0.1s, opacity 0.1s;
     }
 
     .player_bottom-image.display-controls-image & {
         opacity: 1;
+        visibility: visible;
+        transition: visibility 0s linear 0s, opacity 0.1s;
     }
 }
 

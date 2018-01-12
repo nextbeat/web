@@ -24,6 +24,7 @@ interface ConnectProps {
     shouldForceRotation: boolean
     isContinuousPlayEnabled: boolean
     selectedMediaItemId?: number
+    isIOS: boolean
 }
 
 type Props = OwnProps & ConnectProps & DispatchProps
@@ -167,12 +168,20 @@ class Image extends React.Component<Props, ImageState> {
     // Events
 
     handleOnMouseOver() {
+        if (this.props.isIOS) {
+            return;
+        }
+
         this.setState({
             shouldDisplayControls: true
         })
     }
 
     handleOnMouseOut() {
+        if (this.props.isIOS) {
+            return;
+        }
+        
         this.setState({
             shouldDisplayControls: false
         })
@@ -288,6 +297,7 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
         shouldForceRotation: App.get(state, 'browser') === 'Chrome' && parseInt(App.get(state, 'version')) === 52,
         isContinuousPlayEnabled: !!ownProps.roomId && Room.get(state, ownProps.roomId, 'isContinuousPlayEnabled', false),
         selectedMediaItemId: ownProps.roomId && Room.get(state, ownProps.roomId, 'selectedMediaItemId'),
+        isIOS: App.isIOS(state)
     }
 }
 

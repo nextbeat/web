@@ -10,6 +10,12 @@
     }
 }
 
+.player_navigation_inner {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+
 .player_nav-button {
     flex: 1;
     position: relative;
@@ -71,6 +77,27 @@
 
 }
 
+.player_nav-autoplay {
+    display: none;
+    width: 78px;
+    flex: 0 0 auto;
+    border-left: 1px solid #eee;
+    padding: 10px 0;
+    flex-direction: column;
+    align-items: center;
+}
+
+.player_nav-autoplay_title {
+    font-size: 11px;
+    font-weight: 500;
+    color: #666;
+    margin-bottom: 3px;
+}
+
+.player_nav-autoplay_switch {
+    width: 35px;
+}
+
 // Animation to indicate progress when using arrow keys to navigate
 .player_nav-button-flash {
     animation-duration: 0.15s;
@@ -85,5 +112,27 @@
     }
     to {
         box-shadow: inset 0px 0px 8px 2px rgba($primary-color, 0.15);
+    }
+}
+
+// iOS specific styles 
+
+.player_navigation-ios {
+    .player_nav-counter {
+        order: 0;
+        width: 78px;
+    }
+
+    .player_nav-backward {
+        order: 1;
+    }
+
+    .player_nav-forward {
+        order: 2;
+    }
+
+    .player_nav-autoplay {
+        order: 3;
+        display: flex;
     }
 }
