@@ -22,9 +22,12 @@ interface OwnProps {
 
 interface ConnectProps {
     shouldForceRotation: boolean
-    isContinuousPlayEnabled: boolean
     selectedMediaItemId?: number
     isIOS: boolean
+
+    isContinuousPlayEnabled: boolean
+    continuousPlayCountdownTimeLeft: number
+    continuousPlayCountdownDuration: number
 }
 
 type Props = OwnProps & ConnectProps & DispatchProps
@@ -35,10 +38,6 @@ interface ImageState {
     scale: number
     shouldDisplayControls: boolean
     isFullScreen: boolean
-
-    continuousPlayTimerId: number
-    continuousPlayTimeLeft: number
-    continuousPlayDuration: number
 }
 
 class Image extends React.Component<Props, ImageState> {
@@ -49,10 +48,6 @@ class Image extends React.Component<Props, ImageState> {
 
     constructor(props: Props) {
         super(props)
-
-        this.startContinuousPlayTimer = this.startContinuousPlayTimer.bind(this)
-        this.runTimer = this.runTimer.bind(this)
-        this.clearTimer = this.clearTimer.bind(this)
 
         this.fullScreen = this.fullScreen.bind(this)
         this.toggleContinuousPlay = this.toggleContinuousPlay.bind(this)
@@ -69,10 +64,7 @@ class Image extends React.Component<Props, ImageState> {
             height: 0,
             scale: 1,
             shouldDisplayControls: false,
-            isFullScreen: false,
-            continuousPlayTimerId: -1,
-            continuousPlayTimeLeft: 0,
-            continuousPlayDuration: 9
+            isFullScreen: false
         }
     }
 
@@ -91,7 +83,6 @@ class Image extends React.Component<Props, ImageState> {
         $(window).on('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
 
         this.calculateDimensions(this.props.image)
-        this.startContinuousPlayTimer()
     }
 
     componentDidUpdate(prevProps: Props) {
@@ -101,53 +92,10 @@ class Image extends React.Component<Props, ImageState> {
         {
             this.calculateDimensions(this.props.image)
         }
-
-        if (prevProps.image !== this.props.image
-            || prevProps.isContinuousPlayEnabled !== this.props.isContinuousPlayEnabled) 
-        {
-            this.startContinuousPlayTimer()
-        }
     }
 
     componentWillUnmount() {
         $(window).off('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
-        this.clearTimer()
-    }
-
-    // Continuous play
-
-    startContinuousPlayTimer() {
-        const { isContinuousPlayEnabled, image } = this.props
-        if (!isContinuousPlayEnabled || image.isEmpty()) {
-            return;
-        }
-        this.clearTimer()
-        this.runTimer(this.state.continuousPlayDuration, 500)
-    }
-
-    clearTimer() {
-        if (this.state.continuousPlayTimerId > 0) {
-            window.clearTimeout(this.state.continuousPlayTimerId)
-        }
-    }
-
-    runTimer(secondsLeft: number, delay: number) {
-        if (secondsLeft <= 0) {
-            const { dispatch, roomId, selectedMediaItemId: itemId } = this.props
-            if (roomId && itemId) {
-                dispatch(playbackDidEnd(roomId, itemId, 'mediaItem'))
-            }
-            return;
-        }
-
-        let continuousPlayTimerId = window.setTimeout(() => {
-            this.runTimer(secondsLeft-(delay/1000), delay)
-        }, delay)
-
-        this.setState({ 
-            continuousPlayTimerId,
-            continuousPlayTimeLeft: secondsLeft
-        })
     }
 
     // Actions
@@ -252,9 +200,9 @@ class Image extends React.Component<Props, ImageState> {
     }
 
     render() {
-        let { image, decoration, hideControls, isContinuousPlayEnabled } = this.props
-        let { width, height, shouldDisplayControls, isFullScreen, 
-              continuousPlayTimeLeft, continuousPlayDuration } = this.state
+        let { image, decoration, hideControls, isContinuousPlayEnabled,
+              continuousPlayCountdownDuration, continuousPlayCountdownTimeLeft } = this.props
+        let { width, height, shouldDisplayControls, isFullScreen } = this.state
 
         const imageStyle = {
             display: image.isEmpty() ? 'none' : 'block'
@@ -270,8 +218,8 @@ class Image extends React.Component<Props, ImageState> {
             toggleContinuousPlay: this.toggleContinuousPlay,
             isFullScreen,
             isContinuousPlayEnabled,
-            continuousPlayTimeLeft,
-            continuousPlayDuration,
+            continuousPlayTimeLeft: continuousPlayCountdownTimeLeft,
+            continuousPlayDuration: continuousPlayCountdownDuration,
             shouldDisplayControls
         }
 
@@ -295,9 +243,12 @@ class Image extends React.Component<Props, ImageState> {
 function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     return {
         shouldForceRotation: App.get(state, 'browser') === 'Chrome' && parseInt(App.get(state, 'version')) === 52,
-        isContinuousPlayEnabled: !!ownProps.roomId && Room.get(state, ownProps.roomId, 'isContinuousPlayEnabled', false),
         selectedMediaItemId: ownProps.roomId && Room.get(state, ownProps.roomId, 'selectedMediaItemId'),
-        isIOS: App.isIOS(state)
+        isIOS: App.isIOS(state),
+
+        isContinuousPlayEnabled: !!ownProps.roomId && Room.get(state, ownProps.roomId, 'isContinuousPlayEnabled', false),
+        continuousPlayCountdownTimeLeft: !!ownProps.roomId ? Room.get(state, ownProps.roomId, 'continuousPlayCountdownTimeLeft') : 0,
+        continuousPlayCountdownDuration: !!ownProps.roomId ? Room.get(state, ownProps.roomId, 'continuousPlayCountdownDuration') : 1
     }
 }
 

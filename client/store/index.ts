@@ -14,6 +14,7 @@ const actionTypesToIgnore = [
     ActionType.RESIZE,
     ActionType.USE_CHAT,
     ActionType.HAS_NAVIGATED,
+    ActionType.UPDATE_CONTINUOUS_PLAY_COUNTDOWN
 ]
 
 if (process.env.NODE_ENV !== "production") {

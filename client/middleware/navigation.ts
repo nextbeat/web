@@ -1,7 +1,13 @@
 import debounce from 'lodash-es/debounce'
 import assign from 'lodash-es/assign'
 import { ActionType, Action } from '@actions/types'
-import { markStack, goForward } from '@actions/room'
+import { 
+    markStack, 
+    goForward, 
+    playbackDidEnd, 
+    updateContinuousPlayCountdown,
+    cancelContinuousPlayCountdown
+} from '@actions/room'
 import CurrentUser from '@models/state/currentUser'
 import RoomPage from '@models/state/pages/room'
 import Room from '@models/state/room'
@@ -12,12 +18,42 @@ let markStackFn = debounce((store, next, action) => {
     store.dispatch(markStack(action.roomId, action.lastRead))
 }, 1000)
 
+function runContinuousPlayCountdown(store: Store, action: Action, secondsLeft: number, delay: number, duration: number) {
+    let selectedMediaItem = Room.selectedMediaItem(store.getState(), action.roomId)
+
+    if (secondsLeft <= 0) {
+        store.dispatch(playbackDidEnd(action.roomId, selectedMediaItem.get('id'), 'mediaItem'))
+        return;
+    }
+
+    let continuousPlayTimerId = window.setTimeout(() => {
+        runContinuousPlayCountdown(store, action, secondsLeft-(delay/1000), delay, duration)
+    }, delay)
+
+    store.dispatch(updateContinuousPlayCountdown(action.roomId, continuousPlayTimerId, secondsLeft, duration))
+}
+
+function startContinuousPlayCountdown(store: Store, action: Action) {
+    runContinuousPlayCountdown(store, action, 9, 500, 9)
+}
+
+function stopContinuousPlayCountdown(store: Store, action: Action) {
+    const timerId = Room.get(store.getState(), action.roomId, 'continuousPlayCountdownTimerId')
+    if (timerId > 0) {
+        window.clearTimeout(timerId)
+        store.dispatch(cancelContinuousPlayCountdown(action.roomId))
+    }
+}
+
 export default (store: Store) => (next: Dispatch) => (action: Action) => {
     
     const state = store.getState()    
 
     if (action.type === ActionType.SELECT_MEDIA_ITEM) 
     {
+        // Cancel previous continuous play countdown timer, if it exists
+        stopContinuousPlayCountdown(store, action)
+
         /* Calculate number of media items in the range between the
          * last seen media item and the currently selected media item.
          * Decrement the unreadCount accordingly.
@@ -47,6 +83,11 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
             }
         }
 
+        // Start countdown if continuous play is enabled
+        if (Room.get(state, action.roomId, 'isContinuousPlayEnabled') && selectedMediaItem.get('type') === 'photo') {
+            startContinuousPlayCountdown(store, action)
+        }
+
         next(action)
     } 
     else if (action.type === ActionType.RECEIVE_ROOM_MARKED) {
@@ -69,6 +110,20 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
             // Automatically select next media item
             store.dispatch(goForward(action.roomId))
         }
+        next(action);
+    }
+    else if (action.type === ActionType.SET_CONTINUOUS_PLAY) 
+    {
+        // Start the countdown if the selected media item is an image
+        if (action.enabled) {
+            let selectedMediaItem = Room.selectedMediaItem(store.getState(), action.roomId)
+            if (selectedMediaItem.get('type') === 'photo') {
+                startContinuousPlayCountdown(store, action)
+            }
+        } else {
+            stopContinuousPlayCountdown(store, action)
+        }
+        next(action);
     }
     else
     {

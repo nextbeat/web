@@ -46,6 +46,8 @@ export type RoomActionAll =
     DidPlayVideoAction |
     PlaybackDidEndAction |
     SetContinuousPlayAction |
+    UpdateContinuousPlayCountdownAction |
+    CancelContinuousPlayCountdownAction |
     SelectMediaItemAction |
     MarkStackAction |
     RoomAdsAction |
@@ -534,6 +536,34 @@ export function setContinuousPlay(roomId: number, enabled: boolean): SetContinuo
         type: ActionType.SET_CONTINUOUS_PLAY,
         roomId,
         enabled
+    }
+}
+
+export interface UpdateContinuousPlayCountdownAction extends GenericAction {
+    type: ActionType.UPDATE_CONTINUOUS_PLAY_COUNTDOWN,
+    roomId: number
+    timerId: number
+    timeLeft: number
+    duration: number
+}
+export function updateContinuousPlayCountdown(roomId: number, timerId: number, timeLeft: number, duration: number): UpdateContinuousPlayCountdownAction {
+    return {
+        type: ActionType.UPDATE_CONTINUOUS_PLAY_COUNTDOWN,
+        roomId,
+        timerId,
+        timeLeft,
+        duration
+    }
+}
+
+export interface CancelContinuousPlayCountdownAction extends GenericAction {
+    type: ActionType.CANCEL_CONTINUOUS_PLAY_COUNTDOWN,
+    roomId: number
+}
+export function cancelContinuousPlayCountdown(roomId: number): CancelContinuousPlayCountdownAction {
+    return {
+        type: ActionType.CANCEL_CONTINUOUS_PLAY_COUNTDOWN,
+        roomId
     }
 }
 

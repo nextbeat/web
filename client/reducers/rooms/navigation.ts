@@ -14,6 +14,18 @@ export default function(state = Map(), action: Action) {
         return state.set('selectedComment', action.comment.get('id'))
     } else if (action.type === ActionType.SET_CONTINUOUS_PLAY) {
         return state.set('isContinuousPlayEnabled', action.enabled)
+    } else if (action.type === ActionType.UPDATE_CONTINUOUS_PLAY_COUNTDOWN) {
+        return state.merge({
+            continuousPlayCountdownTimerId: action.timerId,
+            continuousPlayCountdownTimeLeft: action.timeLeft,
+            continuousPlayCountdownDuration: action.duration
+        })
+    } else if (action.type === ActionType.CANCEL_CONTINUOUS_PLAY_COUNTDOWN) {
+        return state.deleteAll([
+            'continuousPlayCountdownTimerId', 
+            'continuousPlayCountdownTimeLeft', 
+            'continuousPlayCountdownDuration'
+        ])
     }
     return state
 }

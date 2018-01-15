@@ -57,6 +57,9 @@ export interface RoomProps {
 
     videoDidPlay: boolean
     isContinuousPlayEnabled: boolean
+    continuousPlayCountdownTimerId: number
+    continuousPlayCountdownTimeLeft: number
+    continuousPlayCountdownDuration: number
 }
 
 const keyMap: {[key in keyof RoomProps]: string[]} = {
@@ -104,7 +107,10 @@ const keyMap: {[key in keyof RoomProps]: string[]} = {
     'hasPlayedPrerollAd': ['ads', 'hasPlayedPrerollAd'],
     // playback
     'videoDidPlay': ['navigation', 'videoDidPlay'],
-    'isContinuousPlayEnabled': ['navigation', 'isContinuousPlayEnabled']
+    'isContinuousPlayEnabled': ['navigation', 'isContinuousPlayEnabled'],
+    'continuousPlayCountdownTimerId': ['navigation', 'continuousPlayCountdownTimerId'],
+    'continuousPlayCountdownTimeLeft': ['navigation', 'continuousPlayCountdownTimeLeft'],
+    'continuousPlayCountdownDuration': ['navigation', 'continuousPlayCountdownDuration']
 }
 
 export default class Room {
