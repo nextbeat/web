@@ -674,7 +674,7 @@ class Video extends React.Component<Props, VideoState> {
 
         let videoAttributes: any = {
             preload: "none",
-            playsInline: true,
+            // playsInline: true,
             controls: isIOS,
             poster: posterUrl
         }
