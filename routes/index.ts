@@ -4,6 +4,7 @@ import { Route, Redirect } from 'react-router'
 import App from '../client/components/App'
 import { gaPage } from '../client/actions/ga'
 import { Store } from '../client/types'
+import AppModel from '../client/models/state/app'
 import CurrentUser from '../client/models/state/currentUser'
 
 export default (store: Store) => {
@@ -41,6 +42,12 @@ export default (store: Store) => {
             childRoutes: [
                 { 
                     path: 'company',
+                    onEnter: (nextState: any, replace: any) => {
+                        // Disable brand-facing pages in production until ready
+                        if (AppModel.get(store.getState(), 'environment') === 'production') {
+                            replace('/')
+                        }
+                    },
                     indexRoute: { onEnter: (nextState: any, replace: any) => replace('/company/contact') },
                     getComponent: (nextState: any, cb: any) => {
                         import('../client/components/pages/company/Company').then(component => {
