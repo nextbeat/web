@@ -84,7 +84,8 @@
 }
 
 .advertising_users {
-    color: #424242;
+    color: #eee;
+    background: #424242;
     padding: 60px 50px;
 }
 
@@ -97,7 +98,7 @@
 }
 
 .advertising_users_stats_title {
-    color: #7588ae;
+    color: #e4e4e4;
     font-size: 18px;
     font-weight: 500;
     margin-bottom: 10px;
@@ -129,11 +130,84 @@
 .advertising_users_stat_label {
     font-size: 18px;
     font-weight: 300;
+    color: #aaa;
 }
 
 .advertising_users_text {
     flex: 0 1 390px;
     margin-left: 10px;
+}
+
+.advertising_nextbeat {
+    background: #fbfbfb;
+    margin-bottom: -40px;
+}
+
+.advertising_nextbeat_container {
+    margin: 0 auto;
+    position: relative;
+    top: -20px;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px 0 rgba(#000, 0.15);
+    background: #fff;
+
+    max-width: 900px;
+
+    @include media('<=930px') {
+        max-width: 700px;
+    }
+
+    @include media('<=730px') {
+        max-width: auto;
+        margin: 0 15px;
+    }
+}
+
+.advertising_nextbeat_info {
+    padding: 30px 85px 20px 85px;
+    text-align: center;
+
+    p {
+        color: #777;
+        line-height: 170%;
+    }
+
+    h1 {
+        font-size: 24px;
+        font-weight: 500;
+    }
+
+    @include media('<=730px') {
+        padding: 25px 50px 15px 50px;
+    }
+}
+
+.advertising_nextbeat_stats {
+    background: #f0f0f0;
+    padding: 25px 100px;
+    border-radius: 0 0 8px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    @include media('<=930px') {
+        padding: 25px 60px;
+    }
+
+    @include media('<=730px') {
+        padding: 25px 40px;
+    }
+}
+
+.advertising_nextbeat_stat {
+    text-align: center;
+    max-width: 290px;
+    color: #666;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 140%;
+    margin: 0 10px;
+    letter-spacing: 0.02em;
 }
 
 .advertising_store {
@@ -192,7 +266,7 @@ a.advertising_action_button {
     }
 
     .advertising_users {
-        padding: 35px 30px;
+        padding: 35px 30px 50px 30px;
     }
 
     .advertising_content {
@@ -241,6 +315,21 @@ a.advertising_action_button {
 
     .advertising_users_stat_label {
         font-size: 16px;
+    }
+
+    .advertising_nextbeat_intro {
+        padding: 25px 35px;
+        p {
+            line-height: 160%;
+        }
+    }
+
+    .advertising_nextbeat_stats {
+        flex-direction: column;
+    }
+
+    .advertising_nextbeat_stat {
+        margin: 10px 0;
     }
 
 }

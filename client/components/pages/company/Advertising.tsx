@@ -33,7 +33,19 @@ class Advertising extends React.Component {
                         <div className="advertising_text advertising_users_text">
                             <h1>Users hang out.</h1>
                             <p>Because of the unique way content is added to rooms on Nextbeat, audiences loiter and wait for new posts to arrive. This “downtime” can be used to drive active buyers to your brand.</p>
-                            <p><a>Learn more about how Nextbeat works.</a></p>
+                        </div>
+                    </div>
+                </div>
+                <div className="advertising_nextbeat">
+                    <div className="advertising_nextbeat_container">
+                        <div className="advertising_nextbeat_info advertising_text">
+                            <h1>How does Nextbeat work?</h1>
+                            <p>Nextbeat is a video platform. Creators host <b>rooms</b> where they post video updates over several hours for a wide audiences. We have a suite of community features which let creators and audiences engage interactively in real time.</p>
+                            <p>On average, our featured creators upload 20 minutes of original video content over 3 hours in the form of multiple post updates.</p>
+                        </div>
+                        <div className="advertising_nextbeat_stats">
+                            <div className="advertising_nextbeat_stat">Audiences watch an average of <b>82%</b> of each video</div>
+                            <div className="advertising_nextbeat_stat">Average number of videos in a room: <b>20</b></div>
                         </div>
                     </div>
                 </div>
