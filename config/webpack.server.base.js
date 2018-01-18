@@ -67,8 +67,17 @@ module.exports = {
             },
             {
                 test: /\.(gif|png|jpe?g)$/,
-                loader: 'file-loader?name=./images/[hash:16].[ext]',
-                exclude: /node_modules/
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[hash:16].[ext]',
+                            emitFile: false,
+                            publicPath: '/images/',
+                        }
+                    }
+                ]
             },
             {
                 test: /\.md$/,
