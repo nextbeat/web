@@ -1,12 +1,12 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import debounce from 'lodash-es/debounce'
-import * as Hls from 'hls.js'
 import { toggleFullScreen, isFullScreen } from '../../../utils'
 
 import Decoration from './Decoration'
 import VideoControls from './VideoControls'
 import Spinner from '@components/shared/Spinner'
+import Icon from '@components/shared/Icon'
 import { setVideoVolume } from '@actions/app'
 import { logVideoImpression } from '@actions/ga'
 import { didPlayVideo, playbackDidEnd, setContinuousPlay } from '@actions/room'
@@ -17,16 +17,15 @@ import { State, DispatchProps } from '@types'
 
 const START_IMPRESSION_WAIT_TIME = 500;
 
-function canPlayHlsNative(videoElem: HTMLVideoElement) {
-    return videoElem.canPlayType && !!videoElem.canPlayType('application/vnd.apple.mpegURL')
-}
-
 interface OwnProps {
     video: State
-    roomId?: number
     decoration?: State
-    alternateVideo?: State
-    prerollAd?: Ad
+
+    roomId?: number
+    itemId?: number
+    itemType?: 'ad' | 'mediaItem'
+    itemUrl?: string
+    posterUrl?: string 
 
     shouldAutoplay?: boolean
 
@@ -42,20 +41,25 @@ interface ConnectProps {
     volume: number
     isContinuousPlayEnabled: boolean
 
-    selectedMediaItemId?: number
-    authorUsername?: string
+    authorUsername: string
 }
 
 type Props = OwnProps & ConnectProps & DispatchProps
+
+enum LoadState {
+    Unavailable = 'UNAVAILABLE',
+    Loading = 'LOADING',
+    Playing = 'PLAYING',
+    Paused = 'PAUSED',
+    WaitingToPlay = 'WAITING_TO_PLAY'
+}
 
 interface VideoState {
     currentTime: number
     loadedDuration: number
     duration: number
     storedVolume: number
-    isPlaying: boolean
-    hasPlayed: boolean
-    isLoading: boolean
+    loadState: LoadState
     shouldDisplayControls: boolean
     isFullScreen: boolean
     timeIntervalId: number
@@ -64,9 +68,7 @@ interface VideoState {
     width: number
     height: number
     scale: number
-    hls?: Hls,
     isAutoplayEnabled: boolean
-    posterUrl?: string
 }
 
 class Video extends React.Component<Props, VideoState> {
@@ -76,13 +78,13 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     private _controls: VideoControls
+    private _videoElem: HTMLVideoElement
 
     constructor(props: Props) {
         super(props);
 
         this.shouldForceVideoRotation = this.shouldForceVideoRotation.bind(this);
         this.shouldForceVideoResizing = this.shouldForceVideoResizing.bind(this);
-        this.displayedVideo = this.displayedVideo.bind(this);
         this.calculateDimensions = this.calculateDimensions.bind(this);
 
         this.didLoadMetadata = this.didLoadMetadata.bind(this);
@@ -124,9 +126,7 @@ class Video extends React.Component<Props, VideoState> {
             loadedDuration: 0,
             duration: 0.5, // not zero to avoid divide by zero bugs
             storedVolume: 1, // stores last set volume when volume = 0 due to muting
-            isPlaying: false,
-            hasPlayed: false,
-            isLoading: true,
+            loadState: LoadState.Unavailable,
             shouldDisplayControls: true,
             isFullScreen: false,
             timeIntervalId: -1,
@@ -146,7 +146,7 @@ class Video extends React.Component<Props, VideoState> {
 
         video.addEventListener('loadedmetadata', this.didLoadMetadata);
         video.addEventListener('canplay', this.canPlay);
-        video.addEventListener('playing', this.isPlaying);
+        video.addEventListener('play', this.isPlaying);
         video.addEventListener('pause', this.didPause);
         video.addEventListener('waiting', this.isWaiting);
         video.addEventListener('progress', this.didProgressDownload);
@@ -178,12 +178,12 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     componentDidUpdate(prevProps: Props) {
-        if (this.displayedVideo(prevProps) !== this.displayedVideo(this.props)) 
+        if (prevProps.video !== this.props.video) 
         {
             this.logImpression();
             this.loadVideo();
 
-            if (this.displayedVideo(this.props).isEmpty()) {
+            if (this.props.video.isEmpty()) {
                 // Video element is empty, meaning the next media item is 
                 // an image. On iOS devices, we need to manually exit
                 // out of fullscreen in this case.
@@ -213,19 +213,8 @@ class Video extends React.Component<Props, VideoState> {
         return browser === 'Chrome' && parseInt(version) === 52;
     }
 
-    displayedVideo(props?: Props): State {
-        props = props || this.props
-        const { prerollAd, video, alternateVideo } = props;
-
-        const videoPlayer = document.getElementById('video_player') as HTMLVideoElement;
-
-        if (prerollAd) {
-            return prerollAd.video();
-        } else if (video.get('type') === 'hls' && !(canPlayHlsNative(videoPlayer) || Hls.isSupported()) && alternateVideo) {
-            return alternateVideo;
-        } else {
-            return video;
-        }
+    posterUrl() : string | undefined {
+        return this.props.posterUrl || this.props.video.get('poster_url')
     }
 
     // Events 
@@ -237,9 +226,9 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     calculateDimensions() {
-        const { containerWidth, containerHeight } = this.props
+        const { containerWidth, containerHeight, video } = this.props
 
-        const videoRatio = this.displayedVideo().get('width')/this.displayedVideo().get('height')
+        const videoRatio = video.get('width')/video.get('height')
         const containerRatio = containerWidth/containerHeight
 
         if (videoRatio > containerRatio) {
@@ -276,81 +265,70 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     canPlay() {
-        this.setState({
-            isLoading: false
-        })
+        // this.setState({
+        //     isLoading: false
+        // })
     }
 
     isPlaying() {
-        const video = document.getElementById('video_player') as HTMLVideoElement;
-
-        clearInterval(this.state.timeIntervalId);
-        const timeIntervalId = window.setInterval(this.didUpdateTime, 500);
-
-        if (video.readyState < 4) {
-            return;
-        }
-
-        this.startNewImpression()
-
-        this.setState({
-            currentTime: video.currentTime,
-            timeIntervalId,
-            isPlaying: true,
-            hasPlayed: true
-        });
-
-        if (video.currentTime === 0) {
-            this.hideControlsAfterDelay();
-            this.setState({
-                shouldDisplayControls: true
-            })
-        } 
-
-        // record that video has been played if in room
-        const { roomId, dispatch } = this.props
-        if (roomId) {
-            dispatch(didPlayVideo(roomId))
-        }
-
         process.nextTick(() => {
+            clearInterval(this.state.timeIntervalId);
+            const timeIntervalId = window.setInterval(this.didUpdateTime, 500);
+    
+            console.log('in isplaying', this._videoElem.readyState);
+
+            this.startNewImpression()
+
             this.setState({
-                posterUrl: undefined
-            })
-        });
+                currentTime: this._videoElem.currentTime,
+                timeIntervalId,
+                loadState: LoadState.Playing
+            });
+    
+            if (this._videoElem.currentTime === 0) {
+                this.hideControlsAfterDelay();
+                this.setState({
+                    shouldDisplayControls: true
+                })
+            } 
+    
+            // record that video has been played if in room
+            const { roomId, dispatch } = this.props
+            if (roomId) {
+                dispatch(didPlayVideo(roomId))
+            }
+        })
+
     }
 
     didPause() {
-        const video = document.getElementById('video_player') as HTMLVideoElement;
         clearInterval(this.state.timeIntervalId);
+
+        if (this.state.loadState === LoadState.WaitingToPlay) {
+            return;
+        }
 
         // record video impression if one is active
         this.logImpression();
 
         this.setState({
-            currentTime: video.currentTime,
-            isPlaying: false,
+            currentTime: this._videoElem.currentTime,
+            loadState: LoadState.Paused,
             shouldDisplayControls: true
         });
     }
 
     didEnd() {
-        const { roomId, selectedMediaItemId, prerollAd, video, dispatch } = this.props
-        if (roomId) {
-            if (prerollAd) {
-                dispatch(playbackDidEnd(roomId, prerollAd.get('id'), 'ad'))
-            } else if (selectedMediaItemId) {
-                dispatch(playbackDidEnd(roomId, selectedMediaItemId, 'mediaItem'))
-            }
+        const { roomId, itemType, itemId, dispatch } = this.props
+        if (roomId && itemId && itemType) {
+            dispatch(playbackDidEnd(roomId, itemId, itemType))
         }
     }
 
     isWaiting() {
-        const video = document.getElementById('video_player');
-
         this.setState({
-            isPlaying: false
-        });
+            loadState: LoadState.Paused
+        })
     }
 
     didProgressDownload() {
@@ -367,64 +345,25 @@ class Video extends React.Component<Props, VideoState> {
     // Actions
 
     loadVideo() {
-        const video = this.displayedVideo();
+        const { video } = this.props
 
         this.unloadVideo();
 
-        clearInterval(this.state.timeIntervalId);
-        clearInterval(this.state.hoverTimeoutId);
-
-        let videoPlayer = document.getElementById('video_player') as HTMLVideoElement;
-
-        if (video.get('type') === 'hls') 
-        {
-            if (canPlayHlsNative(videoPlayer)) 
-            {
-                videoPlayer.src = video.get('url'); 
-            } 
-            else if (Hls.isSupported()) 
-            {
-                // use hls.js player
-                var hls = new Hls();
-                hls.attachMedia(videoPlayer);
-                hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-                    hls.loadSource(video.get('url'));
-                    hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-                        videoPlayer.play();
-                    });
-                });
-                this.setState({ hls })
-            } 
-        } 
-        else 
-        {
-            videoPlayer.src = video.get('url')
-        }
-
+        this._videoElem.src = video.get('url')
         if (video.get('type') === 'objectURL') {
-            videoPlayer.addEventListener('loadeddata', () => {
+            this._videoElem.addEventListener('loadeddata', () => {
                 URL.revokeObjectURL(video.get('url'))
             })
         }
 
-        videoPlayer.volume = this.props.volume
-
+        this._videoElem.volume = this.props.volume
         this.calculateDimensions();
 
         this.setState({
-            currentTime: 0,
-            duration: 0.5,
-            loadedDuration: 0
-        });
+            loadState: LoadState.Loading
+        })
 
-        window.setTimeout(() => {
-            let videoPlayer = document.getElementById('video_player') as HTMLVideoElement;
-            if (videoPlayer.readyState < 4) {
-                this.setState({ isLoading: true })
-            }
-        }, 100)
-
-        videoPlayer.load();
+        this._videoElem.load();
     }
 
     startPlayback() {
@@ -442,6 +381,7 @@ class Video extends React.Component<Props, VideoState> {
                 })
                 .catch((e) => {
                     // Cannot autoplay
+                    console.log(e);
                     this.setLoadState(false)
                 })
             } else {
@@ -454,59 +394,50 @@ class Video extends React.Component<Props, VideoState> {
     }    
 
     setLoadState(canAutoplay: boolean) {
-        // If the preroll ad is playing, display the 
-        // preroll poster only if autoplay is enabled
-        const { prerollAd, video } = this.props
-        const posterUrl = prerollAd && canAutoplay ? prerollAd.video().get('poster_url') : video.get('poster_url')
-
+        const currentLoadState = this.state.loadState
+        const loadState = canAutoplay ? (currentLoadState === LoadState.Playing ? LoadState.Playing : LoadState.Loading) : LoadState.WaitingToPlay
+        
         this.setState({
-            isPlaying: canAutoplay,
-            isAutoplayEnabled: canAutoplay,
-            posterUrl
+            loadState,
+            isAutoplayEnabled: canAutoplay, 
         })
     }
 
     unloadVideo() {
-        const { hls } = this.state;
-        if (hls) {
-            hls.destroy();
-            this.setState({ hls: undefined });
-        }
+        clearInterval(this.state.timeIntervalId);
+        clearInterval(this.state.hoverTimeoutId);
         this.setState({ 
-            posterUrl: undefined,
-            hasPlayed: false
+            currentTime: 0,
+            duration: 0.5,
+            loadedDuration: 0,
+            loadState: LoadState.Unavailable
         })
     }
 
     playPause() {
-        const video = document.getElementById('video_player') as HTMLVideoElement;
-        if (!this.state.isPlaying) {
-            video.play();
+        const { loadState } = this.state
+        if (loadState === LoadState.Playing) {
+            this._videoElem.pause();
         } else {
-            video.pause();
-            if (this.state.isLoading) {
-                this.setState({ isPlaying: false })
-            }
+            this._videoElem.play();
         }
     }
 
     seek(time: number) {
-        const video = document.getElementById('video_player') as HTMLVideoElement;
-        video.currentTime = time;
+        this._videoElem.currentTime = time;
         this.setState({
-            currentTime: video.currentTime
+            currentTime: this._videoElem.currentTime
         });
     }
 
     adjustVolume(volume: number) {
-        const video = document.getElementById('video_player') as HTMLVideoElement;
         if (volume < 0.05) {
             volume = 0;
         }
         if (volume > 0.95) {
             volume = 1;
         }
-        video.volume = volume;
+        this._videoElem.volume = volume;
         this.props.dispatch(setVideoVolume(volume))
     }
 
@@ -545,12 +476,13 @@ class Video extends React.Component<Props, VideoState> {
     hideControlsAfterDelay(delay=2500) {
         clearTimeout(this.state.hoverTimeoutId);
         const hoverTimeoutId = window.setTimeout(() => {
-            if (this.state.isPlaying) {
+            if (this.state.loadState === LoadState.Playing) {
                 this.setState({
                     shouldDisplayControls: false
                 })
             }
         }, delay);
+
         this.setState({
             hoverTimeoutId
         });
@@ -561,14 +493,13 @@ class Video extends React.Component<Props, VideoState> {
 
     logImpression(reset=true) {
         const { impressionStartTime } = this.state
-        const { selectedMediaItemId, dispatch } = this.props
+        const { itemId, itemType, dispatch } = this.props
         // only log impression if one has began and video is associated with a media item
-        if (impressionStartTime < 0 || !selectedMediaItemId) {
+        if (impressionStartTime < 0 || itemType !== 'mediaItem' || !itemId) {
             return;
         }
 
-        const video = document.getElementById('video_player') as HTMLVideoElement
-        dispatch(logVideoImpression(selectedMediaItemId, impressionStartTime, video.currentTime))
+        dispatch(logVideoImpression(itemId, impressionStartTime, this._videoElem.currentTime))
 
         this.setState({
             impressionStartTime: -1
@@ -577,10 +508,9 @@ class Video extends React.Component<Props, VideoState> {
 
     startNewImpression() {
         // debounced function, so called START_IMPRESSION_WAIT_TIME msecs after play begins
-        const video = document.getElementById('video_player') as HTMLVideoElement
-        if (video) {
+        if (this._videoElem) {
             this.setState({
-                impressionStartTime: Math.max(0, video.currentTime - START_IMPRESSION_WAIT_TIME/1000)
+                impressionStartTime: Math.max(0, this._videoElem.currentTime - START_IMPRESSION_WAIT_TIME/1000)
             })
         }
 
@@ -597,7 +527,7 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     handleOnMouseOut() {
-        if (this.state.isPlaying) {
+        if (this.state.loadState === LoadState.Playing) {
             this.setState({
                 shouldDisplayControls: false
             })
@@ -627,21 +557,22 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     handleClick(e: React.MouseEvent<HTMLElement>) {
-        const { prerollAd } = this.props
-        if (!prerollAd || !prerollAd.get('link_url')) {
+        const { itemUrl } = this.props
+        if (!itemUrl) {
             return;
         }
 
-        window.open(prerollAd.get('link_url'), '_blank');
+        window.open(itemUrl, '_blank');
     }
 
     // Render
 
     videoStyle(video: State) {
-        const { scale, width, height, isLoading } = this.state
+        const { scale, width, height, loadState } = this.state
         const { isIOS } = this.props
         
-        let style: any = { display: isLoading && !isIOS ? 'none' : 'block' }
+        // let style: any = { display: isLoading && !isIOS ? 'none' : 'block' }
+        let style: any = {}
         if (this.shouldForceVideoRotation()) {
             // need to manually rotate video if in Firefox or IE 10 
             if (video.get('orientation') === 90) {
@@ -664,12 +595,13 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     render() {
-        const { video, decoration, volume, isIOS, prerollAd, authorUsername } = this.props;
-        const { shouldDisplayControls, isLoading, isPlaying, hasPlayed,
-                width, height, isAutoplayEnabled, posterUrl } = this.state;
+        const { video, decoration, volume, isIOS, 
+                authorUsername, itemType } = this.props;
+        const { shouldDisplayControls, loadState,
+                width, height, isAutoplayEnabled } = this.state;
 
         const videoContainerStyle = {
-            display: video.isEmpty() && !prerollAd ? 'none' : 'block',
+            display: video.isEmpty() ? 'none' : 'block',
             cursor: shouldDisplayControls ? 'auto' : 'none'
         }
 
@@ -687,7 +619,7 @@ class Video extends React.Component<Props, VideoState> {
             loadedDuration: this.state.loadedDuration,
             volume: volume,
             shouldDisplayControls: this.state.shouldDisplayControls,
-            isPlaying: this.state.isPlaying,
+            isPlaying: this.state.loadState === LoadState.Playing,
             isFullScreen: this.state.isFullScreen,
             isContinuousPlayEnabled: this.props.isContinuousPlayEnabled,
             adjustVolume: this.adjustVolume,
@@ -696,31 +628,36 @@ class Video extends React.Component<Props, VideoState> {
             seek: this.seek,
             fullScreen: this.fullScreen,
             toggleContinuousPlay: this.toggleContinuousPlay,
-            isScrubbable: !prerollAd,
-            shouldDisplayContinuousPlay: !prerollAd
+            isScrubbable: itemType === 'mediaItem',
+            shouldDisplayContinuousPlay: itemType === 'mediaItem'
         }
 
         let videoAttributes: any = {
             preload: "none",
             playsInline: true,
-            controls: isIOS,
-            poster: posterUrl
+            controls: isIOS
         }
 
-        const adClass = !!prerollAd ? 'video_container-ad' : ''
-        // If autoplay is not enabled, we don't want to display ad text if the video has not begun
-        const shouldDisplayAdText = prerollAd && (isAutoplayEnabled || hasPlayed)
+        const adClass = itemType === 'ad' ? 'video_container-ad' : ''
+        const hasPlayed = [LoadState.Playing, LoadState.Paused].indexOf(loadState) > -1
+
+        const thumbnailStyle = {
+            backgroundImage: `url(${this.posterUrl()})`,
+            display: loadState === LoadState.WaitingToPlay ? 'block' : 'none'
+        }
 
         return (
             <div className={`video_container ${adClass}`} id="video_container" tabIndex={-1} style={videoContainerStyle} {...videoContainerEvents}>
                 <div className="video_player-container">
-                    <div className="video_player-background" style={{ backgroundImage: `url(${posterUrl})`}} />
-                    <video id="video_player" className="video_player" {...videoAttributes} style={this.videoStyle(video)} />
-                    { !prerollAd && decoration && <Decoration decoration={decoration} width={width} height={height} barHeight={70} /> }
-                    { isLoading && !isIOS && <Spinner styles={['white', 'large', 'faded']} /> }
+                    <video id="video_player" className="video_player" {...videoAttributes} style={this.videoStyle(video)} ref={(c) => { if (c) { this._videoElem = c } }} />
+                    { decoration && <Decoration decoration={decoration} width={width} height={height} barHeight={70} /> }
+                    { loadState === LoadState.Loading && <Spinner styles={['white', 'large', 'faded']} /> }
                 </div>
                 { !isIOS && <VideoControls ref={(c) => { if (c) { this._controls = c } }} {...videoControlsProps} /> }
-                { shouldDisplayAdText && <div className="ad-video_sponsor">This ad sponsors { authorUsername }</div> }
+                { itemType === 'ad' && hasPlayed && <div className="ad-video_sponsor">This ad sponsors { authorUsername }</div> }
+                <div className="video_player_thumbnail" style={thumbnailStyle} onClick={this.playPause}>
+                    <div className="video_player_thumbnail_play"><Icon type="play" /></div>
+                </div>
             </div>
         );
     }
@@ -732,9 +669,9 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
         browser: App.get(state, 'browser'),
         version: App.get(state, 'version'),
         volume: App.get(state, 'volume', 1),
-        isContinuousPlayEnabled: !!ownProps.roomId && Room.get(state, ownProps.roomId, 'isContinuousPlayEnabled', false),
-        selectedMediaItemId: ownProps.roomId && Room.get(state, ownProps.roomId, 'selectedMediaItemId'),
-        authorUsername: ownProps.roomId ? Room.author(state, ownProps.roomId).get('username') : undefined
+
+        isContinuousPlayEnabled: ownProps.roomId ? Room.get(state, ownProps.roomId, 'isContinuousPlayEnabled', false) : false,
+        authorUsername: ownProps.roomId ? Room.author(state, ownProps.roomId).get('username') : ''
     }
 }
 

@@ -89,7 +89,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
     constructor(props: Props) {
         super(props);
 
-        this.isDisplayingPrerollAd = this.isDisplayingPrerollAd.bind(this)
+        this.shouldDisplayPrerollAd = this.shouldDisplayPrerollAd.bind(this)
 
         this.handleBackward = this.handleBackward.bind(this)
         this.handleForward = this.handleForward.bind(this)
@@ -138,8 +138,9 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
     // Queries
 
-    isDisplayingPrerollAd() {
-        return !!this.props.prerollAd && !this.props.hasPlayedPrerollAd
+    shouldDisplayPrerollAd() {
+        const { prerollAd, hasPlayedPrerollAd, selectedMediaItem: item } = this.props
+        return !!prerollAd && !hasPlayedPrerollAd && item.get('type') === 'video'
     }
 
     isFullScreenInteractive() {
@@ -170,7 +171,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
         if (isFullScreen() && storageAvailable('localStorage')) {
             const isDisplayingFullScreenTooltip = !JSON.parse(localStorage.getItem('hideFullScreenTooltip') || 'false')
-            if (isDisplayingFullScreenTooltip || true) {
+            if (isDisplayingFullScreenTooltip) {
 
                 const tooltipHideTimeoutId = window.setTimeout(() => {
                     this.setState({ isDisplayingFullScreenTooltip: false })
@@ -181,8 +182,6 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                 const tooltipShowTimeoutId = window.setTimeout(() => {
                     this.setState({ isDisplayingFullScreenTooltip: true })
                 }, 500)
-                
-                console.log('is displaying tooltip')
                 
                 this.setState({
                     tooltipHideTimeoutId,
@@ -205,11 +204,19 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
     // Navigation
 
     handleBackward() {
+        if (this.shouldDisplayPrerollAd()) {
+            return
+        }
+        
         const { dispatch, roomId } = this.props
         dispatch(goBackward(roomId))
     }
 
     handleForward() {
+        if (this.shouldDisplayPrerollAd()) {
+            return
+        }
+
         const { dispatch, roomId } = this.props
         dispatch(goForward(roomId))
     }
@@ -255,24 +262,28 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
             containerHeight: playerHeight
         }
 
-        let ad = this.isDisplayingPrerollAd() && prerollAd ? prerollAd : undefined
+        const isAd = this.shouldDisplayPrerollAd()
+
+        let videoProps = {
+            video: isAd ? (prerollAd as Ad).video('mp4') : item.video('mp4'),
+            decoration: isAd ? undefined : item.get('decoration'),
+            roomId: roomId,
+            posterUrl: item.video('mp4').get('poster_url'),
+            itemType: isAd ? 'ad' : 'mediaItem' as 'ad' | 'mediaItem',
+            itemId: isAd ? (prerollAd as Ad).get('id') : item.get('id'),
+            itemUrl: isAd ? (prerollAd as Ad).get('link_url') : undefined,
+            ...containerProps
+        }
 
         return (
             <div style={{ width: '100%', height: '100%' }}>
-                { !this.isDisplayingPrerollAd() && item.hasReference() && <ItemReference roomId={roomId} {...containerProps} /> } 
+                { !this.shouldDisplayPrerollAd() && item.hasReference() && <ItemReference roomId={roomId} {...containerProps} /> } 
                 <Image 
                     image={item.image()} 
                     decoration={item.get('decoration')} 
                     roomId={roomId}
                     {...containerProps} />
-                <Video 
-                    video={item.video('mp4')}
-                    alternateVideo={item.video('mp4')}
-                    decoration={item.get('decoration')} 
-                    roomId={roomId} 
-                    shouldAutoplay={shouldAutoplayVideo} 
-                    prerollAd={ad}
-                    {...containerProps} />
+                <Video {...videoProps} />
             </div>
         )
     }
@@ -287,9 +298,9 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         const { playerWidth, playerHeight, isFullScreen, 
                 isDisplayingFullScreenTooltip } = this.state;
 
-        const leftDisabledClass = index === 0 || index === -1 || this.isDisplayingPrerollAd()
+        const leftDisabledClass = index === 0 || index === -1 || this.shouldDisplayPrerollAd()
             ? 'disabled' : '';
-        const rightDisabledClass = index === mediaItemsSize - 1 || index === -1 || this.isDisplayingPrerollAd()
+        const rightDisabledClass = index === mediaItemsSize - 1 || index === -1 || this.shouldDisplayPrerollAd()
             ? 'disabled' : ''; 
 
         let playerStyle = playerHeight > 0 ? { height: `${playerHeight}px` } : {}
