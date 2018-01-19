@@ -287,8 +287,12 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                 { !!preloadedImageUrl && <link rel="preload" as="image" href={preloadedImageUrl} /> }
                     <div className="player_media-inner" id="player_media-inner">
                         { this.renderItem() }
-                        <div className={`player_media-fullscreen_tooltip ${tooltipClass}`}>
-                            Use the arrow keys to navigate between posts while in full screen.
+                        <div className="player_media-fullscreen_controls">
+                            <div className="player_media-fullscreen_back" />
+                            <div className="player_media-fullscreen_forward" />
+                            <div className={`player_media-fullscreen_tooltip ${tooltipClass}`}>
+                                Use the arrow keys to navigate between posts while in full screen.
+                            </div>
                         </div>
                     </div>
                 </div>

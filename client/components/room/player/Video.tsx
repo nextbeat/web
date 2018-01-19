@@ -103,6 +103,7 @@ class Video extends React.Component<Props, VideoState> {
         this.handleClick = this.handleClick.bind(this)
 
         this.loadVideo = this.loadVideo.bind(this);
+        this.startPlayback = this.startPlayback.bind(this);
         this.setLoadState = this.setLoadState.bind(this);
         this.unloadVideo = this.unloadVideo.bind(this);
         this.playPause = this.playPause.bind(this);
@@ -145,7 +146,7 @@ class Video extends React.Component<Props, VideoState> {
 
         video.addEventListener('loadedmetadata', this.didLoadMetadata);
         video.addEventListener('canplay', this.canPlay);
-        video.addEventListener('playing', this.isPlaying);
+        video.addEventListener('play', this.isPlaying);
         video.addEventListener('pause', this.didPause);
         video.addEventListener('waiting', this.isWaiting);
         video.addEventListener('progress', this.didProgressDownload);
@@ -181,6 +182,16 @@ class Video extends React.Component<Props, VideoState> {
         {
             this.logImpression();
             this.loadVideo();
+
+            if (this.displayedVideo(this.props).isEmpty()) {
+                // Video element is empty, meaning the next media item is 
+                // an image. On iOS devices, we need to manually exit
+                // out of fullscreen in this case.
+                const videoPlayer = document.getElementById('video_player') as HTMLVideoElement;
+                if (videoPlayer.webkitDisplayingFullscreen) {
+                    videoPlayer.webkitExitFullScreen();
+                }
+            }
         }
 
         if (prevProps.containerWidth !== this.props.containerWidth
@@ -253,6 +264,8 @@ class Video extends React.Component<Props, VideoState> {
         this.setState({
             duration: video.duration
         });
+
+        this.startPlayback();
     }
 
     didUpdateTime() {
@@ -295,6 +308,12 @@ class Video extends React.Component<Props, VideoState> {
         if (roomId) {
             dispatch(didPlayVideo(roomId))
         }
+
+        process.nextTick(() => {
+            this.setState({
+                posterUrl: undefined
+            })
+        });
     }
 
     didPause() {
@@ -324,7 +343,6 @@ class Video extends React.Component<Props, VideoState> {
 
     isWaiting() {
         const video = document.getElementById('video_player');
-        clearInterval(this.state.timeIntervalId);
 
         this.setState({
             isPlaying: false
@@ -401,7 +419,13 @@ class Video extends React.Component<Props, VideoState> {
                 this.setState({ isLoading: true })
             }
         }, 100)
-        
+
+        videoPlayer.load();
+    }
+
+    startPlayback() {
+        let videoPlayer = document.getElementById('video_player') as HTMLVideoElement;
+
         if (this.props.shouldAutoplay) {
             const playPromise = videoPlayer.play()
             // This method returns a promise in Chrome and Safari.
@@ -423,7 +447,7 @@ class Video extends React.Component<Props, VideoState> {
             // Require user to manually start playback
             this.setLoadState(false)
         }
-    }
+    }    
 
     setLoadState(canAutoplay: boolean) {
         // If the preroll ad is playing, display the 
