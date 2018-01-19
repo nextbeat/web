@@ -266,6 +266,10 @@
 .player_control:hover .player_tooltip {
     opacity: 1;
 
+    @media (-moz-touch-enabled: 1), (hover: none), (hover: on-demand) {
+        opacity: 0;
+    }
+
     &:hover {
         opacity: 0;
     }
