@@ -32,6 +32,7 @@ interface ConnectProps {
     selectedMediaItem: MediaItem
     indexOfSelectedMediaItem: number
     isIOS: boolean
+    isMobile: boolean
 
     prerollAd: Ad | null
     hasPlayedPrerollAd: boolean
@@ -92,6 +93,8 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
         this.handleBackward = this.handleBackward.bind(this)
         this.handleForward = this.handleForward.bind(this)
+        this.handleFullScreenBackward = this.handleFullScreenBackward.bind(this)
+        this.handleFullScreenForward = this.handleFullScreenForward.bind(this)
         this.handleCounterClick = this.handleCounterClick.bind(this)
         this.toggleContinuousPlay = this.toggleContinuousPlay.bind(this)
         
@@ -139,6 +142,10 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         return !!this.props.prerollAd && !this.props.hasPlayedPrerollAd
     }
 
+    isFullScreenInteractive() {
+        return this.state.isFullScreen && this.props.isMobile
+    }
+
 
     // Resize
 
@@ -163,7 +170,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
         if (isFullScreen() && storageAvailable('localStorage')) {
             const isDisplayingFullScreenTooltip = !JSON.parse(localStorage.getItem('hideFullScreenTooltip') || 'false')
-            if (isDisplayingFullScreenTooltip) {
+            if (isDisplayingFullScreenTooltip || true) {
 
                 const tooltipHideTimeoutId = window.setTimeout(() => {
                     this.setState({ isDisplayingFullScreenTooltip: false })
@@ -174,6 +181,8 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                 const tooltipShowTimeoutId = window.setTimeout(() => {
                     this.setState({ isDisplayingFullScreenTooltip: true })
                 }, 500)
+                
+                console.log('is displaying tooltip')
                 
                 this.setState({
                     tooltipHideTimeoutId,
@@ -203,6 +212,20 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
     handleForward() {
         const { dispatch, roomId } = this.props
         dispatch(goForward(roomId))
+    }
+
+    handleFullScreenBackward() {
+        if (!this.isFullScreenInteractive()) {
+            return
+        }
+        this.handleBackward()
+    }
+    
+    handleFullScreenForward() {
+        if (!this.isFullScreenInteractive()) {
+            return
+        }
+        this.handleForward()
     }
 
     handleCounterClick() {
@@ -257,7 +280,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
     render() {
         const { children, roomId, mediaItemsSize, 
                 indexOfSelectedMediaItem: index,
-                selectedMediaItem: item,
+                selectedMediaItem: item, isMobile,
                 prerollAd, hasPlayedPrerollAd, isIOS,
                 isContinuousPlayEnabled } = this.props;
 
@@ -279,6 +302,8 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         const fullScreenClass = isFullScreen ? 'player_media-fullscreen' : '';
         const tooltipClass = isDisplayingFullScreenTooltip ? 'show' : 'hide';
         const navigationIOSClass = isIOS ? 'player_navigation-ios' : '';
+        const interactiveFullScreenClass = this.isFullScreenInteractive() ? 'interactive' : '';
+
         return (
             <div className="player_main">
                 { children }
@@ -287,8 +312,15 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                 { !!preloadedImageUrl && <link rel="preload" as="image" href={preloadedImageUrl} /> }
                     <div className="player_media-inner" id="player_media-inner">
                         { this.renderItem() }
-                        <div className={`player_media-fullscreen_tooltip ${tooltipClass}`}>
-                            Use the arrow keys to navigate between posts while in full screen.
+                        <div className={`player_media-fullscreen_controls ${interactiveFullScreenClass}`}>
+                            <div className="player_media-fullscreen_back" onClick={this.handleFullScreenBackward} />
+                            <div className="player_media-fullscreen_forward" onClick={this.handleFullScreenForward} />
+                            <div className={`player_media-fullscreen_tooltip ${tooltipClass}`}>
+                                { this.isFullScreenInteractive() ?
+                                    "Tap the screen to navigate between posts while in full screen."
+                                    : "Use the arrow keys to navigate between posts while in full screen."
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -318,7 +350,8 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
         prerollAd: Room.ad(state, ownProps.roomId, 'preroll'),
         hasPlayedPrerollAd: Room.get(state, ownProps.roomId, 'hasPlayedPrerollAd'),
         isContinuousPlayEnabled: Room.get(state, ownProps.roomId, 'isContinuousPlayEnabled', false),
-        isIOS: App.isIOS(state)
+        isIOS: App.isIOS(state),
+        isMobile: App.isMobile(state)
     }
 }
 

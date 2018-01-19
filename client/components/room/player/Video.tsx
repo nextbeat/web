@@ -146,7 +146,7 @@ class Video extends React.Component<Props, VideoState> {
 
         video.addEventListener('loadedmetadata', this.didLoadMetadata);
         video.addEventListener('canplay', this.canPlay);
-        video.addEventListener('play', this.isPlaying);
+        video.addEventListener('playing', this.isPlaying);
         video.addEventListener('pause', this.didPause);
         video.addEventListener('waiting', this.isWaiting);
         video.addEventListener('progress', this.didProgressDownload);
@@ -286,6 +286,10 @@ class Video extends React.Component<Props, VideoState> {
 
         clearInterval(this.state.timeIntervalId);
         const timeIntervalId = window.setInterval(this.didUpdateTime, 500);
+
+        if (video.readyState < 4) {
+            return;
+        }
 
         this.startNewImpression()
 
