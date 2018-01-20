@@ -68,7 +68,6 @@ interface VideoState {
     width: number
     height: number
     scale: number
-    isAutoplayEnabled: boolean
 }
 
 class Video extends React.Component<Props, VideoState> {
@@ -134,8 +133,7 @@ class Video extends React.Component<Props, VideoState> {
             impressionStartTime: -1,
             width: 0,
             height: 0,
-            scale: 1,
-            isAutoplayEnabled: false
+            scale: 1
         };
     }
 
@@ -275,8 +273,6 @@ class Video extends React.Component<Props, VideoState> {
             clearInterval(this.state.timeIntervalId);
             const timeIntervalId = window.setInterval(this.didUpdateTime, 500);
     
-            console.log('in isplaying', this._videoElem.readyState);
-
             this.startNewImpression()
 
             this.setState({
@@ -381,7 +377,6 @@ class Video extends React.Component<Props, VideoState> {
                 })
                 .catch((e) => {
                     // Cannot autoplay
-                    console.log(e);
                     this.setLoadState(false)
                 })
             } else {
@@ -397,10 +392,7 @@ class Video extends React.Component<Props, VideoState> {
         const currentLoadState = this.state.loadState
         const loadState = canAutoplay ? (currentLoadState === LoadState.Playing ? LoadState.Playing : LoadState.Loading) : LoadState.WaitingToPlay
         
-        this.setState({
-            loadState,
-            isAutoplayEnabled: canAutoplay, 
-        })
+        this.setState({ loadState })
     }
 
     unloadVideo() {
@@ -558,6 +550,7 @@ class Video extends React.Component<Props, VideoState> {
 
     handleClick(e: React.MouseEvent<HTMLElement>) {
         const { itemUrl } = this.props
+
         if (!itemUrl) {
             return;
         }
@@ -597,8 +590,7 @@ class Video extends React.Component<Props, VideoState> {
     render() {
         const { video, decoration, volume, isIOS, 
                 authorUsername, itemType } = this.props;
-        const { shouldDisplayControls, loadState,
-                width, height, isAutoplayEnabled } = this.state;
+        const { shouldDisplayControls, loadState, width, height } = this.state;
 
         const videoContainerStyle = {
             display: video.isEmpty() ? 'none' : 'block',
@@ -635,7 +627,7 @@ class Video extends React.Component<Props, VideoState> {
         let videoAttributes: any = {
             preload: "none",
             playsInline: true,
-            controls: isIOS
+            controls: isIOS && itemType !== 'ad'
         }
 
         const adClass = itemType === 'ad' ? 'video_container-ad' : ''
@@ -654,6 +646,7 @@ class Video extends React.Component<Props, VideoState> {
                     { loadState === LoadState.Loading && <Spinner styles={['white', 'large', 'faded']} /> }
                 </div>
                 { !isIOS && <VideoControls ref={(c) => { if (c) { this._controls = c } }} {...videoControlsProps} /> }
+                { itemType === 'ad' && hasPlayed && <div className="ad-video_click-box" onClick={this.handleClick} />}
                 { itemType === 'ad' && hasPlayed && <div className="ad-video_sponsor">This ad sponsors { authorUsername }</div> }
                 <div className="video_player_thumbnail" style={thumbnailStyle} onClick={this.playPause}>
                     <div className="video_player_thumbnail_play"><Icon type="play" /></div>

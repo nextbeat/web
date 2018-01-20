@@ -275,6 +275,8 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
             ...containerProps
         }
 
+        console.log(videoProps.itemUrl)
+
         return (
             <div style={{ width: '100%', height: '100%' }}>
                 { !this.shouldDisplayPrerollAd() && item.hasReference() && <ItemReference roomId={roomId} {...containerProps} /> } 
