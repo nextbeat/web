@@ -582,6 +582,7 @@ class Video extends React.Component<Props, VideoState> {
         }
 
         window.open(itemUrl, '_blank');
+        this._videoElem.pause();
     }
 
     // Render
