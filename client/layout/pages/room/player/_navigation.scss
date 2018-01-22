@@ -3,6 +3,7 @@
     height: 60px;
     display: flex;
     border-bottom: 1px solid $border-color;
+    border-top: 1px solid #eee;
     align-items: stretch;
 
     @include media('<=small') {
@@ -115,9 +116,9 @@
     }
 }
 
-// iOS specific styles 
+// Mobile specific styles 
 
-.player_navigation-ios {
+.player_navigation-mobile {
     .player_nav-counter {
         order: 0;
         width: 78px;

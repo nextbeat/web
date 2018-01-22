@@ -6,11 +6,14 @@
 
     &.player_bottom-video {
         opacity: 0;
-        transition: opacity 0.1s ease-in;
+        visibility: hidden;
+        transition: opacity 0.1s ease-in, visibility 0s linear 0.1s;
     }
 
     &.display-controls-video {
+        visibility: visible;
         opacity: 1;
+        transition: opacity 0.1s ease-out, visibility 0s linear 0s;
     }
 
     &.not-scrubbable .video_progress-bar-padding {

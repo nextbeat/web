@@ -193,6 +193,19 @@
     }
 }
 
+// Mobile styles
+
+.video_container-mobile {
+    .player_control-volume {
+        display: none;
+    }
+    .player_control-autoplay {
+        display: none;
+    }
+}
+
+// Fullscreen styles
+
 .player_media-fullscreen {
     .player_photo-container, .video_player-container {
         background: #000;

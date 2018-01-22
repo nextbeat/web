@@ -35,6 +35,7 @@ interface OwnProps {
 
 interface ConnectProps {
     isIOS: boolean
+    isMobile: boolean
     browser: string
     version: string
 
@@ -101,7 +102,9 @@ class Video extends React.Component<Props, VideoState> {
         this.handleOnMouseUp = this.handleOnMouseUp.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleFullScreenChange = this.handleFullScreenChange.bind(this);
-        this.handleClick = this.handleClick.bind(this)
+
+        this.handleAdContainerClick = this.handleAdContainerClick.bind(this);
+        this.handleAdClick = this.handleAdClick.bind(this);
 
         this.loadVideo = this.loadVideo.bind(this);
         this.startPlayback = this.startPlayback.bind(this);
@@ -187,7 +190,7 @@ class Video extends React.Component<Props, VideoState> {
                 // out of fullscreen in this case.
                 const videoPlayer = document.getElementById('video_player') as HTMLVideoElement;
                 if (videoPlayer.webkitDisplayingFullscreen) {
-                    videoPlayer.webkitExitFullScreen();
+                    videoPlayer.webkitExitFullscreen();
                 }
             }
         }
@@ -283,6 +286,7 @@ class Video extends React.Component<Props, VideoState> {
     
             if (this._videoElem.currentTime === 0) {
                 this.hideControlsAfterDelay();
+                console.log('is playing')
                 this.setState({
                     shouldDisplayControls: true
                 })
@@ -307,6 +311,7 @@ class Video extends React.Component<Props, VideoState> {
         // record video impression if one is active
         this.logImpression();
 
+        console.log('did pause')
         this.setState({
             currentTime: this._videoElem.currentTime,
             loadState: LoadState.Paused,
@@ -453,7 +458,16 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     fullScreen() {
-        toggleFullScreen(document.getElementById('player_media-inner'));
+        const { isIOS } = this.props
+        if (isIOS) {
+            if (this._videoElem.webkitDisplayingFullscreen) {
+                this._videoElem.webkitExitFullscreen();
+            } else {
+                this._videoElem.webkitEnterFullscreen();
+            }
+        } else {
+            toggleFullScreen(document.getElementById('player_media-inner'));
+        }
     }
 
     toggleContinuousPlay() {
@@ -537,6 +551,12 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     handleOnMouseUp(e: React.MouseEvent<HTMLElement>) {
+        const { isMobile } = this.props 
+        const { shouldDisplayControls, loadState } = this.state
+        if (isMobile && shouldDisplayControls && loadState === LoadState.Playing) {
+            this.setState({ shouldDisplayControls: false })
+        }
+
         // call event handler on child component
         this._controls.handleOnMouseUp(e)
     }
@@ -548,9 +568,15 @@ class Video extends React.Component<Props, VideoState> {
         }
     }
 
-    handleClick(e: React.MouseEvent<HTMLElement>) {
-        const { itemUrl } = this.props
+    handleAdContainerClick(e: React.MouseEvent<HTMLElement>) {
+        if (this.props.isMobile) {
+            return;
+        }
+        this.handleAdClick();
+    }
 
+    handleAdClick() {
+        const { itemUrl } = this.props
         if (!itemUrl) {
             return;
         }
@@ -588,7 +614,7 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     render() {
-        const { video, decoration, volume, isIOS, 
+        const { video, decoration, volume, isIOS, isMobile,
                 authorUsername, itemType } = this.props;
         const { shouldDisplayControls, loadState, width, height } = this.state;
 
@@ -602,7 +628,7 @@ class Video extends React.Component<Props, VideoState> {
             onMouseOut: this.handleOnMouseOut,
             onMouseMove: this.handleOnMouseMove,
             onMouseUp: this.handleOnMouseUp,
-            onKeyPress: this.handleKeyPress,
+            onKeyPress: this.handleKeyPress
         }
 
         const videoControlsProps = {
@@ -627,10 +653,11 @@ class Video extends React.Component<Props, VideoState> {
         let videoAttributes: any = {
             preload: "none",
             playsInline: true,
-            controls: isIOS && itemType !== 'ad'
+            controls: false
         }
 
         const adClass = itemType === 'ad' ? 'video_container-ad' : ''
+        const mobileClass = isMobile ? 'video_container-mobile' : ''
         const hasPlayed = [LoadState.Playing, LoadState.Paused].indexOf(loadState) > -1
 
         const thumbnailStyle = {
@@ -639,15 +666,16 @@ class Video extends React.Component<Props, VideoState> {
         }
 
         return (
-            <div className={`video_container ${adClass}`} id="video_container" tabIndex={-1} style={videoContainerStyle} {...videoContainerEvents}>
+            <div className={`video_container ${adClass} ${mobileClass}`} id="video_container" tabIndex={-1} style={videoContainerStyle} {...videoContainerEvents}>
                 <div className="video_player-container">
                     <video id="video_player" className="video_player" {...videoAttributes} style={this.videoStyle(video)} ref={(c) => { if (c) { this._videoElem = c } }} />
                     { decoration && <Decoration decoration={decoration} width={width} height={height} barHeight={70} /> }
                     { loadState === LoadState.Loading && <Spinner styles={['white', 'large', 'faded']} /> }
                 </div>
-                { !isIOS && <VideoControls ref={(c) => { if (c) { this._controls = c } }} {...videoControlsProps} /> }
-                { itemType === 'ad' && hasPlayed && <div className="ad-video_click-box" onClick={this.handleClick} />}
+                <VideoControls ref={(c) => { if (c) { this._controls = c } }} {...videoControlsProps} />
+                { itemType === 'ad' && hasPlayed && <div className="ad-video_click-box" onClick={this.handleAdContainerClick} />}
                 { itemType === 'ad' && hasPlayed && <div className="ad-video_sponsor">This ad sponsors { authorUsername }</div> }
+                { itemType === 'ad' && hasPlayed && isMobile && <div className="ad-video_visit" onClick={this.handleAdClick}>Visit Advertiser</div> }
                 <div className="video_player_thumbnail" style={thumbnailStyle} onClick={this.playPause}>
                     <div className="video_player_thumbnail_play"><Icon type="play" /></div>
                 </div>
@@ -659,6 +687,7 @@ class Video extends React.Component<Props, VideoState> {
 function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     return {
         isIOS: App.isIOS(state),
+        isMobile: App.isMobile(state),
         browser: App.get(state, 'browser'),
         version: App.get(state, 'version'),
         volume: App.get(state, 'volume', 1),

@@ -31,7 +31,6 @@ interface ConnectProps {
     mediaItemsSize: number
     selectedMediaItem: MediaItem
     indexOfSelectedMediaItem: number
-    isIOS: boolean
     isMobile: boolean
 
     prerollAd: Ad | null
@@ -275,8 +274,6 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
             ...containerProps
         }
 
-        console.log(videoProps.itemUrl)
-
         return (
             <div style={{ width: '100%', height: '100%' }}>
                 { !this.shouldDisplayPrerollAd() && item.hasReference() && <ItemReference roomId={roomId} {...containerProps} /> } 
@@ -294,7 +291,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         const { children, roomId, mediaItemsSize, 
                 indexOfSelectedMediaItem: index,
                 selectedMediaItem: item, isMobile,
-                prerollAd, hasPlayedPrerollAd, isIOS,
+                prerollAd, hasPlayedPrerollAd,
                 isContinuousPlayEnabled } = this.props;
 
         const { playerWidth, playerHeight, isFullScreen, 
@@ -314,7 +311,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
         const fullScreenClass = isFullScreen ? 'player_media-fullscreen' : '';
         const tooltipClass = isDisplayingFullScreenTooltip ? 'show' : 'hide';
-        const navigationIOSClass = isIOS ? 'player_navigation-ios' : '';
+        const navigationMobileClass = isMobile ? 'player_navigation-mobile' : '';
         const interactiveFullScreenClass = this.isFullScreenInteractive() ? 'interactive' : '';
 
         return (
@@ -337,7 +334,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                         </div>
                     </div>
                 </div>
-                <div className={`player_navigation ${navigationIOSClass}`}>
+                <div className={`player_navigation ${navigationMobileClass}`}>
                     <div className="player_navigation_inner">
                         <div className={`player_nav-button player_nav-backward ${leftDisabledClass}`} onClick={this.handleBackward}><Icon type="arrow-back" /></div>
                         <div className="player_nav-counter" onClick={this.handleCounterClick}><CounterInner roomId={roomId} /></div>
@@ -363,7 +360,6 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
         prerollAd: Room.ad(state, ownProps.roomId, 'preroll'),
         hasPlayedPrerollAd: Room.get(state, ownProps.roomId, 'hasPlayedPrerollAd'),
         isContinuousPlayEnabled: Room.get(state, ownProps.roomId, 'isContinuousPlayEnabled', false),
-        isIOS: App.isIOS(state),
         isMobile: App.isMobile(state)
     }
 }
