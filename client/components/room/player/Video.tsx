@@ -79,6 +79,7 @@ class Video extends React.Component<Props, VideoState> {
 
     private _controls: VideoControls
     private _videoElem: HTMLVideoElement
+    private _videoContainerElem: HTMLDivElement
 
     constructor(props: Props) {
         super(props);
@@ -101,6 +102,7 @@ class Video extends React.Component<Props, VideoState> {
         this.handleOnMouseMove = this.handleOnMouseMove.bind(this);
         this.handleOnMouseUp = this.handleOnMouseUp.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.handleOnPointerUp = this.handleOnPointerUp.bind(this);
         this.handleFullScreenChange = this.handleFullScreenChange.bind(this);
 
         this.handleAdContainerClick = this.handleAdContainerClick.bind(this);
@@ -143,15 +145,14 @@ class Video extends React.Component<Props, VideoState> {
     // Component lifecycle
 
     componentDidMount() {
-        const video = document.getElementById('video_player') as HTMLVideoElement;
-
-        video.addEventListener('loadedmetadata', this.didLoadMetadata);
-        video.addEventListener('canplay', this.canPlay);
-        video.addEventListener('play', this.isPlaying);
-        video.addEventListener('pause', this.didPause);
-        video.addEventListener('waiting', this.isWaiting);
-        video.addEventListener('progress', this.didProgressDownload);
-        video.addEventListener('ended', this.didEnd);
+        this._videoElem.addEventListener('loadedmetadata', this.didLoadMetadata);
+        this._videoElem.addEventListener('canplay', this.canPlay);
+        this._videoElem.addEventListener('play', this.isPlaying);
+        this._videoElem.addEventListener('pause', this.didPause);
+        this._videoElem.addEventListener('waiting', this.isWaiting);
+        this._videoElem.addEventListener('progress', this.didProgressDownload);
+        this._videoElem.addEventListener('ended', this.didEnd);
+        this._videoContainerElem.addEventListener('pointerup', this.handleOnPointerUp);
 
         this.loadVideo();
 
@@ -159,15 +160,14 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     componentWillUnmount() {        
-        const video = document.getElementById('video_player') as HTMLVideoElement;
-
-        video.removeEventListener('loadedmetadata', this.didLoadMetadata);
-        video.removeEventListener('canplay', this.canPlay);
-        video.removeEventListener('playing', this.isPlaying);
-        video.removeEventListener('pause', this.didPause);
-        video.removeEventListener('waiting', this.isWaiting);
-        video.removeEventListener('progress', this.didProgressDownload);
-        video.removeEventListener('ended', this.didEnd);
+        this._videoElem.removeEventListener('loadedmetadata', this.didLoadMetadata);
+        this._videoElem.removeEventListener('canplay', this.canPlay);
+        this._videoElem.removeEventListener('playing', this.isPlaying);
+        this._videoElem.removeEventListener('pause', this.didPause);
+        this._videoElem.removeEventListener('waiting', this.isWaiting);
+        this._videoElem.removeEventListener('progress', this.didProgressDownload);
+        this._videoElem.removeEventListener('ended', this.didEnd);
+        this._videoContainerElem.removeEventListener('pointerup', this.handleOnPointerUp);
 
         clearInterval(this.state.timeIntervalId);
         clearInterval(this.state.hoverTimeoutId);
@@ -568,6 +568,16 @@ class Video extends React.Component<Props, VideoState> {
         }
     }
 
+    handleOnPointerUp(e: PointerEvent) {
+        // Chrome for Android uses pointer events, not mouse events
+        // See https://developers.google.com/web/updates/2016/10/pointer-events
+        const { isMobile } = this.props 
+        const { shouldDisplayControls, loadState } = this.state
+        if (isMobile && shouldDisplayControls && loadState === LoadState.Playing) {
+            this.setState({ shouldDisplayControls: false })
+        }
+    }
+
     handleAdContainerClick(e: React.MouseEvent<HTMLElement>) {
         if (this.props.isMobile) {
             return;
@@ -667,7 +677,7 @@ class Video extends React.Component<Props, VideoState> {
         }
 
         return (
-            <div className={`video_container ${adClass} ${mobileClass}`} id="video_container" tabIndex={-1} style={videoContainerStyle} {...videoContainerEvents}>
+            <div className={`video_container ${adClass} ${mobileClass}`} id="video_container" tabIndex={-1} style={videoContainerStyle} {...videoContainerEvents} ref={(c) => { if (c) { this._videoContainerElem = c } }}>
                 <div className="video_player-container">
                     <video id="video_player" className="video_player" {...videoAttributes} style={this.videoStyle(video)} ref={(c) => { if (c) { this._videoElem = c } }} />
                     { decoration && <Decoration decoration={decoration} width={width} height={height} barHeight={70} /> }
