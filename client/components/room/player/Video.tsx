@@ -573,8 +573,16 @@ class Video extends React.Component<Props, VideoState> {
         // See https://developers.google.com/web/updates/2016/10/pointer-events
         const { isMobile } = this.props 
         const { shouldDisplayControls, loadState } = this.state
-        if (isMobile && shouldDisplayControls && loadState === LoadState.Playing) {
+        if (!isMobile) {
+            return;
+        }
+        if (shouldDisplayControls && loadState === LoadState.Playing) {
             this.setState({ shouldDisplayControls: false })
+        } else {
+            this.setState({
+                shouldDisplayControls: true
+            })
+            this.hideControlsAfterDelay()
         }
     }
 

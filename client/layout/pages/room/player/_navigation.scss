@@ -83,7 +83,12 @@
     width: 78px;
     flex: 0 0 auto;
     border-left: 1px solid #eee;
-    padding: 10px 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.player_nav-autoplay_inner {
+    display: flex;
     flex-direction: column;
     align-items: center;
 }

@@ -340,8 +340,10 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                         <div className="player_nav-counter" onClick={this.handleCounterClick}><CounterInner roomId={roomId} /></div>
                         <div className={`player_nav-button player_nav-forward ${rightDisabledClass}`} onClick={this.handleForward}><Icon type="arrow-forward" /></div>
                         <div className="player_nav-autoplay" onClick={this.toggleContinuousPlay}>
-                            <div className="player_nav-autoplay_title">AUTOPLAY</div>
-                            <Switch enabled={isContinuousPlayEnabled} className="player_nav-autoplay_switch" />
+                            <div className="player_nav-autoplay_inner">
+                                <div className="player_nav-autoplay_title">AUTOPLAY</div>
+                                <Switch enabled={isContinuousPlayEnabled} className="player_nav-autoplay_switch" />
+                            </div>
                         </div>
                     </div>
                 </div>
