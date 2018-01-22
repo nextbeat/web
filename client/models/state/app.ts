@@ -93,7 +93,7 @@ export default class App extends StateModelFactory<AppProps>(keyMap, keyMapPrefi
     }
 
     static isMobile(state: State) {
-        return this.get(state, 'deviceType') === 'mobile'
+        return ['mobile', 'tablet'].indexOf(this.get(state, 'deviceType')) > -1
     }
 
     static isActiveDropdown(state: State, type: string) {
