@@ -576,6 +576,8 @@ class Video extends React.Component<Props, VideoState> {
         if (!isMobile) {
             return;
         }
+
+        console.log('pointer up!')
         if (shouldDisplayControls && loadState === LoadState.Playing) {
             this.setState({ shouldDisplayControls: false })
         } else {

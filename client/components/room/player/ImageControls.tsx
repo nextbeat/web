@@ -35,8 +35,8 @@ class ImageControls extends React.Component<Props> {
                 <div className="player_progress-bar-container">
                     <div className="player_progress-bar-padding"></div>
                     <div className="player_progress-bar">
-                        <div className="player_progress-play" style={{ transform: `scaleX(${ continuousPlayTimeLeft/continuousPlayDuration })` }}></div>
-                        <div className="player_progress-buffer" style={{ transform: `scaleX(${ continuousPlayTimeLeft/continuousPlayDuration })` }}></div>
+                        <div className="player_progress-play" style={{ transform: `scaleX(${ 1-continuousPlayTimeLeft/continuousPlayDuration })` }}></div>
+                        <div className="player_progress-buffer" style={{ transform: `scaleX(${ 1-continuousPlayTimeLeft/continuousPlayDuration })` }}></div>
                     </div>
                 </div>
                 }
