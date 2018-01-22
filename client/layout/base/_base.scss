@@ -92,6 +92,13 @@ input:-webkit-autofill {
 }
 
 /*
+ * Hide ugly blinking effect on mobile Safari when tapping a clickable element.
+ */
+ * {
+    -webkit-tap-highlight-color: transparent;
+ }
+
+/*
  * Forces all elements to use the border-box style (which includes
  * border and padding in the calculated width size) by default.
  */
