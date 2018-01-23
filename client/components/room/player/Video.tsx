@@ -9,7 +9,7 @@ import Spinner from '@components/shared/Spinner'
 import Icon from '@components/shared/Icon'
 import { setVideoVolume } from '@actions/app'
 import { logVideoImpression, gaEvent } from '@actions/ga'
-import { didPlayVideo, playbackDidEnd, setContinuousPlay } from '@actions/room'
+import { didPlayVideo, playbackDidStart, playbackDidEnd, setContinuousPlay } from '@actions/room'
 import App from '@models/state/app'
 import Room from '@models/state/room'
 import Ad from '@models/entities/ad'
@@ -91,7 +91,6 @@ class Video extends React.Component<Props, VideoState> {
         this.didLoadMetadata = this.didLoadMetadata.bind(this);
         this.didUpdateTime = this.didUpdateTime.bind(this);
         this.isPlaying = this.isPlaying.bind(this);
-        this.canPlay = this.canPlay.bind(this);
         this.didPause = this.didPause.bind(this);
         this.didEnd = this.didEnd.bind(this);
         this.isWaiting = this.isWaiting.bind(this);
@@ -146,7 +145,6 @@ class Video extends React.Component<Props, VideoState> {
 
     componentDidMount() {
         this._videoElem.addEventListener('loadedmetadata', this.didLoadMetadata);
-        this._videoElem.addEventListener('canplay', this.canPlay);
         this._videoElem.addEventListener('play', this.isPlaying);
         this._videoElem.addEventListener('pause', this.didPause);
         this._videoElem.addEventListener('waiting', this.isWaiting);
@@ -161,7 +159,6 @@ class Video extends React.Component<Props, VideoState> {
 
     componentWillUnmount() {        
         this._videoElem.removeEventListener('loadedmetadata', this.didLoadMetadata);
-        this._videoElem.removeEventListener('canplay', this.canPlay);
         this._videoElem.removeEventListener('playing', this.isPlaying);
         this._videoElem.removeEventListener('pause', this.didPause);
         this._videoElem.removeEventListener('waiting', this.isWaiting);
@@ -265,12 +262,6 @@ class Video extends React.Component<Props, VideoState> {
         });
     }
 
-    canPlay() {
-        // this.setState({
-        //     isLoading: false
-        // })
-    }
-
     isPlaying() {
         process.nextTick(() => {
             clearInterval(this.state.timeIntervalId);
@@ -283,16 +274,20 @@ class Video extends React.Component<Props, VideoState> {
                 timeIntervalId,
                 loadState: LoadState.Playing
             });
+
+            const { dispatch, roomId, itemId, itemType } = this.props
     
             if (this._videoElem.currentTime === 0) {
                 this.hideControlsAfterDelay();
                 this.setState({
                     shouldDisplayControls: true
                 })
+                if (roomId && itemId && itemType) {
+                    dispatch(playbackDidStart(roomId, itemId, itemType))
+                }
             } 
     
             // record that video has been played if in room
-            const { roomId, dispatch } = this.props
             if (roomId) {
                 dispatch(didPlayVideo(roomId))
             }

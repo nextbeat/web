@@ -18,6 +18,7 @@ import {
 import { triggerAuthError } from '@actions/app'
 import { loadPaginatedObjects } from '@actions/utils'
 import { selectDetailSection } from '@actions/pages/room'
+import { Dimensions } from '@analytics/definitions'
 import Comment from '@models/entities/comment'
 import TemporaryComment from '@models/entities/temporary/comment'
 import Room, { FetchDirection } from '@models/state/room'
@@ -511,7 +512,28 @@ export function didPlayVideo(roomId: number) {
     }
 }
 
-export interface PlaybackDidEndAction extends GenericAction {
+export interface PlaybackDidStartAction extends AnalyticsAction {
+    type: ActionType.PLAYBACK_DID_START,
+    roomId: number
+    itemId: number
+    itemType: 'mediaItem' | 'ad'
+}
+export function playbackDidStart(roomId: number, itemId: number, itemType: 'mediaItem' | 'ad'): PlaybackDidStartAction {
+    return {
+        type: ActionType.PLAYBACK_DID_START,
+        roomId,
+        itemId,
+        itemType,
+        GA: {
+            type: 'event',
+            category: 'video',
+            action: 'start',
+            [itemType === 'mediaItem' ? Dimensions.MEDIAITEM_ID : Dimensions.AD_ID]: itemId
+        }
+    }
+}
+
+export interface PlaybackDidEndAction extends AnalyticsAction {
     type: ActionType.PLAYBACK_DID_END
     roomId: number
     itemId: number
@@ -522,7 +544,13 @@ export function playbackDidEnd(roomId: number, itemId: number, itemType: 'mediaI
         type: ActionType.PLAYBACK_DID_END,
         roomId,
         itemId,
-        itemType
+        itemType,
+        GA: {
+            type: 'event',
+            category: 'video',
+            action: 'end',
+            [itemType === 'mediaItem' ? Dimensions.MEDIAITEM_ID : Dimensions.AD_ID]: itemId
+        }
     }
 }
 
