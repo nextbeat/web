@@ -531,6 +531,7 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     handleOnMouseOut() {
+        console.log('on mouse out')
         if (this.state.loadState === LoadState.Playing) {
             this.setState({
                 shouldDisplayControls: false
@@ -569,17 +570,17 @@ class Video extends React.Component<Props, VideoState> {
     handleOnPointerUp(e: PointerEvent) {
         // Chrome for Android uses pointer events, not mouse events
         // See https://developers.google.com/web/updates/2016/10/pointer-events
-        console.log('come on')
         const { isMobile } = this.props 
         const { shouldDisplayControls, loadState } = this.state
         if (!isMobile) {
             return;
         }
 
-        console.log('pointer up!')
         if (shouldDisplayControls && loadState === LoadState.Playing) {
+            console.log('hiding')
             this.setState({ shouldDisplayControls: false })
         } else {
+            console.log('showing')
             this.setState({
                 shouldDisplayControls: true
             })

@@ -5,6 +5,7 @@ import {
     ActionType,
     ApiCallAction,
     ApiCancelAction,
+    AnalyticsAction,
     GenericAction,
     ThunkAction,
     Pagination
@@ -13,6 +14,7 @@ import { promptModal } from '@actions/app'
 import { loadRoom, loadComments,  clearComments, clearRoom } from '@actions/room'
 import { joinRoom } from '@actions/eddy'
 import { loadPaginatedObjects } from '@actions/utils'
+import { Dimensions } from '@analytics/definitions'
 import RoomPage, { DetailSection } from '@models/state/pages/room'
 import * as Schemas from '@schemas'
 import { Store, Dispatch } from '@types'
@@ -354,14 +356,28 @@ export function recordView(stackId: number): RecordViewAction {
  **************/
 
 
-export interface SelectDetailSectionAction extends GenericAction {
+export interface SelectDetailSectionAction extends AnalyticsAction {
     type: ActionType.SELECT_DETAIL_SECTION
     section: DetailSection
 }
-export function selectDetailSection(section: DetailSection): SelectDetailSectionAction {
+function performSelectDetailSection(roomId: number, section: DetailSection): SelectDetailSectionAction {
     return {
         type: ActionType.SELECT_DETAIL_SECTION,
-        section
+        section,
+        GA: {
+            type: 'event',
+            category: 'room',
+            action: 'select-detail-section',
+            label: section,
+            [Dimensions.STACK_ID]: roomId,
+        }
+    }
+}
+
+export function selectDetailSection(section: DetailSection): ThunkAction {
+    return (dispatch, getState) => {
+        const id = RoomPage.get(getState(), 'id')
+        dispatch(performSelectDetailSection(id, section))
     }
 }
 
