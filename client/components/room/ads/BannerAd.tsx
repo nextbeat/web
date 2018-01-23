@@ -1,19 +1,37 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
 
+import { gaEvent } from '@actions/ga'
 import Ad from '@models/entities/ad'
+import { DispatchProps } from '@types'
 
 interface OwnProps {
     ad: Ad
 }
 
-type Props = OwnProps
+type Props = OwnProps & DispatchProps
 
 class BannerAd extends React.Component<Props> {
 
     constructor(props: Props) {
         super(props)
 
+        this.onClick = this.onClick.bind(this)
         this.renderImages = this.renderImages.bind(this)
+    }
+
+    onClick(e: React.MouseEvent<HTMLElement>) {
+
+        const { dispatch, ad } = this.props
+        e.preventDefault();
+
+        dispatch(gaEvent({
+            category: 'ad',
+            action: 'click',
+            label: ad.get('id')
+        }, () => {
+            window.open(ad.get('link_url'), '_blank')
+        }))
     }
 
     renderImages() {
@@ -44,7 +62,7 @@ class BannerAd extends React.Component<Props> {
 
         let url = ad.get('link_url')
         let Elem = url ? 'a' : 'div'
-        let elemAttrs = url ? { href: url, target: '_blank' } : {}
+        let elemAttrs = url ? { href: url, target: '_blank', onClick: this.onClick } : {}
 
         return (
             <Elem className="ad-banner-nb" {...elemAttrs} >
@@ -57,4 +75,4 @@ class BannerAd extends React.Component<Props> {
 
 }
 
-export default BannerAd;
+export default connect()(BannerAd);

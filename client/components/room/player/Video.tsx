@@ -8,7 +8,7 @@ import VideoControls from './VideoControls'
 import Spinner from '@components/shared/Spinner'
 import Icon from '@components/shared/Icon'
 import { setVideoVolume } from '@actions/app'
-import { logVideoImpression } from '@actions/ga'
+import { logVideoImpression, gaEvent } from '@actions/ga'
 import { didPlayVideo, playbackDidEnd, setContinuousPlay } from '@actions/room'
 import App from '@models/state/app'
 import Room from '@models/state/room'
@@ -286,7 +286,6 @@ class Video extends React.Component<Props, VideoState> {
     
             if (this._videoElem.currentTime === 0) {
                 this.hideControlsAfterDelay();
-                console.log('is playing')
                 this.setState({
                     shouldDisplayControls: true
                 })
@@ -311,7 +310,6 @@ class Video extends React.Component<Props, VideoState> {
         // record video impression if one is active
         this.logImpression();
 
-        console.log('did pause')
         this.setState({
             currentTime: this._videoElem.currentTime,
             loadState: LoadState.Paused,
@@ -571,6 +569,7 @@ class Video extends React.Component<Props, VideoState> {
     handleOnPointerUp(e: PointerEvent) {
         // Chrome for Android uses pointer events, not mouse events
         // See https://developers.google.com/web/updates/2016/10/pointer-events
+        console.log('come on')
         const { isMobile } = this.props 
         const { shouldDisplayControls, loadState } = this.state
         if (!isMobile) {
@@ -592,16 +591,25 @@ class Video extends React.Component<Props, VideoState> {
         if (this.props.isMobile) {
             return;
         }
-        this.handleAdClick();
+        this.handleAdClick(e);
     }
 
-    handleAdClick() {
-        const { itemUrl } = this.props
+    handleAdClick(e: React.MouseEvent<HTMLElement>) {
+        const { itemUrl, itemId, dispatch } = this.props
         if (!itemUrl) {
             return;
         }
 
-        window.open(itemUrl, '_blank');
+        e.preventDefault();
+
+        dispatch(gaEvent({
+            category: 'ad',
+            action: 'click',
+            label: itemId
+        }, () => {
+            window.open(itemUrl, '_blank')
+        }))
+
         this._videoElem.pause();
     }
 

@@ -1,12 +1,15 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
 
+import { gaEvent } from '@actions/ga'
 import ShopProduct from '@models/entities/shopProduct'
+import { DispatchProps } from '@types'
 
 interface OwnProps {
     product: ShopProduct
 }
 
-type Props = OwnProps
+type Props = OwnProps & DispatchProps
 
 class ShopProductComponent extends React.Component<Props> {
 
@@ -17,12 +20,18 @@ class ShopProductComponent extends React.Component<Props> {
     }
 
     handleClick() {
-        let url = this.props.product.get('url')
-        if (!url) {
+        const { product, dispatch } = this.props
+        if (!product.get('url')) {
             return;
         }
 
-        window.open(url, '_blank')
+        dispatch(gaEvent({
+            category: 'shop',
+            action: 'click',
+            label: product.get('id')
+        }, () => {
+            window.open(product.get('url'), '_blank')
+        }))
     }
 
     render() {
@@ -42,4 +51,4 @@ class ShopProductComponent extends React.Component<Props> {
     }
 }
 
-export default ShopProductComponent;
+export default connect()(ShopProductComponent);
