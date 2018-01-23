@@ -518,6 +518,9 @@ class Video extends React.Component<Props, VideoState> {
     // Video container events
 
     handleOnMouseOver() {
+        if (this.props.isMobile) {
+            return
+        }
         this.setState({
             shouldDisplayControls: true
         })
@@ -526,7 +529,9 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     handleOnMouseOut() {
-        console.log('on mouse out')
+        if (this.props.isMobile) {
+            return
+        }
         if (this.state.loadState === LoadState.Playing) {
             this.setState({
                 shouldDisplayControls: false
@@ -535,6 +540,9 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     handleOnMouseMove(e: React.MouseEvent<HTMLElement>) {
+        if (this.props.isMobile) {
+            return
+        }
         this.setState({
             shouldDisplayControls: true,
         });
