@@ -9,7 +9,7 @@ import {
     AnalyticsEventType 
 } from '@actions/types'
 import { Metrics, Dimensions } from '../analytics/definitions' 
-import MediaItem from '@models/entities/mediaItem'
+import Stack from '@models/entities/stack'
 import User from '@models/entities/user'
 
 export type GAActionAll = 
@@ -73,10 +73,10 @@ interface LogVideoImpressionData {
     endTime: number
     duration: number
     videoDuration: number
-    mediaItemId: number
+    itemId: number
+    itemType: 'mediaItem' | 'ad'
     stackId: number
     authorId: number
-    authorUsername: string
 }
 export interface LogVideoImpressionAction extends AnalyticsAction {
     type: ActionType.LOG_VIDEO_IMPRESSION
@@ -86,44 +86,41 @@ function performLogVideoImpression({
     endTime,
     duration,
     videoDuration,
-    mediaItemId, 
+    itemId,
+    itemType, 
     stackId,
     authorId,
-    authorUsername
 }: LogVideoImpressionData): LogVideoImpressionAction  {
     return {
         type: ActionType.LOG_VIDEO_IMPRESSION,
         GA: {
             type: 'event',
-            category: 'Video Impression',
+            category: 'video',
             action: 'track',
+            label: itemType,
             [Metrics.START_TIME]: startTime,
             [Metrics.END_TIME]: endTime,
             [Metrics.DURATION]: duration,
             [Metrics.MEDIAITEM_DURATION]: videoDuration,
-            [Dimensions.MEDIAITEM_ID]: mediaItemId,
+            [itemType === 'mediaItem' ? Dimensions.MEDIAITEM_ID : Dimensions.AD_ID]: itemId,
             [Dimensions.STACK_ID]: stackId,
             [Dimensions.AUTHOR_ID]: authorId,
-            [Dimensions.AUTHOR_USERNAME]: authorUsername
         }
     }
 }
 
-export function logVideoImpression(mediaItemId: number, startTime: number, endTime: number): ThunkAction {
+export function logVideoImpression(roomId: number, itemId: number, itemType: 'mediaItem' | 'ad', startTime: number, endTime: number, videoDuration: number): ThunkAction {
     return (dispatch, getState) => {
-        let mediaItem = new MediaItem(mediaItemId, getState().get('entities'))
-        let stack = mediaItem.stack()
-        let author = stack.author()
-
+        let stack = new Stack(roomId, getState().get('entities'))
         const logObject = {
             startTime,
             endTime,
             duration: endTime - startTime,
-            videoDuration: mediaItem.video().get('duration'),
-            mediaItemId: mediaItemId,
-            stackId: stack.get('id'),
-            authorId: author.get('id'),
-            authorUsername: author.get('username')
+            videoDuration: videoDuration,
+            itemId: itemId,
+            itemType: itemType,
+            stackId: roomId,
+            authorId: stack.author().get('id')
         }
 
         dispatch(performLogVideoImpression(logObject))

@@ -491,14 +491,14 @@ class Video extends React.Component<Props, VideoState> {
     // Analytics
 
     logImpression(reset=true) {
-        const { impressionStartTime } = this.state
-        const { itemId, itemType, dispatch } = this.props
-        // only log impression if one has began and video is associated with a media item
-        if (impressionStartTime < 0 || itemType !== 'mediaItem' || !itemId) {
+        const { impressionStartTime, duration } = this.state
+        const { roomId, itemId, itemType, dispatch } = this.props
+
+        if (impressionStartTime < 0 || !roomId || !itemId || !itemType) {
             return;
         }
 
-        dispatch(logVideoImpression(itemId, impressionStartTime, this._videoElem.currentTime))
+        dispatch(logVideoImpression(roomId, itemId, itemType, impressionStartTime, this._videoElem.currentTime, duration))
 
         this.setState({
             impressionStartTime: -1

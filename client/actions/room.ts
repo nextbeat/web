@@ -528,6 +528,8 @@ export function playbackDidStart(roomId: number, itemId: number, itemType: 'medi
             type: 'event',
             category: 'video',
             action: 'start',
+            label: itemType,
+            [Dimensions.STACK_ID]: roomId,
             [itemType === 'mediaItem' ? Dimensions.MEDIAITEM_ID : Dimensions.AD_ID]: itemId
         }
     }
@@ -549,6 +551,8 @@ export function playbackDidEnd(roomId: number, itemId: number, itemType: 'mediaI
             type: 'event',
             category: 'video',
             action: 'end',
+            label: itemType,
+            [Dimensions.STACK_ID]: roomId,
             [itemType === 'mediaItem' ? Dimensions.MEDIAITEM_ID : Dimensions.AD_ID]: itemId
         }
     }
