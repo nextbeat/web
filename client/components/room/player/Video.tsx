@@ -35,6 +35,7 @@ interface OwnProps {
 
 interface ConnectProps {
     isIOS: boolean
+    isAndroid: boolean
     isMobile: boolean
     browser: string
     version: string
@@ -521,6 +522,7 @@ class Video extends React.Component<Props, VideoState> {
         if (this.props.isMobile) {
             return
         }
+
         this.setState({
             shouldDisplayControls: true
         })
@@ -532,6 +534,7 @@ class Video extends React.Component<Props, VideoState> {
         if (this.props.isMobile) {
             return
         }
+
         if (this.state.loadState === LoadState.Playing) {
             this.setState({
                 shouldDisplayControls: false
@@ -543,6 +546,7 @@ class Video extends React.Component<Props, VideoState> {
         if (this.props.isMobile) {
             return
         }
+
         this.setState({
             shouldDisplayControls: true,
         });
@@ -553,9 +557,9 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     handleOnMouseUp(e: React.MouseEvent<HTMLElement>) {
-        const { isMobile } = this.props 
+        const { isMobile, isAndroid } = this.props 
         const { shouldDisplayControls, loadState } = this.state
-        if (isMobile && shouldDisplayControls && loadState === LoadState.Playing) {
+        if (isMobile && !isAndroid && shouldDisplayControls && loadState === LoadState.Playing) {
             this.setState({ shouldDisplayControls: false })
         }
 
@@ -720,6 +724,7 @@ class Video extends React.Component<Props, VideoState> {
 function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     return {
         isIOS: App.isIOS(state),
+        isAndroid: App.isAndroid(state),
         isMobile: App.isMobile(state),
         browser: App.get(state, 'browser'),
         version: App.get(state, 'version'),
