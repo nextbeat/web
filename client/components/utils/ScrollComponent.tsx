@@ -147,8 +147,6 @@ export default function ScrollComponent<OriginalProps extends {}>(domId: ((props
 
             scrollToBottom(duration=0) {
                 const elem = this.domElement();
-                console.log(elem.scrollHeight, elem.clientHeight, elem.getBoundingClientRect())
-                console.log(document.getElementsByClassName('chat_compose')[0].getBoundingClientRect())
                 const newTop = elem.scrollHeight - elem.clientHeight;
                 this._doScroll(newTop, duration);
             }

@@ -33,6 +33,10 @@ export default function shop(state = Map(), action: Action) {
                 error: action.error
             })
         }
+    } else if (action.type === ActionType.EXPAND_SHOP_SPONSOR) {
+        return state.mergeDeep({
+            isSponsoredProductsExpanded: action.expanded
+        })
     }
     return state
 }

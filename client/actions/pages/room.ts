@@ -36,6 +36,7 @@ export type RoomPageActionAll =
     SelectDetailSectionAction |
     CloseDetailSectionAction |
     RoomShopAction |
+    ExpandShopSponsorAction |
     LogShopImpressionAction |
     ClearRoomPageAction 
 
@@ -409,6 +410,33 @@ function loadShop(stackId: number): RoomShopAction {
         }
     }
 } 
+
+export interface ExpandShopSponsorAction extends AnalyticsAction {
+    type: ActionType.EXPAND_SHOP_SPONSOR
+    expanded: boolean
+}
+function performExpandShopSponsor(roomId: number, authorId: number, expanded: boolean): ExpandShopSponsorAction {
+    return {
+        type: ActionType.EXPAND_SHOP_SPONSOR,
+        expanded,
+        GA: {
+            type: 'event',
+            category: 'shop',
+            action: expanded ? 'sponsor-expand' : 'sponsor-collapse',
+            [Dimensions.STACK_ID]: roomId,
+            [Dimensions.AUTHOR_ID]: authorId
+        }
+    }
+}
+
+export function expandShopSponsor(expanded: boolean): ThunkAction {
+    return (dispatch, getState) => {
+        const roomId = RoomPage.get(getState(), 'id')
+        const authorId = RoomPage.author(getState()).get('id')
+        dispatch(performExpandShopSponsor(roomId, authorId, expanded))
+    }
+}
+
 
 export interface LogShopImpressionAction extends AnalyticsAction {
     type: ActionType.LOG_SHOP_IMPRESSION

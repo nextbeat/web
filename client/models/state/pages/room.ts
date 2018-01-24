@@ -39,6 +39,7 @@ interface RoomPageProps extends EntityProps {
 
     productIds: List<number>
     sponsoredProductsSponsor: string
+    isSponsoredProductsExpanded: boolean
     sponsoredProductIds: List<number>
     shopFetching: boolean
     shopHasFetched: boolean
@@ -83,6 +84,7 @@ const keyMap = withEntityMap({
     // shop
     'productIds': ['shop', 'productIds'],
     'sponsoredProductsSponsor': ['shop', 'sponsor'],
+    'isSponsoredProductsExpanded': ['shop', 'isSponsoredProductsExpanded'],
     'sponsoredProductIds': ['shop', 'sponsoredProductIds'],
     'shopFetching': ['shop', 'isFetching'],
     'shopHasFetched': ['shop', 'hasFetched'],

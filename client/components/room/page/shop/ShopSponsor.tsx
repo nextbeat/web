@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { List } from 'immutable'
 
 import ShopProduct from './ShopProduct'
+import { expandShopSponsor } from '@actions/pages/room'
 import Icon from '@components/shared/Icon'
 import RoomPage from '@models/state/pages/room'
 import ShopProductModel from '@models/entities/shopProduct'
@@ -11,34 +12,28 @@ import { State, DispatchProps } from '@types'
 interface ConnectProps {
     products: List<ShopProductModel>
     sponsor: string
+    expanded: boolean
     authorUsername: string
 }
 
 type Props = ConnectProps & DispatchProps;
 
-interface ComponentState {
-    expanded: boolean
-}
 
-class ShopSponsor extends React.Component<Props, ComponentState> {
+class ShopSponsor extends React.Component<Props> {
 
     constructor(props: Props) {
         super(props)
 
         this.handleExpand = this.handleExpand.bind(this)
-
-        this.state = {
-            expanded: false
-        }
     }
 
     handleExpand() {
-        this.setState({ expanded: !this.state.expanded })
+        const { expanded, dispatch } = this.props
+        dispatch(expandShopSponsor(!expanded))
     }
 
     render() {
-        const { sponsor, products, authorUsername } = this.props
-        const { expanded } = this.state
+        const { sponsor, products, authorUsername, expanded } = this.props
 
         if (!products || products.size === 0) {
             return null;
@@ -71,6 +66,7 @@ function mapStateToProps(state: State): ConnectProps {
     return {
         products: RoomPage.sponsoredProducts(state),
         sponsor: RoomPage.get(state, 'sponsoredProductsSponsor'),
+        expanded: RoomPage.get(state, 'isSponsoredProductsExpanded'),
         authorUsername: RoomPage.author(state).get('username')
     }
 }
