@@ -141,7 +141,8 @@ class SmallFixedChatHistory extends React.Component<Props, ChatState> {
                     </div>
                 }
                 <div id={scrollComponentId(this.props)} className="chat_history chat_history-small-fixed">
-                    { commentsFetching && <Spinner styles={["grey"]} />}
+                    { 
+                        commentsFetching && <Spinner styles={["grey"]} />}
                     <ul className="chat_items">
                         {comments.reverse().reduce(commentReducer, List()).map((comment, idx) => this.renderComment(comment, idx))}
                         {liveComments.reduce(commentReducer, List()).map((comment, idx) => this.renderLiveComment(comment, idx))}

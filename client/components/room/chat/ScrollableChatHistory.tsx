@@ -115,13 +115,25 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
             this.setState({ inMessageArchive: false });
         }
 
-        if (prevProps.comments.size < this.props.comments.size) {
+        if (prevProps.comments.size < this.props.comments.size || (!prevProps.hasLoadedChat && this.props.hasLoadedChat)) {
             if (this.props.commentsFetchType === 'before') {
                 this.props.keepScrollPosition()
                 this.props.setScrollState()
             } else if (this.props.commentsFetchType === 'around' || this.props.commentsFetchType === 'mostRecent') {
                 this.props.scrollToBottom()
                 this.props.setScrollState()
+
+                // Ugly hack. Because the chat_compose element varies in height
+                // depending on whether or not there are chat tags, the previous
+                // scrollToBottom call will often be off by an offset of 22 pixels
+                // (the height of the chat tags element, which doesn't render
+                // until after componentDidUpdate in this component is called).
+                // We call scrollToBottom again, after both elements have 
+                // (conditionally) rendered, to account for this discrepancy.
+                process.nextTick(() => {
+                    this.props.scrollToBottom()
+                    this.props.setScrollState()
+                })
             }
         }
 
@@ -152,9 +164,11 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
         }
 
         if (!prevProps.selectedComment && this.props.selectedComment) {
-            const commentId = `comment-${this.props.roomId}-${this.props.selectedComment}`
-            this.props.scrollToElementWithId(commentId, 250)
-            window.setTimeout(() => { this.setState({ inScrollToCommentWindow: false })}, 300);
+            process.nextTick(() => {
+                const commentId = `comment-${this.props.roomId}-${this.props.selectedComment}`
+                this.props.scrollToElementWithId(commentId, 250)
+                window.setTimeout(() => { this.setState({ inScrollToCommentWindow: false })}, 300);
+            })
         }
                 
     }
