@@ -14,7 +14,7 @@ import { promptModal } from '@actions/app'
 import { loadRoom, loadComments,  clearComments, clearRoom } from '@actions/room'
 import { joinRoom } from '@actions/eddy'
 import { loadPaginatedObjects } from '@actions/utils'
-import { Dimensions } from '@analytics/definitions'
+import { Dimensions, Metrics } from '@analytics/definitions'
 import RoomPage, { DetailSection } from '@models/state/pages/room'
 import * as Schemas from '@schemas'
 import { Store, Dispatch } from '@types'
@@ -36,6 +36,7 @@ export type RoomPageActionAll =
     SelectDetailSectionAction |
     CloseDetailSectionAction |
     RoomShopAction |
+    LogShopImpressionAction |
     ClearRoomPageAction 
 
 
@@ -408,6 +409,32 @@ function loadShop(stackId: number): RoomShopAction {
         }
     }
 } 
+
+export interface LogShopImpressionAction extends AnalyticsAction {
+    type: ActionType.LOG_SHOP_IMPRESSION
+}
+function performLogShopImpression(roomId: number, authorId: number, duration: number): LogShopImpressionAction {
+    return {
+        type: ActionType.LOG_SHOP_IMPRESSION,
+        GA: {
+            type: 'event',
+            category: 'shop',
+            action: 'track',
+            [Metrics.DURATION]: duration,
+            [Dimensions.STACK_ID]: roomId,
+            [Dimensions.AUTHOR_ID]: authorId
+        }
+    }
+}
+
+export function logShopImpression(duration: number): ThunkAction {
+    return (dispatch, getState) => {
+        const roomId = RoomPage.get(getState(), 'id')
+        const authorId = RoomPage.author(getState()).get('id')
+        dispatch(performLogShopImpression(roomId, authorId, duration))
+    }
+}
+
 
 
 /*******

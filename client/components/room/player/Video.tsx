@@ -8,8 +8,8 @@ import VideoControls from './VideoControls'
 import Spinner from '@components/shared/Spinner'
 import Icon from '@components/shared/Icon'
 import { setVideoVolume } from '@actions/app'
-import { logVideoImpression, gaEvent } from '@actions/ga'
-import { didPlayVideo, playbackDidStart, playbackDidEnd, setContinuousPlay } from '@actions/room'
+import { gaEvent } from '@actions/ga'
+import { didPlayVideo, playbackDidStart, playbackDidEnd, logVideoImpression, setContinuousPlay } from '@actions/room'
 import App from '@models/state/app'
 import Room from '@models/state/room'
 import Ad from '@models/entities/ad'
@@ -152,6 +152,7 @@ class Video extends React.Component<Props, VideoState> {
         this._videoElem.addEventListener('progress', this.didProgressDownload);
         this._videoElem.addEventListener('ended', this.didEnd);
         this._videoContainerElem.addEventListener('pointerup', this.handleOnPointerUp);
+        window.addEventListener('beforeunload', this.logImpression);
 
         this.loadVideo();
 
@@ -166,12 +167,13 @@ class Video extends React.Component<Props, VideoState> {
         this._videoElem.removeEventListener('progress', this.didProgressDownload);
         this._videoElem.removeEventListener('ended', this.didEnd);
         this._videoContainerElem.removeEventListener('pointerup', this.handleOnPointerUp);
+        window.removeEventListener('beforeunload', this.logImpression);
 
         clearInterval(this.state.timeIntervalId);
         clearInterval(this.state.hoverTimeoutId);
 
         this.unloadVideo();
-        this.logImpression(false); 
+        this.logImpression(); 
 
         $(window).off('fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange', this.handleFullScreenChange)
     }
@@ -491,7 +493,7 @@ class Video extends React.Component<Props, VideoState> {
 
     // Analytics
 
-    logImpression(reset=true) {
+    logImpression() {
         const { impressionStartTime, duration } = this.state
         const { roomId, itemId, itemType, dispatch } = this.props
 
@@ -584,10 +586,8 @@ class Video extends React.Component<Props, VideoState> {
         }
 
         if (shouldDisplayControls && loadState === LoadState.Playing) {
-            console.log('hiding')
             this.setState({ shouldDisplayControls: false })
         } else {
-            console.log('showing')
             this.setState({
                 shouldDisplayControls: true
             })

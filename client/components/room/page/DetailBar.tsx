@@ -12,7 +12,7 @@ import ActionsDropdown from './ActionsDropdown'
 import RoomPage, { DetailSection } from '@models/state/pages/room'
 import App from '@models/state/app'
 import Ad from '@models/entities/ad'
-import { selectDetailSection, closeDetailSection } from '@actions/pages/room'
+import { selectDetailSection, closeDetailSection, logShopImpression } from '@actions/pages/room'
 import { toggleDropdown, promptModal } from '@actions/app'
 import { State, DispatchProps } from '@types'
 
@@ -33,6 +33,8 @@ type Props = ConnectProps & DispatchProps
 interface DetailBarState {
     disableAnimations: boolean
     disableAnimationsTimeoutId: number
+
+    shopImpressionStartTime: number
 }
 
 class DetailBar extends React.Component<Props, DetailBarState> {
@@ -45,19 +47,40 @@ class DetailBar extends React.Component<Props, DetailBarState> {
 
         this.handleResize = this.handleResize.bind(this)
         this.handleClose = this.handleClose.bind(this)
+        this.handleVisibilityChange = this.handleVisibilityChange.bind(this)
+        
+        this.startNewShopImpression = this.startNewShopImpression.bind(this)
+        this.logShopImpression = this.logShopImpression.bind(this)
 
         this.state = {
             disableAnimations: false,
-            disableAnimationsTimeoutId: -1
+            disableAnimationsTimeoutId: -1,
+            shopImpressionStartTime: - 1
         }
     }
 
     componentDidMount() {
         $(window).on('resize.detail-bar', this.handleResize)
+        window.addEventListener('beforeunload', this.logShopImpression)
+        window.addEventListener('visibilitychange', this.handleVisibilityChange)
+    }
+
+    componentDidUpdate(prevProps: Props) {
+        if (prevProps.selectedDetailSection !== 'shop' && this.props.selectedDetailSection === 'shop') {
+            this.startNewShopImpression()
+        }
+
+        if (prevProps.selectedDetailSection === 'shop' && this.props.selectedDetailSection !== 'shop') {
+            this.logShopImpression()
+        }
     }
 
     componentWillUnmount() {
         $(window).off('resize.detail-bar')
+        window.removeEventListener('beforeunload', this.logShopImpression)
+        window.removeEventListener('visibilitychange', this.handleVisibilityChange)
+
+        this.logShopImpression()
     }
 
     handleResize() {
@@ -87,6 +110,44 @@ class DetailBar extends React.Component<Props, DetailBarState> {
 
     handleClose() {
         this.props.dispatch(closeDetailSection())
+        this.logShopImpression()
+    }
+
+    // Impressions
+
+    handleVisibilityChange() {
+        if (document.visibilityState === 'hidden') {
+            // lost tab focus
+            this.logShopImpression()
+        } else if (document.visibilityState === 'visible') {
+            // regained tab focus
+            this.startNewShopImpression()
+        }
+    }
+
+    startNewShopImpression() {
+        if (!performance || this.props.selectedDetailSection !== 'shop') {
+            return;
+        }
+
+        this.setState({
+            shopImpressionStartTime: performance.now()
+        })
+    }
+
+    logShopImpression() {
+        const { shopImpressionStartTime } = this.state
+        if (shopImpressionStartTime < 0) {
+            return;
+        }
+
+        const duration = performance.now() - shopImpressionStartTime
+
+        this.props.dispatch(logShopImpression(duration))
+
+        this.setState({
+            shopImpressionStartTime: -1
+        })
     }
 
 
