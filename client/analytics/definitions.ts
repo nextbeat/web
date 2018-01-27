@@ -14,7 +14,8 @@ export const Dimensions = {
     AUTHOR_USERNAME: 'dimension13',
     VISIBILITY_STATE: 'dimension17',
     URL_QUERY_PARAMS: 'dimension18',
-    AD_ID: 'dimension19'
+    AD_ID: 'dimension19',
+    SHOP_PRODUCT_ID: 'dimension20'
 }
 
 export const Metrics = {
@@ -22,6 +23,7 @@ export const Metrics = {
     START_TIME: 'metric2',
     END_TIME: 'metric3',
     MEDIAITEM_DURATION: 'metric4',
+    SESSION_DURATION: 'metric5',
     RESPONSE_END_TIME: 'metric6',
     DOM_LOAD_TIME: 'metric7',
     WINDOW_LOAD_TIME: 'metric8',

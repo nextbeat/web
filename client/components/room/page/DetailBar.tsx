@@ -22,6 +22,7 @@ interface ConnectProps {
     selectedDetailSection: DetailSection
     shouldDisplayShop: boolean
     
+    roomId: number
     isCurrentUserAuthor: boolean
     unseenLiveMediaItemsCount: number
 
@@ -141,7 +142,10 @@ class DetailBar extends React.Component<Props, DetailBarState> {
             return;
         }
 
-        const duration = performance.now() - shopImpressionStartTime
+        const duration = Math.floor((performance.now() - shopImpressionStartTime)/1000)
+        if (duration === 0) {
+            return;
+        }
 
         this.props.dispatch(logShopImpression(duration))
 
@@ -166,7 +170,7 @@ class DetailBar extends React.Component<Props, DetailBarState> {
     }
 
     render() {
-        const { selectedDetailSection, width, activeOverlay, 
+        const { selectedDetailSection, width, activeOverlay, roomId,
                 isCurrentUserAuthor, bannerAd, shouldDisplayShop } = this.props;
         const { disableAnimations } = this.state;
 
@@ -181,7 +185,7 @@ class DetailBar extends React.Component<Props, DetailBarState> {
 
         return (
             <div className={`detail-bar ${collapsedClass} ${activeClass} ${disableAnimationsClass}`}>
-                { bannerAd && <BannerAd ad={bannerAd} /> }
+                { bannerAd && <BannerAd ad={bannerAd} roomId={roomId} /> }
                 <div className="detail-bar_header">
                     { isCurrentUserAuthor && 
                         <div className="detail-bar_toggle-edit dropdown-detail-bar_toggle" onClick={this.toggleDropdown}><Icon type="more-vert" /></div> 
@@ -212,6 +216,7 @@ function mapStateToProps(state: State): ConnectProps {
         shouldDisplayShop: RoomPage.shouldDisplayShop(state),
         width: App.get(state, 'width'),
         activeOverlay: App.get(state, 'activeOverlay'),
+        roomId: RoomPage.get(state, 'id'),
         isCurrentUserAuthor: RoomPage.isCurrentUserAuthor(state),
         unseenLiveMediaItemsCount: RoomPage.unseenLiveMediaItemsCount(state),
         bannerAd: RoomPage.ad(state, 'banner')

@@ -102,6 +102,8 @@ function handleEvent(data: AnalyticsCall) {
         eventData.hitCallback = createFunctionWithTimeout(data.callback);
     }
 
+    console.log(eventData)
+
     ga('send', 'event', eventData)
 }
 

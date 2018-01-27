@@ -112,7 +112,7 @@ class RoomMain extends React.Component<Props> {
                     {/* we only display once the room has loaded */}
                     { isLoadedDeep &&
                     <div className="player_inner">
-                        { bannerAd && <BannerAd ad={bannerAd} />}
+                        { bannerAd && <BannerAd ad={bannerAd} roomId={roomId} />}
                         <RoomPlayer roomId={roomId}>
                             { shouldDisplayCounter && <Counter roomId={roomId} /> }
                         </RoomPlayer>

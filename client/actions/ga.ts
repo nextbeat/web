@@ -52,16 +52,15 @@ interface GAEventData {
     category: string,
     action: string,
     label?: string | number
+    [key: string]: any // custom dimensions or metrics
 }
 export function gaEvent(data: GAEventData, callback?: () => void): GAEventAction {
     return {
         type: ActionType.GA,
         GA: {
             type: 'event',
-            category: data.category,
-            action: data.action,
-            label: data.label,
-            callback
+            callback,
+            ...data
         }
     }
 }

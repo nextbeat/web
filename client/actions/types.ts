@@ -55,7 +55,7 @@ export interface AnalyticsCall {
     label?: string | number
     callback?: () => void
     userId?: number
-    [key: string]: any // metrics and dimensions. todo: keyof
+    [key: string]: any // metrics and dimensions
 }
 
 export interface GenericAction extends AnyAction {

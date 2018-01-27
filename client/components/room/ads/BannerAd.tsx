@@ -2,11 +2,13 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 
 import { gaEvent } from '@actions/ga'
+import { Dimensions } from '@analytics/definitions'
 import Ad from '@models/entities/ad'
 import { DispatchProps } from '@types'
 
 interface OwnProps {
     ad: Ad
+    roomId: number
 }
 
 type Props = OwnProps & DispatchProps
@@ -22,13 +24,15 @@ class BannerAd extends React.Component<Props> {
 
     onClick(e: React.MouseEvent<HTMLElement>) {
 
-        const { dispatch, ad } = this.props
+        const { dispatch, ad, roomId } = this.props
         e.preventDefault();
 
         dispatch(gaEvent({
             category: 'ad',
             action: 'click',
-            label: ad.get('id')
+            label: 'banner',
+            [Dimensions.SHOP_PRODUCT_ID]: ad.get('id'),
+            [Dimensions.STACK_ID]: roomId
         }, () => {
             window.open(ad.get('link_url'), '_blank')
         }))

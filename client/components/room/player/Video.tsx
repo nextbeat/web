@@ -7,9 +7,11 @@ import Decoration from './Decoration'
 import VideoControls from './VideoControls'
 import Spinner from '@components/shared/Spinner'
 import Icon from '@components/shared/Icon'
+
 import { setVideoVolume } from '@actions/app'
 import { gaEvent } from '@actions/ga'
 import { didPlayVideo, playbackDidStart, playbackDidEnd, logVideoImpression, setContinuousPlay } from '@actions/room'
+import { Dimensions } from '@analytics/definitions'
 import App from '@models/state/app'
 import Room from '@models/state/room'
 import Ad from '@models/entities/ad'
@@ -521,7 +523,7 @@ class Video extends React.Component<Props, VideoState> {
     // Video container events
 
     handleOnMouseOver() {
-        if (this.props.isMobile) {
+        if (this.props.isAndroid) {
             return
         }
 
@@ -533,7 +535,7 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     handleOnMouseOut() {
-        if (this.props.isMobile) {
+        if (this.props.isAndroid) {
             return
         }
 
@@ -545,7 +547,7 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     handleOnMouseMove(e: React.MouseEvent<HTMLElement>) {
-        if (this.props.isMobile) {
+        if (this.props.isAndroid) {
             return
         }
 
@@ -603,7 +605,7 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     handleAdClick(e: React.MouseEvent<HTMLElement>) {
-        const { itemUrl, itemId, dispatch } = this.props
+        const { itemUrl, itemId, roomId, dispatch } = this.props
         if (!itemUrl) {
             return;
         }
@@ -613,7 +615,9 @@ class Video extends React.Component<Props, VideoState> {
         dispatch(gaEvent({
             category: 'ad',
             action: 'click',
-            label: itemId
+            label: 'preroll',
+            [Dimensions.AD_ID]: itemId,
+            [Dimensions.STACK_ID]: roomId
         }, () => {
             window.open(itemUrl, '_blank')
         }))

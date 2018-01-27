@@ -10,6 +10,7 @@ import ShopProductModel from '@models/entities/shopProduct'
 import { State, DispatchProps } from '@types'
 
 interface ConnectProps {
+    roomId: number
     products: List<ShopProductModel>
     sponsor: string
     expanded: boolean
@@ -33,7 +34,7 @@ class ShopSponsor extends React.Component<Props> {
     }
 
     render() {
-        const { sponsor, products, authorUsername, expanded } = this.props
+        const { sponsor, products, authorUsername, expanded, roomId } = this.props
 
         if (!products || products.size === 0) {
             return null;
@@ -47,7 +48,7 @@ class ShopSponsor extends React.Component<Props> {
                     { authorUsername } is sponsored by { sponsor }
                 </div>
                 <div className="shop_sponsor_products">
-                    { productsSlice.map(product => <ShopProduct key={product.get('id')} product={product} />) }
+                    { productsSlice.map(product => <ShopProduct key={product.get('id')} product={product} roomId={roomId} />) }
                 </div>
                 { products.size > 1 && 
                 <div className="shop_sponsor_expand">
@@ -64,6 +65,7 @@ class ShopSponsor extends React.Component<Props> {
 
 function mapStateToProps(state: State): ConnectProps {
     return {
+        roomId: RoomPage.get(state, 'id'),
         products: RoomPage.sponsoredProducts(state),
         sponsor: RoomPage.get(state, 'sponsoredProductsSponsor'),
         expanded: RoomPage.get(state, 'isSponsoredProductsExpanded'),

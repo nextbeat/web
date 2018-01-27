@@ -448,7 +448,7 @@ function performLogShopImpression(roomId: number, authorId: number, duration: nu
             type: 'event',
             category: 'shop',
             action: 'track',
-            [Metrics.DURATION]: duration,
+            [Metrics.SESSION_DURATION]: duration,
             [Dimensions.STACK_ID]: roomId,
             [Dimensions.AUTHOR_ID]: authorId
         }

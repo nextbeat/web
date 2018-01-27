@@ -13,6 +13,7 @@ interface OwnProps {
 }
 
 interface ConnectProps {
+    roomId: number
     products: List<ShopProductModel>
     sponsoredProducts: List<ShopProductModel>
 }
@@ -21,11 +22,11 @@ type Props = OwnProps & ConnectProps & DispatchProps
 
 class Shop extends React.Component<Props> {
     render() {
-        const { display, products, sponsoredProducts } = this.props
+        const { display, products, sponsoredProducts, roomId } = this.props
         return (
             <div className="shop" style={{ display: display ? 'block' : 'none' }}>
                 { sponsoredProducts.size > 0 && <ShopSponsor /> }
-                { products.map(product => <ShopProduct key={product.get('id')} product={product} />)}
+                { products.map(product => <ShopProduct key={product.get('id')} product={product} roomId={roomId} />)}
             </div>
         )
     }
@@ -33,6 +34,7 @@ class Shop extends React.Component<Props> {
 
 function mapStateToProps(state: State): ConnectProps {
     return {
+        roomId: RoomPage.get(state, 'id'),
         products: RoomPage.products(state),
         sponsoredProducts: RoomPage.sponsoredProducts(state)
     }

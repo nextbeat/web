@@ -2,11 +2,13 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 
 import { gaEvent } from '@actions/ga'
+import { Dimensions } from '@analytics/definitions'
 import ShopProduct from '@models/entities/shopProduct'
 import { DispatchProps } from '@types'
 
 interface OwnProps {
     product: ShopProduct
+    roomId: number
 }
 
 type Props = OwnProps & DispatchProps
@@ -20,7 +22,7 @@ class ShopProductComponent extends React.Component<Props> {
     }
 
     handleClick() {
-        const { product, dispatch } = this.props
+        const { product, roomId, dispatch } = this.props
         if (!product.get('url')) {
             return;
         }
@@ -28,7 +30,8 @@ class ShopProductComponent extends React.Component<Props> {
         dispatch(gaEvent({
             category: 'shop',
             action: 'click',
-            label: product.get('id')
+            label: product.get('id'),
+            [Dimensions.STACK_ID]: roomId
         }, () => {
             window.open(product.get('url'), '_blank')
         }))
