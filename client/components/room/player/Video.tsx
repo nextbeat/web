@@ -55,6 +55,7 @@ enum LoadState {
     Loading = 'LOADING',
     Playing = 'PLAYING',
     Paused = 'PAUSED',
+    Seeking = 'SEEKING',
     WaitingToPlay = 'WAITING_TO_PLAY'
 }
 
@@ -325,9 +326,9 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     isWaiting() {
-        this.setState({
-            loadState: LoadState.Paused
-        })
+        // this.setState({
+        //     loadState: LoadState.Paused
+        // })
     }
 
     didProgressDownload() {
