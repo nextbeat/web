@@ -73,6 +73,7 @@ interface MediaItemSubmissionObject {
     type: string
     uuid: string
     stack_uuid: string
+    title: string
     images: any[]
     videos: any[]
     references: number
@@ -237,7 +238,7 @@ export default class Upload extends StateModelFactory<UploadSubmissionProps>(sub
         }
 
         // Format media item object
-        // 
+        
         const mediaItemState = this.get(state, 'mediaItem').toJS()
         let mediaItem: Partial<MediaItemSubmissionObject> = {
             type: mediaItemState.type,
@@ -253,6 +254,10 @@ export default class Upload extends StateModelFactory<UploadSubmissionProps>(sub
             mediaItem.videos = [{
                 original_id: mediaItemState.resource_id
             }]
+        }
+
+        if (mediaItemState.title && mediaItemState.title.trim().length > 0) {
+            mediaItem.title = mediaItemState.title.trim()
         }
 
         if (this.referencedCommentIsLoaded(state)) {

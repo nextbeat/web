@@ -16,7 +16,6 @@ interface OwnProps {
 
 interface ConnectProps {
     isSelectedStack: boolean
-    fileType: 'image' | 'video' | null
 }
 
 type Props = OwnProps & ConnectProps & DispatchProps
@@ -42,7 +41,6 @@ class SelectableStackItem extends React.Component<Props> {
     }
 
     renderNewStack() {
-        const { fileType } = this.props
         return (
             <div className="item_container item-room-large_container">
                 <div className="item-room-large item">
@@ -53,7 +51,7 @@ class SelectableStackItem extends React.Component<Props> {
                     </div>
                 </div>
                 <div className="item-room-large_info">
-                    <div className="item-room-large_description item-room-large-new_description">Make a new room with this {fileType}.</div>
+                    <div className="item-room-large_description item-room-large-new_description">Make a new room with this post.</div>
                 </div>
             </div>
         )
@@ -79,7 +77,6 @@ class SelectableStackItem extends React.Component<Props> {
 function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     return {
         isSelectedStack: Upload.get(state, 'selectedStackId') === (ownProps.stack ? ownProps.stack.get('id') : -1),
-        fileType: Upload.fileType(state, UploadType.MediaItem)
     }
 }
 

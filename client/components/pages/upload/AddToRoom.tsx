@@ -10,7 +10,6 @@ import { State } from '@types'
 
 interface Props {
     stacks: List<Stack>
-    fileType: 'image' | 'video' | null
 }
 
 interface ComponentState {
@@ -69,11 +68,11 @@ class AddToRoom extends React.Component<Props, ComponentState> {
     // Render
 
     render() {
-        const { stacks, fileType } = this.props
+        const { stacks } = this.props
         const { itemWidth } = this.state
         return (
-            <div className="upload_add">
-                <div className="upload_subheader">Add {fileType} to room</div>
+            <div className="upload_add-to-room upload_section">
+                <div className="upload_subheader">Add post to room</div>
                 <div className="upload_stacks" ref={c => { if (c) { this._node = c } }}>
                     { stacks.map(stack => <SelectableStackItem key={stack.get('id')} stack={stack} width={itemWidth} />)}
                     <SelectableStackItem stack={null} width={itemWidth} />
@@ -85,8 +84,7 @@ class AddToRoom extends React.Component<Props, ComponentState> {
 
 function mapStateToProps(state: State): Props {
     return {
-        stacks: CurrentUser.openStacks(state),
-        fileType: Upload.fileType(state, UploadType.MediaItem)
+        stacks: CurrentUser.openStacks(state)
     }
 }
 

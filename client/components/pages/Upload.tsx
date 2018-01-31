@@ -10,6 +10,7 @@ import FileSelect from './upload/FileSelect'
 import UploadBar from './upload/UploadBar'
 import AddToRoom from './upload/AddToRoom'
 import CreateRoom from './upload/CreateRoom'
+import AddTitle from './upload/AddTitle'
 import Spinner from '@components/shared/Spinner'
 import Icon from '@components/shared/Icon'
 import PageError from '@components/shared/PageError'
@@ -122,6 +123,9 @@ class Upload extends React.Component<Props> {
                         <CreateRoom key='create-room' />
                     </UploadComponentTransition> 
                 }
+                <UploadComponentTransition>
+                    <AddTitle key='add-title' />
+                </UploadComponentTransition>
                 </TransitionGroup>
                 <div className="upload_submit-container">
                     <a className={`btn ${isSubmittable ? '' : 'btn-inactive'} upload_submit`} onClick={this.handleSubmit}>Submit</a>

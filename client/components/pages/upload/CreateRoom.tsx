@@ -70,7 +70,7 @@ class CreateRoom extends React.Component<Props> {
         const { newStack, openStacks } = this.props
 
         return (
-            <div className="upload_create-room">
+            <div className="upload_create-room upload_section">
                 <EditThumbnailModal />
                 <div className="upload_subheader">
                     Make new room
@@ -86,7 +86,7 @@ class CreateRoom extends React.Component<Props> {
                         </div>
                     </div>
                     <div className="upload_create-room_main">
-                        <input className="upload_create-room_input" type="text" value={newStack.get('title')} onChange={this.handleTitleChange} placeholder="Title" />
+                        <input className="upload_input" type="text" value={newStack.get('title')} onChange={this.handleTitleChange} placeholder="Title" />
                         <TagsInput tags={newStack.get('tags')} onChange={this.updateTags} />
                     </div>
                     <div className="upload_create-room_right">
