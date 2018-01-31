@@ -6,7 +6,6 @@ import Comment from './comment'
 import { State } from '@types'
 
 interface MediaItemProps {
-    decoration: State
     id: number
     references: number
     stack_id: number

@@ -2,7 +2,6 @@ import * as React from 'react'
 import { connect } from 'react-redux' 
 
 import FileComponent, { FileComponentProps } from './utils/FileComponent'
-import AddCaption from './AddCaption'
 import Icon from '@components/shared/Icon'
 import Spinner from '@components/shared/Spinner'
 import { uploadMediaItemFile, updateNewMediaItem } from '@actions/upload'
@@ -45,7 +44,6 @@ class FileSelect extends React.Component<Props, FileSelectState> {
 
         this.handleClick = this.handleClick.bind(this)
         this.handleInputChange = this.handleInputChange.bind(this)
-        this.handleAddCaptionClick = this.handleAddCaptionClick.bind(this)
 
         this.renderUploadPrompt = this.renderUploadPrompt.bind(this)
         this.renderUploadProgress = this.renderUploadProgress.bind(this)
@@ -99,11 +97,6 @@ class FileSelect extends React.Component<Props, FileSelectState> {
             this.props.dispatch(uploadMediaItemFile(file))
         }
     }
-
-    handleAddCaptionClick() {
-        this.props.dispatch(promptModal('add-caption'))
-    }
-
 
     // Render
 
@@ -181,17 +174,11 @@ class FileSelect extends React.Component<Props, FileSelectState> {
                 isInSubmitProcess, isDoneProcessing } = this.props 
 
         const fileIsCompatible = resourceType !== 'incompatible'
-        const hasDecoration = mediaItem.getIn(['decoration', 'caption_text'], '').length > 0
-
-        const shouldDisplayPrompt = !isInSubmitProcess&& (fileIsCompatible || isDoneProcessing)
+        const shouldDisplayPrompt = !isInSubmitProcess && (fileIsCompatible || isDoneProcessing)
 
         return (
             <div className="upload_file-select" id="upload_file-select">
-                <AddCaption width={resourceWidth} height={resourceHeight} />
                 { fileIsCompatible ? this.renderCompatibleFile() : this.renderIncompatibleFile() }
-                { shouldDisplayPrompt && 
-                    <div className="upload_caption-btn" onClick={this.handleAddCaptionClick}>{hasDecoration ? 'Edit' : 'Add'} Caption</div>
-                }
             </div>
         );
     }

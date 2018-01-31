@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import debounce from 'lodash-es/debounce'
 import { toggleFullScreen, isFullScreen } from '../../../utils'
 
-import Decoration from './Decoration'
 import VideoControls from './VideoControls'
 import Spinner from '@components/shared/Spinner'
 import Icon from '@components/shared/Icon'
@@ -21,7 +20,6 @@ const START_IMPRESSION_WAIT_TIME = 500;
 
 interface OwnProps {
     video: State
-    decoration?: State
 
     roomId?: number
     itemId?: number
@@ -656,9 +654,9 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     render() {
-        const { video, decoration, volume, isIOS, isMobile,
+        const { video, volume, isIOS, isMobile,
                 authorUsername, itemType } = this.props;
-        const { shouldDisplayControls, loadState, width, height } = this.state;
+        const { shouldDisplayControls, loadState } = this.state;
 
         const videoContainerStyle = {
             display: video.isEmpty() ? 'none' : 'block',
@@ -711,7 +709,6 @@ class Video extends React.Component<Props, VideoState> {
             <div className={`video_container ${adClass} ${mobileClass}`} id="video_container" tabIndex={-1} style={videoContainerStyle} {...videoContainerEvents} ref={(c) => { if (c) { this._videoContainerElem = c } }}>
                 <div className="video_player-container">
                     <video id="video_player" className="video_player" {...videoAttributes} style={this.videoStyle(video)} ref={(c) => { if (c) { this._videoElem = c } }} />
-                    { decoration && <Decoration decoration={decoration} width={width} height={height} barHeight={70} /> }
                     { loadState === LoadState.Loading && <Spinner styles={['white', 'large', 'faded']} /> }
                 </div>
                 <VideoControls ref={(c) => { if (c) { this._controls = c } }} {...videoControlsProps} />

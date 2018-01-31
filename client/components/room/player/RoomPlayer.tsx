@@ -265,7 +265,6 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
         let videoProps = {
             video: isAd ? (prerollAd as Ad).video('mp4') : item.video('mp4'),
-            decoration: isAd ? undefined : item.get('decoration'),
             roomId: roomId,
             posterUrl: item.video('mp4').get('poster_url'),
             itemType: isAd ? 'ad' : 'mediaItem' as 'ad' | 'mediaItem',
@@ -279,7 +278,6 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                 { !this.shouldDisplayPrerollAd() && item.hasReference() && <ItemReference roomId={roomId} {...containerProps} /> } 
                 <Image 
                     image={item.image()} 
-                    decoration={item.get('decoration')} 
                     roomId={roomId}
                     {...containerProps} />
                 <Video {...videoProps} />

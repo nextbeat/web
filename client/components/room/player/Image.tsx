@@ -2,7 +2,6 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { Map } from 'immutable'
 
-import Decoration from './Decoration'
 import ImageControls from './ImageControls'
 
 import { setContinuousPlay, playbackDidEnd } from '@actions/room'
@@ -16,7 +15,6 @@ interface OwnProps {
     containerWidth: number
     containerHeight: number
     hideControls?: boolean
-    decoration?: State
     roomId?: number
 }
 
@@ -191,16 +189,8 @@ class Image extends React.Component<Props, ImageState> {
         return style;
     }
 
-    captionStyle(state: ImageState) {
-        const { width, height } = state 
-        return {
-            width: `${width}px`, 
-            height: `${height}px`
-        }
-    }
-
     render() {
-        let { image, decoration, hideControls, isContinuousPlayEnabled,
+        let { image, hideControls, isContinuousPlayEnabled,
               continuousPlayCountdownDuration, continuousPlayCountdownTimeLeft } = this.props
         let { width, height, shouldDisplayControls, isFullScreen } = this.state
 
@@ -233,7 +223,6 @@ class Image extends React.Component<Props, ImageState> {
         return (
             <div className="player_photo-container" style={imageStyle} {...photoContainerEvents}>
                 <img key={image.get('url')} src={image.get('url')} id="player_photo" className="player_photo" style={this.imageStyle()} />
-                { decoration && <Decoration decoration={decoration} width={width} height={height} /> }
                 { !hideControls && <ImageControls {...imageControlsProps} /> }
             </div>
         )

@@ -263,36 +263,6 @@
     }
 }
 
-.player_caption {
-    width: 100%;
-    padding: 5px;
-    background-color: rgba(#000, 0.6);
-    color: white;
-    text-align: center;
-    position: absolute;
-    top: 0;
-    left: 0;
-    font-size: 14px;
-
-    a {
-        font-weight: normal;
-        color: $light-secondary-color;
-        /* the video player disables pointer events on the parent element of .player_caption, so this reinstates them */
-        pointer-events: auto; 
-
-        &:hover {
-            cursor: pointer;
-            color: $lighter-secondary-color;
-        }
-    }
-}
-
-.player_decoration {
-    @include center;
-    /* allow passthrough on mouse events to enable video playback on mobile */
-    pointer-events: none;
-}
-
 .player_more {
 
     padding: 10px 15px;

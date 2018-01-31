@@ -73,7 +73,6 @@ interface MediaItemSubmissionObject {
     type: string
     uuid: string
     stack_uuid: string
-    decoration: any
     images: any[]
     videos: any[]
     references: number
@@ -244,10 +243,6 @@ export default class Upload extends StateModelFactory<UploadSubmissionProps>(sub
             type: mediaItemState.type,
             uuid: mediaItemState.uuid,
             stack_uuid: stack.uuid
-        }
-
-        if (this.get(state, 'mediaItem').getIn(['decoration', 'caption_text'], '').length > 0) {
-            mediaItem.decoration = mediaItemState.decoration
         }
 
         if (mediaItem.type === 'photo') {
