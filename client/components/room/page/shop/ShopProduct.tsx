@@ -30,8 +30,8 @@ class ShopProductComponent extends React.Component<Props> {
         dispatch(gaEvent({
             category: 'shop',
             action: 'click',
-            label: product.get('id'),
-            [Dimensions.STACK_ID]: roomId
+            [Dimensions.STACK_ID]: roomId,
+            [Dimensions.SHOP_PRODUCT_ID]: product.get('id')
         }, () => {
             window.open(product.get('url'), '_blank')
         }))

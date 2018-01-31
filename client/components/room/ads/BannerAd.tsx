@@ -31,7 +31,7 @@ class BannerAd extends React.Component<Props> {
             category: 'ad',
             action: 'click',
             label: 'banner',
-            [Dimensions.SHOP_PRODUCT_ID]: ad.get('id'),
+            [Dimensions.AD_ID]: ad.get('id'),
             [Dimensions.STACK_ID]: roomId
         }, () => {
             window.open(ad.get('link_url'), '_blank')
