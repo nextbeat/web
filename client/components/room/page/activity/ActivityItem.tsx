@@ -38,6 +38,7 @@ interface ConnectProps {
 
     isEditingMediaItemTitle: boolean 
     hasEditedMediaItemTitle: boolean 
+    editedMediaItemId: number
     editMediaItemTitleError: string
 }
 
@@ -77,24 +78,24 @@ class ActivityItem extends React.Component<Props, ComponentState> {
 
     componentDidMount() {
         if (!!this.props.mediaItem.get('title')) {
-            this.setState({ editedTitle: this.props.mediaItem.get('title') })
+            this.setState({ editedTitle: this.props.mediaItem.get('title') || '' })
         }
     }
 
     componentWillReceiveProps(nextProps: Props) {
-        if (!this.props.hasDeletedMediaItem && nextProps.hasDeletedMediaItem) {
+        if (this.props.mediaItem.get('id') === nextProps.deletedMediaItemId && !this.props.hasDeletedMediaItem && nextProps.hasDeletedMediaItem) {
             this.props.dispatch(closeModal())
             if (nextProps.selectedMediaItemId === nextProps.deletedMediaItemId) {
                 this.props.dispatch(selectMediaItem(this.props.roomId, nextProps.postDeletionSelectedMediaItemId))
             }
         }
 
-        if (!this.props.hasEditedMediaItemTitle && nextProps.hasEditedMediaItemTitle) {
+        if (this.props.mediaItem.get('id') === nextProps.editedMediaItemId && !this.props.hasEditedMediaItemTitle && nextProps.hasEditedMediaItemTitle) {
             this.props.dispatch(closeModal())
         }
 
         if (this.props.mediaItem.get('title') !== nextProps.mediaItem.get('title')) {
-            this.setState({ editedTitle: nextProps.mediaItem.get('title') })
+            this.setState({ editedTitle: nextProps.mediaItem.get('title') || '' })
         }
     }
 
@@ -148,10 +149,10 @@ class ActivityItem extends React.Component<Props, ComponentState> {
 
     renderDropdown() {
         const { mediaItem, dispatch } = this.props 
-        const hasTitle = !!mediaItem.get('title')
+
         return (
             <Dropdown type={`item-options-${mediaItem.get('id')}`} triangleMargin={-1}>
-                <a className="dropdown-option" onClick={this.handleDropdownEditTitleClick}>{hasTitle ? 'Edit' : 'Add'} Title</a>
+                { !mediaItem.hasReference() && <a className="dropdown-option" onClick={this.handleDropdownEditTitleClick}>{mediaItem.hasTitle() ? 'Edit' : 'Add'} Title</a> }
                 <a className="dropdown-option" onClick={this.handleDropdownDeleteClick}>Delete Post</a>
             </Dropdown>
         )
@@ -182,6 +183,8 @@ class ActivityItem extends React.Component<Props, ComponentState> {
 
     renderEditTitleModal() {
         const { mediaItem, isEditingMediaItemTitle, editMediaItemTitleError, dispatch } = this.props
+        const { editedTitle } = this.state
+
         return (
             <Modal name={`edit-title-${mediaItem.get('id')}`} className="modal-alert">
                 <div className="modal_header">
@@ -190,7 +193,7 @@ class ActivityItem extends React.Component<Props, ComponentState> {
                 <div className="modal-alert_text">
                     To remove the post title, leave the text field blank.
                 </div>
-                <input type="text" onChange={this.handleEditMediaItemChange} placeholder="Post Title" />
+                <input className="modal-alert_input" type="text" onChange={this.handleEditMediaItemChange} value={editedTitle} placeholder="Post Title" />
                 <a className="modal-alert_btn btn" onClick={this.handleEditMediaItemClick}>
                     { isEditingMediaItemTitle? <Spinner styles={["white"]} /> : 'Submit' }
                 </a>
@@ -233,8 +236,8 @@ class ActivityItem extends React.Component<Props, ComponentState> {
         const referencedComment = mediaItem.hasReference() && mediaItem.referencedComment()
         
         return (
-            <div className={`activity-item ${selectedClass} ${liveClass} ${currentUserClass}`} onClick={this.handleClick}>
-                <div className="activity-item_inner">
+            <div className={`activity-item ${selectedClass} ${liveClass} ${currentUserClass}`}>
+                <div className="activity-item_inner" onClick={this.handleClick}>
                     <div className="activity-item_main">
                         <div className="activity-item_thumb" style={{ backgroundImage: `url(${url})`}} />
                         <div className="activity-item_content">
@@ -282,6 +285,7 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
 
         isEditingMediaItemTitle: RoomPage.get(state, 'isEditingMediaItemTitle'),
         hasEditedMediaItemTitle: RoomPage.get(state, 'hasEditedMediaItemTitle'),
+        editedMediaItemId: RoomPage.get(state, 'editedMediaItemId'),
         editMediaItemTitleError: RoomPage.get(state, 'editMediaItemTitleError')
     }
 }
