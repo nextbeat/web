@@ -11,14 +11,20 @@ import navigation from './navigation'
 
 let meta = entity(ActionType.ROOM)
 
+function _deleteMediaItem(state: State, mediaItemId: number) {
+    if (state.get('ids').includes(mediaItemId)) {
+        state = state
+            .update('total', total => total-1)
+            .update('ids', (ids: List<number>) => ids.filter(id => id !== mediaItemId))
+    }
+    return state
+}
+
 function mediaItems(state: State, action: Action) {
     if (action.type === ActionType.DELETE_MEDIA_ITEM && action.status === Status.SUCCESS) {
-        if (state.get('ids').includes(action.id)) {
-            state = state
-                .update('total', total => total-1)
-                .update('ids', ids => ids.filter((id: number) => id !== action.id))
-        }
-        return state
+        return _deleteMediaItem(state, action.id)
+    } else if (action.type === ActionType.RECEIVE_MEDIA_ITEM_DELETE) {
+        return _deleteMediaItem(state, action.mediaItemId)
     } else {
         return paginate(ActionType.MEDIA_ITEMS)(state, action)
     }

@@ -5,6 +5,8 @@ import omit from 'lodash-es/omit'
 import { 
     receiveComment,
     receiveMediaItem,
+    receiveMediaItemUpdate,
+    receiveMediaItemDelete,
     receiveRoomClosed,
     receivePinnedComment,
     receiveUnpinnedComment,
@@ -67,6 +69,8 @@ type EddyReceiveType =
     'unpinned_chat' |
     'notification_comment' |
     'media_item' |
+    'media_item_update' |
+    'media_item_delete' |
     'room_closed' |
     'room_marked' |
     'bookmark_update' |
@@ -327,6 +331,14 @@ export default class EddyClient {
         else if (payload.type === "media_item") 
         {
             this.dispatch(receiveMediaItem(roomId, data.media_item));
+        }
+        else if (payload.type === "media_item_update") 
+        {   
+            this.dispatch(receiveMediaItemUpdate(roomId, data.media_item));
+        }
+        else if (payload.type === "media_item_delete")
+        {
+            this.dispatch(receiveMediaItemDelete(roomId, data.media_item_id));
         }
         else if (payload.type === "room_closed")
         {

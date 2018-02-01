@@ -27,7 +27,6 @@ class Signup extends React.Component<AllProps> {
         this.handleLoginClick = this.handleLoginClick.bind(this)
     }
 
-
     // Events
 
     handleKeyPress(e: React.KeyboardEvent<HTMLElement>) {

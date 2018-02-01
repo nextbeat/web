@@ -21,6 +21,7 @@ import {
     ReceivePinnedCommentAction,
     ReceiveUnpinnedCommentAction,
     ReceiveMediaItemAction,
+    ReceiveMediaItemDeleteAction,
     ReceiveNotificationCommentAction,
 } from '@actions/eddy'
 import { EddyError } from '@errors'
@@ -186,7 +187,14 @@ function receiveUnpinnedComment(state: State, action: ReceiveUnpinnedCommentActi
 }
 
 function receiveMediaItem(state: State, action: ReceiveMediaItemAction) {
-    return state.update('mediaItems', mediaItems => mediaItems.push(action.mediaItem.id));
+    return state.update('mediaItems', (mediaItems: List<number>) => mediaItems.push(action.mediaItem.id));
+}
+
+function receiveMediaItemDelete(state: State, action: ReceiveMediaItemDeleteAction) {
+    if (state.get('mediaItems').includes(action.mediaItemId)) {
+        return state.update('mediaItems', (mediaItems: List<number>) => mediaItems.filter(id => id !== action.mediaItemId))
+    }
+    return state
 }
 
 function receiveNotificationComment(state: State, action: ReceiveNotificationCommentAction) {
@@ -242,6 +250,8 @@ export default function live(state = initialState, action: Action) {
             return receiveUnpinnedComment(state, action);
         case ActionType.RECEIVE_MEDIA_ITEM:
             return receiveMediaItem(state, action);
+        case ActionType.RECEIVE_MEDIA_ITEM_DELETE: 
+            return receiveMediaItemDelete(state, action);
         case ActionType.RECEIVE_NOTIFICATION_COMMENT:
             return receiveNotificationComment(state, action);
         case ActionType.COMMENTS:

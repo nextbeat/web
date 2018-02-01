@@ -28,6 +28,7 @@ import {
     ReceiveCommentAction,
     ReceivePinnedCommentAction,
     ReceiveMediaItemAction,
+    ReceiveMediaItemUpdateAction,
     ReceiveNotificationCommentAction,
     ReceiveRoomClosedAction,
     ReceiveBookmarkUpdateAction
@@ -350,6 +351,12 @@ function receiveMediaItem(store: Store, next: Dispatch, action: ReceiveMediaItem
     return next(assign({}, action, { response }))
 }
 
+function receiveMediaItemUpdate(store: Store, next: Dispatch, action: ReceiveMediaItemUpdateAction) {
+    let response = normalize(action.mediaItem, Schemas.MediaItem)
+    Room.clearMediaItemsSelector(store.getState(), action.roomId)
+    return next(assign({}, action, { response }))
+}
+
 function receiveNotificationComment(store: Store, next: Dispatch, action: ReceiveNotificationCommentAction) {
     // Trigger an entity update
     const response = normalize(action.comment, Schemas.Comment)
@@ -418,6 +425,8 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
             return receivePinnedComment(store, next, action)
         case ActionType.RECEIVE_MEDIA_ITEM:
             return receiveMediaItem(store, next, action)
+        case ActionType.RECEIVE_MEDIA_ITEM_UPDATE:
+            return receiveMediaItemUpdate(store, next, action)
         case ActionType.RECEIVE_NOTIFICATION_COMMENT:
             return receiveNotificationComment(store, next, action)
         case ActionType.RECEIVE_ROOM_CLOSED:

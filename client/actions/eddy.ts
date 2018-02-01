@@ -14,6 +14,8 @@ export type EddyActionAll =
     ReceivePinnedCommentAction |
     ReceiveUnpinnedCommentAction |
     ReceiveMediaItemAction |
+    ReceiveMediaItemUpdateAction |
+    ReceiveMediaItemDeleteAction |
     ReceiveNotificationCommentAction |
     ReceiveRoomClosedAction |
     ReceiveBookmarkUpdateAction |
@@ -156,6 +158,32 @@ export function receiveMediaItem(roomId: number, mediaItem: any): ReceiveMediaIt
         type: ActionType.RECEIVE_MEDIA_ITEM,
         roomId,
         mediaItem
+    }
+}
+
+export interface ReceiveMediaItemUpdateAction extends GenericAction {
+    type: ActionType.RECEIVE_MEDIA_ITEM_UPDATE,
+    roomId: number
+    mediaItem: any
+}
+export function receiveMediaItemUpdate(roomId: number, mediaItem: any): ReceiveMediaItemUpdateAction {
+    return {
+        type: ActionType.RECEIVE_MEDIA_ITEM_UPDATE,
+        roomId,
+        mediaItem
+    }
+}
+
+export interface ReceiveMediaItemDeleteAction extends GenericAction {
+    type: ActionType.RECEIVE_MEDIA_ITEM_DELETE,
+    roomId: number,
+    mediaItemId: number
+}
+export function receiveMediaItemDelete(roomId: number, mediaItemId: number): ReceiveMediaItemDeleteAction {
+    return {
+        type: ActionType.RECEIVE_MEDIA_ITEM_DELETE,
+        roomId,
+        mediaItemId
     }
 }
 
