@@ -9,6 +9,7 @@ interface MediaItemProps {
     id: number
     references: number
     stack_id: number
+    title: string
     type: 'video' | 'photo'
     user_created_at: string
 }
@@ -46,6 +47,14 @@ export default class MediaItem extends EntityModel<MediaItemProps> {
         
     hasReference() {
         return this.has('references')
+    }
+
+    hasTitle() {
+        return !!this.get('title') && this.get('title').length > 0
+    }
+
+    hasAnnotation() {
+        return this.hasReference() || this.hasTitle()
     }
 
     isVideo() {

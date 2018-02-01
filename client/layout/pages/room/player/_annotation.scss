@@ -1,7 +1,7 @@
-.player_reference {
+.item_annotation {
     position: absolute;
     display: flex;
-    min-height: 45px;
+    min-height: 40px;
     align-items: stretch;
     z-index: 50;
     margin: 10px;
@@ -9,17 +9,17 @@
     overflow: hidden;
 }
 
-.player_reference_icon_container {
+.item_annotation_icon_container {
     display: flex;
     align-items: stretch;
-    background: rgba(#000, 0.7);
+    background: rgba(#000, 0.8);
 
-    .player_reference.compact & {
+    .item_annotation.compact & {
         display: none;
     }
 }
 
-.player_reference_icon {
+.item_annotation_icon {
     width: 44px;
     display: flex;
     align-items: center;
@@ -34,67 +34,100 @@
     }
 }
 
-.player_reference_main_container {
+.item_annotation_main_container {
     overflow: hidden;
     display: flex;
     align-items: stretch;
 }
 
-.player_reference_main {
+.item_annotation_main {
 
     display: flex;
     align-items: stretch;
-    background: rgba(#000, 0.7);
+    background: rgba(#000, 0.8);
 
     cursor: pointer;
     transition-property: transform; 
 
-    .player_reference.animated & {
+    .item_annotation.animated & {
         transition-duration: 0.225s;
         transition-timing-function: cubic-bezier(0.0, 0.0, 0.2, 1);
     }
 
-    .player_reference.collapsed & {
+    .item_annotation.collapsed & {
         transform: translateX(calc(-100% + 30px));
     }
 
-    .player_reference.collapsed.animated & {
+    .item_annotation.collapsed.animated & {
         transition-duration: 0.195s;
         transition-timing-function: cubic-bezier(0.4, 0.0, 1, 1);
     }
 }
 
-.player_reference_comment {
+.item_annotation_content {
     max-width: 300px;
+}
+
+// Title
+
+.item_annotation-title {
+    .item_annotation_icon_container {
+        display: none;
+    }
+}
+
+.item_annotation_title {
+    width: 100%;
+    height: 100%;
+    padding: 7px 7px 7px 11px;
+    font-size: 13px;
+    color: rgba(#fff, 0.9);
+    font-weight: 300;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+}
+
+// Referenced comment
+
+.item_annotation-reference {
+    .item_annotation_icon_container, .item_annotation_main {
+        background: rgba(#063538, 0.9);
+    }
+}
+
+.item_annotation_comment {
+    width: 100%;
     font-size: 12px;
     padding: 7px;
     display: flex;
     flex-direction: column;
     justify-content: center;
 
-    .player_reference.compact & {
+    .item_annotation.compact & {
         padding-left: 11px;
     }
 }
 
-.player_reference_comment_username {
+.item_annotation_comment_username {
     color: $secondary-color;
     font-weight: 700;
     margin-bottom: 5px;
 }
 
-.player_reference_comment_timestamp {
+.item_annotation_comment_timestamp {
     color: rgba(#fff, 0.3);
     font-size: 10px;
     font-style: italic;
     padding-left: 8px;
 }
 
-.player_reference_comment_body {
+.item_annotation_comment_body {
     color: rgba(#fff, 0.9);
 }
 
-.player_reference_collapse {
+.item_annotation_collapse {
 
     width: 30px;
     display: flex;
@@ -107,11 +140,11 @@
         fill: rgba(#fff, 0.8);
         transform: rotate(90deg);
 
-        .player_reference.animated & {
+        .item_annotation.animated & {
             transition: transform 0.3s 0.225s;
         }
 
-        .player_reference.collapsed & {
+        .item_annotation.collapsed & {
             transform: rotate(270deg);
         }
     }

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import Video from './Video'
 import Image from './Image'
-import ItemReference from './ItemReference'
+import ItemAnnotation from './ItemAnnotation'
 import Icon from '@components/shared/Icon'
 import Spinner from '@components/shared/Spinner'
 import Switch from '@components/shared/Switch'
@@ -275,7 +275,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
         return (
             <div style={{ width: '100%', height: '100%' }}>
-                { !this.shouldDisplayPrerollAd() && item.hasReference() && <ItemReference roomId={roomId} {...containerProps} /> } 
+                { !isAd && item.hasAnnotation() && <ItemAnnotation roomId={roomId} {...containerProps} /> } 
                 <Image 
                     image={item.image()} 
                     roomId={roomId}

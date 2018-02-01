@@ -19,7 +19,7 @@ interface ConnectProps {
     selectedMediaItem: MediaItem    
 }
 
-interface ItemReferenceState {
+interface ItemAnnotationState {
     collapsed: boolean
     animated: boolean
     compact: boolean
@@ -27,7 +27,7 @@ interface ItemReferenceState {
 
 type AllProps = OwnProps & ConnectProps & DispatchProps
 
-class ItemReference extends React.Component<AllProps, ItemReferenceState> {
+class ItemAnnotation extends React.Component<AllProps, ItemAnnotationState> {
 
     constructor(props: AllProps) {
         super(props);
@@ -80,6 +80,11 @@ class ItemReference extends React.Component<AllProps, ItemReferenceState> {
 
     handleCommentClick() {
         const { dispatch, selectedMediaItem, roomId } = this.props
+
+        if (!selectedMediaItem.hasReference()) {
+            return;
+        }
+
         const comment = selectedMediaItem.referencedComment() as Comment
 
         dispatch(jumpToComment(roomId, comment))
@@ -87,42 +92,64 @@ class ItemReference extends React.Component<AllProps, ItemReferenceState> {
         dispatch(selectDetailSection('chat'))
     }
 
-
     // Render
+
+    renderReference() {
+        const { selectedMediaItem } = this.props
+        const comment = selectedMediaItem.referencedComment() as Comment
+
+        return (
+            <div className="item_annotation_comment" onClick={this.handleCommentClick}>
+                <div className="item_annotation_comment_info">
+                    <span className="item_annotation_comment_username">{comment.author().get('username')}</span>
+                    <span className="item_annotation_comment_timestamp">{timeOfDayString(comment.get('created_at'))}</span>
+                </div>
+                <div ref="text" className="item_annotation_comment_body">
+                    {comment.get('message')}
+                </div>
+            </div>
+        )
+    }
+
+    renderTitle() {
+        const { selectedMediaItem } = this.props
+        const title = selectedMediaItem.get('title')
+
+        return (
+            <div className="item_annotation_title">
+                {title}
+            </div>
+        )
+    }
 
     render() {
         const { selectedMediaItem } = this.props 
         const { collapsed, compact, animated } = this.state
 
-        const comment = selectedMediaItem.referencedComment()
-
-        if (!comment) {
+        if (!selectedMediaItem.hasAnnotation()) {
             return null;
         }
+
+        const annotationType = selectedMediaItem.hasReference() ? 'reference' : 'title'
 
         const collapsedClass = collapsed ? "collapsed" : "";
         const compactClass = compact ? "compact" : "";
         const animatedClass = animated ? "animated": "";
 
         return (
-            <div className={`player_reference ${collapsedClass} ${compactClass} ${animatedClass}`}>
-                <div className="player_reference_icon_container">
-                    <div className="player_reference_icon">
+            <div className={`item_annotation item_annotation-${annotationType} ${collapsedClass} ${compactClass} ${animatedClass}`}>
+                <div className="item_annotation_icon_container">
+                    <div className="item_annotation_icon">
                         <Icon type="reply" />
                     </div>
                 </div>
-                <div className="player_reference_main_container">
-                    <div className="player_reference_main">
-                        <div className="player_reference_comment" onClick={this.handleCommentClick}>
-                            <div className="player_reference_comment_info">
-                                <span className="player_reference_comment_username">{comment.author().get('username')}</span>
-                                <span className="player_reference_comment_timestamp">{timeOfDayString(comment.get('created_at'))}</span>
-                            </div>
-                            <div ref="text" className="player_reference_comment_body">
-                                {comment.get('message')}
-                            </div>
+                <div className="item_annotation_main_container">
+                    <div className="item_annotation_main">
+                        <div className="item_annotation_content">
+                            { annotationType === 'reference' && this.renderReference() }
+                            { annotationType === 'title' && this.renderTitle() }
                         </div>
-                        <div className="player_reference_collapse" onClick={this.handleCollapseClick}>
+                        <div className="item_annotation_collapse" onClick={this.handleCollapseClick}>
                             <Icon type="arrow-drop-down"/>
                         </div>
                     </div>
@@ -138,4 +165,4 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     }
 }
 
-export default connect(mapStateToProps)(ItemReference)
+export default connect(mapStateToProps)(ItemAnnotation)
