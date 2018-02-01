@@ -9,6 +9,7 @@ import Modal from '@components/shared/Modal'
 import RoomPage from '@models/state/pages/room'
 import Room from '@models/state/room'
 import MediaItem from '@models/entities/mediaItem'
+import Comment from '@models/entities/comment'
 import { toggleDropdown, promptModal, closeModal } from '@actions/app'
 import { closeDetailSection,  deleteMediaItem, } from '@actions/pages/room'
 import { selectMediaItem, goForward, goBackward } from '@actions/room'
@@ -54,6 +55,7 @@ class ActivityItem extends React.Component<Props> {
 
         this.renderDropdown = this.renderDropdown.bind(this);
         this.renderModal = this.renderModal.bind(this);
+        this.renderReferencedComment = this.renderReferencedComment.bind(this);
     }
 
 
@@ -128,6 +130,25 @@ class ActivityItem extends React.Component<Props> {
         )
     }
 
+    renderReferencedComment() {
+        const { mediaItem } = this.props
+        const referencedComment = (mediaItem.hasReference() && mediaItem.referencedComment()) as Comment
+
+        return (
+            <div>
+                <div className="activity-item_comment">
+                    <div className="activity-item_comment_header">
+                        <span className="activity-item_comment_username">{ referencedComment.author().get('username') }</span>
+                        <span className="activity-item_comment_timestamp">{ format(referencedComment.get('created_at'), 'h:mm a') }</span>
+                    </div>
+                    <div className="activity-item_body">
+                        { referencedComment.get('message') }
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     render() {
         const { mediaItem, live, index, isUnseen, authorUsername, isCurrentUserAuthor, selectedMediaItemId } = this.props;
 
@@ -145,16 +166,18 @@ class ActivityItem extends React.Component<Props> {
                 <div className="activity-item_inner">
                     <div className="activity-item_main">
                         <div className="activity-item_thumb" style={{ backgroundImage: `url(${url})`}} />
-                        <div className="activity-item_text">
-                            {authorUsername} added {typeString}. 
-                            <span className="activity-item_text-timestamp">{format(mediaItem.get('user_created_at'), 'h:mm a')}</span>
+                        <div className="activity-item_content">
+                            <div className="activity-item_description">
+                                {authorUsername} added {typeString}. 
+                                <span className="activity-item_timestamp">{format(mediaItem.get('user_created_at'), 'h:mm a')}</span>
+                            </div>
+                            { !!mediaItem.get('title') &&
+                                <div className="activity-item_title">{mediaItem.get('title')}</div> 
+                            }
+                            { referencedComment && this.renderReferencedComment() }
                         </div>
                     </div>
-                    { referencedComment &&
-                    <div className="activity-item_comment">
-                        { referencedComment.get('message') }
-                    </div>
-                    }
+                    
                 </div>
                 { isCurrentUserAuthor && 
                     <div className="activity-item_options" onClick={this.handleOptionsClick}><Icon type="more-vert" /></div>

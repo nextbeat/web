@@ -276,6 +276,10 @@ export default class Room {
         return !Room.get(state, id, 'shouldSkipAds') && Room.entity(state, id).get('is_ad_supported')
     }
 
+    static shouldDisplayPrerollAd(state: State, id: number) {
+        // todo
+    }
+
     static isLoadedDeep(state: State, id: number): boolean {
         return Room.get(state, id, 'hasFetched') 
             && Room.get(state, id, 'mediaItemsHasFetched')

@@ -88,12 +88,11 @@
 .activity-item_inner {
     margin: 0 10px;
     padding-top: 10px;
-    border-bottom: 1px solid #e6e6e6;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .activity-item_main {
     display: flex;
-    align-items: center;
     margin-bottom: 10px;
 }
 
@@ -108,13 +107,18 @@
     background-position: center;
 }
 
-.activity-item_text {
+.activity-item_content {
     font-size: 14px;
     color: $text-color;
     margin-left: 10px;
 }
 
-.activity-item_text-timestamp {
+.activity-item_description {
+    margin-top: 6px;
+    margin-bottom: 12px;
+}
+
+.activity-item_timestamp {
     margin-left: 5px;
     font-size: 12px;
     color: #aaa;
@@ -122,11 +126,31 @@
     white-space: pre;
 }
 
+.activity-item_title {
+    color: #808080;
+}
+
 .activity-item_comment {
     font-size: 13px;
     font-weight: 400;
-    color: #666;
-    margin-bottom: 10px;
+    background: mix(#fff, $secondary-color, 85%);
+    padding: 8px 11px;
+}
+
+.activity_item_comment_header {
+    margin-bottom: 5px;
+}
+
+.activity-item_comment_username {
+    color: $secondary-color;
+    font-weight: 700;
+}
+
+.activity-item_comment_timestamp {
+    color: rgba(#000, 0.4);
+    font-size: 11px;
+    font-style: italic;
+    margin-left: 5px;
 }
 
 .activity-item_options {
