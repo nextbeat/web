@@ -31,9 +31,12 @@ export function withEntityMap(keyMap: any): any {
 type Selector<R> = (state: State, ...args: any[]) => R
 type Resolver<R> = (state: State, ...args: any[]) => R
 
-type OutputSelector<R> = (hashResolver: Resolver<any>) => Selector<R>
-type KeyedOutputSelector<R> = (hashResolver: Resolver<any>, keyResolver: Resolver<string|number>) => KeyedOutputSelectorResult<R>
+type OutputSelector<R> = (hashResolver: Resolver<any>) => OutputSelectorResult<R> 
+type OutputSelectorResult<R> = Selector<R> & {
+    clear: () => void
+}
 
+type KeyedOutputSelector<R> = (hashResolver: Resolver<any>, keyResolver: Resolver<string|number>) => KeyedOutputSelectorResult<R>
 type KeyedOutputSelectorResult<R> = Selector<R> & {
     removeKey: (state: State, ...args: any[]) => void
 }
@@ -72,25 +75,30 @@ export function createKeyedSelector<R>(func: Selector<R>): KeyedOutputSelector<R
 
 export function createSelector<R>(func: Selector<R>): OutputSelector<R> {
 
-      return (hashResolver: Resolver<any>) => {
+    return (hashResolver: Resolver<any>) => {
 
-          let lastHash: any;
-          let lastResult: R;
+        let lastHash: any;
+        let lastResult: R | null;
 
-          let selector = function memoize(state: State, ...args: any[]): R {
-              let hash = hashResolver(state, ...args)
-              if (typeof hash === 'undefined') {
-                  hash = null
-              }
-              if (hash !== lastHash) {
-                  lastResult = func(state, ...args)
-              }
-              lastHash = hash
-              return lastResult as R
-          }
+        let selector = function memoize(state: State, ...args: any[]): R {
+            let hash = hashResolver(state, ...args)
+            if (typeof hash === 'undefined') {
+                hash = null
+            }
+            if (hash !== lastHash) {
+                lastResult = func(state, ...args)
+            }
+            lastHash = hash
+            return lastResult as R
+        } as OutputSelectorResult<R>
 
-          return selector
-      }
+        selector.clear = () => {
+            lastHash = null
+            lastResult = null
+        }
+
+        return selector
+    }
 }
 
 export function createEntityListSelector(modelClass: any, idKey: string, entityClass: typeof EntityModel | string): Selector<List<any>> {

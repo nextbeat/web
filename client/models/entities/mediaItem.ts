@@ -12,6 +12,7 @@ interface MediaItemProps {
     title: string
     type: 'video' | 'photo'
     user_created_at: string
+    uuid: string
 }
 
 export default class MediaItem extends EntityModel<MediaItemProps> {

@@ -28,7 +28,7 @@ interface ConnectProps {
     bannerAd: Ad | null
 
     isLoadedDeep: boolean
-    isPlayingPrerollAd: boolean
+    shouldDisplayPrerollAd: boolean
 
     width: string
 }
@@ -53,7 +53,7 @@ class RoomMain extends React.Component<Props> {
     }
 
     handleKeyDown(e: JQueryKeyEventObject) {
-        const { dispatch, roomId, indexOfSelectedMediaItem, mediaItemsSize, isPlayingPrerollAd } = this.props 
+        const { dispatch, roomId, indexOfSelectedMediaItem, mediaItemsSize, shouldDisplayPrerollAd} = this.props 
 
         if (['textarea', 'input'].indexOf((e.target as any).tagName.toLowerCase()) !== -1) {
             // don't navigate if inside text field
@@ -61,7 +61,7 @@ class RoomMain extends React.Component<Props> {
         }
 
         // Disable navigation if ad is playing
-        if (isPlayingPrerollAd) {
+        if (shouldDisplayPrerollAd) {
             return; // todo: FIX
         }
 
@@ -90,7 +90,7 @@ class RoomMain extends React.Component<Props> {
     }
 
     render() {
-        const { roomId, isLoadedDeep, hid, width, isPlayingPrerollAd, 
+        const { roomId, isLoadedDeep, hid, width, shouldDisplayPrerollAd, 
                 authorUsername, indexOfSelectedMediaItem, bannerAd } = this.props;
 
         // display welcome banner here on small screen resolutions 
@@ -102,7 +102,7 @@ class RoomMain extends React.Component<Props> {
         // storage on the browser to find the last visited media
         // item). We don't want to display the counter until 
         // a media item has been selected.
-        const shouldDisplayCounter = indexOfSelectedMediaItem > -1 && !isPlayingPrerollAd
+        const shouldDisplayCounter = indexOfSelectedMediaItem > -1 && !shouldDisplayPrerollAd
 
         return (
             <section className="player-container">
@@ -137,7 +137,7 @@ function mapStateToProps(state: State): ConnectProps {
         bannerAd: RoomPage.ad(state, 'banner'),
 
         isLoadedDeep: RoomPage.isLoadedDeep(state),
-        isPlayingPrerollAd: !!RoomPage.ad(state, 'preroll') && !Room.get(state, roomId, 'hasPlayedPrerollAd'),
+        shouldDisplayPrerollAd: RoomPage.shouldDisplayPrerollAd(state),
 
         width: App.get(state, 'width')
     }

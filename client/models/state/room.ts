@@ -182,10 +182,6 @@ export default class Room {
         (state: State, id: number) => id
     )
 
-    static clearCommentsSelector(state: State, id: number) {
-        Room.comments.removeKey(state, id)
-    }
-
     static latestComments = createKeyedSelector(
         (state: State, id: number) => {
             let commentIds = Room.get(state, id, 'latestCommentIds', List());
@@ -259,6 +255,17 @@ export default class Room {
         return this.ads(state, id).find(ad => ad.get('type') === type) || null
     }
 
+    static clearMediaItemsSelector(state: State, id: number) {
+        Room.mediaItems.removeKey(state, id)
+        Room.liveMediaItems.removeKey(state, id)
+        Room.selectedMediaItem.clear()
+    }
+
+    static clearCommentsSelector(state: State, id: number) {
+        Room.comments.removeKey(state, id)
+        Room.liveComments.removeKey(state, id)
+    }
+
 
     /**
      * Queries
@@ -277,7 +284,10 @@ export default class Room {
     }
 
     static shouldDisplayPrerollAd(state: State, id: number) {
-        // todo
+        const prerollAd = Room.ad(state, id, 'preroll')
+        const hasPlayedPrerollAd = Room.get(state, id, 'hasPlayedPrerollAd')
+        const item = Room.selectedMediaItem(state, id)
+        return !!prerollAd && !hasPlayedPrerollAd && item.get('type') === 'video'
     }
 
     static isLoadedDeep(state: State, id: number): boolean {

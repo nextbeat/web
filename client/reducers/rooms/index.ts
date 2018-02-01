@@ -12,7 +12,7 @@ import navigation from './navigation'
 let meta = entity(ActionType.ROOM)
 
 function mediaItems(state: State, action: Action) {
-    if (action.type === ActionType.DELETE_MEDIA_ITEM) {
+    if (action.type === ActionType.DELETE_MEDIA_ITEM && action.status === Status.SUCCESS) {
         if (state.get('ids').includes(action.id)) {
             state = state
                 .update('total', total => total-1)

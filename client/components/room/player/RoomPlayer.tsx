@@ -34,7 +34,7 @@ interface ConnectProps {
     isMobile: boolean
 
     prerollAd: Ad | null
-    hasPlayedPrerollAd: boolean
+    shouldDisplayPrerollAd: boolean
     isContinuousPlayEnabled: boolean
 }
 
@@ -88,8 +88,6 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
     constructor(props: Props) {
         super(props);
 
-        this.shouldDisplayPrerollAd = this.shouldDisplayPrerollAd.bind(this)
-
         this.handleBackward = this.handleBackward.bind(this)
         this.handleForward = this.handleForward.bind(this)
         this.handleFullScreenBackward = this.handleFullScreenBackward.bind(this)
@@ -136,11 +134,6 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
 
     // Queries
-
-    shouldDisplayPrerollAd() {
-        const { prerollAd, hasPlayedPrerollAd, selectedMediaItem: item } = this.props
-        return !!prerollAd && !hasPlayedPrerollAd && item.get('type') === 'video'
-    }
 
     isFullScreenInteractive() {
         return this.state.isFullScreen && this.props.isMobile
@@ -203,7 +196,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
     // Navigation
 
     handleBackward() {
-        if (this.shouldDisplayPrerollAd()) {
+        if (this.props.shouldDisplayPrerollAd) {
             return
         }
         
@@ -212,7 +205,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
     }
 
     handleForward() {
-        if (this.shouldDisplayPrerollAd()) {
+        if (this.props.shouldDisplayPrerollAd) {
             return
         }
 
@@ -253,15 +246,14 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
     // Render
 
     renderItem() {
-        const { selectedMediaItem: item, roomId, shouldAutoplayVideo, prerollAd } = this.props
+        const { selectedMediaItem: item, roomId, shouldAutoplayVideo, 
+                prerollAd, shouldDisplayPrerollAd: isAd } = this.props
         const { playerWidth, playerHeight } = this.state
 
         let containerProps = {
             containerWidth: playerWidth,
             containerHeight: playerHeight
         }
-
-        const isAd = this.shouldDisplayPrerollAd()
 
         let videoProps = {
             video: isAd ? (prerollAd as Ad).video('mp4') : item.video('mp4'),
@@ -289,15 +281,15 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         const { children, roomId, mediaItemsSize, 
                 indexOfSelectedMediaItem: index,
                 selectedMediaItem: item, isMobile,
-                prerollAd, hasPlayedPrerollAd,
+                prerollAd, shouldDisplayPrerollAd,
                 isContinuousPlayEnabled } = this.props;
 
         const { playerWidth, playerHeight, isFullScreen, 
                 isDisplayingFullScreenTooltip } = this.state;
 
-        const leftDisabledClass = index === 0 || index === -1 || this.shouldDisplayPrerollAd()
+        const leftDisabledClass = index === 0 || index === -1 || shouldDisplayPrerollAd
             ? 'disabled' : '';
-        const rightDisabledClass = index === mediaItemsSize - 1 || index === -1 || this.shouldDisplayPrerollAd()
+        const rightDisabledClass = index === mediaItemsSize - 1 || index === -1 || shouldDisplayPrerollAd
             ? 'disabled' : ''; 
 
         let playerStyle = playerHeight > 0 ? { height: `${playerHeight}px` } : {}
@@ -358,7 +350,7 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
         selectedMediaItem: Room.selectedMediaItem(state, ownProps.roomId),
         indexOfSelectedMediaItem: Room.indexOfSelectedMediaItem(state, ownProps.roomId),
         prerollAd: Room.ad(state, ownProps.roomId, 'preroll'),
-        hasPlayedPrerollAd: Room.get(state, ownProps.roomId, 'hasPlayedPrerollAd'),
+        shouldDisplayPrerollAd: Room.shouldDisplayPrerollAd(state, ownProps.roomId),
         isContinuousPlayEnabled: Room.get(state, ownProps.roomId, 'isContinuousPlayEnabled', false),
         isMobile: App.isMobile(state)
     }

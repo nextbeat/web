@@ -11,7 +11,7 @@ import Room from '@models/state/room'
 import MediaItem from '@models/entities/mediaItem'
 import Comment from '@models/entities/comment'
 import { toggleDropdown, promptModal, closeModal } from '@actions/app'
-import { closeDetailSection,  deleteMediaItem, } from '@actions/pages/room'
+import { closeDetailSection,  deleteMediaItem, editMediaItemTitle } from '@actions/pages/room'
 import { selectMediaItem, goForward, goBackward } from '@actions/room'
 import { State, DispatchProps } from '@types'
 
@@ -35,11 +35,19 @@ interface ConnectProps {
     deleteMediaItemError: string
     deletedMediaItemId: number
     postDeletionSelectedMediaItemId: number
+
+    isEditingMediaItemTitle: boolean 
+    hasEditedMediaItemTitle: boolean 
+    editMediaItemTitleError: string
+}
+
+interface ComponentState {
+    editedTitle: string
 }
 
 type Props = OwnProps & ConnectProps & DispatchProps
 
-class ActivityItem extends React.Component<Props> {
+class ActivityItem extends React.Component<Props, ComponentState> {
 
     static defaultProps: Partial<Props> = {
         live: false
@@ -53,11 +61,25 @@ class ActivityItem extends React.Component<Props> {
         this.handleDropdownDeleteClick = this.handleDropdownDeleteClick.bind(this);
         this.handleDeleteMediaItemClick = this.handleDeleteMediaItemClick.bind(this);
 
+        this.handleDropdownEditTitleClick = this.handleDropdownEditTitleClick.bind(this);
+        this.handleEditMediaItemClick = this.handleEditMediaItemClick.bind(this);
+        this.handleEditMediaItemChange = this.handleEditMediaItemChange.bind(this);
+
         this.renderDropdown = this.renderDropdown.bind(this);
-        this.renderModal = this.renderModal.bind(this);
+        this.renderDeleteModal = this.renderDeleteModal.bind(this);
+        this.renderEditTitleModal = this.renderEditTitleModal.bind(this);
         this.renderReferencedComment = this.renderReferencedComment.bind(this);
+
+        this.state = {
+            editedTitle: ''
+        }
     }
 
+    componentDidMount() {
+        if (!!this.props.mediaItem.get('title')) {
+            this.setState({ editedTitle: this.props.mediaItem.get('title') })
+        }
+    }
 
     componentWillReceiveProps(nextProps: Props) {
         if (!this.props.hasDeletedMediaItem && nextProps.hasDeletedMediaItem) {
@@ -65,6 +87,14 @@ class ActivityItem extends React.Component<Props> {
             if (nextProps.selectedMediaItemId === nextProps.deletedMediaItemId) {
                 this.props.dispatch(selectMediaItem(this.props.roomId, nextProps.postDeletionSelectedMediaItemId))
             }
+        }
+
+        if (!this.props.hasEditedMediaItemTitle && nextProps.hasEditedMediaItemTitle) {
+            this.props.dispatch(closeModal())
+        }
+
+        if (this.props.mediaItem.get('title') !== nextProps.mediaItem.get('title')) {
+            this.setState({ editedTitle: nextProps.mediaItem.get('title') })
         }
     }
 
@@ -95,19 +125,39 @@ class ActivityItem extends React.Component<Props> {
         dispatch(deleteMediaItem(mediaItem.get('id')))
     }
 
+    handleDropdownEditTitleClick(e: React.MouseEvent<HTMLElement>) {
+        const { dispatch, mediaItem } = this.props
+        e.stopPropagation()
+        dispatch(promptModal(`edit-title-${mediaItem.get('id')}`))
+    }
+
+    handleEditMediaItemClick(e: React.MouseEvent<HTMLElement>) {
+        const { dispatch, mediaItem } = this.props
+        const { editedTitle } = this.state
+        e.stopPropagation()
+        dispatch(editMediaItemTitle(mediaItem.get('id'), editedTitle))
+    }
+    
+    handleEditMediaItemChange(e: React.FormEvent<HTMLInputElement>) {
+        e.stopPropagation()
+        this.setState({ editedTitle: e.currentTarget.value.substring(0, 120) })
+    }
+
 
     // Render
 
     renderDropdown() {
         const { mediaItem, dispatch } = this.props 
+        const hasTitle = !!mediaItem.get('title')
         return (
             <Dropdown type={`item-options-${mediaItem.get('id')}`} triangleMargin={-1}>
+                <a className="dropdown-option" onClick={this.handleDropdownEditTitleClick}>{hasTitle ? 'Edit' : 'Add'} Title</a>
                 <a className="dropdown-option" onClick={this.handleDropdownDeleteClick}>Delete Post</a>
             </Dropdown>
         )
     }
 
-    renderModal() {
+    renderDeleteModal() {
         const { mediaItem, isDeletingMediaItem, deleteMediaItemError, dispatch } = this.props
         return (
             <Modal name={`delete-item-${mediaItem.get('id')}`} className="modal-alert">
@@ -122,6 +172,27 @@ class ActivityItem extends React.Component<Props> {
                 }
                 <a className="modal-alert_btn btn" onClick={this.handleDeleteMediaItemClick}>
                     { isDeletingMediaItem ? <Spinner styles={["white"]} /> : 'Delete post' }
+                </a>
+                <a className="modal-alert_btn btn btn-gray" onClick={() => {dispatch(closeModal())}}>
+                    Cancel
+                </a>
+            </Modal>
+        )
+    }
+
+    renderEditTitleModal() {
+        const { mediaItem, isEditingMediaItemTitle, editMediaItemTitleError, dispatch } = this.props
+        return (
+            <Modal name={`edit-title-${mediaItem.get('id')}`} className="modal-alert">
+                <div className="modal_header">
+                    { !!mediaItem.get('title') ? 'Edit' : 'Add' } post title
+                </div>
+                <div className="modal-alert_text">
+                    To remove the post title, leave the text field blank.
+                </div>
+                <input type="text" onChange={this.handleEditMediaItemChange} placeholder="Post Title" />
+                <a className="modal-alert_btn btn" onClick={this.handleEditMediaItemClick}>
+                    { isEditingMediaItemTitle? <Spinner styles={["white"]} /> : 'Submit' }
                 </a>
                 <a className="modal-alert_btn btn btn-gray" onClick={() => {dispatch(closeModal())}}>
                     Cancel
@@ -183,7 +254,8 @@ class ActivityItem extends React.Component<Props> {
                     <div className="activity-item_options" onClick={this.handleOptionsClick}><Icon type="more-vert" /></div>
                 }
                 { this.renderDropdown() }
-                { this.renderModal() }
+                { this.renderDeleteModal() }
+                { this.renderEditTitleModal() }
             </div>
         );
     }
@@ -206,7 +278,11 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
         hasDeletedMediaItem: RoomPage.get(state, 'hasDeletedMediaItem'),
         deleteMediaItemError: RoomPage.get(state, 'deleteMediaItemError'),
         deletedMediaItemId: RoomPage.get(state, 'deletedMediaItemId'),
-        postDeletionSelectedMediaItemId: postDeletionSelectedMediaItem.get('id')
+        postDeletionSelectedMediaItemId: postDeletionSelectedMediaItem.get('id'),
+
+        isEditingMediaItemTitle: RoomPage.get(state, 'isEditingMediaItemTitle'),
+        hasEditedMediaItemTitle: RoomPage.get(state, 'hasEditedMediaItemTitle'),
+        editMediaItemTitleError: RoomPage.get(state, 'editMediaItemTitleError')
     }
 }
 

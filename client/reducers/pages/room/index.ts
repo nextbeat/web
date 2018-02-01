@@ -95,7 +95,26 @@ function actions(state = Map<string, any>(), action: Action) {
             return state.merge({
                 isDeletingMediaItem: false,
                 hasDeletedMediaItem: false,
-                deleteMediaItemError: action.error.message
+                deleteMediaItemError: action.error.message || "Error"
+            })
+        }
+    } else if (action.type === ActionType.EDIT_MEDIA_ITEM_TITLE) {
+        if (action.status === Status.REQUESTING) {
+            return state.merge({
+                isEditingMediaItemTitle: true,
+                hasEditedMediaItemTitle: false,
+                editedMediaItemId: action.id 
+            }).deleteAll('editMediaItemTitleError')
+        } else if (action.status === Status.SUCCESS) {
+            return state.merge({
+                isEditingMediaItemTitle: false,
+                hasEditedMediaItemTitle: true
+            })
+        } else if (action.status === Status.FAILURE) {
+            return state.merge({
+                isEditingMediaItemTitle: false,
+                hasEditedMediaItemTitle: false,
+                editMediaItemTitleError: action.error.message || "Error"
             })
         }
     }

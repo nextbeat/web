@@ -51,10 +51,16 @@ interface RoomPageProps extends EntityProps {
     isClosing: boolean
     hasClosed: boolean
     closeError: string
+
     isDeletingMediaItem: boolean
     deletedMediaItemId: number
     hasDeletedMediaItem: boolean
     deleteMediaItemError: string
+
+    isEditingMediaItemTitle: boolean
+    editedMediaItemId: number
+    hasEditedMediaItemTitle: boolean
+    editMediaItemTitleError: string
 }
 
 const keyMap = withEntityMap({
@@ -99,7 +105,11 @@ const keyMap = withEntityMap({
     'isDeletingMediaItem': ['actions', 'isDeletingMediaItem'],
     'deletedMediaItemId': ['actions', 'deletedMediaItemId'],
     'hasDeletedMediaItem': ['actions', 'hasDeletedMediaItem'],
-    'deleteMediaItemError': ['actions', 'deleteMediaItemError']
+    'deleteMediaItemError': ['actions', 'deleteMediaItemError'],
+    'isEditingMediaItemTitle': ['actions', 'isEditingMediaItemTitle'],
+    'editedMediaItemId': ['actions', 'editedMediaItemId'],
+    'hasEditedMediaItemTitle': ['actions', 'hasEditedMediaItemTitle'],
+    'editMediaItemTitleError': ['actions', 'editMediaItemTitleError']
 })
 
 const keyMapPrefix = ['pages', 'room']
@@ -187,6 +197,10 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
 
     static shouldDisplayAds(state: State) {
         return Room.shouldDisplayAds(state, this.get(state, 'id'))
+    }
+
+    static shouldDisplayPrerollAd(state: State) {
+        return Room.shouldDisplayPrerollAd(state, this.get(state, 'id'))
     }
 
     static shouldDisplayShop(state: State) {

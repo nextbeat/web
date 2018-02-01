@@ -112,5 +112,5 @@ export function put(url: string, body, options) {
 }
 
 export function del(url: string, body, options) {
-    return _request('GET', url, body, options)
+    return _request('DELETE', url, body, options)
 }

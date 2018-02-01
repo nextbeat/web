@@ -23,6 +23,8 @@ export function init(web) {
     // and forwards to the api server
     apiRouter.all('*', function(req, res) {
         var method = req.method.toLowerCase();
+        method = method === 'delete' ? 'del' : method;
+        
         var token = req.user ? req.user.token : undefined;
         var options = {
             auth: token,

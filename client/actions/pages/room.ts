@@ -1,5 +1,6 @@
 import { List } from 'immutable'
 import { normalize } from 'normalizr'
+import * as format from 'date-fns/format'
 
 import { 
     ActionType,
@@ -16,6 +17,7 @@ import { joinRoom } from '@actions/eddy'
 import { loadPaginatedObjects } from '@actions/utils'
 import { Dimensions, Metrics } from '@analytics/definitions'
 import RoomPage, { DetailSection } from '@models/state/pages/room'
+import Room from '@models/state/room'
 import * as Schemas from '@schemas'
 import { Store, Dispatch } from '@types'
 
@@ -29,6 +31,7 @@ export type RoomPageActionAll =
     DeleteStackAction |
     CloseStackAction |
     DeleteMediaItemAction |
+    EditMediaItemTitleAction |
     PromptChatActionsAction |
     MentionUserAction |
     ClearChatMessageAction |
@@ -279,6 +282,67 @@ export function deleteMediaItem(id: number): ThunkAction {
             return null;
         }
         return dispatch(postDeleteMediaItem(roomId, id))
+    }
+}
+
+function onEditMediaItemTitleSuccessImmediate(store: Store, next: Dispatch, action: EditMediaItemTitleAction) {
+    // We invalidate the cached selector so that the title
+    // will update upon next refresh
+    Room.clearMediaItemsSelector(store.getState(), action.roomId)
+
+    const newMediaItem = {
+        id: action.id,
+        title: action.title || null
+    }
+    store.dispatch({
+        type: ActionType.ENTITY_UPDATE,
+        response: normalize(newMediaItem, Schemas.MediaItem)
+    })
+}
+export interface EditMediaItemTitleAction extends ApiCallAction {
+    type: ActionType.EDIT_MEDIA_ITEM_TITLE,
+    roomId: number,
+    id: number,
+    title: string
+}
+function postEditMediaItemTitle(roomId: number, id: number, object: { uuid: string, stack_uuid: string, title: string }): EditMediaItemTitleAction {
+    return {
+        type: ActionType.EDIT_MEDIA_ITEM_TITLE,
+        roomId,
+        id,
+        title: object.title,
+        API_CALL: {
+            method: 'POST',
+            endpoint: `stacks/${roomId}/mediaItems/sync`,
+            body: {
+                maxLastModified: format(0),
+                objectsToSync: [object]
+            },
+            authenticated: true,
+            onSuccessImmediate: onEditMediaItemTitleSuccessImmediate
+        }
+    }
+}
+
+export function editMediaItemTitle(id: number, title: string): ThunkAction {
+    return (dispatch, getState) => {
+        const roomId = RoomPage.get(getState(), 'id')
+        if (!roomId || !RoomPage.isCurrentUserAuthor(getState())) {
+            return null;
+        }
+
+        const mediaItem = RoomPage.allMediaItems(getState()).get(RoomPage.indexOfMediaItemId(getState(), id))
+        if (!mediaItem) {
+            return null;
+        }
+
+        const object = {
+            uuid: mediaItem.get('uuid'),
+            stack_uuid: RoomPage.entity(getState()).get('uuid'),
+            title
+        }
+
+        return dispatch(postEditMediaItemTitle(roomId, id, object))
     }
 }
 
