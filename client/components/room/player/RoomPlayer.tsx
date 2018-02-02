@@ -262,6 +262,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
             itemType: isAd ? 'ad' : 'mediaItem' as 'ad' | 'mediaItem',
             itemId: isAd ? (prerollAd as Ad).get('id') : item.get('id'),
             itemUrl: isAd ? (prerollAd as Ad).get('link_url') : undefined,
+            shouldAutoplay: shouldAutoplayVideo,
             ...containerProps
         }
 
