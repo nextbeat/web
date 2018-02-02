@@ -144,14 +144,31 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
     }
     else if (action.type === ActionType.SET_CONTINUOUS_PLAY) 
     {
-        // Start the countdown if the selected media item is an image
         if (action.enabled) {
-            let selectedMediaItem = Room.selectedMediaItem(store.getState(), action.roomId)
+            let selectedMediaItem = Room.selectedMediaItem(state, action.roomId)
+            let isAtPlaybackEnd = Room.get(state, action.roomId, 'isAtPlaybackEnd')
+
             if (selectedMediaItem.get('type') === 'photo') {
+                // Start the countdown if the selected media item is an image
                 startContinuousPlayCountdown(store, action)
+            } else if (selectedMediaItem.get('type') === 'video' && isAtPlaybackEnd) {
+                // Navigate to next item if we've reach the end of the previous
+                store.dispatch(goForward(action.roomId))
             }
         } else {
             stopContinuousPlayCountdown(store, action)
+        }
+        next(action);
+    }
+    else if (action.type === ActionType.RECEIVE_MEDIA_ITEM) 
+    {
+        const isAtLastMediaItem = Room.indexOfSelectedMediaItem(state, action.roomId) === Room.mediaItemsSize(state, action.roomId)-1
+        let isAtPlaybackEnd = Room.get(state, action.roomId, 'isAtPlaybackEnd')
+
+        if (isAtLastMediaItem && isAtPlaybackEnd) {
+            process.nextTick(() => {
+                store.dispatch(goForward(action.roomId))
+            })
         }
         next(action);
     }

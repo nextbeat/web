@@ -4,7 +4,7 @@ import { Map } from 'immutable'
 
 import ImageControls from './ImageControls'
 
-import { setContinuousPlay, playbackDidEnd } from '@actions/room'
+import { setContinuousPlay } from '@actions/room'
 import App from '@models/state/app'
 import Room from '@models/state/room'
 import { toggleFullScreen, isFullScreen } from '@utils'

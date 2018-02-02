@@ -56,6 +56,7 @@ export interface RoomProps {
     hasPlayedPrerollAd: boolean
 
     videoDidPlay: boolean
+    isAtPlaybackEnd: boolean
     isContinuousPlayEnabled: boolean
     continuousPlayCountdownTimerId: number
     continuousPlayCountdownTimeLeft: number
@@ -107,6 +108,7 @@ const keyMap: {[key in keyof RoomProps]: string[]} = {
     'hasPlayedPrerollAd': ['ads', 'hasPlayedPrerollAd'],
     // playback
     'videoDidPlay': ['navigation', 'videoDidPlay'],
+    'isAtPlaybackEnd': ['navigation', 'isAtPlaybackEnd'],
     'isContinuousPlayEnabled': ['navigation', 'isContinuousPlayEnabled'],
     'continuousPlayCountdownTimerId': ['navigation', 'continuousPlayCountdownTimerId'],
     'continuousPlayCountdownTimeLeft': ['navigation', 'continuousPlayCountdownTimeLeft'],

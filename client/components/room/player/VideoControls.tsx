@@ -69,15 +69,18 @@ class VideoControls extends React.Component<Props, State> {
     // Actions
 
     handleVolume(e: React.MouseEvent<HTMLElement>) {
+        e.stopPropagation()
         const offset: number = e.pageX - (this._volumeSliderContainer.getBoundingClientRect().left + document.documentElement.scrollLeft)
         const width = this._volumeSliderContainer.clientWidth
-        this.props.adjustVolume(offset/width);
+        this.props.adjustVolume(Math.min(Math.max(0, offset/width), 1));
     }
 
     handleSeek(e: React.MouseEvent<HTMLElement>) {
+        e.stopPropagation()
         const offset: number = e.pageX - (this._progressBar.getBoundingClientRect().left + document.documentElement.scrollLeft)
         const width = this._progressBar.clientWidth
-        this.props.seek(offset/width * this.props.duration);
+        const time = offset/width * this.props.duration
+        this.props.seek(Math.min(Math.max(0, time), this.props.duration));
     }
 
     // Container events

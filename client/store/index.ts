@@ -14,7 +14,8 @@ const actionTypesToIgnore = [
     ActionType.RESIZE,
     ActionType.USE_CHAT,
     ActionType.HAS_NAVIGATED,
-    ActionType.UPDATE_CONTINUOUS_PLAY_COUNTDOWN
+    ActionType.UPDATE_CONTINUOUS_PLAY_COUNTDOWN,
+    ActionType.ROOM_INFO
 ]
 
 if (process.env.NODE_ENV !== "production") {
@@ -33,7 +34,7 @@ if (process.env.NODE_ENV !== "production") {
     });
 
     if (typeof window !== 'undefined') { // in browser only
-        // middlewares.push(logger);
+        middlewares.push(logger);
     }
 }
 
