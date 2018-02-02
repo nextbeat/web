@@ -32,11 +32,6 @@ interface RoomPageProps extends EntityProps {
 
     selectedDetailSection: DetailSection
 
-    moreStackIds: List<number>
-    moreStacksIsFetching: boolean
-    moreStacksHasFetched: boolean
-    moreStacksError: boolean
-
     productIds: List<number>
     sponsoredProductsSponsor: string
     isSponsoredProductsExpanded: boolean
@@ -82,11 +77,6 @@ const keyMap = withEntityMap({
     'searchHistory': ['chat', 'searchHistory'],
     // ui
     'selectedDetailSection': ['ui', 'detailSection'],
-    // more
-    'moreStackIds': ['more', 'ids'],
-    'moreStacksFetching': ['more', 'isFetching'],
-    'moreStacksHasFetched': ['more', 'hasFetched'],
-    'moreStacksError': ['more', 'error'],
     // shop
     'productIds': ['shop', 'productIds'],
     'sponsoredProductsSponsor': ['shop', 'sponsor'],
@@ -127,8 +117,6 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
     static isActive(state: State) {
         return !!this.get(state, 'isFetching') || this.get(state, 'id') > 0
     }
-
-    static moreStacks = createEntityListSelector(RoomPage, 'moreStackIds', Stack)
 
     static searchResults = createEntityListSelector(RoomPage, 'searchResultIds', SearchResultComment)
 
@@ -209,13 +197,11 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
 
     static isLoadedDeep(state: State) {
         return Room.isLoadedDeep(state, this.get(state, 'id'))
-            && this.get(state, 'moreStacksHasFetched')
             && (!this.shouldDisplayShop(state) || this.get(state, 'shopHasFetched'))
     }
 
     static hasErrorDeep(state: State) {
         return Room.hasErrorDeep(state, this.get(state, 'id'))
-            || !!this.get(state, 'moreStacksError')
             || !!this.get(state, 'error')
             || (this.shouldDisplayShop(state) && !!this.get(state, 'shopError'))
     }

@@ -9,11 +9,8 @@ import { goBackward, goForward } from '@actions/room'
 import { selectDetailSection } from '@actions/pages/room'
 
 import RoomPlayer from '../player/RoomPlayer'
-import Counter from '../counter/Counter'
-import ActivityCounter from '../counter/ActivityCounter'
 import SmallChat from './chat/SmallChat'
 import Info from './main/Info'
-import More from './main/More'
 import BannerAd from '../ads/BannerAd'
 import AppBanner from '@components/shared/AppBanner'
 
@@ -104,7 +101,6 @@ class RoomMain extends React.Component<Props> {
                         <RoomPlayer roomId={roomId} />
                         <SmallChat />
                         <Info />
-                        <More />
                     </div>
                     }
                 </section>

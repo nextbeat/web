@@ -9,29 +9,6 @@ import shop from './shop'
 
 const meta = entity(ActionType.ROOM_PAGE);
 
-function more(state = Map<string, any>(), action: Action) {
-    if (action.type === ActionType.MORE_STACKS) {
-        if (action.status === Status.REQUESTING) {
-            return state.merge({
-                isFetching: true,
-                hasFetched: false
-            }).delete('error').delete('ids')
-        } else if (action.status === Status.SUCCESS && action.response) {
-            return state.merge({
-                isFetching: false,
-                hasFetched: true,
-                ids: action.response.result
-            })
-        } else if (action.status === Status.FAILURE) {
-            return state.merge({
-                isFetching: false,
-                error: action.error.message
-            })
-        }
-    }
-    return state;
-}
-
 const initialUIState = fromJS({ detailSection: 'chat' })
 function ui(state = initialUIState, action: Action) {
     if (action.type === ActionType.SELECT_DETAIL_SECTION) {
@@ -153,7 +130,6 @@ const reducers = {
     chat,
     shop,
     ui,
-    more,
     actions,
     unread
 }

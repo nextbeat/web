@@ -23,7 +23,6 @@ import { Store, Dispatch } from '@types'
 
 export type RoomPageActionAll = 
     RoomPageAction |
-    MoreStacksAction |
     SearchChatAction |
     ClearSearchChatAction |
     HideSearchChatResultsAction |
@@ -52,7 +51,6 @@ function onRoomPageSuccess(store: Store, next: Dispatch, action: RoomPageAction,
     const stack = response.entities.stacks[response.result];
     // Optionally, jump to comment at provided date upon load
     store.dispatch(loadRoom(stack.id, { jumpToCommentAtDate: action.jumpToCommentAtDate }));
-    store.dispatch(loadMoreStacks(stack.id))
     store.dispatch(recordView(stack.id)); 
 
     // TODO: move to room page actions
@@ -88,22 +86,6 @@ export function loadRoomPage(hid: string, jumpToCommentAtDate?: number): ThunkAc
             dispatch(joinRoom(roomId))
         } else if (!RoomPage.hasErrorDeep(state)) {
             dispatch(fetchRoomPage(hid, jumpToCommentAtDate))
-        }
-    }
-}
-
-export interface MoreStacksAction extends ApiCallAction {
-    type: ActionType.MORE_STACKS
-    stackId: number
-}
-export function loadMoreStacks(stackId: number): MoreStacksAction {
-    return {
-        type: ActionType.MORE_STACKS,
-        stackId,
-        API_CALL: {
-            schema: Schemas.Stacks,
-            endpoint: `stacks/${stackId}/more`,
-            pagination: { limit: 6, page: 1 }
         }
     }
 }
@@ -540,7 +522,7 @@ function performClearRoomPage() {
     return {
         type: ActionType.CLEAR_ROOM_PAGE,
         API_CANCEL: {
-            actionTypes: [ActionType.MORE_STACKS, ActionType.SEARCH_CHAT]
+            actionTypes: [ActionType.SEARCH_CHAT]
         }
     }
 }
