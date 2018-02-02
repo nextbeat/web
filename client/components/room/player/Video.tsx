@@ -207,7 +207,7 @@ class Video extends React.Component<Props, VideoState> {
 
     shouldForceVideoRotation() {
         const { browser, version } = this.props;
-        return browser === 'Firefox' || (browser === 'IE' && parseInt(version) === 10)
+        return (browser === 'Firefox' && parseInt(version) < 57) || (browser === 'IE' && parseInt(version) === 10)
     }
 
     shouldForceVideoResizing() {
