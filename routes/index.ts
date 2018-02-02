@@ -42,12 +42,6 @@ export default (store: Store) => {
             childRoutes: [
                 { 
                     path: 'company',
-                    onEnter: (nextState: any, replace: any) => {
-                        // Disable brand-facing pages in production until ready
-                        if (AppModel.get(store.getState(), 'environment') === 'production') {
-                            replace('/')
-                        }
-                    },
                     indexRoute: { onEnter: (nextState: any, replace: any) => replace('/company/contact') },
                     getComponent: (nextState: any, cb: any) => {
                         import('../client/components/pages/company/Company').then(component => {
@@ -96,11 +90,26 @@ export default (store: Store) => {
                                 })
                             ]
                         },
-                        analyticsRoute('advertise', cb => {
-                            import(/* webpackChunkName: 'advertising' */ '../client/components/pages/company/Advertising').then(component => {
-                                return cb(null, component.default)
-                            })
-                        }),
+                        {
+                            path: 'advertise',
+                            getComponent: (nextState: any, cb: any) => { 
+                                import(/* webpackChunkName: 'advertising' */ '../client/components/pages/company/Advertising').then(component => {
+                                    return cb(null, component.default)
+                                })
+                            },
+                            onEnter: function(nextState: any, replace: any) {
+                                 // Disable brand-facing pages in production until ready
+                                if (AppModel.get(store.getState(), 'environment') === 'production') {
+                                    replace('/')
+                                    return
+                                }
+                                
+                                if (typeof window !== 'undefined') { 
+                                    store.dispatch(gaPage())
+                                }
+                            }
+
+                        }
                     ]
                 },
                 {

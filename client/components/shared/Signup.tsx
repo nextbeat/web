@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { Link, LinkProps } from 'react-router'
 
-import { promptModal } from '@actions/app'
+import { promptModal, closeModal } from '@actions/app'
 import { signup } from '@actions/user'
 import CurrentUser from '@models/state/currentUser'
 import Modal from '@components/shared/Modal'
@@ -53,6 +54,9 @@ class Signup extends React.Component<AllProps> {
 
     render() {
         const { signupError } = this.props;
+
+        const SignupLink = (props: LinkProps) => <Link {...props} onClick={() => this.props.dispatch(closeModal())} />
+        
         return (
             <Modal name="signup" className="modal-auth">
                 <form className="modal_form" id="signup-form" onKeyPress={this.handleKeyPress} >
@@ -68,7 +72,7 @@ class Signup extends React.Component<AllProps> {
                         <input type="password" autoComplete="new-password" ref={(c) => { if (c) { this._signupPassword = c } }} name="signup_password" placeholder="Password" />
                     </div>
                     <div className="modal_input-description">
-                        By signing up, you indicate that you agree with our <a>Terms of Service</a> and <a>Privacy Policy</a>.
+                        By signing up, you indicate that you agree with our <SignupLink to="/company/legal/terms">Terms of Service</SignupLink> and <SignupLink to="/company/legal/privacy">Privacy Policy</SignupLink>.
                     </div>
                     <div className="modal_input-wrapper modal_input-wrapper-submit">
                         <a className="btn modal_form_submit" onClick={this.handleSignupSubmit}>Sign Up</a>
