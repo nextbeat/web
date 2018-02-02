@@ -90,19 +90,8 @@ class RoomMain extends React.Component<Props> {
     }
 
     render() {
-        const { roomId, isLoadedDeep, hid, width, shouldDisplayPrerollAd, 
-                authorUsername, indexOfSelectedMediaItem, bannerAd } = this.props;
-
-        // display welcome banner here on small screen resolutions 
-        // so that it scrolls with rest of content
-        const shouldDisplayBanner = width === 'small' && authorUsername === 'safiya'
-
-        // Media item selection happens after the room has been 
-        // loaded from the server (since we need to check local
-        // storage on the browser to find the last visited media
-        // item). We don't want to display the counter until 
-        // a media item has been selected.
-        const shouldDisplayCounter = indexOfSelectedMediaItem > -1 && !shouldDisplayPrerollAd
+        const { roomId, isLoadedDeep, hid, width,
+                authorUsername, bannerAd } = this.props;
 
         return (
             <section className="player-container">
@@ -112,9 +101,7 @@ class RoomMain extends React.Component<Props> {
                     { isLoadedDeep &&
                     <div className="player_inner">
                         { bannerAd && <BannerAd ad={bannerAd} roomId={roomId} />}
-                        <RoomPlayer roomId={roomId}>
-                            { shouldDisplayCounter && <Counter roomId={roomId} /> }
-                        </RoomPlayer>
+                        <RoomPlayer roomId={roomId} />
                         <SmallChat />
                         <Info />
                         <More />

@@ -9,6 +9,7 @@ import ItemAnnotation from './ItemAnnotation'
 import Icon from '@components/shared/Icon'
 import Spinner from '@components/shared/Spinner'
 import Switch from '@components/shared/Switch'
+import Counter from '@components/room/counter/Counter'
 import CounterInner from '@components/room/counter/CounterInner'
 
 import { goBackward, goForward, setContinuousPlay } from '@actions/room'
@@ -283,7 +284,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                 indexOfSelectedMediaItem: index,
                 selectedMediaItem: item, isMobile,
                 prerollAd, shouldDisplayPrerollAd,
-                isContinuousPlayEnabled } = this.props;
+                isContinuousPlayEnabled, isRoomCard } = this.props;
 
         const { playerWidth, playerHeight, isFullScreen, 
                 isDisplayingFullScreenTooltip } = this.state;
@@ -305,9 +306,16 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         const navigationMobileClass = isMobile ? 'player_navigation-mobile' : '';
         const interactiveFullScreenClass = this.isFullScreenInteractive() ? 'interactive' : '';
 
+        // Media item selection happens after the room has been 
+        // loaded from the server (since we need to check local
+        // storage on the browser to find the last visited media
+        // item). We don't want to display the counter until 
+        // a media item has been selected.
+        const shouldDisplayCounter = index > -1 && !shouldDisplayPrerollAd && !isRoomCard
+
         return (
             <div className="player_main">
-                { children }
+                { shouldDisplayCounter && <Counter roomId={roomId} /> }
                 <div className={`player_media ${fullScreenClass}`} style={playerStyle}>
                     { /* Preload the first post's image to prevent load hiccup after ad closes. */ }
                 { !!preloadedImageUrl && <link rel="preload" as="image" href={preloadedImageUrl} /> }
