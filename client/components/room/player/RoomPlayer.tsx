@@ -16,6 +16,7 @@ import { goBackward, goForward, setContinuousPlay } from '@actions/room'
 import { selectDetailSection } from '@actions/pages/room'
 import Room from '@models/state/room'
 import App from '@models/state/app'
+import CurrentUser from '@models/state/currentUser'
 import MediaItem from '@models/entities/mediaItem'
 import Ad from '@models/entities/ad'
 import { State, DispatchProps } from '@types'
@@ -37,6 +38,8 @@ interface ConnectProps {
     prerollAd: Ad | null
     shouldDisplayPrerollAd: boolean
     isContinuousPlayEnabled: boolean
+
+    isLoggedIn: boolean
 }
 
 type Props = OwnProps & ConnectProps & DispatchProps 
@@ -124,6 +127,13 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         }); 
        
         this.resize();
+    }
+
+    componentDidUpdate(prevProps: Props) {
+        if (this.props.isLoggedIn !== prevProps.isLoggedIn) {
+            // recalculate sizes to account for sidebar
+            this.resize();
+        }
     }
 
     componentWillUnmount() {
@@ -361,7 +371,8 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
         prerollAd: Room.ad(state, ownProps.roomId, 'preroll'),
         shouldDisplayPrerollAd: Room.shouldDisplayPrerollAd(state, ownProps.roomId),
         isContinuousPlayEnabled: Room.get(state, ownProps.roomId, 'isContinuousPlayEnabled', false),
-        isMobile: App.isMobile(state)
+        isMobile: App.isMobile(state),
+        isLoggedIn: CurrentUser.isLoggedIn(state)
     }
 }
 
