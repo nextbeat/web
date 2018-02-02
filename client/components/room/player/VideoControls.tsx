@@ -39,6 +39,9 @@ interface State {
 
 class VideoControls extends React.Component<Props, State> {
 
+    private _progressBar: HTMLDivElement
+    private _volumeSliderContainer: HTMLDivElement
+
     constructor(props: Props) {
         super(props);
 
@@ -66,18 +69,16 @@ class VideoControls extends React.Component<Props, State> {
     // Actions
 
     handleVolume(e: React.MouseEvent<HTMLElement>) {
-        const offset: number = e.pageX - ($('.player_volume-slider-container').offset() as any).left;
-        const width = $('.player_volume-slider-container').width() as number
-        let volume = offset/width;
-        this.props.adjustVolume(volume);
+        const offset: number = e.pageX - (this._volumeSliderContainer.getBoundingClientRect().left + document.documentElement.scrollLeft)
+        const width = this._volumeSliderContainer.clientWidth
+        this.props.adjustVolume(offset/width);
     }
 
     handleSeek(e: React.MouseEvent<HTMLElement>) {
-        const offset: number = e.pageX - ($('.player_progress-bar').offset() as any).left;
-        const width = $('.player_progress-bar').width() as number;
+        const offset: number = e.pageX - (this._progressBar.getBoundingClientRect().left + document.documentElement.scrollLeft)
+        const width = this._progressBar.clientWidth
         this.props.seek(offset/width * this.props.duration);
     }
-
 
     // Container events
 
@@ -199,7 +200,7 @@ class VideoControls extends React.Component<Props, State> {
                 <div className="player_progress-bar-container">
                     <div className="player_progress-bar-padding" {...progressBarEvents}></div>
                     <div className={`player_progress-scrubber ${progressBarActiveClass}`} style={{ left: `${ currentTime/duration*100 }%` }} ></div>
-                    <div className={`player_progress-bar ${progressBarActiveClass}`}>
+                    <div className={`player_progress-bar ${progressBarActiveClass}`} ref={c => { if (c) { this._progressBar = c } }} >
                         <div className="player_progress-play" style={{ transform: `scaleX(${ currentTime/duration })` }}></div>
                         <div className="player_progress-buffer" style={{ transform: `scaleX(${ loadedDuration/duration })` }}></div>
                         <div className="player_progress-hover"></div>
@@ -212,7 +213,7 @@ class VideoControls extends React.Component<Props, State> {
                         </a>
                         <div className={`player_control player_control-volume ${volumeActiveClass}`} {...volumeEvents}>
                             <span className="player_volume-icon" onClick={mute}><Icon type={volumeIcon} /></span>
-                            <div className="player_volume-slider-container" {...volumeSliderEvents} >
+                            <div className="player_volume-slider-container" ref={c => { if (c) { this._volumeSliderContainer = c } }} {...volumeSliderEvents} >
                                 <div className="player_volume-slider_scrubber" style={{ left: `${volume}%` }}></div>
                                 <div className="player_volume-slider" style={{ transform: `translateY(-50%) scaleX(${volume})`}}></div>
                                 <div className="player_volume-slider-backdrop"></div>
