@@ -2,6 +2,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { List } from 'immutable'
+import * as format from 'date-fns/format'
 
 import User from '@components/shared/User'
 import Icon from '@components/shared/Icon'
@@ -15,11 +16,14 @@ import UserEntity from '@models/entities/user'
 import Room from '@models/state/room'
 import RoomPage from '@models/state/pages/room'
 import { State, DispatchProps } from '@types'
+import { timeLeftString } from '@utils'
 
-interface Props {
+interface ConnectProps {
     id: number
     author: UserEntity
     closed: boolean
+    createdAt: string
+    expires: string
     description?: string
     isCurrentUserAuthor: boolean
     privacyStatus: string
@@ -27,11 +31,11 @@ interface Props {
     views: number
 }
 
-type AllProps = Props & DispatchProps
+type Props = ConnectProps & DispatchProps
 
-class Info extends React.Component<AllProps> {
+class Info extends React.Component<Props> {
 
-    constructor(props: AllProps) {
+    constructor(props: Props) {
         super(props);
 
         this.renderLarge = this.renderLarge.bind(this);
@@ -45,7 +49,8 @@ class Info extends React.Component<AllProps> {
     }
 
     renderSmall() {
-        const { author, views, description, privacyStatus, isCurrentUserAuthor, tags, closed } = this.props 
+        const { author, views, description, privacyStatus, createdAt, expires,
+                isCurrentUserAuthor, tags, closed } = this.props 
 
         return (
             <section className="player_info-small">
@@ -64,11 +69,13 @@ class Info extends React.Component<AllProps> {
                     </div>
                 </div>
                 <div className="player_info-small_user">
-                    <User user={author} style="small" />
+                    <User user={author} style="small" /> 
+                    <span className="player_info-small_views">{ `${views} visit${views !== 1 ? 's' : ''}` }</span>
                 </div>
                 <div className="player_info-small_bottom">
-                    <div className="player_info-small_views">
-                        { `${views} visit${views !== 1 ? 's' : ''}` }
+                    <div className="player_info-small_time">
+                        { closed && format(createdAt, 'MMMM D, YYYY') }
+                        { !closed && timeLeftString(expires) }
                     </div>
                     <Bookmark type="small" />
                 </div>
@@ -81,7 +88,8 @@ class Info extends React.Component<AllProps> {
     }
 
     renderLarge() {
-        const { id, closed, description, privacyStatus, isCurrentUserAuthor, author, tags, views } = this.props 
+        const { id, closed, description, privacyStatus, createdAt, expires,
+                isCurrentUserAuthor, author, tags, views } = this.props 
 
         return (
             <section className="player_info">
@@ -101,6 +109,10 @@ class Info extends React.Component<AllProps> {
                 </div>
                 <div className="player_info_user">
                     <User user={author} />
+                    <div className="player_info_time">
+                        { closed && format(createdAt, 'MMMM D, YYYY') }
+                        { !closed && timeLeftString(expires) }
+                    </div>
                 </div>
                 <div className="player_info_bottom">
                     <div className="player_info_tags">
@@ -125,12 +137,14 @@ class Info extends React.Component<AllProps> {
     }
 }
 
-function mapStateToProps(state: State): Props {
+function mapStateToProps(state: State): ConnectProps {
     const id = RoomPage.get(state, 'id')
     return {
         id,
         author: Room.author(state, id),
         closed: Room.entity(state, id).get('closed'),
+        createdAt: Room.entity(state, id).get('created_at'),
+        expires: Room.entity(state, id).get('expires'),
         description: Room.entity(state, id).get('description'),
         isCurrentUserAuthor: Room.isCurrentUserAuthor(state, id),        
         privacyStatus: Room.entity(state, id).get('privacy_status'),

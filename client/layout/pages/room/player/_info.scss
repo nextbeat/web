@@ -68,6 +68,16 @@
 
 .player_info_user {
     margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.player_info_time {
+    color: #888;
+    font-size: 13px;
+    font-weight: 300;
+    margin-bottom: 3px;
 }
 
 .player_info_bottom {
@@ -167,6 +177,19 @@ a.player_info_tag {
 
 .player_info-small_user {
     margin-top: 3px;
+    display: flex;
+    align-items: center;
+
+    .user {
+        min-width: auto;
+    }
+}
+
+.player_info-small_views {
+    font-size: 12px;
+    color: $detail-text-color;
+    font-weight: 300;
+    margin: 0 0 0 10px;
 }
 
 .player_info-small_bottom {
@@ -176,11 +199,10 @@ a.player_info_tag {
     margin-top: 3px;
 }
 
-.player_info-small_views {
+.player_info-small_time {
     font-size: 13px;
     color: $detail-text-color;
     font-weight: 300;
-    margin-bottom: 4px;
 }
 
 .player_info-small_bookmarks {

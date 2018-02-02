@@ -22,9 +22,6 @@ interface OwnProps {
 
 interface ConnectProps {
     roomId: number
-    isClosed: boolean
-    createdAt: string
-    expires: string
 
     mediaItemsFetching: boolean
     mediaItems: List<MediaItem>
@@ -113,18 +110,12 @@ class Activity extends React.Component<Props, ActivityState> {
 
     render() {
         const { display, mediaItemsFetching,
-                isClosed, createdAt, expires, selectedMediaItem,
-                mediaItems, liveMediaItems } = this.props;
+                selectedMediaItem, mediaItems, 
+                liveMediaItems } = this.props;
         const { displayNewItem } = this.state;
 
         return (
         <section className="activity" style={{ display: (display ? "flex" : "none") }}>
-            <div className="activity_header">
-                <div className="activity_time">
-                    { isClosed && format(createdAt, 'MMMM D, YYYY') }
-                    { !isClosed && timeLeftString(expires) }
-                </div>
-            </div>
             <div className="activity_inner" id="activity-inner">
                 {mediaItemsFetching && <Spinner styles={["grey"]} />}
                 {mediaItems.map((mediaItem, idx) => {
@@ -164,9 +155,6 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     const roomId = RoomPage.get(state, 'id')
     return {
         roomId,
-        isClosed: RoomPage.status(state) === 'closed',
-        createdAt: RoomPage.entity(state).get('created_at'),
-        expires: RoomPage.entity(state).get('expires'),
 
         mediaItemsFetching: Room.get(state, roomId, 'mediaItemsFetching'),
         mediaItems: RoomPage.mediaItems(state),

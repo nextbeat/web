@@ -35,7 +35,7 @@ class User extends React.Component<Props> {
                 </Link>
                 <div className="user_info">
                     <div className="user_username"><Link to={`/u/${user.get('username')}`}>{ user.get('username') }</Link></div>
-                    <span className="user_separator">•</span>
+                    <span className="user_separator">{'\u00b7'}</span>
                     { showSubscribe ? 
                         <Subscribe user={user} /> : 
                         <div className="user_subscriber-count">{`${subscriberCount} subscriber${subscriberCount === 1 ? '' : 's'}`}</div>
