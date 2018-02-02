@@ -1,5 +1,6 @@
 import { Map, Set } from 'immutable'
 import { ActionType, Status, Action } from '@actions/types'
+import { State } from '@types'
 
 export default function(state = Map(), action: Action) {
     if (action.type === ActionType.SELECT_MEDIA_ITEM) {

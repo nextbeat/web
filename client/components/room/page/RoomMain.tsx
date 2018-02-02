@@ -62,7 +62,7 @@ class RoomMain extends React.Component<Props> {
 
         // Disable navigation if ad is playing
         if (shouldDisplayPrerollAd) {
-            return; // todo: FIX
+            return; 
         }
 
         if (e.keyCode === 37) { // left arrow

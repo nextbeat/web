@@ -1,13 +1,15 @@
 import debounce from 'lodash-es/debounce'
 import assign from 'lodash-es/assign'
-import { ActionType, Action } from '@actions/types'
+import { ActionType, Action, Status } from '@actions/types'
 import { 
     markStack, 
     goForward, 
+    selectMediaItem,
     playbackDidEnd, 
     updateContinuousPlayCountdown,
-    cancelContinuousPlayCountdown
+    cancelContinuousPlayCountdown,
 } from '@actions/room'
+
 import CurrentUser from '@models/state/currentUser'
 import RoomPage from '@models/state/pages/room'
 import Room from '@models/state/room'
@@ -17,6 +19,8 @@ import { Store, Dispatch } from '@types'
 let markStackFn = debounce((store, next, action) => {
     store.dispatch(markStack(action.roomId, action.lastRead))
 }, 1000)
+
+/* Continuous play countdown */
 
 function runContinuousPlayCountdown(store: Store, action: Action, secondsLeft: number, delay: number, duration: number) {
     let selectedMediaItem = Room.selectedMediaItem(store.getState(), action.roomId)
@@ -44,6 +48,32 @@ function stopContinuousPlayCountdown(store: Store, action: Action) {
         store.dispatch(cancelContinuousPlayCountdown(action.roomId))
     }
 }
+
+/* Media item deletion */
+
+function maybeSelectMediaItemOnDeletion(store: Store, roomId: number, deletedId: number) {
+    // Upon deleting a media item, if the user is currently
+    // selecting the media item, we should navigate to the previous
+    // item in the room (unless we've selected the first item)
+    const state = store.getState()
+
+    if (deletedId === Room.selectedMediaItem(state, roomId).get('id')) {
+        const index = Room.indexOfSelectedMediaItem(state, roomId)
+        const newIndex = index === 0 ? index+1 : index-1
+        const newId = Room.mediaItemIdAtIndex(state, roomId, newIndex)
+
+        if (newId > 0) {
+            // TODO: Fix bug in which selectMediaItem is called 
+            // twice upon navigation (due to issues with handling
+            // browser history on selection); if the first media item is
+            // deleted, it will cause the second media item in the
+            // updated list to be selected.
+            return store.dispatch(selectMediaItem(roomId, newId))
+        }
+    }
+}
+
+/* Middleware fn */
 
 export default (store: Store) => (next: Dispatch) => (action: Action) => {
     
@@ -123,6 +153,16 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
         } else {
             stopContinuousPlayCountdown(store, action)
         }
+        next(action);
+    }
+    else if (action.type === ActionType.DELETE_MEDIA_ITEM && action.status === Status.SUCCESS) 
+    {
+        maybeSelectMediaItemOnDeletion(store, action.roomId, action.id)
+        next(action);
+    }
+    else if (action.type === ActionType.RECEIVE_MEDIA_ITEM_DELETE) 
+    {
+        maybeSelectMediaItemOnDeletion(store, action.roomId, action.mediaItemId)
         next(action);
     }
     else

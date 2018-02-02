@@ -34,7 +34,6 @@ interface ConnectProps {
     hasDeletedMediaItem: boolean
     deleteMediaItemError: string
     deletedMediaItemId: number
-    postDeletionSelectedMediaItemId: number
 
     isEditingMediaItemTitle: boolean 
     hasEditedMediaItemTitle: boolean 
@@ -83,14 +82,15 @@ class ActivityItem extends React.Component<Props, ComponentState> {
     }
 
     componentWillReceiveProps(nextProps: Props) {
-        if (this.props.mediaItem.get('id') === nextProps.deletedMediaItemId && !this.props.hasDeletedMediaItem && nextProps.hasDeletedMediaItem) {
+        if (this.props.mediaItem.get('id') === nextProps.deletedMediaItemId
+            && !this.props.hasDeletedMediaItem && nextProps.hasDeletedMediaItem
+        ) {
             this.props.dispatch(closeModal())
-            if (nextProps.selectedMediaItemId === nextProps.deletedMediaItemId) {
-                this.props.dispatch(selectMediaItem(this.props.roomId, nextProps.postDeletionSelectedMediaItemId))
-            }
         }
 
-        if (this.props.mediaItem.get('id') === nextProps.editedMediaItemId && !this.props.hasEditedMediaItemTitle && nextProps.hasEditedMediaItemTitle) {
+        if (this.props.mediaItem.get('id') === nextProps.editedMediaItemId 
+            && !this.props.hasEditedMediaItemTitle && nextProps.hasEditedMediaItemTitle
+        ) {
             this.props.dispatch(closeModal())
         }
 
@@ -264,9 +264,7 @@ class ActivityItem extends React.Component<Props, ComponentState> {
     }
 }
 
-function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
-    let postDeletionSelectedMediaItem = RoomPage.mediaItems(state).first() || RoomPage.liveMediaItems(state).first() as MediaItem
-    
+function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {    
     return {
         roomId: RoomPage.get(state, 'id'),
         authorUsername: RoomPage.entity(state).author().get('username'),
@@ -281,7 +279,6 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
         hasDeletedMediaItem: RoomPage.get(state, 'hasDeletedMediaItem'),
         deleteMediaItemError: RoomPage.get(state, 'deleteMediaItemError'),
         deletedMediaItemId: RoomPage.get(state, 'deletedMediaItemId'),
-        postDeletionSelectedMediaItemId: postDeletionSelectedMediaItem.get('id'),
 
         isEditingMediaItemTitle: RoomPage.get(state, 'isEditingMediaItemTitle'),
         hasEditedMediaItemTitle: RoomPage.get(state, 'hasEditedMediaItemTitle'),
