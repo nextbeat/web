@@ -108,7 +108,7 @@ function handleEvent(data: AnalyticsCall) {
 export default (store: Store) => (next: Dispatch) => (action: Action) => {
 
     const data = action.GA as AnalyticsCall
-    if (typeof data === 'undefined') {
+    if (typeof data === 'undefined' || typeof window === 'undefined') {
         return next(action)
     }
 

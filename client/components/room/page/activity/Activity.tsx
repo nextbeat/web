@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import * as format from 'date-fns/format'
 import { List, Set } from 'immutable'
 
 import RoomPage from '@models/state/pages/room'
@@ -13,7 +12,6 @@ import ActivityItem from './ActivityItem'
 import Spinner from '@components/shared/Spinner'
 import Icon from '@components/shared/Icon'
 import MediaItem from '@models/entities/mediaItem'
-import { timeLeftString } from '@utils'
 import { State, DispatchProps } from '@types'
 
 interface OwnProps {

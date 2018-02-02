@@ -34,6 +34,7 @@ interface ConnectProps {
     hid: string
     author: User
     description: string
+    isClosed: boolean
     thumbnailUrl: string
     mediaItemsFetching: boolean
     mediaItems: List<MediaItem>
@@ -53,12 +54,19 @@ class RoomPageComponent extends React.Component<Props> {
             const unsubscribe = store.subscribe(() => {
                 const state = store.getState()
                 if (RoomPage.isLoadedDeep(state)) {
+                    console.log('room is loaded deep')
                     unsubscribe()
                     resolve(store)
                 }
                 if (RoomPage.hasErrorDeep(state)) {
                     unsubscribe()
                     reject(new Error('Room does not exist.'))
+                }
+                if (RoomPage.isLoaded(state) && RoomPage.entity(state).get('closed')) {
+                    if (RoomPage.get(state, 'selectedDetailSection') !== 'activity') {
+                        console.log('room is closed', RoomPage.get(state, 'selectedDetailSection'))
+                        store.dispatch(selectDetailSection('activity'))
+                    }
                 }
             })
             store.dispatch(loadRoomPage(params.hid))
@@ -93,11 +101,7 @@ class RoomPageComponent extends React.Component<Props> {
 
         if (isLoadedDeep) {
             this.selectMediaItemOnLoad()
-        }
-
-        let detailSection = location.query.detail
-        if (detailSection === 'activity') {
-            dispatch(selectDetailSection('activity'))
+            this.selectDetailSectionOnLoad()
         }
     }
 
@@ -107,7 +111,7 @@ class RoomPageComponent extends React.Component<Props> {
 
     componentDidUpdate(prevProps: Props) {
         const { params, dispatch, mediaItems, id: roomId, 
-                mediaItemIdAtParamIndex } = this.props
+                mediaItemIdAtParamIndex, isLoadedDeep } = this.props
 
         if (prevProps.params.hid !== params.hid) {
             // new room, reload
@@ -115,9 +119,11 @@ class RoomPageComponent extends React.Component<Props> {
             this.loadRoom()
         }
 
-        if (prevProps.mediaItemsFetching && mediaItems.size > 0) {
+        if (!prevProps.isLoadedDeep && isLoadedDeep) {
             // first page of media items has loaded, select the first
             this.selectMediaItemOnLoad()
+            // select chat or activity conditionally
+            this.selectDetailSectionOnLoad()
         }
 
         // if we're navigating by updating the url (i.e. using 
@@ -161,6 +167,12 @@ class RoomPageComponent extends React.Component<Props> {
         dispatch(selectMediaItem(roomId, id, { shouldReplaceHistory: true }))
         dispatch(closeDetailSection())
     }
+
+    selectDetailSectionOnLoad() {
+        const { isClosed, dispatch } = this.props
+        const detailSection = isClosed ? 'activity' : 'chat'
+        dispatch(selectDetailSection(detailSection))
+    }   
 
     // RENDER
 
@@ -255,6 +267,7 @@ function mapStateToProps(state: State, ownProps: RouteProps<Params>): ConnectPro
         hid: RoomPage.entity(state).get('hid'),
         author: RoomPage.author(state),
         description: RoomPage.entity(state).get('description'),
+        isClosed: RoomPage.entity(state).get('closed', false),
         thumbnailUrl: RoomPage.thumbnail(state, 'large').get('url'),
         mediaItemsFetching: Room.get(state, id, 'mediaItemsFetching'),
         mediaItems: RoomPage.mediaItems(state),
