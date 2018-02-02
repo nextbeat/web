@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import debounce from 'lodash-es/debounce'
+import throttle from 'lodash-es/throttle'
 import { toggleFullScreen, isFullScreen } from '../../../utils'
 
 import VideoControls from './VideoControls'
@@ -115,6 +116,7 @@ class Video extends React.Component<Props, VideoState> {
         this.unloadVideo = this.unloadVideo.bind(this);
         this.playPause = this.playPause.bind(this);
         this.seek = this.seek.bind(this);
+        this.setCurrentTime = throttle(this.setCurrentTime, 300);
         this.adjustVolume = this.adjustVolume.bind(this);
         this.mute = this.mute.bind(this);
         this.fullScreen = this.fullScreen.bind(this);
@@ -418,10 +420,16 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     seek(time: number) {
-        this._videoElem.currentTime = time;
         this.setState({
-            currentTime: this._videoElem.currentTime
+            currentTime: time
         });
+        this.setCurrentTime(time)
+    }
+
+    private setCurrentTime(time: number) {
+        // This fn is throttled to prevent
+        // unnecessary work
+        this._videoElem.currentTime = time;
     }
 
     adjustVolume(volume: number) {
