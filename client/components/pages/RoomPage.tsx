@@ -54,7 +54,6 @@ class RoomPageComponent extends React.Component<Props> {
             const unsubscribe = store.subscribe(() => {
                 const state = store.getState()
                 if (RoomPage.isLoadedDeep(state)) {
-                    console.log('room is loaded deep')
                     unsubscribe()
                     resolve(store)
                 }
@@ -63,8 +62,8 @@ class RoomPageComponent extends React.Component<Props> {
                     reject(new Error('Room does not exist.'))
                 }
                 if (RoomPage.isLoaded(state) && RoomPage.entity(state).get('closed')) {
+                    // Select activity section by default for closed rooms
                     if (RoomPage.get(state, 'selectedDetailSection') !== 'activity') {
-                        console.log('room is closed', RoomPage.get(state, 'selectedDetailSection'))
                         store.dispatch(selectDetailSection('activity'))
                     }
                 }

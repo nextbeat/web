@@ -99,6 +99,11 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
                 e.preventDefault();
             }
         })
+
+        if (this.props.comments.size > 0 && this.props.commentsFetchType === 'mostRecent') {
+            this.props.scrollToBottom()
+            this.props.setScrollState()
+        }
     }
 
     componentDidUpdate(prevProps: Props) {    
