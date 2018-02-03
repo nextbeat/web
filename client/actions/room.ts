@@ -179,7 +179,7 @@ function onFetchCommentSuccess(store: Store, next: Dispatch, action: CommentsAct
     if (action.fetchType === 'around') {
         let comment = action.comment
         if (!comment) {
-            comment = commentClosestToDate(action.date, response)
+            comment = commentClosestToDate(action.jumpTo as number, response)
             // Force open chat section if in mobile res
             store.dispatch(selectDetailSection('chat'))
         }
