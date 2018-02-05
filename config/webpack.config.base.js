@@ -36,7 +36,7 @@ module.exports = {
                 })
             },
             {
-                test: /\.(gif|png|jpe?g)$/,
+                test: /\.(gif|png|jpe?g|svg)$/,
                 loader: 'file-loader?name=./images/[hash:16].[ext]',
                 exclude: /node_modules/
             },

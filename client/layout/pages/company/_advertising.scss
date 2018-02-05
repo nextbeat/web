@@ -1,22 +1,32 @@
 .advertising {
-    p, h1 {
+    p, h1, h2 {
         margin: 0;
     }
 }
 
 .advertising_text {
     letter-spacing: 0.02em;
-    line-height: 1.35;
+    line-height: 1.5;
 
     h1 {
         font-weight: 500;
-        font-size: 20px;
+        font-size: 24px;
         margin-bottom: 20px;
+        letter-spacing: 0.04em;
+    }
+    h2 {
+        font-weight: 500;
+        font-size: 20px;
+        margin-bottom: 10px;
         letter-spacing: 0.03em;
     }
     p {
         margin-bottom: 15px;
         font-weight: 300;
+        font-size: 15px;
+        &:last-child {
+            margin-bottom: 0;
+        }
     }
     a {
         font-weight: 300;
@@ -45,11 +55,15 @@
 }
 
 .advertising_intro_text {
-    margin-left: 95px;
+    width: calc(100% - 100px);
+    max-width: 900px;
+    margin: 0 auto;
+
     font-size: 24px;
     font-weight: 300;
     letter-spacing: 0.03em;
     z-index: 11;
+
     p {
         margin-top: 8px;
     }
@@ -115,7 +129,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: $primary-color;
+    color: #ff6f44;
 
     &:first-child {
         margin-right: 12px;
@@ -128,7 +142,7 @@
 }
 
 .advertising_users_stat_label {
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 300;
     color: #aaa;
 }
@@ -164,12 +178,12 @@
 }
 
 .advertising_nextbeat_info {
-    padding: 30px 85px 20px 85px;
+    padding: 30px 85px;
     text-align: center;
 
     p {
         color: #777;
-        line-height: 170%;
+        line-height: 1.7;
     }
 
     h1 {
@@ -211,18 +225,55 @@
 }
 
 .advertising_store {
-    padding: 60px 50px;
-    background: linear-gradient(to right, $primary-color, #fca469);
+    padding: 60px 50px 85px 50px;
+    background: linear-gradient(to right, #ff985a, #f27d5e);
     color: #fff;
 }
 
-.advertising_store_text {
-    flex: 0 1 475px;
+.advertising_store_header {
+    text-align: center;
 }
 
-.advertising_store_graphic {
-    flex: 0 1 200px;
-    text-align: center;
+.advertising_store_text {
+    flex: 0 1 auto;
+}
+
+.advertising_store_icon {
+    position: relative;
+    flex: 1 0 auto;
+    width: 140px;
+    height: 140px;
+    background-color: #fff;
+    border-radius: 70px;
+    margin-right: 50px;
+    box-shadow: 0 5px 10px 0 rgba(#07215c, 0.10);
+}
+
+.advertising_store_icon_inner {
+    @include center;
+    width: 65%;
+    height: 65%;
+
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+
+.advertising_store_icon-partnerships {
+    margin-top: -3px;
+    background-image: url(../public/images/cash_register.svg);
+}
+
+.advertising_store_icon-conversions {
+    margin-left: 5px;
+    background-image: url(../public/images/influencer.svg);
+}
+
+.advertising_store_content {
+    margin-bottom: 50px;
+    &:last-child {
+        margin-bottom: 0;
+    }
 }
 
 .advertising_action {
@@ -286,15 +337,24 @@ a.advertising_action_button {
         margin-bottom: 30px;
     }
 
-    .advertising_store_text {
-        flex: 0 1 auto;
-        margin-bottom: 30px;
-        max-width: 600px;
+    .advertising_store {
+        background: linear-gradient(to bottom, #ff985a, #f27d5e);
     }
 
-    .advertising_store_graphic {
-        flex: 0 1 auto;
-        width: 100%;
+    .advertising_store {
+        h2 {
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 30px;
+        }
+    }
+
+    .advertising_store_icon {
+        width: 160px;
+        height: 160px;
+        border-radius: 90px;
+        margin: 0 0 20px 0;
     }
 }
 
