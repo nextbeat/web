@@ -59,7 +59,7 @@ class Advertising extends React.Component {
                         </div>
                         <div className="advertising_text advertising_store_text">
                             <h2>Strategic Partnerships</h2>
-                            <p>Unlike Youtube sponsorships, Nextbeat's integrated Shop tab makes it easy for consumers to convert tentative interest into tangible clickthroughs and purchases. Products featured in our Shop tab are easily accessible, and Nextbeat's low-maintenance format makes it possible for users to explore sponsored content without fear of getting left behind.</p>
+                            <p>Align your brand with influential creators who speak directly into the ears of their millions of avid followers. Gain access to a young, enthusiastic demographic who view these content creators as equal parts idol and virtual best friend, and who take their recommendations very seriously.</p>
                         </div>
                     </div>
                     <div className="advertising_content advertising_store_content">
@@ -68,7 +68,7 @@ class Advertising extends React.Component {
                         </div>
                         <div className="advertising_text advertising_store_text">
                             <h2>Seamless Conversions</h2>
-                            <p>Align your brand with influential creators who speak directly into the ears of their millions of avid followers. Gain access to a young, enthusiastic demographic who view these content creators as equal parts idol and virtual best friend, and who take their recommendations very seriously.</p>
+                            <p>Unlike Youtube sponsorships, Nextbeat's integrated Shop tab makes it easy for consumers to convert tentative interest into tangible clickthroughs and purchases. Products featured in our Shop tab are easily accessible, and Nextbeat's low-maintenance format makes it possible for users to explore sponsored content without fear of getting left behind.</p>
                         </div>
                     </div>
                 </div>
