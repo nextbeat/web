@@ -50,6 +50,7 @@ class Advertising extends React.Component {
                     </div>
                 </div>
                 <div className="advertising_store">
+                    <div className="advertising_store_triangle" />
                     <div className="advertising_store_header advertising_text">
                         <h1>Why partner with Nextbeat?</h1>
                     </div>

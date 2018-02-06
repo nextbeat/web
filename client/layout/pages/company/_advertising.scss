@@ -164,6 +164,7 @@
     border-radius: 8px;
     box-shadow: 0 8px 16px 0 rgba(#000, 0.15);
     background: #fff;
+    z-index: 15;
 
     max-width: 900px;
 
@@ -226,8 +227,23 @@
 
 .advertising_store {
     padding: 60px 50px 85px 50px;
-    background: linear-gradient(to right, #ff985a, #f27d5e);
+    position: relative;
+    background: linear-gradient(to bottom, #db5430, #cd4f2d);
     color: #fff;
+}
+
+@mixin triangle-path($x-start, $x-end) {
+    clip-path: polygon(0 0, $x-start 0, $x-end 100%, (100%-$x-end) 100%, (100%-$x-start) 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.advertising_store_triangle {
+    position: absolute;
+    background: rgba(#000, 0.05);
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    @include triangle-path(5%, 8%);
 }
 
 .advertising_store_header {
@@ -338,16 +354,16 @@ a.advertising_action_button {
     }
 
     .advertising_store {
-        background: linear-gradient(to bottom, #ff985a, #f27d5e);
-    }
-
-    .advertising_store {
         h2 {
             text-align: center;
         }
         h1 {
             margin-bottom: 30px;
         }
+    }
+
+    .advertising_store_triangle {
+        @include triangle-path(5%, 15%);
     }
 
     .advertising_store_icon {
