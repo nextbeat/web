@@ -9,6 +9,7 @@
 .shop-product {
     display: flex;
     padding: 10px;
+    margin-bottom: 5px;
     cursor: pointer;
 
     &:hover .shop-product_title {
@@ -38,6 +39,7 @@
 
 .shop-product_title {
     font-size: 14px;
+    line-height: 1.35;
     color: $primary-color;
 }
 
@@ -48,9 +50,10 @@
 }
 
 .shop-product_description {
-    font-size: 12px;
+    font-size: 13px;
     margin-top: 5px;
     font-weight: 300;
+    line-height: 1.45;
 }
 
 /* Sponsored section */

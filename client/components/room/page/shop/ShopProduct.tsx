@@ -46,7 +46,7 @@ class ShopProductComponent extends React.Component<Props> {
                 <div className="shop-product_thumbnail" style={thumbnailStyle} />
                 <div className="shop-product_main">
                     <div className="shop-product_title">{product.get('title')}</div>
-                    { (product.get('price') || true) && <div className="shop-product_price">{product.get('price') || '$6.99'}</div> }
+                    { product.get('price') && <div className="shop-product_price">${product.get('price')}</div> }
                     { product.get('description') && <div className="shop-product_description">{product.get('description')}</div> }
                 </div>
             </div>
