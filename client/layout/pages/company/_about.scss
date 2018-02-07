@@ -3,6 +3,7 @@
     letter-spacing: 0.02em;
     font-size: 15px;
     font-weight: 300;
+    margin-bottom: 50px;
 }
 
 .about_header {
@@ -56,6 +57,10 @@
         font-weight: 600;
     }
 
+    @include media ("<=1020px") {
+        margin-bottom: 5px;
+    }
+
     @include media("<=small") {
         margin-bottom: 0;
     }
@@ -70,7 +75,8 @@
     padding: 0 20px;
 
     @include media ("<=1020px") {
-        max-width: 620px;
+        max-width: 650px;
+        margin-bottom: 25px;
     }
 
     @include media ("<=600px") {
@@ -86,11 +92,11 @@
 
     @include media ("<=1020px") {
         max-width: 280px;
+        text-align: center;
     }
 
     @include media ("<=600px") {
         max-width: 320px;
-        text-align: center;
     }
 }
 
@@ -140,6 +146,7 @@
 
 .about_get-started {
     margin-bottom: 40px;
+    padding: 0 20px;
     text-align: center;
 }
 
@@ -150,6 +157,92 @@
         font-weight: 600;
         text-align: center;
     }
+}
+
+.about_creators {
+    background: #e4e7ed;
+    padding: 35px 0 25px 0;
+}
+
+.about_creators_content {
+    padding: 0 40px;
+    max-width: 830px;
+    margin: 0 auto;
+}
+
+.about_creators_header {
+    margin-bottom: 15px;
+    h2 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+    p {
+        font-size: 14px;
+    }
+}
+
+.about_platforms {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 0 auto;
+    max-width: 515px;
+}
+
+.about_platform {
+    max-width: 80px;
+}
+
+.about_platform_icon_container {
+    width: 70px;
+    height: 70px;
+    position: relative;
+    margin: 0 auto;
+}
+
+.about_platform_icon {
+    @include center;
+    width: 70%;
+    height: 70%;
+    opacity: 0.8;
+    cursor: pointer;
+
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+
+    &:hover {
+        opacity: 0.6;
+    }
+
+    .about_platform-youtube & {
+        background-image: url(../public/images/platforms/youtube.svg);
+    }
+
+    .about_platform-twitch & {
+        background-image: url(../public/images/platforms/twitch.svg);
+    }
+
+    .about_platform-snapchat & {
+        background-image: url(../public/images/platforms/snapchat.svg);
+    }
+
+    .about_platform-instagram & {
+        background-image: url(../public/images/platforms/instagram.svg);
+    }
+}
+
+.about_platform_text {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.about_partners {
+    margin-top: 25px;
+    text-align: center;
 }
 
 

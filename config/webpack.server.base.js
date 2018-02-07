@@ -102,6 +102,7 @@ module.exports = {
             "@components": absolutePath('components'),
             "@eddy": absolutePath('eddy'),
             "@errors": absolutePath('errors'),
+            "@images": absolutePath('public/images'),
             "@models": absolutePath('models'),
             "@reducers": absolutePath('reducers'),
             "@schemas": absolutePath('schemas'),

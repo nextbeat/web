@@ -110,11 +110,22 @@ export default (store: Store) => {
                             }
 
                         },
-                        analyticsRoute('about', cb => {
-                            import(/* webpackChunkName: 'about' */ '../client/components/pages/company/About').then(component => {
-                                return cb(null, component.default)
-                            })
-                        })
+                        {
+                            path: 'about',
+                            indexRoute: analyticsRoute(undefined, cb => {
+                                import(/* webpackChunkName: 'about' */ '../client/components/pages/company/About').then(component => {
+                                    return cb(null, component.default)
+                                })
+                            }),
+                            childRoutes: [
+                                analyticsRoute('creators/youtube', cb => {
+                                    import(/* webpackChunkName: 'about' */ '../client/components/pages/company/creators/Youtube').then(component => {
+                                        return cb(null, component.default)
+                                    })
+                                })
+                            ]
+                        }
+                        
                     ]
                 },
                 {

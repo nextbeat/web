@@ -33,6 +33,10 @@ a.legal_sidebar_link {
     font-size: 14px;
     flex: 1 1 auto;
 
+    p, h1, h2, h3 {
+        margin-bottom: 1em;
+    }
+
     h2 {
         font-size: 18px;
     }
@@ -48,7 +52,7 @@ a.legal_sidebar_link {
 }
 
 .legal_header {
-    margin-top: 15px;
+    margin: 15px 0;
     display: flex;
     justify-content: space-between;
 }

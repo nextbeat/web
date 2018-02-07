@@ -1,0 +1,24 @@
+.creators_header {
+    background: #db5430;
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.creators_header_content {
+    display: flex;
+    align-items: center;
+}
+
+.creators_title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.creators_icon {
+    width: 60px;
+    height: 60px;
+}

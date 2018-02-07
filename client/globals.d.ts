@@ -14,4 +14,5 @@ interface NodeRequire extends WebpackRequire {}
 declare var require: NodeRequire;
 
 declare module '*.png'
+declare module '*.svg'
 declare module '*.md'

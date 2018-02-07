@@ -17,6 +17,7 @@
             "@components/*": ["./client/components/*"],
             "@eddy": ["./client/eddy"],
             "@errors": ["./client/errors"],
+            "@images/*": ["../client/public/images/*"],
             "@models": ["./client/models"],
             "@models/*": ["./client/models/*"],
             "@reducers/*": ["./client/reducers/*"],

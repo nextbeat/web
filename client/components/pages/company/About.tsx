@@ -51,6 +51,51 @@ class About extends React.Component {
                     </div>
                     <Link to="/" className="about_get-started_button company_button">Check out our current featured room!</Link>
                 </div>
+                <div className="about_creators">
+                    <div className="about_creators_content">
+                        <div className="about_creators_header">
+                            <h2>Are you a content creator?</h2>
+                            <p>We'd love to walk you through what Nextbeat can do for you! What kind of video content do you create?</p>
+                        </div>
+                        <div className="about_platforms">
+                            <div className="about_platform about_platform-youtube">
+                                <div className="about_platform_icon_container">
+                                    <div className="about_platform_icon" />
+                                </div>
+                                <div className="about_platform_text">
+                                    YouTube Videos
+                                </div>
+                            </div>
+                            <div className="about_platform about_platform-twitch">
+                                <div className="about_platform_icon_container">
+                                    <div className="about_platform_icon" />
+                                </div>
+                                <div className="about_platform_text">
+                                    Twitch/<wbr />Livestream
+                                </div>
+                            </div>
+                            <div className="about_platform about_platform-snapchat">
+                                <div className="about_platform_icon_container">
+                                    <div className="about_platform_icon" />
+                                </div>
+                                <div className="about_platform_text">
+                                Snapchat Stories
+                                </div>
+                            </div>
+                            <div className="about_platform about_platform-instagram">
+                                <div className="about_platform_icon_container">
+                                    <div className="about_platform_icon" />
+                                </div>
+                                <div className="about_platform_text">
+                                    Instagram Stories
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="about_partners">
+                    <a>Looking to partner with Nextbeat?</a>
+                </div>
             </div>
         )
     }
