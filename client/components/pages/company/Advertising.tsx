@@ -78,7 +78,7 @@ class Advertising extends React.Component {
                         <p>We can place you in rooms with YouTube influencers Safiya Nygaard and Tyler Williams, who have a combined following of over 4 million subscribers.</p>
                         <p>Included will be detailed analytics reports to track the performance of your store, total impressions, and other ads.</p>
                     </div>
-                    <Link to="/company/contact" className="advertising_action_button">To learn more, contact us.</Link>
+                    <Link to="/company/contact" className="advertising_action_button company_button">To learn more, contact us.</Link>
                 </div>
             </div>
         )

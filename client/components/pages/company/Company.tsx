@@ -46,7 +46,7 @@ class Company extends React.Component<Props, ComponentState> {
                             <span className="topbar_logo-small"><Link to="/"><SmallLogo /></Link></span>
                         </div>
                         <div className="topbar_right topbar-company_right">
-                            <a className="topbar-company_link">ABOUT</a>
+                            <Link className="topbar-company_link" to="/company/about">ABOUT</Link>
                             <Link className="topbar-company_link" to="/company/contact">CONTACT</Link>
                             <Link className="topbar-company_link" to="/company/legal/terms">LEGAL</Link>
                         </div>

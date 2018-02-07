@@ -1,9 +1,3 @@
-.advertising {
-    p, h1, h2 {
-        margin: 0;
-    }
-}
-
 .advertising_text {
     letter-spacing: 0.02em;
     line-height: 1.5;
@@ -232,18 +226,8 @@
     color: #fff;
 }
 
-@mixin triangle-path($x-start, $x-end) {
-    clip-path: polygon(0 0, $x-start 0, $x-end 100%, (100%-$x-end) 100%, (100%-$x-start) 0, 100% 0, 100% 100%, 0 100%);
-}
-
 .advertising_store_triangle {
-    position: absolute;
-    background: rgba(#000, 0.05);
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    @include triangle-path(5%, 8%);
+    @include triangle-background(rgba(#000, 0.05), 5%, 8%);
 }
 
 .advertising_store_header {
@@ -281,8 +265,8 @@
 }
 
 .advertising_store_icon-partnerships {
-    margin-left: 5px;
-    background-image: url(../public/images/influencer.svg);
+    margin-top: 5px;
+    background-image: url(../public/images/handshake.svg);
 }
 
 .advertising_store_content {
@@ -304,20 +288,6 @@
     max-width: 475px;
     text-align: center;
     margin-bottom: 30px;
-}
-
-a.advertising_action_button {
-    font-weight: 300;
-    background: $primary-color;
-    color: #fff;
-    padding: 18px 23px;
-    border-radius: 10px;
-    box-shadow: 0 5px 0 $company-drop-shadow;
-
-    &:hover {
-        color: #fff;
-        background: $light-primary-color;
-    }
 }
 
 @include media("<=medium") {
@@ -363,7 +333,7 @@ a.advertising_action_button {
     }
 
     .advertising_store_triangle {
-        @include triangle-path(5%, 15%);
+        @include triangle-background(rgba(#000, 0.05), 5%, 15%);
     }
 
     .advertising_store_icon {

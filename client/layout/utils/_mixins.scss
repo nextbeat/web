@@ -50,3 +50,13 @@
         margin-left: -$size;
     }
 }
+
+@mixin triangle-background($color, $x-start, $x-end) {
+    position: absolute;
+    background: $color;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    clip-path: polygon(0 0, $x-start 0, $x-end 100%, (100%-$x-end) 100%, (100%-$x-start) 0, 100% 0, 100% 100%, 0 100%);
+}

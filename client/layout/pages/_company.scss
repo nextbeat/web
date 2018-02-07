@@ -103,6 +103,35 @@ a.company_footer_link {
     }
 }
 
+/* Company-wide styles */
+
+.company {
+    p, h1, h2 {
+        margin: 0;
+    }
+}
+
+.company_button {
+    font-weight: 300;
+    text-align: center;
+    display: inline-block;
+    background: $primary-color;
+    color: #fff;
+    padding: 18px 23px;
+    border-radius: 10px;
+    box-shadow: 0 5px 0 $company-drop-shadow;
+
+    &:hover {
+        color: #fff;
+        background: $light-primary-color;
+    }
+
+    &:visited {
+        color: #fff;
+    }
+}
+
+@import 'company/about';
 @import 'company/advertising';
 @import 'company/contact';
 @import 'company/legal';

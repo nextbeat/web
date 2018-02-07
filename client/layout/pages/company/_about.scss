@@ -1,0 +1,156 @@
+.about {
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    font-size: 15px;
+    font-weight: 300;
+}
+
+.about_header {
+    position: relative;
+    padding: 60px 0;
+    color: #fff;
+    background: linear-gradient(to bottom, #db5430, #cd4f2d);
+
+    h1 {
+        font-size: 30px;
+        font-weight: 700;
+        margin-bottom: 25px;
+        text-align: center;
+        display: block;
+        letter-spacing: 0.04em;
+    }
+
+    p {
+        display: block;
+        margin: 0 auto;
+        padding: 0 40px;
+        max-width: 830px;
+    }
+
+    @include media("<small") {
+        padding: 40px 0;
+        p {
+            padding: 0 25px;
+        }
+    }
+}
+
+.about_header_triangle {
+    @include triangle-background(rgba(#000, 0.05), 4%, 8%);
+}
+
+.about_why {
+    padding: 40px 0 0 0;
+
+    @include media("<=small") {
+        padding: 25px 0 0 0;
+    }
+}
+
+.about_why_header {
+    margin-bottom: 25px;
+    h1 {
+        font-size: 24px;
+        letter-spacing: 0.04em;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    @include media("<=small") {
+        margin-bottom: 0;
+    }
+}
+
+.about_features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+
+    @include media ("<=1020px") {
+        max-width: 620px;
+    }
+
+    @include media ("<=600px") {
+        max-width: 400px;
+        justify-content: center;
+    }
+}
+
+.about_feature {
+    flex: 1 1 auto;
+    max-width: 215px;
+    margin-bottom: 25px;
+
+    @include media ("<=1020px") {
+        max-width: 280px;
+    }
+
+    @include media ("<=600px") {
+        max-width: 320px;
+        text-align: center;
+    }
+}
+
+.about_feature_icon_container {
+    width: 150px;
+    height: 150px;  
+    position: relative;
+    margin: 0 auto;
+}   
+
+.about_feature_icon {
+    @include center;
+    width: 70%;
+    height: 70%;
+
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+
+    .about_feature-content & {
+        background-image: url(../public/images/creator.svg);
+        width: 100%;
+        height: 100%;
+    }
+
+    .about_feature-friends & {
+        background-image: url(../public/images/handshake.svg);
+    }
+
+    .about_feature-highlights & {
+        background-image: url(../public/images/spotlight.svg);
+    }
+
+    .about_feature-moment & {
+        background-image: url(../public/images/stopwatch.svg);
+        width: 65%;
+        height: 65%;
+    }
+}
+
+.about_feature_title {
+    font-size: 18px;
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.about_get-started {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.about_get-started_header {
+    margin-bottom: 20px;
+    h2 {
+        font-size: 18px;
+        font-weight: 600;
+        text-align: center;
+    }
+}
+
+
+

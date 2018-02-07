@@ -74,22 +74,6 @@
     margin-right: 12px;
 }
 
-a.contact_form_submit {
-    font-weight: 300;
-    text-align: center;
-    display: inline-block;
-    background: $primary-color;
-    color: #fff;
-    padding: 18px 23px;
-    border-radius: 10px;
-    box-shadow: 0 5px 0 $company-drop-shadow;
-
-    &:hover {
-        color: #fff;
-        background: $light-primary-color;
-    }
-}
-
 .contact_direct {
     background: $company-light-background;
     padding: 35px 50px;

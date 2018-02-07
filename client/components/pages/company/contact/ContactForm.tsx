@@ -108,7 +108,7 @@ class ContactForm extends React.Component<Props, ComponentState> {
                                 Please fill out all required fields.
                             </span> 
                         }
-                        <a className="contact_form_submit" onClick={this.submit}>Submit</a>
+                        <a className="contact_form_submit company_button" onClick={this.submit}>Submit</a>
                     </div>
                 </form>
             </div>

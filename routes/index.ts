@@ -109,7 +109,12 @@ export default (store: Store) => {
                                 }
                             }
 
-                        }
+                        },
+                        analyticsRoute('about', cb => {
+                            import(/* webpackChunkName: 'about' */ '../client/components/pages/company/About').then(component => {
+                                return cb(null, component.default)
+                            })
+                        })
                     ]
                 },
                 {
