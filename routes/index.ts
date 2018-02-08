@@ -112,6 +112,13 @@ export default (store: Store) => {
                         },
                         {
                             path: 'about',
+                            onEnter: function(nextState: any, replace: any) {
+                                // Temporary disabling in production
+                                if (AppModel.get(store.getState(), 'environment') === 'production') {
+                                    replace('/')
+                                    return
+                                }
+                            },
                             indexRoute: analyticsRoute(undefined, cb => {
                                 import(/* webpackChunkName: 'about' */ '../client/components/pages/company/About').then(component => {
                                     return cb(null, component.default)
@@ -119,7 +126,7 @@ export default (store: Store) => {
                             }),
                             childRoutes: [
                                 analyticsRoute('creators/youtube', cb => {
-                                    import(/* webpackChunkName: 'about' */ '../client/components/pages/company/creators/Youtube').then(component => {
+                                    import('../client/components/pages/company/creators/Youtube').then(component => {
                                         return cb(null, component.default)
                                     })
                                 })
