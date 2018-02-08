@@ -66,35 +66,35 @@ class About extends React.Component {
                                     YouTube Videos
                                 </div>
                             </Link>
-                            <div className="about_platform about_platform-twitch">
+                            <Link className="about_platform about_platform-twitch" to="/company/about/creators/twitch">
                                 <div className="about_platform_icon_container">
                                     <div className="about_platform_icon" />
                                 </div>
                                 <div className="about_platform_text">
                                     Twitch/<wbr />Livestream
                                 </div>
-                            </div>
-                            <div className="about_platform about_platform-snapchat">
+                            </Link>
+                            <Link className="about_platform about_platform-snapchat" to="/company/about/creators/snapchat">
                                 <div className="about_platform_icon_container">
                                     <div className="about_platform_icon" />
                                 </div>
                                 <div className="about_platform_text">
                                 Snapchat Stories
                                 </div>
-                            </div>
-                            <div className="about_platform about_platform-instagram">
+                            </Link>
+                            <Link className="about_platform about_platform-instagram" to="/company/about/creators/instagram">
                                 <div className="about_platform_icon_container">
                                     <div className="about_platform_icon" />
                                 </div>
                                 <div className="about_platform_text">
                                     Instagram Stories
                                 </div>
-                            </div>
+                            </Link>
                         </div>
                     </div>
                 </div>
                 <div className="about_partners">
-                    <a>Looking to partner with Nextbeat?</a>
+                    <Link to="/company/about/brands">Looking to partner with Nextbeat?</Link>
                 </div>
             </div>
         )

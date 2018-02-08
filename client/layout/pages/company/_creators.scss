@@ -43,19 +43,25 @@
     background-position: center;
 
     .creators-youtube & {
-        background-image: url(../public/images/platforms/youtube_white.svg)
+        background-image: url(../public/images/platforms/youtube_white.svg);
     }
 
     .creators-twitch & {
-        background-image: url(../public/images/platforms/twitch_white.svg)
+        background-image: url(../public/images/platforms/twitch_white.svg);
+        width: 75%;
+        height: 75%;
     }
 
     .creators-snapchat & {
-        background-image: url(../public/images/platforms/snapchat_white.svg)
+        background-image: url(../public/images/platforms/snapchat_white.svg);
+        width: 85%;
+        height: 85%;
     }
 
     .creators-instagram & {
-        background-image: url(../public/images/platforms/instagram_white.svg)
+        background-image: url(../public/images/platforms/instagram_white.svg);
+        width: 75%;
+        height: 75%;
     }
 }
 

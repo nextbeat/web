@@ -129,7 +129,27 @@ export default (store: Store) => {
                                     import('../client/components/pages/company/creators/Youtube').then(component => {
                                         return cb(null, component.default)
                                     })
-                                })
+                                }),
+                                analyticsRoute('creators/twitch', cb => {
+                                    import('../client/components/pages/company/creators/Twitch').then(component => {
+                                        return cb(null, component.default)
+                                    })
+                                }),
+                                analyticsRoute('creators/snapchat', cb => {
+                                    import('../client/components/pages/company/creators/Snapchat').then(component => {
+                                        return cb(null, component.default)
+                                    })
+                                }),
+                                analyticsRoute('creators/instagram', cb => {
+                                    import('../client/components/pages/company/creators/Instagram').then(component => {
+                                        return cb(null, component.default)
+                                    })
+                                }),
+                                analyticsRoute('brands', cb => {
+                                    import('../client/components/pages/company/AboutBrands').then(component => {
+                                        return cb(null, component.default)
+                                    })
+                                }),
                             ]
                         }
                         
