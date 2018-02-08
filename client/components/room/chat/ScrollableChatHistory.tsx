@@ -15,6 +15,7 @@ import { loadComments, resendComment, selectMediaItem } from '@actions/room'
 import { promptChatActionsForUser, closeDetailSection, searchChat } from '@actions/pages/room'
 import App from '@models/state/app'
 import Room, { FetchDirection } from '@models/state/room'
+import RoomPage, { DetailSection } from '@models/state/pages/room'
 import Comment from '@models/entities/comment'
 import TemporaryComment from '@models/entities/temporary/comment'
 import { State, DispatchProps } from '@types'
@@ -42,6 +43,8 @@ interface ConnectProps {
     selectedComment: number
 
     activeDropdowns: Set<string>
+
+    selectedDetailSection: DetailSection | null
 }
 
 type Props = OwnProps & ConnectProps & DispatchProps & ScrollComponentProps
@@ -50,6 +53,8 @@ interface ChatState {
     inMessageArchive: boolean
     hasUnseenLiveMessages: boolean
     inScrollToCommentWindow: boolean
+
+    shouldScrollToBottomOnSelectingChatSection: boolean
 }
 
 function scrollComponentId(props: Props) {
@@ -83,7 +88,8 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
         this.state = {
             inMessageArchive: false,
             hasUnseenLiveMessages: false,
-            inScrollToCommentWindow: false
+            inScrollToCommentWindow: false,
+            shouldScrollToBottomOnSelectingChatSection: false
         }
     }
 
@@ -127,6 +133,14 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
             } else if (this.props.commentsFetchType === 'around' || this.props.commentsFetchType === 'mostRecent') {
                 this.props.scrollToBottom()
                 this.props.setScrollState()
+
+                if (this.props.selectedDetailSection && this.props.selectedDetailSection !== 'chat') {
+                    // If the chat isn't selected initially (e.g. after a room is closed),
+                    // then the chat element will have 0 height (as it is not displayed),
+                    // and scrollToBottom() will do nothing. We set a flag to scroll to 
+                    // bottom when the user first switches to the chat section.
+                    this.setState({ shouldScrollToBottomOnSelectingChatSection: true })
+                }
 
                 // Ugly hack. Because the chat_compose element varies in height
                 // depending on whether or not there are chat tags, the previous
@@ -174,6 +188,17 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
                 this.props.scrollToElementWithId(commentId, 250)
                 window.setTimeout(() => { this.setState({ inScrollToCommentWindow: false })}, 300);
             })
+        }
+
+        if (prevProps.selectedDetailSection !== 'chat' && this.props.selectedDetailSection === 'chat') {
+            if (this.state.shouldScrollToBottomOnSelectingChatSection) {
+                this.props.scrollToBottom()
+                this.props.setScrollState()
+
+                this.setState({
+                    shouldScrollToBottomOnSelectingChatSection: false
+                })
+            }
         }
                 
     }
@@ -349,10 +374,11 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
         commentsFetching: Room.get(state, id, 'commentsFetching'),
         commentsFetchType: Room.get(state, id, 'commentsFetchType'),
         hasReachedLatestComment: Room.get(state, id, 'hasReachedLatestComment'),
-
         selectedComment: Room.get(state, id, 'selectedComment'),
 
-        activeDropdowns: App.get(state, 'activeDropdowns', Set<string>())
+        activeDropdowns: App.get(state, 'activeDropdowns', Set<string>()),
+
+        selectedDetailSection: RoomPage.get(state, 'selectedDetailSection') || null
     }
 }
 
