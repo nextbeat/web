@@ -98,7 +98,7 @@
 
 .activity-item_thumb {
     height: 50px;
-    width: 50px * 4 / 3;
+    flex: 0 0 (50px * 4 / 3);
 
     overflow: hidden;
     background-color: #ccc;
