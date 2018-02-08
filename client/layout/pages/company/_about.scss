@@ -188,10 +188,15 @@
     justify-content: space-between;
     margin: 0 auto;
     max-width: 515px;
+
+    a, a:visited {
+        color: $text-color;
+    }
 }
 
 .about_platform {
     max-width: 80px;
+    display: block;
 }
 
 .about_platform_icon_container {

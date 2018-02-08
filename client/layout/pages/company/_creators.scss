@@ -1,3 +1,10 @@
+.creators {
+    line-height: 1.4;
+    font-size: 15px;
+    font-weight: 300;
+    margin-bottom: 50px;
+}
+
 .creators_header {
     background: #db5430;
     width: 100%;
@@ -14,11 +21,83 @@
 
 .creators_title {
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 500;
+    letter-spacing: 0.03em;
     color: #fff;
 }
 
+.creators_icon_container {
+    width: 55px;
+    height: 55px;
+    position: relative;
+    margin-right: 12px;
+}
+
 .creators_icon {
+    @include center;
+    width: 100%;
+    height: 100%;
+
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+
+    .creators-youtube & {
+        background-image: url(../public/images/platforms/youtube_white.svg)
+    }
+
+    .creators-twitch & {
+        background-image: url(../public/images/platforms/twitch_white.svg)
+    }
+
+    .creators-snapchat & {
+        background-image: url(../public/images/platforms/snapchat_white.svg)
+    }
+
+    .creators-instagram & {
+        background-image: url(../public/images/platforms/instagram_white.svg)
+    }
+}
+
+.creators_content {
+    margin: 0 auto;
+    max-width: 655px;
+    padding: 0 20px;
+}
+
+.creators_main {
+    margin-top: 45px;
+}
+
+.creators_section {
+    margin-bottom: 45px;
+
+    h2 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    p {
+        margin-bottom: 12px;
+    }
+
+    aside {
+        background: #e4e7ed;
+        padding: 13px;
+        font-size: 14px;
+        color: rgba(#333, 0.8);
+        margin-top: 17px;
+    }
+
+    a {
+        font-weight: 500;
+    }
+}
+
+.creators_separator {
     width: 60px;
-    height: 60px;
+    border-top: 2px solid $primary-color;
+    height: 40px;
+    margin: 0 auto;
 }

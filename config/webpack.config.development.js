@@ -3,7 +3,7 @@ const merge                 = require('webpack-merge');
 const config                = require('./webpack.config.base');
 const ExtractTextPlugin     = require('extract-text-webpack-plugin');
 
-module.exports = merge(config, {
+module.exports = merge.smart(config, {
     cache: true,
     output: {
         filename: 'js/bundle.js',

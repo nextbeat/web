@@ -6,7 +6,7 @@ const ManifestPlugin        = require('webpack-manifest-plugin');
 
 const nodeEnv = process.env.NODE_ENV || 'development';
 
-module.exports = merge(config, {
+module.exports = merge.smart(config, {
     output: {
         filename: 'js/bundle.[chunkhash].js',
         chunkFilename: 'js/[id].bundle.[chunkhash].js',

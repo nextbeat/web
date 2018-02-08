@@ -58,14 +58,14 @@ class About extends React.Component {
                             <p>We'd love to walk you through what Nextbeat can do for you! What kind of video content do you create?</p>
                         </div>
                         <div className="about_platforms">
-                            <div className="about_platform about_platform-youtube">
+                            <Link className="about_platform about_platform-youtube" to="/company/about/creators/youtube">
                                 <div className="about_platform_icon_container">
                                     <div className="about_platform_icon" />
                                 </div>
                                 <div className="about_platform_text">
                                     YouTube Videos
                                 </div>
-                            </div>
+                            </Link>
                             <div className="about_platform about_platform-twitch">
                                 <div className="about_platform_icon_container">
                                     <div className="about_platform_icon" />

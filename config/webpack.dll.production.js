@@ -4,7 +4,7 @@ const config                = require('./webpack.dll.base');
 
 const nodeEnv = process.env.NODE_ENV || 'development';
 
-module.exports = merge(config, {
+module.exports = merge.smart(config, {
     output: {
         filename: '[name].[chunkhash].dll.js'
     },

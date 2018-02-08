@@ -2,12 +2,10 @@ import * as React from 'react'
 import { Link } from 'react-router'
 import Creator from './Creator'
 
-import icon from '@images/platforms/youtube.svg';
-
 class Youtube extends React.Component {
     render() {
         return (
-            <Creator platform="youtube" title="YouTube Creators" icon={icon}>
+            <Creator platform="youtube" title="YouTube Creators">
                 <div className="creators_main">
                     <section className="creators_section">
                         <h2>Why use Nextbeat?</h2>
