@@ -168,9 +168,9 @@ class RoomPageComponent extends React.Component<Props> {
     }
 
     selectDetailSectionOnLoad() {
-        const { isClosed, dispatch } = this.props
-        const detailSection = isClosed ? 'activity' : 'chat'
-        dispatch(selectDetailSection(detailSection))
+        // const { isClosed, dispatch } = this.props
+        // const detailSection = isClosed ? 'activity' : 'chat'
+        // dispatch(selectDetailSection(detailSection))
     }   
 
     // RENDER
