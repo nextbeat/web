@@ -1,6 +1,6 @@
 .splash-topbar {
     width: 100%;
-    height: 160px;
+    height: $splash-topbar-height;
     background: $primary-color;
     padding: 15px 25px;
     flex: none;
@@ -11,7 +11,7 @@
     transition: transform 300ms;
 
     &.collapsed {
-        transform: translateY(-95px);
+        transform: translateY(-$splash-topbar-collapsed-offset);
 
         .svg-icon-small-logo.svg-icon-small-logo-splash-topbar {
             opacity: 0;
@@ -27,7 +27,7 @@
         }
 
         .splash-topbar_inner {
-            transform: translateY(95px);
+            transform: translateY($splash-topbar-collapsed-offset);
         }
     }
 }
@@ -49,11 +49,9 @@
 }
 
 .svg-icon-small-logo.svg-icon-small-logo-splash-topbar {
-    margin: 0 auto;
-    display: block;
+    @include center;
     width: 550px;
-    margin-top: -180px;
-    opacity: 0.25;
+    opacity: 0.2;
     pointer-events: none;
 
     transition: opacity 300ms, transform 300ms;
@@ -109,10 +107,25 @@
     font-size: 36px;
     color: #fff;
     font-weight: 300;
-    padding: 0 20px;
-    transform: translateY(15px);
+    transform: translateY(8px);
 
     transition: opacity 300ms, transform 300ms;
+}
+
+.splash-topbar_text_about {
+    font-size: 16px;
+    letter-spacing: 0.02em;
+    margin-top: 10px;
+
+    a, a:hover, a:visited {
+        color: #fff;
+        text-decoration: underline;
+        font-weight: 300;
+    }
+
+    a:hover {
+        color: rgba(#fff, 0.8);
+    }
 }
 
 .splash-topbar_search-container {
@@ -198,6 +211,15 @@ input.splash-topbar_search-bar {
     }
 
     @include media('<=small') {
+        height: $splash-topbar-height-small;
+
+        &.collapsed {
+            transform: translateY(-$splash-topbar-collapsed-offset-small);
+            .splash-topbar_inner {
+                transform: translateY($splash-topbar-collapsed-offset-small);
+            }
+        }
+
         .splash-topbar_signup {
             display: none;
         }
@@ -218,7 +240,12 @@ input.splash-topbar_search-bar {
         }
 
         .splash-topbar_text {
-            font-size: 28px;            
+            transform: translateY(10px);
+            font-size: 28px;
+        }
+
+        .svg-icon-small-logo.svg-icon-small-logo-splash-topbar {
+            width: 400px;
         }
     }
 }

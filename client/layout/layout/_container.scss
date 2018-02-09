@@ -32,12 +32,23 @@
     transform: none;
 
     &.splash {
-        margin-top: 160px;
+        margin-top: $splash-topbar-height;
         transition: transform 300ms;
-        bottom: -95px;
+        bottom: -$splash-topbar-collapsed-offset;
+
+        @include media("<=small") {
+            margin-top: $splash-topbar-height-small;
+            bottom: -$splash-topbar-collapsed-offset-small;
+        }
     }
 
     &.splash-collapsed {
-        transform: translateY(-95px);
+        transform: translateY(-$splash-topbar-collapsed-offset);
+
+        @include media("<=small") {
+            transform: translateY(-$splash-topbar-collapsed-offset-small);
+        }
     }
+
+
 }

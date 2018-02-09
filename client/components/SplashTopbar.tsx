@@ -109,7 +109,8 @@ class SplashTopbar extends React.Component<Props & DispatchProps> {
                         </div>
                     </div>
                     <div className="splash-topbar_text">
-                        Do anything with an audience.
+                        <div className="splash-topbar_text_tagline">Never miss a beat.</div>
+                        <div className="splash-topbar_text_about">New to Nextbeat? <Link to="/company/about">Learn about us!</Link></div>
                     </div>
                 </div>
 

@@ -28,3 +28,10 @@ $sidebar-width: 260px;
 $detail-bar-width: 300px;
 $topbar-height: 60px;
 
+$splash-topbar-height: 160px;
+$splash-topbar-collapsed-height: 65px;
+$splash-topbar-collapsed-offset: $splash-topbar-height - $splash-topbar-collapsed-height;
+
+$splash-topbar-height-small: 160px;
+$splash-topbar-collapsed-offset-small: $splash-topbar-height-small - $splash-topbar-collapsed-height;
+

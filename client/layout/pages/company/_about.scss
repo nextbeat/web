@@ -38,6 +38,7 @@
 }
 
 .about_header_triangle {
+    display: none; // disable
     @include triangle-background(rgba(#000, 0.05), 4%, 8%);
 }
 
