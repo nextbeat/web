@@ -49,7 +49,7 @@ class About extends React.Component {
                     <div className="about_get-started_header">
                         <h2>Ready to get started?</h2>
                     </div>
-                    <Link to="/" className="about_get-started_button company_button">Check out our current featured room!</Link>
+                    <Link to="/r/featured" className="about_get-started_button company_button">Check out our current featured room!</Link>
                 </div>
                 <div className="about_creators">
                     <div className="about_creators_content">
