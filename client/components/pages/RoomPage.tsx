@@ -16,6 +16,7 @@ import StackActions from '@components/room/page/StackActions'
 import Spinner from '@components/shared/Spinner'
 import PageError from '@components/shared/PageError'
 
+import { gaEvent } from '@actions/ga'
 import { loadRoomPage, clearRoomPage, closeDetailSection, selectDetailSection } from '@actions/pages/room'
 import { selectMediaItem, getRoomInfo } from '@actions/room'
 import RoomPage from '@models/state/pages/room'
@@ -176,6 +177,12 @@ class RoomPageComponent extends React.Component<Props, ComponentState> {
         if (storageAvailable('localStorage')) {
             localStorage.setItem('hideWelcomeBanner', 'true')
         }
+
+        this.props.dispatch(gaEvent({
+            category: 'onboarding',
+            action: 'click',
+            label: 'welcome-banner-dismiss'
+        }))
     }
 
     // SELECTION

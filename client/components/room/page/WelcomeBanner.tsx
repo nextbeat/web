@@ -6,8 +6,9 @@ import * as CSSTransition from 'react-transition-group/CSSTransition'
 
 import Icon from '@components/shared/Icon'
 
+import { gaEvent } from '@actions/ga'
 import RoomPage from '@models/state/pages/room'
-import { State } from '@types'
+import { State, DispatchProps } from '@types'
 import { storageAvailable } from '@utils'
 
 interface ConnectProps {
@@ -19,14 +20,24 @@ interface OwnProps {
     handleClose: (e: any) => void
 }
 
-type Props = ConnectProps & OwnProps
+type Props = ConnectProps & OwnProps & DispatchProps
 
 class WelcomeBanner extends React.Component<Props> {
 
     constructor(props: Props) {
         super(props)
 
+        this.handleLearnMoreClick = this.handleLearnMoreClick.bind(this)
         this.renderText = this.renderText.bind(this)
+    }
+
+    handleLearnMoreClick() {
+        this.props.dispatch(gaEvent({
+            category: 'onboarding',
+            action: 'click',
+            label: 'welcome-banner-learn-more'
+        }))
+        return true;
     }
 
     // Render
@@ -48,7 +59,7 @@ class WelcomeBanner extends React.Component<Props> {
                     <b>Welcome to Nextbeat!</b> { this.renderText() }
                 </div>
                 <div className="room_welcome-banner_buttons">
-                    <Link className="room_welcome-banner_button room_welcome-banner_button-about" to="/company/about" target="_blank">
+                    <Link className="room_welcome-banner_button room_welcome-banner_button-about" to="/company/about" target="_blank" onClick={this.handleLearnMoreClick}>
                         LEARN MORE
                     </Link>
                     <div className="room_welcome-banner_close" onClick={handleClose} >
