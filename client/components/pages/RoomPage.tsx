@@ -214,9 +214,10 @@ class RoomPageComponent extends React.Component<Props, ComponentState> {
     }
 
     selectDetailSectionOnLoad() {
-        // const { isClosed, dispatch } = this.props
-        // const detailSection = isClosed ? 'activity' : 'chat'
-        // dispatch(selectDetailSection(detailSection))
+        const { isClosed, dispatch } = this.props
+        const detailSection = isClosed ? 'activity' : 'chat'
+        dispatch(selectDetailSection(detailSection))
+        dispatch(closeDetailSection()) // prevents section element from appearing on small/medium resolutions
     }   
 
     // RENDER
