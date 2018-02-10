@@ -8,7 +8,6 @@ import * as CSSTransition from 'react-transition-group/CSSTransition'
 import Compose from './Compose'
 import ChatSearchResults from './ChatSearchResults'
 import UserActions from './UserActions'
-import WelcomeBanner from './WelcomeBanner'
 import ScrollableChatHistory from '@components/room/chat/ScrollableChatHistory'
 import Spinner from '@components/shared/Spinner'
 import PinnedChatItem from '@components/room/chat/PinnedChatItem'
@@ -75,7 +74,6 @@ class Chat extends React.Component<Props> {
         return (
         <div className="chat" onWheel={debounce(this.handleOnWheel, 200)} style={{ display: (display ? "flex" : "none") }}>
             <UserActions />
-            <WelcomeBanner username={authorUsername} closed={isClosed} />
             { hasPinnedComment && 
                 <PinnedChatItem />
             }

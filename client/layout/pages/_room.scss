@@ -9,6 +9,16 @@
     }
 }
 
+.room_transition_group {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.room_inner_container {
+    flex: 1 0;
+}
+
 .room_inner {
     position: relative;
     flex: 1 0;
@@ -20,3 +30,4 @@
 @import 'room/detail-bar';
 @import 'room/player';
 @import 'room/shop';
+@import 'room/welcome';

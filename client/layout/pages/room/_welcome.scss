@@ -1,0 +1,130 @@
+.room_welcome-banner {
+    display: flex;
+    align-items: center;
+    background: #1fb4be;
+    border-bottom: solid 4px #0f878f;
+    padding: 12px 20px;
+}
+
+.room_welcome-banner_text {
+    line-height: 1.5;
+    font-size: 14px;
+    font-weight: 300;
+    color: #fff;
+    flex: 1 0;
+
+    a, a:visited, a:hover {
+        color: #fff;
+        font-weight: 300;
+        text-decoration: underline;
+    }
+
+    a:hover {
+        opacity: 0.8;
+    }
+}
+
+.room_welcome-banner_buttons {
+    margin-left: 30px;
+    width: 160px;
+    flex: 0 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+a.room_welcome-banner_button {
+    color: $secondary-color;
+    background: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px 15px;
+    border-radius: 7px;
+    box-shadow: 0 4px 0 rgba(#0f878f, 0.5);
+
+    &:visited {
+        color: $secondary-color;
+    }
+
+    &:hover {
+        color: $light-secondary-color;
+    }
+}
+
+a.room_welcome-banner_button-dismiss {
+    background: #0f878f;
+    color: #fff;
+    display: none;
+
+    &:hover {
+        color: $light-secondary-color;
+    }
+}
+
+.room_welcome-banner_close {
+    width: 27px;
+    height: 27px;
+    cursor: pointer;
+
+    .svg-icon {
+        fill: #fff;
+        width: 100%;
+        height: 100%;
+    }
+
+    &:hover {
+        .svg-icon {
+            fill: mix($secondary-color, #fff, 20%);
+        }
+    }
+}
+
+@include media("<=medium") {
+    .room_welcome-banner {
+        flex-direction: column;
+    }
+
+    .room_welcome-banner_buttons {
+        margin: 10px 0 0 0;
+        display: inline-flex;
+        width: auto;
+    }
+
+    a.room_welcome-banner_button-dismiss {
+        display: block;
+    }
+
+    .room_welcome-banner_button-about {
+        margin-right: 10px;
+    }
+
+    .room_welcome-banner_close {
+        display: none;
+    }
+}
+
+// Transitions
+
+.room_welcome-banner-enter {
+    opacity: 0.01;
+
+    &.room_welcome-banner-enter-active {
+        opacity: 1;
+        transition: opacity 0ms;
+    }
+}
+
+.room_welcome-banner-exit {
+    opacity: 1;
+
+    &.room_welcome-banner-exit-active {
+        opacity: 0.01;
+        transition: opacity 150ms;
+    }
+}
+
+
+
+
+
+

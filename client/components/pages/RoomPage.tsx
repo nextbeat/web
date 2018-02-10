@@ -4,7 +4,12 @@ import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { List } from 'immutable'
+import * as TransitionGroup from 'react-transition-group/TransitionGroup'
+import Transition from 'react-transition-group/Transition'
+import * as CSSTransition from 'react-transition-group/CSSTransition'
 
+
+import WelcomeBanner from '@components/room/page/WelcomeBanner'
 import RoomMain from '@components/room/page/RoomMain'
 import DetailBar from '@components/room/page/DetailBar'
 import StackActions from '@components/room/page/StackActions'
@@ -17,7 +22,7 @@ import RoomPage from '@models/state/pages/room'
 import Room from '@models/state/room'
 import MediaItem from '@models/entities/mediaItem'
 import User from '@models/entities/user'
-import { baseUrl, getStorageItem } from '@utils'
+import { baseUrl, getStorageItem, storageAvailable } from '@utils'
 import { Store, DispatchProps, State, RouteProps, staticImplements, ServerRenderingComponent } from '@types'
 
 interface Params {
@@ -45,8 +50,12 @@ interface ConnectProps {
 
 type Props = ConnectProps & DispatchProps & RouteProps<Params>
 
+interface ComponentState {
+    hideWelcomeBanner: boolean
+}
+
 @staticImplements<ServerRenderingComponent>()
-class RoomPageComponent extends React.Component<Props> {
+class RoomPageComponent extends React.Component<Props, ComponentState> {
 
     static fetchData(store: Store, params: Params) {
         return new Promise((resolve, reject) => {
@@ -78,7 +87,12 @@ class RoomPageComponent extends React.Component<Props> {
 
         this.loadRoom = this.loadRoom.bind(this)
         this.selectMediaItemOnLoad = this.selectMediaItemOnLoad.bind(this)
+        this.handleWelcomeBannerClose = this.handleWelcomeBannerClose.bind(this);
         this.renderDocumentHead = this.renderDocumentHead.bind(this);
+
+        this.state = {
+            hideWelcomeBanner: true
+        }
     }
 
     // LIFECYCLE
@@ -102,10 +116,21 @@ class RoomPageComponent extends React.Component<Props> {
             this.selectMediaItemOnLoad()
             this.selectDetailSectionOnLoad()
         }
+
+        if (storageAvailable('localStorage')) {
+            this.setState({
+                hideWelcomeBanner: JSON.parse(localStorage.getItem('hideWelcomeBanner') || 'false') 
+            })
+        }
     }
 
     componentWillUnmount() {
         this.props.dispatch(clearRoomPage());
+
+        // Prevent banner from being seen again
+        if (storageAvailable('localStorage')) {
+            localStorage.setItem('hideWelcomeBanner', 'true')
+        }
     }
 
     componentDidUpdate(prevProps: Props) {
@@ -136,6 +161,20 @@ class RoomPageComponent extends React.Component<Props> {
         if (prevIndex > 0 && currIndex > 0 && prevIndex !== currIndex && mediaItemIdAtParamIndex ) {
             console.log(prevIndex, currIndex, mediaItemIdAtParamIndex)
             dispatch(selectMediaItem(roomId, mediaItemIdAtParamIndex, { shouldUpdateHistory: false }))
+        }
+    }
+
+    // ACTIONS
+
+    handleWelcomeBannerClose(e: React.MouseEvent<HTMLElement>) {
+        e.preventDefault()
+
+        this.setState({
+            hideWelcomeBanner: true
+        })
+
+        if (storageAvailable('localStorage')) {
+            localStorage.setItem('hideWelcomeBanner', 'true')
         }
     }
 
@@ -222,6 +261,8 @@ class RoomPageComponent extends React.Component<Props> {
 
     render() {
         const { isLoadedDeep, isFetchingDeep, hasErrorDeep } = this.props 
+        const { hideWelcomeBanner } = this.state
+
         return (
         <section className="room">
             {this.renderDocumentHead()}
@@ -229,10 +270,19 @@ class RoomPageComponent extends React.Component<Props> {
             { isFetchingDeep && <Spinner styles={["grey", "large"]} /> }
             { hasErrorDeep && <PageError>The room could not be found, or it has been deleted by its owner.</PageError> }
             { isLoadedDeep && 
-                <div className="room_inner"> 
-                    <RoomMain />
-                    <DetailBar />
-                </div>
+                <TransitionGroup className="room_transition_group">
+                    { !hideWelcomeBanner && 
+                        <CSSTransition classNames="room_welcome-banner" timeout={{ enter: 0, exit: 150 }}>
+                            <WelcomeBanner handleClose={this.handleWelcomeBannerClose} />
+                        </CSSTransition>
+                    }
+                    <Transition timeout={0}> 
+                        <div className="room_inner">
+                            <RoomMain />
+                            <DetailBar />
+                        </div>
+                    </Transition>
+                </TransitionGroup>
             }
         </section>
         );
