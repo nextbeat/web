@@ -23,6 +23,10 @@
     margin-bottom: 15px;
     padding: 0 15px 10px 15px;
     border-bottom: 1px solid #e6e6e6;
+
+    &.sidebar_section-last {
+        border: 0;
+    }
 }
 
 
@@ -119,6 +123,22 @@ a.sidebar_item {
         &:last-child {
             margin: 0;
         }
+    }
+}
+
+// Company
+
+.sidebar_company {
+    a, a:visited, a:hover {
+        display: block;
+        color: #666;
+        font-weight: 500;
+        font-size: 13px;
+        margin-bottom: 12px;
+    }
+
+    a:hover {
+        color: #888;
     }
 }
 

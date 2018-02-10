@@ -117,6 +117,12 @@ class Sidebar extends React.Component<AllProps> {
                         {subscriptions.size === 0 && <div className="sidebar_no-content">You have no subscriptions.</div>}
                         {subscriptions.map(sub => this.renderSubscription(sub))}
                     </div>
+                    <div className="sidebar_company sidebar_section sidebar_section-last">
+                        <Link to="/company/about">About</Link>
+                        <a href="https://medium.com/nextbeat">Blog</a>
+                        <Link to="/company/contact">Contact</Link>
+                        <Link to="/company/legal">Legal</Link>
+                    </div>
                 </div>
                 }
             </div>

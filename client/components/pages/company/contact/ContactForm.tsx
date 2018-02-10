@@ -86,6 +86,7 @@ class ContactForm extends React.Component<Props, ComponentState> {
                             <label htmlFor="contact_form_email">Email <i>required</i></label>
                             <input type="text" id="contact_form_email" name="email" onChange={this.handleInputChange} />
                         </div>
+                        { /*
                         <div className="contact_form_field">
                             <label htmlFor="contact_form_phone">Phone</label>
                             <input type="text" id="contact_form_phone" name="phone" onChange={this.handleInputChange} />
@@ -94,6 +95,7 @@ class ContactForm extends React.Component<Props, ComponentState> {
                             <label htmlFor="contact_form_company">Company</label>
                             <input type="text" id="contact_form_company" name="company" onChange={this.handleInputChange} />
                         </div>
+                        */ }
                     </div>
                     <label htmlFor="contact_form_message">Message <i>required</i></label>
                     <textarea id="contact_form_message" name="message" onChange={this.handleInputChange} />
