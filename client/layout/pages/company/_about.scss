@@ -194,11 +194,19 @@
     a, a:visited {
         color: $text-color;
     }
+
+    @include media ("<=small") {
+        max-width: 200px;
+    }
 }
 
 .about_platform {
     max-width: 80px;
     display: block;
+
+    @include media ("<=small") {
+        margin-bottom: 10px;
+    }
 }
 
 .about_platform_icon_container {
