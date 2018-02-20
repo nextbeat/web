@@ -90,26 +90,11 @@ export default (store: Store) => {
                                 })
                             ]
                         },
-                        {
-                            path: 'advertise',
-                            getComponent: (nextState: any, cb: any) => { 
-                                import(/* webpackChunkName: 'advertising' */ '../client/components/pages/company/Advertising').then(component => {
-                                    return cb(null, component.default)
-                                })
-                            },
-                            onEnter: function(nextState: any, replace: any) {
-                                 // Disable brand-facing pages in production until ready
-                                if (AppModel.get(store.getState(), 'environment') === 'production') {
-                                    replace('/')
-                                    return
-                                }
-                                
-                                if (typeof window !== 'undefined') { 
-                                    store.dispatch(gaPage())
-                                }
-                            }
-
-                        },
+                        analyticsRoute('advertise', cb => {
+                            import(/* webpackChunkName: 'advertising' */ '../client/components/pages/company/Advertising').then(component => {
+                                return cb(null, component.default)
+                            })
+                        }),
                         {
                             path: 'about',
                             indexRoute: analyticsRoute(undefined, cb => {
