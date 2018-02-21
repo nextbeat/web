@@ -240,14 +240,16 @@ class ActivityItem extends React.Component<Props, ComponentState> {
                     <div className="activity-item_main">
                         <div className="activity-item_thumb" style={{ backgroundImage: `url(${url})`}} />
                         <div className="activity-item_content">
-                            <div className="activity-item_description">
-                                {authorUsername} added {typeString}. 
-                                <span className="activity-item_timestamp">{format(mediaItem.get('user_created_at'), 'h:mm a')}</span>
-                            </div>
                             { !!mediaItem.get('title') &&
                                 <div className="activity-item_title">{mediaItem.get('title')}</div> 
                             }
                             { referencedComment && this.renderReferencedComment() }
+                            { !mediaItem.get('title') && !referencedComment &&
+                                <div className="activity-item_no-title">
+                                    {authorUsername} added {typeString}. 
+                                </div>
+                            }
+                            <div className="activity-item_timestamp">{format(mediaItem.get('user_created_at'), 'h:mm a')}</div>
                         </div>
                     </div>
                     

@@ -2,6 +2,10 @@
     padding: 10px 0 12px 0;
     margin: 0 15px;
     border-bottom: 1px solid #e2e2e2;
+
+    @include media(">medium") {
+        display: none;
+    }
 }
 
 .activity_info_top {
