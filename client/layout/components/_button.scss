@@ -129,20 +129,16 @@
         border: none;
         padding: 0 6px;
         color: $button-color;
-        font-size: 21px;
-        font-weight: 500;
+        font-size: 16px;
+        font-weight: 600;
     }
 
     .svg-icon-bookmark, .svg-icon-bookmark-outline {
-        height: 26px;
-        width: 26px;
+        height: 24px;
+        width: 24px;
         fill: $button-color;
         margin-top: 3px;
         position: static;
-
-        // &:hover {
-        //     fill: $primary-color;
-        // }
     }
 
     .btn-bookmark_text {

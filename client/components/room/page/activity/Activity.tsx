@@ -2,14 +2,16 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { List, Set } from 'immutable'
 
+import ScrollComponent, { ScrollComponentProps } from '@components/utils/ScrollComponent'
+import ActivityItem from './ActivityItem'
+import ActivityInfo from './ActivityInfo'
+import Spinner from '@components/shared/Spinner'
+import Icon from '@components/shared/Icon'
+
+import { selectMediaItem } from '@actions/room'
 import RoomPage from '@models/state/pages/room'
 import Room from '@models/state/room'
 import App from '@models/state/app'
-import { selectMediaItem } from '@actions/room'
-import ScrollComponent, { ScrollComponentProps } from '@components/utils/ScrollComponent'
-import ActivityItem from './ActivityItem'
-import Spinner from '@components/shared/Spinner'
-import Icon from '@components/shared/Icon'
 import MediaItem from '@models/entities/mediaItem'
 import { State, DispatchProps } from '@types'
 
@@ -61,7 +63,7 @@ class Activity extends React.Component<Props, ActivityState> {
         }
         
         if (prevProps.selectedMediaItem.get('id') !== this.props.selectedMediaItem.get('id')) {
-            const [ selected, activity ] = [ $('.activity-item.selected'), $('#activity-inner') ];
+            const [ selected, activity, roomInner ] = [ $('.activity-item.selected'), $('#activity-inner'), $('#room_inner') ];
             let activityScrollTop = activity.scrollTop() || 0
             let selectedOffset = selected.position().top + activityScrollTop
             let selectedOuterHeight = selected.outerHeight() || 0
@@ -77,6 +79,10 @@ class Activity extends React.Component<Props, ActivityState> {
             if (activityScrollTop > selectedOffset) {
                 activity.animate({ scrollTop: selectedOffset }, 100);
             }
+
+            // scroll room_inner element to top; used for <=medium resolutions
+            console.log(roomInner.scrollTop())
+            roomInner.animate({ scrollTop: 0 }, 200)
 
             this.props.setScrollState();
         }
@@ -113,6 +119,7 @@ class Activity extends React.Component<Props, ActivityState> {
         return (
         <section className="activity" style={{ display: (display ? "flex" : "none") }}>
             <div className="activity_inner" id="activity-inner">
+                <ActivityInfo />
                 {mediaItemsFetching && <Spinner styles={["grey"]} />}
                 {mediaItems.map((mediaItem, idx) => {
                     var selected = (mediaItem.get('id') === selectedMediaItem.get('id'));

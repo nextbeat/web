@@ -243,7 +243,7 @@ class RoomPageComponent extends React.Component<Props, ComponentState> {
             { isFetchingDeep && <Spinner styles={["grey", "large"]} /> }
             { hasErrorDeep && <PageError>The room could not be found, or it has been deleted by its owner.</PageError> }
             { isLoadedDeep && 
-                <div className={`room_inner ${detailSectionClass}`}>
+                <div className={`room_inner ${detailSectionClass}`} id="room_inner">
                     <RoomMain />
                     <DetailBar />
                 </div>

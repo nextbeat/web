@@ -107,10 +107,14 @@
 
 // Style-specific
 
-.player_info-small {
+.activity_info {
+
+    .player_share_modal {
+        right: -2px;
+    }
 
     .player_share_modal::after {
-        right: 15px;
+        right: 13px;
     }
 
     .player_button-share_text {

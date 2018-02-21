@@ -1,0 +1,76 @@
+.activity_info {
+    padding: 10px 0 12px 0;
+    margin: 0 15px;
+    border-bottom: 1px solid #e2e2e2;
+}
+
+.activity_info_top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    min-height: 30px;
+}
+
+.activity_info_description {
+    margin-right: 10px;
+}
+
+.activity_info_title {
+    display: inline;
+    font-size: 16px;
+    font-weight: 500;
+    margin-right: 10px;
+    line-height: 1.4;
+}
+
+.activity_info_badges {
+    display: inline-block;
+}
+
+.activity_info_button-share {
+    margin: 4px -7px 0 0;
+}
+
+.activity_info_middle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.activity_info_details {
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.activity_info_separator {
+    margin: 0 4px;
+}
+
+.activity_info_views {
+    color: #999;
+}
+
+.activity_info_button-bookmark {
+    margin-right: -4px;
+}
+
+.activity_info_bottom {
+    display: none; // disable tag display
+}
+
+.activity_info_tags {
+    width: 100%;
+    margin-top: 0;
+}
+
+a.activity_info_tag {
+    color: #aaa;
+    font-size: 12px;
+    font-weight: 300;
+    margin-right: 5px;
+
+    &:hover {
+        color: #aaa;
+        cursor: pointer;
+    }
+}
