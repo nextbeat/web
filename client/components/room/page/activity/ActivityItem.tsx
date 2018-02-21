@@ -11,7 +11,7 @@ import Room from '@models/state/room'
 import MediaItem from '@models/entities/mediaItem'
 import Comment from '@models/entities/comment'
 import { toggleDropdown, promptModal, closeModal } from '@actions/app'
-import { closeDetailSection,  deleteMediaItem, editMediaItemTitle } from '@actions/pages/room'
+import { deleteMediaItem, editMediaItemTitle } from '@actions/pages/room'
 import { selectMediaItem, goForward, goBackward } from '@actions/room'
 import { State, DispatchProps } from '@types'
 
@@ -105,7 +105,6 @@ class ActivityItem extends React.Component<Props, ComponentState> {
         const { dispatch, roomId, mediaItem } = this.props
 
         this.props.dispatch(selectMediaItem(roomId, mediaItem.get('id')))
-        this.props.dispatch(closeDetailSection())
     }
 
     handleOptionsClick(e: React.MouseEvent<HTMLElement>) {

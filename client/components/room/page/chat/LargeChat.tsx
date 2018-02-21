@@ -13,7 +13,7 @@ import Spinner from '@components/shared/Spinner'
 import Icon from '@components/shared/Icon'
 import PinnedChatItem from '@components/room/chat/PinnedChatItem'
 
-import { promptChatActionsForUser, resetChat, closeDetailSection } from '@actions/pages/room'
+import { promptChatActionsForUser, resetChat, collapseChat } from '@actions/pages/room'
 import { loadComments, sendComment, didUseChat } from '@actions/room'
 import RoomPage from '@models/state/pages/room'
 import Room from '@models/state/room'
@@ -43,7 +43,7 @@ class LargeChat extends React.Component<Props> {
     }
 
     handleDismiss() {
-        this.props.dispatch(closeDetailSection())
+        this.props.dispatch(collapseChat())
     }
 
     render() {

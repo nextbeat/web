@@ -12,7 +12,7 @@ import Spinner from '@components/shared/Spinner'
 import PageError from '@components/shared/PageError'
 
 import { gaEvent } from '@actions/ga'
-import { loadRoomPage, clearRoomPage, closeDetailSection, selectDetailSection } from '@actions/pages/room'
+import { loadRoomPage, clearRoomPage, collapseChat, selectDetailSection } from '@actions/pages/room'
 import { selectMediaItem, getRoomInfo } from '@actions/room'
 import RoomPage, { DetailSection } from '@models/state/pages/room'
 import Room from '@models/state/room'
@@ -175,14 +175,12 @@ class RoomPageComponent extends React.Component<Props, ComponentState> {
         }
 
         dispatch(selectMediaItem(roomId, id, { shouldReplaceHistory: true }))
-        dispatch(closeDetailSection())
     }
 
     selectDetailSectionOnLoad() {
         const { isClosed, dispatch } = this.props
         const detailSection = isClosed ? 'activity' : 'chat'
         dispatch(selectDetailSection(detailSection))
-        dispatch(closeDetailSection()) // prevents section element from appearing on small/medium resolutions
     }   
 
     // RENDER

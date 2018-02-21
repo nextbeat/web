@@ -13,7 +13,7 @@ import RoomPage from '@models/state/pages/room'
 import SearchResultComment from '@models/entities/searchResultComment'
 
 import { selectMediaItem, jumpToComment } from '@actions/room'
-import { hideSearchChatResults, searchChat, closeDetailSection } from '@actions/pages/room'
+import { hideSearchChatResults, searchChat, collapseChat } from '@actions/pages/room'
 import { toggleDropdown } from '@actions/app'
 import { State, DispatchProps } from '@types'
 
@@ -60,8 +60,7 @@ class ChatSearchResults extends React.Component<Props> {
     handleSelectMediaItem(mediaItemId: number) {
         const { dispatch, roomId } = this.props
         dispatch(selectMediaItem(roomId, mediaItemId));
-        // dispatch(hideSearchChatResults())
-        dispatch(closeDetailSection())
+        dispatch(collapseChat())
     }
 
     handleSelectChatOptions(chatId: string) {

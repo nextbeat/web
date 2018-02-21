@@ -6,7 +6,6 @@ import RoomPage from '@models/state/pages/room'
 import Room from '@models/state/room'
 import App from '@models/state/app'
 import { selectMediaItem } from '@actions/room'
-import { closeDetailSection } from '@actions/pages/room'
 import ScrollComponent, { ScrollComponentProps } from '@components/utils/ScrollComponent'
 import ActivityItem from './ActivityItem'
 import Spinner from '@components/shared/Spinner'
@@ -95,7 +94,6 @@ class Activity extends React.Component<Props, ActivityState> {
         const newestLiveItem = liveMediaItems.last();
         if (newestLiveItem) {
             dispatch(selectMediaItem(roomId, newestLiveItem.get('id')));
-            dispatch(closeDetailSection())
         }
 
         this.setState({

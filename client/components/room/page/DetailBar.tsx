@@ -12,7 +12,7 @@ import ActionsDropdown from './ActionsDropdown'
 import RoomPage, { DetailSection } from '@models/state/pages/room'
 import App from '@models/state/app'
 import Ad from '@models/entities/ad'
-import { selectDetailSection, closeDetailSection, logShopImpression } from '@actions/pages/room'
+import { selectDetailSection, logShopImpression } from '@actions/pages/room'
 import { toggleDropdown, promptModal } from '@actions/app'
 import { State, DispatchProps } from '@types'
 
@@ -46,7 +46,6 @@ class DetailBar extends React.Component<Props, DetailBarState> {
         this.renderBadge = this.renderBadge.bind(this)
 
         this.handleResize = this.handleResize.bind(this)
-        this.handleClose = this.handleClose.bind(this)
         this.handleVisibilityChange = this.handleVisibilityChange.bind(this)
         
         this.startNewShopImpression = this.startNewShopImpression.bind(this)
@@ -106,11 +105,6 @@ class DetailBar extends React.Component<Props, DetailBarState> {
 
     toggleDropdown() {
         this.props.dispatch(toggleDropdown('stack-actions-detail-bar'))
-    }
-
-    handleClose() {
-        this.props.dispatch(closeDetailSection())
-        this.logShopImpression()
     }
 
     // Impressions

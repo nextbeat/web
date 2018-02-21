@@ -36,7 +36,8 @@ export type RoomPageActionAll =
     ClearChatMessageAction |
     RecordViewAction |
     SelectDetailSectionAction |
-    CloseDetailSectionAction |
+    ExpandChatAction |
+    CollapseChatAction |
     RoomShopAction |
     ExpandShopSponsorAction |
     LogShopImpressionAction |
@@ -429,12 +430,21 @@ export function selectDetailSection(section: DetailSection): ThunkAction {
     }
 }
 
-export interface CloseDetailSectionAction extends GenericAction {
-    type: ActionType.CLOSE_DETAIL_SECTION
+export interface ExpandChatAction extends GenericAction {
+    type: ActionType.EXPAND_CHAT
 }
-export function closeDetailSection(): CloseDetailSectionAction {
+export function expandChat() {
     return {
-        type: ActionType.CLOSE_DETAIL_SECTION
+        type: ActionType.EXPAND_CHAT
+    }
+}
+
+export interface CollapseChatAction extends GenericAction {
+    type: ActionType.COLLAPSE_CHAT
+}
+export function collapseChat() {
+    return {
+        type: ActionType.COLLAPSE_CHAT
     }
 }
 

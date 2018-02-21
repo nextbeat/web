@@ -72,15 +72,12 @@ function state(state = Map(), action: Action) {
         return state.set('splashTopbarCollapsed', true)
     } else if (action.type === ActionType.EXPAND_SPLASH_TOPBAR) {
         return state.set('splashTopbarCollapsed', false)
+    } else if (action.type === ActionType.EXPAND_CHAT) {
+        return state.set('overlay', 'chat')
+    } else if (action.type === ActionType.COLLAPSE_CHAT) {
+        return state.delete('overlay')
     } else if (action.type === ActionType.CLEAR_HOME) {
         return state.set('splashTopbarCollapsed', false)
-    } else if (action.type === ActionType.SELECT_DETAIL_SECTION) {
-        // set as overlay if small or medium screen size
-        if (includes(['small', 'medium'], state.get('width'))) {
-            return state.set('overlay', action.section)
-        }
-    } else if (action.type === ActionType.CLOSE_DETAIL_SECTION) {
-        return state.delete('overlay')
     } else if (action.type === ActionType.SET_VIDEO_VOLUME) {
         return state.set('volume', action.volume)
     } else if (action.type === ActionType.RESIZE) {

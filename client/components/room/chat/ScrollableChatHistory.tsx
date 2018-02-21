@@ -12,7 +12,7 @@ import commentReducer from './utils/commentReducer'
 
 import { toggleDropdown } from '@actions/app'
 import { loadComments, resendComment, selectMediaItem } from '@actions/room'
-import { promptChatActionsForUser, closeDetailSection, searchChat } from '@actions/pages/room'
+import { promptChatActionsForUser,searchChat } from '@actions/pages/room'
 import App from '@models/state/app'
 import Room, { FetchDirection } from '@models/state/room'
 import RoomPage, { DetailSection } from '@models/state/pages/room'
@@ -227,7 +227,6 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
     handleSelectMediaItem(mediaItemId: number) {
         const { dispatch, roomId } = this.props
         dispatch(selectMediaItem(roomId, mediaItemId));
-        dispatch(closeDetailSection())
     }
 
     handleSelectChatOptions(chatId: string) {
