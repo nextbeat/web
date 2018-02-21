@@ -21,6 +21,7 @@
         &.room_inner-chat {
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
     }
 }

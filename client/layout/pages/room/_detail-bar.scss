@@ -36,38 +36,6 @@
             display: none;
         }
     }
-
-    // @include media('<=medium') {
-    //     position: absolute;
-    //     border: none;
-    //     width: 100%;
-    //     top: 0;
-    //     left: 0;
-    //     bottom: 0;
-    //     right: 0;
-    //     z-index: 1001;
-    //     transform: translateY(100%);
-    //     transition-property: transform;
-    //     transition-duration: 225ms;
-    //     transition-timing-function: cubic-bezier(0.4, 0.0, 1, 1);
-
-    //     &.active {
-    //         transform: none;
-    //         transition-duration: 275ms;
-    //         transition-timing-function: cubic-bezier(0.0, 0.0, 0.2, 1);
-    //     }
-
-    //     .ad-banner-nb {
-    //         display: none;
-    //     }
-    // }
-
-    // @include media('<=small') {
-    //     transition-duration: 195ms;
-    //     &.active {
-    //         transition-duration: 225ms;
-    //     }
-    // }
 }
 
 // layout
@@ -78,7 +46,6 @@
     border-bottom: 1px solid #eee;
     text-align: center;
     position: relative;
-    // background: #f6f6f6;
 }
 
 .detail-bar_toggle-edit {
@@ -156,6 +123,7 @@
 
     @include media("<=medium") {
         overflow: visible;
+        position: static;
     }
 }
 

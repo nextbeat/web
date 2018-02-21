@@ -126,7 +126,7 @@
     justify-content: flex-end;
     align-items: center;
 
-    .chat_item.show-options & {
+    .chat_history-expanded .chat_item.show-options & {
         margin-right: 16px;
     }
 }
@@ -178,19 +178,11 @@
         cursor: pointer;
     }
 
-    // &.dropdown-active {
-    //     display: block;
-    // }
-
     .svg-icon-more-vert {
         width: 18px;
         height: 18px;
         fill: #aaa;
     }
-
-    // .chat_item.show-options:hover & {
-    //     display: block;
-    // }
 
     .chat_item-highlighted & {
         top: 8px;

@@ -1,0 +1,49 @@
+
+.chat_large {
+    width: 100%;
+    background: #fff;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+
+    @include media("<=medium") {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1001;
+        transform: translateY(100%);
+        transition-property: transform;
+        transition-duration: 225ms;
+        transition-timing-function: cubic-bezier(0.4, 0.0, 1, 1);
+
+        &.chat_large-active {
+            transform: none;
+            transition-duration: 275ms;
+            transition-timing-function: cubic-bezier(0.0, 0.0, 0.2, 1);
+        }
+    }
+
+    @include media('<=small') {
+        transition-duration: 195ms;
+        &.chat_large-active {
+            transition-duration: 225ms;
+        }
+    }     
+}
+
+.chat_large_dismiss-bar {
+    display: none;
+    height: 40px;
+    border-bottom: 1px solid $border-color;
+    align-items: center;
+    justify-content: center;
+    background: #eee;
+
+    @include media('<=medium') {
+        display: flex;
+    }
+}

@@ -10,9 +10,10 @@ import ChatSearchResults from './ChatSearchResults'
 import UserActions from './UserActions'
 import ScrollableChatHistory from '@components/room/chat/ScrollableChatHistory'
 import Spinner from '@components/shared/Spinner'
+import Icon from '@components/shared/Icon'
 import PinnedChatItem from '@components/room/chat/PinnedChatItem'
 
-import { promptChatActionsForUser, resetChat } from '@actions/pages/room'
+import { promptChatActionsForUser, resetChat, closeDetailSection } from '@actions/pages/room'
 import { loadComments, sendComment, didUseChat } from '@actions/room'
 import RoomPage from '@models/state/pages/room'
 import Room from '@models/state/room'
@@ -21,6 +22,8 @@ import Eddy from '@models/state/eddy'
 import { State, DispatchProps } from '@types'
 
 interface ConnectProps {
+    isActiveOverlay: boolean
+
     hasLostConnection: boolean
     roomId: number
     isClosed: boolean
@@ -33,13 +36,28 @@ type Props =  ConnectProps & DispatchProps
 
 class LargeChat extends React.Component<Props> {
 
+    constructor(props: Props) {
+        super(props)
+
+        this.handleDismiss = this.handleDismiss.bind(this)
+    }
+
+    handleDismiss() {
+        this.props.dispatch(closeDetailSection())
+    }
+
     render() {
-        const { hasLostConnection, hasPinnedComment, 
+        const { hasLostConnection, hasPinnedComment, isActiveOverlay,
                 showSearchResults, isClosed, authorUsername, roomId } = this.props;
 
+        const activeClass = isActiveOverlay ? 'chat_large-active' : '';
+
         return (
-        <div className="chat_large">
+        <div className={`chat_large ${activeClass}`}>
             <UserActions />
+            <div className="chat_large_dismiss-bar" onClick={this.handleDismiss}>
+                <Icon type="expand-more" />
+            </div>
             { hasPinnedComment && 
                 <PinnedChatItem />
             }
@@ -64,6 +82,7 @@ class LargeChat extends React.Component<Props> {
 
 function mapStateToProps(state: State): ConnectProps {
     return {
+        isActiveOverlay: App.get(state, 'activeOverlay') === 'chat',
         hasLostConnection: Eddy.get(state, 'hasLostConnection'),
         roomId: RoomPage.get(state, 'id'),
         isClosed: RoomPage.status(state) === 'closed',

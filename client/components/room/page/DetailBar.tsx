@@ -18,7 +18,6 @@ import { State, DispatchProps } from '@types'
 
 interface ConnectProps {
     width: string
-    activeOverlay: string
     selectedDetailSection: DetailSection
     shouldDisplayShop: boolean
     
@@ -170,18 +169,16 @@ class DetailBar extends React.Component<Props, DetailBarState> {
     }
 
     render() {
-        const { selectedDetailSection, width, activeOverlay, roomId,
+        const { selectedDetailSection, width, roomId,
                 isCurrentUserAuthor, bannerAd, shouldDisplayShop } = this.props;
         const { disableAnimations } = this.state;
 
         const selected = (type: DetailSection) => selectedDetailSection === type ? "selected" : "";
 
         const disableAnimationsClass = disableAnimations ? 'detail-bar-disable-animations' : ''
-        const detailOverlayActive = activeOverlay === 'chat' || activeOverlay === 'activity' || activeOverlay === 'shop'
-        const activeClass = detailOverlayActive ? 'active' : ''
 
         return (
-            <div className={`detail-bar ${activeClass} ${disableAnimationsClass}`}>
+            <div className={`detail-bar ${disableAnimationsClass}`}>
                 { bannerAd && <BannerAd ad={bannerAd} roomId={roomId} /> }
                 <div className="detail-bar_header">
                     { isCurrentUserAuthor && 
@@ -209,7 +206,6 @@ function mapStateToProps(state: State): ConnectProps {
         selectedDetailSection: RoomPage.get(state, 'selectedDetailSection', 'chat'),
         shouldDisplayShop: RoomPage.shouldDisplayShop(state),
         width: App.get(state, 'width'),
-        activeOverlay: App.get(state, 'activeOverlay'),
         roomId: RoomPage.get(state, 'id'),
         isCurrentUserAuthor: RoomPage.isCurrentUserAuthor(state),
         unseenLiveMediaItemsCount: RoomPage.unseenLiveMediaItemsCount(state),
