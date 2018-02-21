@@ -15,6 +15,7 @@
 
     @include media("<=medium") {
         overflow: auto;
+        background: #fff;
         // display: flex;
 
         &.room_inner-chat {

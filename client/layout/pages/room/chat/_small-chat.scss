@@ -1,9 +1,11 @@
-.player_small-chat {
-    height: 130px;
-    border-bottom: 1px solid $border-color;
-    flex-direction: column;
-    position: relative;
+.chat_small {
+    width: 100%;
+    background: #fff;
+    height: 100%;
     display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
 
     .chat_history_container {
         height: 100%;
@@ -30,16 +32,16 @@
     }
 }
 
-.player_small-chat_expand {
-    height: 30px;
+.chat_small_expand {
+    height: 45px;
     width: 100%;
     flex: 0 0 auto;
     position: relative;
 }
 
-.player_small-chat_expand-prompt {
+.chat_small_expand-prompt {
     display: inline-block;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
     color: $primary-color;
     @include center;

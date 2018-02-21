@@ -187,9 +187,6 @@ class DetailBar extends React.Component<Props, DetailBarState> {
                     { isCurrentUserAuthor && 
                         <div className="detail-bar_toggle-edit dropdown-detail-bar_toggle" onClick={this.toggleDropdown}><Icon type="more-vert" /></div> 
                     }
-                    { detailOverlayActive &&
-                        <div className="detail-bar_close" onClick={this.handleClose}><Icon type="expand-more" /></div>
-                    }
                     <ActionsDropdown type="detail-bar" />
                     <div className="detail-bar_tab-container">
                         <span className={`detail-bar_tab ${selected("chat")}`} onClick={this.setSelected.bind(this, "chat")}>Chat</span>

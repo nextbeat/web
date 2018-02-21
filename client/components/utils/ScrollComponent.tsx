@@ -118,6 +118,10 @@ export default function ScrollComponent<OriginalProps extends {}>(domId: ((props
             }
 
             handleScroll() {
+                if (this.domElement().clientHeight === 0) {
+                    return;
+                }
+
                 this.setScrollState()
                 if (this.isScrolledToTop() && typeof onScrollToTop === "function") {
                     onScrollToTop.call(this.refs.child)

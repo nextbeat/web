@@ -58,7 +58,7 @@ interface ChatState {
 }
 
 function scrollComponentId(props: Props) {
-    return `history-${props.roomId}-scroll`
+    return `history-${props.roomId}-${props.style}-scroll`
 }
 
 class ScrollableChatHistory extends React.Component<Props, ChatState> {
@@ -109,6 +109,13 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
         if (this.props.comments.size > 0 && this.props.commentsFetchType === 'mostRecent') {
             this.props.scrollToBottom()
             this.props.setScrollState()
+
+            process.nextTick(() => {
+                if (this.props.selectedDetailSection && this.props.selectedDetailSection !== 'chat') {
+                    this.setState({ shouldScrollToBottomOnSelectingChatSection: true })
+                }
+            })
+            
         }
     }
 

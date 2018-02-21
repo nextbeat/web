@@ -24,6 +24,7 @@
 
     @include media('<=medium') {
         position: static;
+        overflow: visible;
         width: 100%;
         top: auto;
         right: auto;
@@ -152,15 +153,9 @@
     .spinner {
         margin: 10px auto;
     }
-}
 
-.detail-bar_close {
-    position: absolute;
-    width: 40px;
-    cursor: pointer;
-
-    &:hover .svg-icon {
-        fill: #999;
+    @include media("<=medium") {
+        overflow: visible;
     }
 }
 

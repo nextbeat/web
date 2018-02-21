@@ -32,10 +32,13 @@
 }
 
 .activity_inner {
-    height: calc(100% - 35px);
     overflow: auto;
     position: relative;
     -webkit-overflow-scrolling: touch;
+
+    @include media("<=medium") {
+        overflow: visible;
+    }
 }
 
 .activity_new-media {
