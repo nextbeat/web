@@ -110,6 +110,13 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
             this.props.scrollToBottom()
             this.props.setScrollState()
 
+            // Apologies for all of these dirty hacks. But sometimes
+            // chat won't fully scroll down on initial mount.
+            process.nextTick(() => {
+                this.props.scrollToBottom()
+                this.props.setScrollState()
+            })
+
             process.nextTick(() => {
                 if (this.props.selectedDetailSection && this.props.selectedDetailSection !== 'chat') {
                     this.setState({ shouldScrollToBottomOnSelectingChatSection: true })

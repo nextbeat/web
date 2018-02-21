@@ -244,8 +244,6 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
         if (isRoomCard) {
             router.push({ pathname: `/r/${hid}/${indexOfSelectedMediaItem}`, query: { detail: 'activity' }})
-        } else {
-            dispatch(selectDetailSection('activity'))
         }
     }
 
