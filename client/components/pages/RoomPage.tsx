@@ -4,12 +4,7 @@ import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { List } from 'immutable'
-import * as TransitionGroup from 'react-transition-group/TransitionGroup'
-import Transition from 'react-transition-group/Transition'
-import * as CSSTransition from 'react-transition-group/CSSTransition'
 
-
-import WelcomeBanner from '@components/room/page/WelcomeBanner'
 import RoomMain from '@components/room/page/RoomMain'
 import DetailBar from '@components/room/page/DetailBar'
 import StackActions from '@components/room/page/StackActions'
@@ -19,7 +14,7 @@ import PageError from '@components/shared/PageError'
 import { gaEvent } from '@actions/ga'
 import { loadRoomPage, clearRoomPage, closeDetailSection, selectDetailSection } from '@actions/pages/room'
 import { selectMediaItem, getRoomInfo } from '@actions/room'
-import RoomPage from '@models/state/pages/room'
+import RoomPage, { DetailSection } from '@models/state/pages/room'
 import Room from '@models/state/room'
 import MediaItem from '@models/entities/mediaItem'
 import User from '@models/entities/user'
@@ -36,6 +31,8 @@ interface ConnectProps {
     isFetchingDeep: boolean
     isLoadedDeep: boolean
     hasErrorDeep: boolean
+
+    selectedDetailSection: DetailSection
 
     hid: string
     author: User
@@ -88,7 +85,6 @@ class RoomPageComponent extends React.Component<Props, ComponentState> {
 
         this.loadRoom = this.loadRoom.bind(this)
         this.selectMediaItemOnLoad = this.selectMediaItemOnLoad.bind(this)
-        this.handleWelcomeBannerClose = this.handleWelcomeBannerClose.bind(this);
         this.renderDocumentHead = this.renderDocumentHead.bind(this);
 
         this.state = {
@@ -117,21 +113,10 @@ class RoomPageComponent extends React.Component<Props, ComponentState> {
             this.selectMediaItemOnLoad()
             this.selectDetailSectionOnLoad()
         }
-
-        if (storageAvailable('localStorage')) {
-            this.setState({
-                hideWelcomeBanner: JSON.parse(localStorage.getItem('hideWelcomeBanner') || 'false') 
-            })
-        }
     }
 
     componentWillUnmount() {
         this.props.dispatch(clearRoomPage());
-
-        // Prevent banner from being seen again
-        if (storageAvailable('localStorage')) {
-            localStorage.setItem('hideWelcomeBanner', 'true')
-        }
     }
 
     componentDidUpdate(prevProps: Props) {
@@ -163,26 +148,6 @@ class RoomPageComponent extends React.Component<Props, ComponentState> {
             console.log(prevIndex, currIndex, mediaItemIdAtParamIndex)
             dispatch(selectMediaItem(roomId, mediaItemIdAtParamIndex, { shouldUpdateHistory: false }))
         }
-    }
-
-    // ACTIONS
-
-    handleWelcomeBannerClose(e: React.MouseEvent<HTMLElement>) {
-        e.preventDefault()
-
-        this.setState({
-            hideWelcomeBanner: true
-        })
-
-        if (storageAvailable('localStorage')) {
-            localStorage.setItem('hideWelcomeBanner', 'true')
-        }
-
-        this.props.dispatch(gaEvent({
-            category: 'onboarding',
-            action: 'click',
-            label: 'welcome-banner-dismiss'
-        }))
     }
 
     // SELECTION
@@ -268,8 +233,10 @@ class RoomPageComponent extends React.Component<Props, ComponentState> {
     }
 
     render() {
-        const { isLoadedDeep, isFetchingDeep, hasErrorDeep } = this.props 
+        const { isLoadedDeep, isFetchingDeep, hasErrorDeep, selectedDetailSection } = this.props 
         const { hideWelcomeBanner } = this.state
+
+        const detailSectionClass = `room_inner-${selectedDetailSection}`
 
         return (
         <section className="room">
@@ -278,19 +245,10 @@ class RoomPageComponent extends React.Component<Props, ComponentState> {
             { isFetchingDeep && <Spinner styles={["grey", "large"]} /> }
             { hasErrorDeep && <PageError>The room could not be found, or it has been deleted by its owner.</PageError> }
             { isLoadedDeep && 
-                <TransitionGroup className="room_transition_group">
-                    { !hideWelcomeBanner && 
-                        <CSSTransition classNames="room_welcome-banner" timeout={{ enter: 0, exit: 150 }}>
-                            <WelcomeBanner handleClose={this.handleWelcomeBannerClose} />
-                        </CSSTransition>
-                    }
-                    <Transition timeout={0}> 
-                        <div className="room_inner">
-                            <RoomMain />
-                            <DetailBar />
-                        </div>
-                    </Transition>
-                </TransitionGroup>
+                <div className={`room_inner ${detailSectionClass}`}>
+                    <RoomMain />
+                    <DetailBar />
+                </div>
             }
         </section>
         );
@@ -320,6 +278,7 @@ function mapStateToProps(state: State, ownProps: RouteProps<Params>): ConnectPro
         hasErrorDeep: RoomPage.hasErrorDeep(state),
         isLoadedDeep: RoomPage.isLoadedDeep(state),
         isFetchingDeep: RoomPage.isFetchingDeep(state),
+        selectedDetailSection: RoomPage.get(state, 'selectedDetailSection'),
 
         hid: RoomPage.entity(state).get('hid'),
         author: RoomPage.author(state),

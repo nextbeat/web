@@ -38,9 +38,6 @@ class Info extends React.Component<Props> {
     constructor(props: Props) {
         super(props);
 
-        this.renderLarge = this.renderLarge.bind(this);
-        this.renderSmall = this.renderSmall.bind(this);
-
         this.handleActionsClick = this.handleActionsClick.bind(this);
     }
 
@@ -48,46 +45,7 @@ class Info extends React.Component<Props> {
         this.props.dispatch(toggleDropdown('stack-actions-info'))
     }
 
-    renderSmall() {
-        const { author, views, description, privacyStatus, createdAt, expires,
-                isCurrentUserAuthor, tags, closed } = this.props 
-
-        return (
-            <section className="player_info-small">
-                <div className="player_info-small_top">
-                    <div className="player_info-small_description">
-                        <div className="player_info-small_title">{ description || "No description." }</div>
-                        <div className="player_info_badges">
-                            { !closed && <Badge elementType="player_info" type="open" /> } 
-                            { privacyStatus === 'unlisted' && <Badge elementType="player_info" type="unlisted" /> }
-                        </div>
-                    </div>
-                    <div className="player_info-small_actions">
-                        <ActionsDropdown type="info" />
-                        { isCurrentUserAuthor && <div className="player_info-small_action" onClick={this.handleActionsClick}><Icon type="more-vert" /></div> }
-                        <div className="player_info-small_action"><Share /></div>
-                    </div>
-                </div>
-                <div className="player_info-small_user">
-                    <User user={author} style="small" /> 
-                    <span className="player_info-small_views">{ `${views} visit${views !== 1 ? 's' : ''}` }</span>
-                </div>
-                <div className="player_info-small_bottom">
-                    <div className="player_info-small_time">
-                        { closed && format(createdAt, 'MMMM D, YYYY') }
-                        { !closed && timeLeftString(expires) }
-                    </div>
-                    <Bookmark type="small" />
-                </div>
-                <div className="player_info-small_tags">
-                    {tags.map(tag => <Link to={`/t/${tag}`} key={`t-${tag}`} className="player_info-small_tag">{tag}</Link>)}
-                </div>
-
-            </section>
-        )
-    }
-
-    renderLarge() {
+    render() {
         const { id, closed, description, privacyStatus, createdAt, expires,
                 isCurrentUserAuthor, author, tags, views } = this.props 
 
@@ -124,15 +82,6 @@ class Info extends React.Component<Props> {
                     </div>
                 </div>
             </section>
-        )
-    }
-
-    render() {
-        return (
-            <div>
-                { this.renderLarge() }
-                { this.renderSmall() }
-            </div>
         )
     }
 }

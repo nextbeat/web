@@ -176,15 +176,12 @@ class DetailBar extends React.Component<Props, DetailBarState> {
 
         const selected = (type: DetailSection) => selectedDetailSection === type ? "selected" : "";
 
-        // collapse detail bar if window width below threshold
-        const collapsedClass = width === 'small' || width === 'medium' ? 'collapsed' : ''
         const disableAnimationsClass = disableAnimations ? 'detail-bar-disable-animations' : ''
-
         const detailOverlayActive = activeOverlay === 'chat' || activeOverlay === 'activity' || activeOverlay === 'shop'
         const activeClass = detailOverlayActive ? 'active' : ''
 
         return (
-            <div className={`detail-bar ${collapsedClass} ${activeClass} ${disableAnimationsClass}`}>
+            <div className={`detail-bar ${activeClass} ${disableAnimationsClass}`}>
                 { bannerAd && <BannerAd ad={bannerAd} roomId={roomId} /> }
                 <div className="detail-bar_header">
                     { isCurrentUserAuthor && 

@@ -9,10 +9,8 @@ import { goBackward, goForward } from '@actions/room'
 import { selectDetailSection } from '@actions/pages/room'
 
 import RoomPlayer from '../player/RoomPlayer'
-import SmallChat from './chat/SmallChat'
 import Info from './main/Info'
 import BannerAd from '../ads/BannerAd'
-import AppBanner from '@components/shared/AppBanner'
 
 import { State, DispatchProps } from '@types'
 
@@ -91,16 +89,14 @@ class RoomMain extends React.Component<Props> {
                 authorUsername, bannerAd } = this.props;
 
         return (
-            <section className="player-container">
+            <section className="room_main">
                 <section className="player content" id="player">
-                    <AppBanner url={`nextbeat://rooms/${hid}`} />
                     {/* we only display once the room has loaded */}
                     { isLoadedDeep &&
                     <div className="player_inner">
                         { bannerAd && <BannerAd ad={bannerAd} roomId={roomId} />}
                         <RoomPlayer roomId={roomId} />
-                        <SmallChat />
-                        <Info />
+                        <Info /> 
                     </div>
                     }
                 </section>
