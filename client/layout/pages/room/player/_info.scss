@@ -17,8 +17,9 @@
 }
 
 .player_info_description {
-    font-size: 18px;
-    font-weight: 300;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.4;
     flex: 1;
 }
 
@@ -58,7 +59,7 @@
 }
 
 .player_info_user {
-    margin-top: 10px;
+    margin-top: 14px;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;

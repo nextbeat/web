@@ -42,6 +42,7 @@
     align-items: center;
     justify-content: center;
     background: #eee;
+    cursor: pointer;
 
     @include media('<=medium') {
         display: flex;

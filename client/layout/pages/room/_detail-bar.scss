@@ -42,20 +42,16 @@
 
 .detail-bar_header {
     width: 100%;
-    height: 30px;
+    height: 35px;
     border-bottom: 1px solid #eee;
     text-align: center;
     position: relative;
-
-    @include media("<=medium") {
-        height: 35px;
-    }
 }
 
 .detail-bar_toggle-edit {
     position: absolute;
     right: 3px;
-    top: 4px;
+    top: 7px;
 
     .svg-icon-more-vert {
         fill: #a3a3a3;
@@ -66,10 +62,6 @@
             fill: #b6b6b6;
             cursor: pointer;
         }
-    }
-
-    @include media("<=medium") {
-        top: 7px;
     }
 }
 
@@ -89,7 +81,7 @@
     display: inline-block;
     font-size: 14px;
     font-weight: 400;
-    line-height: 25px;
+    line-height: 30px;
     text-align: center;
     text-transform: uppercase;
     position: relative;
@@ -114,10 +106,6 @@
         margin-right: 0;
     }
 
-    @include media("<=medium") {
-        line-height: 30px;
-    }
-
     @include media('<=380px') {
         margin-right: 20px;
     }
@@ -131,7 +119,7 @@
 .detail-bar_main {
     overflow: hidden;
     position: relative;
-    height: calc(100% - 30px);
+    height: calc(100% - 35px);
     display: flex;
     flex-direction: column;
 
@@ -142,7 +130,6 @@
     @include media("<=medium") {
         overflow: visible;
         position: static;
-        height: calc(100% - 35px);
     }
 }
 
