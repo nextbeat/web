@@ -21,6 +21,7 @@ interface ConnectProps {
     hid: string
     author: UserEntity
     isIOS: boolean
+    isLoadedDeep: boolean
 
     isLoggedIn: boolean
     username: string
@@ -98,18 +99,20 @@ class RoomTopbar extends React.Component<Props> {
     }
 
     render() {
-        const { author, isIOS } = this.props;
+        const { author, isIOS, isLoadedDeep } = this.props;
         return (
             <div className="topbar room_topbar">
                 <div className="room_topbar_left">
                     <div className="room_topbar_logo"><Link to="/"><SmallLogo /></Link></div>
-                    <div className="room_topbar_user">
-                        <Link className="room_topbar_username" to={`/u/${author.get('username')}`}>{author.get('username')}</Link>
-                        <Subscribe user={author} />
-                    </div>
+                    { isLoadedDeep && 
+                        <div className="room_topbar_user">
+                            <Link className="room_topbar_username" to={`/u/${author.get('username')}`}>{author.get('username')}</Link>
+                            <Subscribe user={author} />
+                        </div>
+                    }
                 </div>
                 <div className="room_topbar_right">
-                    { isIOS && <div className="room_topbar_open" onClick={this.handleOpenInAppClick}>Open in app</div> }
+                    { isIOS && isLoadedDeep && <div className="room_topbar_open" onClick={this.handleOpenInAppClick}>Open in app</div> }
                     <div className="room_topbar_options" onClick={this.handleOptionsClick}>
                         <Icon type="more-vert" />
                     </div>
@@ -125,6 +128,7 @@ function mapStateToProps(state: State): ConnectProps {
         hid: RoomPage.entity(state).get('hid'),
         author: RoomPage.entity(state).author(),
         isIOS: App.isIOS(state),
+        isLoadedDeep: RoomPage.isLoadedDeep(state),
 
         isLoggedIn: CurrentUser.isLoggedIn(state),
         username: CurrentUser.entity(state).get('username'),

@@ -72,6 +72,11 @@ class DetailBar extends React.Component<Props, DetailBarState> {
         if (prevProps.selectedDetailSection === 'shop' && this.props.selectedDetailSection !== 'shop') {
             this.logShopImpression()
         }
+
+        if (prevProps.selectedDetailSection !== 'chat' && this.props.selectedDetailSection === 'chat') {
+            let roomInnerElem = document.getElementById('room_inner') as HTMLElement
+            roomInnerElem.scrollTop = 0
+        }
     }
 
     componentWillUnmount() {
