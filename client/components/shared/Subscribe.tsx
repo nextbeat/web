@@ -38,6 +38,7 @@ class Subscribe extends React.Component<AllProps, SubscribeState> {
     handleSubscribe() {
         const { dispatch, user } = this.props
         dispatch(subscribe(user))
+        this.setState({ hover: false })
     }
 
     handleUnsubscribe() {
