@@ -6,6 +6,7 @@ import Helmet from 'react-helmet'
 import { List } from 'immutable'
 
 import RoomMain from '@components/room/page/RoomMain'
+import RoomTopbar from '@components/room/page/RoomTopbar'
 import DetailBar from '@components/room/page/DetailBar'
 import StackActions from '@components/room/page/StackActions'
 import Spinner from '@components/shared/Spinner'
@@ -240,6 +241,7 @@ class RoomPageComponent extends React.Component<Props, ComponentState> {
         <section className="room">
             {this.renderDocumentHead()}
             <StackActions />
+            <RoomTopbar/>
             { isFetchingDeep && <Spinner styles={["grey", "large"]} /> }
             { hasErrorDeep && <PageError>The room could not be found, or it has been deleted by its owner.</PageError> }
             { isLoadedDeep && 

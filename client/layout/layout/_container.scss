@@ -49,6 +49,16 @@
             transform: translateY(-$splash-topbar-collapsed-offset-small);
         }
     }
+}
 
-
+// Hide topbar in room on <=medium displays
+.main-container-room {
+    @include media("<=medium") {
+        .main-and-sidebar {
+            margin-top: 0;
+        }
+        .topbar:not(.room_topbar) {
+            display: none;
+        }
+    }  
 }

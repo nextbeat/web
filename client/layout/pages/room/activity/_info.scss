@@ -22,7 +22,7 @@
 .activity_info_title {
     display: inline;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 400;
     margin-right: 10px;
     line-height: 1.4;
 }
@@ -44,14 +44,11 @@
 .activity_info_details {
     font-size: 13px;
     font-weight: 400;
+    color: #999;
 }
 
 .activity_info_separator {
     margin: 0 4px;
-}
-
-.activity_info_views {
-    color: #999;
 }
 
 .activity_info_button-bookmark {
