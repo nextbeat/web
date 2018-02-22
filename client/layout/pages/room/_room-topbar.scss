@@ -1,3 +1,69 @@
 .room_topbar {
-    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px 0 15px;
+
+    .dropdown-room-options {
+        top: 100%;
+        margin-top: -2px;
+        right: 9px;
+
+        .dropdown-option-signup {
+            color: $primary-color;
+        }
+    }
+}
+
+.room_topbar_left {
+    display: flex;
+    align-items: center;
+}
+
+.room_topbar_logo { 
+    height: 30px;
+    svg {
+        width: 30px;
+    }
+}
+
+a.room_topbar_username {
+    display: block;
+    color: $text-color;
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 3px;
+    &:hover {
+        color: #666;
+    }
+}
+
+.room_topbar_user {
+    margin-left: 15px;
+
+    .btn-subscribe .btn {
+        font-size: 13px;
+        font-weight: 500;
+        background: none;
+        padding: 0;
+        color: $primary-color;
+    }
+
+    .btn-subscribe_count {
+        display: none;
+    }
+}
+
+.room_topbar_right {
+    display: flex;
+    align-items: center;
+}
+
+.room_topbar_open {
+    font-size: 14px;
+    font-weight: 500;
+    margin-right: 5px;
+}
+
+.room_topbar_options {
+    margin-top: 3px;
 }

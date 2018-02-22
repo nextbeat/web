@@ -12,11 +12,11 @@
 .room_inner {
     position: relative;
     flex: 1 0;
+    -webkit-overflow-scrolling: touch;
 
     @include media("<=medium") {
         overflow: auto;
         background: #fff;
-        // display: flex;
 
         &.room_inner-chat {
             display: flex;

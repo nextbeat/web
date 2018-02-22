@@ -69,7 +69,7 @@ class SectionComponent extends React.Component<Props> {
                         {"property": "al:ios:url", "content": `nextbeat://sections/${slug}`}
                     ]}
                 />
-                <AppBanner url={`nextbeat://sections/${slug}`}/>
+                <AppBanner url={`nextbeat://sections/${slug}`} />
                 <div className="content_inner section_inner">
                     { name && 
                     <div className="section_header">
