@@ -2,7 +2,7 @@
     width: 100%;
     height: $topbar-height;
     background: white;
-    padding: 0 25px;
+    padding: 0 15px;
     position: relative;
     overflow: visible;
     // display: flex;
@@ -65,8 +65,9 @@
 
 .topbar_logo-small {
     display: none;
+    height: 30px;
     svg {
-        width: 25px;
+        width: 30px;
     }
 }
 

@@ -45,7 +45,7 @@ class ShopSponsor extends React.Component<Props> {
         return (
             <div className="shop_sponsor">
                 <div className="shop_sponsor_detail">
-                    { authorUsername } is sponsored by { sponsor }
+                    Nextbeat is sponsored by { sponsor }
                 </div>
                 <div className="shop_sponsor_products">
                     { productsSlice.map(product => <ShopProduct key={product.get('id')} product={product} roomId={roomId} />) }
