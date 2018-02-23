@@ -12,6 +12,10 @@
             color: $primary-color;
         }
     }
+
+    @include media(">medium") {
+        display: none;
+    }
 }
 
 .room_topbar_left {
