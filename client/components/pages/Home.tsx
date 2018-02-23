@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
 import { List } from 'immutable'
 
 import HomeSection from './home/HomeSection'
@@ -22,7 +23,19 @@ interface ConnectProps {
 
 type Props = ConnectProps & DispatchProps
 
-class HomeComponent extends React.Component<Props> {
+interface ComponentState {
+    year: number
+}
+
+class HomeComponent extends React.Component<Props, ComponentState> {
+
+    constructor(props: Props) {
+        super(props)
+
+        this.state = {
+            year: (new Date()).getUTCFullYear()
+        }
+    }
 
     componentDidMount() {
         const { isLoaded, dispatch } = this.props 
@@ -41,6 +54,7 @@ class HomeComponent extends React.Component<Props> {
         return (
             <div className="home content">
                 {isLoaded && 
+                    <div>
                     <div className="content_inner">
                         { !isLoggedIn && <RoomCard id={mainCardId} title="FEATURED ROOM" /> }
                         <div className="home_sections">
@@ -48,6 +62,20 @@ class HomeComponent extends React.Component<Props> {
                                 <HomeSection key={`sec${idx}`} index={idx} />
                             )}
                         </div>
+                    </div>
+                    { !isLoggedIn &&
+                        <footer className="footer footer-home">
+                            <div className="footer_copyright">
+                                &copy; {this.state.year}, Bubl Inc.
+                            </div>
+                            <div className="footer_nav">
+                                <Link className="footer_link" to="/company/about">About</Link>
+                                <a className="footer_link" href="https://medium.com/nextbeat">Blog</a>
+                                <Link className="footer_link" to="/company/contact">Contact</Link>
+                                <Link className="footer_link" to="/company/legal">Legal</Link>
+                            </div>
+                        </footer>
+                    }
                     </div>
                 }
             </div>

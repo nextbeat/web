@@ -54,14 +54,14 @@ class Company extends React.Component<Props, ComponentState> {
                 </div>
                 <div className="company_main" id="company_main">
                     { this.props.children }
-                    <footer className="company_footer">
-                        <div className="company_footer_copyright">
+                    <footer className="footer footer-company">
+                        <div className="footer_copyright">
                             &copy; {this.state.year}, Bubl Inc.
                         </div>
-                        <div className="company_footer_nav">
-                            <Link className="company_footer_link" to="/company/contact">Contact Us</Link>
-                            <Link className="company_footer_link" to="/company/legal/terms">Terms</Link>
-                            <Link className="company_footer_link" to="/company/legal/privacy">Privacy</Link>
+                        <div className="footer_nav">
+                            <Link className="footer_link" to="/company/contact">Contact</Link>
+                            <Link className="footer_link" to="/company/legal/terms">Terms</Link>
+                            <Link className="footer_link" to="/company/legal/privacy">Privacy</Link>
                         </div>
                     </footer>
                 </div>

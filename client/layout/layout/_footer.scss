@@ -1,0 +1,37 @@
+.footer {
+    background: $primary-color;
+    padding: 23px 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 300;
+    box-shadow: 0 500px 0 500px $primary-color; // extends footer to bottom of screen if necessary
+
+    @include media("<=small") {
+        padding: 18px 30px;
+    }
+
+    @include media("<400px") {
+        flex-direction: column;
+        .footer_copyright {
+            margin-bottom: 10px;
+        }
+    }
+}
+
+.footer_copyright {
+    color: #fff;
+    opacity: 0.7;
+}
+
+a.footer_link {
+    color: #fff;
+    font-weight: 300;
+    margin-left: 12px;
+
+    &:hover {
+        color: #fff;
+        text-decoration: underline;
+    }
+}
