@@ -62,7 +62,7 @@
 
 .shop_sponsor {
     background: $secondary-color;
-    padding: 8px 15px;
+    padding: 3px 13px 8px 13px;
     overflow: hidden;
 
     .shop-product_title {
@@ -71,6 +71,10 @@
 
     &:hover .shop-product_title {
         color: $secondary-color;
+    }
+
+    &:first-child {
+        padding-top: 8px;
     }
 }
 
@@ -85,7 +89,7 @@
 .shop_sponsor_products {
     margin-top: 10px;
     background: #fff;
-    box-shadow: 0px 5px 25px 1px rgba(0, 0, 0, 0.2); 
+    box-shadow: 0px 5px 10px 1px rgba(0, 0, 0, 0.1); 
 
     &:last-child {
         margin-bottom: 4px;

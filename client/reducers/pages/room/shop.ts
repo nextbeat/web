@@ -1,4 +1,4 @@
-import { Map, fromJS } from 'immutable'
+import { Map, List, fromJS } from 'immutable'
 import { ActionType, Action, Status } from '@actions/types'
 
 export default function shop(state = Map(), action: Action) {
@@ -8,8 +8,7 @@ export default function shop(state = Map(), action: Action) {
                 isFetching: true,
                 hasFetched: false
             }).delete('productIds')
-              .delete('sponsor')
-              .delete('sponsoredProductIds')
+              .delete('sponsoredProducts')
               .delete('error')
         } else if (action.status === Status.SUCCESS && action.response) {
             state = state.merge({
@@ -18,13 +17,16 @@ export default function shop(state = Map(), action: Action) {
                 productIds: fromJS(action.response.result.products),
             })
             if (action.response.result.sponsored_products.length > 0) {
-                const sponsoredProducts = action.response.result.sponsored_products[0]
+                const sponsors = fromJS(action.response.result.sponsored_products) as List<any>
                 // We only want to support a single shop sponsor
                 // per room for now, so we just use the first
                 // returned result from the sponsored_products list
                 state = state.merge({
-                    sponsor: sponsoredProducts.sponsor,
-                    sponsoredProductIds: fromJS(sponsoredProducts.products)
+                    sponsors: sponsors.map(sponsor => Map({
+                        name: sponsor.get('sponsor'),
+                        productIds: sponsor.get('products', List()),
+                        expanded: false
+                    }))
                 })
             }
         } else if (action.status === Status.FAILURE) {
@@ -34,9 +36,11 @@ export default function shop(state = Map(), action: Action) {
             })
         }
     } else if (action.type === ActionType.EXPAND_SHOP_SPONSOR) {
-        return state.mergeDeep({
-            isSponsoredProductsExpanded: action.expanded
-        })
+        return state.update('sponsors', ((sponsors: List<any>) => 
+            sponsors.update(action.index, (sponsor: Map<any, any>) => 
+                sponsor.set('expanded', action.expanded)
+            )
+        ))
     }
     return state
 }

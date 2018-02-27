@@ -9,15 +9,18 @@ import RoomPage from '@models/state/pages/room'
 import ShopProductModel from '@models/entities/shopProduct'
 import { State, DispatchProps } from '@types'
 
+interface OwnProps {
+    index: number
+}
+
 interface ConnectProps {
     roomId: number
     products: List<ShopProductModel>
-    sponsor: string
+    name: string
     expanded: boolean
-    authorUsername: string
 }
 
-type Props = ConnectProps & DispatchProps;
+type Props = OwnProps & ConnectProps & DispatchProps;
 
 
 class ShopSponsor extends React.Component<Props> {
@@ -29,28 +32,28 @@ class ShopSponsor extends React.Component<Props> {
     }
 
     handleExpand() {
-        const { expanded, dispatch } = this.props
-        dispatch(expandShopSponsor(!expanded))
+        const { expanded, dispatch, index } = this.props
+        dispatch(expandShopSponsor(!expanded, index))
     }
 
     render() {
-        const { sponsor, products, authorUsername, expanded, roomId } = this.props
+        const { name, products,  expanded, roomId } = this.props
 
         if (!products || products.size === 0) {
             return null;
         }
 
-        let productsSlice = expanded ? products : products.slice(0, 1)
+        let productsSlice = expanded ? products : products.slice(0, 2)
 
         return (
             <div className="shop_sponsor">
                 <div className="shop_sponsor_detail">
-                    Nextbeat is sponsored by { sponsor }
+                    Nextbeat is sponsored by { name }
                 </div>
                 <div className="shop_sponsor_products">
                     { productsSlice.map(product => <ShopProduct key={product.get('id')} product={product} roomId={roomId} />) }
                 </div>
-                { products.size > 1 && 
+                { products.size > 2 && 
                 <div className="shop_sponsor_expand">
                     <div className="shop_sponsor_expand_button" onClick={this.handleExpand} >
                         { expanded ? "show less" : "show more" }
@@ -63,13 +66,12 @@ class ShopSponsor extends React.Component<Props> {
     }
 }
 
-function mapStateToProps(state: State): ConnectProps {
+function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     return {
         roomId: RoomPage.get(state, 'id'),
-        products: RoomPage.sponsoredProducts(state),
-        sponsor: RoomPage.get(state, 'sponsoredProductsSponsor'),
-        expanded: RoomPage.get(state, 'isSponsoredProductsExpanded'),
-        authorUsername: RoomPage.author(state).get('username')
+        products: RoomPage.sponsorProducts(state, ownProps.index),
+        name: RoomPage.sponsorName(state, ownProps.index),
+        expanded: RoomPage.isSponsorExpanded(state, ownProps.index)
     }
 }
 

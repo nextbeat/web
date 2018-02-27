@@ -469,12 +469,14 @@ function loadShop(stackId: number): RoomShopAction {
 
 export interface ExpandShopSponsorAction extends AnalyticsAction {
     type: ActionType.EXPAND_SHOP_SPONSOR
+    index: number
     expanded: boolean
 }
-function performExpandShopSponsor(roomId: number, authorId: number, expanded: boolean): ExpandShopSponsorAction {
+function performExpandShopSponsor(roomId: number, authorId: number, expanded: boolean, index: number): ExpandShopSponsorAction {
     return {
         type: ActionType.EXPAND_SHOP_SPONSOR,
         expanded,
+        index,
         GA: {
             type: 'event',
             category: 'shop',
@@ -485,11 +487,11 @@ function performExpandShopSponsor(roomId: number, authorId: number, expanded: bo
     }
 }
 
-export function expandShopSponsor(expanded: boolean): ThunkAction {
+export function expandShopSponsor(expanded: boolean, index: number): ThunkAction {
     return (dispatch, getState) => {
         const roomId = RoomPage.get(getState(), 'id')
         const authorId = RoomPage.author(getState()).get('id')
-        dispatch(performExpandShopSponsor(roomId, authorId, expanded))
+        dispatch(performExpandShopSponsor(roomId, authorId, expanded, index))
     }
 }
 

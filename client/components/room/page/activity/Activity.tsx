@@ -81,7 +81,6 @@ class Activity extends React.Component<Props, ActivityState> {
             }
 
             // scroll room_inner element to top; used for <=medium resolutions
-            console.log(roomInner.scrollTop())
             roomInner.animate({ scrollTop: 0 }, 200)
 
             this.props.setScrollState();

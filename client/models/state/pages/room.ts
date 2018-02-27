@@ -1,4 +1,4 @@
-import { List, Set } from 'immutable'
+import { List, Set, Map } from 'immutable'
 import { StateModelFactory } from '@models/state/base'
 import { withEntityMap, EntityProps } from '@models/utils'
  
@@ -8,7 +8,7 @@ import SearchResultComment from '@models/entities/searchResultComment'
 import { AdType } from '@models/entities/ad'
 import ShopProduct from '@models/entities/shopProduct'
 import Room, { RoomProps } from '@models/state/room'
-import { createEntityListSelector } from '@models/utils'
+import { createEntityListSelector, createKeyedSelector } from '@models/utils'
 import { State } from '@types'
 
 export type DetailSection = 'chat' | 'activity' | 'shop'
@@ -32,13 +32,11 @@ interface RoomPageProps extends EntityProps {
 
     selectedDetailSection: DetailSection
 
-    productIds: List<number>
-    sponsoredProductsSponsor: string
-    isSponsoredProductsExpanded: boolean
-    sponsoredProductIds: List<number>
     shopFetching: boolean
     shopHasFetched: boolean
     shopError: string
+    productIds: List<number>
+    sponsors: List<Map<any, any>>
 
     isDeleting: boolean
     hasDeleted: boolean
@@ -78,13 +76,11 @@ const keyMap = withEntityMap({
     // ui
     'selectedDetailSection': ['ui', 'detailSection'],
     // shop
-    'productIds': ['shop', 'productIds'],
-    'sponsoredProductsSponsor': ['shop', 'sponsor'],
-    'isSponsoredProductsExpanded': ['shop', 'isSponsoredProductsExpanded'],
-    'sponsoredProductIds': ['shop', 'sponsoredProductIds'],
     'shopFetching': ['shop', 'isFetching'],
     'shopHasFetched': ['shop', 'hasFetched'],
     'shopError': ['shop', 'error'],
+    'productIds': ['shop', 'productIds'],
+    'sponsors': ['shop', 'sponsors'],
     // actions
     'isDeleting': ['actions', 'isDeleting'],
     'hasDeleted': ['actions', 'hasDeleted'],
@@ -169,7 +165,21 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
     }
 
     static products = createEntityListSelector(RoomPage, 'productIds', ShopProduct)
-    static sponsoredProducts = createEntityListSelector(RoomPage, 'sponsoredProductIds', ShopProduct)
+
+    static sponsorName(state: State, index: number) {
+        let sponsor = this.get(state, 'sponsors', List()).get(index)
+        return sponsor ? sponsor.get('name') : null
+    }
+
+    static sponsorProducts = createKeyedSelector(
+        (state: State, index: number) => {
+            let productIds = (RoomPage.get(state, 'sponsors', List()).get(index) as Map<any, any>).get('productIds', List())
+            return productIds.map((id: number) => new ShopProduct(id, state.get('entities')))
+        },
+    )(
+        (state: State, index: number) => (RoomPage.get(state, 'sponsors', List()).get(index) as Map<any, any>).get('productIds'),
+        (state: State, index: number) => index
+    )
     
     /**
      * Wrapped queries
@@ -244,6 +254,10 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
 
     static isUserBanned(state: State, username: string) {
         return Room.isUserBanned(state, this.get(state, 'id'), username)
+    }
+
+    static isSponsorExpanded(state: State, index: number) {
+        return !!(RoomPage.get(state, 'sponsors', List()).get(index) as Map<any, any>).get('expanded')
     }
 
 }
