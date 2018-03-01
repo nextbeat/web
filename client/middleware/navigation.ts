@@ -164,8 +164,9 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
     {
         const isAtLastMediaItem = Room.indexOfSelectedMediaItem(state, action.roomId) === Room.mediaItemsSize(state, action.roomId)-1
         let isAtPlaybackEnd = Room.get(state, action.roomId, 'isAtPlaybackEnd')
+        let isContinuousPlayEnabled = Room.get(state, action.roomId, 'isContinuousPlayEnabled')
 
-        if (isAtLastMediaItem && isAtPlaybackEnd) {
+        if (isAtLastMediaItem && isAtPlaybackEnd && isContinuousPlayEnabled) {
             process.nextTick(() => {
                 store.dispatch(goForward(action.roomId))
             })
