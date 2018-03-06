@@ -37,7 +37,6 @@ export function init(web) {
             // we check for the header which is set if the current token
             // is still a jwt, and update the user's token
             if (req.user && has(res2.headers, 'x-bbl-jwt-token')) {
-                console.log(req.user.username, res2.headers['x-bbl-jwt-token']);
                 var newUser = assign({}, req.user, { token: res2.headers['x-bbl-jwt-token'] })
                 req.logIn(newUser, function(err) {
                     res.send(res2.body);
