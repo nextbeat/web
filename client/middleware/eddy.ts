@@ -41,11 +41,17 @@ import {
     UnpinCommentAction,
     BookmarkAction,
     UnbookmarkAction,
-    RoomBanUserAction,
-    RoomUnbanUserAction,
+    RoomBanAction,
+    RoomUnbanAction,
     RoomAction,
     ClearRoomAction
 } from '@actions/room'
+import {
+    CreatorBanAction,
+    CreatorUnbanAction,
+    ModAction,
+    UnmodAction
+} from '@actions/user'
 import { triggerAuthError } from '@actions/app'
 
 import Eddy from '@models/state/eddy'
@@ -250,14 +256,6 @@ function wrapUnbookmark(store: Store, next: Dispatch, action: UnbookmarkAction) 
     return wrapAction(store, next, action)(unbookmark, { updateAction })
 }
 
-function roomBan(action: RoomBanUserAction, client: EddyClient) {
-    return client.ban(action.roomId, action.username);
-}
-
-function roomUnban(action: RoomUnbanUserAction, client: EddyClient) {
-    return client.unban(action.roomId, action.username);
-}
-
 function sendComment(action: SendCommentAction, client: EddyClient) {
     return client.chat(action.roomId, action.message);
 }
@@ -313,6 +311,30 @@ function wrapPinComment(store: Store, next: Dispatch, action: PinCommentAction) 
 
 function unpinComment(action: UnpinCommentAction, client: EddyClient) {
     return client.unpin(action.roomId);
+}
+
+function roomBan(action: RoomBanAction, client: EddyClient) {
+    return client.roomBan(action.roomId, action.username);
+}
+
+function roomUnban(action: RoomUnbanAction, client: EddyClient) {
+    return client.roomUnban(action.roomId, action.username);
+}
+
+function creatorBan(action: CreatorBanAction, client: EddyClient) {
+    return client.creatorBan(action.creatorId, action.username);
+}
+
+function creatorUnban(action: CreatorUnbanAction, client: EddyClient) {
+    return client.creatorUnban(action.creatorId, action.username);
+}
+
+function mod(action: ModAction, client: EddyClient) {
+    return client.mod(action.creatorId, action.username);
+}
+
+function unmod(action: ModAction, client: EddyClient) {
+    return client.unmod(action.creatorId, action.username);
 }
 
 function loadRoom(store: Store, next: Dispatch, action: RoomAction) {
@@ -411,10 +433,18 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
             return wrapBookmark(store, next, action);
         case ActionType.UNBOOKMARK:
             return wrapUnbookmark(store, next, action);
-        case ActionType.ROOM_BAN_USER:
+        case ActionType.ROOM_BAN:
             return wrap(roomBan);
-        case ActionType.ROOM_UNBAN_USER:
+        case ActionType.ROOM_UNBAN:
             return wrap(roomUnban);
+        case ActionType.CREATOR_BAN:
+            return wrap(creatorBan);
+        case ActionType.CREATOR_UNBAN:
+            return wrap(creatorUnban)
+        case ActionType.MOD:
+            return wrap(mod)
+        case ActionType.UNMOD:
+            return wrap(unmod)
         case ActionType.ROOM:
             return loadRoom(store, next, action)
         case ActionType.CLEAR_ROOM:

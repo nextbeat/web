@@ -5,14 +5,20 @@ import {
     SendCommentAction,
     PinCommentAction,
     UnpinCommentAction,
-    RoomBanUserAction,
-    RoomUnbanUserAction,
+    RoomBanAction,
+    RoomUnbanAction,
     ClearCommentsAction,
     CommentsAction
 } from '@actions/room'
 import {
     DeleteMediaItemAction
 } from '@actions/pages/room'
+import {
+    CreatorBanAction,
+    CreatorUnbanAction,
+    ModAction,
+    UnmodAction
+} from '@actions/user'
 import {
     JoinRoomAction,
     LeaveRoomAction,
@@ -35,6 +41,12 @@ function processRoomInfo(state: State, action: RoomInfoAction | JoinRoomAction) 
     })
     if ('room_banned_users' in action.responseData) {
         state = state.set('roomBannedUsers', fromJS(action.responseData.room_banned_users));
+    }
+    if ('creator_banned_users' in action.responseData) {
+        state = state.set('creatorBannedUsers', fromJS(action.responseData.creator_banned_users))
+    }
+    if ('moderators' in action.responseData) {
+        state = state.set('moderators', fromJS(action.responseData.moderators))
     }
     return state;
 }
@@ -148,16 +160,44 @@ function unpinComment(state: State, action: UnpinCommentAction) {
     return state;
 }
 
-function roomBanUser(state: State, action: RoomBanUserAction) {
+function roomBan(state: State, action: RoomBanAction) {
     if (action.status === Status.SUCCESS) {
         return state.update('roomBannedUsers', List(), users => users.push(action.username));
     }
     return state;
 }
 
-function roomUnbanUser(state: State, action: RoomUnbanUserAction) {
+function roomUnban(state: State, action: RoomUnbanAction) {
     if (action.status === Status.SUCCESS) {
         return state.update('roomBannedUsers', List(), users => users.filterNot((u: any) => u === action.username))
+    }
+    return state;
+}
+
+function creatorBan(state: State, action: CreatorBanAction) {
+    if (action.status === Status.SUCCESS) {
+        return state.update('creatorBannedUsers', List(), users => users.push(action.username));
+    }
+    return state;
+}
+
+function creatorUnban(state: State, action: CreatorUnbanAction) {
+    if (action.status === Status.SUCCESS) {
+        return state.update('creatorBannedUsers', List(), users => users.filterNot((u: any) => u === action.username))
+    }
+    return state;
+}
+
+function mod(state: State, action: ModAction) {
+    if (action.status === Status.SUCCESS) {
+        return state.update('moderators', List(), users => users.push(action.username));
+    }
+    return state;
+}
+
+function unmod(state: State, action: UnmodAction) {
+    if (action.status === Status.SUCCESS) {
+        return state.update('moderators', List(), users => users.filterNot((u: any) => u === action.username))
     }
     return state;
 }
@@ -234,10 +274,18 @@ export default function live(state = initialState, action: Action) {
             return pinComment(state, action);
         case ActionType.UNPIN_COMMENT:
             return unpinComment(state, action);
-        case ActionType.ROOM_BAN_USER:
-            return roomBanUser(state, action);
-        case ActionType.ROOM_UNBAN_USER:
-            return roomUnbanUser(state, action);
+        case ActionType.ROOM_BAN:
+            return roomBan(state, action);
+        case ActionType.ROOM_UNBAN:
+            return roomUnban(state, action);
+        case ActionType.CREATOR_BAN:
+            return creatorBan(state, action);
+        case ActionType.CREATOR_UNBAN:
+            return creatorUnban(state, action);
+        case ActionType.MOD:
+            return mod(state, action);
+        case ActionType.UNMOD:
+            return unmod(state, action);
         case ActionType.CLEAR_COMMENTS:
             return clearComments(state);
         case ActionType.DELETE_MEDIA_ITEM:

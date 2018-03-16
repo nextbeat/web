@@ -32,6 +32,10 @@ export type UserActionAll =
     SignupAction |
     SubscribeAction |
     UnsubscribeAction |
+    CreatorBanAction |
+    CreatorUnbanAction |
+    ModAction |
+    UnmodAction |
     ClearLoginSignupAction |
     ClearClosedBookmarkedStacksAction 
     
@@ -345,6 +349,62 @@ export function unsubscribe(user: UserEntity): ThunkAction {
             return
         }
         dispatch(postUnsubscribe(user.get('id')))
+    }
+}
+
+/***********
+ * COMMUNITY
+ ***********/
+
+export interface CreatorBanAction extends GenericAction {
+    type: ActionType.CREATOR_BAN
+    creatorId: number
+    username: string
+}
+export function creatorBan(creatorId: number, username: string): CreatorBanAction {
+    return {
+        type: ActionType.CREATOR_BAN,
+        creatorId,
+        username
+    }
+}
+
+export interface CreatorUnbanAction extends GenericAction {
+    type: ActionType.CREATOR_UNBAN
+    creatorId: number
+    username: string
+}
+export function creatorUnban(creatorId: number, username: string): CreatorUnbanAction {
+    return {
+        type: ActionType.CREATOR_UNBAN,
+        creatorId,
+        username
+    }
+}
+
+export interface ModAction extends GenericAction {
+    type: ActionType.MOD,
+    creatorId: number,
+    username: string
+}
+export function mod(creatorId: number, username: string): ModAction {
+    return {
+        type: ActionType.MOD,
+        creatorId,
+        username
+    }
+}
+
+export interface UnmodAction extends GenericAction {
+    type: ActionType.UNMOD,
+    creatorId: number,
+    username: string
+}
+export function unmod(creatorId: number, username: string): UnmodAction {
+    return {
+        type: ActionType.UNMOD,
+        creatorId,
+        username
     }
 }
 

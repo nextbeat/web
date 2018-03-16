@@ -57,6 +57,8 @@ type EddySendType =
     'chat' |
     'ban' |
     'unban' |
+    'mod' | 
+    'unmod' |
     'pin' |
     'unpin' |
     'bookmark' |
@@ -246,12 +248,28 @@ export default class EddyClient {
         return this._send('unbookmark', { room_id: roomId })
     }
 
-    ban(roomId: number, username: string) {
+    roomBan(roomId: number, username: string) {
         return this._send('ban', { room_id: roomId, username: username });
     }
 
-    unban(roomId: number, username: string) {
+    roomUnban(roomId: number, username: string) {
         return this._send('unban', { room_id: roomId, username: username });
+    }
+
+    creatorBan(creatorId: number, username: string) {
+        return this._send('ban', { creator_id: creatorId, username: username })
+    }
+
+    creatorUnban(creatorId: number, username: string) {
+        return this._send('unban', { creator_id: creatorId, username: username })
+    }
+
+    mod(creatorId: number, username: string) {
+        return this._send('mod', { creator_id: creatorId, username: username })
+    }
+
+    unmod(creatorId: number, username: string) {
+        return this._send('unmod', { creator_id: creatorId, username: username })
     }
 
     // Message sending and receiving

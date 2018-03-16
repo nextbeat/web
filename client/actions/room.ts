@@ -39,8 +39,8 @@ export type RoomActionAll =
     SendCommentAction |
     PinCommentAction |
     UnpinCommentAction |
-    RoomBanUserAction |
-    RoomUnbanUserAction |
+    RoomBanAction |
+    RoomUnbanAction |
     UseChatAction |
     BookmarkAction |
     UnbookmarkAction |
@@ -374,55 +374,49 @@ export function unpinComment(roomId: number): ThunkAction {
     }
 }
 
-export interface RoomBanUserAction extends GenericAction {
-    type: ActionType.ROOM_BAN_USER
+export interface RoomBanAction extends GenericAction {
+    type: ActionType.ROOM_BAN
     roomId: number
     username: string
 }
-function performRoomBanUser(roomId: number, username: string): RoomBanUserAction {
+function performRoomBan(roomId: number, username: string): RoomBanAction {
     return {
-        type: ActionType.ROOM_BAN_USER,
+        type: ActionType.ROOM_BAN,
         roomId,
         username
     }
 }
 
-export function roomBanUser(roomId: number, username: string): ThunkAction {
+export function roomBan(roomId: number, username: string): ThunkAction {
     return (dispatch, getState) => {
         const state = getState()
-        if (!Room.isCurrentUserAuthor(state, roomId)) {
-            return null;
-        }
         if (Room.isUserRoomBanned(state, roomId, username)) {
             return null;
         }
-        dispatch(performRoomBanUser(roomId, username))
+        dispatch(performRoomBan(roomId, username))
     }
 }
 
-export interface RoomUnbanUserAction extends GenericAction {
-    type: ActionType.ROOM_UNBAN_USER
+export interface RoomUnbanAction extends GenericAction {
+    type: ActionType.ROOM_UNBAN
     roomId: number
     username: string
 }
-function performRoomUnbanUser(roomId: number, username: string): RoomUnbanUserAction {
+function performRoomUnban(roomId: number, username: string): RoomUnbanAction {
     return {
-        type: ActionType.ROOM_UNBAN_USER,
+        type: ActionType.ROOM_UNBAN,
         roomId,
         username
     }
 }
 
-export function roomUnbanUser(roomId: number, username: string): ThunkAction {
+export function roomUnban(roomId: number, username: string): ThunkAction {
     return (dispatch, getState) => {
         const state = getState()
-        if (!Room.isCurrentUserAuthor(state, roomId)) {
-            return null;
-        }
         if (!Room.isUserRoomBanned(state, roomId, username)) {
             return null;
         }
-        dispatch(performRoomUnbanUser(roomId, username))
+        dispatch(performRoomUnban(roomId, username))
     }
 }
 

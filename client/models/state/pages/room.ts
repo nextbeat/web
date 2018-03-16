@@ -256,6 +256,14 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
         return Room.isUserRoomBanned(state, this.get(state, 'id'), username)
     }
 
+    static isUserCreatorBanned(state: State, username: string) {
+        return Room.isUserCreatorBanned(state, this.get(state, 'id'), username)
+    }
+
+    static isUserModerator(state: State, username: string) {
+        return Room.isUserModerator(state, this.get(state, 'id'), username)
+    }
+
     static isSponsorExpanded(state: State, index: number) {
         return !!(RoomPage.get(state, 'sponsors', List()).get(index) as Map<any, any>).get('expanded')
     }

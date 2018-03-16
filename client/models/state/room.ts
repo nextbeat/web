@@ -44,6 +44,8 @@ export interface RoomProps {
     selectedComment: number
 
     roomBannedUsers: List<string>
+    creatorBannedUsers: List<string>
+    moderators: List<string>
     pinnedCommentId: number
     creator: string
     chatTags: List<string>
@@ -96,6 +98,8 @@ const keyMap: {[key in keyof RoomProps]: string[]} = {
     'selectedComment': ['navigation', 'selectedComment'],
     // other data
     'roomBannedUsers': ['live', 'roomBannedUsers'],
+    'creatorBannedUsers': ['live', 'creatorBannedUsers'],
+    'moderators': ['live', 'moderators'],
     'pinnedCommentId': ['live', 'pinnedCommentId'],
     'creator': ['live', 'creator'],
     'chatTags': ['live', 'tags'],
@@ -372,6 +376,14 @@ export default class Room {
 
     static isUserRoomBanned(state: State, id: number, username: string): boolean {
         return (Room.get(state, id, 'roomBannedUsers', List()).indexOf(username) > -1)
+    }
+
+    static isUserCreatorBanned(state: State, id: number, username: string): boolean {
+        return (Room.get(state, id, 'creatorBannedUsers', List()).indexOf(username) > -1)
+    }
+
+    static isUserModerator(state: State, id: number, username: string): boolean {
+        return (Room.get(state, id, 'moderators', List()).indexOf(username) > -1)
     }
 
     /* Other */
