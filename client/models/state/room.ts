@@ -43,7 +43,7 @@ export interface RoomProps {
     failedComments: List<State>
     selectedComment: number
 
-    bannedUsers: List<string>
+    roomBannedUsers: List<string>
     pinnedCommentId: number
     creator: string
     chatTags: List<string>
@@ -95,7 +95,7 @@ const keyMap: {[key in keyof RoomProps]: string[]} = {
     'failedComments': ['live', 'failedComments'],
     'selectedComment': ['navigation', 'selectedComment'],
     // other data
-    'bannedUsers': ['live', 'bannedUsers'],
+    'roomBannedUsers': ['live', 'roomBannedUsers'],
     'pinnedCommentId': ['live', 'pinnedCommentId'],
     'creator': ['live', 'creator'],
     'chatTags': ['live', 'tags'],
@@ -370,8 +370,8 @@ export default class Room {
         return !!this.get(state, id, 'commentsHasFetched') && this.hasJoined(state, id)
     }
 
-    static isUserBanned(state: State, id: number, username: string): boolean {
-        return (Room.get(state, id, 'bannedUsers', List()).indexOf(username) > -1)
+    static isUserRoomBanned(state: State, id: number, username: string): boolean {
+        return (Room.get(state, id, 'roomBannedUsers', List()).indexOf(username) > -1)
     }
 
     /* Other */

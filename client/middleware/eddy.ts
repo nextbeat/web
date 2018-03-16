@@ -41,8 +41,8 @@ import {
     UnpinCommentAction,
     BookmarkAction,
     UnbookmarkAction,
-    BanUserAction,
-    UnbanUserAction,
+    RoomBanUserAction,
+    RoomUnbanUserAction,
     RoomAction,
     ClearRoomAction
 } from '@actions/room'
@@ -250,11 +250,11 @@ function wrapUnbookmark(store: Store, next: Dispatch, action: UnbookmarkAction) 
     return wrapAction(store, next, action)(unbookmark, { updateAction })
 }
 
-function ban(action: BanUserAction, client: EddyClient) {
+function roomBan(action: RoomBanUserAction, client: EddyClient) {
     return client.ban(action.roomId, action.username);
 }
 
-function unban(action: UnbanUserAction, client: EddyClient) {
+function roomUnban(action: RoomUnbanUserAction, client: EddyClient) {
     return client.unban(action.roomId, action.username);
 }
 
@@ -411,10 +411,10 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
             return wrapBookmark(store, next, action);
         case ActionType.UNBOOKMARK:
             return wrapUnbookmark(store, next, action);
-        case ActionType.BAN_USER:
-            return wrap(ban);
-        case ActionType.UNBAN_USER:
-            return wrap(unban);
+        case ActionType.ROOM_BAN_USER:
+            return wrap(roomBan);
+        case ActionType.ROOM_UNBAN_USER:
+            return wrap(roomUnban);
         case ActionType.ROOM:
             return loadRoom(store, next, action)
         case ActionType.CLEAR_ROOM:

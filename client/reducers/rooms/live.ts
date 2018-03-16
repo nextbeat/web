@@ -5,8 +5,8 @@ import {
     SendCommentAction,
     PinCommentAction,
     UnpinCommentAction,
-    BanUserAction,
-    UnbanUserAction,
+    RoomBanUserAction,
+    RoomUnbanUserAction,
     ClearCommentsAction,
     CommentsAction
 } from '@actions/room'
@@ -33,8 +33,8 @@ function processRoomInfo(state: State, action: RoomInfoAction | JoinRoomAction) 
         creator: action.responseData.creator,
         tags: fromJS(action.responseData.tags)
     })
-    if ('banned_users' in action.responseData) {
-        state = state.set('bannedUsers', fromJS(action.responseData.banned_users));
+    if ('room_banned_users' in action.responseData) {
+        state = state.set('roomBannedUsers', fromJS(action.responseData.room_banned_users));
     }
     return state;
 }
@@ -148,16 +148,16 @@ function unpinComment(state: State, action: UnpinCommentAction) {
     return state;
 }
 
-function banUser(state: State, action: BanUserAction) {
+function roomBanUser(state: State, action: RoomBanUserAction) {
     if (action.status === Status.SUCCESS) {
-        return state.update('bannedUsers', List(), users => users.push(action.username));
+        return state.update('roomBannedUsers', List(), users => users.push(action.username));
     }
     return state;
 }
 
-function unbanUser(state: State, action: UnbanUserAction) {
+function roomUnbanUser(state: State, action: RoomUnbanUserAction) {
     if (action.status === Status.SUCCESS) {
-        return state.update('bannedUsers', List(), users => users.filterNot((u: any) => u === action.username))
+        return state.update('roomBannedUsers', List(), users => users.filterNot((u: any) => u === action.username))
     }
     return state;
 }
@@ -234,10 +234,10 @@ export default function live(state = initialState, action: Action) {
             return pinComment(state, action);
         case ActionType.UNPIN_COMMENT:
             return unpinComment(state, action);
-        case ActionType.BAN_USER:
-            return banUser(state, action);
-        case ActionType.UNBAN_USER:
-            return unbanUser(state, action);
+        case ActionType.ROOM_BAN_USER:
+            return roomBanUser(state, action);
+        case ActionType.ROOM_UNBAN_USER:
+            return roomUnbanUser(state, action);
         case ActionType.CLEAR_COMMENTS:
             return clearComments(state);
         case ActionType.DELETE_MEDIA_ITEM:

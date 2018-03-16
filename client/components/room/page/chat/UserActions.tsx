@@ -6,7 +6,7 @@ import Modal from '@components/shared/Modal'
 import CurrentUser from '@models/state/currentUser'
 import App from '@models/state/app'
 import RoomPage from '@models/state/pages/room'
-import { banUser, unbanUser } from '@actions/room'
+import { roomBanUser, roomUnbanUser } from '@actions/room'
 import { mentionUser } from '@actions/pages/room'
 import { closeModal } from '@actions/app'
 import { State, DispatchProps } from '@types'
@@ -50,9 +50,9 @@ class UserActions extends React.Component<Props> {
         const { dispatch, username, roomId, isUserBanned } = this.props 
         dispatch(closeModal())
         if (isUserBanned) {
-            dispatch(unbanUser(roomId, username))
+            dispatch(roomUnbanUser(roomId, username))
         } else {
-            dispatch(banUser(roomId, username))
+            dispatch(roomBanUser(roomId, username))
         }
     }
 
@@ -89,7 +89,7 @@ function mapStateToProps(state: State): ConnectProps {
         username,
         roomId: RoomPage.get(state, 'id'),
         isCurrentUserAuthor: RoomPage.isCurrentUserAuthor(state),
-        isUserBanned: RoomPage.isUserBanned(state, username),
+        isUserBanned: RoomPage.isUserRoomBanned(state, username),
         isUserCurrentUser: CurrentUser.entity(state).get('username') === username
     }
 }

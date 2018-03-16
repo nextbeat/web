@@ -252,8 +252,8 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
         return Room.mostRecentComment(state, this.get(state, 'id'))
     }
 
-    static isUserBanned(state: State, username: string) {
-        return Room.isUserBanned(state, this.get(state, 'id'), username)
+    static isUserRoomBanned(state: State, username: string) {
+        return Room.isUserRoomBanned(state, this.get(state, 'id'), username)
     }
 
     static isSponsorExpanded(state: State, index: number) {
