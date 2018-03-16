@@ -55,6 +55,8 @@ type EddySendType =
     'room_leave' |
     'room_info' |
     'chat' |
+    'room_ban' |
+    'room_unban' |
     'ban' |
     'unban' |
     'mod' | 
@@ -249,11 +251,11 @@ export default class EddyClient {
     }
 
     roomBan(roomId: number, username: string) {
-        return this._send('ban', { room_id: roomId, username: username });
+        return this._send('room_ban', { room_id: roomId, username: username });
     }
 
     roomUnban(roomId: number, username: string) {
-        return this._send('unban', { room_id: roomId, username: username });
+        return this._send('room_unban', { room_id: roomId, username: username });
     }
 
     creatorBan(creatorId: number, username: string) {

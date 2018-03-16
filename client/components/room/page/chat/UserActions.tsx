@@ -8,14 +8,19 @@ import App from '@models/state/app'
 import RoomPage from '@models/state/pages/room'
 import { roomBan, roomUnban } from '@actions/room'
 import { mentionUser } from '@actions/pages/room'
+import { creatorBan, creatorUnban, mod, unmod } from '@actions/user'
 import { closeModal } from '@actions/app'
 import { State, DispatchProps } from '@types'
 
 interface ConnectProps {
     username: string
     roomId: number
+    creatorId: number
+
     isCurrentUserAuthor: boolean
+    isCurrentUserModerator: boolean
     isUserCurrentUser: boolean
+
     isUserRoomBanned: boolean
     isUserCreatorBanned: boolean
     isUserModerator: boolean
@@ -30,7 +35,9 @@ class UserActions extends React.Component<Props> {
 
         this.handleGoToProfile = this.handleGoToProfile.bind(this);
         this.handleMention = this.handleMention.bind(this);
-        this.handleUpdateBanStatus = this.handleUpdateBanStatus.bind(this);
+        this.handleRoomBan = this.handleRoomBan.bind(this);
+        this.handleCreatorBan = this.handleCreatorBan.bind(this);
+        this.handleMod = this.handleMod.bind(this);
     }
     
 
@@ -48,8 +55,9 @@ class UserActions extends React.Component<Props> {
         browserHistory.push(`/u/${username}`)
     }
 
-    handleUpdateBanStatus() {
+    handleRoomBan() {
         const { dispatch, username, roomId, isUserRoomBanned } = this.props 
+
         dispatch(closeModal())
         if (isUserRoomBanned) {
             dispatch(roomUnban(roomId, username))
@@ -58,11 +66,34 @@ class UserActions extends React.Component<Props> {
         }
     }
 
+    handleCreatorBan() {
+        const { dispatch, username, creatorId, isUserCreatorBanned } = this.props 
+
+        dispatch(closeModal())
+        if (isUserCreatorBanned) {
+            dispatch(creatorUnban(creatorId, username))
+        } else {
+            dispatch(creatorBan(creatorId, username))
+        }
+    }
+
+    handleMod() {
+        const { dispatch, username, creatorId, isUserModerator } = this.props 
+
+        dispatch(closeModal())
+        if (isUserModerator) {
+            dispatch(unmod(creatorId, username))
+        } else {
+            dispatch(mod(creatorId, username))
+        }
+    }
+
 
     // Render
 
     render() {
-        const { isCurrentUserAuthor, isUserRoomBanned, isUserCurrentUser, username } = this.props
+        const { username, isCurrentUserAuthor, isCurrentUserModerator, isUserCurrentUser, 
+                isUserRoomBanned, isUserCreatorBanned, isUserModerator } = this.props
 
         return (
             <Modal name="chat-user-actions" className="modal-action">
@@ -75,9 +106,19 @@ class UserActions extends React.Component<Props> {
                 <div className="modal-action_btn btn btn-gray" onClick={this.handleMention}>
                     Mention
                 </div>
-                { isCurrentUserAuthor && !isUserCurrentUser && 
-                    <div className="modal-action_btn btn" onClick={this.handleUpdateBanStatus}>
-                    { isUserRoomBanned ? "Unban" : "Ban" }
+                { (isCurrentUserModerator || isCurrentUserAuthor) && !isUserCurrentUser && !isUserModerator && !isUserCreatorBanned &&
+                    <div className="modal-action_btn btn" onClick={this.handleRoomBan}>
+                        { isUserRoomBanned ? "Remove ban from room" : "Ban from room" }
+                    </div>
+                }
+                { (isCurrentUserModerator || isCurrentUserAuthor) && !isUserCurrentUser && !isUserModerator &&
+                    <div className="modal-action_btn btn" onClick={this.handleCreatorBan}>
+                        { isUserCreatorBanned ? "Remove permaban" : "Permaban" }
+                    </div>
+                }
+                { isCurrentUserAuthor && !isUserCurrentUser && !isUserRoomBanned && !isUserCreatorBanned &&
+                    <div className="modal-action_btn btn" onClick={this.handleMod}>
+                        { isUserModerator ? "Unmod" : "Mod" }
                     </div>
                 }
             </Modal>
@@ -90,8 +131,12 @@ function mapStateToProps(state: State): ConnectProps {
     return {
         username,
         roomId: RoomPage.get(state, 'id'),
+        creatorId: RoomPage.author(state).get('id'),
+        
         isCurrentUserAuthor: RoomPage.isCurrentUserAuthor(state),
+        isCurrentUserModerator: RoomPage.isCurrentUserModerator(state),
         isUserCurrentUser: CurrentUser.entity(state).get('username') === username,
+
         isUserRoomBanned: RoomPage.isUserRoomBanned(state, username),
         isUserCreatorBanned: RoomPage.isUserCreatorBanned(state, username),
         isUserModerator: RoomPage.isUserModerator(state, username)

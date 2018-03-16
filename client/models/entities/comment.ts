@@ -1,4 +1,4 @@
-import { List } from 'immutable'
+import { List, Map } from 'immutable'
 
 import { EntityModel } from './base'
 import User from './user'
@@ -6,8 +6,28 @@ import Stack from './stack'
 
 import { State } from '@types'
 
+interface CommentAuthorProps {
+    badge: string
+    id: number
+    username: string
+}
+
+export class CommentAuthor extends EntityModel<CommentAuthorProps> {
+    constructor(public _entity: State) {
+        super(0, Map())
+    }
+
+    entity(): State {
+        return this._entity;
+    }
+
+    isBot(): boolean {
+        return this.get('badge') === 'bot'
+    }
+}
+
 interface CommentProps {
-    author: number
+    author: State
     created_at: string
     is_referenced_by: number
     id: number
@@ -30,8 +50,8 @@ export default class Comment extends EntityModel<CommentProps> {
 
     entityName = "comments"
 
-    author(): User {
-        return new User(this.get('author', 0), this.entities)
+    author(): CommentAuthor {
+        return new CommentAuthor(this.get('author'))
     }
 
     stack(): Stack {

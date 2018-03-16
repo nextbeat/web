@@ -2,6 +2,8 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 
 import renderMessageText from './utils/renderMessageText'
+import ChatItemHeader from './ChatItemHeader'
+
 import { unpinComment } from '@actions/room'
 import { searchChat } from '@actions/pages/room'
 import RoomPage from '@models/state/pages/room'
@@ -46,9 +48,7 @@ class PinnedChatItem extends React.Component<Props & DispatchProps> {
         return (
             <div className="chat_pinned-comment">
                 <div className="chat_item-pinned-comment chat_item">
-                    <div className="chat_item-pinned-comment_header">
-                        <span className={`chat_item_username chat_item-pinned-comment_username ${creatorClass}`}>{pinnedComment.author().get('username')}</span>
-                    </div>
+                    <ChatItemHeader comment={pinnedComment} />
                     <div className="chat_item-pinned-comment_body">
                        { renderMessageText(pinnedComment, { onHashtagClick: this.handleSelectHashtag }) }
                     </div>

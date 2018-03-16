@@ -264,6 +264,10 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
         return Room.isUserModerator(state, this.get(state, 'id'), username)
     }
 
+    static isCurrentUserModerator(state: State) {
+        return Room.isCurrentUserModerator(state, this.get(state, 'id'))
+    }
+
     static isSponsorExpanded(state: State, index: number) {
         return !!(RoomPage.get(state, 'sponsors', List()).get(index) as Map<any, any>).get('expanded')
     }

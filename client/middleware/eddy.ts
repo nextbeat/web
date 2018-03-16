@@ -3,12 +3,6 @@ import { normalize } from 'normalizr'
 import * as format from 'date-fns/format'
 import * as Promise from 'bluebird'
 
-// import EddyClient from '../eddy'
-// import { ActionTypes, Status } from '../actions'
-// import { joinRoom, leaveRoom, reconnectEddy, getRoomInfo, startRoomTimer, triggerAuthError } from '../actions'
-// import { Eddy, CurrentUser, Room } from '../models'
-// import Schemas from '../schemas'
-
 import { Store, Dispatch } from '@types'
 import { Status, Action, GenericAction, ActionType } from '@actions/types' 
 import { 
@@ -263,20 +257,10 @@ function sendComment(action: SendCommentAction, client: EddyClient) {
 function wrapSendComment(store: Store, next: Dispatch, action: SendCommentAction) {
 
     let updateAction = function(action: SendCommentAction) {
-        // save comment into entities, now that we have the id
-        // todo: private comment support
-        const comment = {
-            message: action.message,
-            type: "message",
-            subtype: "public",
-            id: action.responseData.comment_id,
-            user_mentions: action.responseData.user_mentions,
+        const comment = assign({}, action.responseData.comment, {
             stack_id: action.roomId,
-            created_at: format(new Date()),
-            author: {
-                id: CurrentUser.get(store.getState(), 'id')
-            }
-        }
+            type: 'message'
+        })
         const response = normalize(comment, Schemas.Comment)
         return assign({}, action, { response })
     }
@@ -291,17 +275,10 @@ function pinComment(action: PinCommentAction, client: EddyClient) {
 function wrapPinComment(store: Store, next: Dispatch, action: PinCommentAction) {
 
     let updateAction = function(action: PinCommentAction) {
-        const comment = {
-            message: action.message,
-            type: "message",
-            subtype: "pinned",
-            id: action.responseData.comment_id,
+        const comment = assign({}, action.responseData.comment, {
             stack_id: action.roomId,
-            user_mentions: action.responseData.user_mentions,
-            author: {
-                id: CurrentUser.get(store.getState(), 'id')
-            }
-        }
+            type: 'message'
+        })
         const response = normalize(comment, Schemas.Comment)
         return assign({}, action, { response })
     }

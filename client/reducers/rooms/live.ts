@@ -122,7 +122,7 @@ function sendComment(state: State, action: SendCommentAction) {
     } else if (action.status === Status.SUCCESS) {
 
         return state
-            .update('comments', comments => comments.push(action.responseData.comment_id))
+            .update('comments', comments => comments.push(action.responseData.comment.id))
             .update('submittingComments', comments => comments.filter((c: State) => c.get('temporary_id') !== action.temporaryId))
             .update('failedComments', comments => comments.filter((c: State) => c.get('temporary_id') !== action.temporaryId))
 
@@ -148,7 +148,7 @@ function sendComment(state: State, action: SendCommentAction) {
 
 function pinComment(state: State, action: PinCommentAction) {
     if (action.status === Status.SUCCESS) {
-        return state.set('pinnedCommentId', action.responseData.comment_id)
+        return state.set('pinnedCommentId', action.responseData.comment.id)
     }
     return state;
 }

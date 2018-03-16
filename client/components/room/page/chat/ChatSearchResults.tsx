@@ -83,17 +83,15 @@ class ChatSearchResults extends React.Component<Props> {
 
 
     renderComment(comment: SearchResultComment, idx: number) {
-        const { isCurrentUserAuthor, isClosed, activeDropdowns, roomId, authorUsername } = this.props
+        const { isCurrentUserAuthor, isClosed, activeDropdowns, roomId } = this.props
 
         const componentId = `comment-search-result-${roomId}-${comment.get('id')}`
         const isDropdownActive = activeDropdowns.includes(`${componentId}-options`)
-        const isCreator = authorUsername === comment.author().get('username')
 
         return <ChatItem
                     id={componentId}
                     key={idx} 
                     comment={comment} 
-                    isCreator={isCreator}
                     showOptions={isCurrentUserAuthor && !isClosed}
                     isSearchResult={true}
                     isDropdownActive={isDropdownActive}

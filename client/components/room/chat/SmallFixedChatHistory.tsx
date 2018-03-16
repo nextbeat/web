@@ -86,13 +86,11 @@ class SmallFixedChatHistory extends React.Component<Props, ChatState> {
 
     renderComment(comment: Comment, idx: number) {
         const { authorUsername, roomId } = this.props;
-        const isCreator = comment.author().get('username') === authorUsername;
 
         if (comment.get('type') === 'message') {
             return <ChatItem 
                         key={comment.get('id')} 
                         comment={comment}
-                        isCreator={isCreator} 
                         isCollapsed={true}
                     />
         } else if (comment.get('type') === 'notification') {
@@ -108,13 +106,11 @@ class SmallFixedChatHistory extends React.Component<Props, ChatState> {
     renderLiveComment(comment: Comment, idx: number) {
         const { authorUsername, comments, roomId } = this.props;
         const key = `l${idx}`;
-        const isCreator = (authorUsername === comment.author().get('username'));
 
         if (comment.get('type') === 'message') {
             return <ChatItem 
                         key={key} 
                         comment={comment} 
-                        isCreator={isCreator} 
                         isCollapsed={true}
                     />
         } else if (comment.get('type') === 'notification') {

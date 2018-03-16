@@ -386,6 +386,13 @@ export default class Room {
         return (Room.get(state, id, 'moderators', List()).indexOf(username) > -1)
     }
 
+    static isCurrentUserModerator(state: State, id: number): boolean {
+        if (!CurrentUser.isLoggedIn(state)) {
+            return false
+        }
+        return (Room.get(state, id, 'moderators', List()).indexOf(CurrentUser.entity(state).get('username')) > -1)
+    }
+
     /* Other */
 
     static isCurrentUserAuthor(state: State, id: number): boolean {

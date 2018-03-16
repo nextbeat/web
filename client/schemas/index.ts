@@ -4,7 +4,7 @@ const Tag = new schema.Entity('tags');
 const User = new schema.Entity('users');
 const MediaItem = new schema.Entity('mediaItems');
 const Stack = new schema.Entity('stacks', { author: User, mediaItems: [ MediaItem ] });
-const Comment = new schema.Entity('comments', { author: User, recipient: User, stack: Stack })
+const Comment = new schema.Entity('comments', { stack: Stack })
 const CampaignStack = new schema.Entity('campaignStacks')
 const Campaign = new schema.Entity('campaigns', { stacks: [ CampaignStack ] })
 const Ad = new schema.Entity('ads')
@@ -16,7 +16,7 @@ MediaItem.define({ references: Comment }); // handles circular reference
 // attribute, so we create a new schema to store
 // them so that normal Comments aren't polluted
 // with that attribute (which could affect rendering)
-const SearchResultComment = new schema.Entity('searchResultComments', { author: User, recipient: User });
+const SearchResultComment = new schema.Entity('searchResultComments');
 
 // The shop schema does not directly map to an
 // entity, but is used for normalizing the result

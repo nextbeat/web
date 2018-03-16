@@ -1,5 +1,6 @@
 import { Map } from 'immutable'
 import TemporaryEntityModel from './base'
+import { CommentAuthor } from '../comment'
 
 interface TemporaryCommentProps {
     message: string
@@ -14,8 +15,8 @@ export default class TemporaryComment extends TemporaryEntityModel<TemporaryComm
 
     __no_header__?: boolean    
     
-    author() {
-        return Map({ username: this.get('username'), is_bot: false })
+    author(): CommentAuthor {
+        return new CommentAuthor(Map({ username: this.get('username') }))
     }
 
 }

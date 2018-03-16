@@ -4,17 +4,15 @@ import { Map } from 'immutable'
 import { timeOfDayString } from '@utils'
 
 import renderMessageText from './utils/renderMessageText'
+import ChatItemHeader from './ChatItemHeader'
 import Icon from '@components/shared/Icon'
 import Dropdown from '@components/shared/Dropdown'
 import Comment from '@models/entities/comment'
 import TemporaryComment from '@models/entities/temporary/comment'
 
-import robot from '@images/robot_64px.png';
-
 interface Props {
     id?: string
     comment: Comment | TemporaryComment
-    isCreator: boolean
 
     isCollapsed?: boolean
     isSelected?: boolean
@@ -83,30 +81,15 @@ class ChatItem extends React.PureComponent<Props> {
     }
 
     renderHeader() {
-        const { comment, isCreator, isSearchResult,
-                handleJump, handleSelectUsername, handleSelectMediaItem } = this.props;
+        const { comment, isSearchResult, handleJump, handleSelectUsername, handleSelectMediaItem } = this.props;
 
-        const creatorClass  = isCreator ? "creator" : ""
-        const username      = comment instanceof Comment ? comment.author().get('username') as string : comment.author().get('username') as string
+        const username      = comment.author().get('username')
         const timestamp     = timeOfDayString(comment.get('created_at'))
-        const isBot         = comment instanceof Comment ? !!comment.author().get('is_bot'): !!comment.author().get('is_bot')
-        const isPrivate     = comment.get('subtype') === 'private'
         const isReferenced  = !!comment.get('is_referenced_by')
 
         return (
-            <div className="chat_item_header">
-                <div className="chat_item_header_main">
-                    { isBot && <img className="chat_item_emoji" src={robot as any} /> }
-                    <div className="chat_item_header_info">
-                        <span 
-                            onClick={() => { !isBot && handleSelectUsername && handleSelectUsername(username) }} 
-                            className={`chat_item_username ${creatorClass}`}>
-                            {username}
-                        </span>
-                        <span className="chat_item_timestamp">{timestamp}</span>
-                        { isPrivate && <span className="chat_item_private">only visible to you</span> }
-                    </div>
-                </div>
+            <div className="chat_item_header_container">
+                <ChatItemHeader comment={comment} handleSelectUsername={handleSelectUsername} />
                 <div className="chat_item_header_right">
                     { isReferenced && 
                         <div className="chat_item_referenced" onClick={() => { handleSelectMediaItem && handleSelectMediaItem(comment.get('is_referenced_by')) }}>
@@ -141,7 +124,7 @@ class ChatItem extends React.PureComponent<Props> {
     }
 
     render() {
-        const { id, comment, isCreator, isSelected, isDropdownActive, isSearchResult, 
+        const { id, comment, isSelected, isDropdownActive, isSearchResult, 
                 handleSelectOptions, handleResend, showHeader, showOptions } = this.props;
 
 
@@ -150,12 +133,12 @@ class ChatItem extends React.PureComponent<Props> {
         const isHighlighted     = isReferenced || isSelected
         const highlightedClass  = isHighlighted ? "chat_item-highlighted" : ""
         const searchResultClass = isSearchResult ? "chat_item-search" : ""
-
-        const headerClass       = showHeader ? "" : "chat_item-no-header"
+        
         const isPrivate         = comment.get('subtype') === 'private'
+        const isBot             = comment.author().isBot()
+        const headerClass       = showHeader ? "" : "chat_item-no-header"
         const privateClass      = isPrivate ? 'chat_item_body-private' : ''
-        const isBot             = comment instanceof Comment ? !!comment.author().get('is_bot') : !!comment.author().get('is_bot') // Typescript wackiness
-        const isBotClass        = isBot ? 'chat_item-chatbot' : ''
+        const badgeClass        = `chat_item-${comment.author().get('badge') || 'user'}`
 
         const submitStatus      = comment instanceof TemporaryComment ? comment.get('submit_status') : ""
         const submitClass       = submitStatus ? `chat_item-${submitStatus}` : ''
@@ -163,7 +146,7 @@ class ChatItem extends React.PureComponent<Props> {
         const showOptionsClass  = showOptions && !isBot && !isReferenced ? "show-options" : ""
         const dropdownActiveClass = isDropdownActive ? "dropdown-active" : ""
 
-        const chatItemClasses = `${highlightedClass} ${referencedClass} ${headerClass} ${submitClass} ${isBotClass} ${showOptionsClass} ${searchResultClass}`
+        const chatItemClasses = `${highlightedClass} ${referencedClass} ${headerClass} ${submitClass} ${badgeClass} ${showOptionsClass} ${searchResultClass}`
         
         return (
             <li className={`chat_item ${chatItemClasses}`} ref="chat" id={id}>

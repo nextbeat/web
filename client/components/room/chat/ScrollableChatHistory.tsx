@@ -263,7 +263,6 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
     renderComment(comment: Comment | TemporaryComment, idx: number) {
         const { roomId, authorUsername, isCurrentUserAuthor, isClosed, activeDropdowns, selectedComment } = this.props;
 
-        const isCreator = (comment.author() as any).get('username') === authorUsername;
         const componentId = `comment-${roomId}-${comment.get('id')}`
         const isDropdownActive = activeDropdowns.includes(`${componentId}-options`)
         const isSelected = !!comment.get('id') && comment.get('id') === selectedComment;
@@ -273,7 +272,6 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
                         id={componentId}
                         key={idx} 
                         comment={comment}
-                        isCreator={isCreator} 
                         showHeader={!comment.__no_header__}
                         showOptions={isCurrentUserAuthor && !isClosed}
                         handleSelectUsername={this.handleSelectUsername}
