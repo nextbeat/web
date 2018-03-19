@@ -10,21 +10,21 @@ class Creator extends React.Component<Props> {
     render() {
         const { platform, title, children } = this.props
         return (
-            <div className={`creators creators-${platform}`}>
-                <div className='creators_header'>
-                    <div className='creators_header_content'>
-                        <div className='creators_icon_container'>
-                            <div className="creators_icon" />
+            <div className={`article creators-${platform}`}>
+                <div className='article_header'>
+                    <div className='article_header_content'>
+                        <div className='article_icon_container'>
+                            <div className="article_icon" />
                         </div>
-                        <span className='creators_title'>
+                        <span className='article_title'>
                             { title }
                         </span>
                     </div>
                 </div>
-                <div className="creators_content">
+                <div className="article_content">
                     { children }
-                    <section className="creators_section">
-                        <div className="creators_separator" />
+                    <section className="article_section">
+                        <div className="article_separator" />
                         <p>Want to know more? We're happy to answer your questions — you can reach us at <a href="mailto:creators@nextbeat.co">creators@nextbeat.co</a>.</p> 
                     </section>
                 </div>

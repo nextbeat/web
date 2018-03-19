@@ -109,30 +109,35 @@ export default (store: Store) => {
                             }),
                             childRoutes: [
                                 analyticsRoute('creators/youtube', cb => {
-                                    import('../client/components/pages/company/creators/Youtube').then(component => {
+                                    import('../client/components/pages/company/articles/creators/Youtube').then(component => {
                                         return cb(null, component.default)
                                     })
                                 }),
                                 analyticsRoute('creators/twitch', cb => {
-                                    import('../client/components/pages/company/creators/Twitch').then(component => {
+                                    import('../client/components/pages/company/articles/creators/Twitch').then(component => {
                                         return cb(null, component.default)
                                     })
                                 }),
                                 analyticsRoute('creators/snapchat', cb => {
-                                    import('../client/components/pages/company/creators/Snapchat').then(component => {
+                                    import('../client/components/pages/company/articles/creators/Snapchat').then(component => {
                                         return cb(null, component.default)
                                     })
                                 }),
                                 analyticsRoute('creators/instagram', cb => {
-                                    import('../client/components/pages/company/creators/Instagram').then(component => {
+                                    import('../client/components/pages/company/articles/creators/Instagram').then(component => {
                                         return cb(null, component.default)
                                     })
                                 }),
                                 analyticsRoute('brands', cb => {
-                                    import('../client/components/pages/company/AboutBrands').then(component => {
+                                    import('../client/components/pages/company/articles/AboutBrands').then(component => {
                                         return cb(null, component.default)
                                     })
                                 }),
+                                analyticsRoute('mod', cb => {
+                                    import('../client/components/pages/company/articles/Moderation').then(component => {
+                                        return cb(null, component.default)
+                                    })
+                                })
                             ]
                         }
                         
