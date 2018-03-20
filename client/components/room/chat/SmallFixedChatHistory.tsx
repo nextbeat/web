@@ -8,7 +8,7 @@ import NotificationChatItem from './NotificationChatItem'
 import Spinner from '@components/shared/Spinner'
 import commentReducer from './utils/commentReducer'
 
-import { loadComments, resendComment } from '@actions/room'
+import { loadComments } from '@actions/room'
 import { promptChatActionsForUser } from '@actions/pages/room'
 import Room from '@models/state/room'
 import Comment from '@models/entities/comment'

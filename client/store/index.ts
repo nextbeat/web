@@ -3,12 +3,24 @@ import thunkMiddleware from 'redux-thunk'
 import { createLogger } from 'redux-logger'
 import { Map, isCollection } from 'immutable'
 
-import { api, cache, ga, cancel, navigation, ui, upload, push, eddy } from '../middleware'
+import { api, cache, chat, ga, cancel, navigation, ui, upload, push, eddy } from '../middleware'
 import { ActionType, Action } from '@actions/types'
 import reducer from '@reducers/index'
 import { State, Store } from '@types'
 
-const middlewares = [thunkMiddleware, ui, ga, upload, navigation, push, api, cache, cancel, eddy];
+const middlewares = [
+    thunkMiddleware, 
+    ui, 
+    chat,
+    ga, 
+    upload, 
+    navigation, 
+    push, 
+    api, 
+    cache, 
+    cancel, 
+    eddy
+];
 
 const actionTypesToIgnore = [
     ActionType.RESIZE,

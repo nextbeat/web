@@ -67,24 +67,24 @@ class UserActions extends React.Component<Props> {
     }
 
     handleCreatorBan() {
-        const { dispatch, username, creatorId, isUserCreatorBanned } = this.props 
+        const { dispatch, username, roomId, creatorId, isUserCreatorBanned } = this.props 
 
         dispatch(closeModal())
         if (isUserCreatorBanned) {
-            dispatch(creatorUnban(creatorId, username))
+            dispatch(creatorUnban(creatorId, username, roomId))
         } else {
-            dispatch(creatorBan(creatorId, username))
+            dispatch(creatorBan(creatorId, username, roomId))
         }
     }
 
     handleMod() {
-        const { dispatch, username, creatorId, isUserModerator } = this.props 
+        const { dispatch, username, roomId, creatorId, isUserModerator } = this.props 
 
         dispatch(closeModal())
         if (isUserModerator) {
-            dispatch(unmod(creatorId, username))
+            dispatch(unmod(creatorId, username, roomId))
         } else {
-            dispatch(mod(creatorId, username))
+            dispatch(mod(creatorId, username, roomId))
         }
     }
 

@@ -37,11 +37,13 @@ export type RoomActionAll =
     GoToCommentAction |
     CommentsAction |
     SendCommentAction |
+    ResendCommentAction |
     PinCommentAction |
     UnpinCommentAction |
     RoomBanAction |
     RoomUnbanAction |
     UseChatAction |
+    SlashCommandResponseAction |
     BookmarkAction |
     UnbookmarkAction |
     DidPlayVideoAction |
@@ -270,60 +272,38 @@ export function jumpToComment(roomId: number, comment: Comment): ThunkAction {
  * CHAT
  ******/
 
-interface SendCommentOptions {
-    roomId: number,
-    temporaryId: string,
-    message: string,
-    username: string,
-    createdAt: Date
-}
-export interface SendCommentAction extends AnalyticsAction, SendCommentOptions {
+export interface SendCommentAction extends AnalyticsAction {
     type: ActionType.SEND_COMMENT
+    roomId: number
+    message: string
+    temporaryId?: string
+    createdAt?: Date
+    username?: string
 }
-function performSendComment(options: SendCommentOptions): SendCommentAction {
+export function sendComment(roomId: number, message: string): SendCommentAction {
     return {
         type: ActionType.SEND_COMMENT,
-        temporaryId: options.temporaryId,
-        roomId: options.roomId,
-        message: options.message,
-        username: options.username,
-        createdAt: options.createdAt,
+        roomId,
+        message, 
         GA: {
             type: 'event',
             category: 'chat',
             action: 'send',
-            label: options.roomId
+            label: roomId
         }
     }
 }
-
-export function sendComment(roomId: number, message: string): ThunkAction {
-    return (dispatch, getState) => {
-
-        if (!message || message.trim().length === 0) {
-            return null;
-        }
-
-        if (!CurrentUser.isLoggedIn(getState())) {
-            return dispatch(triggerAuthError())
-        } else {
-            let username = CurrentUser.entity(getState()).get('username')
-            let temporaryId = generateUuid()
-            let createdAt = new Date()
-            return dispatch(performSendComment({ message, roomId, username, temporaryId, createdAt }));
-        }
-    }
+export interface ResendCommentAction extends GenericAction {
+    type: ActionType.RESEND_COMMENT
+    roomId: number
+    comment: TemporaryComment
 }
-
-export function resendComment(roomId: number, comment: TemporaryComment): SendCommentAction {
-    let newComment = {
+export function resendComment(roomId: number, comment: TemporaryComment): ResendCommentAction {
+    return {
+        type: ActionType.RESEND_COMMENT,
         roomId,
-        message: comment.get('message'),
-        username: comment.get('username'),
-        temporaryId: comment.get('temporary_id'),
-        createdAt: new Date()
+        comment
     }
-    return performSendComment(newComment)
 }
 
 export interface PinCommentAction extends GenericAction {
@@ -379,21 +359,11 @@ export interface RoomBanAction extends GenericAction {
     roomId: number
     username: string
 }
-function performRoomBan(roomId: number, username: string): RoomBanAction {
+export function roomBan(roomId: number, username: string): RoomBanAction {
     return {
         type: ActionType.ROOM_BAN,
         roomId,
         username
-    }
-}
-
-export function roomBan(roomId: number, username: string): ThunkAction {
-    return (dispatch, getState) => {
-        const state = getState()
-        if (Room.isUserRoomBanned(state, roomId, username)) {
-            return null;
-        }
-        dispatch(performRoomBan(roomId, username))
     }
 }
 
@@ -402,21 +372,11 @@ export interface RoomUnbanAction extends GenericAction {
     roomId: number
     username: string
 }
-function performRoomUnban(roomId: number, username: string): RoomUnbanAction {
-    return {
+export function roomUnban(roomId: number, username: string): RoomUnbanAction {
+     return {
         type: ActionType.ROOM_UNBAN,
         roomId,
         username
-    }
-}
-
-export function roomUnban(roomId: number, username: string): ThunkAction {
-    return (dispatch, getState) => {
-        const state = getState()
-        if (!Room.isUserRoomBanned(state, roomId, username)) {
-            return null;
-        }
-        dispatch(performRoomUnban(roomId, username))
     }
 }
 
@@ -429,6 +389,19 @@ export function didUseChat(): UseChatAction {
     // which tells analytics tracker to prolong the chat session
     return {
         type: ActionType.USE_CHAT
+    }
+}
+
+export interface SlashCommandResponseAction extends GenericAction {
+    type: ActionType.SLASH_COMMAND_RESPONSE
+    roomId: number
+    message: string
+}
+export function slashCommandResponse(roomId: number, message: string): SlashCommandResponseAction {
+    return {
+        type: ActionType.SLASH_COMMAND_RESPONSE,
+        roomId,
+        message
     }
 }
 

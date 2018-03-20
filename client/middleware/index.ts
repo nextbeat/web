@@ -1,6 +1,7 @@
 export { default as api } from './api'
 export { default as cache } from './cache'
 export { default as cancel } from './cancel'
+export { default as chat } from './chat'
 export { default as eddy } from './eddy'
 export { default as ga } from './ga'
 export { default as navigation } from './navigation'

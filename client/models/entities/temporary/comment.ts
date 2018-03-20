@@ -9,6 +9,13 @@ interface TemporaryCommentProps {
     temporary_id: string
     type: string
     username: string    
+
+    // for compatibility
+    id?: any
+    created_at?: any
+    is_referenced_by?: any
+    result_indices?: any
+    user_mentions?: any
 }
 
 export default class TemporaryComment extends TemporaryEntityModel<TemporaryCommentProps> {

@@ -359,52 +359,60 @@ export function unsubscribe(user: UserEntity): ThunkAction {
 export interface CreatorBanAction extends GenericAction {
     type: ActionType.CREATOR_BAN
     creatorId: number
+    roomId?: number
     username: string
 }
-export function creatorBan(creatorId: number, username: string): CreatorBanAction {
+export function creatorBan(creatorId: number, username: string, roomId?: number): CreatorBanAction {
     return {
         type: ActionType.CREATOR_BAN,
         creatorId,
-        username
+        username,
+        roomId
     }
 }
 
 export interface CreatorUnbanAction extends GenericAction {
     type: ActionType.CREATOR_UNBAN
     creatorId: number
+    roomId?: number
     username: string
 }
-export function creatorUnban(creatorId: number, username: string): CreatorUnbanAction {
+export function creatorUnban(creatorId: number, username: string, roomId?: number): CreatorUnbanAction {
     return {
         type: ActionType.CREATOR_UNBAN,
         creatorId,
-        username
+        username,
+        roomId
     }
 }
 
 export interface ModAction extends GenericAction {
-    type: ActionType.MOD,
-    creatorId: number,
+    type: ActionType.MOD
+    creatorId: number
+    roomId?: number
     username: string
 }
-export function mod(creatorId: number, username: string): ModAction {
+export function mod(creatorId: number, username: string, roomId?: number): ModAction {
     return {
         type: ActionType.MOD,
         creatorId,
-        username
+        username,
+        roomId
     }
 }
 
 export interface UnmodAction extends GenericAction {
-    type: ActionType.UNMOD,
-    creatorId: number,
+    type: ActionType.UNMOD
+    creatorId: number
+    roomId?: number
     username: string
 }
-export function unmod(creatorId: number, username: string): UnmodAction {
+export function unmod(creatorId: number, username: string, roomId?: number): UnmodAction {
     return {
         type: ActionType.UNMOD,
         creatorId,
-        username
+        username,
+        roomId
     }
 }
 

@@ -3,6 +3,7 @@ import { normalize } from 'normalizr'
 import * as format from 'date-fns/format'
 import * as Promise from 'bluebird'
 
+import { EddyError } from '@errors'
 import { Store, Dispatch } from '@types'
 import { Status, Action, GenericAction, ActionType } from '@actions/types' 
 import { 
@@ -27,7 +28,10 @@ import {
     ReceiveRoomClosedAction,
     ReceiveBookmarkUpdateAction
 } from '@actions/eddy'
-import { getRoomInfo } from '@actions/room'
+import { 
+    getRoomInfo,
+    slashCommandResponse 
+} from '@actions/room'
 import {
     RoomInfoAction,
     SendCommentAction,
@@ -104,6 +108,11 @@ function wrapAction(store: Store, next: Dispatch, action: Action): Wrap {
                 }
             })
             .catch((error) => { 
+                if (error instanceof EddyError) {
+                    if (action.roomId && error.message === "not_permitted") {
+                        store.dispatch(slashCommandResponse(action.roomId, "This action is not permitted."))
+                    }
+                }
                 next(actionWith(Status.FAILURE, { error }));
             })
     }
