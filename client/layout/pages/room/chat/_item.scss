@@ -48,7 +48,7 @@
 
 .chat_item_header {
     display: flex;
-    align-items: center;
+    align-items: baseline;
 }
 
 .chat_item_username {
@@ -357,7 +357,7 @@ a.chat_item_hashtag {
     }
 
     .chat_item_header {
-        display: inline;
+        display: inline-flex;
     }
 
     .chat_item_header_right {

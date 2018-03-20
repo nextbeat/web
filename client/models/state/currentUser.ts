@@ -9,6 +9,7 @@ import StackEntity from '@models/entities/stack'
 interface CurrentUserProps {
     id: number
     token: string
+    cookie: string
     isLoggingIn: boolean
     loginError: string
     isSigningUp: boolean
@@ -37,6 +38,7 @@ const keyMap = {
     // meta
     'id': ['meta', 'id'],
     'token': ['meta', 'token'],
+    'cookie': ['meta', 'cookie'],
     'isLoggingIn': ['meta', 'isLoggingIn'],
     'loginError': ['meta', 'loginError'],
     'isSigningUp': ['meta', 'isSigningUp'],

@@ -40,6 +40,7 @@ function getInitialState(req) {
                 meta: { 
                     id: req.user.id,
                     token: req.user.token,
+                    cookie: req.headers.cookie,
                     hasUpdatedEntity: true 
                 },
                 notifications: {

@@ -42,17 +42,17 @@ function urlWithParams(endpoint: string, pagination: Pagination, queries: any): 
 interface FetchInit {
     method: "GET" | "HEAD" | "PUT" | "POST" | "DELETE"
     body?: string
-    headers: object
+    headers: any
     credentials: "same-origin"
 }
 
-function fetchOptions(options: ApiCall): FetchInit {
+function fetchOptions(store: Store, options: ApiCall): FetchInit {
     let { 
         method="GET", 
         body={},
     } = options
 
-    return {
+    let fetchOptions: FetchInit = {
         method,
         body: ["GET", "HEAD"].indexOf(method) === -1 ? JSON.stringify(body) : undefined, 
         headers: {
@@ -61,6 +61,18 @@ function fetchOptions(options: ApiCall): FetchInit {
         },
         credentials: 'same-origin' 
     }
+
+    if (typeof window === 'undefined') {
+        // If we're calling api methods server-side, we need to 
+        // artificially inject the user's cookies into the request
+        // if applicable. (NOTE: is there a better way to do this?)
+        let cookie = CurrentUser.get(store.getState(), 'cookie')
+        if (cookie) {
+            fetchOptions.headers['Cookie'] = cookie
+        }
+    }
+
+    return fetchOptions
 }
 
 function callApi(options: ApiCall, store: Store, action: ApiCallAction): Promise<[object, object]> {
@@ -74,7 +86,7 @@ function callApi(options: ApiCall, store: Store, action: ApiCallAction): Promise
     // we wrap in a bluebird promise to give access to bluebird methods (e.g. delay)
     return Promise.resolve()
     .then(function() {
-        return fetch(url, fetchOptions(options))
+        return fetch(url, fetchOptions(store, options))
     })
     .then(response => {
         return response.json()
