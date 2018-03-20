@@ -79,6 +79,19 @@ interface Wrap {
     (fn: WrapFn, options?: WrapOptions): void
 }
 
+function messageForError(error: EddyError): string {
+    switch (error.message) {
+        case "not_permitted":
+            return "This action is not permitted.";
+        case "already_banned":
+            return "This user is already banned.";
+        case "not_banned":
+            return "This user is not banned.";
+        default:
+            return "Unknown error.";
+    }
+}
+
 function wrapAction(store: Store, next: Dispatch, action: Action): Wrap {
     let client = Eddy.client(store.getState())
 
@@ -108,10 +121,9 @@ function wrapAction(store: Store, next: Dispatch, action: Action): Wrap {
                 }
             })
             .catch((error) => { 
-                if (error instanceof EddyError) {
-                    if (action.roomId && error.message === "not_permitted") {
-                        store.dispatch(slashCommandResponse(action.roomId, "This action is not permitted."))
-                    }
+                if (error instanceof EddyError && action.roomId) {
+                    const message = messageForError(error)
+                    store.dispatch(slashCommandResponse(action.roomId, message))
                 }
                 next(actionWith(Status.FAILURE, { error }));
             })

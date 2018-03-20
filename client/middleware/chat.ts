@@ -23,7 +23,7 @@ import { generateUuid } from '@utils'
 function parseSlashCommand(roomId: number, creatorId: number, message: string): Action | null {
     let isSlashCommand  = /^\/(\w+)/.test(message)
     let re              = /^\/(\w+)(\s+(\w+))?$/.exec(message)
-    const helpMessage   = "Available slash commands are /banroom, /unbanroom, /ban, /unban, /mod, /unmod, /help"
+    const helpMessage   = "Available slash commands are /roomban, /unroomban, /ban, /unban, /mod, /unmod, /help"
     const errorMessage  = "This is not a valid command. Type /help for a list of supported commands."
 
     if (!isSlashCommand) {
@@ -43,9 +43,9 @@ function parseSlashCommand(roomId: number, creatorId: number, message: string): 
     } else {
         const value = re[3]
         switch (command) {
-            case 'banroom':
+            case 'roomban':
                 return roomBan(roomId, value)
-            case 'unbanroom':
+            case 'unroomban':
                 return roomUnban(roomId, value)
             case 'ban':
                 return creatorBan(creatorId, value, roomId)
