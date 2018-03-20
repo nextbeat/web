@@ -14,6 +14,7 @@ import {
     receiveActivityEvent,
     receiveRoomMarked,
     receiveBookmarkUpdate,
+    receiveCommunityUpdate,
     reconnectEddy,
     identifyEddy, 
     joinRoom
@@ -78,6 +79,12 @@ type EddyReceiveType =
     'room_closed' |
     'room_marked' |
     'bookmark_update' |
+    'user_room_banned' |
+    'user_room_unbanned' |
+    'user_creator_banned' |
+    'user_creator_unbanned' |
+    'moderator_added' |
+    'moderator_removed' |
     'activity_event'
 
 interface EddyRoomData {
@@ -370,8 +377,17 @@ export default class EddyClient {
         }
         else if (payload.type === "bookmark_update") 
         {
-            // TODO: replace with bookmark_update event?
             this.dispatch(receiveBookmarkUpdate(roomId, data.count))
+        }
+        else if (
+            payload.type === 'user_room_banned'
+            || payload.type === 'user_room_unbanned'
+            || payload.type === 'user_creator_banned'
+            || payload.type === 'user_creator_unbanned'
+            || payload.type === 'moderator_added'
+            || payload.type === 'moderator_removed'
+        ) {
+            this.dispatch(receiveCommunityUpdate(roomId, payload.type, data.username))
         }
     }
 

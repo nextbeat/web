@@ -19,6 +19,7 @@ export type EddyActionAll =
     ReceiveNotificationCommentAction |
     ReceiveRoomClosedAction |
     ReceiveBookmarkUpdateAction |
+    ReceiveCommunityUpdateAction |
     ReceiveActivityEventAction |
     ReceiveRoomMarkedAction
 
@@ -221,6 +222,22 @@ export function receiveBookmarkUpdate(roomId: number, count: number): ReceiveBoo
         type: ActionType.RECEIVE_BOOKMARK_UPDATE,
         roomId,
         count
+    }
+}
+
+type EddyCommunityEventType = 'user_room_banned' | 'user_room_unbanned' | 'user_creator_banned' | 'user_creator_unbanned' | 'moderator_added' | 'moderator_removed'
+export interface ReceiveCommunityUpdateAction extends GenericAction {
+    type: ActionType.RECEIVE_COMMUNITY_UPDATE,
+    event: EddyCommunityEventType
+    roomId: number
+    username: string
+}
+export function receiveCommunityUpdate(roomId: number, event: EddyCommunityEventType, username: string): ReceiveCommunityUpdateAction {
+    return {
+        type: ActionType.RECEIVE_COMMUNITY_UPDATE,
+        roomId,
+        event,
+        username
     }
 }
 

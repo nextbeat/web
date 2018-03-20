@@ -29,6 +29,7 @@ import {
     ReceiveMediaItemAction,
     ReceiveMediaItemDeleteAction,
     ReceiveNotificationCommentAction,
+    ReceiveCommunityUpdateAction,
 } from '@actions/eddy'
 import { EddyError } from '@errors'
 import { State } from '@types'
@@ -241,6 +242,23 @@ function receiveNotificationComment(state: State, action: ReceiveNotificationCom
     return state.update('comments', comments => comments.push(action.comment.id));
 }
 
+function receiveCommunityUpdate(state: State, action: ReceiveCommunityUpdateAction) {
+    if (action.event === 'user_room_banned') {
+        return state.update('roomBannedUsers', List(), (users: List<string>) => users.push(action.username))
+    } else if (action.event === 'user_room_unbanned') {
+        return state.update('roomBannedUsers', List(), (users: List<string>) => users.filter(u => u !== action.username))
+    } else if (action.event === 'user_creator_banned') {
+        return state.update('creatorBannedUsers', List(), (users: List<string>) => users.push(action.username))
+    } else if (action.event === 'user_creator_unbanned') {
+        return state.update('creatorBannedUsers', List(), (users: List<string>) => users.filter(u => u !== action.username))
+    } else if (action.event === 'moderator_added') {
+        return state.update('moderators', List(), (users: List<string>) => users.push(action.username))
+    } else if (action.event === 'moderator_removed') {
+        return state.update('moderators', List(), (users: List<string>) => users.filter(u => u !== action.username))
+    }
+    return state
+}
+
 function loadComments(state: State, action: CommentsAction) {
     // When refreshing the most recent comments,
     // we need to clear out all old live comments,
@@ -302,6 +320,8 @@ export default function live(state = initialState, action: Action) {
             return receiveMediaItemDelete(state, action);
         case ActionType.RECEIVE_NOTIFICATION_COMMENT:
             return receiveNotificationComment(state, action);
+        case ActionType.RECEIVE_COMMUNITY_UPDATE:
+            return receiveCommunityUpdate(state, action);
         case ActionType.COMMENTS:
             return loadComments(state, action);
     }
