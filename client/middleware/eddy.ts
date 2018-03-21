@@ -87,6 +87,10 @@ function messageForError(error: EddyError): string {
             return "This user is already banned.";
         case "not_banned":
             return "This user is not banned.";
+        case "already_moderator":
+            return "This user is already a moderator.";
+        case "not_moderator":
+            return "This user is not a moderator.";
         default:
             return "Unknown error.";
     }
@@ -121,7 +125,7 @@ function wrapAction(store: Store, next: Dispatch, action: Action): Wrap {
                 }
             })
             .catch((error) => { 
-                if (error instanceof EddyError && action.roomId) {
+                if (error instanceof EddyError && action.roomId && action.type !== ActionType.SEND_COMMENT) {
                     const message = messageForError(error)
                     store.dispatch(slashCommandResponse(action.roomId, message))
                 }
