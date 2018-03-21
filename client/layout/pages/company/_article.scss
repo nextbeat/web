@@ -67,6 +67,10 @@
         margin-bottom: 12px;
     }
 
+    li {
+        margin-bottom: 6px;
+    }
+
     aside {
         background: #e4e7ed;
         padding: 13px;
@@ -78,6 +82,17 @@
     a {
         font-weight: 500;
     }
+
+    strong {
+        font-weight: 400;
+        font-style: italic;
+    }
+}
+
+.article_command {
+    background: mix($primary-color, #fff, 10%);
+    padding: 4px 6px;
+    color: $primary-color;
 }
 
 .article_separator {
