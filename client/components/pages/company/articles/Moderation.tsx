@@ -38,6 +38,10 @@ class Moderation extends React.Component {
                             </ul>
                             <p>To remove the ban, type <span className="article_command">/unban [username]</span></p>
                         </section>
+                        <section className="article_section">
+                            <h2>Other cases</h2>
+                            <p>If you witness any behavior from a user that is flagrantly inappropriate – making sexual advances toward a minor, pressuring others into sharing personal or financial information, etc. – please send a link and a screenshot to us at <a href="mailto:team@nextbeat.co">team@nextbeat.co</a>, and we’ll permanently block them from Nextbeat.</p>
+                        </section>
                     </div>
                 </div>
             </div>

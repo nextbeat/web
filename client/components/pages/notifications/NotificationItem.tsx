@@ -47,6 +47,7 @@ class NotificationItem extends React.Component<Props, ComponentState> {
             case 'new_mediaitem':
                 return `/r/${notification.stack.hid}`
             case 'subscriptions':
+            case 'moderator':
                 return `/u/${notification.user.username}`
             default:
                 return '';
@@ -64,6 +65,8 @@ class NotificationItem extends React.Component<Props, ComponentState> {
             return <span><strong>{notification.user.username}</strong>{` bookmarked your room: ${notification.stack.description}`}</span>
         } else if (notification.type === 'subscriptions') {
             return <span><strong>{notification.user.username}</strong>{` subscribed to you.`}</span>
+        } else if (notification.type === 'moderator') {
+            return <span><strong>{notification.user.username}</strong>{` added you as a moderator.`}</span>
         }
         return null;
     }

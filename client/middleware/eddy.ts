@@ -79,7 +79,7 @@ interface Wrap {
     (fn: WrapFn, options?: WrapOptions): void
 }
 
-function messageForError(error: EddyError): string {
+function messageForError(error: EddyError): string | undefined {
     switch (error.message) {
         case "not_permitted":
             return "This action is not permitted.";
@@ -91,8 +91,8 @@ function messageForError(error: EddyError): string {
             return "This user is already a moderator.";
         case "not_moderator":
             return "This user is not a moderator.";
-        default:
-            return "Unknown error.";
+        case "user_not_found":
+            return "This user could not be found.";
     }
 }
 
@@ -127,7 +127,9 @@ function wrapAction(store: Store, next: Dispatch, action: Action): Wrap {
             .catch((error) => { 
                 if (error instanceof EddyError && action.roomId && action.type !== ActionType.SEND_COMMENT) {
                     const message = messageForError(error)
-                    store.dispatch(slashCommandResponse(action.roomId, message))
+                    if (message) {
+                        store.dispatch(slashCommandResponse(action.roomId, message))
+                    }
                 }
                 next(actionWith(Status.FAILURE, { error }));
             })
