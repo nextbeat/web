@@ -84,6 +84,7 @@
     width: 16px;
     height: 16px;
     margin-right: 5px;
+    position: relative;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -106,6 +107,34 @@
 
     &.chat_item_badge-staff {
         background-image: url(../public/images/emoji/wrench_64px.png);
+    }
+}
+
+.chat_item_badge_tooltip {
+    @include triangle(rgba(#000, 0.8), 14px, 5px);
+
+    background: rgba(#000, 0.8);
+    padding: 4px 6px;
+    border-radius: 2px;
+    font-size: 11px;
+    font-weight: 400;
+    color: #fff;
+    position: absolute;
+    left: -6px;
+    bottom: 25px;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.chat_item_badge:hover .chat_item_badge_tooltip {
+    opacity: 1;
+
+    @media (-moz-touch-enabled: 1), (hover: none), (hover: on-demand) {
+        opacity: 0;
+    }
+
+    &:hover {
+        opacity: 0;
     }
 }
 

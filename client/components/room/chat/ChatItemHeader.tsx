@@ -15,6 +15,7 @@ class ChatItemHeader extends React.Component<Props> {
         super(props)
 
         this.handleClick = this.handleClick.bind(this)
+        this.tooltipText = this.tooltipText.bind(this)
     }
 
     handleClick() {
@@ -28,6 +29,22 @@ class ChatItemHeader extends React.Component<Props> {
         }
     }
 
+    tooltipText(): string {
+        const badge = this.props.comment.author().get('badge')
+        switch(badge) {
+            case 'moderator':
+                return 'Moderator'
+            case 'staff':
+                return 'Staff'
+            case 'bot':
+                return 'Bot'
+            case 'creator':
+                return 'Creator'
+            default: 
+                return ''
+        }
+    }
+
     render() {
         const { comment } = this.props
         const badge = comment.author().get('badge') || 'user'
@@ -37,7 +54,9 @@ class ChatItemHeader extends React.Component<Props> {
 
         return (
             <div className={`chat_item_header chat_item_header-${badge}`}>
-                <div className={`chat_item_badge chat_item_badge-${badge}`} />
+                <div className={`chat_item_badge chat_item_badge-${badge}`}>
+                    <div className="chat_item_badge_tooltip">{this.tooltipText()}</div>
+                </div>
                 <div className="chat_item_header_info">
                     <span onClick={this.handleClick} className="chat_item_username">{username}</span>
                     <span className="chat_item_timestamp">{timestamp}</span>
