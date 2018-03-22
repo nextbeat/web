@@ -175,14 +175,13 @@ class DetailBar extends React.Component<Props, DetailBarState> {
         const selected = (type: DetailSection) => selectedDetailSection === type ? "selected" : "";
 
         const disableAnimationsClass = disableAnimations ? 'detail-bar-disable-animations' : ''
+        const creatorClass = isCurrentUserAuthor ? 'detail-bar_header-creator' : ''
 
         return (
             <div className={`detail-bar ${disableAnimationsClass}`}>
                 { bannerAd && <BannerAd ad={bannerAd} roomId={roomId} /> }
-                <div className="detail-bar_header">
-                    { isCurrentUserAuthor && 
-                        <div className="detail-bar_toggle-edit dropdown-detail-bar_toggle" onClick={this.toggleDropdown}><Icon type="more-vert" /></div> 
-                    }
+                <div className={`detail-bar_header ${creatorClass}`}>
+                    <div className="detail-bar_toggle-edit dropdown-detail-bar_toggle" onClick={this.toggleDropdown}><Icon type="more-vert" /></div> 
                     <ActionsDropdown type="detail-bar" />
                     <div className="detail-bar_tab-container">
                         <span className={`detail-bar_tab ${selected("chat")}`} onClick={this.setSelected.bind(this, "chat")}>Chat</span>

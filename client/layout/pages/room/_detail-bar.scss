@@ -50,6 +50,7 @@
 
 .detail-bar_toggle-edit {
     position: absolute;
+    display: none;
     right: 3px;
     top: 7px;
 
@@ -64,7 +65,6 @@
         }
     }
 }
-
 
 .detail-bar_tab-container {
     width: 100%;
@@ -147,4 +147,16 @@
     font-size: 12px;
     padding: 2px 4px;
     border-radius: 2px;
+}
+
+// Creator-specific
+
+.detail-bar_header-creator {
+    .detail-bar_toggle-edit {
+        display: block;
+    }
+
+    .detail-bar_tab-container {
+       padding-right: 30px;
+    }
 }
