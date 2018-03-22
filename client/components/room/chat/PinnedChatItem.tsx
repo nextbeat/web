@@ -54,7 +54,7 @@ class PinnedChatItem extends React.Component<Props & DispatchProps> {
                     </div>
                 </div>
                 { isCurrentUserAuthor &&
-                    <div className="btn btn-gray chat_pinned-comment_unpin" onClick={this.handleUnpin}>Remove</div>
+                    <div className="chat_pinned-comment_unpin" onClick={this.handleUnpin}>Remove</div>
                 }
                 { !isCurrentUserAuthor && 
                     <div className="chat_item-pinned-comment_pinned">Pinned</div>

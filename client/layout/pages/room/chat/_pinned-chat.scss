@@ -11,18 +11,6 @@ $pinned-chat-color: #1dc310;
     background-color: #f6f6f6;
 }
 
-.chat_item-pinned-comment_header {
-    display: flex;
-    align-items: center;
-
-    .svg-icon-pin {
-        fill: $pinned-chat-color;
-        width: 17px;
-        height: 17px;
-        margin-top: 2px;
-    }
-}
-
 .chat_item-pinned-comment_username {
     padding-right: 8px;
 }
@@ -34,7 +22,8 @@ $pinned-chat-color: #1dc310;
     right: 10px;
     font-size: 11px;
     font-weight: 500;
-    color: $pinned-chat-color;
+    color: #999;
+    text-transform: uppercase;
 }
 
 .chat_item-pinned-comment_body {
@@ -44,13 +33,14 @@ $pinned-chat-color: #1dc310;
 .chat_pinned-comment_unpin {
     display: inline-block;
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 8px;
+    right: 10px;
     font-size: 11px;
-    padding: 3px 6px;
-    background-color: #bbb;
+    color: #777;
+    font-weight: 500;
+    cursor: pointer;
 
     &:hover {
-        background-color: #ccc;
+        color: $primary-color;
     }
 }

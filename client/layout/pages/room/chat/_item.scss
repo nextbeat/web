@@ -69,8 +69,7 @@
 .chat_item_timestamp {
     color: #b3b3b3;
     font-size: 11px;
-    font-style: italic;
-    padding-left: 5px;
+    padding-left: 6px;
 }
 
 .chat_item_private {
@@ -128,6 +127,10 @@
 
 .chat_item_badge:hover .chat_item_badge_tooltip {
     opacity: 1;
+
+    .chat_item-pinned-comment & {
+        opacity: 0;
+    }
 
     @media (-moz-touch-enabled: 1), (hover: none), (hover: on-demand) {
         opacity: 0;

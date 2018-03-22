@@ -169,6 +169,11 @@ input.topbar_search-bar {
     }
 }
 
+.topbar_icon-notifications .svg-icon {
+    width: 28px;
+    height: 28px;
+}
+
 .topbar_notifications-badge {
     background: $primary-color;
     position: absolute;
