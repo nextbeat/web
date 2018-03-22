@@ -61,6 +61,19 @@ function parseSlashCommand(roomId: number, creatorId: number, message: string): 
     return slashCommandResponse(roomId, errorMessage)
 }
 
+function badgeForUser(state: State, roomId: number) {
+    if (Room.isCurrentUserAuthor(state, roomId)) {
+        return 'creator'
+    } else if (CurrentUser.entity(state).get('is_staff')) {
+        return 'staff'
+    } else if (CurrentUser.entity(state).get('is_verified')) {
+        return 'verified'
+    } else if (Room.isCurrentUserModerator(state, roomId)) {
+        return 'moderator'
+    }
+    return '';
+}
+
 export default (store: Store) => (next: Dispatch) => (action: Action) => {
 
     const state = store.getState();
@@ -90,9 +103,11 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
         const username = CurrentUser.entity(state).get('username')
         const temporaryId = generateUuid()
         const createdAt = new Date()
+        const badge = badgeForUser(state, action.roomId)
 
         return next(assign(action, {
             username,
+            badge,
             temporaryId,
             createdAt
         }))
@@ -107,6 +122,7 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
             message: comment.get('message'),
             username: comment.get('username'),
             temporaryId: comment.get('temporary_id'),
+            badge: comment.get('badge'),
             createdAt: new Date()
         })
     }

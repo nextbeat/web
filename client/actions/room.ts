@@ -279,6 +279,7 @@ export interface SendCommentAction extends AnalyticsAction {
     temporaryId?: string
     createdAt?: Date
     username?: string
+    badge?: string
 }
 export function sendComment(roomId: number, message: string): SendCommentAction {
     return {

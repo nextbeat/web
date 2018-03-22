@@ -8,7 +8,8 @@ interface TemporaryCommentProps {
     subtype: string
     temporary_id: string
     type: string
-    username: string    
+    username: string   
+    badge: string 
 
     // for compatibility
     id?: any
@@ -23,7 +24,10 @@ export default class TemporaryComment extends TemporaryEntityModel<TemporaryComm
     __no_header__?: boolean    
     
     author(): CommentAuthor {
-        return new CommentAuthor(Map({ username: this.get('username') }))
+        return new CommentAuthor(Map({ 
+            username: this.get('username'), 
+            badge: this.get('badge') 
+        }))
     }
 
 }

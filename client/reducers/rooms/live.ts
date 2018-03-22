@@ -108,6 +108,7 @@ function sendComment(state: State, action: SendCommentAction) {
             subtype: 'public',
             message: action.message,
             username: action.username,
+            badge: action.badge,
             temporary_id: action.temporaryId,
             submit_status: "submitting",
             created_at: action.createdAt

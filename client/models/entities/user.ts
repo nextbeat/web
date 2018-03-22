@@ -11,6 +11,8 @@ interface UserProps {
     id: number
     is_advertiser: boolean
     is_bot: boolean
+    is_staff: boolean
+    is_verified: boolean
     open_stacks: number
     profpic_url: string
     subscriber_count: number
