@@ -70,11 +70,10 @@
     width: 100%;
     height: 100%;
     display: flex;
-    justify-content: center;
-    padding: 0 20px;
 }
 
 .detail-bar_tab {
+    flex: 1;
     height: 100%;
     color: #999;
     padding: 0 10px;
@@ -83,15 +82,15 @@
     font-weight: 400;
     line-height: 30px;
     text-align: center;
-    text-transform: uppercase;
+    // text-transform: uppercase;
     position: relative;
     border-bottom: 5px solid #fff;
-    margin-right: 30px;
+    // margin-right: 30px;
 
     &.selected {
         border-bottom: 5px solid $secondary-color;
         color: $text-color;
-        font-weight: 500;
+        font-weight: 600;
         &:hover {
             border-bottom: 5px solid $secondary-color;
         }
@@ -102,17 +101,17 @@
         cursor: pointer;
     }
 
-    &:last-child {
-        margin-right: 0;
-    }
+    // &:last-child {
+    //     margin-right: 0;
+    // }
 
-    @include media('<=380px') {
-        margin-right: 20px;
-    }
+    // @include media('<=380px') {
+    //     margin-right: 20px;
+    // }
 
-    @include media('<=320px') {
-        margin-right: 10px;
-    }
+    // @include media('<=320px') {
+    //     margin-right: 10px;
+    // }
     
 }
 
