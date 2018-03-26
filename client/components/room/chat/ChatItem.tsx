@@ -46,7 +46,6 @@ class ChatItem extends React.PureComponent<Props> {
 
         this.renderMessage = this.renderMessage.bind(this)
         this.renderHeader = this.renderHeader.bind(this)
-        this.renderDropdown = this.renderDropdown.bind(this)
     }
 
 
@@ -70,6 +69,9 @@ class ChatItem extends React.PureComponent<Props> {
             $(this.refs.chat).trigger('destroy.dot')
         }
     }
+
+
+    // Events
 
 
     // Render
@@ -109,23 +111,10 @@ class ChatItem extends React.PureComponent<Props> {
         );
     }
 
-    renderDropdown() {
-        const { id, handleRespond, comment } = this.props;
-
-        if (comment instanceof TemporaryComment) {
-            return null
-        }
-
-        return (
-            <Dropdown type={`${id}-options`} triangleMargin={-1}>
-                <a className="dropdown-option" onClick={() => { handleRespond && handleRespond(comment) }}>Respond</a>
-            </Dropdown>
-        )
-    }
-
     render() {
         const { id, comment, isSelected, isDropdownActive, isSearchResult, 
-                handleSelectOptions, handleResend, showHeader, showOptions } = this.props;
+                handleSelectOptions, handleResend, handleRespond,
+                showHeader, showOptions } = this.props;
 
 
         const isReferenced      = !!comment.get('is_referenced_by')
@@ -144,22 +133,23 @@ class ChatItem extends React.PureComponent<Props> {
         const submitClass       = submitStatus ? `chat_item-${submitStatus}` : ''
 
         const showOptionsClass  = showOptions && !isBot && !isReferenced ? "show-options" : ""
-        const dropdownActiveClass = isDropdownActive ? "dropdown-active" : ""
 
         const chatItemClasses = `${highlightedClass} ${referencedClass} ${headerClass} ${submitClass} ${badgeClass} ${showOptionsClass} ${searchResultClass}`
         
         return (
             <li className={`chat_item ${chatItemClasses}`} ref="chat" id={id}>
                 <div className="chat_item_inner">
-                    { this.renderDropdown() }
                     { showHeader && this.renderHeader() }
-                    <div className={`chat_item_options ${dropdownActiveClass}`} onClick={() => { id && handleSelectOptions && handleSelectOptions(id) }}>
-                        <Icon type="more-vert" />
-                    </div>
                     <div className={`chat_item_body ${privateClass}`}>
                         {this.renderMessage(isBot)}
                         { submitStatus === "failed" && comment instanceof TemporaryComment && 
                             <a className="btn chat_item-failed_retry" onClick={ () => { handleResend && handleResend(comment) } }>Retry</a>
+                        }
+                        { comment instanceof Comment && handleRespond && 
+                            <div className="chat_item_options" onClick={() => { handleRespond(comment) }}>
+                                <Icon type="reply" />
+                                <div className="chat_item_tooltip chat_item_tooltip-options">Respond to this message</div>
+                            </div>
                         }
                     </div>
                 </div>

@@ -37,6 +37,19 @@
     background: mix(white, $secondary-color, 85%);
 }
 
+.chat_item_tooltip {
+    background: rgba(#000, 0.8);
+    padding: 4px 6px;
+    border-radius: 2px;
+    font-size: 11px;
+    font-weight: 400;
+    color: #fff;
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+
 // Header
 
 .chat_item_header_container {
@@ -109,23 +122,15 @@
     }
 }
 
-.chat_item_badge_tooltip {
+.chat_item_tooltip-badge {
     @include triangle(rgba(#000, 0.8), 14px, 5px);
-
-    background: rgba(#000, 0.8);
-    padding: 4px 6px;
-    border-radius: 2px;
-    font-size: 11px;
-    font-weight: 400;
-    color: #fff;
+    
     position: absolute;
     left: -6px;
     bottom: 25px;
-    opacity: 0;
-    transition: opacity 0.15s;
 }
 
-.chat_item_badge:hover .chat_item_badge_tooltip {
+.chat_item_badge:hover .chat_item_tooltip-badge {
     opacity: 1;
 
     .chat_item-pinned-comment & {
@@ -191,19 +196,18 @@
 
 .chat_item_options {
     position: absolute;
-    right: 10px;
+    left: 100%;
     top: 0;
     display: none;
 
-    .chat_item.show-options & {
+    .chat_item.show-options:hover & {
         display: block;
         cursor: pointer;
     }
 
-    .svg-icon-more-vert {
+    .svg-icon-reply {
         width: 18px;
         height: 18px;
-        fill: #aaa;
     }
 
     .chat_item-highlighted & {
@@ -211,9 +215,33 @@
     }
 } 
 
+.chat_item_tooltip-options {
+    @include triangle(rgba(#000, 0.8), calc(100% - 13px), 5px);
+
+    white-space: nowrap;
+    position: absolute;
+    pointer-events: none;
+    right: -3px;
+    bottom: 27px;
+}
+
+.chat_item_options:hover .chat_item_tooltip-options {
+    opacity: 1;
+
+    @media (-moz-touch-enabled: 1), (hover: none), (hover: on-demand) {
+        opacity: 0;
+    }
+
+    &:hover {
+        opacity: 0;
+    }
+}
+
 // Body
 
 .chat_item_body {
+    position: relative;
+
     .chat_item.show-options & {
         margin-right: 20px;
     }
@@ -434,5 +462,9 @@ a.chat_item_hashtag {
         .chat_item-notification_text {
             margin-left: 0;
         }
+    }
+
+    .chat_item.show-options:hover .chat_item_options {
+        display: none;
     }
 }

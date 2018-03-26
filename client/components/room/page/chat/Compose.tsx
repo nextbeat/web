@@ -87,11 +87,11 @@ class Compose extends React.Component<Props, ComposeState> {
 
     shouldPromptChatInfoDropdown() {
         const { isLoggedIn } = this.props 
-        return isLoggedIn && storageAvailable('localStorage') && !JSON.parse(localStorage.getItem('hideChatInfoDropdown') || '') 
+        return isLoggedIn && storageAvailable('localStorage') && !JSON.parse(localStorage.getItem('hideChatInfoDropdown') || 'false') 
     }
 
     shouldPromptChatPinInfoDropdown() {
-        return storageAvailable('localStorage') && !JSON.parse(localStorage.getItem('hideChatPinInfoDropdown') || '') 
+        return storageAvailable('localStorage') && !JSON.parse(localStorage.getItem('hideChatPinInfoDropdown') || 'false') 
     }
 
     handleChange(e: React.FormEvent<HTMLTextAreaElement>) {
