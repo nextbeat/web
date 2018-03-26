@@ -46,8 +46,8 @@ interface WidthRange {
 const WIDTH_RANGES = [
     { range: [0, 501], type: 'small' },
     { range: [501, 801], type: 'medium' },
-    { range: [801, 1101], type: 'room-medium' },
-    { range: [1101, Infinity], type: 'large' } 
+    { range: [801, 1151], type: 'room-medium' },
+    { range: [1151, Infinity], type: 'large' } 
 ]
 
 function state(state = Map(), action: Action) {
