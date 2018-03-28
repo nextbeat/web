@@ -1,14 +1,15 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 
-import YoutubePlayer from '@components/shared/YoutubePlayer'
-import TwitterTimeline from '@components/shared/TwitterTimeline'
+import CreatorSocial from './CreatorSocial'
+import Icon from '@components/shared/Icon'
+import Subscribe from '@components/shared/Subscribe'
 
 import UserEntity from '@models/entities/user'
 import Room from '@models/state/room'
 import RoomPage from '@models/state/pages/room'
 import { State, DispatchProps } from '@types'
-import { baseUrl } from '@utils'
+import { baseUrl, secureUrl } from '@utils'
 
 interface ConnectProps {
     id: number
@@ -26,22 +27,19 @@ class CreatorInfo extends React.Component<Props> {
     render() {
         const { id, author } = this.props 
 
-        const youtubeOpts = {
-            width: '100%',
-            height: '100%',
-            playerVars: {
-                disablekb: 1 as 1, // lol typescript
-                enablejsapi: 1 as 1,
-                origin: baseUrl(),
-                playsinline: 1 as 1,
-                rel: 0 as 0,
-            }
-        }
+        let profpicUrl = author.thumbnail('small').get('url')
+        let profpicStyle = profpicUrl ? { backgroundImage: `url(${secureUrl(profpicUrl)})`} : {}
 
         return (
             <section className="creator-info">
-                {/* <YoutubePlayer className="creator-info_youtube" videoId="PHLY4a5fTjU" opts={youtubeOpts}/> */}
-                <TwitterTimeline className="creator-info_twitter" username="safiyajn" />
+                <div className="creator-info_left">
+                    <div className="creator-info_profpic" style={profpicStyle}>{ !profpicUrl && <Icon type="person" /> }</div>
+                </div>
+                <div className="creator-info_main">
+                    <div className="creator-info_username">{author.get('username')}</div>
+                    <Subscribe user={author} />
+                    <CreatorSocial />
+                </div>
             </section>
         )
     }

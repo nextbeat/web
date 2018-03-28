@@ -9,7 +9,7 @@ import { goBackward, goForward } from '@actions/room'
 import { selectDetailSection } from '@actions/pages/room'
 
 import RoomPlayer from '../player/RoomPlayer'
-import Info from './main/Info'
+import RoomInfo from './main/RoomInfo'
 import CreatorInfo from './main/CreatorInfo'
 import BannerAd from '../ads/BannerAd'
 
@@ -98,7 +98,8 @@ class RoomMain extends React.Component<Props> {
                     <div className="player_inner">
                         { bannerAd && <BannerAd ad={bannerAd} roomId={roomId} />}
                         <RoomPlayer roomId={roomId} />
-                        <Info /> 
+                        <RoomInfo /> 
+                        <CreatorInfo />
                     </div>
                     }
                 </section>

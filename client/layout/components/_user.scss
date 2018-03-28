@@ -1,133 +1,132 @@
-.user {
-    position: relative;
-    display: inline-flex;
-    min-width: 150px;
-    @include clearfix;
+// .user {
+//     position: relative;
+//     display: inline-flex;
+//     min-width: 150px;
+//     @include clearfix;
 
-    &:hover {
-        cursor: pointer;
-    }
+//     &:hover {
+//         cursor: pointer;
+//     }
 
-    .btn-subscribe_count {
-        display: none;
-    }
-}
+//     .btn-subscribe_count {
+//         display: none;
+//     }
+// }
 
-.user_profpic {
-    width: 50px;
-    height: 50px;
-    position: relative;
-    overflow: hidden;
-    border-radius: 10px;
-    background-color: #ddd;
-    user-select: none;  
-    /* fixes Webkit bug where border-radius clipping doesn't occur (http://stackoverflow.com/a/25206004/371747) */
-    z-index: 15; 
-
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-
-    .svg-icon-person {
-        @include center;
-        width: 70%;
-        height: 70%;
-    }
-}
-
-.user_info {
-    margin-left: 13px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-}
-
-.user_username {
-    flex: 1 0;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    a {
-        font-size: 13px;
-        color: $text-color;
-        font-weight: 500;  
-        &:hover {
-            color: $primary-color;
-        }
-    }
-}
-
-.user_separator {
-    display: none;
-}
-
-.user_subscribe {
-    flex: none;
-    .btn {
-        font-size: 13px;
-        font-weight: 300;
-        padding: 4px 8px;
-    }
-}
-
-.user_subscriber-count {
-    flex: none;
-    color: $text-color;
-    font-size: 13px;
-    font-weight: 300;
-}
-
-// Alternate styles
-
-.user-no-subscribe {
-    .user_profpic {
-        width: 40px;
-        height: 40px;
-    }
-}
-
-.user-small {
-
-    display: inline-flex;
-    align-items: center;
+// .user_profpic {
+//     width: 50px;
+//     height: 50px;
+//     position: relative;
+//     overflow: hidden;
+//     border-radius: 10px;
+//     background-color: #ddd;
+//     user-select: none;  
 
 
-    .user_profpic {
-        width: 18px;
-        height: 18px;
-        border-radius: 3px;
-    }
+//     background-repeat: no-repeat;
+//     background-size: cover;
+//     background-position: center;
 
-    .user_info {
-        flex-direction: row;
-        align-items: baseline;
-        margin-left: 7px;
-    }
+//     .svg-icon-person {
+//         @include center;
+//         width: 70%;
+//         height: 70%;
+//     }
+// }
 
-    .user_username {
-        font-weight: 500;
-        font-size: 12px;
-    }
+// .user_info {
+//     margin-left: 13px;
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: flex-end;
+// }
 
-    .user_separator {
-        display: inline;
-        margin-left: 4px;
-        font-size: 12px;
-    }
+// .user_username {
+//     flex: 1 0;
+//     position: relative;
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: center;
 
-    .user_subscribe {
-        margin-left: 4px;
-        .btn {
-            font-size: 12px;
-            font-weight: 500;
-            background: none;
-            padding: 0;
-            color: $primary-color;
-        }
-        .btn-inactive {
-            color: $button-color;
-        }
-    }
-}
+//     a {
+//         font-size: 13px;
+//         color: $text-color;
+//         font-weight: 500;  
+//         &:hover {
+//             color: $primary-color;
+//         }
+//     }
+// }
+
+// .user_separator {
+//     display: none;
+// }
+
+// .user_subscribe {
+//     flex: none;
+//     .btn {
+//         font-size: 13px;
+//         font-weight: 300;
+//         padding: 4px 8px;
+//     }
+// }
+
+// .user_subscriber-count {
+//     flex: none;
+//     color: $text-color;
+//     font-size: 13px;
+//     font-weight: 300;
+// }
+
+// // Alternate styles
+
+// .user-no-subscribe {
+//     .user_profpic {
+//         width: 40px;
+//         height: 40px;
+//     }
+// }
+
+// .user-small {
+
+//     display: inline-flex;
+//     align-items: center;
+
+
+//     .user_profpic {
+//         width: 18px;
+//         height: 18px;
+//         border-radius: 3px;
+//     }
+
+//     .user_info {
+//         flex-direction: row;
+//         align-items: baseline;
+//         margin-left: 7px;
+//     }
+
+//     .user_username {
+//         font-weight: 500;
+//         font-size: 12px;
+//     }
+
+//     .user_separator {
+//         display: inline;
+//         margin-left: 4px;
+//         font-size: 12px;
+//     }
+
+//     .user_subscribe {
+//         margin-left: 4px;
+//         .btn {
+//             font-size: 12px;
+//             font-weight: 500;
+//             background: none;
+//             padding: 0;
+//             color: $primary-color;
+//         }
+//         .btn-inactive {
+//             color: $button-color;
+//         }
+//     }
+// }
