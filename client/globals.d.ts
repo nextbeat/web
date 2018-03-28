@@ -2,6 +2,7 @@
 
 declare module 'hoist-non-react-statics';
 declare module 'linkifyjs/html';
+declare module 'youtube-player';
 
 declare var ga: UniversalAnalytics.ga
 

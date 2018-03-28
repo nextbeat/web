@@ -16,6 +16,12 @@ import './layout/main.scss'
 require('dotdotdot');
 require('jquery-bez');
 
+// load twitter global object
+if (typeof window !== 'undefined') {
+    let $script = require('scriptjs') as any
+    $script('https://platform.twitter.com/widgets.js', 'twitter-widgets')
+}
+
 let initialState = (window as any).__INITIAL_STATE__;
 
 // Initialize the command queue in case analytics.js hasn't loaded yet.

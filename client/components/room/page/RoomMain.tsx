@@ -10,9 +10,11 @@ import { selectDetailSection } from '@actions/pages/room'
 
 import RoomPlayer from '../player/RoomPlayer'
 import Info from './main/Info'
+import CreatorInfo from './main/CreatorInfo'
 import BannerAd from '../ads/BannerAd'
 
 import { State, DispatchProps } from '@types'
+import Creator from '@client/components/pages/company/articles/creators/Creator';
 
 interface ConnectProps {
     roomId: number
