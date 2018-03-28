@@ -147,6 +147,10 @@
 
 // Subscribe
 
+.user_subscribe {
+    display: inline-block;
+}
+
 .btn.btn-subscribe {
 
     font-size: 14px;
@@ -159,7 +163,7 @@
 }
 
 .btn-subscribe {
-    display: flex;
+    display: inline-flex;
 
     & > * {
         display: inline-block;
