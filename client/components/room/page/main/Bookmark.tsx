@@ -68,13 +68,12 @@ class Bookmark extends React.Component<Props, BookmarkState> {
     render() {
         const { bookmarkCount, isBookmarked, type } = this.props;
         const typeClass = type ? `btn-bookmark-${type}` : ''
+        const bookmarkedClass = isBookmarked ? 'bookmarked' : 'unbookmarked';
 
         return (
-            <div className={`btn-bookmark ${typeClass}`}>
-                <div className="btn-bookmark_inner">
-                    <div className="btn-bookmark_count">{ bookmarkCount }</div>
-                    { isBookmarked ? this.renderBookmarked() : this.renderUnbookmarked() }
-                </div>
+            <div className={`btn-bookmark ${typeClass} ${bookmarkedClass}`}>
+                <div className="btn-bookmark_count">{ bookmarkCount }</div>
+                { isBookmarked ? this.renderBookmarked() : this.renderUnbookmarked() }
             </div>
         );
     }

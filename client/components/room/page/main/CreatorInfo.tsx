@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
 
 import CreatorSocial from './CreatorSocial'
 import Icon from '@components/shared/Icon'
@@ -33,10 +34,12 @@ class CreatorInfo extends React.Component<Props> {
         return (
             <section className="creator-info">
                 <div className="creator-info_left">
-                    <div className="creator-info_profpic" style={profpicStyle}>{ !profpicUrl && <Icon type="person" /> }</div>
+                    <Link to={`/u/${author.get('username')}`}>
+                        <div className="creator-info_profpic" style={profpicStyle}>{ !profpicUrl && <Icon type="person" /> }</div>
+                    </Link>
                 </div>
                 <div className="creator-info_main">
-                    <div className="creator-info_username">{author.get('username')}</div>
+                    <Link to={`/u/${author.get('username')}`} className="creator-info_username">{author.get('username')}</Link>
                     <Subscribe user={author} />
                     <CreatorSocial />
                 </div>
