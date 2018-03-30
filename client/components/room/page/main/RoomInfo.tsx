@@ -4,7 +4,6 @@ import { Link } from 'react-router'
 import { List } from 'immutable'
 import * as format from 'date-fns/format'
 
-import User from '@components/shared/User'
 import Icon from '@components/shared/Icon'
 import Bookmark from './Bookmark'
 import Share from './Share'

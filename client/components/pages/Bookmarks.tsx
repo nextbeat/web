@@ -6,7 +6,6 @@ import { List } from 'immutable'
 
 import ScrollComponent, { ScrollComponentProps } from '@components/utils/ScrollComponent'
 import LargeStackItem from '@components/shared/LargeStackItem'
-import User from '@components/shared/User'
 import Spinner from '@components/shared/Spinner'
 import PageError from '@components/shared/PageError'
 import AppBanner from '@components/shared/AppBanner'

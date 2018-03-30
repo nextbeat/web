@@ -57,7 +57,7 @@
 .profile_info {
     padding-left: 120px;
     padding-right: 20px;
-    font-weight: 300;
+    font-weight: 400;
     width: 100%;
 }
 
@@ -78,6 +78,10 @@
     .btn-subscribe_count {
         display: none;
     }
+
+    .btn-edit-profile {
+        margin-left: 20px;
+    }
 }
 
 .profile_subscribers {
@@ -85,7 +89,7 @@
 }
 
 .profile_subscriber-count {
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .profile_bio {
