@@ -46,6 +46,39 @@
     }
 }
 
+.edit_form-item-social {
+    label {
+        padding: 0 10px 0 0;
+    }
+}
+
+.edit_form_social_text {
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline;
+    cursor: pointer;
+    line-height: 20px;
+
+    &:hover {
+        color: $primary-color;
+    }
+}
+
+.edit_form_social_icon {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+
+    &.edit_form_social_icon-google {
+        background-image: url(../public/images/platforms/youtube_color.png);
+    }
+}
+
 .edit_select {
     width: 200px;
     display: inline-block;
@@ -60,6 +93,7 @@
     height: 1px;
     width: 100%;
     background: $border-color;
+    margin-top: 50px;
 }
 
 .edit_submit {

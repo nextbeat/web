@@ -34,7 +34,9 @@ function _request(method, url, body, options) {
             baseUrl: baseUrl,
             body: body,
             auth: auth,
-            resolveWithFullResponse: true
+            resolveWithFullResponse: true,
+            followRedirect: false,
+            simple: true
         }, options))
     });
 }

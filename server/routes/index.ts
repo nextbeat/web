@@ -33,7 +33,8 @@ export function init(web) {
             }
         };
 
-        api[method](req.url, req.body, options).then(function(res2) {
+        api[method](req.url, req.body, options)
+        .then(function(res2) {
             // we check for the header which is set if the current token
             // is still a jwt, and update the user's token
             if (req.user && has(res2.headers, 'x-bbl-jwt-token')) {
@@ -44,9 +45,13 @@ export function init(web) {
             } else {
                 res.send(res2.body);
             }
-        }).catch(function(e) {
+        })
+        .catch(function(e) {
             var statusCode = e.statusCode || 404;
-            res.status(statusCode).json({error: e.error});
+            if (/^3/.test(`${statusCode}`)) {
+                return void res.status(statusCode).set(e.response.headers).end();
+            }
+            return void res.status(statusCode).json({error: e.error});
         })
     })
 
