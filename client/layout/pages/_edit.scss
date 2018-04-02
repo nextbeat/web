@@ -53,9 +53,26 @@
 }
 
 .edit_form_social_text {
-    color: #666;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
+    display: inline;
+    line-height: 20px;
+    margin-right: 10px;
+    color: $text-color;
+
+    cursor: pointer;
+    &:visited {
+        color: $text-color;
+    }
+    &:hover {
+        color: $primary-color;
+    }
+}
+
+.edit_form_social_action {
+    color: #777;
+    font-size: 14px;
+    font-weight: 400;
     display: inline;
     cursor: pointer;
     line-height: 20px;

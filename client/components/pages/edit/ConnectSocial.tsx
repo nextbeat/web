@@ -1,13 +1,21 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
 
+import CurrentUser from '@models/state/currentUser'
+import { UserSocial } from '@models/entities/user'
 import { baseUrl } from '@utils'
+import { State } from '@types'
 
 interface OwnProps {
     platform: string
     displayName: string
 }
 
-type Props = OwnProps
+interface ConnectProps {
+    social?: UserSocial
+}
+
+type Props = OwnProps & ConnectProps
 
 class ConnectSocial extends React.Component<Props> {
 
@@ -41,14 +49,28 @@ class ConnectSocial extends React.Component<Props> {
     }
 
     render() {
-        const { platform, displayName } = this.props
+        const { platform, displayName, social } = this.props
         return (
             <div className="edit_form-item edit_form-item-social">
                 <label><div className={`edit_form_social_icon edit_form_social_icon-${platform}`} /></label>
-                <div className="edit_form_social_text" onClick={this.handleConnectClick}>Connect {displayName} Account</div>
+                { social &&
+                    <div>
+                        <a href={social.get('channel_url')} className="edit_form_social_text">{social.get('channel_name')}</a>
+                        <div className="edit_form_social_action">Disconnect</div>
+                    </div>
+                }
+                { !social &&
+                    <div className="edit_form_social_text" onClick={this.handleConnectClick}>Connect {displayName} Account</div>
+                }
             </div>
         )
     }
 }
 
-export default ConnectSocial
+function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
+    return {
+        social: CurrentUser.entity(state).social(ownProps.platform)
+    }
+}
+
+export default connect(mapStateToProps)(ConnectSocial)

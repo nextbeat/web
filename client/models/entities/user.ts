@@ -5,7 +5,7 @@ import { State } from '@types'
 
 interface UserSocialProps {
     platform: string
-    channel_id: string
+    channel_url: string
     channel_name: string
 }
 

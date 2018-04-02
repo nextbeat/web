@@ -14,20 +14,11 @@ interface ConnectProps {
 
 type Props = ConnectProps
 
-function urlForSocial(social: UserSocial) {
-    switch (social.get('platform')) {
-        case 'youtube': return `https://www.youtube.com/channel/${social.get('channel_id')}`
-        case 'instagram': return `https://www.instagram.com/${social.get('channel_id')}`
-        case 'twitter': return `https://www.twitter.com/${social.get('channel_id')}`
-        default: return ''
-    }
-}
-
 class CreatorSocial extends React.Component<Props> {
 
     renderField(social: UserSocial) {
         const platform = social.get('platform')
-        const url = urlForSocial(social)
+        const url = social.get('channel_url')
 
         let onClick = () => {
             // todo: log event
@@ -65,7 +56,7 @@ function mapStateToProps(state: State): ConnectProps {
     const user = RoomPage.author(state)
     return {
         count: user.get('social').size,
-        youtube: user.social('youtube'),
+        youtube: user.social('google'),
         instagram: user.social('instagram'),
         twitter: user.social('twitter')
     }

@@ -260,6 +260,26 @@ export function signup(credentials: Credentials): ThunkAction {
     }
 }
 
+/********
+ * SOCIAL
+ ********/
+
+export interface RevokeSocialAccountAction extends ApiCallAction {
+    type: ActionType.REVOKE_SOCIAL_ACCOUNT
+    platform: string
+}
+
+export function revokeSocialAccount(platform: string): RevokeSocialAccountAction {
+    return {
+        type: ActionType.REVOKE_SOCIAL_ACCOUNT,
+        platform,
+        API_CALL: {
+            endpoint: `/social/${platform}/auth/revoke`,
+            method: 'POST'
+        }
+    }
+}
+
 /**************
  * SUBSCRIPTION
  **************/
@@ -355,6 +375,8 @@ export function unsubscribe(user: UserEntity): ThunkAction {
 /***********
  * COMMUNITY
  ***********/
+
+// todo: move elsewhere
 
 export interface CreatorBanAction extends GenericAction {
     type: ActionType.CREATOR_BAN
