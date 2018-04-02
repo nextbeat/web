@@ -1,10 +1,11 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 
+import { getCurrentUser, revokeSocialAccount } from '@actions/user'
 import CurrentUser from '@models/state/currentUser'
 import { UserSocial } from '@models/entities/user'
 import { baseUrl } from '@utils'
-import { State } from '@types'
+import { State, DispatchProps } from '@types'
 
 interface OwnProps {
     platform: string
@@ -15,7 +16,7 @@ interface ConnectProps {
     social?: UserSocial
 }
 
-type Props = OwnProps & ConnectProps
+type Props = OwnProps & ConnectProps & DispatchProps
 
 class ConnectSocial extends React.Component<Props> {
 
@@ -24,6 +25,7 @@ class ConnectSocial extends React.Component<Props> {
 
         this.handleReceiveMessage = this.handleReceiveMessage.bind(this)
         this.handleConnectClick = this.handleConnectClick.bind(this)
+        this.handleDisconnectClick = this.handleDisconnectClick.bind(this)
     }
 
     componentDidMount() {
@@ -39,7 +41,7 @@ class ConnectSocial extends React.Component<Props> {
             return
         }
 
-        console.log(e.origin, e.source, e.data)
+        this.props.dispatch(getCurrentUser())
     } 
 
     handleConnectClick() {
@@ -48,15 +50,20 @@ class ConnectSocial extends React.Component<Props> {
         window.open(url, '_blank', 'toolbar=0,location=0,menubar=0,width=700,height=600')
     }
 
+    handleDisconnectClick() {
+        const { dispatch, platform } = this.props
+        dispatch(revokeSocialAccount(platform))
+    }
+
     render() {
         const { platform, displayName, social } = this.props
         return (
             <div className="edit_form-item edit_form-item-social">
                 <label><div className={`edit_form_social_icon edit_form_social_icon-${platform}`} /></label>
                 { social &&
-                    <div>
+                    <div style={{ display: 'inline-block' }}>
                         <a href={social.get('channel_url')} className="edit_form_social_text">{social.get('channel_name')}</a>
-                        <div className="edit_form_social_action">Disconnect</div>
+                        <div className="edit_form_social_action" onClick={this.handleDisconnectClick}>Disconnect</div>
                     </div>
                 }
                 { !social &&

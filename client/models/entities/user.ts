@@ -50,7 +50,7 @@ export default class User extends EntityModel<UserProps> {
     }
 
     social(platform: string): UserSocial | undefined {
-        return this.get('social').find(social => social.get('platform') === platform)
+        return this.get('social', List()).find(social => social.get('platform') === platform)
     }
 
 }

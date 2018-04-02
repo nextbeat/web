@@ -27,9 +27,11 @@ export type UserActionAll =
     SyncStacksAction |
     BookmarkedStacksAction |
     SubscriptionsAction |
+    GetCurrentUserAction |
     LoginAction |
     LogoutAction |
     SignupAction |
+    RevokeSocialAccountAction |
     SubscribeAction |
     UnsubscribeAction |
     CreatorBanAction |
@@ -128,6 +130,31 @@ export function loadSubscriptions(): SubscriptionsAction {
         limit: "all",
         page: 1
     });
+}
+
+export interface GetCurrentUserAction extends ApiCallAction {
+    type: ActionType.GET_CURRENT_USER
+}
+function fetchCurrentUser(username: string): GetCurrentUserAction {
+    return {
+        type: ActionType.GET_CURRENT_USER,
+        API_CALL: {
+            schema: Schemas.User,
+            endpoint: `users/${username}`,
+            authenticated: true
+        }
+    }
+}
+
+export function getCurrentUser(): ThunkAction {
+    return (dispatch, getState) => {
+        if (!CurrentUser.isLoggedIn(getState())) {
+            return;
+        }
+
+        const username = CurrentUser.entity(getState()).get('username')
+        dispatch(fetchCurrentUser(username))
+    }
 }
 
 /******
@@ -264,18 +291,23 @@ export function signup(credentials: Credentials): ThunkAction {
  * SOCIAL
  ********/
 
+function onRevokeSocialAccountSuccess(store: Store, next: Dispatch, action: RevokeSocialAccountAction) {
+    // Refresh current user serialization to get updated social accounts
+    store.dispatch(getCurrentUser())
+}
+
 export interface RevokeSocialAccountAction extends ApiCallAction {
     type: ActionType.REVOKE_SOCIAL_ACCOUNT
     platform: string
 }
-
 export function revokeSocialAccount(platform: string): RevokeSocialAccountAction {
     return {
         type: ActionType.REVOKE_SOCIAL_ACCOUNT,
         platform,
         API_CALL: {
-            endpoint: `/social/${platform}/auth/revoke`,
-            method: 'POST'
+            endpoint: `social/${platform}/auth/revoke`,
+            method: 'POST',
+            onSuccess: onRevokeSocialAccountSuccess
         }
     }
 }
