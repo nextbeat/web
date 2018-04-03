@@ -66,7 +66,7 @@ class BannerAd extends React.Component<Props> {
 
         let url = ad.get('link_url')
         let Elem = url ? 'a' : 'div'
-        let elemAttrs = url ? { href: url, target: '_blank', onClick: this.onClick } : {}
+        let elemAttrs = url ? { href: url, target: '_blank', rel: "nofollow", onClick: this.onClick } : {}
 
         return (
             <Elem className="ad-banner-nb" {...elemAttrs} >

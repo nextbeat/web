@@ -62,7 +62,7 @@ class ConnectSocial extends React.Component<Props> {
                 <label><div className={`edit_form_social_icon edit_form_social_icon-${platform}`} /></label>
                 { social &&
                     <div style={{ display: 'inline-block' }}>
-                        <a href={social.get('channel_url')} className="edit_form_social_text">{social.get('channel_name')}</a>
+                        <a href={social.get('channel_url')} className="edit_form_social_text" target="_blank" rel="nofollow">{social.get('channel_name')}</a>
                         <div className="edit_form_social_action" onClick={this.handleDisconnectClick}>Disconnect</div>
                     </div>
                 }

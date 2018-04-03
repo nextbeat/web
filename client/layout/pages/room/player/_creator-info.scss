@@ -17,6 +17,8 @@
     width: 70px;
     height: 70px;
 
+    background-color: #ddd;
+    position: relative;
     border-radius: 10px;
     /* fixes Webkit bug where border-radius clipping doesn't occur (http://stackoverflow.com/a/25206004/371747) */
     z-index: 15; 
@@ -77,7 +79,7 @@ a.creator-info_username {
         margin-right: 0;
     }
 
-    &.creator-info_social_field-youtube:hover {
+    &.creator-info_social_field-google:hover {
         border-bottom-color: #f00;
     }
 
@@ -99,7 +101,7 @@ a.creator-info_username {
     background-size: contain;
     background-position: center;
 
-    .creator-info_social_field-youtube & {
+    .creator-info_social_field-google & {
         width: 20px;
         background-image: url(../public/images/platforms/youtube_color.png)
     }
