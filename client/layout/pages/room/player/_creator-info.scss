@@ -79,16 +79,18 @@ a.creator-info_username {
         margin-right: 0;
     }
 
-    &.creator-info_social_field-google:hover {
-        border-bottom-color: #f00;
-    }
-
-    &.creator-info_social_field-twitter:hover {
-        border-bottom-color: #429dd3;
-    }
-
-    &.creator-info_social_field-instagram:hover {
-        border-bottom-color: #e1306c;
+    &:hover, &.selected {
+        &.creator-info_social_field-google {
+            border-bottom-color: #f00;
+        }
+    
+        &.creator-info_social_field-twitter {
+            border-bottom-color: #429dd3;
+        }
+    
+        &.creator-info_social_field-instagram {
+            border-bottom-color: #e1306c;
+        }
     }
 }
 
@@ -118,10 +120,35 @@ a.creator-info_username {
     }
 }
 
+.creator-info_social_content {
+    margin-top: 10px;
+}
+
+.creator-info_social_content_outgoing {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 12px;
+    color: #888;
+    cursor: pointer;
+    margin-bottom: 5px;
+
+    .svg-icon {
+        margin-left: 3px;
+        width: 17px;
+        height: 17px;
+        fill: #888;
+    }
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
 .creator-info_social_youtube {
-    margin: 0 auto;
-    width: calc(100% - 20px);
-    max-width: 400px;
+    // margin: 0 auto;
+    // width: calc(100% - 20px);
+    max-width: 500px;
 }
 
 .creator-info_social_twitter {

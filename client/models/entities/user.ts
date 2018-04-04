@@ -5,8 +5,10 @@ import { State } from '@types'
 
 interface UserSocialProps {
     platform: string
+    channel_id: string
     channel_url: string
     channel_name: string
+    post_id: string
 }
 
 export type UserSocial = Map<keyof UserSocialProps, string>

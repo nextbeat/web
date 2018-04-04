@@ -6,6 +6,12 @@ import { StateModelFactory } from '@models/state/base'
 import UserEntity from '@models/entities/user'
 import StackEntity from '@models/entities/stack'
 
+interface SocialProps {
+    isRevoking: boolean
+    hasRevoked: boolean
+    revokeError: string
+}
+
 interface CurrentUserProps {
     id: number
     token: string
@@ -32,6 +38,8 @@ interface CurrentUserProps {
     subscriptionsFetching: boolean
     subscriptionsError: string
     subscriptionsLoaded: boolean
+
+    social: Map<string, any>
 }
 
 const keyMap = {
@@ -60,7 +68,9 @@ const keyMap = {
     'subscriptionIds': ['subscriptions', 'ids'],
     'subscriptionsFetching': ['subscriptions', 'isFetching'],
     'subscriptionsError': ['subscriptions', 'error'],
-    'subscriptionsLoaded': ['meta', 'loadedSubscriptions']
+    'subscriptionsLoaded': ['meta', 'loadedSubscriptions'],
+    // social
+    'social': ['social']
 }
 
 const keyMapPrefix = ['user']
@@ -110,6 +120,10 @@ export default class CurrentUser extends StateModelFactory<CurrentUserProps>(key
     )(
         (state: State) => CurrentUser.get(state, 'closedStackIds')
     )
+
+    static social<K extends keyof SocialProps>(state: State, platform: string, key: K): SocialProps[K] {
+        return this.get(state, 'social', Map()).get(platform, Map()).get(key)
+    }
 
     /**
      * Queries

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Player from 'youtube-player'
 
-enum PlayerState {
+export enum PlayerState {
     UNSTARTED = -1,
     ENDED = 0,
     PLAYING = 1,
@@ -65,11 +65,12 @@ class YoutubePlayer extends React.Component<Props> {
 
         this.player = Player(this.playerRef, {
             ...opts,
-            videoId
+            videoId,
         })
 
         this.player.on('stateChange', (event: any) => {
             if (onPlayerStateChange) {
+                console.log('help')
                 onPlayerStateChange(event.target, event.data)
             }
         })
