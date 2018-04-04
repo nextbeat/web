@@ -47,6 +47,8 @@
 }
 
 .edit_form-item-social {
+    margin-bottom: 10px;
+    
     label {
         padding: 0 10px 0 0;
     }
@@ -101,6 +103,10 @@
 
     &.edit_form_social_icon-google {
         background-image: url(../public/images/platforms/youtube_color.png);
+    }
+
+    &.edit_form_social_icon-twitter {
+        background-image: url(../public/images/platforms/twitter_color.png);
     }
 }
 

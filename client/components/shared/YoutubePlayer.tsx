@@ -70,7 +70,6 @@ class YoutubePlayer extends React.Component<Props> {
 
         this.player.on('stateChange', (event: any) => {
             if (onPlayerStateChange) {
-                console.log('help')
                 onPlayerStateChange(event.target, event.data)
             }
         })

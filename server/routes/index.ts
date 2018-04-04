@@ -29,7 +29,8 @@ export function init(web) {
         var options = {
             auth: token,
             headers: {
-                'X-Forwarded-For': req.ip
+                'X-Forwarded-For': req.ip,
+                'Cookie': req.headers.cookie
             }
         };
 

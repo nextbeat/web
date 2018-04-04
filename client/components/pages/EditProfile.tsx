@@ -124,6 +124,7 @@ class EditProfile extends React.Component<AllProps> {
                             <label>Bio</label><textarea onChange={this.handleBioChange} value={profileFields.get('bio', '') || ''} />
                         </div>
                         <ConnectSocial platform="google" displayName="YouTube" />
+                        <ConnectSocial platform="twitter" displayName="Twitter" />
                         <div className="edit_separator"></div>
                         <div className="edit_submit">
                             <div className="edit_submit-btn"><a className={`btn ${shouldDisableSubmit ? 'btn-gray btn-disabled' : ''}`} onClick={this.handleSubmit}>Submit</a></div>
