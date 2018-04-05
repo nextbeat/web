@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import Icon from '@components/shared/Icon'
 import YoutubePlayer, { PlayerState as YoutubePlayerState } from '@components/shared/YoutubePlayer'
+import TwitterTimeline from '@components/shared/TwitterTimeline'
 
 import { gaEvent } from '@actions/ga'
 import { Dimensions } from '@analytics/definitions'
@@ -36,6 +37,7 @@ class CreatorSocial extends React.PureComponent<Props, ComponentState> {
 
         this.renderField = this.renderField.bind(this)
         this.renderYoutube = this.renderYoutube.bind(this)
+        this.renderTwitter = this.renderTwitter.bind(this)
 
         this.state = {
             selectedPlatform: this.defaultSelectedPlatform(this.props)
@@ -91,16 +93,20 @@ class CreatorSocial extends React.PureComponent<Props, ComponentState> {
         const platform = social.get('platform')
         const url = social.get('channel_url')
         const selectedClass = this.state.selectedPlatform === platform ? 'selected' : ''
+
+        let onClick = () => {
+            this.setState({ selectedPlatform: platform })
+        }
         
         return (
-            <li className={`creator-info_social_field creator-info_social_field-${platform} ${selectedClass}`}>
+            <li className={`creator-info_social_field creator-info_social_field-${platform} ${selectedClass}`} onClick={onClick}>
                 <div className="creator-info_social_icon" />
                 {social.get('channel_name')}
             </li>
         )
     }
 
-    renderYoutube() {
+    renderYoutube(display: boolean) {
         const youtube = this.props.youtube!
         const opts = {
             width: '100%',
@@ -109,7 +115,7 @@ class CreatorSocial extends React.PureComponent<Props, ComponentState> {
         }
 
         return (
-            <div>
+            <div className="creator-info_social_content_inner" style={{ display: display ? 'block' : 'none' }}>
                 <div className="creator-info_social_content_outgoing" onClick={this.handleOutgoingClick.bind(this, youtube)}>Go to channel <Icon type="exit-to-app" /></div>
                 <YoutubePlayer 
                     videoId={youtube.get('post_id')!} 
@@ -117,6 +123,17 @@ class CreatorSocial extends React.PureComponent<Props, ComponentState> {
                     className="creator-info_social_youtube" 
                     onPlayerStateChange={this.handleYoutubePlayerStateChange} 
                 />
+            </div>
+        )
+    }
+
+    renderTwitter(display: boolean) {
+        const twitter = this.props.twitter!
+
+        return (
+            <div className="creator-info_social_content_inner" style={{ display: display ? 'block' : 'none' }}>
+                <div className="creator-info_social_content_outgoing" onClick={this.handleOutgoingClick.bind(this, twitter)}>Go to profile <Icon type="exit-to-app" /></div>
+                <TwitterTimeline username={twitter.get('channel_name')!} className="creator-info_social_twitter" />
             </div>
         )
     }
@@ -129,6 +146,8 @@ class CreatorSocial extends React.PureComponent<Props, ComponentState> {
             return null;
         }
 
+        // TODO: display toggle instead of adding to dom every time
+
         return (
             <div className="creator-info_social">
                 <ul className="creator-info_social_fields">
@@ -137,7 +156,8 @@ class CreatorSocial extends React.PureComponent<Props, ComponentState> {
                     { instagram && this.renderField(instagram) }
                 </ul>
                 <div className="creator-info_social_content">
-                    { selectedPlatform === "google" && this.renderYoutube() }
+                    { this.renderYoutube(selectedPlatform === "google") }
+                    { this.renderTwitter(selectedPlatform === "twitter") }
                 </div>
             </div>
         )

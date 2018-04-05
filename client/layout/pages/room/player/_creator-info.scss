@@ -145,12 +145,14 @@ a.creator-info_username {
     }
 }
 
+.creator-info_social_content_inner {
+    max-width: 500px;
+}
+
 .creator-info_social_youtube {
     max-width: 500px;
 }
 
 .creator-info_social_twitter {
-    margin: 0 auto;
-    width: calc(100% - 20px);
     max-width: 500px;
 }

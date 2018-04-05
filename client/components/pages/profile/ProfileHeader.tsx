@@ -57,6 +57,7 @@ class ProfileHeader extends React.Component<Props> {
         return (
             <div className="profile_social profile_info-item">
                 { user.social('google') && socialItem('google') }
+                { user.social('twitter') && socialItem('twitter')}
             </div>
         )
     }
