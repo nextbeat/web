@@ -99,20 +99,15 @@
     &:hover {
         border-bottom: 5px solid mix(white, $secondary-color, 60%);
         cursor: pointer;
+    } 
+}
+
+.detail-bar_tab-shop {
+    display: none;
+
+    @include media("<=medium") {
+        display: inline-block;
     }
-
-    // &:last-child {
-    //     margin-right: 0;
-    // }
-
-    // @include media('<=380px') {
-    //     margin-right: 20px;
-    // }
-
-    // @include media('<=320px') {
-    //     margin-right: 10px;
-    // }
-    
 }
 
 .detail-bar_main {

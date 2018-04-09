@@ -80,6 +80,10 @@ a.creator-info_username {
     }
 
     &:hover, &.selected {
+        &.creator-info_social_field-shop {
+            border-bottom-color: $primary-color;
+        }
+
         &.creator-info_social_field-google {
             border-bottom-color: #f00;
         }
@@ -102,6 +106,11 @@ a.creator-info_username {
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
+
+    .creator-info_social_field-shop & {
+        width: 20px;
+        background-image: url(../public/images/platforms/shop_color.png)
+    }
 
     .creator-info_social_field-google & {
         width: 20px;
@@ -155,4 +164,41 @@ a.creator-info_username {
 
 .creator-info_social_twitter {
     max-width: 500px;
+}
+
+.creator-info_social_shop {
+    background: #fff;
+    padding: 10px;
+    border: 1px solid #e9e9e9;
+}
+
+.creator-info_social_shop_products {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    // margin: -5px -10px;
+
+    &.two-across .shop-product.shop-product-square {
+        flex-basis: calc(50% - 20px);
+    }
+
+    &.three-across .shop-product.shop-product-square {
+        flex-basis: calc(33.3333% - 20px);
+    }
+
+    &.four-across .shop-product.shop-product-square {
+        flex-basis: calc(25% - 20px);
+    }
+
+    &.five-across .shop-product.shop-product-square {
+        flex-basis: calc(50% - 20px);
+    }
+}
+
+.creator-info_social_shop_sponsor_banner {
+    background: $secondary-color;
+    color: #fff;
+    padding: 6px 10px;
+    width: 100%;
+    font-size: 13px;
 }
