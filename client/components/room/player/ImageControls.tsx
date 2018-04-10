@@ -5,6 +5,7 @@ interface Props {
     shouldDisplayControls: boolean
     isFullScreen: boolean
     isContinuousPlayEnabled: boolean
+    shouldDisplayContinuousPlayCountdown: boolean
     continuousPlayTimeLeft: number
     continuousPlayDuration: number
     
@@ -20,17 +21,17 @@ class ImageControls extends React.Component<Props> {
     render() {
 
         const { shouldDisplayControls, isFullScreen, isContinuousPlayEnabled, fullScreen, 
-                continuousPlayTimeLeft, continuousPlayDuration } = this.props
+                continuousPlayTimeLeft, continuousPlayDuration, shouldDisplayContinuousPlayCountdown } = this.props
 
         const displayControlsClass = shouldDisplayControls ? "display-controls-image" : "";
         const fullScreenIcon = isFullScreen ? "fullscreen-exit" : "fullscreen";
         const autoplaySelectedClass = isContinuousPlayEnabled ? "player_control-autoplay-selected" : "";
-        const timeLeft = Math.ceil(continuousPlayTimeLeft)
+        const timeLeft = Math.ceil(continuousPlayTimeLeft) || 0
 
         return (
             <div className={`player_bottom player_bottom-image not-scrubbable ${displayControlsClass}`}>
                 <div className="player_gradient-bottom"></div>
-                { isContinuousPlayEnabled &&
+                { isContinuousPlayEnabled && shouldDisplayContinuousPlayCountdown &&
                 <div className="player_progress-bar-container">
                     <div className="player_progress-bar-padding"></div>
                     <div className="player_progress-bar">
@@ -45,7 +46,7 @@ class ImageControls extends React.Component<Props> {
                             <Icon type={fullScreenIcon} />
                             <div className="player_tooltip">Fullscreen</div>
                         </a>
-                        { isContinuousPlayEnabled && <div className="player_control player_control-autoplay-timer">{timeLeft}</div> }
+                        { isContinuousPlayEnabled && shouldDisplayContinuousPlayCountdown && <div className="player_control player_control-autoplay-timer">{timeLeft}</div> }
                     </div>
                 </div>
             </div>

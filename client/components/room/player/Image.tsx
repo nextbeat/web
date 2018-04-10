@@ -23,6 +23,7 @@ interface ConnectProps {
     isIOS: boolean
 
     isContinuousPlayEnabled: boolean
+    shouldDisplayContinuousPlayCountdown: boolean
     continuousPlayCountdownTimeLeft: number
     continuousPlayCountdownDuration: number
 }
@@ -180,7 +181,7 @@ class Image extends React.Component<Props, ImageState> {
     }
 
     render() {
-        let { image, hideControls, isContinuousPlayEnabled,
+        let { image, hideControls, isContinuousPlayEnabled, shouldDisplayContinuousPlayCountdown,
               continuousPlayCountdownDuration, continuousPlayCountdownTimeLeft } = this.props
         let { width, height, shouldDisplayControls, isFullScreen } = this.state
 
@@ -197,6 +198,7 @@ class Image extends React.Component<Props, ImageState> {
             fullScreen: this.fullScreen,
             isFullScreen,
             isContinuousPlayEnabled,
+            shouldDisplayContinuousPlayCountdown,
             continuousPlayTimeLeft: continuousPlayCountdownTimeLeft,
             continuousPlayDuration: continuousPlayCountdownDuration,
             shouldDisplayControls
@@ -219,14 +221,18 @@ class Image extends React.Component<Props, ImageState> {
 }
 
 function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
+    const roomId = ownProps.roomId
+    const mediaItemId = roomId && Room.get(state, roomId, 'selectedMediaItemId')
+
     return {
         shouldForceRotation: App.get(state, 'browser') === 'Chrome' && parseInt(App.get(state, 'version')) === 52,
-        selectedMediaItemId: ownProps.roomId && Room.get(state, ownProps.roomId, 'selectedMediaItemId'),
+        selectedMediaItemId: mediaItemId,
         isIOS: App.isIOS(state),
 
-        isContinuousPlayEnabled: !!ownProps.roomId && Room.get(state, ownProps.roomId, 'isContinuousPlayEnabled', false),
-        continuousPlayCountdownTimeLeft: !!ownProps.roomId ? Room.get(state, ownProps.roomId, 'continuousPlayCountdownTimeLeft') : 0,
-        continuousPlayCountdownDuration: !!ownProps.roomId ? Room.get(state, ownProps.roomId, 'continuousPlayCountdownDuration') : 1
+        isContinuousPlayEnabled: !!roomId && Room.get(state, roomId, 'isContinuousPlayEnabled', false),
+        shouldDisplayContinuousPlayCountdown: !!roomId && Room.indexOfMediaItemId(state, roomId, mediaItemId!) < Room.mediaItemsSize(state, roomId) - 1,
+        continuousPlayCountdownTimeLeft: !!roomId ? Room.get(state, roomId, 'continuousPlayCountdownTimeLeft') : 0,
+        continuousPlayCountdownDuration: !!roomId ? Room.get(state, roomId, 'continuousPlayCountdownDuration') : 1
     }
 }
 

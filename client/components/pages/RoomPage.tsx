@@ -86,6 +86,7 @@ class RoomPageComponent extends React.Component<Props, ComponentState> {
 
         this.loadRoom = this.loadRoom.bind(this)
         this.selectMediaItemOnLoad = this.selectMediaItemOnLoad.bind(this)
+        this.selectDetailSectionOnLoad = this.selectDetailSectionOnLoad.bind(this)
         this.renderDocumentHead = this.renderDocumentHead.bind(this);
 
         this.state = {
@@ -183,6 +184,10 @@ class RoomPageComponent extends React.Component<Props, ComponentState> {
         const detailSection = isClosed ? 'activity' : 'chat'
         dispatch(selectDetailSection(detailSection))
     }   
+
+    selectContinuousPlayOnLoad() {
+
+    }
 
     // RENDER
 
