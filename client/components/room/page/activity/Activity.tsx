@@ -7,8 +7,9 @@ import ActivityItem from './ActivityItem'
 import ActivityInfo from './ActivityInfo'
 import Spinner from '@components/shared/Spinner'
 import Icon from '@components/shared/Icon'
+import Switch from '@components/shared/Switch'
 
-import { selectMediaItem } from '@actions/room'
+import { selectMediaItem, setContinuousPlay } from '@actions/room'
 import RoomPage from '@models/state/pages/room'
 import Room from '@models/state/room'
 import App from '@models/state/app'
@@ -21,6 +22,7 @@ interface OwnProps {
 
 interface ConnectProps {
     roomId: number
+    isContinuousPlayEnabled: boolean
 
     mediaItemsFetching: boolean
     mediaItems: List<MediaItem>
@@ -40,6 +42,7 @@ class Activity extends React.Component<Props, ActivityState> {
         super(props);
 
         this.handleNewMediaClick = this.handleNewMediaClick.bind(this);
+        this.handleContinuousPlayClick = this.handleContinuousPlayClick.bind(this);
 
         this.state = {
             displayNewItem: false
@@ -106,19 +109,31 @@ class Activity extends React.Component<Props, ActivityState> {
         });
     }
 
+    handleContinuousPlayClick() {
+        const { dispatch, isContinuousPlayEnabled, roomId } = this.props
+        dispatch(setContinuousPlay(roomId, !isContinuousPlayEnabled));
+    }
+
 
     // Render
 
     render() {
         const { display, mediaItemsFetching,
                 selectedMediaItem, mediaItems, 
-                liveMediaItems } = this.props;
+                liveMediaItems, isContinuousPlayEnabled } = this.props;
         const { displayNewItem } = this.state;
 
         return (
         <section className="activity" style={{ display: (display ? "flex" : "none") }}>
             <div className="activity_inner" id="activity-inner">
                 <ActivityInfo />
+                <div className="activity_header">
+                    <div className="activity_header_title">Posts</div>
+                    <div className="activity_header_autoplay">
+                        Autoplay 
+                        <Switch enabled={isContinuousPlayEnabled} className="activity_header_autoplay_switch" onClick={this.handleContinuousPlayClick} />
+                    </div>
+                </div>
                 {mediaItemsFetching && <Spinner styles={["grey"]} />}
                 {mediaItems.map((mediaItem, idx) => {
                     var selected = (mediaItem.get('id') === selectedMediaItem.get('id'));
@@ -157,7 +172,7 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     const roomId = RoomPage.get(state, 'id')
     return {
         roomId,
-
+        isContinuousPlayEnabled: Room.get(state, roomId, 'isContinuousPlayEnabled', false),
         mediaItemsFetching: Room.get(state, roomId, 'mediaItemsFetching'),
         mediaItems: RoomPage.mediaItems(state),
         liveMediaItems: RoomPage.liveMediaItems(state),

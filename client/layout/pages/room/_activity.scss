@@ -16,6 +16,31 @@
     }
 }
 
+.activity_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 15px;
+}
+
+.activity_header_title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.activity_header_autoplay {
+    display: flex;
+    font-size: 13px;
+    align-items: center;
+    color: #777;
+}
+
+.activity_header_autoplay_switch {
+    margin-left: 7px;
+    width: 30px;
+}
+
 .activity_new-media {
     position: absolute;
     bottom: 0;
