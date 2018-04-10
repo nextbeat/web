@@ -160,7 +160,7 @@ class CreatorSocial extends React.PureComponent<Props, ComponentState> {
         }
 
         return (
-            <div className="creator-info_social_content_inner" style={{ display: display ? 'block' : 'none' }}>
+            <div className="creator-info_social_content_inner creator-info_social_content_inner-youtube" style={{ display: display ? 'block' : 'none' }}>
                 <div className="creator-info_social_content_outgoing" onClick={this.handleOutgoingClick.bind(this, youtube)}>Go to channel <Icon type="exit-to-app" /></div>
                 <YoutubePlayer 
                     videoId={youtube.get('post_id')!} 
@@ -176,7 +176,7 @@ class CreatorSocial extends React.PureComponent<Props, ComponentState> {
         const twitter = this.props.twitter!
 
         return (
-            <div className="creator-info_social_content_inner" style={{ display: display ? 'block' : 'none' }}>
+            <div className="creator-info_social_content_inner creator-info_social_content_inner-twitter" style={{ display: display ? 'block' : 'none' }}>
                 <div className="creator-info_social_content_outgoing" onClick={this.handleOutgoingClick.bind(this, twitter)}>Go to profile <Icon type="exit-to-app" /></div>
                 <TwitterTimeline username={twitter.get('channel_name')!} className="creator-info_social_twitter" />
             </div>

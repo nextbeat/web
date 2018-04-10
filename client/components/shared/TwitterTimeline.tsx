@@ -23,7 +23,7 @@ class TwitterTimeline extends React.Component<Props> {
                 },
                 this.twitterRef,
                 {
-                    chrome: 'noheader,nofooter',
+                    chrome: 'noheader,nofooter,noborders',
                     height: 400
                 }
             )

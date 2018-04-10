@@ -154,16 +154,17 @@ a.creator-info_username {
     }
 }
 
-.creator-info_social_content_inner {
+.creator-info_social_content_inner-youtube {
     max-width: 500px;
 }
 
-.creator-info_social_youtube {
-    max-width: 500px;
+.creator-info_social_content_inner-twitter {
+    max-width: 600px;
 }
 
 .creator-info_social_twitter {
-    max-width: 500px;
+    border: 1px solid #e9e9e9 !important;
+    height: 400px;
 }
 
 .creator-info_social_shop {
@@ -176,7 +177,6 @@ a.creator-info_username {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
-    // margin: -5px -10px;
 
     &.two-across .shop-product.shop-product-square {
         flex-basis: calc(50% - 20px);
