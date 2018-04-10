@@ -9,7 +9,6 @@ interface Props {
     continuousPlayDuration: number
     
     fullScreen: () => void
-    toggleContinuousPlay: () => void
 }
 
 class ImageControls extends React.Component<Props> {
@@ -21,7 +20,7 @@ class ImageControls extends React.Component<Props> {
     render() {
 
         const { shouldDisplayControls, isFullScreen, isContinuousPlayEnabled, fullScreen, 
-                toggleContinuousPlay, continuousPlayTimeLeft, continuousPlayDuration } = this.props
+                continuousPlayTimeLeft, continuousPlayDuration } = this.props
 
         const displayControlsClass = shouldDisplayControls ? "display-controls-image" : "";
         const fullScreenIcon = isFullScreen ? "fullscreen-exit" : "fullscreen";
@@ -45,10 +44,6 @@ class ImageControls extends React.Component<Props> {
                         <a className="player_control player_control-fullscreen" onClick={fullScreen}>
                             <Icon type={fullScreenIcon} />
                             <div className="player_tooltip">Fullscreen</div>
-                        </a>
-                        <a className={`player_control player_control-autoplay ${autoplaySelectedClass}`} onClick={toggleContinuousPlay}>
-                            <Icon type="autoplay" />
-                            <div className="player_tooltip">Autoplay</div>
                         </a>
                         { isContinuousPlayEnabled && <div className="player_control player_control-autoplay-timer">{timeLeft}</div> }
                     </div>

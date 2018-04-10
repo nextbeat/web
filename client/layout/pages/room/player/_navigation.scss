@@ -73,32 +73,6 @@
 
 }
 
-.player_nav-autoplay {
-    display: none;
-    width: 78px;
-    flex: 0 0 auto;
-    border-left: 1px solid #eee;
-    align-items: center;
-    justify-content: center;
-}
-
-.player_nav-autoplay_inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.player_nav-autoplay_title {
-    font-size: 11px;
-    font-weight: 500;
-    color: #666;
-    margin-bottom: 3px;
-}
-
-.player_nav-autoplay_switch {
-    width: 35px;
-}
-
 // Animation to indicate progress when using arrow keys to navigate
 .player_nav-button-flash {
     animation-duration: 0.15s;
@@ -120,20 +94,15 @@
 
 .player_navigation-mobile {
     .player_nav-counter {
-        order: 0;
+        order: 1;
         width: 78px;
     }
 
     .player_nav-backward {
-        order: 1;
+        order: 0;
     }
 
     .player_nav-forward {
         order: 2;
-    }
-
-    .player_nav-autoplay {
-        order: 3;
-        display: flex;
     }
 }

@@ -4,7 +4,6 @@ import { Map } from 'immutable'
 
 import ImageControls from './ImageControls'
 
-import { setContinuousPlay } from '@actions/room'
 import App from '@models/state/app'
 import Room from '@models/state/room'
 import { toggleFullScreen, isFullScreen } from '@utils'
@@ -48,7 +47,6 @@ class Image extends React.Component<Props, ImageState> {
         super(props)
 
         this.fullScreen = this.fullScreen.bind(this)
-        this.toggleContinuousPlay = this.toggleContinuousPlay.bind(this)
 
         this.calculateDimensions = this.calculateDimensions.bind(this)
         this.handleFullScreenChange = this.handleFullScreenChange.bind(this)
@@ -102,14 +100,6 @@ class Image extends React.Component<Props, ImageState> {
         toggleFullScreen(document.getElementById('player_media-inner'))
     }
 
-    toggleContinuousPlay() {
-        const { dispatch, roomId, isContinuousPlayEnabled } = this.props
-        if (!roomId) {
-            return
-        }
-
-        dispatch(setContinuousPlay(roomId, !isContinuousPlayEnabled))
-    }
 
     // Events
 
@@ -205,7 +195,6 @@ class Image extends React.Component<Props, ImageState> {
 
         const imageControlsProps = {
             fullScreen: this.fullScreen,
-            toggleContinuousPlay: this.toggleContinuousPlay,
             isFullScreen,
             isContinuousPlayEnabled,
             continuousPlayTimeLeft: continuousPlayCountdownTimeLeft,
