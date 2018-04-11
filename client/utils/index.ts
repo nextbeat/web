@@ -270,6 +270,25 @@ export function shallowEqual(a: any, b: any): boolean {
 export { fromString, fromNowString, timeLeftString, timeOfDayString, timeString } from './date'
 
 
+/*******************
+ * NUMBER FORMATTING
+ *******************/
+
+export function formatNumber(num: number): string {
+  if (num < 1000) {
+    return `${num}`
+  } else if (num < 1000000) {
+    let int = Math.floor(num / 1000)
+    let frac = Math.floor((num % 1000)/100)
+    return frac > 0 ? `${int}.${frac}K` : `${int}K`
+  } else {
+    let int = Math.floor(num / 1000000)
+    let frac = Math.floor((num % 1000000)/100000)
+    return frac > 0 ? `${int}.${frac}M` : `${int}M`
+  }
+} 
+
+
 /*******
  * OTHER
  *******/
