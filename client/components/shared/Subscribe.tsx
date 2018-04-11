@@ -5,6 +5,7 @@ import CurrentUser from '@models/state/currentUser'
 import User from '@models/entities/user'
 import { subscribe, unsubscribe } from '@actions/user'
 import { State, DispatchProps } from '@types'
+import { formatNumber } from '@utils'
 
 interface OwnProps {
     user: User
@@ -61,7 +62,7 @@ class Subscribe extends React.Component<AllProps, SubscribeState> {
         return (
             <div className={`btn-subscribe ${subscribedClass}`} onMouseOver={() => this.setState({hover: true})} onMouseOut={() => this.setState({hover: false})}>
                 { isSubscribed? this.renderSubscribed() : this.renderUnsubscribed()}
-                <div className="btn-subscribe_count">{user.get('subscriber_count')}</div>
+                <div className="btn-subscribe_count">{formatNumber(user.get('subscriber_count'))}</div>
             </div>
         );
     }

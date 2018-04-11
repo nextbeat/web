@@ -93,7 +93,7 @@ class ProfileHeader extends React.Component<Props> {
                             { user.get('username') } { isCurrentUser ? <Link className="btn btn-gray btn-edit-profile" to="/edit-profile">Edit Profile</Link> : <Subscribe user={user} /> }
                         </div>
                         <div className="profile_subscribers profile_info-item">
-                            <span className="profile_subscriber-count">{`${user.get('subscriber_count')}`}</span> {`subscriber${user.get('subscriber_count') !== 1 ? 's' : ''}` } 
+                            <span className="profile_subscriber-count">{user.get('subscriber_count', 0).toLocaleString()}</span> {`subscriber${user.get('subscriber_count') !== 1 ? 's' : ''}` } 
                         </div>
                         { this.renderBio(user) }
                         { this.renderSocial(user) }

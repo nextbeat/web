@@ -6,6 +6,7 @@ import RoomPage from '@models/state/pages/room'
 import Room from '@models/state/room'
 import Icon from '@components/shared/Icon'
 import { State, DispatchProps } from '@types'
+import { formatNumber } from '@utils'
 
 interface OwnProps {
     type?: string
@@ -72,7 +73,7 @@ class Bookmark extends React.Component<Props, BookmarkState> {
 
         return (
             <div className={`btn-bookmark ${typeClass} ${bookmarkedClass}`}>
-                <div className="btn-bookmark_count">{ bookmarkCount }</div>
+                <div className="btn-bookmark_count">{ formatNumber(bookmarkCount) }</div>
                 { isBookmarked ? this.renderBookmarked() : this.renderUnbookmarked() }
             </div>
         );
