@@ -155,7 +155,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
     resize() {
         const playerWidth = parseInt($('.player_media-inner').css('width'));
-        let playerHeight = Math.min(500, Math.floor(playerWidth * 9 / 16))
+        let playerHeight = Math.min(470, Math.floor(playerWidth * 9 / 16))
 
         if (isFullScreen()) {
             playerHeight = parseInt($('.player_media-inner').css('height'));

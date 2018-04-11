@@ -1,5 +1,5 @@
 .creator-info {
-    margin: 10px 20px 40px 20px;
+    margin: 0 20px 40px 20px;
     display: flex;
 
     @include media('<=medium') {
@@ -191,7 +191,7 @@ a.creator-info_username {
     }
 
     &.five-across .shop-product.shop-product-square {
-        flex-basis: calc(50% - 30px);
+        flex-basis: calc(20% - 30px);
     }
 }
 
