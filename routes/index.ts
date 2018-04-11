@@ -38,6 +38,14 @@ export default (store: Store) => {
             }
         },
         {
+            path: 'social/:platform/auth/success',
+            getComponent: (nextState: any, cb: any) => {
+                import('../client/components/pages/social/ConnectSuccess').then(component => {
+                    return cb(null, component.default)
+                })
+            }
+        },
+        {
             component: App,
             childRoutes: [
                 { 

@@ -32,7 +32,11 @@
         &.chat_large-active {
             transition-duration: 225ms;
         }
-    }     
+    }  
+    
+    .detail-bar-disable-animations & {
+        transition-duration: 0s !important;
+    }
 }
 
 .chat_large_dismiss-bar {

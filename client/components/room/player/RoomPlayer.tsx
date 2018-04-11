@@ -155,7 +155,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
     resize() {
         const playerWidth = parseInt($('.player_media-inner').css('width'));
-        let playerHeight = Math.min(500, Math.floor(playerWidth * 9 / 16))
+        let playerHeight = Math.min(470, Math.floor(playerWidth * 9 / 16))
 
         if (isFullScreen()) {
             playerHeight = parseInt($('.player_media-inner').css('height'));
@@ -311,19 +311,10 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
         const fullScreenClass = isFullScreen ? 'player_media-fullscreen' : '';
         const tooltipClass = isDisplayingFullScreenTooltip ? 'show' : 'hide';
-        const navigationMobileClass = isMobile ? 'player_navigation-mobile' : '';
         const interactiveFullScreenClass = this.isFullScreenInteractive() ? 'interactive' : '';
-
-        // Media item selection happens after the room has been 
-        // loaded from the server (since we need to check local
-        // storage on the browser to find the last visited media
-        // item). We don't want to display the counter until 
-        // a media item has been selected.
-        const shouldDisplayCounter = index > -1 && !shouldDisplayPrerollAd && !isRoomCard
 
         return (
             <div className="player_main">
-                { shouldDisplayCounter && <Counter roomId={roomId} /> }
                 <div className={`player_media ${fullScreenClass}`} style={playerStyle}>
                     { /* Preload the first post's image to prevent load hiccup after ad closes. */ }
                 { !!preloadedImageUrl && <link rel="preload" as="image" href={preloadedImageUrl} /> }
@@ -341,17 +332,11 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                         </div>
                     </div>
                 </div>
-                <div className={`player_navigation ${navigationMobileClass}`}>
+                <div className={`player_navigation`}>
                     <div className="player_navigation_inner">
                         <div className={`player_nav-button player_nav-backward ${leftDisabledClass}`} onClick={this.handleBackward}><Icon type="arrow-back" /></div>
                         <div className="player_nav-counter" onClick={this.handleCounterClick}><CounterInner roomId={roomId} /></div>
                         <div className={`player_nav-button player_nav-forward ${rightDisabledClass}`} onClick={this.handleForward}><Icon type="arrow-forward" /></div>
-                        <div className="player_nav-autoplay" onClick={this.toggleContinuousPlay}>
-                            <div className="player_nav-autoplay_inner">
-                                <div className="player_nav-autoplay_title">AUTOPLAY</div>
-                                <Switch enabled={isContinuousPlayEnabled} className="player_nav-autoplay_switch" />
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <script dangerouslySetInnerHTML={getScript(resizePlayerOnLoad)} />

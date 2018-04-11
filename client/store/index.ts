@@ -14,9 +14,9 @@ const middlewares = [
     chat,
     ga, 
     upload, 
-    navigation, 
     push, 
     api, 
+    navigation, 
     cache, 
     cancel, 
     eddy

@@ -74,6 +74,15 @@
 // Bookmark
 
 .btn-bookmark {
+    
+    display: flex;
+    align-items: center;
+
+    & > * {
+        display: inline-block;
+        position: relative;
+        align-items: center;
+    }
 
     .svg-icon-bookmark, .svg-icon-bookmark-outline {
         height: 17px;
@@ -87,26 +96,17 @@
 
 }
 
-.btn-bookmark_inner {
-
-    display: flex;
-
-    & > * {
-        display: inline-block;
-        position: relative;
-        align-items: stretch;
-    }
-}
-
 .btn-bookmark_count {
-    border: 1px solid $border-color;
-    border-right: none;
-    vertical-align: middle;
-    text-align: center;
-    line-height: 26px;
-    padding: 0 5px;
-    color: $button-color;
+    padding: 0 7px;
+    color: $secondary-color;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 25px;
     min-width: 20px;
+
+    .btn-bookmark.bookmarked & {
+        color: $button-color;
+    }
 }
 
 .btn-bookmark_text {
@@ -119,9 +119,6 @@
         background: none;
         padding: 0;
         color: $button-color;
-    }
-
-    .btn-bookmark_inner {
         align-items: center;
     }
 
@@ -149,32 +146,34 @@
 
 // Subscribe
 
-.btn.btn-subscribe {
-
-    &:hover {
-        cursor: pointer;
-    }
-}
-
-// Subscribe
-
 .btn-subscribe {
-    display: flex;
+
+    cursor: pointer;
+    display: inline-flex;
 
     & > * {
         display: inline-block;
         position: relative;
-        align-items: stretch;
+        align-items: center;
+    }
+
+    .btn {
+        font-size: 14px;
+        font-weight: 400;
+        padding: 6px 10px;
     }
 }
 
 .btn-subscribe_count {
-    border: 1px solid $border-color;
-    border-left: none;
     text-align: center;
-    padding: 0 5px;
-    color: $button-color;
+    padding: 0 7px;
+    color: $primary-color;
     min-width: 20px;
-    font-size: 12px;
-    line-height: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 28px;
+
+    .btn-subscribe.subscribed & {
+        color: $button-color;
+    }
 }

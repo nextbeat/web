@@ -23,19 +23,28 @@
     height: 90px;
     flex: 0 0 auto;
 
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    background-color: #ddd;
-
     @include media('<300px') {
         width: 75px;
         height: 75px;
     }
 }
 
+.shop-product_thumbnail_inner{
+    width: 100%;
+    height: 100%;
+
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-color: #ddd;
+}
+
 .shop-product_main {
     margin-left: 10px;
+}
+
+.shop-product_sponsor {
+    display: none;
 }
 
 .shop-product_title {
@@ -58,13 +67,9 @@
     line-height: 1.45;
 }
 
-/* Sponsored section */
+/* Styles */
 
-.shop_sponsor {
-    background: $secondary-color;
-    padding: 3px 13px 8px 13px;
-    overflow: hidden;
-
+.shop-product.shop-product-sponsored {
     .shop-product_title {
         color: $secondary-color;
     }
@@ -72,7 +77,76 @@
     &:hover .shop-product_title {
         color: $secondary-color;
     }
+}
 
+.shop-product.shop-product-square {
+    flex-direction: column;
+    flex: 0 0 auto;
+    padding: 0;
+
+    .shop-product_thumbnail {
+        width: 100%;
+        padding-top: 100%;
+        height: 0;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 3px;
+    }
+
+    .shop-product_thumbnail_inner {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    .shop-product_title {
+        font-size: 13px;
+    }
+
+    .shop-product_sponsor {
+        display: block;
+        font-size: 12px;
+        color: $secondary-color;
+        margin-top: 4px;
+    }
+
+    .shop-product_price {
+        font-size: 12px;
+    }
+
+    .shop-product_description {
+        font-size: 12px;
+        margin-top: 3px;
+        line-height: 1.3;
+    }
+
+    .shop-product_main {
+        margin-left: 0;
+    }
+
+    margin: 10px 15px;
+    flex-basis: calc(50% - 30px);
+}
+
+.shop-product.shop-product-sponsored.shop-product-square {
+    .shop-product_title {
+        color: $primary-color;
+    }
+
+    &:hover .shop-product_title {
+        color: $primary-color;
+    }
+}
+
+
+/* Sponsored section */
+
+.shop_sponsor {
+    background: $secondary-color;
+    padding: 3px 13px 8px 13px;
+    overflow: hidden;
     &:first-child {
         padding-top: 8px;
     }

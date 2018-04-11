@@ -6,15 +6,16 @@ import { List } from 'immutable'
 
 import Spinner from '@components/shared/Spinner'
 import Icon from '@components/shared/Icon'
-import User from '@components/shared/User'
+import Subscribe from '@components/shared/Subscribe'
 import LargeStackItem from '@components/shared/LargeStackItem'
 import Badge from '@components/shared/Badge'
 
 import Search, { SearchType } from '@models/state/pages/search'
 import Stack from '@models/entities/stack'
-import UserModel from '@models/entities/user'
+import UserEntity from '@models/entities/user'
 import { loadSearchResults, clearSearch } from '@actions/pages/search'
 import { State, DispatchProps, RouteProps } from '@types'
+import { secureUrl } from '@utils'
 
 const SEARCH_FILTERS = [
     {
@@ -38,7 +39,7 @@ interface ConnectProps {
     stacksFetching: boolean
     stacks: List<Stack>
     usersFetching: boolean
-    users: List<UserModel>
+    users: List<UserEntity>
     tagsFetching: boolean
     tags: List<State>
 }
@@ -63,6 +64,8 @@ class SearchComponent extends React.Component<Props, ComponentState> {
         this.renderStacks = this.renderStacks.bind(this)
         this.renderUsers = this.renderUsers.bind(this)
         this.renderTags = this.renderTags.bind(this)
+
+        this.renderUser = this.renderUser.bind(this)
 
         this.state = {
             query: '',
@@ -118,6 +121,21 @@ class SearchComponent extends React.Component<Props, ComponentState> {
 
     // Render
 
+    renderUser(user: UserEntity) {
+        let profpicUrl = user.thumbnail('small').get('url')
+        let profpicStyle = profpicUrl ? { backgroundImage: `url(${secureUrl(profpicUrl)})`} : {}
+
+        return (
+            <div className="search_result_user">
+                <div className="search_result_user_profpic" style={profpicStyle} />
+                <div className="search_result_user_info">
+                    <Link className="search_result_user_username" to={`/u/${user.get('username')}`}>{user.get('username')}</Link>
+                    <Subscribe user={user} />
+                </div>
+            </div>
+        )
+    }
+
     renderStacks() {
         const { stacksFetching, stacks } = this.props
         return (
@@ -137,12 +155,7 @@ class SearchComponent extends React.Component<Props, ComponentState> {
             <div className="search_results">
             { usersFetching && <Spinner type="search-results" styles={["grey"]} />}
             { !usersFetching && users.size === 0 && <span className="search_no-content">No people found.</span>}
-            { users.map(u => 
-                <div key={`search-u-${u.get('id')}`} className="search_result search_result-user">
-                    <User user={u} />
-                    { u.get('open_stacks', 0) > 0 && <Badge type="open" elementType="search_result-user">OPEN ROOM</Badge> }
-                </div>
-            )}
+            { users.map(u => this.renderUser(u)) }
             </div>
         )
     }

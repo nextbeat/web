@@ -28,6 +28,7 @@ const MAX_MESSAGE_LENGTH = 120
 
 interface ConnectProps {
     roomId: number
+    isClosed: boolean
     mentions: List<string>
     authorUsername: string
     isCurrentUserAuthor: boolean
@@ -87,11 +88,11 @@ class Compose extends React.Component<Props, ComposeState> {
 
     shouldPromptChatInfoDropdown() {
         const { isLoggedIn } = this.props 
-        return isLoggedIn && storageAvailable('localStorage') && !JSON.parse(localStorage.getItem('hideChatInfoDropdown') || '') 
+        return isLoggedIn && storageAvailable('localStorage') && !JSON.parse(localStorage.getItem('hideChatInfoDropdown') || 'false') 
     }
 
     shouldPromptChatPinInfoDropdown() {
-        return storageAvailable('localStorage') && !JSON.parse(localStorage.getItem('hideChatPinInfoDropdown') || '') 
+        return storageAvailable('localStorage') && !JSON.parse(localStorage.getItem('hideChatPinInfoDropdown') || 'false') 
     }
 
     handleChange(e: React.FormEvent<HTMLTextAreaElement>) {
@@ -211,8 +212,10 @@ class Compose extends React.Component<Props, ComposeState> {
     }
 
     render() {
-        const { authorUsername, isCurrentUserAuthor } = this.props
+        const { authorUsername, isCurrentUserAuthor, isClosed } = this.props
         const { message, isPinned } = this.state
+        const placeholder = isClosed ? `This room is closed! Subscribe to catch ${authorUsername} live next time.` : "Send a message"
+
         return (
             <div className="chat_compose">
                 <ChatInfoDropdown username={authorUsername} handleClose={this.handleChatInfoDropdownClose} />
@@ -220,7 +223,7 @@ class Compose extends React.Component<Props, ComposeState> {
                 <ChatPinOverMaxLengthDropdown maxLength={MAX_MESSAGE_LENGTH} />
                 <div className="chat_compose-inner">
                     { this.renderTags() }
-                    <textarea ref={ (c) => { if (c) { this._textarea = c } }} onChange={this.handleChange} onFocus={this.handleFocus} onKeyPress={this.handleKeyPress} placeholder="Send a message" value={message}></textarea>
+                    <textarea ref={ (c) => { if (c) { this._textarea = c } }} onChange={this.handleChange} onFocus={this.handleFocus} onKeyPress={this.handleKeyPress} placeholder={placeholder} value={message}></textarea>
                     <div className="chat_compose_controls">
                         <input type="submit" 
                            className={`chat_compose_submit btn ${isPinned && length(message) > MAX_MESSAGE_LENGTH ? 'chat_compose_submit-over-max' : ''}`} 
@@ -239,6 +242,7 @@ class Compose extends React.Component<Props, ComposeState> {
 function mapStateToProps(state: State): ConnectProps {
     return {
         roomId: RoomPage.get(state, 'id'),
+        isClosed: RoomPage.entity(state).get('closed', false),
         mentions: RoomPage.get(state, 'mentions', List()),
         authorUsername: RoomPage.entity(state).author().get('username'),
         isCurrentUserAuthor: RoomPage.isCurrentUserAuthor(state),

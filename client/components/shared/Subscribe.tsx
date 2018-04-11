@@ -47,21 +47,21 @@ class Subscribe extends React.Component<AllProps, SubscribeState> {
     }
 
     renderSubscribed() {
-        return <a className="btn btn-light btn-inactive" onClick={this.handleUnsubscribe}>{ this.state.hover ? "Unsubscribe" : "Subscribed" }</a>
+        return <a className="btn btn-inactive" onClick={this.handleUnsubscribe}>{ this.state.hover ? "Unsubscribe" : "Subscribed" }</a>
     }
 
     renderUnsubscribed() {
-        return <a className="btn btn-light" onClick={this.handleSubscribe}>Subscribe</a>
+        return <a className="btn" onClick={this.handleSubscribe}>Subscribe</a>
     }
 
     render() {
         const { isSubscribed, user } = this.props;
+        const subscribedClass = isSubscribed ? 'subscribed' : 'unsubscribed';
+        
         return (
-            <div className="user_subscribe" onMouseOver={() => this.setState({hover: true})} onMouseOut={() => this.setState({hover: false})}>
-                <div className="btn-subscribe">
-                    { isSubscribed? this.renderSubscribed() : this.renderUnsubscribed()}
-                    <div className="btn-subscribe_count">{user.get('subscriber_count')}</div>
-                </div>
+            <div className={`btn-subscribe ${subscribedClass}`} onMouseOver={() => this.setState({hover: true})} onMouseOut={() => this.setState({hover: false})}>
+                { isSubscribed? this.renderSubscribed() : this.renderUnsubscribed()}
+                <div className="btn-subscribe_count">{user.get('subscriber_count')}</div>
             </div>
         );
     }

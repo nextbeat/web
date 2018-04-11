@@ -8,6 +8,7 @@ import {
     playbackDidEnd, 
     updateContinuousPlayCountdown,
     cancelContinuousPlayCountdown,
+    setContinuousPlay
 } from '@actions/room'
 
 import CurrentUser from '@models/state/currentUser'
@@ -181,6 +182,16 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
     else if (action.type === ActionType.RECEIVE_MEDIA_ITEM_DELETE) 
     {
         maybeSelectMediaItemOnDeletion(store, action.roomId, action.mediaItemId)
+        next(action);
+    }
+    else if (action.type === ActionType.ROOM_PAGE && action.status === Status.SUCCESS) 
+    {   
+        // On room page load, turn on continuous play if the room is closed
+        let roomId = (action.response)!.result
+        let isClosed = (action.response)!.entities.stacks[roomId].closed
+
+        store.dispatch(setContinuousPlay(roomId, isClosed))
+
         next(action);
     }
     else

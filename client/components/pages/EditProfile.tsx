@@ -7,6 +7,7 @@ import EditCoverImage from './edit/EditCoverImage'
 import EditCoverImageModal from './edit/EditCoverImageModal'
 import EditProfilePicture from './edit/EditProfilePicture'
 import EditProfilePictureModal from './edit/EditProfilePictureModal'
+import ConnectSocial from './edit/ConnectSocial'
 import Spinner from '@components/shared/Spinner'
 import Icon from '@components/shared/Icon'
 
@@ -114,14 +115,16 @@ class EditProfile extends React.Component<AllProps> {
                     </div>
                     <div className="edit_form">
                         <div className="edit_form-item">
-                            <label>Full Name</label><input type="text" onChange={this.handleFullNameChange} value={profileFields.get('fullName', '')} />
+                            <label>Full Name</label><input type="text" onChange={this.handleFullNameChange} value={profileFields.get('fullName', '') || ''} />
                         </div>
                         <div className="edit_form-item">
-                            <label>Website</label><input type="text" onChange={this.handleWebsiteChange} value={profileFields.get('website', '')} />
+                            <label>Website</label><input type="text" onChange={this.handleWebsiteChange} value={profileFields.get('website', '') || ''} />
                         </div>
                         <div className="edit_form-item">
-                            <label>Bio</label><textarea onChange={this.handleBioChange} value={profileFields.get('bio', '')} />
+                            <label>Bio</label><textarea onChange={this.handleBioChange} value={profileFields.get('bio', '') || ''} />
                         </div>
+                        <ConnectSocial platform="google" displayName="YouTube" />
+                        <ConnectSocial platform="twitter" displayName="Twitter" />
                         <div className="edit_separator"></div>
                         <div className="edit_submit">
                             <div className="edit_submit-btn"><a className={`btn ${shouldDisableSubmit ? 'btn-gray btn-disabled' : ''}`} onClick={this.handleSubmit}>Submit</a></div>

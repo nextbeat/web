@@ -10,7 +10,7 @@ import Icon from '@components/shared/Icon'
 
 import { setVideoVolume } from '@actions/app'
 import { gaEvent } from '@actions/ga'
-import { didPlayVideo, playbackDidStart, playbackDidEnd, logVideoImpression, setContinuousPlay } from '@actions/room'
+import { didPlayVideo, playbackDidStart, playbackDidEnd, logVideoImpression } from '@actions/room'
 import { Dimensions } from '@analytics/definitions'
 import App from '@models/state/app'
 import Room from '@models/state/room'
@@ -120,7 +120,6 @@ class Video extends React.Component<Props, VideoState> {
         this.adjustVolume = this.adjustVolume.bind(this);
         this.mute = this.mute.bind(this);
         this.fullScreen = this.fullScreen.bind(this);
-        this.toggleContinuousPlay = this.toggleContinuousPlay.bind(this);
         this.hideControlsAfterDelay = this.hideControlsAfterDelay.bind(this);
 
         this.startNewImpression = debounce(this.startNewImpression.bind(this), START_IMPRESSION_WAIT_TIME);
@@ -475,15 +474,6 @@ class Video extends React.Component<Props, VideoState> {
         }
     }
 
-    toggleContinuousPlay() {
-        const { dispatch, roomId, isContinuousPlayEnabled } = this.props
-        if (!roomId) {
-            return
-        }
-
-        dispatch(setContinuousPlay(roomId, !isContinuousPlayEnabled))
-    }
-
     hideControlsAfterDelay(delay=2500) {
         clearTimeout(this.state.hoverTimeoutId);
         const hoverTimeoutId = window.setTimeout(() => {
@@ -693,7 +683,6 @@ class Video extends React.Component<Props, VideoState> {
             playPause: this.playPause,
             seek: this.seek,
             fullScreen: this.fullScreen,
-            toggleContinuousPlay: this.toggleContinuousPlay,
             isScrubbable: itemType === 'mediaItem',
             shouldDisplayContinuousPlay: itemType === 'mediaItem'
         }

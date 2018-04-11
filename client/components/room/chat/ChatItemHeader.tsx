@@ -55,7 +55,7 @@ class ChatItemHeader extends React.Component<Props> {
         return (
             <div className={`chat_item_header chat_item_header-${badge}`}>
                 <div className={`chat_item_badge chat_item_badge-${badge}`}>
-                    <div className="chat_item_badge_tooltip">{this.tooltipText()}</div>
+                    <div className="chat_item_tooltip chat_item_tooltip-badge">{this.tooltipText()}</div>
                 </div>
                 <div className="chat_item_header_info">
                     <span onClick={this.handleClick} className="chat_item_username">{username}</span>

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import { List } from 'immutable'
 
 import Subscribe from '@components/shared/Subscribe'
 import Icon from '@components/shared/Icon'
@@ -40,6 +41,27 @@ class ProfileHeader extends React.Component<Props> {
         )
     }
 
+    renderSocial(user: User) {
+        if (user.get('social', List()).size === 0) {
+            return null
+        }
+
+        let socialItem = (platform: string) => 
+            <a 
+                className={`profile_social_item profile_social_item-${platform}`} 
+                href={user.social(platform)!.get('channel_url')} 
+                target="_blank" 
+                rel="nofollow" 
+            />
+
+        return (
+            <div className="profile_social profile_info-item">
+                { user.social('google') && socialItem('google') }
+                { user.social('twitter') && socialItem('twitter')}
+            </div>
+        )
+    }
+
     render() {
         const { user, isCurrentUser } = this.props 
 
@@ -74,6 +96,7 @@ class ProfileHeader extends React.Component<Props> {
                             <span className="profile_subscriber-count">{`${user.get('subscriber_count')}`}</span> {`subscriber${user.get('subscriber_count') !== 1 ? 's' : ''}` } 
                         </div>
                         { this.renderBio(user) }
+                        { this.renderSocial(user) }
                     </div>
 
                 </div> 

@@ -48,7 +48,7 @@ a.sidebar_header {
 }
 
 a.sidebar_item {
-    font-weight: 300;
+    font-weight: 400;
     color: $text-color;
     display: flex;
     margin-bottom: 12px;
@@ -181,7 +181,7 @@ a.sidebar_item {
     } 
 }
 
-// For sidebar within room, we want to collapse when screen is < 1100px
+// For sidebar within room, we want to collapse when screen is < 1150px
 // which accounts for the detail bar
 .main-container-room .sidebar {
     @include media('<=room-medium') {

@@ -71,16 +71,16 @@ function preprocessAnnotations(comment: Comment | TemporaryComment, options: Ren
     let hashtags = getHashtagData(comment);
 
     let annotations = List<Annotation>();
-    mentions.forEach(m => {
+    mentions.forEach((m: any) => {
         annotations = annotations.push({ type: 'mention', start: m.get('indices').get(0), end: m.get('indices').get(1), username: m.get('username') })
     })
-    highlights.forEach(h => {
+    highlights.forEach((h: any) => {
         annotations = annotations.push({ type: 'highlight', start: h.get(0) as number, end: h.get(1) as number })
     })
-    links.forEach(l => {
+    links.forEach((l: any) => {
         annotations = annotations.push(l)
     })
-    hashtags.forEach(h => {
+    hashtags.forEach((h: any) => {
         annotations = annotations.push(h)
     })
     

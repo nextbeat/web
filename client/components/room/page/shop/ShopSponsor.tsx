@@ -51,7 +51,7 @@ class ShopSponsor extends React.Component<Props> {
                     Nextbeat is sponsored by { name }
                 </div>
                 <div className="shop_sponsor_products">
-                    { productsSlice.map(product => <ShopProduct key={product.get('id')} product={product} roomId={roomId} />) }
+                    { productsSlice.map(product => <ShopProduct key={product.get('id')} product={product} roomId={roomId} styles={["sponsored"]} />) }
                 </div>
                 { products.size > 2 && 
                 <div className="shop_sponsor_expand">

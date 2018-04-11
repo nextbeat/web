@@ -1,0 +1,204 @@
+.creator-info {
+    margin: 0 20px 40px 20px;
+    display: flex;
+
+    @include media('<=medium') {
+        display: none;
+    }
+}
+
+.creator-info_left {
+    flex: 0 0 auto;
+    width: 70px;
+    margin-right: 15px;
+}
+
+.creator-info_profpic {
+    width: 70px;
+    height: 70px;
+
+    background-color: #ddd;
+    position: relative;
+    border-radius: 10px;
+    /* fixes Webkit bug where border-radius clipping doesn't occur (http://stackoverflow.com/a/25206004/371747) */
+    z-index: 15; 
+
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+
+    .svg-icon-person {
+        @include center;
+        width: 70%;
+        height: 70%;
+    }
+}
+
+.creator-info_main {
+    margin-top: 4px;
+    flex: 1;
+}
+
+a.creator-info_username {
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 6px;
+    color: $text-color;
+    display: block;
+
+    &:hover {
+        color: $primary-color;
+    }
+}
+
+.creator-info_social {
+    margin-top: 13px;
+    width: 100%;
+    border-top: 1px solid #e9e9e9;
+}
+
+.creator-info_social_fields {
+    list-style-type: none;
+    margin: 6px 0 0 0;
+    padding: 0;
+    display: flex;
+}
+
+.creator-info_social_field {
+    margin-right: 20px;
+    color: #666;
+    font-size: 13px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    padding-bottom: 3px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    
+    &:last-child {
+        margin-right: 0;
+    }
+
+    &:hover, &.selected {
+        &.creator-info_social_field-shop {
+            border-bottom-color: $primary-color;
+        }
+
+        &.creator-info_social_field-google {
+            border-bottom-color: #f00;
+        }
+    
+        &.creator-info_social_field-twitter {
+            border-bottom-color: #429dd3;
+        }
+    
+        &.creator-info_social_field-instagram {
+            border-bottom-color: #e1306c;
+        }
+    }
+}
+
+.creator-info_social_icon {
+    width: 25px;
+    height: 25px;
+    margin-right: 6px;
+
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+
+    .creator-info_social_field-shop & {
+        width: 20px;
+        background-image: url(../public/images/platforms/shop_color.png)
+    }
+
+    .creator-info_social_field-google & {
+        width: 20px;
+        background-image: url(../public/images/platforms/youtube_color.png)
+    }
+
+    .creator-info_social_field-instagram & {
+        width: 20px;
+        background-image: url(../public/images/platforms/instagram_color.png)
+    }
+
+    .creator-info_social_field-twitter & {
+        width: 23px;
+        margin-right: 4px;
+        background-image: url(../public/images/platforms/twitter_color.png)
+    }
+}
+
+.creator-info_social_content {
+    margin-top: 10px;
+}
+
+.creator-info_social_content_outgoing {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 12px;
+    color: #888;
+    cursor: pointer;
+    margin-bottom: 5px;
+
+    .svg-icon {
+        margin-left: 5px;
+        width: 17px;
+        height: 17px;
+        fill: #888;
+    }
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.creator-info_social_content_inner-youtube {
+    max-width: 500px;
+}
+
+.creator-info_social_content_inner-twitter {
+    max-width: 600px;
+}
+
+.creator-info_social_twitter {
+    border: 1px solid #e9e9e9 !important;
+    height: 400px;
+}
+
+.creator-info_social_shop {
+    background: #fff;
+    padding: 10px;
+    border: 1px solid #e9e9e9;
+}
+
+.creator-info_social_shop_products {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+
+    &.two-across .shop-product.shop-product-square {
+        flex-basis: calc(50% - 30px);
+    }
+
+    &.three-across .shop-product.shop-product-square {
+        flex-basis: calc(33.3333% - 30px);
+    }
+
+    &.four-across .shop-product.shop-product-square {
+        flex-basis: calc(25% - 30px);
+    }
+
+    &.five-across .shop-product.shop-product-square {
+        flex-basis: calc(20% - 30px);
+    }
+}
+
+.creator-info_social_shop_sponsor_banner {
+    background: $secondary-color;
+    color: #fff;
+    padding: 6px 10px;
+    width: 100%;
+    font-size: 13px;
+}

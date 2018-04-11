@@ -46,6 +46,70 @@
     }
 }
 
+.edit_form-item-social {
+    margin-bottom: 10px;
+    
+    label {
+        padding: 0 10px 0 0;
+    }
+
+    .spinner {
+        padding-top: 2px;
+        margin-left: 8px;
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+    }   
+}
+
+.edit_form_social_text {
+    font-size: 14px;
+    font-weight: 600;
+    display: inline;
+    line-height: 20px;
+    margin-right: 10px;
+    color: $text-color;
+
+    cursor: pointer;
+    &:visited {
+        color: $text-color;
+    }
+    &:hover {
+        color: $primary-color;
+    }
+}
+
+.edit_form_social_action {
+    color: #777;
+    font-size: 14px;
+    font-weight: 400;
+    display: inline;
+    cursor: pointer;
+    line-height: 20px;
+
+    &:hover {
+        color: $primary-color;
+    }
+}
+
+.edit_form_social_icon {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+
+    &.edit_form_social_icon-google {
+        background-image: url(../public/images/platforms/youtube_color.png);
+    }
+
+    &.edit_form_social_icon-twitter {
+        background-image: url(../public/images/platforms/twitter_color.png);
+    }
+}
+
 .edit_select {
     width: 200px;
     display: inline-block;
@@ -60,6 +124,7 @@
     height: 1px;
     width: 100%;
     background: $border-color;
+    margin-top: 50px;
 }
 
 .edit_submit {

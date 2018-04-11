@@ -1,7 +1,17 @@
-import { Map } from 'immutable'
+import { Map, List } from 'immutable'
 import { EntityModel } from './base'
 
 import { State } from '@types'
+
+interface UserSocialProps {
+    platform: string
+    channel_id: string
+    channel_url: string
+    channel_name: string
+    post_id: string
+}
+
+export type UserSocial = Map<keyof UserSocialProps, string>
 
 interface UserProps {
     cover_image_url: string
@@ -15,6 +25,7 @@ interface UserProps {
     is_verified: boolean
     open_stacks: number
     profpic_url: string
+    social: List<UserSocial>
     subscriber_count: number
     username: string
     uuid: string
@@ -38,6 +49,10 @@ export default class User extends EntityModel<UserProps> {
     coverImage(preferredType: string): State {
         let coverImage = this.getResource('cover_images', preferredType)
         return !coverImage.isEmpty() ? coverImage : Map({ url: this.get('cover_image_url') })
+    }
+
+    social(platform: string): UserSocial | undefined {
+        return this.get('social', List()).find(social => social.get('platform') === platform)
     }
 
 }

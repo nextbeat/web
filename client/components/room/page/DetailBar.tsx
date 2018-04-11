@@ -94,7 +94,7 @@ class DetailBar extends React.Component<Props, DetailBarState> {
 
         const disableAnimationsTimeoutId = window.setTimeout(() => {
             this.setState({ disableAnimations: false })
-        }, 300)
+        }, 500)
 
         this.setState({
             disableAnimationsTimeoutId,
@@ -186,7 +186,7 @@ class DetailBar extends React.Component<Props, DetailBarState> {
                     <div className="detail-bar_tab-container">
                         <span className={`detail-bar_tab ${selected("chat")}`} onClick={this.setSelected.bind(this, "chat")}>Chat</span>
                         <span className={`detail-bar_tab ${selected("activity")}`} onClick={this.setSelected.bind(this, "activity")}>Activity{this.renderBadge()}</span>
-                        { shouldDisplayShop && <span className={`detail-bar_tab ${selected("shop")}`} onClick={this.setSelected.bind(this, "shop")}>Shop</span>}
+                        { shouldDisplayShop && <span className={`detail-bar_tab detail-bar_tab-shop ${selected("shop")}`} onClick={this.setSelected.bind(this, "shop")}>Shop</span>}
                     </div>
                 </div>
                 <div className="detail-bar_main">

@@ -1,11 +1,12 @@
 .switch {
     width: 100%;
+    cursor: pointer;
 }
 
 .switch_inner {
     position: relative;
     height: 0;
-    padding-bottom: 36%;
+    padding-bottom: 43%;
     overflow: hidden;
 }
 
@@ -15,21 +16,22 @@
     right: 0;
     bottom: 0;
     left: 0;
+    padding: 2px;
     background: #ddd;
 
     .switch.enabled & {
-        background: mix(#fff, $primary-color, 70%);
+        background: mix(#fff, $secondary-color, 70%);
     }
 }
 
 .switch_scrubber {
-    width: 30%;
+    width: 35%;
     height: 100%;
     background: #888;
     transition: transform ease-in-out 0.1s;
 
     .switch.enabled & {
-        transform: translateX(233%);
-        background: $primary-color;
+        transform: translateX(186%);
+        background: $secondary-color;
     }
 }

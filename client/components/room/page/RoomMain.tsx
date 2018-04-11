@@ -9,10 +9,12 @@ import { goBackward, goForward } from '@actions/room'
 import { selectDetailSection } from '@actions/pages/room'
 
 import RoomPlayer from '../player/RoomPlayer'
-import Info from './main/Info'
+import RoomInfo from './main/RoomInfo'
+import CreatorInfo from './main/CreatorInfo'
 import BannerAd from '../ads/BannerAd'
 
 import { State, DispatchProps } from '@types'
+import Creator from '@client/components/pages/company/articles/creators/Creator';
 
 interface ConnectProps {
     roomId: number
@@ -96,7 +98,8 @@ class RoomMain extends React.Component<Props> {
                     <div className="player_inner">
                         { bannerAd && <BannerAd ad={bannerAd} roomId={roomId} />}
                         <RoomPlayer roomId={roomId} />
-                        <Info /> 
+                        <RoomInfo /> 
+                        <CreatorInfo />
                     </div>
                     }
                 </section>

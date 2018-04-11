@@ -100,6 +100,13 @@ function renderFullPage(html, head, initialState) {
             <script src="${vendorsPath}"></script>
             <script src="${jsPath}"></script>
             <script async src='https://www.google-analytics.com/analytics.js'></script>
+            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({
+                    google_ad_client: "ca-pub-6179673641751101",
+                    enable_page_level_ads: true
+                });
+            </script>
         </body>
         </html>
     `
