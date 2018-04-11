@@ -237,7 +237,7 @@ function mapStateToProps(state: State): ConnectProps {
         shopProducts: RoomPage.products(state),
         shopSponsors: RoomPage.get(state, 'sponsors'),
         
-        count: user.get('social').size,
+        count: user.get('social', List()).size,
         youtube: user.social('google'),
         instagram: user.social('instagram'),
         twitter: user.social('twitter')
