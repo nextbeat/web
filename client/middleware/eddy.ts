@@ -209,6 +209,12 @@ function join(action: JoinRoomAction, client: EddyClient) {
 
 function wrapJoin(store: Store, next: Dispatch, action: JoinRoomAction) {
     let successCallback = function(action: JoinRoomAction, client: EddyClient, responseData: any) {
+        // clear room info timer if exists
+        let oldTimerId = Room.get(store.getState(), action.roomId, 'timerId')
+        if (oldTimerId) {
+            window.clearInterval(oldTimerId)
+        }
+
         // set up room info timer
         let roomInfoIntervalId = window.setInterval(() => {
             store.dispatch(getRoomInfo(action.roomId))
@@ -226,7 +232,7 @@ function leave(action: LeaveRoomAction, client:EddyClient) {
 function wrapLeave(store: Store, next: Dispatch, action: LeaveRoomAction) {
     let timerId = Room.get(store.getState(), action.roomId, 'timerId')
     if (timerId) {
-        clearInterval(timerId)
+        window.clearInterval(timerId)
     }
     return wrapAction(store, next, action)(leave)
 }
