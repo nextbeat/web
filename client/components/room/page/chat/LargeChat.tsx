@@ -60,7 +60,7 @@ class LargeChat extends React.Component<Props> {
             <div className="chat_large_dismiss-bar" onClick={this.handleDismiss}>
                 <Icon type="expand-more" />
             </div>
-            { !isAppLocal && <GoogleAd slot="4015885108" format="link" className="google-ad-chat_large" /> }
+            <GoogleAd slot="4015885108" format="link" className="google-ad-chat_large" />
             { hasPinnedComment && 
                 <PinnedChatItem />
             }
