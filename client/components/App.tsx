@@ -185,8 +185,10 @@ class App extends React.Component<Props> {
     }
 
     render() {
+        const { environment } = this.props
+
         return (
-            <div className="app-container" id="app-container">
+            <div className={`app-container app-${environment}`} id="app-container">
                 { this.setTitle() }
                 <Login />
                 <Signup />

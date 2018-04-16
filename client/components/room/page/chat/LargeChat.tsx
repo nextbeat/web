@@ -11,6 +11,7 @@ import UserActions from './UserActions'
 import ScrollableChatHistory from '@components/room/chat/ScrollableChatHistory'
 import Spinner from '@components/shared/Spinner'
 import Icon from '@components/shared/Icon'
+import GoogleAd from '@components/shared/GoogleAd'
 import PinnedChatItem from '@components/room/chat/PinnedChatItem'
 
 import { promptChatActionsForUser, resetChat, collapseChat } from '@actions/pages/room'
@@ -22,6 +23,7 @@ import Eddy from '@models/state/eddy'
 import { State, DispatchProps } from '@types'
 
 interface ConnectProps {
+    isAppLocal: boolean
     isActiveOverlay: boolean
 
     hasLostConnection: boolean
@@ -47,7 +49,7 @@ class LargeChat extends React.Component<Props> {
     }
 
     render() {
-        const { hasLostConnection, hasPinnedComment, isActiveOverlay,
+        const { hasLostConnection, hasPinnedComment, isActiveOverlay, isAppLocal,
                 showSearchResults, isClosed, authorUsername, roomId } = this.props;
 
         const activeClass = isActiveOverlay ? 'chat_large-active' : '';
@@ -58,6 +60,7 @@ class LargeChat extends React.Component<Props> {
             <div className="chat_large_dismiss-bar" onClick={this.handleDismiss}>
                 <Icon type="expand-more" />
             </div>
+            { !isAppLocal && <GoogleAd slot="4015885108" format="link" className="google-ad-chat_large" /> }
             { hasPinnedComment && 
                 <PinnedChatItem />
             }
@@ -82,6 +85,7 @@ class LargeChat extends React.Component<Props> {
 
 function mapStateToProps(state: State): ConnectProps {
     return {
+        isAppLocal: App.isLocal(state),
         isActiveOverlay: App.get(state, 'activeOverlay') === 'chat',
         hasLostConnection: Eddy.get(state, 'hasLostConnection'),
         roomId: RoomPage.get(state, 'id'),
