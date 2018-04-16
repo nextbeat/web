@@ -124,7 +124,7 @@ class Activity extends React.Component<Props, ActivityState> {
         const { displayNewItem } = this.state;
 
         return (
-        <section className="activity" style={{ display: (display ? "flex" : "none") }}>
+        <section className={`activity ${display ? 'selected' : 'unselected'}`}>
             <div className="activity_inner" id="activity-inner">
                 <ActivityInfo />
                 <div className="activity_header">

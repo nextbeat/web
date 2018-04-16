@@ -103,6 +103,7 @@
     font-weight: 600;
     line-height: 25px;
     min-width: 20px;
+    display: none; // disable for now
 
     .btn-bookmark.bookmarked & {
         color: $button-color;

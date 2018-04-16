@@ -127,6 +127,11 @@
     }
 }
 
+.detail-bar_main > .unselected  {
+    height: 0;
+    transform: translateX(100%);
+}
+
 // Badges
 
 .detail-bar_activity-badge {

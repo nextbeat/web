@@ -62,7 +62,7 @@ class Chat extends React.Component<Props> {
         const { display, isOverlayActive } = this.props;
 
         return (
-        <div className="chat" onWheel={debounce(this.handleOnWheel, 200)} style={{ display: (display ? "block" : "none") }}>
+        <div className={`chat ${display ? 'selected' : 'unselected'}`} onWheel={debounce(this.handleOnWheel, 200)}>
             <LargeChat />
             <SmallChat />
         </div>

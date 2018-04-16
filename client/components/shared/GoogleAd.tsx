@@ -39,7 +39,7 @@ class GoogleAd extends React.Component<Props> {
             "data-ad-format": format
         }
 
-        if (environment !== 'production' && environment !== 'development') {
+        if (environment !== 'production') {
             dataAttrs["data-adtest"] = "on"
         }
 

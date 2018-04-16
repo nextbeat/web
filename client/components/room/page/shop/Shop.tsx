@@ -24,7 +24,7 @@ class Shop extends React.Component<Props> {
     render() {
         const { display, products, sponsors, roomId } = this.props
         return (
-            <div className="shop" style={{ display: display ? 'block' : 'none' }}>
+            <div className={`shop ${display ? 'selected' : 'unselected'}`}>
                 { sponsors && sponsors.map((sponsor, idx) => <ShopSponsor key={idx} index={idx} />)}
                 { products.map(product => <ShopProduct key={product.get('id')} product={product} roomId={roomId} />)}
             </div>

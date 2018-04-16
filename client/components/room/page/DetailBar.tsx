@@ -94,7 +94,7 @@ class DetailBar extends React.Component<Props, DetailBarState> {
 
         const disableAnimationsTimeoutId = window.setTimeout(() => {
             this.setState({ disableAnimations: false })
-        }, 500)
+        }, 1000)
 
         this.setState({
             disableAnimationsTimeoutId,
