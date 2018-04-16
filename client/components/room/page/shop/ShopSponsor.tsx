@@ -47,16 +47,13 @@ class ShopSponsor extends React.Component<Props> {
 
         return (
             <div className="shop_sponsor">
-                <div className="shop_sponsor_detail">
-                    Nextbeat is sponsored by { name }
-                </div>
                 <div className="shop_sponsor_products">
-                    { productsSlice.map(product => <ShopProduct key={product.get('id')} product={product} roomId={roomId} styles={["sponsored"]} />) }
+                    { productsSlice.map(product => <ShopProduct key={product.get('id')} product={product} roomId={roomId} styles={["sponsored"]} sponsor={name} />) }
                 </div>
                 { products.size > 2 && 
                 <div className="shop_sponsor_expand">
                     <div className="shop_sponsor_expand_button" onClick={this.handleExpand} >
-                        { expanded ? "show less" : "show more" }
+                        { expanded ? "Show less" : `Show more from ${name}` }
                         <Icon type={ expanded ? "expand-less" : "expand-more" } />
                     </div>
                 </div>

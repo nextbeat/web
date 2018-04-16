@@ -33,7 +33,7 @@
     }
 }
 
-.shop-product_thumbnail_inner{
+.shop-product_thumbnail_inner {
     width: 100%;
     height: 100%;
 
@@ -48,7 +48,10 @@
 }
 
 .shop-product_sponsor {
-    display: none;
+    display: block;
+    font-size: 13px;
+    color: $secondary-color;
+    margin-top: 4px;
 }
 
 .shop-product_title {
@@ -72,16 +75,6 @@
 }
 
 /* Styles */
-
-.shop-product.shop-product-sponsored {
-    .shop-product_title {
-        color: $secondary-color;
-    }
-
-    &:hover .shop-product_title {
-        color: $secondary-color;
-    }
-}
 
 .shop-product.shop-product-square {
     flex-direction: column;
@@ -110,10 +103,7 @@
     }
 
     .shop-product_sponsor {
-        display: block;
         font-size: 12px;
-        color: $secondary-color;
-        margin-top: 4px;
     }
 
     .shop-product_price {
@@ -134,22 +124,10 @@
     flex-basis: calc(50% - 30px);
 }
 
-.shop-product.shop-product-sponsored.shop-product-square {
-    .shop-product_title {
-        color: $primary-color;
-    }
-
-    &:hover .shop-product_title {
-        color: $primary-color;
-    }
-}
-
 
 /* Sponsored section */
 
 .shop_sponsor {
-    background: $secondary-color;
-    padding: 3px 13px 8px 13px;
     overflow: hidden;
     &:first-child {
         padding-top: 8px;
@@ -164,39 +142,29 @@
     text-align: right;
 }
 
-.shop_sponsor_products {
-    margin-top: 10px;
-    background: #fff;
-    box-shadow: 0px 5px 10px 1px rgba(0, 0, 0, 0.1); 
-
-    &:last-child {
-        margin-bottom: 4px;
-    }
-}
-
 .shop_sponsor_expand {
     text-align: center;
     margin-top: 6px;
+    background: #eee;
+    color: #777;
 }
 
 .shop_sponsor_expand_button {
     display: inline-flex;
     align-items: center;
     font-size: 12px;
-    color: #fff;
     cursor: pointer;
 
     .svg-icon {
         width: 20px;
         height: 20px;
-        fill: #fff;
     }
 
-    &:hover {
-        color: mix(white, $secondary-color, 80%);
+    // &:hover {
+    //     color: mix(white, $secondary-color, 80%);
 
-        .svg-icon {
-            fill:  mix(white, $secondary-color, 80%);
-        }
-    }
+    //     .svg-icon {
+    //         fill:  mix(white, $secondary-color, 80%);
+    //     }
+    // }
 }
