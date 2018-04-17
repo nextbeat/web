@@ -195,7 +195,7 @@ class DetailBar extends React.Component<Props, DetailBarState> {
                     { <Activity display={selectedDetailSection === "activity"} /> }
                     { <Shop display={selectedDetailSection === "shop"} /> }
                 </div>
-                <GoogleAd slot="3990004377" format="auto" className="google-ad-detail-bar" />
+                <GoogleAd slot="3990004377" style={{ width: '300px', height: '250px' }} className="google-ad-detail-bar" />
             </div>
         );
     }

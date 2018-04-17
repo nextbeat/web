@@ -128,7 +128,7 @@ class Activity extends React.Component<Props, ActivityState> {
         <section className={`activity ${display ? 'selected' : 'unselected'}`}>
             <div className="activity_inner" id="activity-inner">
                 <ActivityInfo />
-                <GoogleAd slot="1240675816" format="auto" className="google-ad-activity" />
+                <GoogleAd slot="1240675816" style={{ width: '320px', height: '50px' }} className="google-ad-activity" />
                 <div className="activity_header">
                     <div className="activity_header_title">Posts</div>
                     <div className="activity_header_autoplay">
