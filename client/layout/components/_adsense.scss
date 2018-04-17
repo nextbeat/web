@@ -1,6 +1,6 @@
 .google-ad-chat_large {
     width: 100%;
-    height: 100px;
+    height: 0;
     display: none;
 
     @include media("<=medium") {
@@ -10,7 +10,7 @@
 
 .google-ad-activity {
     width: 100%;
-    height: 100px;
+    height: 0;
     display: none;
 
     @include media("<=medium") {
@@ -19,8 +19,9 @@
 }
 
 .google-ad-detail-bar {
-    width: 100%;
-    height: 100px;
+    width: 320px;
+    margin: 0 auto;
+    height: 0;
     display: block;
 
     @include media("<=medium") {
@@ -30,7 +31,7 @@
 
 .google-ad-home_sections {
     width: 100%;
-    height: 100px;
+    height: 0;
     display: block;
     float: left;
     clear: both;
