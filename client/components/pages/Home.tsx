@@ -8,6 +8,7 @@ import HomeSplash from './home/HomeSplash'
 import RoomCard from '@components/room/RoomCard'
 import Spinner from '@components/shared/Spinner'
 import AppBanner from '@components/shared/AppBanner'
+import GoogleAd from '@components/shared/GoogleAd'
 
 import { loadHome, clearHome } from '@actions/pages/home'
 import Home from '@models/state/pages/home'
@@ -60,7 +61,7 @@ class HomeComponent extends React.Component<Props, ComponentState> {
                         <div className="home_sections">
                             {sections.map((section, idx) => 
                                 <HomeSection key={`sec${idx}`} index={idx} />
-                            )}
+                            ).insert(2, <GoogleAd slot="5027043434" format="auto" className="google-ad-home_sections"/>)}
                         </div>
                     </div>
                     { !isLoggedIn &&

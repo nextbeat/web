@@ -6,6 +6,7 @@ import Chat from './chat/Chat'
 import Activity from './activity/Activity'
 import Shop from './shop/Shop'
 import BannerAd from '@components/room/ads/BannerAd'
+import GoogleAd from '@components/shared/GoogleAd'
 import Icon from '@components/shared/Icon'
 import ActionsDropdown from './ActionsDropdown'
 
@@ -180,6 +181,7 @@ class DetailBar extends React.Component<Props, DetailBarState> {
         return (
             <div className={`detail-bar ${disableAnimationsClass}`}>
                 { bannerAd && <BannerAd ad={bannerAd} roomId={roomId} /> }
+                <GoogleAd slot="8096059906" format="auto" className="google-ad-detail-bar" />
                 <div className={`detail-bar_header ${creatorClass}`}>
                     <div className="detail-bar_toggle-edit dropdown-detail-bar_toggle" onClick={this.toggleDropdown}><Icon type="more-vert" /></div> 
                     <ActionsDropdown type="detail-bar" />

@@ -8,6 +8,7 @@ import ActivityInfo from './ActivityInfo'
 import Spinner from '@components/shared/Spinner'
 import Icon from '@components/shared/Icon'
 import Switch from '@components/shared/Switch'
+import GoogleAd from '@components/shared/GoogleAd'
 
 import { selectMediaItem, setContinuousPlay } from '@actions/room'
 import RoomPage from '@models/state/pages/room'
@@ -127,6 +128,7 @@ class Activity extends React.Component<Props, ActivityState> {
         <section className={`activity ${display ? 'selected' : 'unselected'}`}>
             <div className="activity_inner" id="activity-inner">
                 <ActivityInfo />
+                <GoogleAd slot='4101862626' format="auto" className="google-ad-activity" />
                 <div className="activity_header">
                     <div className="activity_header_title">Posts</div>
                     <div className="activity_header_autoplay">
