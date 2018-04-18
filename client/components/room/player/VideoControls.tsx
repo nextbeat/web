@@ -113,7 +113,6 @@ class VideoControls extends React.Component<Props, State> {
     }
 
     handleProgressBarOnMouseDown(e: React.MouseEvent<HTMLElement>) {
-        this.handleSeek(e);
         this.setState({
             isDraggingProgressBar: true,
             isProgressBarActive: true

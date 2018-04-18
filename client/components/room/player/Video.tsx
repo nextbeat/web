@@ -116,7 +116,7 @@ class Video extends React.Component<Props, VideoState> {
         this.unloadVideo = this.unloadVideo.bind(this);
         this.playPause = this.playPause.bind(this);
         this.seek = this.seek.bind(this);
-        this.setCurrentTime = throttle(this.setCurrentTime, 300);
+        this.setCurrentTime = debounce(this.setCurrentTime, 200);
         this.adjustVolume = this.adjustVolume.bind(this);
         this.mute = this.mute.bind(this);
         this.fullScreen = this.fullScreen.bind(this);
@@ -419,6 +419,7 @@ class Video extends React.Component<Props, VideoState> {
     }
 
     seek(time: number) {
+        console.log('seek', time)
         this.setState({
             currentTime: time
         });
@@ -428,6 +429,7 @@ class Video extends React.Component<Props, VideoState> {
     private setCurrentTime(time: number) {
         // This fn is throttled to prevent
         // unnecessary work
+        console.log('setting time', time)
         this._videoElem.currentTime = time;
     }
 
