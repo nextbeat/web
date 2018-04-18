@@ -83,7 +83,7 @@ function callApi(options: ApiCall, store: Store, action: ApiCallAction): Promise
         return Promise.reject(new NotLoggedInError());
     }
 
-    // we wrap in a bluebird promise to give access to bluebird methods (e.g. delay)
+    // we wrap in a bluebird promise to give access to bluebird methods (e.g. delay) 
     return Promise.resolve()
     .then(function() {
         return fetch(url, fetchOptions(store, options))

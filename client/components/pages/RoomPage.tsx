@@ -147,7 +147,6 @@ class RoomPageComponent extends React.Component<Props, ComponentState> {
         let prevIndex = parseInt(prevProps.params.index || "0")
         let currIndex = parseInt(this.props.params.index || "0")
         if (prevIndex > 0 && currIndex > 0 && prevIndex !== currIndex && mediaItemIdAtParamIndex ) {
-            console.log(prevIndex, currIndex, mediaItemIdAtParamIndex)
             dispatch(selectMediaItem(roomId, mediaItemIdAtParamIndex, { shouldUpdateHistory: false }))
         }
     }
