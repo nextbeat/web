@@ -8,7 +8,7 @@
 }
 
 .google-ad-activity {
-    margin: 0 auto;
+    margin: 0 auto 5px;
     display: none;
 
     @include media("<=medium") {
@@ -31,5 +31,5 @@
     display: block;
     float: left;
     clear: both;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }

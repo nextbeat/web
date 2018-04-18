@@ -57,10 +57,10 @@ class LargeChat extends React.Component<Props> {
         return (
         <div className={`chat_large ${activeClass}`}>
             <UserActions />
+            <GoogleAd slot="6887630451" style={{ width: '320px', height: '50px' }} className="google-ad-chat_large" />
             <div className="chat_large_dismiss-bar" onClick={this.handleDismiss}>
                 <Icon type="expand-more" />
             </div>
-            <GoogleAd slot="6887630451" style={{ width: '320px', height: '50px' }} className="google-ad-chat_large" />
             { hasPinnedComment && 
                 <PinnedChatItem />
             }
