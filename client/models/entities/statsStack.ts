@@ -28,4 +28,8 @@ interface StatsStackProps {
     mediaItems: List<Map<keyof StatsMediaItemProps, any>>
 }
 
-export default class StatsStack extends EntityModel<StatsStackProps> {}
+export default class StatsStack extends EntityModel<StatsStackProps> {
+
+    entityName = "statsStacks"
+
+}

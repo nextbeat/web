@@ -30,7 +30,7 @@ const keyMap = withEntityMap({
     'roomError': ['room', 'error']
 })
 
-const keyMapPrefix = ['pages', 'profile']
+const keyMapPrefix = ['pages', 'creator', 'stats']
 
 export default class Stats extends StateModelFactory<StatsProps>(keyMap, keyMapPrefix) {
 

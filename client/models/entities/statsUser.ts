@@ -17,6 +17,8 @@ interface StatsUserProps {
 
 export default class StatsUser extends EntityModel<StatsUserProps> {
 
+    entityName = "statsUsers"
+
     stacks(): List<StatsStack> {
         return this.get('stacks', List()).map(stackId => new StatsStack(stackId, this.entities))
     }

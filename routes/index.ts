@@ -247,16 +247,16 @@ export default (store: Store) => {
                                 //         return cb(null, component.default)
                                 //     })
                                 // }),
-                                // analyticsRoute('stats', cb => {
-                                //     import(/* webpackChunkName: 'stats' */ '../client/components/pages/creator/Stats').then(component => {
-                                //         return cb(null, component.default)
-                                //     })
-                                // }),
-                                // analyticsRoute('stats/:hid', cb => {
-                                //     import(/* webpackChunkName: 'stats' */ '../client/components/pages/creator/RoomStats').then(component => {
-                                //         return cb(null, component.default)
-                                //     })
-                                // }),
+                                analyticsRoute('stats', cb => {
+                                    import(/* webpackChunkName: 'stats' */ '../client/components/pages/creator/Stats').then(component => {
+                                        return cb(null, component.default)
+                                    })
+                                }),
+                                analyticsRoute('stats/:hid', cb => {
+                                    import(/* webpackChunkName: 'stats' */ '../client/components/pages/creator/StatsRoom').then(component => {
+                                        return cb(null, component.default)
+                                    })
+                                }),
                             ]
                         },
                         {
