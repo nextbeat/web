@@ -59,7 +59,14 @@
         display: inline-block;
         width: 16px;
         height: 16px;
-    }   
+    } 
+    
+    @include media("<=small") {
+        label {
+            display: inline-block;
+            width: auto;
+        }
+    }
 }
 
 .edit_form_social_text {

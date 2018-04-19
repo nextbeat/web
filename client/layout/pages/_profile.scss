@@ -54,11 +54,18 @@
     }
 }
 
-.profile_info {
+.profile_main {
+    display: flex;
+    justify-content: space-between;
+
     padding-left: 120px;
     padding-right: 20px;
     font-weight: 400;
     width: 100%;
+
+    @include media("<=small") {
+        flex-direction: column;
+    }
 }
 
 .profile_info-item {
@@ -121,6 +128,28 @@
 
     &.profile_social_item-twitter {
         background-image: url(../public/images/platforms/twitter_color.png);
+    }
+}
+
+.profile_actions {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    margin-top: 6px;
+
+    @include media("<=small") {
+        justify-content: flex-start;
+    }
+}
+
+.profile_actions_button {
+    background: #888;
+    display: block;
+    margin-left: 6px;
+    flex: 0 0 auto;
+
+    &:first-child {
+        margin-left: 0;
     }
 }
 

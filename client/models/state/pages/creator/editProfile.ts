@@ -19,13 +19,13 @@ const keyMap = {
     'id': ['meta', 'id'],
     'fields': ['fields'],
     'hasChanged': ['hasChanged'],
-    // submission
+
     'isUpdatingUser': ['submission', 'isUpdatingUser'],
     'hasUpdatedUser': ['submission', 'hasUpdatedUser'],
     'updateUserError': ['submission', 'updateUserError']
 }
 
-const keyMapPrefix = ['pages', 'editProfile']
+const keyMapPrefix = ['pages', 'creator', 'editProfile']
 
 interface UserSubmitObject {
     full_name: string

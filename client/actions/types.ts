@@ -221,11 +221,16 @@ export enum ActionType {
     UPDATE_TAGS = 'UPDATE_TAGS',
     CLEAR_EDIT_ROOM = 'CLEAR_EDIT_ROOM',
 
-    /* EDIT PROFILE */
+    /* CREATOR: EDIT PROFILE */
     EDIT_PROFILE = 'EDIT_PROFILE',
     UPDATE_EDIT_PROFILE = 'UPDATE_EDIT_PROFILE',
     SUBMIT_EDIT_PROFILE = 'SUBMIT_EDIT_PROFILE',
     CLEAR_EDIT_PROFILE = 'CLEAR_EDIT_PROFILE',
+
+    /* CREATOR: STATS */
+    STATS = 'STATS',
+    ROOM_STATS = 'ROOM_STATS',
+    CLEAR_STATS = 'CLEAR_STATS',
 
     /* HOME */
     HOME = 'HOME',
@@ -301,7 +306,8 @@ import { UploadActionAll } from './upload'
 import { UserActionAll } from './user'
 
 import { CompanyActionAll } from './pages/company'
-import { EditProfileActionAll } from './pages/editProfile'
+import { EditProfileActionAll } from './pages/creator/editProfile'
+import { StatsActionAll } from './pages/creator/stats'
 import { EditRoomActionAll } from './pages/editRoom'
 import { HomeActionAll } from './pages/home'
 import { PartnerActionAll } from './pages/partner'
@@ -316,7 +322,6 @@ interface OtherAction extends GenericAction {
     type: ActionType.ENTITY_UPDATE | ActionType.CLEAR_FETCH
 }
 
-
 export type Action = 
     AppActionAll |
     EddyActionAll |
@@ -328,6 +333,7 @@ export type Action =
     UserActionAll |
     CompanyActionAll |
     EditProfileActionAll |
+    StatsActionAll |
     EditRoomActionAll |
     HomeActionAll |
     PartnerActionAll |

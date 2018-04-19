@@ -8,7 +8,7 @@ import {
     ThunkAction
 } from '@actions/types'
 import CurrentUser from '@models/state/currentUser'
-import EditProfile from '@models/state/pages/editProfile'
+import EditProfile from '@models/state/pages/creator/editProfile'
 
 export type EditProfileActionAll = 
     EditProfileAction |
@@ -21,17 +21,17 @@ export type EditProfileActionAll =
  ******/
 
 interface UserObject {
-    fullName?: string
-    uuid?: string
-    bio?: string
-    website?: string
+    uuid: string
+    fullName: string
+    bio: string
+    website: string
 }
 export interface EditProfileAction extends GenericAction {
     type: ActionType.EDIT_PROFILE
     userId: number
-    userObject: UserObject
+    userObject: Partial<UserObject>
 }
-function performEditProfile(userId: number, userObject: UserObject): EditProfileAction {
+function performEditProfile(userId: number, userObject: Partial<UserObject>): EditProfileAction {
     return {
         type: ActionType.EDIT_PROFILE,
         userId,
@@ -66,9 +66,9 @@ export function loadEditProfile(): ThunkAction {
 
 export interface UpdateEditProfileAction extends GenericAction {
     type: ActionType.UPDATE_EDIT_PROFILE
-    userObject: UserObject
+    userObject: Partial<UserObject>
 }
-export function updateEditProfile(fields: UserObject): UpdateEditProfileAction {
+export function updateEditProfile(fields: Partial<UserObject>): UpdateEditProfileAction {
     return {
         type: ActionType.UPDATE_EDIT_PROFILE,
         userObject: fields
@@ -78,7 +78,7 @@ export function updateEditProfile(fields: UserObject): UpdateEditProfileAction {
 export interface SubmitEditProfileAction extends ApiCallAction {
     type: ActionType.SUBMIT_EDIT_PROFILE
 }
-function postSubmitEditProfile(userObject: UserObject): SubmitEditProfileAction {
+function postSubmitEditProfile(userObject: Partial<UserObject>): SubmitEditProfileAction {
     return {
         type: ActionType.SUBMIT_EDIT_PROFILE,
         API_CALL: {

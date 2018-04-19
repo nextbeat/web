@@ -1,5 +1,5 @@
 import company from './company'
-import editProfile from './editProfile'
+import creator from './creator'
 import editRoom from './editRoom'
 import home from './home'
 import partner from './partner'
@@ -13,8 +13,8 @@ import { combineReducers } from '@reducers/utils'
 
 export default combineReducers({
     company,
+    creator,
     editRoom,
-    editProfile,
     home,
     partner,
     profile,

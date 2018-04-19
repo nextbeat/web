@@ -5,10 +5,14 @@ const User = new schema.Entity('users');
 const MediaItem = new schema.Entity('mediaItems');
 const Stack = new schema.Entity('stacks', { author: User, mediaItems: [ MediaItem ] });
 const Comment = new schema.Entity('comments', { stack: Stack })
-const CampaignStack = new schema.Entity('campaignStacks')
-const Campaign = new schema.Entity('campaigns', { stacks: [ CampaignStack ] })
 const Ad = new schema.Entity('ads')
 const ShopProduct = new schema.Entity('shopProducts')
+
+// Analytics entities
+const StatsStack = new schema.Entity('statsStacks')
+const StatsUser = new schema.Entity('statsUsers', { stacks: [ StatsStack ]})
+const CampaignStack = new schema.Entity('campaignStacks')
+const Campaign = new schema.Entity('campaigns', { stacks: [ CampaignStack ] })
 
 MediaItem.define({ references: Comment }); // handles circular reference
 
@@ -34,11 +38,14 @@ const Users = [User]
 const MediaItems = [MediaItem]
 const Stacks = [Stack]
 const Comments = [Comment]
-const CampaignStacks = [CampaignStack]
-const Campaigns = [Campaign]
 const SearchResultComments = [SearchResultComment]
 const Ads = [Ad]
 const ShopProducts = [ShopProduct]
+
+const StatsStacks = [StatsStack]
+const StatsUsers = [StatsUser]
+const CampaignStacks = [CampaignStack]
+const Campaigns = [Campaign]
 
 export { 
     Comment,
@@ -53,13 +60,17 @@ export {
     Tags,
     User,
     Users,
-    Campaign,
-    Campaigns,
-    CampaignStack,
-    CampaignStacks,
     Ad,
     Ads,
     ShopProduct,
     ShopProducts,
-    Shop
+    Shop,
+    StatsStack,
+    StatsStacks,
+    StatsUser,
+    StatsUsers,
+    Campaign,
+    Campaigns,
+    CampaignStack,
+    CampaignStacks,
 }

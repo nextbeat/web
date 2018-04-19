@@ -234,11 +234,31 @@ export default (store: Store) => {
                                 return cb(null, component.default)
                             })
                         }),
-                        analyticsRoute('edit-profile', cb => {
-                            import(/* webpackChunkName: 'edit-profile' */ '../client/components/pages/EditProfile').then(component => {
-                                return cb(null, component.default)
-                            })
-                        }),
+                        {
+                            path: 'creator',
+                            childRoutes: [
+                                analyticsRoute('edit', cb => {
+                                    import(/* webpackChunkName: 'edit-profile' */ '../client/components/pages/creator/EditProfile').then(component => {
+                                        return cb(null, component.default)
+                                    })
+                                }),
+                                // analyticsRoute('community', cb => {
+                                //     import(/* webpackChunkName: 'community' */ '../client/components/pages/creator/Community').then(component => {
+                                //         return cb(null, component.default)
+                                //     })
+                                // }),
+                                // analyticsRoute('stats', cb => {
+                                //     import(/* webpackChunkName: 'stats' */ '../client/components/pages/creator/Stats').then(component => {
+                                //         return cb(null, component.default)
+                                //     })
+                                // }),
+                                // analyticsRoute('stats/:hid', cb => {
+                                //     import(/* webpackChunkName: 'stats' */ '../client/components/pages/creator/RoomStats').then(component => {
+                                //         return cb(null, component.default)
+                                //     })
+                                // }),
+                            ]
+                        },
                         {
                             path: 'support',
                             childRoutes: [

@@ -88,15 +88,24 @@ class ProfileHeader extends React.Component<Props> {
                         { !profpicUrl && <Icon type="person" /> }
                     </div>
 
-                    <div className="profile_info">
-                        <div className="profile_username profile_info-item">
-                            { user.get('username') } { isCurrentUser ? <Link className="btn btn-gray btn-edit-profile" to="/edit-profile">Edit Profile</Link> : <Subscribe user={user} /> }
+                    <div className="profile_main">
+                        <div className="profile_info">
+                            <div className="profile_username profile_info-item">
+                                { user.get('username') } { !isCurrentUser && <Subscribe user={user} /> }
+                            </div>
+                            <div className="profile_subscribers profile_info-item">
+                                <span className="profile_subscriber-count">{user.get('subscriber_count', 0).toLocaleString()}</span> {`subscriber${user.get('subscriber_count') !== 1 ? 's' : ''}` } 
+                            </div>
+                            { this.renderBio(user) }
+                            { this.renderSocial(user) }
                         </div>
-                        <div className="profile_subscribers profile_info-item">
-                            <span className="profile_subscriber-count">{user.get('subscriber_count', 0).toLocaleString()}</span> {`subscriber${user.get('subscriber_count') !== 1 ? 's' : ''}` } 
-                        </div>
-                        { this.renderBio(user) }
-                        { this.renderSocial(user) }
+                        { isCurrentUser && 
+                            <div className="profile_actions">
+                                <Link className="btn profile_actions_button" to="/creator/edit">Edit Profile</Link>
+                                <Link className="btn profile_actions_button" to="/creator/community">Community</Link>
+                                <Link className="btn profile_actions_button" to="/creator/stats">Stats</Link>
+                            </div>
+                        }
                     </div>
 
                 </div> 
