@@ -39,6 +39,15 @@ export default class StatsStack extends EntityModel<StatsStackProps> {
 
     entityName = "statsStacks"
 
+    thumbnail(preferredType: string) {
+        // default to the largest thumbnail
+        let defaultKeyFn = (thumbnails: State) => {
+            let orderedThumbnails = thumbnails.sort((a, b) => a.get('width') > b.get('width') ? 1 : -1)
+            return orderedThumbnails.keySeq().first()
+        }
+        return this.getResource('thumbnails', preferredType, defaultKeyFn)
+    }
+
     mediaItems() {
         return this.get('media_items', List())
             .map(item => new StatsMediaItem(item))
