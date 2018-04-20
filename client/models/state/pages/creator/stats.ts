@@ -41,7 +41,7 @@ export default class Stats extends StateModelFactory<StatsProps>(keyMap, keyMapP
     )
 
     static room = createSelector(
-        (state: State) => new StatsUser(Stats.get(state, 'userId'), state.get('entities'))
+        (state: State) => new StatsStack(Stats.get(state, 'roomId'), state.get('entities'))
     )(
         (state: State) => Stats.get(state, 'roomId')
     )

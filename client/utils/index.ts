@@ -275,6 +275,10 @@ export { fromString, fromNowString, timeLeftString, timeOfDayString, timeString 
  *******************/
 
 export function formatNumber(num: number): string {
+  if (typeof num !== "number") {
+    return 'n/a'
+  }
+
   if (num < 1000) {
     return `${num}`
   } else if (num < 1000000) {
@@ -287,6 +291,31 @@ export function formatNumber(num: number): string {
     return frac > 0 ? `${int}.${frac}M` : `${int}M`
   }
 } 
+
+export function pad(num: number, amt: number): string {
+  let str = num.toString()
+  while (str.length < amt) {
+      str = '0' + str
+  }
+  return str
+}
+
+export function formatDuration(numSeconds: number, includeSeconds=true): string {
+  if (typeof numSeconds !== "number") {
+    return 'n/a'
+  } 
+  
+  numSeconds = Math.floor(numSeconds)
+  if (!includeSeconds) {
+    return `${pad(Math.floor(numSeconds/3600), 2)}:${pad(Math.floor(numSeconds/60)%60, 2)}`
+  } else {
+    if (numSeconds > 3600) {
+      return `${pad(Math.floor(numSeconds/3600), 2)}:${pad(Math.floor(numSeconds/60)%60, 2)}:${pad(numSeconds%60, 2)}`
+    } else {
+      return `${pad(Math.floor(numSeconds/60)%60, 2)}:${pad(numSeconds%60, 2)}`
+    }
+  }   
+}
 
 
 /*******

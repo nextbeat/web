@@ -9,7 +9,7 @@ interface StatsUserProps {
     session_count: number
     session_duration: number
     total_watch_duration: number
-    total_watch_session_duration: number
+    total_watch_session_count: number
     views: number
 
     stacks: List<number>

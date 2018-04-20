@@ -27,7 +27,7 @@
 // Site-wide styles
 
 .content_header {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 400;
     padding-bottom: 18px;
     border-bottom: 1px solid $separator-color;
@@ -47,9 +47,10 @@
 }
 
 .content_back {
-    width: 28px;
-    height: 28px;
+    width: 25px;
+    height: 25px;
     margin-right: 8px;
+    margin-top: 1px;
 
     .svg-icon {
         width: 100%;
