@@ -32,6 +32,8 @@ class StatsComponent extends React.Component<Props> {
 
     constructor(props: Props) {
         super(props);
+
+        this.handleBackClick = this.handleBackClick.bind(this)
     }
 
     componentDidMount() {
@@ -61,8 +63,8 @@ class StatsComponent extends React.Component<Props> {
     renderStatsStack(stack: StatsStack) {
         return (
             <tr key={stack.get('id')} onClick={this.handleStackClick.bind(this, stack)}>
-                <td>{format(stack.get('created_at'), 'MMM D, YYYY')}</td>
-                <td>{stack.get('description')}</td>
+                <td className="stats_table_detail">{format(stack.get('created_at'), 'MMM D, YYYY')}</td>
+                <td className="stats_table_link">{stack.get('description')}</td>
                 <td>{stack.get('views').toLocaleString()}</td>
                 <td>{stack.get('total_watch_session_count').toLocaleString()}</td>
             </tr>
@@ -72,50 +74,57 @@ class StatsComponent extends React.Component<Props> {
     render() {
         const { stats, isFetching, hasFetched, error } = this.props
         return (
-            <div className="stats content">
+            <div className="stats stats-user content">
                 <div className="content_inner">
                     <div className="content_header">
                         <div className="content_back" onClick={this.handleBackClick}><Icon type="arrow-back" /></div>Stats
                     </div>
-                    <div className="stats_section">
-                        <div className="stats_items">   
-                            <div className="stats_item">
-                                <div className="stats_item_value">{formatNumber(stats.get('views'))}</div>
-                                <div className="stats_item_description">Total visits</div>
+                    { isFetching && <Spinner styles={["grey"]} /> }
+                    { hasFetched && 
+                        <div className="stats_main">
+                            <div className="stats_section">
+                                <div className="stats_items">   
+                                    <div className="stats_item">
+                                        <div className="stats_item_value">{formatNumber(stats.get('views'))}</div>
+                                        <div className="stats_item_description">Total visits</div>
+                                    </div>
+                                    <div className="stats_item">
+                                        <div className="stats_item_value">{formatNumber(stats.get('total_watch_session_count'))}</div>
+                                        <div className="stats_item_description">Total video views</div>
+                                    </div>
+                                    <div className="stats_item">
+                                        <div className="stats_item_value">{Math.floor(stats.get('views')/Math.max(1, stats.stacks().size))}</div>
+                                        <div className="stats_item_description">Average visits per room</div>
+                                    </div>
+                                    <div className="stats_item">
+                                        <div className="stats_item_value">{formatDuration(stats.get('total_watch_duration'), false)}</div>
+                                        <div className="stats_item_description">Total hours watched</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="stats_item">
-                                <div className="stats_item_value">{formatNumber(stats.get('total_watch_session_count'))}</div>
-                                <div className="stats_item_description">Total video views</div>
-                            </div>
-                            <div className="stats_item">
-                                <div className="stats_item_value">{Math.floor(stats.get('views')/Math.max(1, stats.stacks().size))}</div>
-                                <div className="stats_item_description">Average visits per room</div>
-                            </div>
-                            <div className="stats_item">
-                                <div className="stats_item_value">{formatDuration(stats.get('total_watch_duration'), false)}</div>
-                                <div className="stats_item_description">Total hours watched</div>
+                            <div className="stats_section"> 
+                                <div className="stats_section_title">
+                                    Rooms
+                                    <div className="stats_section_description">
+                                        Select a room for more information, including average viewer session time and views per video.
+                                    </div>
+                                </div>
+                                <table className="stats_table stats-user_table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Title</th>
+                                            <th>Visits</th>
+                                            <th>Video views</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {stats.stacks().map((statsStack) => this.renderStatsStack(statsStack))}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    </div>
-                    <div className="stats_section"> 
-                        <div className="stats_section_title">Rooms</div>
-                        <div className="stats_section_description">
-                            Select a room for more information, including average viewer session time and views per video.
-                        </div>
-                        <table className="stats_table">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Title</th>
-                                    <th>Visits</th>
-                                    <th>Video views</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {stats.stacks().map((statsStack) => this.renderStatsStack(statsStack))}
-                            </tbody>
-                        </table>
-                    </div>
+                    }
                 </div>
             </div>
         )
