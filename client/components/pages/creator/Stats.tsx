@@ -1,4 +1,3 @@
-import * as PropTypes from 'prop-types'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Link, browserHistory } from 'react-router'
@@ -113,6 +112,7 @@ class StatsComponent extends React.Component<Props> {
                                         Select a room for more information, including average viewer session time and views per video.
                                     </div>
                                 </div>
+                                {stats.stacks().size > 0 && 
                                 <table className="stats_table stats-user_table">
                                     <thead>
                                         <tr>
@@ -126,6 +126,12 @@ class StatsComponent extends React.Component<Props> {
                                         {stats.stacks().map((statsStack) => this.renderStatsStack(statsStack))}
                                     </tbody>
                                 </table>
+                                }
+                                {stats.stacks().size === 0 &&
+                                <div className="stats_section_not-found">
+                                    Create a room to see its stats!
+                                </div>
+                                }
                             </div>
                         </div>
                     }

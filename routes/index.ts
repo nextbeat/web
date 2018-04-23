@@ -242,11 +242,11 @@ export default (store: Store) => {
                                         return cb(null, component.default)
                                     })
                                 }),
-                                // analyticsRoute('community', cb => {
-                                //     import(/* webpackChunkName: 'community' */ '../client/components/pages/creator/Community').then(component => {
-                                //         return cb(null, component.default)
-                                //     })
-                                // }),
+                                analyticsRoute('community', cb => {
+                                    import(/* webpackChunkName: 'community' */ '../client/components/pages/creator/Community').then(component => {
+                                        return cb(null, component.default)
+                                    })
+                                }),
                                 analyticsRoute('stats', cb => {
                                     import(/* webpackChunkName: 'stats' */ '../client/components/pages/creator/Stats').then(component => {
                                         return cb(null, component.default)

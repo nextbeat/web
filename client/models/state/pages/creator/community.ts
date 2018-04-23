@@ -12,12 +12,10 @@ interface CommunityProps {
     moderatorIds: List<number>
 
     isAddingModerator: boolean
-    hasAddedModerator: boolean
-    addError: string
+    addModeratorError: string
 
     isRemovingModerator: boolean
-    hasRemovedModerator: boolean
-    removeError: string
+    removeModeratorError: string
 }
 
 const keyMap = {
@@ -27,12 +25,10 @@ const keyMap = {
     'moderatorIds': ['ids'],
 
     'isAddingModerator': ['isAddingModerator'],
-    'hasAddedModerator': ['hasAddedModerator'],
-    'addError': ['addError'],
+    'addModeratorError': ['addModeratorError'],
 
     'isRemovingModerator': ['isRemovingModerator'],
-    'hasRemovedModerator': ['hasRemovedModerator'],
-    'removeError': ['removeError']
+    'removeModeratorError': ['removeModeratorError']
 }
 
 const keyMapPrefix = ['pages', 'creator', 'community']
@@ -40,5 +36,5 @@ const keyMapPrefix = ['pages', 'creator', 'community']
 export default class Community extends StateModelFactory<CommunityProps>(keyMap, keyMapPrefix) {
 
     static moderators = createEntityListSelector(Community, 'moderatorIds', User)
-    
+
 }

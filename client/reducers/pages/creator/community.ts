@@ -32,7 +32,7 @@ function addModerator(state: State, action: AddModeratorAction) {
     if (action.status === Status.REQUESTING) {
         return state.merge({
             isAddingModerator: true
-        }).delete('addError')
+        }).delete('addModeratorError')
     } else if (action.status === Status.SUCCESS && action.response) {
         return state.merge({
             isAddingModerator: false,
@@ -41,7 +41,7 @@ function addModerator(state: State, action: AddModeratorAction) {
     } else if (action.stats === Status.FAILURE) {
         return state.merge({
             isAddingModerator: false,
-            addError: action.error
+            addModeratorError: action.error
         })
     }
     return state
@@ -51,7 +51,7 @@ function removeModerator(state: State, action: RemoveModeratorAction) {
     if (action.status === Status.REQUESTING) {
         return state.merge({
             isRemovingModerator: true
-        }).delete('removeError')
+        }).delete('removeModeratorError')
     } else if (action.status === Status.SUCCESS && action.response) {
         return state.merge({
             isRemovingModerator: false,
@@ -60,7 +60,7 @@ function removeModerator(state: State, action: RemoveModeratorAction) {
     } else if (action.stats === Status.FAILURE) {
         return state.merge({
             isRemovingModerator: false,
-            removeError: action.error
+            removeModeratorError: action.error
         })
     }
     return state
