@@ -14,8 +14,6 @@ import * as Schemas from '@schemas'
 
 export type CommunityActionAll = 
     ModeratorsAction |
-    AddModeratorAction |
-    RemoveModeratorAction |
     ClearModeratorsAction
 
 /******
@@ -46,72 +44,6 @@ export function loadModerators(): ThunkAction {
         }
 
         dispatch(fetchModerators(CurrentUser.get(state, 'id')))
-    }
-}
-
-/********
- * UPDATE
- ********/
-
-export interface AddModeratorAction extends ApiCallAction {
-    type: ActionType.ADD_MODERATOR
-    creatorId: number
-    username: string
-}
-function performAddModerator(creatorId: number, username: string): AddModeratorAction {
-    return {
-        type: ActionType.ADD_MODERATOR,
-        creatorId,
-        username,
-        API_CALL: {
-            endpoint: `users/${creatorId}/mod`,
-            method: 'POST',
-            body: { username },
-            schema: Schemas.User
-        }
-    }
-}
-
-export function addModerator(username: string): ThunkAction {
-    return (dispatch, getState) => {
-        const state = getState()
-
-        if (!CurrentUser.isLoggedIn(state)) {
-            return null;
-        }
-
-        dispatch(performAddModerator(CurrentUser.get(state, 'id'), username))
-    }
-}
-
-export interface RemoveModeratorAction extends ApiCallAction {
-    type: ActionType.REMOVE_MODERATOR
-    creatorId: number
-    username: string
-}
-function performRemoveModerator(creatorId: number, username: string): RemoveModeratorAction {
-    return {
-        type: ActionType.REMOVE_MODERATOR,
-        creatorId,
-        username,
-        API_CALL: {
-            endpoint: `users/${creatorId}/unmod`,
-            method: 'POST',
-            body: { username },
-            schema: Schemas.User
-        }
-    }
-}
-
-export function removeModerator(username: string): ThunkAction {
-    return (dispatch, getState) => {
-        const state = getState()
-
-        if (!CurrentUser.isLoggedIn(state)) {
-            return null;
-        }
-
-        dispatch(performRemoveModerator(CurrentUser.get(state, 'id'), username))
     }
 }
 

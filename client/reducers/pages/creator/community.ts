@@ -1,10 +1,7 @@
 import { Map, List, fromJS } from 'immutable'
 import { ActionType, Status, Action } from '@actions/types'
-import { 
-    ModeratorsAction, 
-    AddModeratorAction, 
-    RemoveModeratorAction 
-} from '@actions/pages/creator/community'
+import { ModeratorsAction } from '@actions/pages/creator/community'
+import { ModAction, UnmodAction } from '@actions/user'
 import { State } from '@types'
 
 function moderators(state: State, action: ModeratorsAction) {
@@ -12,7 +9,7 @@ function moderators(state: State, action: ModeratorsAction) {
         return state.merge({
             isFetchingModerators: true,
             hasFetchedModerators: false
-        }).delete('moderatorsError')
+        }).deleteAll(['moderatorsError', 'addModeratorError', 'removeModeratorError'])
     } else if (action.status === Status.SUCCESS && action.response) {
         return state.merge({
             isFetchingModerators: false,
@@ -28,17 +25,16 @@ function moderators(state: State, action: ModeratorsAction) {
     return state
 }
 
-function addModerator(state: State, action: AddModeratorAction) {
+function addModerator(state: State, action: ModAction) {
     if (action.status === Status.REQUESTING) {
         return state.merge({
             isAddingModerator: true
-        }).delete('addModeratorError')
-    } else if (action.status === Status.SUCCESS && action.response) {
+        }).deleteAll(['moderatorsError', 'addModeratorError', 'removeModeratorError'])
+    } else if (action.status === Status.SUCCESS) {
         return state.merge({
-            isAddingModerator: false,
-            moderatorIds: state.get('ids', List()).push(action.response.result)
+            isAddingModerator: false
         })
-    } else if (action.stats === Status.FAILURE) {
+    } else if (action.status === Status.FAILURE) {
         return state.merge({
             isAddingModerator: false,
             addModeratorError: action.error
@@ -47,17 +43,16 @@ function addModerator(state: State, action: AddModeratorAction) {
     return state
 }
 
-function removeModerator(state: State, action: RemoveModeratorAction) {
+function removeModerator(state: State, action: UnmodAction) {
     if (action.status === Status.REQUESTING) {
         return state.merge({
             isRemovingModerator: true
-        }).delete('removeModeratorError')
-    } else if (action.status === Status.SUCCESS && action.response) {
+        }).deleteAll(['moderatorsError', 'addModeratorError', 'removeModeratorError'])
+    } else if (action.status === Status.SUCCESS) {
         return state.merge({
-            isRemovingModerator: false,
-            moderatorIds: state.get('ids', List()).filter((id: number) => id !== (action.response)!.result)
+            isRemovingModerator: false
         })
-    } else if (action.stats === Status.FAILURE) {
+    } else if (action.status === Status.FAILURE) {
         return state.merge({
             isRemovingModerator: false,
             removeModeratorError: action.error
@@ -71,9 +66,9 @@ export default function (state = Map<string, any>(), action: Action) {
         return Map()
     } else if (action.type === ActionType.MODERATORS) {
         return moderators(state, action)
-    } else if (action.type === ActionType.ADD_MODERATOR) {
+    } else if (action.type === ActionType.MOD) {
         return addModerator(state, action)
-    } else if (action.type === ActionType.REMOVE_MODERATOR) {
+    } else if (action.type === ActionType.UNMOD) {
         return removeModerator(state, action)
     }
     return state;

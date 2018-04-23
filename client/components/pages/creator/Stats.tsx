@@ -77,15 +77,15 @@ class StatsComponent extends React.Component<Props> {
     render() {
         const { stats, isFetching, hasFetched, error } = this.props
         return (
-            <div className="stats stats-user content">
+            <div className="creator stats stats-user content">
                 <div className="content_inner">
                     <div className="content_header">
                         <div className="content_back" onClick={this.handleBackClick}><Icon type="arrow-back" /></div>Stats
                     </div>
                     { isFetching && <Spinner styles={["grey"]} /> }
                     { hasFetched && 
-                        <div className="stats_main">
-                            <div className="stats_section">
+                        <div className="creator_main stats_main">
+                            <div className="creator_section">
                                 <div className="stats_items">   
                                     <div className="stats_item">
                                         <div className="stats_item_value">{formatNumber(stats.get('views'))}</div>
@@ -105,10 +105,10 @@ class StatsComponent extends React.Component<Props> {
                                     </div>
                                 </div>
                             </div>
-                            <div className="stats_section"> 
-                                <div className="stats_section_title">
+                            <div className="creator_section"> 
+                                <div className="creator_section_title">
                                     Rooms
-                                    <div className="stats_section_description">
+                                    <div className="creator_section_description">
                                         Select a room for more information, including average viewer session time and views per video.
                                     </div>
                                 </div>
@@ -128,7 +128,7 @@ class StatsComponent extends React.Component<Props> {
                                 </table>
                                 }
                                 {stats.stacks().size === 0 &&
-                                <div className="stats_section_not-found">
+                                <div className="creator_section_not-found">
                                     Create a room to see its stats!
                                 </div>
                                 }

@@ -73,14 +73,14 @@ class StatsRoom extends React.Component<Props> {
         const roomThumbnail = stats.thumbnail('small')
 
         return (
-            <div className="stats stats-room content">
+            <div className="creator stats stats-room content">
                 <div className="content_inner">
                     <div className="content_header">
                         <div className="content_back" onClick={this.handleBackClick}><Icon type="arrow-back" /></div>Stats
                     </div>
                     { isFetching && <Spinner styles={["grey"]} /> }
                     { hasFetched && 
-                        <div className="stats_main">
+                        <div className="creator_main stats_main">
                             <div className="stats_room">
                                 <div className="stats_room_thumbnail" style={{ backgroundImage: `url(${roomThumbnail.get('url')})`}} />
                                 <div className="stats_room_main">
@@ -89,7 +89,7 @@ class StatsRoom extends React.Component<Props> {
                                 </div>
                                 <Link className="stats_room_link" to={`/r/${stats.get('hid')}`}>Go to room</Link>
                             </div>
-                            <div className="stats_section">
+                            <div className="creator_section">
                                 <div className="stats_items">   
                                     <div className="stats_item">
                                         <div className="stats_item_value">{formatDuration(stats.get('session_duration')/Math.max(1, stats.get('session_count')))}</div>
@@ -109,8 +109,8 @@ class StatsRoom extends React.Component<Props> {
                                     </div>
                                 </div>
                             </div>
-                            <div className="stats_section"> 
-                                <div className="stats_section_title">Videos</div>
+                            <div className="creator_section"> 
+                                <div className="creator_section_title">Videos</div>
                                 { videoCount > 0 && 
                                 <table className="stats_table stats-room_table">
                                     <thead>
@@ -127,7 +127,7 @@ class StatsRoom extends React.Component<Props> {
                                 </table>
                                 }
                                 { videoCount === 0 &&
-                                    <div className="stats_section_not-found">
+                                    <div className="creator_section_not-found">
                                         No video posts in room.
                                     </div>
                                 }

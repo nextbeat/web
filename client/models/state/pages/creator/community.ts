@@ -22,7 +22,7 @@ const keyMap = {
     'isFetchingModerators': ['isFetchingModerators'],
     'hasFetchedModerators': ['hasFetchedModerators'],
     'moderatorsError': ['moderatorsError'],
-    'moderatorIds': ['ids'],
+    'moderatorIds': ['moderatorIds'],
 
     'isAddingModerator': ['isAddingModerator'],
     'addModeratorError': ['addModeratorError'],
