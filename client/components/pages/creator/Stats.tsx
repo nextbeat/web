@@ -8,7 +8,7 @@ import Spinner from '@components/shared/Spinner'
 import Icon from '@components/shared/Icon'
 
 import { triggerAuthError } from '@actions/app'
-import { loadStats } from '@actions/pages/creator/stats'
+import { loadStats, clearStats } from '@actions/pages/creator/stats'
 import CurrentUser from '@models/state/currentUser'
 import StatsModel from '@models/state/pages/creator/stats'
 import StatsUser from '@models/entities/statsUser'
@@ -50,6 +50,10 @@ class StatsComponent extends React.Component<Props> {
                 dispatch(loadStats())
             }
         }
+    }
+
+    componentWillUnmount() {
+        this.props.dispatch(clearStats());
     }
 
     handleBackClick() {
