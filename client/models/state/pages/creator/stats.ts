@@ -3,7 +3,7 @@ import { List } from 'immutable'
 import { StateModelFactory } from '@models/state/base'
 import StatsUser from '@models/entities/statsUser'
 import StatsStack from '@models/entities/statsStack'
-import { withEntityMap,  createSelector } from '@models/utils'
+import { createSelector } from '@models/utils'
 import { State } from '@types'
 
 interface StatsProps {
@@ -18,7 +18,7 @@ interface StatsProps {
     roomError: string
 }
 
-const keyMap = withEntityMap({
+const keyMap = {
     'userId': ['user', 'id'],
     'userIsFetching': ['user', 'isFetching'],
     'userHasFetched': ['user', 'hasFetched'],
@@ -28,7 +28,7 @@ const keyMap = withEntityMap({
     'roomIsFetching': ['room', 'isFetching'],
     'roomHasFetched': ['room', 'hasFetched'],
     'roomError': ['room', 'error']
-})
+}
 
 const keyMapPrefix = ['pages', 'creator', 'stats']
 

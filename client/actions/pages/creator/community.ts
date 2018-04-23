@@ -12,13 +12,17 @@ import { triggerAuthError } from '@actions/app'
 import CurrentUser from '@models/state/currentUser'
 import * as Schemas from '@schemas'
 
-export type CommunityActionAll = any
+export type CommunityActionAll = 
+    ModeratorsAction |
+    AddModeratorAction |
+    RemoveModeratorAction |
+    ClearModeratorsAction
 
 /******
  * LOAD
  ******/
 
-interface ModeratorsAction extends ApiCallAction {
+export interface ModeratorsAction extends ApiCallAction {
     type: ActionType.MODERATORS,
     creatorId: number
 }
@@ -49,7 +53,7 @@ export function loadModerators(): ThunkAction {
  * UPDATE
  ********/
 
-interface AddModeratorAction extends ApiCallAction {
+export interface AddModeratorAction extends ApiCallAction {
     type: ActionType.ADD_MODERATOR
     creatorId: number
     username: string
@@ -62,7 +66,8 @@ function performAddModerator(creatorId: number, username: string): AddModeratorA
         API_CALL: {
             endpoint: `users/${creatorId}/mod`,
             method: 'POST',
-            body: { username }
+            body: { username },
+            schema: Schemas.User
         }
     }
 }
@@ -79,7 +84,7 @@ export function addModerator(username: string): ThunkAction {
     }
 }
 
-interface RemoveModeratorAction extends ApiCallAction {
+export interface RemoveModeratorAction extends ApiCallAction {
     type: ActionType.REMOVE_MODERATOR
     creatorId: number
     username: string
@@ -92,7 +97,8 @@ function performRemoveModerator(creatorId: number, username: string): RemoveMode
         API_CALL: {
             endpoint: `users/${creatorId}/unmod`,
             method: 'POST',
-            body: { username }
+            body: { username },
+            schema: Schemas.User
         }
     }
 }
@@ -113,7 +119,7 @@ export function removeModerator(username: string): ThunkAction {
  * CLEAR
  *******/
 
-interface ClearModeratorsAction extends ApiCancelAction {
+export interface ClearModeratorsAction extends ApiCancelAction {
     type: ActionType.CLEAR_MODERATORS
 }
 

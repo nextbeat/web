@@ -16,7 +16,7 @@ export interface EntityProps {
 
 const entityKeyMap = {
     'id': ['meta', 'id'],
-    'isFetching': ['meta', 'boolean'],
+    'isFetching': ['meta', 'isFetching'],
     'error': ['meta', 'error']
 }
 

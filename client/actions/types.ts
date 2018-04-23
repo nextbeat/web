@@ -313,6 +313,7 @@ import { UserActionAll } from './user'
 
 import { CompanyActionAll } from './pages/company'
 import { EditProfileActionAll } from './pages/creator/editProfile'
+import { CommunityActionAll } from './pages/creator/community'
 import { StatsActionAll } from './pages/creator/stats'
 import { EditRoomActionAll } from './pages/editRoom'
 import { HomeActionAll } from './pages/home'
@@ -339,6 +340,7 @@ export type Action =
     UserActionAll |
     CompanyActionAll |
     EditProfileActionAll |
+    CommunityActionAll |
     StatsActionAll |
     EditRoomActionAll |
     HomeActionAll |
