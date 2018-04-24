@@ -181,6 +181,7 @@ class DetailBar extends React.Component<Props, DetailBarState> {
         return (
             <div className={`detail-bar ${disableAnimationsClass}`}>
                 { bannerAd && <BannerAd ad={bannerAd} roomId={roomId} /> }
+                <GoogleAd slot="3990004377" style={{ width: '300px', height: '250px' }} className="google-ad-detail-bar" />
                 <div className={`detail-bar_header ${creatorClass}`}>
                     <div className="detail-bar_toggle-edit dropdown-detail-bar_toggle" onClick={this.toggleDropdown}><Icon type="more-vert" /></div> 
                     <ActionsDropdown type="detail-bar" />
@@ -195,7 +196,6 @@ class DetailBar extends React.Component<Props, DetailBarState> {
                     { <Activity display={selectedDetailSection === "activity"} /> }
                     { <Shop display={selectedDetailSection === "shop"} /> }
                 </div>
-                <GoogleAd slot="3990004377" style={{ width: '300px', height: '250px' }} className="google-ad-detail-bar" />
             </div>
         );
     }
