@@ -1,18 +1,19 @@
 .advertising_text {
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
     line-height: 1.5;
 
     h1 {
         font-weight: 600;
         font-size: 24px;
-        margin-bottom: 20px;
+        margin-bottom: 18px;
         letter-spacing: 0.04em;
     }
 
     h2 {
         font-weight: 600;
         font-size: 18px;
-        margin-bottom: 10px;
+        margin-bottom: 7px;
+        color: #476fbd;
     }
 
     p {
@@ -31,11 +32,8 @@
 }
 
 .advertising_content {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
     margin: 0 auto;
-    max-width: 900px;
+    max-width: 800px;
 }
 
 /* Specific panel styles */
@@ -54,7 +52,7 @@
 
 .advertising_intro_text {
     width: calc(100% - 100px);
-    max-width: 900px;
+    max-width: 800px;
     margin: 0 auto;
 
     font-size: 24px;
@@ -116,12 +114,13 @@
 }
 
 .advertising_nextbeat_subsection {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .advertising_stats_column {
-    flex: 0 1 370px;
+    float: right;
     padding-left: 35px;
+    padding-bottom: 40px;
 }
 
 .advertising_stats {
@@ -209,6 +208,8 @@
     margin-bottom: 30px;
 }
 
+// Responsive styles
+
 @include media("<=medium") {
 
     .advertising_text {
@@ -218,8 +219,10 @@
     }
 
     .advertising_content {
+        display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: space-between;
     }
 
     .advertising_intro_shape1, .advertising_intro_shape2 {
@@ -230,6 +233,11 @@
         height: auto;
         min-height: 250px;
         padding: 10px;
+    }
+
+    .advertising_intro_text {
+        text-align: center;
+        margin: 0 auto;
     }
 
     .advertising_nextbeat {
@@ -248,18 +256,20 @@
     .advertising_stats_column {
         flex: 0 1 auto;
         padding-left: 0;
+        padding-bottom: 0;
         width: 100%;
+        order: 2;
     }
 
     .advertising_stats {
         flex-wrap: wrap;
         justify-content: center;
-        height: 330px;
+        height: 280px;
         width: 100%;
     }
 
     .advertising_stat_group {
-        margin-bottom: 25px;
+        margin-bottom: 30px;
     }
 
     .advertising_stat_group:nth-child(2) {
@@ -305,11 +315,6 @@
 }
 
 @include media("<=small") {
-
-    .advertising_intro_text {
-        text-align: center;
-        margin: 0 auto;
-    }
 
     .advertising_nextbeat_intro {
         padding: 25px 35px;

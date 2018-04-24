@@ -17,28 +17,6 @@ class Advertising extends React.Component {
                 </div>
                 <div className="advertising_nextbeat">
                     <div className="advertising_content advertising_nextbeat_content">
-                        <div className="advertising_text advertising_nextbeat_text">
-                            <div className="advertising_nextbeat_section">
-                                <h1>How does Nextbeat work?</h1>
-                                <p>Nextbeat is a video platform created by Youtubers for Youtubers, designed to attract highly influential creators via a first-hand understanding of the problems they face.</p>
-                                <p>On Nextbeat, creators can open a room and upload a series of low-effort, high-intimacy video clips with their community, directly engaging their audience and fulfilling viewer requests with short video replies. Think of it as an interactive Instagram Story that builds revenue over time instead of disappearing overnight.</p>
-                            </div>
-                            <div className="advertising_nextbeat_section">
-                                <h1>Why partner with Nextbeat?</h1>
-                                <div className="advertising_nextbeat_subsection">
-                                    <h2>Strategic Partnerships</h2>
-                                    <p>Align your brand with influential creators who speak directly into the ears of their millions of avid followers. Gain access to a young, enthusiastic demographic who view these content creators as equal parts idol and virtual best friend, and who take their recommendations very seriously.</p>
-                                </div>
-                                <div className="advertising_nextbeat_subsection">
-                                    <h2>Native Ad Integration</h2>
-                                    <p>Because we host ad content directly on our servers (rather than bartering through an SSP), AdBlock software can't detect our ads, guaranteeing you 100% of our user impressions.</p>
-                                </div>
-                                <div className="advertising_nextbeat_subsection">
-                                    <h2>Improved Clickability</h2>
-                                    <p>On Youtube, even an interested viewer might forget about your product when your ad ends and the video begins. Nextbeat solves this problem by featuring our partnered brands in an integrated Shop tab, which remains accessible throughout the course of the Nextbeat room. Our media suite is also designed to be highly interactive, encouraging more user clicks and less listless, zoned-out viewing.</p>
-                                </div>
-                            </div>
-                        </div>
                         <div className="advertising_stats_column">
                             <div className="advertising_stats">
                                 <div className="advertising_stat_group">
@@ -69,6 +47,28 @@ class Advertising extends React.Component {
                                             <div className="advertising_stat_label">TOP 10%</div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="advertising_text advertising_nextbeat_text">
+                            <div className="advertising_nextbeat_section">
+                                <h1>How does Nextbeat work?</h1>
+                                <p>Nextbeat is a video platform created by Youtubers for Youtubers, designed to attract highly influential creators via a first-hand understanding of the problems they face.</p>
+                                <p>Creators can open a Nextbeat room to upload a series of fun, low-maintenance video clips with their audience over a few hours or a day, sharing glimpses of their day-to-day life and fulfilling viewer requests with short video replies. Think of it as an interactive Instagram Story that builds revenue over time instead of disappearing overnight.</p>
+                            </div>
+                            <div className="advertising_nextbeat_section">
+                                <h1>Why partner with Nextbeat?</h1>
+                                <div className="advertising_nextbeat_subsection">
+                                    <h2>Strategic Partnerships</h2>
+                                    <p>Align your brand with influential creators who speak directly into the ears of their millions of avid followers. Gain access to a young, enthusiastic demographic who view these content creators as equal parts idol and virtual best friend, and who take their recommendations very seriously.</p>
+                                </div>
+                                <div className="advertising_nextbeat_subsection">
+                                    <h2>Native Ad Integration</h2>
+                                    <p>Because we host ad content directly on our servers (rather than bartering through an SSP), AdBlock software can't detect our ads, guaranteeing you 100% of our user impressions.</p>
+                                </div>
+                                <div className="advertising_nextbeat_subsection">
+                                    <h2>Improved Clickability</h2>
+                                    <p>On Youtube, even an interested viewer might forget about your product when your ad ends and the video begins. Nextbeat solves this problem by featuring our partnered brands in an integrated Shop tab, which remains accessible throughout the course of the Nextbeat room. Our media suite is also designed to be highly interactive, encouraging more user clicks and less listless, zoned-out viewing.</p>
                                 </div>
                             </div>
                         </div>
