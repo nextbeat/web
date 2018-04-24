@@ -19,10 +19,6 @@ interface UserProps {
     full_name: string
     gaid: string
     id: number
-    is_advertiser: boolean
-    is_bot: boolean
-    is_staff: boolean
-    is_verified: boolean
     open_stacks: number
     profpic_url: string
     social: List<UserSocial>
@@ -30,6 +26,12 @@ interface UserProps {
     username: string
     uuid: string
     website_url: string
+
+    is_advertiser: boolean
+    is_bot: boolean
+    is_partner: boolean
+    is_staff: boolean
+    is_verified: boolean
 }
 
 export default class User extends EntityModel<UserProps> {

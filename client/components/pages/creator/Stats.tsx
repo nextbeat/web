@@ -99,17 +99,13 @@ class StatsComponent extends React.Component<Props> {
                                         <div className="stats_item_value">{Math.floor(stats.get('views')/Math.max(1, stats.stacks().size))}</div>
                                         <div className="stats_item_description">Average visits per room</div>
                                     </div>
-                                    <div className="stats_item">
-                                        <div className="stats_item_value">{formatDuration(stats.get('total_watch_duration'), false)}</div>
-                                        <div className="stats_item_description">Total hours watched</div>
-                                    </div>
                                 </div>
                             </div>
                             <div className="creator_section"> 
                                 <div className="creator_section_title">
                                     Rooms
                                     <div className="creator_section_description">
-                                        Select a room for more information, including average viewer session time and views per video.
+                                        Select a room for more information.
                                     </div>
                                 </div>
                                 {stats.stacks().size > 0 && 
@@ -129,7 +125,7 @@ class StatsComponent extends React.Component<Props> {
                                 }
                                 {stats.stacks().size === 0 &&
                                 <div className="creator_section_not-found">
-                                    Create a room to see its stats!
+                                    No rooms available.
                                 </div>
                                 }
                             </div>

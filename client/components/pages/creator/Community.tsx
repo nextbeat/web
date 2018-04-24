@@ -160,7 +160,7 @@ class CommunityComponent extends React.Component<Props, ComponentState> {
                             <div className="creator_section_title">
                                 Moderators
                                 <div className="creator_section_description">
-                                    Add moderators who will moderate your rooms.
+                                    Moderators are chosen members of your community who can help you to manage your chat — they shut down trolls so you don't have to! We recommend choosing friends or trusted community members who have been consistent, positive contributors to the chat.
                                 </div>
                             </div>
                             { this.renderModerators() }

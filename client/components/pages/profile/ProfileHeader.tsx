@@ -18,6 +18,7 @@ interface OwnProps {
 
 interface ConnectProps {
     isCurrentUser: boolean
+    isCurrentUserPartner: boolean
 }
 
 type Props = OwnProps & ConnectProps
@@ -63,7 +64,7 @@ class ProfileHeader extends React.Component<Props> {
     }
 
     render() {
-        const { user, isCurrentUser } = this.props 
+        const { user, isCurrentUser, isCurrentUserPartner } = this.props 
 
         let profpicUrl = user.thumbnail('large').get('url')
         let profpicStyle = { backgroundImage: profpicUrl ? `url(${profpicUrl})` : ''}
@@ -103,7 +104,7 @@ class ProfileHeader extends React.Component<Props> {
                             <div className="profile_actions">
                                 <Link className="btn profile_actions_button" to="/creator/edit">Edit Profile</Link>
                                 <Link className="btn profile_actions_button" to="/creator/community">Community</Link>
-                                <Link className="btn profile_actions_button" to="/creator/stats">Stats</Link>
+                                { isCurrentUserPartner && <Link className="btn profile_actions_button" to="/creator/stats">Stats</Link> }
                             </div>
                         }
                     </div>
@@ -116,7 +117,8 @@ class ProfileHeader extends React.Component<Props> {
 
 function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
     return {
-        isCurrentUser: CurrentUser.isUser(state, ownProps.user)
+        isCurrentUser: CurrentUser.isUser(state, ownProps.user),
+        isCurrentUserPartner: CurrentUser.isPartner(state)
     }
 }
 

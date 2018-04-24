@@ -8,12 +8,13 @@
         margin-bottom: 20px;
         letter-spacing: 0.04em;
     }
+
     h2 {
         font-weight: 600;
-        font-size: 20px;
+        font-size: 18px;
         margin-bottom: 10px;
-        letter-spacing: 0.03em;
     }
+
     p {
         margin-bottom: 15px;
         font-weight: 400;
@@ -22,6 +23,7 @@
             margin-bottom: 0;
         }
     }
+
     a {
         font-weight: 400;
         text-decoration: underline;
@@ -113,9 +115,13 @@
     }
 }
 
+.advertising_nextbeat_subsection {
+    margin-bottom: 25px;
+}
+
 .advertising_stats_column {
-    flex: 0 1 390px;
-    padding-left: 50px;
+    flex: 0 1 370px;
+    padding-left: 35px;
 }
 
 .advertising_stats {
@@ -141,7 +147,7 @@
 
 .advertising_stat_group_title {
     color: #eff4ff;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 500;
     margin-bottom: 5px;
     text-align: center;
@@ -173,78 +179,18 @@
 }
 
 .advertising_stat_value {
-    font-size: 48px;
+    font-size: 44px;
     font-weight: 600;
 
     .advertising_stat_group_body-multiple & {
-        font-size: 45px;
+        font-size: 41px;
     }
 }
 
 .advertising_stat_label {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 400;
-    color: #dde8fd;
-}
-
-// Store
-
-.advertising_store {
-    padding: 0 50px 85px 50px;
-    position: relative;
-}
-
-.advertising_store_triangle {
-    display: none; // disable
-    @include triangle-background(rgba(#000, 0.05), 5%, 8%);
-}
-
-.advertising_store_header {
-    text-align: center;
-}
-
-.advertising_store_content {
-    max-width: 800px;
-}
-
-.advertising_store_item {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: center;
-    max-width: 375px;
-
-    h2 {
-        text-align: center;
-    }
-
-    margin: 0 30px 0 0;
-    &:last-child {
-        margin: 0;
-    }
-}
-
-.advertising_store_icon {
-    position: relative;
-    flex: 1 0 auto;
-    width: 130px;
-    height: 130px;
-
-    margin-bottom: 20px;
-
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-}
-
-.advertising_store_icon-conversions {
-    margin-top: -3px;
-    background-image: url(../public/images/cash_register.svg);
-}
-
-.advertising_store_icon-partnerships {
-    margin-top: 5px;
-    background-image: url(../public/images/handshake.svg);
+    color: #c1d2f3;
 }
 
 // Action

@@ -18,7 +18,7 @@ import Badge from '@components/shared/Badge'
 
 interface Props {
     isLoggedIn: boolean
-    isPartner: boolean
+    isAdvertiser: boolean
     username: string
     profilePictureUrl: string
     isSidebarDataLoaded: boolean
@@ -76,7 +76,7 @@ class Sidebar extends React.Component<AllProps> {
     }
 
     render() {
-        const { isLoggedIn, isPartner, activeOverlay, isSidebarAnimating, isSidebarDataLoaded,
+        const { isLoggedIn, isAdvertiser, activeOverlay, isSidebarAnimating, isSidebarDataLoaded,
                 username, profilePictureUrl, openBookmarkedStacks, subscriptions } = this.props;
 
         // hide sidebar if user is not logged in
@@ -101,7 +101,7 @@ class Sidebar extends React.Component<AllProps> {
                             <div className="sidebar_icon" style={profileStyle}>{ !profilePictureUrl && <Icon type="person" /> }</div>
                             My Profile
                         </Link>
-                        { isPartner &&
+                        { isAdvertiser &&
                             <Link to="/studio" activeClassName="selected" className="sidebar_item">
                                 My Campaigns
                             </Link>
@@ -133,7 +133,7 @@ class Sidebar extends React.Component<AllProps> {
 function mapStateToProps(state: State): Props {
     return {
         isLoggedIn: CurrentUser.isLoggedIn(state),
-        isPartner: CurrentUser.isPartner(state),
+        isAdvertiser: CurrentUser.isAdvertiser(state),
         username: CurrentUser.entity(state).get('username'),
         profilePictureUrl: CurrentUser.profileThumbnailUrl(state),
         isSidebarDataLoaded: CurrentUser.isSidebarDataLoaded(state),

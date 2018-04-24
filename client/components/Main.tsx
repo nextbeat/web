@@ -15,7 +15,7 @@ import { State, DispatchProps, RouteProps } from '@types'
 
 interface ConnectProps {
     isLoggedIn: boolean
-    isPartner: boolean
+    isAdvertiser: boolean
 
     isSplashTopbarCollapsed: boolean
     hasAuthError: boolean
@@ -83,12 +83,12 @@ class Main extends React.Component<Props> {
     }
 
     render() {
-        const { isLoggedIn, isPartner, isSplashTopbarCollapsed, activeOverlay, children } = this.props
+        const { isLoggedIn, isAdvertiser, isSplashTopbarCollapsed, activeOverlay, children } = this.props
         const { router } = this.context
         const pathname = router.location.pathname
 
         const inHome = router.isActive('/', true)
-        const inStudio = router.isActive('/studio') && isPartner
+        const inStudio = router.isActive('/studio') && isAdvertiser
         const showSplashTopbar = inHome && !isLoggedIn
 
         const inRoomClass = this.isInRoom() ? 'main-container-room' : ''
@@ -116,7 +116,7 @@ class Main extends React.Component<Props> {
 function mapStateToProps(state: State): ConnectProps {
     return {
         isLoggedIn: CurrentUser.isLoggedIn(state),
-        isPartner: CurrentUser.isPartner(state),
+        isAdvertiser: CurrentUser.isAdvertiser(state),
 
         isSplashTopbarCollapsed: !!AppModel.get(state, 'splashTopbarCollapsed'),
         hasAuthError: AppModel.hasAuthError(state),

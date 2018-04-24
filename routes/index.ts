@@ -282,7 +282,7 @@ export default (store: Store) => {
                         {
                             path: 'studio',
                             getComponent: (nextState: any, cb: any) => {
-                                if (!CurrentUser.isPartner(store.getState())) {
+                                if (!CurrentUser.isAdvertiser(store.getState())) {
                                     import('../client/components/pages/NoMatch').then(component => {
                                         return cb(null, component.default)
                                     })

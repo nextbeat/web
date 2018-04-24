@@ -137,8 +137,12 @@ export default class CurrentUser extends StateModelFactory<CurrentUserProps>(key
         return this.isLoggedIn(state) && this.get(state, 'id') === user.get('id')
     }
 
-    static isPartner(state: State) {
+    static isAdvertiser(state: State) {
         return !!this.isLoggedIn(state) && this.entity(state).get('is_advertiser')
+    }
+
+    static isPartner(state: State) {
+        return !!this.isLoggedIn(state) && this.entity(state).get('is_partner')
     }
 
     static isSubscribed(state: State, userId: number) {
