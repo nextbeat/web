@@ -42,18 +42,18 @@ class Advertising extends React.Component {
                         <div className="advertising_stats_column">
                             <div className="advertising_stats">
                                 <div className="advertising_stat_group">
-                                    <div className="advertising_stat_group_title">AVERAGE PERCENT OF EACH VIDEO WATCHED</div>
+                                    <div className="advertising_stat_group_title">AVERAGE VISITS PER ROOM</div>
                                     <div className="advertising_stat_group_body">
                                         <div className="advertising_stat">
-                                            <div className="advertising_stat_value">82%</div>
+                                            <div className="advertising_stat_value">47,000</div>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="advertising_stat_group">
-                                    <div className="advertising_stat_group_title">AVERAGE NUMBER OF VIDEOS PER ROOM</div>
+                                    <div className="advertising_stat_group_title">AVERAGE VIDEO VIEWS PER ROOM</div>
                                     <div className="advertising_stat_group_body">
                                         <div className="advertising_stat">
-                                            <div className="advertising_stat_value">20</div>
+                                            <div className="advertising_stat_value">200,000</div>
                                         </div>
                                     </div>
                                 </div>
