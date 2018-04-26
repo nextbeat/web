@@ -36,6 +36,8 @@ interface DetailBarState {
     disableAnimationsTimeoutId: number
 
     shopImpressionStartTime: number
+
+    displayGoogleAd: boolean
 }
 
 class DetailBar extends React.Component<Props, DetailBarState> {
@@ -55,7 +57,8 @@ class DetailBar extends React.Component<Props, DetailBarState> {
         this.state = {
             disableAnimations: false,
             disableAnimationsTimeoutId: -1,
-            shopImpressionStartTime: - 1
+            shopImpressionStartTime: - 1,
+            displayGoogleAd: true
         }
     }
 
@@ -171,7 +174,7 @@ class DetailBar extends React.Component<Props, DetailBarState> {
     render() {
         const { selectedDetailSection, width, roomId,
                 isCurrentUserAuthor, bannerAd, shouldDisplayShop } = this.props;
-        const { disableAnimations } = this.state;
+        const { disableAnimations, displayGoogleAd } = this.state;
 
         const selected = (type: DetailSection) => selectedDetailSection === type ? "selected" : "";
 
@@ -181,7 +184,12 @@ class DetailBar extends React.Component<Props, DetailBarState> {
         return (
             <div className={`detail-bar ${disableAnimationsClass}`}>
                 { bannerAd && <BannerAd ad={bannerAd} roomId={roomId} /> }
-                <GoogleAd slot="3990004377" style={{ width: '300px', height: '250px' }} className="google-ad-detail-bar" />
+                { displayGoogleAd && <div className="google-ad-detail-bar_container">
+                    <div className="google-ad-detail-bar_close" onClick={() => this.setState({ displayGoogleAd: false })}>
+                        Close Ad <Icon type="close" />
+                    </div>
+                    <GoogleAd slot="3990004377" style={{ width: '300px', height: '250px' }} className="google-ad-detail-bar" />
+                </div> }
                 <div className={`detail-bar_header ${creatorClass}`}>
                     <div className="detail-bar_toggle-edit dropdown-detail-bar_toggle" onClick={this.toggleDropdown}><Icon type="more-vert" /></div> 
                     <ActionsDropdown type="detail-bar" />
