@@ -121,6 +121,7 @@ class Sidebar extends React.Component<AllProps> {
                         <Link to="/company/about">About</Link>
                         <a href="https://medium.com/nextbeat">Blog</a>
                         <Link to="/company/contact">Contact</Link>
+                        <Link to="/company/legal/guidelines">Community Guidelines</Link>
                         <Link to="/company/legal">Legal</Link>
                     </div>
                 </div>

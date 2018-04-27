@@ -76,6 +76,11 @@ export default (store: Store) => {
                                         return cb(null, component.default)
                                     })
                                 }),
+                                analyticsRoute('guidelines', cb => {
+                                    import(/* webpackChunkName: 'guidelines' */ '../client/components/pages/company/legal/Guidelines').then(component => {
+                                        return cb(null, component.default)
+                                    })
+                                }),
                                 analyticsRoute('attributions', cb => {
                                     import(/* webpackChunkName: 'attributions' */ '../client/components/pages/company/legal/Attributions').then(component => {
                                         return cb(null, component.default)
