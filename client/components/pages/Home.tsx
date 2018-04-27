@@ -61,7 +61,11 @@ class HomeComponent extends React.Component<Props, ComponentState> {
                         <div className="home_sections">
                             {sections.map((section, idx) => 
                                 <HomeSection key={`sec${idx}`} index={idx} />
-                            ).insert(2, <GoogleAd slot="5027043434" format="auto" className="google-ad-home_sections"/>)}
+                            ).insert(2, 
+                                <div className="google-ad-home_sections_container">
+                                    <GoogleAd slot="5027043434" format="auto" className="google-ad-home_sections"/>
+                                </div>
+                            )}
                         </div>
                     </div>
                     { !isLoggedIn &&
