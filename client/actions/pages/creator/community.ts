@@ -14,11 +14,14 @@ import * as Schemas from '@schemas'
 
 export type CommunityActionAll = 
     ModeratorsAction |
-    ClearModeratorsAction
+    EmojisAction |
+    AddEmojiAction |
+    RemoveEmojiAction |
+    ClearCommunityAction
 
-/******
- * LOAD
- ******/
+/************
+ * MODERATORS
+ ************/
 
 export interface ModeratorsAction extends ApiCallAction {
     type: ActionType.MODERATORS,
@@ -47,19 +50,104 @@ export function loadModerators(): ThunkAction {
     }
 }
 
+/********
+ * EMOJIS
+ ********/
+
+export interface EmojisAction extends ApiCallAction {
+    type: ActionType.EMOJIS
+}
+function fetchEmojis(creatorId: number): EmojisAction {
+    return {
+        type: ActionType.EMOJIS,
+        API_CALL: {
+            endpoint: `users/${creatorId}/emojis`
+        }
+    }
+}
+
+export function loadEmojis(): ThunkAction {
+    return (dispatch, getState) => {
+        const state = getState()
+
+        if (!CurrentUser.isLoggedIn(state)) {
+            return null;
+        }
+
+        dispatch(fetchEmojis(CurrentUser.get(state, 'id')))
+    }
+}
+
+export interface AddEmojiAction extends ApiCallAction {
+    type: ActionType.ADD_EMOJI,
+    name: string
+}
+function performAddEmoji(creatorId: number, name: string, image: string): AddEmojiAction {
+    return {
+        type: ActionType.ADD_EMOJI,
+        name,
+        API_CALL: {
+            endpoint: `users/${creatorId}/emoji`,
+            method: 'POST',
+            authenticated: true,
+            body: { name, image }
+        }
+    }
+}
+
+export function addEmoji(name: string, image: string): ThunkAction {
+    return (dispatch, getState) => {
+        const state = getState()
+
+        if (!CurrentUser.isLoggedIn(state)) {
+            return null;
+        }
+
+        dispatch(performAddEmoji(CurrentUser.get(state, 'id'), name, image))
+    }
+}
+
+export interface RemoveEmojiAction extends ApiCallAction {
+    type: ActionType.REMOVE_EMOJI,
+    name: string
+}
+function performRemoveEmoji(creatorId: number, name: string): RemoveEmojiAction {
+    return {
+        type: ActionType.REMOVE_EMOJI,
+        name,
+        API_CALL: {
+            endpoint: `users/${creatorId}/emoji`,
+            method: 'DELETE',
+            authenticated: true
+        }
+    }
+}
+
+export function removeEmoji(name: string): ThunkAction {
+    return (dispatch, getState) => {
+        const state = getState()
+
+        if (!CurrentUser.isLoggedIn(state)) {
+            return null;
+        }
+
+        dispatch(performRemoveEmoji(CurrentUser.get(state, 'id'), name))
+    }
+}
+
 /*******
  * CLEAR
  *******/
 
-export interface ClearModeratorsAction extends ApiCancelAction {
-    type: ActionType.CLEAR_MODERATORS
+export interface ClearCommunityAction extends ApiCancelAction {
+    type: ActionType.CLEAR_COMMUNITY
 }
 
-export function clearModerators(): ApiCancelAction {
+export function clearCommunity(): ApiCancelAction {
     return {
-        type: ActionType.CLEAR_MODERATORS,
+        type: ActionType.CLEAR_COMMUNITY,
         API_CANCEL: {
-            actionTypes: [ActionType.CLEAR_MODERATORS, ActionType.ADD_MODERATOR, ActionType.REMOVE_MODERATOR]
+            actionTypes: [ActionType.MODERATORS, ActionType.EMOJIS, ActionType.ADD_EMOJI, ActionType.REMOVE_EMOJI]
         }
     }
 }

@@ -229,9 +229,10 @@ export enum ActionType {
 
     /* CREATOR: COMMUNITY */
     MODERATORS = 'MODERATORS',
-    ADD_MODERATOR = 'ADD_MODERATOR',
-    REMOVE_MODERATOR = 'REMOVE_MODERATOR',
-    CLEAR_MODERATORS = 'CLEAR_MODERATORS',
+    EMOJIS = 'EMOJIS',
+    ADD_EMOJI = 'ADD_EMOJI',
+    REMOVE_EMOJI = 'REMOVE_EMOJI',
+    CLEAR_COMMUNITY = 'CLEAR_COMMUNITY',
 
     /* CREATOR: STATS */
     STATS = 'STATS',
@@ -352,4 +353,3 @@ export type Action =
     SupportActionAll |
     TagActionAll |
     OtherAction
-

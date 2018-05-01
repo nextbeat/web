@@ -62,7 +62,7 @@ function removeModerator(state: State, action: UnmodAction) {
 }
 
 export default function (state = Map<string, any>(), action: Action) {
-    if (action.type === ActionType.CLEAR_MODERATORS) {
+    if (action.type === ActionType.CLEAR_COMMUNITY) {
         return Map()
     } else if (action.type === ActionType.MODERATORS) {
         return moderators(state, action)
