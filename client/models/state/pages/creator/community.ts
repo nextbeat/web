@@ -22,6 +22,7 @@ interface CommunityProps {
     emojisError: string
     emojis: List<Map<string, any>>
 
+    emojiFile?: File
     isAddingEmoji: boolean
     addEmojiError: string
     isRemovingEmoji: boolean
@@ -44,6 +45,7 @@ const keyMap = {
     'emojisError': ['emojis', 'error'],
     'emojis': ['emojis', 'emojis'],
 
+    'emojiFile': ['emojis', 'file'],
     'isAddingEmoji': ['emojis', 'isAdding'],
     'addEmojiError': ['emojis', 'addError'],
     'isRemovingEmoji': ['emojis', 'isRemoving'],

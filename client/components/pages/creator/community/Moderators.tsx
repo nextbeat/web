@@ -69,7 +69,7 @@ class Moderators extends React.Component<Props, ComponentState> {
     }
 
     handleKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
-        const { dispatch } = this.props
+        const { dispatch } = this.props;
         if (e.charCode === 13) { // enter
             this.handleSubmit(e)
         }

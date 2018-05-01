@@ -59,6 +59,8 @@
 
 .community_box_submit_fields {
     display: flex;
+    height: 38px;
+    justify-content: space-between;
 }
 
 input.community_box_input {
@@ -85,8 +87,36 @@ input.community_box_submit {
     }
 }
 
+.community_box_cancel {
+    cursor: pointer;
+    font-size: 13px;
+    color: $primary-color;
+
+    &:hover {
+        color: $light-primary-color;
+    }
+}
+
 .community_box_submit_error {
     color: $error-color;
     font-size: 12px;
     margin-bottom: 5px;
 }
+
+/* Emojis */
+
+.community_emojis_file_container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.community_emojis_submit_image_container {
+    width: 32px;
+    height: 32px;
+    position: relative;
+    margin-right: 10px;
+    flex: 0 0 auto;
+}
+

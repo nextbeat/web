@@ -2,7 +2,9 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { List } from 'immutable'
 
-import { loadEmojis, addEmoji, removeEmoji } from '@actions/pages/creator/community'
+import EmojisFileSubmit from './EmojisFileSubmit'
+
+import { loadEmojis, selectEmojiFile, removeEmoji } from '@actions/pages/creator/community'
 import Emoji from '@models/objects/emoji'
 import Community from '@models/state/pages/creator/community'
 import { State, DispatchProps } from '@types'
@@ -13,25 +15,50 @@ interface ConnectProps {
     error?: string
     emojis: List<Emoji>
 
+    file?: File
     isAdding: boolean
     addError?: string
     isRemoving: boolean
     removeError?: string
 }
 
+interface ComponentState {
+    hasFileError: boolean
+}
+
 type Props = ConnectProps & DispatchProps
 
-class Emojis extends React.Component<Props> {
+class Emojis extends React.Component<Props, ComponentState> {
 
     constructor(props: Props) {
         super(props)
 
         this.handleRemoveClick = this.handleRemoveClick.bind(this)
+        this.handleFileChange = this.handleFileChange.bind(this)
+
         this.renderEmoji = this.renderEmoji.bind(this)
+
+        this.state = {
+            hasFileError: false
+        }
     }
 
     componentDidMount() {
         this.props.dispatch(loadEmojis())
+    }
+
+    handleFileChange(e: React.FormEvent<HTMLInputElement>) {
+        const { dispatch } = this.props
+        if (e.currentTarget.files && e.currentTarget.files.length > 0) {
+            const file = e.currentTarget.files[0]
+            if (file.type === 'image/png' && file.size < 32*1024*1024) {
+                this.setState({ hasFileError: false })
+                dispatch(selectEmojiFile(file))
+            } else {
+                this.setState({ hasFileError: true })
+                dispatch(selectEmojiFile(undefined))
+            }
+        }
     }
 
     handleRemoveClick(emoji: Emoji) {
@@ -52,12 +79,38 @@ class Emojis extends React.Component<Props> {
     }
 
     render() {
-        const { isFetching, hasFetched, emojis } = this.props
+        const { isFetching, hasFetched, emojis, file } = this.props
+        const { hasFileError } = this.state
+
         return (
             <div className="community_box">
                 <div className="community_box_list">
                     { emojis.map(emoji => this.renderEmoji(emoji)) }
                 </div>
+                { !file && 
+                    <div className="community_box_submit_container">
+                        { hasFileError && <div className="community_box_submit_error">Invalid file. Please try again.</div>}
+                        <div className="community_box_submit_fields">
+                            <input type="file"
+                                id="community_emojis_upload-file"
+                                className="upload_file-input"
+                                accept="image/png"
+                                onChange={this.handleFileChange}
+                            />
+                            <input type="submit"
+                                className="community_box_submit"
+                                value="Select file"
+                                onClick={() => $('#community_emojis_upload-file').click()}
+                            />
+                            <input type="submit" 
+                                className="community_box_submit"
+                                value="Add" 
+                                disabled={true} 
+                            />
+                        </div>
+                    </div>
+                }
+                { file && <EmojisFileSubmit file={file} />}
             </div>
         )
     }
@@ -70,6 +123,7 @@ function mapStateToProps(state: State): ConnectProps {
         error: Community.get(state, 'emojisError'),
         emojis: Community.emojis(state),
 
+        file: Community.get(state, 'emojiFile'),
         isAdding: Community.get(state, 'isAddingEmoji'),
         addError: Community.get(state, 'addEmojiError'),
         isRemoving: Community.get(state, 'isRemovingEmoji'),

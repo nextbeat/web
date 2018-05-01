@@ -1,3 +1,5 @@
+import assign from 'lodash-es/assign'
+
 import { 
     ActionType, 
     ApiCallAction, 
@@ -11,10 +13,12 @@ import { triggerAuthError } from '@actions/app'
 
 import CurrentUser from '@models/state/currentUser'
 import * as Schemas from '@schemas'
+import Emoji from '@client/models/objects/emoji';
 
 export type CommunityActionAll = 
     ModeratorsAction |
     EmojisAction |
+    SelectEmojiFileAction |
     AddEmojiAction |
     RemoveEmojiAction |
     ClearCommunityAction
@@ -78,24 +82,41 @@ export function loadEmojis(): ThunkAction {
     }
 }
 
+export interface SelectEmojiFileAction extends GenericAction {
+    type: ActionType.SELECT_EMOJI_FILE,
+    file?: File
+}
+export function selectEmojiFile(file?: File): SelectEmojiFileAction {
+    return {
+        type: ActionType.SELECT_EMOJI_FILE,
+        file
+    }
+}
+
 export interface AddEmojiAction extends ApiCallAction {
     type: ActionType.ADD_EMOJI,
     name: string
 }
-function performAddEmoji(creatorId: number, name: string, image: string): AddEmojiAction {
+function performAddEmoji(creatorId: number, emoji: EmojiObject): AddEmojiAction {
     return {
         type: ActionType.ADD_EMOJI,
-        name,
+        name: emoji.name,
         API_CALL: {
             endpoint: `users/${creatorId}/emoji`,
             method: 'POST',
             authenticated: true,
-            body: { name, image }
+            body: assign({}, emoji)
         }
     }
 }
 
-export function addEmoji(name: string, image: string): ThunkAction {
+interface EmojiObject {
+    name: string
+    image: string
+    width: number
+    height: number
+}
+export function addEmoji(emoji: EmojiObject): ThunkAction {
     return (dispatch, getState) => {
         const state = getState()
 
@@ -103,7 +124,7 @@ export function addEmoji(name: string, image: string): ThunkAction {
             return null;
         }
 
-        dispatch(performAddEmoji(CurrentUser.get(state, 'id'), name, image))
+        dispatch(performAddEmoji(CurrentUser.get(state, 'id'), emoji))
     }
 }
 

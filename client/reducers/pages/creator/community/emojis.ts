@@ -1,6 +1,11 @@
 import { Map, List, fromJS } from 'immutable'
 import { ActionType, Status, Action } from '@actions/types'
-import { EmojisAction, AddEmojiAction, RemoveEmojiAction } from '@actions/pages/creator/community'
+import { 
+    EmojisAction, 
+    SelectEmojiFileAction,
+    AddEmojiAction, 
+    RemoveEmojiAction 
+} from '@actions/pages/creator/community'
 import { State } from '@types'
 
 function emojis(state: State, action: EmojisAction) {
@@ -22,6 +27,12 @@ function emojis(state: State, action: EmojisAction) {
         })
     }
     return state
+}
+
+function selectEmojiFile(state: State, action: SelectEmojiFileAction) {
+    return state.merge({
+        file: action.file
+    })
 }
 
 function addEmoji(state: State, action: AddEmojiAction) {
@@ -65,6 +76,8 @@ export default function (state = Map<string, any>(), action: Action) {
         return Map()
     } else if (action.type === ActionType.EMOJIS) {
         return emojis(state, action)
+    } else if (action.type === ActionType.SELECT_EMOJI_FILE) {
+        return selectEmojiFile(state, action)
     } else if (action.type === ActionType.ADD_EMOJI) {
         return addEmoji(state, action)
     } else if (action.type === ActionType.REMOVE_EMOJI) {

@@ -19,7 +19,7 @@ import CurrentUser from '@models/state/currentUser'
 import Upload from '@models/state/upload'
 import { Store, Dispatch } from '@types'
 import { UploadType, fileType, cloudfrontUrl, bucketUrl, checkFileCompatibility } from '@upload'
-import { generateUuid } from '@utils'
+import { generateUuid, joinUrls } from '@utils'
 
 function fetchApi(url: string, method = 'GET', body?: any): Promise<any> {
      const fetchOptions: RequestInit = {
@@ -214,7 +214,7 @@ function uploadFile(store: Store, next: Dispatch, action: UploadFileAction) {
     }
     const uuid = generateUuid()
     const key = keyName(action.file, type, uuid)
-    const url = `${cloudfrontUrl()}${key}`
+    const url = joinUrls(cloudfrontUrl(), key)
 
     // we keep a reference to the XHR object so we can abort if requested
     let xhr = new XMLHttpRequest() 
