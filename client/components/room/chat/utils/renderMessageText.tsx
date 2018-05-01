@@ -4,7 +4,7 @@ import assign from 'lodash-es/assign'
 import { List } from 'immutable'
 
 import Comment from '@models/entities/comment'
-import TemporaryComment from '@models/entities/temporary/comment'
+import ObjectComment from '@models/objects/comment'
 import { hashCode } from '@utils'
 
 type AnnotationType = 'link' | 'hashtag' | 'mention' | 'highlight'
@@ -37,7 +37,7 @@ interface HighlightAnnotation extends GenericAnnotation {
 
 type Annotation = LinkAnnotation | MentionAnnotation | HashtagAnnotation | HighlightAnnotation
 
-function getLinkData(comment: Comment | TemporaryComment): List<LinkAnnotation> {
+function getLinkData(comment: Comment | ObjectComment): List<LinkAnnotation> {
     var re = /\[(.+)\]\((.+)\)/g 
 
     let links = List<LinkAnnotation>()
@@ -50,7 +50,7 @@ function getLinkData(comment: Comment | TemporaryComment): List<LinkAnnotation> 
     return links
 }
 
-function getHashtagData(comment: Comment | TemporaryComment): List<Annotation> {
+function getHashtagData(comment: Comment | ObjectComment): List<Annotation> {
     var re = /(^|\s)#(\w+)/g
 
     let hashtags = List<Annotation>()
@@ -64,7 +64,7 @@ function getHashtagData(comment: Comment | TemporaryComment): List<Annotation> {
     return hashtags
 }
 
-function preprocessAnnotations(comment: Comment | TemporaryComment, options: RenderMessageOptions): List<Annotation> {
+function preprocessAnnotations(comment: Comment | ObjectComment, options: RenderMessageOptions): List<Annotation> {
     let mentions = comment.get('user_mentions') || List();
     let highlights = comment.get('result_indices') || List();
     let links = options.includeLinks ? getLinkData(comment) : List<LinkAnnotation>();
@@ -144,7 +144,7 @@ function recursiveCreateElement(start: number, end: number, annotations: List<An
     ]
 }  
 
-function doRenderMessageText(comment: Comment | TemporaryComment, options: RenderMessageOptions): JSX.Element {
+function doRenderMessageText(comment: Comment | ObjectComment, options: RenderMessageOptions): JSX.Element {
     let annotations = preprocessAnnotations(comment, options)
     let message     = comment.get('message')
     return <span>{recursiveCreateElement(0, message.length, annotations, message, options)}</span>
@@ -152,7 +152,7 @@ function doRenderMessageText(comment: Comment | TemporaryComment, options: Rende
 
 let cache: {[key: number]: JSX.Element} = {}
 
-function memoizedRenderMessageText(comment: Comment | TemporaryComment, options: RenderMessageOptions) {
+function memoizedRenderMessageText(comment: Comment | ObjectComment, options: RenderMessageOptions) {
     let key = hashCode(comment.get('message') + JSON.stringify(comment.get('user_mentions')) + JSON.stringify(comment.get('result_indices')) + JSON.stringify(options))
     if (!cache[key]) {
         cache[key] = doRenderMessageText(comment, options);
@@ -166,7 +166,7 @@ interface RenderMessageOptions {
     includeLinks?: boolean
 }
 
-export default function renderMessageText(comment: Comment | TemporaryComment, options?: RenderMessageOptions) {
+export default function renderMessageText(comment: Comment | ObjectComment, options?: RenderMessageOptions) {
     if (!comment.get('message')) {
         return null;
     }

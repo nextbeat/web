@@ -7,7 +7,7 @@ import Comment from '@models/entities/comment'
 import User from '@models/entities/user'
 import Ad, { AdType } from '@models/entities/ad'
 import CurrentUser from '@models/state/currentUser'
-import TemporaryComment from '@models/entities/temporary/comment'
+import ObjectComment from '@models/objects/comment'
 import { State } from '@types'
 
 export type FetchDirection = 'before' | 'after' | 'around' | 'mostRecent'
@@ -211,7 +211,7 @@ export default class Room {
     static submittingComments = createKeyedSelector(
         (state: State, id: number) => {
             let comments = Room.get(state, id, 'submittingComments', List())
-            return comments.map(comment => new TemporaryComment(comment))
+            return comments.map(comment => new ObjectComment(comment))
         } 
     )(
         (state: State, id: number) => Room.get(state, id, 'submittingComments'),
@@ -221,7 +221,7 @@ export default class Room {
     static failedComments = createKeyedSelector(
         (state: State, id: number) => {
             let comments = Room.get(state, id, 'failedComments', List())
-            return comments.map(comment => new TemporaryComment(comment))
+            return comments.map(comment => new ObjectComment(comment))
         } 
     )(
         (state: State, id: number) => Room.get(state, id, 'failedComments'),

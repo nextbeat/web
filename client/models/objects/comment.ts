@@ -1,8 +1,19 @@
 import { Map } from 'immutable'
-import TemporaryEntityModel from './base'
-import { CommentAuthor } from '../comment'
+import ObjectModel from './base'
 
-interface TemporaryCommentProps {
+interface CommentAuthorProps {
+    badge: string
+    id: number
+    username: string
+}
+
+export class CommentAuthor extends ObjectModel<CommentAuthorProps> {
+    isBot(): boolean {
+        return this.get('badge') === 'bot'
+    }
+}
+
+interface CommentProps {
     message: string
     submit_status: string
     subtype: string
@@ -19,7 +30,7 @@ interface TemporaryCommentProps {
     user_mentions?: any
 }
 
-export default class TemporaryComment extends TemporaryEntityModel<TemporaryCommentProps> {
+export default class Comment extends ObjectModel<CommentProps> {
 
     __no_header__?: boolean    
     

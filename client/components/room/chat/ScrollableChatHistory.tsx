@@ -17,7 +17,7 @@ import App from '@models/state/app'
 import Room, { FetchDirection } from '@models/state/room'
 import RoomPage, { DetailSection } from '@models/state/pages/room'
 import Comment from '@models/entities/comment'
-import TemporaryComment from '@models/entities/temporary/comment'
+import ObjectComment from '@models/objects/comment'
 import { State, DispatchProps } from '@types'
 
 interface OwnProps {
@@ -33,8 +33,8 @@ interface ConnectProps {
     
     comments: List<Comment>
     liveComments: List<Comment>
-    submittingComments: List<TemporaryComment>
-    failedComments: List<TemporaryComment>
+    submittingComments: List<ObjectComment>
+    failedComments: List<ObjectComment>
 
     hasLoadedChat: boolean
     commentsFetching: boolean
@@ -241,7 +241,7 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
         dispatch(toggleDropdown(`${chatId}-options`))
     }
 
-    handleResend(comment: TemporaryComment) {
+    handleResend(comment: ObjectComment) {
         const { dispatch, roomId } = this.props
         dispatch(resendComment(roomId, comment))
     }
@@ -260,7 +260,7 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
 
     // Render
 
-    renderComment(comment: Comment | TemporaryComment, idx: number) {
+    renderComment(comment: Comment | ObjectComment, idx: number) {
         const { roomId, authorUsername, isCurrentUserAuthor, isClosed, activeDropdowns, selectedComment } = this.props;
 
         const componentId = `comment-${roomId}-${comment.get('id')}`
@@ -303,7 +303,7 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
 
         let styleClass = `chat_history-${style}`
 
-        let commentsList: List<Comment | TemporaryComment> = comments.reverse();
+        let commentsList: List<Comment | ObjectComment> = comments.reverse();
         if (hasReachedLatestComment) {
             commentsList = commentsList.concat(liveComments);
             if (style === "expanded") {

@@ -8,11 +8,11 @@ import ChatItemHeader from './ChatItemHeader'
 import Icon from '@components/shared/Icon'
 import Dropdown from '@components/shared/Dropdown'
 import Comment from '@models/entities/comment'
-import TemporaryComment from '@models/entities/temporary/comment'
+import ObjectComment from '@models/objects/comment'
 
 interface Props {
     id?: string
-    comment: Comment | TemporaryComment
+    comment: Comment | ObjectComment
 
     isCollapsed?: boolean
     isSelected?: boolean
@@ -23,7 +23,7 @@ interface Props {
 
     handleSelectUsername?: (username: string) => void
     handleSelectHashtag?: (hashtag: string) => void
-    handleResend?: (comment: TemporaryComment) => void
+    handleResend?: (comment: ObjectComment) => void
     handleSelectMediaItem?: (id: number) => void
     handleRespond?: (comment: Comment) => void
     handleSelectOptions?: (componentId: string) => void
@@ -129,7 +129,7 @@ class ChatItem extends React.PureComponent<Props> {
         const privateClass      = isPrivate ? 'chat_item_body-private' : ''
         const badgeClass        = `chat_item-${comment.author().get('badge') || 'user'}`
 
-        const submitStatus      = comment instanceof TemporaryComment ? comment.get('submit_status') : ""
+        const submitStatus      = comment instanceof ObjectComment ? comment.get('submit_status') : ""
         const submitClass       = submitStatus ? `chat_item-${submitStatus}` : ''
 
         const showOptionsClass  = showOptions && !isBot && !isReferenced ? "show-options" : ""
@@ -142,7 +142,7 @@ class ChatItem extends React.PureComponent<Props> {
                     { showHeader && this.renderHeader() }
                     <div className={`chat_item_body ${privateClass}`}>
                         {this.renderMessage(isBot)}
-                        { submitStatus === "failed" && comment instanceof TemporaryComment && 
+                        { submitStatus === "failed" && comment instanceof ObjectComment && 
                             <a className="btn chat_item-failed_retry" onClick={ () => { handleResend && handleResend(comment) } }>Retry</a>
                         }
                         { comment instanceof Comment && handleRespond && 

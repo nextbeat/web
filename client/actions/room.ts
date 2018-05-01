@@ -20,7 +20,7 @@ import { loadPaginatedObjects } from '@actions/utils'
 import { selectDetailSection } from '@actions/pages/room'
 import { Dimensions, Metrics } from '@analytics/definitions'
 import Comment from '@models/entities/comment'
-import TemporaryComment from '@models/entities/temporary/comment'
+import ObjectComment from '@models/objects/comment'
 import Room, { FetchDirection } from '@models/state/room'
 import RoomPage from '@models/state/pages/room'
 import CurrentUser from '@models/state/currentUser'
@@ -297,9 +297,9 @@ export function sendComment(roomId: number, message: string): SendCommentAction 
 export interface ResendCommentAction extends GenericAction {
     type: ActionType.RESEND_COMMENT
     roomId: number
-    comment: TemporaryComment
+    comment: ObjectComment
 }
-export function resendComment(roomId: number, comment: TemporaryComment): ResendCommentAction {
+export function resendComment(roomId: number, comment: ObjectComment): ResendCommentAction {
     return {
         type: ActionType.RESEND_COMMENT,
         roomId,

@@ -90,13 +90,13 @@ class Moderators extends React.Component<Props, ComponentState> {
 
     renderUser(user: User) {
         return (
-            <div className="community_moderators_user" key={user.get('id')}>
+            <div className="community_box_element" key={user.get('id')}>
                 <div 
-                    className="community_moderators_user_thumbnail" 
+                    className="community_box_element_thumbnail community_box_element_thumbnail-user" 
                     style={{backgroundImage: `url(${user.thumbnail('small').get('url')})`}}
                 />
-                <div className="community_moderators_user_username">{ user.get('username') }</div>
-                <div className="community_moderators_user_remove" onClick={this.handleRemoveClick.bind(this, user.get('username'))}>Remove</div>
+                <div className="community_box_element_text">{ user.get('username') }</div>
+                <div className="community_box_element_remove" onClick={this.handleRemoveClick.bind(this, user.get('username'))}>Remove</div>
             </div>
         )
     }
@@ -107,24 +107,25 @@ class Moderators extends React.Component<Props, ComponentState> {
         const { username } = this.state
 
         const isProcessing = isFetching || isAdding || isRemoving
+        
         return (
-            <div className="community_moderators">
-                <div className="community_moderators_list">
+            <div className="community_box community_box-moderators">
+                <div className="community_box_list">
                     { isProcessing && <Spinner styles={["grey"]} /> }
                     { !isProcessing && moderators.map(mod => this.renderUser(mod)) }
                 </div>
-                <div className="community_moderators_submit_container">
-                    { addError && <div className="community_moderators_submit_error">Error adding user. Please try again.</div> }
-                    <div className="community_moderators_submit_fields">
+                <div className="community_box_submit_container">
+                    { addError && <div className="community_box_submit_error">Error adding user. Please try again.</div> }
+                    <div className="community_box_submit_fields">
                         <input 
                             placeholder="Add a moderator"
-                            className="community_moderators_input"
+                            className="community_box_input"
                             onKeyPress={this.handleKeyPress} 
                             onChange={this.handleChange}
                             value={username}
                         />
                         <input type="submit" 
-                            className="community_moderators_submit"
+                            className="community_box_submit"
                             value="Add" 
                             disabled={username.trim().length === 0} 
                             onClick={this.handleSubmit} 

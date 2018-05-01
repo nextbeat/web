@@ -1,8 +1,9 @@
-import { List } from 'immutable'
+import { List, Map } from 'immutable'
 
 import { StateModelFactory } from '@models/state/base'
 import User from '@models/entities/user'
-import { createEntityListSelector } from '@models/utils'
+import Emoji from '@models/objects/emoji'
+import { createEntityListSelector, createSelector } from '@models/utils'
 import { State } from '@types'
 
 interface CommunityProps {
@@ -13,22 +14,40 @@ interface CommunityProps {
 
     isAddingModerator: boolean
     addModeratorError: string
-
     isRemovingModerator: boolean
     removeModeratorError: string
+
+    isFetchingEmojis: boolean
+    hasFetchedEmojis: boolean
+    emojisError: string
+    emojis: List<Map<string, any>>
+
+    isAddingEmoji: boolean
+    addEmojiError: string
+    isRemovingEmoji: boolean
+    removeEmojiError: string
 }
 
 const keyMap = {
-    'isFetchingModerators': ['isFetchingModerators'],
-    'hasFetchedModerators': ['hasFetchedModerators'],
-    'moderatorsError': ['moderatorsError'],
-    'moderatorIds': ['moderatorIds'],
+    'isFetchingModerators': ['moderators', 'isFetching'],
+    'hasFetchedModerators': ['moderators', 'hasFetched'],
+    'moderatorsError': ['moderators', 'error'],
+    'moderatorIds': ['moderators', 'ids'],
 
-    'isAddingModerator': ['isAddingModerator'],
-    'addModeratorError': ['addModeratorError'],
+    'isAddingModerator': ['moderators', 'isAdding'],
+    'addModeratorError': ['moderators', 'addError'],
+    'isRemovingModerator': ['moderators', 'isRemoving'],
+    'removeModeratorError': ['moderators', 'removeError'],
 
-    'isRemovingModerator': ['isRemovingModerator'],
-    'removeModeratorError': ['removeModeratorError']
+    'isFetchingEmojis': ['emojis', 'isFetching'],
+    'hasFetchedEmojis': ['emojis', 'hasFetched'],
+    'emojisError': ['emojis', 'error'],
+    'emojis': ['emojis', 'emojis'],
+
+    'isAddingEmoji': ['emojis', 'isAdding'],
+    'addEmojiError': ['emojis', 'addError'],
+    'isRemovingEmoji': ['emojis', 'isRemoving'],
+    'removeEmojiError': ['emojis', 'removeError']
 }
 
 const keyMapPrefix = ['pages', 'creator', 'community']
@@ -37,4 +56,9 @@ export default class Community extends StateModelFactory<CommunityProps>(keyMap,
 
     static moderators = createEntityListSelector(Community, 'moderatorIds', User)
 
+    static emojis = createSelector(
+        (state: State) => Community.get(state, 'emojis', List()).map(emojiState => new Emoji(emojiState))
+    )(
+        (state: State) => Community.get(state, 'emojis')
+    )
 }
