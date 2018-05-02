@@ -51,7 +51,9 @@ function addEmoji(state: State, action: AddEmojiAction) {
         }).deleteAll(['error', 'addError', 'removeError'])
     } else if (action.status === Status.SUCCESS) {
         return state.merge({
-            isAdding: false
+            isAdding: false,
+            fileError: undefined,
+            file: undefined
         })
     } else if (action.status === Status.FAILURE) {
         return state.merge({
