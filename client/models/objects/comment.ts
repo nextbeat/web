@@ -23,6 +23,7 @@ interface CommentProps {
     badge: string 
 
     // for compatibility
+    emojis?: any
     id?: any
     created_at?: any
     is_referenced_by?: any

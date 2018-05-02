@@ -110,6 +110,10 @@
     }
 }
 
+.item_annotation_comment_info {
+    margin-bottom: 3px;
+}
+
 .item_annotation_comment_username {
     color: $secondary-color;
     font-weight: 700;
@@ -125,6 +129,10 @@
 
 .item_annotation_comment_body {
     color: rgba(#fff, 0.9);
+
+    a.chat_item_hashtag {
+        color: rgba(#fff, 0.6);
+    }
 }
 
 .item_annotation_collapse {

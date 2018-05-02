@@ -2,6 +2,8 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 
 import Icon from '@components/shared/Icon'
+import renderMessageText from '@components/room/chat/utils/renderMessageText'
+
 import { selectDetailSection, hideSearchChatResults } from '@actions/pages/room'
 import { jumpToComment } from '@actions/room'
 import Room from '@models/state/room'
@@ -105,7 +107,7 @@ class ItemAnnotation extends React.Component<AllProps, ItemAnnotationState> {
                     <span className="item_annotation_comment_timestamp">{timeOfDayString(comment.get('created_at'))}</span>
                 </div>
                 <div ref="text" className="item_annotation_comment_body">
-                    {comment.get('message')}
+                    {renderMessageText(comment)}
                 </div>
             </div>
         )

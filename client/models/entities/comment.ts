@@ -10,6 +10,7 @@ import { State } from '@types'
 interface CommentProps {
     author: State
     created_at: string
+    emojis: List<State>
     is_referenced_by: number
     id: number
     mediaitem_id: number
