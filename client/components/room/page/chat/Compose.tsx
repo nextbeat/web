@@ -7,16 +7,18 @@ import * as CSSTransition from 'react-transition-group/CSSTransition'
 import ChatInfoDropdown from './ChatInfoDropdown'
 import ChatPinInfoDropdown from './ChatPinInfoDropdown'
 import ChatPinOverMaxLengthDropdown from './ChatPinOverMaxLengthDropdown'
+import ChatEmojiDropdown from './ChatEmojiDropdown'
 import Checkbox from '@components/shared/Checkbox'
 import Icon from '@components/shared/Icon'
 
 import { sendComment, pinComment, didUseChat } from '@actions/room'
 import { searchChat } from '@actions/pages/room'
-import { promptModal, promptDropdown, closeDropdown } from '@actions/app'
+import { promptModal, promptDropdown, closeDropdown, toggleDropdown } from '@actions/app'
 import { clearChatMessage } from '@actions/pages/room'
 import CurrentUser from '@models/state/currentUser'
 import RoomPage from '@models/state/pages/room'
 import Room from '@models/state/room'
+import Emoji from '@models/objects/emoji'
 import { storageAvailable } from '@utils'
 import { State, DispatchProps } from '@types'
 
@@ -31,6 +33,7 @@ interface ConnectProps {
     isClosed: boolean
     mentions: List<string>
     authorUsername: string
+    authorHasEmojis: boolean
     isCurrentUserAuthor: boolean
     chatTags: List<string>
     isLoggedIn: boolean
@@ -58,6 +61,7 @@ class Compose extends React.Component<Props, ComposeState> {
         this.handleFocus = this.handleFocus.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handlePinnedChange = this.handlePinnedChange.bind(this);
+        this.handleEmojiClick = this.handleEmojiClick.bind(this);
         this.handleChatInfoDropdownClose = this.handleChatInfoDropdownClose.bind(this);
         this.handleChatPinInfoDropdownClose = this.handleChatPinInfoDropdownClose.bind(this);
 
@@ -112,6 +116,10 @@ class Compose extends React.Component<Props, ComposeState> {
         if (this.shouldPromptChatInfoDropdown()) {
             dispatch(promptDropdown('chat-info'))
         } 
+    }
+
+    handleEmojiClick() {
+        this.props.dispatch(toggleDropdown('chat-emoji'))
     }
 
     handleSubmit() {
@@ -212,7 +220,7 @@ class Compose extends React.Component<Props, ComposeState> {
     }
 
     render() {
-        const { authorUsername, isCurrentUserAuthor, isClosed } = this.props
+        const { authorUsername, isCurrentUserAuthor, isClosed, authorHasEmojis } = this.props
         const { message, isPinned } = this.state
         const placeholder = isClosed ? `This room is closed! Subscribe to catch ${authorUsername} live next time.` : "Send a message"
 
@@ -221,17 +229,21 @@ class Compose extends React.Component<Props, ComposeState> {
                 <ChatInfoDropdown username={authorUsername} handleClose={this.handleChatInfoDropdownClose} />
                 <ChatPinInfoDropdown handleClose={this.handleChatPinInfoDropdownClose} />
                 <ChatPinOverMaxLengthDropdown maxLength={MAX_MESSAGE_LENGTH} />
+                <ChatEmojiDropdown />
                 <div className="chat_compose-inner">
                     { this.renderTags() }
                     <textarea ref={ (c) => { if (c) { this._textarea = c } }} onChange={this.handleChange} onFocus={this.handleFocus} onKeyPress={this.handleKeyPress} placeholder={placeholder} value={message}></textarea>
                     <div className="chat_compose_controls">
+                        <div className="chat_compose_controls_left">
+                            { authorHasEmojis && <div className="chat_compose_insert-emoji" onClick={this.handleEmojiClick}><Icon type="insert-emoticon" /></div> }
+                            { isCurrentUserAuthor && this.renderPinControl() }
+                        </div>
                         <input type="submit" 
                            className={`chat_compose_submit btn ${isPinned && length(message) > MAX_MESSAGE_LENGTH ? 'chat_compose_submit-over-max' : ''}`} 
                            value="Send" 
                            disabled={length(message) === 0} 
                            onClick={this.handleSubmit} 
                         />
-                        { isCurrentUserAuthor && this.renderPinControl() }
                     </div>
                 </div>
             </div>
@@ -245,6 +257,8 @@ function mapStateToProps(state: State): ConnectProps {
         isClosed: RoomPage.entity(state).get('closed', false),
         mentions: RoomPage.get(state, 'mentions', List()),
         authorUsername: RoomPage.entity(state).author().get('username'),
+        authorHasEmojis: RoomPage.authorEmojis(state).size > 0,
+
         isCurrentUserAuthor: RoomPage.isCurrentUserAuthor(state),
         chatTags: Room.get(state, RoomPage.get(state, 'id'), 'chatTags', List()),
 

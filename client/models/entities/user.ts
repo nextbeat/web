@@ -1,5 +1,6 @@
 import { Map, List } from 'immutable'
 import { EntityModel } from './base'
+import Emoji from '@models/objects/emoji'
 
 import { State } from '@types'
 
@@ -16,6 +17,7 @@ export type UserSocial = Map<keyof UserSocialProps, string>
 interface UserProps {
     cover_image_url: string
     description: string
+    emojis: List<State>
     full_name: string
     gaid: string
     id: number

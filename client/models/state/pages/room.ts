@@ -160,6 +160,10 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
         return Room.thumbnail(state, this.get(state, 'id'), preferredType)
     }
 
+    static authorEmojis(state: State) {
+        return Room.authorEmojis(state, this.get(state, 'id'))
+    }
+
     static ad(state: State, type: AdType) {
         return Room.ad(state, this.get(state, 'id'), type)
     }

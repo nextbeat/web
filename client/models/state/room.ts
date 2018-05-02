@@ -8,6 +8,7 @@ import User from '@models/entities/user'
 import Ad, { AdType } from '@models/entities/ad'
 import CurrentUser from '@models/state/currentUser'
 import ObjectComment from '@models/objects/comment'
+import Emoji from '@models/objects/emoji'
 import { State } from '@types'
 
 export type FetchDirection = 'before' | 'after' | 'around' | 'mostRecent'
@@ -246,6 +247,16 @@ export default class Room {
     static thumbnail(state: State, id: number, preferredSize: string): State {
         return Room.entity(state, id).thumbnail(preferredSize)
     }
+
+    static authorEmojis = createKeyedSelector(
+        (state: State, id: number) => {
+            let emojiList = Room.entity(state, id).author().get('emojis', List())
+            return emojiList.map(emojiState => new Emoji(emojiState))
+        }
+    )(
+        (state: State, id: number) => Room.entity(state, id).author().get('emojis'),
+        (state: State, id: number) => id
+    )
 
     static ads = createKeyedSelector(
         (state: State, id: number) => {

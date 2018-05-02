@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import assign from 'lodash-es/assign'
 
 import App from '@models/state/app'
 import { closeDropdown } from '@actions/app'
@@ -17,7 +18,7 @@ interface OwnProps {
     triangleOnBottom?: boolean
     handleClose?: () => void
     style?: string
-    triangleMargin?: number
+    triangleMargin?: number | object
 }
 
 type AllProps = OwnProps & ConnectProps & DispatchProps
@@ -96,11 +97,13 @@ class Dropdown extends React.Component<AllProps> {
         const { type, style, children, isActive, triangleMargin, triangleOnBottom, shouldForceClose } = this.props
 
         let triangleStyle: any = {}
-        if (typeof triangleMargin !== 'undefined') {
+        if (typeof triangleMargin === 'number') {
             triangleStyle.right = `${triangleMargin}px`
             if (triangleMargin < 0) {
                 triangleStyle.display = 'none'
             }
+        } else if (typeof triangleMargin === 'object') {
+            assign(triangleStyle, triangleMargin)
         }
 
         return (
