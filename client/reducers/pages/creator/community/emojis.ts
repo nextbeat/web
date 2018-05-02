@@ -3,6 +3,7 @@ import { ActionType, Status, Action } from '@actions/types'
 import { 
     EmojisAction, 
     SelectEmojiFileAction,
+    SetEmojiFileErrorAction,
     AddEmojiAction, 
     RemoveEmojiAction 
 } from '@actions/pages/creator/community'
@@ -31,7 +32,15 @@ function emojis(state: State, action: EmojisAction) {
 
 function selectEmojiFile(state: State, action: SelectEmojiFileAction) {
     return state.merge({
-        file: action.file
+        file: action.file,
+        fileError: undefined
+    })
+}
+
+function setEmojiFileError(state: State, action: SetEmojiFileErrorAction) {
+    return state.merge({
+        fileError: action.error,
+        file: undefined
     })
 }
 
@@ -78,6 +87,8 @@ export default function (state = Map<string, any>(), action: Action) {
         return emojis(state, action)
     } else if (action.type === ActionType.SELECT_EMOJI_FILE) {
         return selectEmojiFile(state, action)
+    } else if (action.type === ActionType.SET_EMOJI_FILE_ERROR) {
+        return setEmojiFileError(state, action)
     } else if (action.type === ActionType.ADD_EMOJI) {
         return addEmoji(state, action)
     } else if (action.type === ActionType.REMOVE_EMOJI) {

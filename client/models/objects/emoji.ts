@@ -5,6 +5,7 @@ import { cloudfrontUrl } from '@upload'
 import { joinUrls } from '@utils'
 
 interface EmojiProps {
+    id: number
     name: string
     url: string
 }

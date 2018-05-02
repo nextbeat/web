@@ -19,6 +19,7 @@ export type CommunityActionAll =
     ModeratorsAction |
     EmojisAction |
     SelectEmojiFileAction |
+    SetEmojiFileErrorAction |
     AddEmojiAction |
     RemoveEmojiAction |
     ClearCommunityAction
@@ -93,6 +94,17 @@ export function selectEmojiFile(file?: File): SelectEmojiFileAction {
     }
 }
 
+export interface SetEmojiFileErrorAction extends GenericAction {
+    type: ActionType.SET_EMOJI_FILE_ERROR,
+    error?: string
+}
+export function setEmojiFileError(error?: string): SetEmojiFileErrorAction {
+    return {
+        type: ActionType.SET_EMOJI_FILE_ERROR,
+        error
+    }
+}
+
 export interface AddEmojiAction extends ApiCallAction {
     type: ActionType.ADD_EMOJI,
     name: string
@@ -102,7 +114,7 @@ function performAddEmoji(creatorId: number, emoji: EmojiObject): AddEmojiAction 
         type: ActionType.ADD_EMOJI,
         name: emoji.name,
         API_CALL: {
-            endpoint: `users/${creatorId}/emoji`,
+            endpoint: `users/${creatorId}/emojis`,
             method: 'POST',
             authenticated: true,
             body: assign({}, emoji)
@@ -130,21 +142,21 @@ export function addEmoji(emoji: EmojiObject): ThunkAction {
 
 export interface RemoveEmojiAction extends ApiCallAction {
     type: ActionType.REMOVE_EMOJI,
-    name: string
+    id: number
 }
-function performRemoveEmoji(creatorId: number, name: string): RemoveEmojiAction {
+function performRemoveEmoji(creatorId: number, emojiId: number): RemoveEmojiAction {
     return {
         type: ActionType.REMOVE_EMOJI,
-        name,
+        id: emojiId,
         API_CALL: {
-            endpoint: `users/${creatorId}/emoji`,
+            endpoint: `users/${creatorId}/emojis/${emojiId}`,
             method: 'DELETE',
             authenticated: true
         }
     }
 }
 
-export function removeEmoji(name: string): ThunkAction {
+export function removeEmoji(emoji: Emoji): ThunkAction {
     return (dispatch, getState) => {
         const state = getState()
 
@@ -152,7 +164,7 @@ export function removeEmoji(name: string): ThunkAction {
             return null;
         }
 
-        dispatch(performRemoveEmoji(CurrentUser.get(state, 'id'), name))
+        dispatch(performRemoveEmoji(CurrentUser.get(state, 'id'), emoji.get('id')))
     }
 }
 

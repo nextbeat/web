@@ -2,7 +2,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 
 import FileComponent, { FileComponentProps } from '@components/utils/FileComponent'
-import { selectEmojiFile, addEmoji } from '@actions/pages/creator/community'
+import { selectEmojiFile, setEmojiFileError, addEmoji } from '@actions/pages/creator/community'
 import { State, DispatchProps } from '@types'
 
 interface OwnProps {
@@ -46,11 +46,17 @@ class EmojisFileSubmit extends React.Component<Props, ComponentState> {
     }
 
     handleSubmit(e: React.FormEvent<HTMLElement>) {
-        const { getBase64String, width, height } = this.props
+        const { getBase64String, width, height, dispatch } = this.props
+        const { name } = this.state
 
-        this.props.getBase64String()
-        .then((data) => {
-            // todo: submit
+        getBase64String().then((data) => {
+            const emojiObject = {
+                name: name.trim(),
+                image: data,
+                width,
+                height
+            }
+            dispatch(addEmoji(emojiObject))
         })
     }
 
@@ -102,12 +108,21 @@ class EmojisFileSubmit extends React.Component<Props, ComponentState> {
 
 const fileOptions = {
     onImageLoad: function(this: EmojisFileSubmit, src: string) {
-        // todo: check resource width and height
+        const { resourceWidth, resourceHeight, dispatch } = this.props
+        if (resourceWidth !== 64 || resourceHeight !== 64) {
+            dispatch(setEmojiFileError('Image does not have correct dimensions. Please try again.'))
+            return
+        }
 
         let imageElement = document.getElementById('community_emojis_submit_image') as HTMLImageElement
         imageElement.src = src
     }
 }
 
-export default FileComponent('community_emojis_submit_image_container', fileOptions)(connect()(EmojisFileSubmit));
+// Necessary for Typescript
+function mapStateToProps(state: State, ownProps: OwnProps): {} {
+    return {}
+}
+
+export default connect(mapStateToProps)(FileComponent('community_emojis_submit_image_container', fileOptions)(EmojisFileSubmit));
 

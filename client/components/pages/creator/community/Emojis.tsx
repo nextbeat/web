@@ -2,9 +2,10 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { List } from 'immutable'
 
+import Spinner from '@components/shared/Spinner'
 import EmojisFileSubmit from './EmojisFileSubmit'
 
-import { loadEmojis, selectEmojiFile, removeEmoji } from '@actions/pages/creator/community'
+import { loadEmojis, selectEmojiFile, setEmojiFileError, removeEmoji } from '@actions/pages/creator/community'
 import Emoji from '@models/objects/emoji'
 import Community from '@models/state/pages/creator/community'
 import { State, DispatchProps } from '@types'
@@ -16,19 +17,16 @@ interface ConnectProps {
     emojis: List<Emoji>
 
     file?: File
+    fileError?: string
     isAdding: boolean
     addError?: string
     isRemoving: boolean
     removeError?: string
 }
 
-interface ComponentState {
-    hasFileError: boolean
-}
-
 type Props = ConnectProps & DispatchProps
 
-class Emojis extends React.Component<Props, ComponentState> {
+class Emojis extends React.Component<Props> {
 
     constructor(props: Props) {
         super(props)
@@ -37,32 +35,36 @@ class Emojis extends React.Component<Props, ComponentState> {
         this.handleFileChange = this.handleFileChange.bind(this)
 
         this.renderEmoji = this.renderEmoji.bind(this)
-
-        this.state = {
-            hasFileError: false
-        }
     }
 
     componentDidMount() {
         this.props.dispatch(loadEmojis())
     }
 
+    componentDidUpdate(prevProps: Props) {
+        const { isAdding, isRemoving, addError, removeError, dispatch } = this.props
+
+        if ((prevProps.isAdding && !isAdding && !addError)
+            || (prevProps.isRemoving && !isRemoving && !removeError)) 
+        {
+            dispatch(loadEmojis())
+        }
+    }
+
     handleFileChange(e: React.FormEvent<HTMLInputElement>) {
         const { dispatch } = this.props
         if (e.currentTarget.files && e.currentTarget.files.length > 0) {
             const file = e.currentTarget.files[0]
-            if (file.type === 'image/png' && file.size < 32*1024*1024) {
-                this.setState({ hasFileError: false })
+            if (file.type === 'image/png' && file.size < 32*1024) {
                 dispatch(selectEmojiFile(file))
             } else {
-                this.setState({ hasFileError: true })
-                dispatch(selectEmojiFile(undefined))
+                dispatch(setEmojiFileError('File size too large. Please try again.'))
             }
         }
     }
 
     handleRemoveClick(emoji: Emoji) {
-        this.props.dispatch(removeEmoji(emoji.get('name')))
+        this.props.dispatch(removeEmoji(emoji))
     }
 
     renderEmoji(emoji: Emoji) {
@@ -79,17 +81,18 @@ class Emojis extends React.Component<Props, ComponentState> {
     }
 
     render() {
-        const { isFetching, hasFetched, emojis, file } = this.props
-        const { hasFileError } = this.state
+        const { isFetching, isAdding, isRemoving, emojis, file, fileError } = this.props
+        const isProcessing = isFetching || isAdding || isRemoving
 
         return (
             <div className="community_box">
                 <div className="community_box_list">
-                    { emojis.map(emoji => this.renderEmoji(emoji)) }
+                    { isProcessing && <Spinner styles={["grey"]} /> }
+                    { !isProcessing && emojis.map(emoji => this.renderEmoji(emoji)) }
                 </div>
                 { !file && 
                     <div className="community_box_submit_container">
-                        { hasFileError && <div className="community_box_submit_error">Invalid file. Please try again.</div>}
+                        { fileError && <div className="community_box_submit_error">{fileError}</div>}
                         <div className="community_box_submit_fields">
                             <input type="file"
                                 id="community_emojis_upload-file"
@@ -124,6 +127,7 @@ function mapStateToProps(state: State): ConnectProps {
         emojis: Community.emojis(state),
 
         file: Community.get(state, 'emojiFile'),
+        fileError: Community.get(state, 'emojiFileError'),
         isAdding: Community.get(state, 'isAddingEmoji'),
         addError: Community.get(state, 'addEmojiError'),
         isRemoving: Community.get(state, 'isRemovingEmoji'),

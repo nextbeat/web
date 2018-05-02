@@ -123,6 +123,10 @@ export function joinUrls(...urls: string[]) {
     // Simple join function which deals with 
     // errant slashes in the string arguments
     return urls.map((url, idx) => {
+        if (typeof url !== 'string' || url.length === 0) {
+            return ''
+        }
+        
         // Strip end slashes from all arguments except the last
         if (idx < urls.length-1) {
             url = url.replace(/\/+$/, '')
