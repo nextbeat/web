@@ -27,7 +27,11 @@ type Props = ConnectProps & DispatchProps
 class ChatEmojiDropdown extends React.Component<Props> {
 
     onClick(emoji: Emoji) {
-        const { dispatch } = this.props
+        const { dispatch, canUseEmoji } = this.props
+        if (!canUseEmoji) {
+            return
+        }
+        
         dispatch(insertEmoji(emoji.get('name')))
         dispatch(closeDropdown('chat-emoji'))
     }
