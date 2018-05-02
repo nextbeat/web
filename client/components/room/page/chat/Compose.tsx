@@ -32,6 +32,7 @@ interface ConnectProps {
     roomId: number
     isClosed: boolean
     mentions: List<string>
+    emojis: List<string>
     authorUsername: string
     authorHasEmojis: boolean
     isCurrentUserAuthor: boolean
@@ -77,8 +78,9 @@ class Compose extends React.Component<Props, ComposeState> {
     }
 
     componentWillReceiveProps(nextProps: Props) {
+        let message = this.state.message
+
         if (nextProps.mentions.size > this.props.mentions.size) {
-            let message = this.state.message
             let username = nextProps.mentions.last() as string
             if (length(message) === 0 || /\s$/.test(message)) {
                 // don't add whitespace
@@ -87,6 +89,14 @@ class Compose extends React.Component<Props, ComposeState> {
                 message = `${message} @${username}`
             }
             this.setState({ message })
+            this._textarea.focus()
+        }
+
+        if (nextProps.emojis.size > this.props.emojis.size) {
+            let name = nextProps.emojis.last() as string
+            message = `${message}:${name}:`
+            this.setState({ message })
+            this._textarea.focus()
         }
     }
 
@@ -256,6 +266,7 @@ function mapStateToProps(state: State): ConnectProps {
         roomId: RoomPage.get(state, 'id'),
         isClosed: RoomPage.entity(state).get('closed', false),
         mentions: RoomPage.get(state, 'mentions', List()),
+        emojis: RoomPage.get(state, 'emojis', List()),
         authorUsername: RoomPage.entity(state).author().get('username'),
         authorHasEmojis: RoomPage.authorEmojis(state).size > 0,
 

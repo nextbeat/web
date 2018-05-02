@@ -33,6 +33,7 @@ export type RoomPageActionAll =
     EditMediaItemTitleAction |
     PromptChatActionsAction |
     MentionUserAction |
+    InsertEmojiAction |
     ClearChatMessageAction |
     RecordViewAction |
     SelectDetailSectionAction |
@@ -360,6 +361,17 @@ export function mentionUser(username: string): MentionUserAction {
     return {
         type: ActionType.MENTION_USER,
         username
+    }
+}
+
+export interface InsertEmojiAction extends GenericAction {
+    type: ActionType.INSERT_EMOJI,
+    name: string
+}
+export function insertEmoji(name: string): InsertEmojiAction {
+    return {
+        type: ActionType.INSERT_EMOJI,
+        name
     }
 }
 

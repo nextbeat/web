@@ -215,6 +215,22 @@
     text-align: center;
 }
 
+.chat_compose_emoji_subscribe-enter {
+    opacity: 0;
+    &.chat_compose_emoji_subscribe-enter-active {
+        opacity: 1;
+        transition: opacity 150ms;
+    }
+}
+
+.chat_compose_emoji_subscribe-exit {
+    opacity: 1;
+    &.chat_compose_emoji_subscribe-exit-active {
+        opacity: 0;
+        transition: opacity 150ms;
+    }
+}
+
 .chat_compose_emoji_subscribe_text {
     margin-bottom: 6px;
 }

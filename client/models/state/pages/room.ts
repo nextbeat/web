@@ -19,6 +19,7 @@ interface RoomPageProps extends EntityProps {
 
     selectedChatUsername: string
     mentions: List<string>
+    emojis: List<string>
     showSearchResults: boolean
     searchQuery: string
     searchResultIds: List<number>
@@ -63,6 +64,7 @@ const keyMap = withEntityMap({
     // chat
     'selectedChatUsername': ['chat', 'selectedUsername'],
     'mentions': ['chat', 'mentions'],
+    'emojis': ['chat', 'emojis'],
     'showSearchResults': ['chat', 'showSearchResults'],
     'searchQuery': ['chat', 'searchQuery'],
     'searchResultIds': ['chat', 'search', 'ids'],

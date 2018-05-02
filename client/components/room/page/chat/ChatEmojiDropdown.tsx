@@ -8,6 +8,8 @@ import * as CSSTransition from 'react-transition-group/CSSTransition'
 import Dropdown from '@components/shared/Dropdown'
 import Subscribe from '@components/shared/Subscribe'
 
+import { closeDropdown } from '@actions/app'
+import { insertEmoji } from '@actions/pages/room'
 import RoomPage from '@models/state/pages/room'
 import CurrentUser from '@models/state/currentUser'
 import User from '@models/entities/user'
@@ -25,7 +27,9 @@ type Props = ConnectProps & DispatchProps
 class ChatEmojiDropdown extends React.Component<Props> {
 
     onClick(emoji: Emoji) {
-
+        const { dispatch } = this.props
+        dispatch(insertEmoji(emoji.get('name')))
+        dispatch(closeDropdown('chat-emoji'))
     }
 
     render() {
@@ -33,10 +37,10 @@ class ChatEmojiDropdown extends React.Component<Props> {
         const disabledEmojiClass = canUseEmoji ? '' : 'chat_compose_emoji_list-disabled'
 
         return (
-            <Dropdown type="chat-emoji" style="info" triangleMargin={{ left: '10px' }} triangleOnBottom={true}>
+            <Dropdown type="chat-emoji" style="info" triangleMargin={{ left: '10px' }} triangleOnBottom={true} shouldCloseOnClick={false}>
                 <div className={`chat_compose_emoji_list ${disabledEmojiClass}`}>
                     {emojis.map(emoji => 
-                        <div key={emoji.get('name')} className="chat_compose_emoji_element" data-name={emoji.get('name')}>
+                        <div key={emoji.get('name')} className="chat_compose_emoji_element" data-name={emoji.get('name')} onClick={this.onClick.bind(this, emoji)}>
                             <img src={emoji.url()} alt={emoji.get('name')} />
                         </div>
                     )}

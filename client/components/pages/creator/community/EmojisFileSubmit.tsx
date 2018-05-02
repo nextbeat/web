@@ -109,7 +109,7 @@ class EmojisFileSubmit extends React.Component<Props, ComponentState> {
 const fileOptions = {
     onImageLoad: function(this: EmojisFileSubmit, src: string) {
         const { resourceWidth, resourceHeight, dispatch } = this.props
-        if (resourceWidth !== 64 || resourceHeight !== 64) {
+        if (resourceWidth !== 60 || resourceHeight !== 60) {
             dispatch(setEmojiFileError('Image does not have correct dimensions. Please try again.'))
             return
         }
