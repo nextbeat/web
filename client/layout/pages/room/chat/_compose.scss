@@ -16,10 +16,6 @@
     }
 }
 
-.chat_compose-inner {
-    // margin-bottom: 5px;
-}
-
 .chat_compose_controls {
     display: flex;
     flex-direction: row-reverse;
@@ -114,6 +110,7 @@
     bottom: 100%;
     right: 0;
     margin-right: 15px;
+    margin-bottom: 5px;
     width: 270px;
 } 
 

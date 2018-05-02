@@ -120,7 +120,8 @@ function elementForAnnotation(annotation: Annotation, annotations: List<Annotati
     } else if (annotation.type === 'emoji') {
         type = 'img';
         assign(props, {
-            src: annotation.emoji.url()
+            src: annotation.emoji.url(),
+            alt: annotation.emoji.get('name')
         })
     } else if (annotation.type === 'hashtag') {
         type = 'a';
