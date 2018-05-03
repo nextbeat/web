@@ -31,7 +31,7 @@ class ChatEmojiDropdown extends React.Component<Props> {
         if (!canUseEmoji) {
             return
         }
-        
+
         dispatch(insertEmoji(emoji.get('name')))
         dispatch(closeDropdown('chat-emoji'))
     }
@@ -53,7 +53,7 @@ class ChatEmojiDropdown extends React.Component<Props> {
                     { !canUseEmoji && 
                         <CSSTransition classNames="chat_compose_emoji_subscribe" timeout={150}>
                             <div className="chat_compose_emoji_subscribe">
-                                <div className="chat_compose_emoji_subscribe_text">Access custom emoji by subscribing to {author.get('username')}</div>
+                                <div className="chat_compose_emoji_subscribe_text">Subscribe to {author.get('username')} to unlock custom emoji!</div>
                                 <Subscribe user={author} />
                             </div>
                         </CSSTransition>
