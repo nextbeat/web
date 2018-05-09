@@ -33,6 +33,9 @@ class RoomInfo extends React.Component<Props> {
         const { id, closed, description, privacyStatus, 
                 createdAt, expires, views } = this.props 
 
+        const timeString = closed ? format(createdAt, 'MMMM D, YYYY') : timeLeftString(expires)
+        const viewsString = `${views} visit${views !== 1 ? 's' : ''}`
+
         return (
             <section className="room-info">
                 <div className="room-info_main">
@@ -45,7 +48,7 @@ class RoomInfo extends React.Component<Props> {
                             </div>
                         </div>
                         <div className="room-info_views">
-                            { `${views} visit${views !== 1 ? 's' : ''}` }
+                            {timeString} {'\u00b7'} {viewsString}
                         </div>
                     </div>
                 </div>

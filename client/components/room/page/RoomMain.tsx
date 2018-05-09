@@ -51,22 +51,33 @@ interface ComponentState {
  * the first DOM load. It's hacky but it works.
  */
 
-function resizePlayerOnLoad() {
-    var elems = document.getElementsByClassName('player_media')
-    if  (elems.length > 0) {
-        var player = elems[0] as HTMLElement
-        var width = parseInt(window.getComputedStyle(player).width || '0', 10)
-        var height = Math.min(470, Math.floor(width * 9 / 16))
-        player.style.height = `${height}px`
-    }
+function getContainerWidth() {
+    var height = function(elem: HTMLElement) { return parseInt(window.getComputedStyle(elem).height || '0', 10) }
+    var width = function(elem: HTMLElement) { return parseInt(window.getComputedStyle(elem).width || '0', 10) }
+
+    var container = document.getElementById('room_main') as HTMLElement
+    var navigation = document.getElementById('player_navigation') as HTMLElement
+    var creatorSocial = document.getElementById('creator-info_social') as HTMLElement
+
+    var currentExtraHeight = height(container) - width(container)*(9/16)
+    var neededExtraHeight = creatorSocial.getBoundingClientRect().top - navigation.getBoundingClientRect().top + 10
+    neededExtraHeight = Math.min(neededExtraHeight, height(container) - 250)
+
+    var delta = neededExtraHeight - currentExtraHeight
+
+    // Need to decrease height of media player by delta px
+    var containerWidth = width(container) - Math.floor((16/9)*delta)
+
+    return containerWidth;
 }
 
-function getScript(fn: Function) {
-    let fnText = `(${fn.toString()})()`
+function getResizeOnLoadScript() {
+    let fnText = `(function() {
+        var containerWidth = (${getContainerWidth.toString()})();
+        document.getElementById('player').style.maxWidth = containerWidth + 'px';
+    })()`
     return { __html: fnText }
 }
-
-// <script dangerouslySetInnerHTML={getScript(resizePlayerOnLoad)} />
 
 const fullScreenEvents = 'fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange'
 
@@ -119,21 +130,7 @@ class RoomMain extends React.Component<Props, ComponentState> {
     }
 
     handleResize() {
-        let height = (elem: HTMLElement) => parseInt(window.getComputedStyle(elem).height || '0', 10)
-        let width = (elem: HTMLElement) => parseInt(window.getComputedStyle(elem).width || '0', 10)
-
-        let container = document.getElementById('room_main') as HTMLElement
-        let navigation = document.getElementById('player_navigation') as HTMLElement
-        let creatorSocial = document.getElementById('creator-info_social') as HTMLElement
-
-        let currentExtraHeight = height(container) - width(container)*(9/16)
-        let neededExtraHeight = creatorSocial.getBoundingClientRect().top - navigation.getBoundingClientRect().top + 10
-
-        let delta = neededExtraHeight - currentExtraHeight
-
-        // Need to decrease height of media player by delta px
-        let containerWidth = width(container) - Math.floor((16/9)*delta)
-
+        let containerWidth = getContainerWidth()
         this.setState({ 
             containerWidth            
         })
@@ -195,6 +192,7 @@ class RoomMain extends React.Component<Props, ComponentState> {
                     </div>
                     }
                 </section>
+                <script dangerouslySetInnerHTML={getResizeOnLoadScript()} />
             </section>
         );
     }
