@@ -30,14 +30,16 @@ interface ConnectProps {
     isLoggedIn: boolean
 }
 
-interface RoomCardState {
+interface ComponentState {
     shouldAutoplayVideo: boolean
     collapsed: boolean
+    playerWidth: number
+    playerHeight: number
 }
 
 type AllProps = OwnProps & ConnectProps & DispatchProps
 
-class RoomCard extends React.Component<AllProps, RoomCardState> {
+class RoomCard extends React.Component<AllProps, ComponentState> {
 
     static defaultProps: Partial<AllProps> = {
         showAuthor: true
@@ -56,7 +58,9 @@ class RoomCard extends React.Component<AllProps, RoomCardState> {
         // video from autoplaying, so as to not disturb the user.
         this.state = {
             shouldAutoplayVideo: false,
-            collapsed: false
+            collapsed: false,
+            playerWidth: 0,
+            playerHeight: 0
         }
     }
 
@@ -135,13 +139,15 @@ class RoomCard extends React.Component<AllProps, RoomCardState> {
         let parentWidth = parent.width() as number
 
         this.setState({
-            collapsed: parentWidth <= 800
+            collapsed: parentWidth <= 800,
+            playerWidth: parseInt($('.player_media-inner').css('width')),
+            playerHeight: parseInt($('.player_media-inner').css('height'))
         })
     }
 
     render() {
         const { id, hid, indexOfSelectedMediaItem, showAuthor, title } = this.props 
-        const { shouldAutoplayVideo, collapsed } = this.state 
+        const { shouldAutoplayVideo, collapsed, playerHeight, playerWidth } = this.state 
 
         let hideAuthorClass = showAuthor ? '' : 'room-card-hide-author'
         let collapsedClass = collapsed ? 'room-card-collapsed' : ''
@@ -156,7 +162,7 @@ class RoomCard extends React.Component<AllProps, RoomCardState> {
                 }
                 <RoomCardHeader id={id} />
                 <div className="room-card_main">
-                    <RoomPlayer roomId={id} shouldAutoplayVideo={shouldAutoplayVideo} isRoomCard={true} />
+                    <RoomPlayer roomId={id} shouldAutoplayVideo={shouldAutoplayVideo} isRoomCard={true} playerHeight={playerHeight} playerWidth={playerWidth} />
                     <ScrollableChatHistory roomId={id} style='compact' />
                 </div>
                 <Link to={`/r/${hid}/${index}`} className="room-card_prompt">

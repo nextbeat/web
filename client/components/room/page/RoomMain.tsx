@@ -2,6 +2,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 
 import App from '@models/state/app'
+import CurrentUser from '@models/state/currentUser'
 import RoomPage from '@models/state/pages/room'
 import Room from '@models/state/room'
 import Ad from '@models/entities/ad'
@@ -14,7 +15,7 @@ import CreatorInfo from './main/CreatorInfo'
 import BannerAd from '../ads/BannerAd'
 
 import { State, DispatchProps } from '@types'
-import Creator from '@client/components/pages/company/articles/creators/Creator';
+import { isFullScreen } from '@utils'
 
 interface ConnectProps {
     roomId: number
@@ -28,25 +29,114 @@ interface ConnectProps {
     shouldDisplayPrerollAd: boolean
 
     width: string
+    isLoggedIn: boolean
 }
 
 type Props = ConnectProps & DispatchProps
 
-class RoomMain extends React.Component<Props> {
+interface ComponentState {
+    containerWidth: number
+    playerWidth: number
+    playerHeight: number
+    isFullScreen: boolean
+}
+
+
+/* When rendering the room page directly from the
+ * server, we want the media player to display at the
+ * proper ratio when the page is first presented,
+ * before the server HTML is replaced by the React-generated
+ * DOM. In order to do this, we insert this function
+ * into a script tag so that it runs immediately upon
+ * the first DOM load. It's hacky but it works.
+ */
+
+function resizePlayerOnLoad() {
+    var elems = document.getElementsByClassName('player_media')
+    if  (elems.length > 0) {
+        var player = elems[0] as HTMLElement
+        var width = parseInt(window.getComputedStyle(player).width || '0', 10)
+        var height = Math.min(470, Math.floor(width * 9 / 16))
+        player.style.height = `${height}px`
+    }
+}
+
+function getScript(fn: Function) {
+    let fnText = `(${fn.toString()})()`
+    return { __html: fnText }
+}
+
+// <script dangerouslySetInnerHTML={getScript(resizePlayerOnLoad)} />
+
+const fullScreenEvents = 'fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange'
+
+class RoomMain extends React.Component<Props, ComponentState> {
 
     constructor(props: Props) {
         super(props);
         
         this.handleChat = this.handleChat.bind(this);
+        this.handleResize = this.handleResize.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
+
+        this.state = {
+            containerWidth: 0,
+            playerWidth: 0,
+            playerHeight: 0,
+            isFullScreen: false
+        }
     }
 
     componentDidMount() {
         $(document).on('keydown', this.handleKeyDown);
+        $(window).on('resize', this.handleResize);       
+        $(window).on(fullScreenEvents, this.handleFullScreen);
+        this.handleResize();
+    }
+
+    componentDidUpdate(prevProps: Props, prevState: ComponentState) {
+        if (this.props.isLoggedIn !== prevProps.isLoggedIn) {
+            // recalculate sizes to account for sidebar
+            this.handleResize();
+        }
+
+        if (prevState.containerWidth !== this.state.containerWidth || prevState.isFullScreen !== this.state.isFullScreen) {
+            this.setState({
+                playerWidth: parseInt($('.player_media-inner').css('width')),
+                playerHeight: parseInt($('.player_media-inner').css('height'))
+            })
+        }
     }
 
     componentWillUnmount() {
+        $(window).off('resize', this.handleResize);
         $(document).off('keydown', this.handleKeyDown);
+        $(window).off(fullScreenEvents, this.handleFullScreen);
+    }
+
+    handleFullScreen() {
+        this.setState({ isFullScreen: isFullScreen() })
+    }
+
+    handleResize() {
+        let height = (elem: HTMLElement) => parseInt(window.getComputedStyle(elem).height || '0', 10)
+        let width = (elem: HTMLElement) => parseInt(window.getComputedStyle(elem).width || '0', 10)
+
+        let container = document.getElementById('room_main') as HTMLElement
+        let navigation = document.getElementById('player_navigation') as HTMLElement
+        let creatorSocial = document.getElementById('creator-info_social') as HTMLElement
+
+        let currentExtraHeight = height(container) - width(container)*(9/16)
+        let neededExtraHeight = creatorSocial.getBoundingClientRect().top - navigation.getBoundingClientRect().top + 10
+
+        let delta = neededExtraHeight - currentExtraHeight
+
+        // Need to decrease height of media player by delta px
+        let containerWidth = width(container) - Math.floor((16/9)*delta)
+
+        this.setState({ 
+            containerWidth            
+        })
     }
 
     handleKeyDown(e: JQueryKeyEventObject) {
@@ -90,14 +180,16 @@ class RoomMain extends React.Component<Props> {
         const { roomId, isLoadedDeep, hid, width,
                 authorUsername, bannerAd } = this.props;
 
+        const { containerWidth, playerWidth, playerHeight } = this.state;
+
         return (
-            <section className="room_main">
-                <section className="player content" id="player">
+            <section className="room_main" id="room_main">
+                <section className="player content" id="player" style={{ maxWidth: containerWidth > 0 ? `${containerWidth}px`: 'auto' }}>
                     {/* we only display once the room has loaded */}
                     { isLoadedDeep &&
                     <div className="player_inner">
                         { bannerAd && <BannerAd ad={bannerAd} roomId={roomId} />}
-                        <RoomPlayer roomId={roomId} />
+                        <RoomPlayer roomId={roomId} playerWidth={playerWidth} playerHeight={playerHeight} />
                         <RoomInfo /> 
                         <CreatorInfo />
                     </div>
@@ -121,7 +213,8 @@ function mapStateToProps(state: State): ConnectProps {
         isLoadedDeep: RoomPage.isLoadedDeep(state),
         shouldDisplayPrerollAd: RoomPage.shouldDisplayPrerollAd(state),
 
-        width: App.get(state, 'width')
+        width: App.get(state, 'width'),
+        isLoggedIn: CurrentUser.isLoggedIn(state)
     }
 }
 

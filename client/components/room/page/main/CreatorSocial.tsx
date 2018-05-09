@@ -210,7 +210,7 @@ class CreatorSocial extends React.PureComponent<Props, ComponentState> {
         }
 
         return (
-            <div className="creator-info_social">
+            <div className="creator-info_social" id="creator-info_social">
                 <ul className="creator-info_social_fields">
                     { shouldDisplayShop && this.renderField('Shop')}
                     { youtube && this.renderField(youtube) }

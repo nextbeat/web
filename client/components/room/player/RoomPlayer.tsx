@@ -24,6 +24,10 @@ import { isFullScreen, storageAvailable } from '@utils'
 
 interface OwnProps {
     roomId: number
+
+    playerWidth: number
+    playerHeight: number
+
     isRoomCard?: boolean
     shouldAutoplayVideo?: boolean
 }
@@ -45,35 +49,10 @@ interface ConnectProps {
 type Props = OwnProps & ConnectProps & DispatchProps 
 
 interface RoomPlayerState {
-    playerWidth: number
-    playerHeight: number
     isFullScreen: boolean
     isDisplayingFullScreenTooltip: boolean
     tooltipShowTimeoutId: number
     tooltipHideTimeoutId: number
-}
-
-/* When rendering the room page directly from the
- * server, we want the media player to display at the
- * proper ratio when the page is first presented,
- * before the server HTML is replaced by the React-generated
- * DOM. In order to do this, we insert this function
- * into a script tag so that it runs immediately upon
- * the first DOM load. It's hacky but it works.
- */
-function resizePlayerOnLoad() {
-    var elems = document.getElementsByClassName('player_media')
-    if  (elems.length > 0) {
-        var player = elems[0] as HTMLElement
-        var width = parseInt(window.getComputedStyle(player).width || '0', 10)
-        var height = Math.min(500, Math.floor(width * 9 / 16))
-        player.style.height = `${height}px`
-    }
-}
-
-function getScript(fn: Function) {
-    let fnText = `(${fn.toString()})()`
-    return { __html: fnText }
 }
 
 const fullScreenEvents = 'fullscreenchange webkitfullscreenchange mozfullscreenchange msfullscreenchange'
@@ -99,15 +78,12 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         this.handleCounterClick = this.handleCounterClick.bind(this)
         this.toggleContinuousPlay = this.toggleContinuousPlay.bind(this)
         
-        this.resize = this.resize.bind(this)
         this.handleFullScreen = this.handleFullScreen.bind(this)
         this.dismissFullScreenTooltip = this.dismissFullScreenTooltip.bind(this)
 
         this.renderItem = this.renderItem.bind(this)
 
         this.state = {
-            playerWidth: 0,
-            playerHeight: 0,
             isFullScreen: false,
             isDisplayingFullScreenTooltip: false,
             tooltipShowTimeoutId: -1,
@@ -118,26 +94,10 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
     // Lifecycle
 
     componentDidMount() {
-        $(window).on(`resize ${fullScreenEvents}`, this.resize);
         $(window).on(fullScreenEvents, this.handleFullScreen)
-
-        this.setState({
-            playerWidth: parseInt($('.player_main').css('width')),
-            playerHeight: parseInt($('.player_main').css('height'))
-        }); 
-       
-        this.resize();
-    }
-
-    componentDidUpdate(prevProps: Props) {
-        if (this.props.isLoggedIn !== prevProps.isLoggedIn) {
-            // recalculate sizes to account for sidebar
-            this.resize();
-        }
     }
 
     componentWillUnmount() {
-        $(window).off(`resize ${fullScreenEvents}`, this.resize);
         $(window).off(fullScreenEvents, this.handleFullScreen)
 
         this.dismissFullScreenTooltip()
@@ -150,22 +110,6 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
         return this.state.isFullScreen && this.props.isMobile
     }
 
-
-    // Resize
-
-    resize() {
-        const playerWidth = parseInt($('.player_media-inner').css('width'));
-        let playerHeight = Math.min(470, Math.floor(playerWidth * 9 / 16))
-
-        if (isFullScreen()) {
-            playerHeight = parseInt($('.player_media-inner').css('height'));
-        }
-
-        this.setState({
-            playerWidth,
-            playerHeight,
-        })
-    }
 
     // Full screen
 
@@ -256,8 +200,8 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
     renderItem() {
         const { selectedMediaItem: item, roomId, shouldAutoplayVideo, 
+                playerWidth, playerHeight,
                 prerollAd, shouldDisplayPrerollAd: isAd } = this.props
-        const { playerWidth, playerHeight } = this.state
 
         let containerProps = {
             containerWidth: playerWidth,
@@ -294,15 +238,12 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                 prerollAd, shouldDisplayPrerollAd,
                 isContinuousPlayEnabled, isRoomCard } = this.props;
 
-        const { playerWidth, playerHeight, isFullScreen, 
-                isDisplayingFullScreenTooltip } = this.state;
+        const { isFullScreen, isDisplayingFullScreenTooltip } = this.state;
 
         const leftDisabledClass = index === 0 || index === -1 || shouldDisplayPrerollAd
             ? 'disabled' : '';
         const rightDisabledClass = index === mediaItemsSize - 1 || index === -1 || shouldDisplayPrerollAd
             ? 'disabled' : ''; 
-
-        let playerStyle = playerHeight > 0 ? { height: `${playerHeight}px` } : {}
 
         let preloadedImageUrl = null
         if (item) {
@@ -315,7 +256,7 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
 
         return (
             <div className="player_main">
-                <div className={`player_media ${fullScreenClass}`} style={playerStyle}>
+                <div className={`player_media ${fullScreenClass}`}>
                     { /* Preload the first post's image to prevent load hiccup after ad closes. */ }
                 { !!preloadedImageUrl && <link rel="preload" as="image" href={preloadedImageUrl} /> }
                     <div className="player_media-inner" id="player_media-inner">
@@ -332,14 +273,13 @@ class RoomPlayer extends React.Component<Props, RoomPlayerState> {
                         </div>
                     </div>
                 </div>
-                <div className={`player_navigation`}>
+                <div className={`player_navigation`} id="player_navigation">
                     <div className="player_navigation_inner">
                         <div className={`player_nav-button player_nav-backward ${leftDisabledClass}`} onClick={this.handleBackward}><Icon type="arrow-back" /></div>
                         <div className="player_nav-counter" onClick={this.handleCounterClick}><CounterInner roomId={roomId} /></div>
                         <div className={`player_nav-button player_nav-forward ${rightDisabledClass}`} onClick={this.handleForward}><Icon type="arrow-forward" /></div>
                     </div>
                 </div>
-                <script dangerouslySetInnerHTML={getScript(resizePlayerOnLoad)} />
             </div>
         );
     }
