@@ -159,9 +159,9 @@
     }
 
     .btn {
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 400;
-        padding: 6px 10px;
+        padding: 5px 8px;
     }
 }
 
@@ -172,7 +172,7 @@
     min-width: 20px;
     font-size: 16px;
     font-weight: 600;
-    line-height: 28px;
+    line-height: 26px;
 
     .btn-subscribe.subscribed & {
         color: $button-color;
