@@ -6,6 +6,8 @@ import Icon from '@components/shared/Icon'
 import Spinner from '@components/shared/Spinner'
 import Dropdown from '@components/shared/Dropdown'
 import Modal from '@components/shared/Modal'
+import renderMessageText from '@components/room/chat/utils/renderMessageText'
+
 import RoomPage from '@models/state/pages/room'
 import Room from '@models/state/room'
 import MediaItem from '@models/entities/mediaItem'
@@ -215,7 +217,7 @@ class ActivityItem extends React.Component<Props, ComponentState> {
                         <span className="activity-item_comment_timestamp">{ format(referencedComment.get('created_at'), 'h:mm a') }</span>
                     </div>
                     <div className="activity-item_body">
-                        { referencedComment.get('message') }
+                        { renderMessageText(referencedComment) }
                     </div>
                 </div>
             </div>

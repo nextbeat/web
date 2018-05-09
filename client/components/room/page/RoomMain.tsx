@@ -57,10 +57,10 @@ function getContainerPadding() {
 
     var container = document.getElementById('room_main') as HTMLElement
     var navigation = document.getElementById('player_navigation') as HTMLElement
-    var creatorSocial = document.getElementById('creator-info_social') as HTMLElement
+    var creatorInfo = document.getElementById('creator-info_main') as HTMLElement
 
     var currentExtraHeight = height(container) - width(container)*(9/16)
-    var neededExtraHeight = creatorSocial.getBoundingClientRect().top - navigation.getBoundingClientRect().top + 10
+    var neededExtraHeight = creatorInfo.getBoundingClientRect().top - navigation.getBoundingClientRect().top + 66
     neededExtraHeight = Math.min(neededExtraHeight, height(container) - 250)
 
     var delta = neededExtraHeight - currentExtraHeight
