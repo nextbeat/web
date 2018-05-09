@@ -35,7 +35,7 @@ interface ConnectProps {
 type Props = ConnectProps & DispatchProps
 
 interface ComponentState {
-    containerWidth: number
+    containerPadding: number
     playerWidth: number
     playerHeight: number
     isFullScreen: boolean
@@ -51,7 +51,7 @@ interface ComponentState {
  * the first DOM load. It's hacky but it works.
  */
 
-function getContainerWidth() {
+function getContainerPadding() {
     var height = function(elem: HTMLElement) { return parseInt(window.getComputedStyle(elem).height || '0', 10) }
     var width = function(elem: HTMLElement) { return parseInt(window.getComputedStyle(elem).width || '0', 10) }
 
@@ -66,15 +66,15 @@ function getContainerWidth() {
     var delta = neededExtraHeight - currentExtraHeight
 
     // Need to decrease height of media player by delta px
-    var containerWidth = width(container) - Math.floor((16/9)*delta)
+    var containerPadding = Math.floor((16/9)*delta/2)
 
-    return containerWidth;
+    return containerPadding;
 }
 
 function getResizeOnLoadScript() {
     let fnText = `(function() {
-        var containerWidth = (${getContainerWidth.toString()})();
-        document.getElementById('player').style.maxWidth = containerWidth + 'px';
+        var containerWidth = (${getContainerPadding.toString()})();
+        document.getElementById('player').style.padding = '0 ' + containerWidth + 'px';
     })()`
     return { __html: fnText }
 }
@@ -91,7 +91,7 @@ class RoomMain extends React.Component<Props, ComponentState> {
         this.handleKeyDown = this.handleKeyDown.bind(this);
 
         this.state = {
-            containerWidth: 0,
+            containerPadding: 0,
             playerWidth: 0,
             playerHeight: 0,
             isFullScreen: false
@@ -111,7 +111,7 @@ class RoomMain extends React.Component<Props, ComponentState> {
             this.handleResize();
         }
 
-        if (prevState.containerWidth !== this.state.containerWidth || prevState.isFullScreen !== this.state.isFullScreen) {
+        if (prevState.containerPadding !== this.state.containerPadding || prevState.isFullScreen !== this.state.isFullScreen) {
             this.setState({
                 playerWidth: parseInt($('.player_media-inner').css('width')),
                 playerHeight: parseInt($('.player_media-inner').css('height'))
@@ -130,9 +130,9 @@ class RoomMain extends React.Component<Props, ComponentState> {
     }
 
     handleResize() {
-        let containerWidth = getContainerWidth()
+        let containerPadding = getContainerPadding()
         this.setState({ 
-            containerWidth            
+            containerPadding          
         })
     }
 
@@ -177,11 +177,11 @@ class RoomMain extends React.Component<Props, ComponentState> {
         const { roomId, isLoadedDeep, hid, width,
                 authorUsername, bannerAd } = this.props;
 
-        const { containerWidth, playerWidth, playerHeight } = this.state;
+        const { containerPadding, playerWidth, playerHeight } = this.state;
 
         return (
             <section className="room_main" id="room_main">
-                <section className="player content" id="player" style={{ maxWidth: containerWidth > 0 ? `${containerWidth}px`: 'auto' }}>
+                <section className="player content" id="player" style={{ padding: containerPadding > 0 ? `0 ${containerPadding}px`: 'auto' }}>
                     {/* we only display once the room has loaded */}
                     { isLoadedDeep &&
                     <div className="player_inner">
