@@ -40,7 +40,7 @@
     }
 
     @include media('<=medium') {
-        max-width: auto !important;
+        padding: 0 !important;
     }
 }
 
@@ -52,10 +52,10 @@
 }
 
 .player_main {
-    display: flex;
+    display: block;
     position: relative;
     flex-shrink: 0;
-    flex-direction: column;
+    // flex-direction: column;
     height: 100%;
 }
 
