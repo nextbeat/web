@@ -104,6 +104,9 @@ a.room-card_header {
 
     .player_main {
         width: 496px;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
     }
 
     .player_media {
