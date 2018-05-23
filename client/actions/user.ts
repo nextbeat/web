@@ -350,13 +350,13 @@ function postSubscribe(subscription_id: number): SubscribeAction {
     }
 }
 
-export function subscribe(user: UserEntity): ThunkAction {
+export function subscribe(userId: number): ThunkAction {
     return (dispatch, getState) => {
-        if (CurrentUser.get(getState(), 'id') === user.get('id')) {
+        if (CurrentUser.get(getState(), 'id') === userId) {
             // can't subscribe to yourself
             return
         }
-        dispatch(postSubscribe(user.get('id')))
+        dispatch(postSubscribe(userId))
     }
 }
 
@@ -394,13 +394,13 @@ function postUnsubscribe(subscription_id: number): UnsubscribeAction {
     }
 }
 
-export function unsubscribe(user: UserEntity): ThunkAction {
+export function unsubscribe(userId: number): ThunkAction {
     return (dispatch, getState) => {
-        if (CurrentUser.get(getState(), 'id') === user.get('id')) {
+        if (CurrentUser.get(getState(), 'id') === userId) {
             // can't unsubscribe to yourself
             return
         }
-        dispatch(postUnsubscribe(user.get('id')))
+        dispatch(postUnsubscribe(userId))
     }
 }
 

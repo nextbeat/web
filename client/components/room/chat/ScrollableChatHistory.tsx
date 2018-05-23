@@ -11,11 +11,13 @@ import NotificationChatItem from './NotificationChatItem'
 import commentReducer from './utils/commentReducer'
 
 import { toggleDropdown } from '@actions/app'
+import { subscribe } from '@actions/user'
 import { loadComments, resendComment, selectMediaItem } from '@actions/room'
-import { promptChatActionsForUser,searchChat } from '@actions/pages/room'
+import { promptChatActionsForUser, searchChat } from '@actions/pages/room'
 import App from '@models/state/app'
 import Room, { FetchDirection } from '@models/state/room'
 import RoomPage, { DetailSection } from '@models/state/pages/room'
+import CurrentUser from '@models/state/currentUser'
 import Comment from '@models/entities/comment'
 import ObjectComment from '@models/objects/comment'
 import { State, DispatchProps } from '@types'
@@ -29,7 +31,9 @@ interface ConnectProps {
     hid: string
     isClosed: boolean
     authorUsername: string
+    authorId: number
     isCurrentUserAuthor: boolean
+    isCurrentUserSubscribedToAuthor: boolean
     
     comments: List<Comment>
     liveComments: List<Comment>
@@ -76,6 +80,7 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
 
         this.handleSelectUsername = this.handleSelectUsername.bind(this)
         this.handleSelectHashtag = this.handleSelectHashtag.bind(this)
+        this.handleSelectSubscribe = this.handleSelectSubscribe.bind(this)
         this.handleSelectMediaItem = this.handleSelectMediaItem.bind(this)
         this.handleSelectChatOptions = this.handleSelectChatOptions.bind(this)
 
@@ -231,6 +236,11 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
         this.props.dispatch(searchChat(tag))
     }
 
+    handleSelectSubscribe() {
+        const { dispatch, authorId } = this.props
+        dispatch(subscribe(authorId))
+    }
+
     handleSelectMediaItem(mediaItemId: number) {
         const { dispatch, roomId } = this.props
         dispatch(selectMediaItem(roomId, mediaItemId));
@@ -261,22 +271,33 @@ class ScrollableChatHistory extends React.Component<Props, ChatState> {
     // Render
 
     renderComment(comment: Comment | ObjectComment, idx: number) {
-        const { roomId, authorUsername, isCurrentUserAuthor, isClosed, activeDropdowns, selectedComment } = this.props;
+        const { roomId, 
+                authorUsername, 
+                isCurrentUserAuthor, 
+                isCurrentUserSubscribedToAuthor,
+                isClosed, 
+                activeDropdowns, 
+                selectedComment,
+                style
+            } = this.props;
 
         const componentId = `comment-${roomId}-${comment.get('id')}`
         const isDropdownActive = activeDropdowns.includes(`${componentId}-options`)
-        const isSelected = !!comment.get('id') && comment.get('id') === selectedComment;
+        const isSelected = !!comment.get('id') && comment.get('id') === selectedComment
+        const showSubscribeHighlight = style === 'expanded' && !isCurrentUserSubscribedToAuthor && !isCurrentUserAuthor
 
         if (comment.get('type') === 'message') {
             return <ChatItem 
                         id={componentId}
                         key={idx} 
                         comment={comment}
-                        showHeader={!comment.__no_header__}
+                        showHeader={!comment.__no_header__ && !comment.get('quiet')}
                         showOptions={isCurrentUserAuthor && !isClosed}
+                        showSubscribeHighlight={showSubscribeHighlight}
                         handleSelectUsername={this.handleSelectUsername}
                         handleSelectHashtag={this.handleSelectHashtag}
                         handleSelectMediaItem={this.handleSelectMediaItem}
+                        handleSelectSubscribe={this.handleSelectSubscribe}
                         handleSelectOptions={this.handleSelectChatOptions}
                         handleRespond={this.handleRespond}
                         handleResend={this.handleResend}
@@ -374,7 +395,9 @@ function mapStateToProps(state: State, ownProps: OwnProps): ConnectProps {
         hid: Room.entity(state, id).get('hid'),
         isClosed: Room.status(state, id) === 'closed',
         authorUsername: Room.author(state, id).get('username'),
+        authorId: Room.author(state, id).get('id'),
         isCurrentUserAuthor: Room.isCurrentUserAuthor(state, id),
+        isCurrentUserSubscribedToAuthor: CurrentUser.isSubscribed(state, Room.author(state, id).get('id')),
 
         comments: Room.comments(state, id),
         liveComments: Room.liveComments(state, id),

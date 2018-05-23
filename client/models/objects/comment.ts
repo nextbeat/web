@@ -27,6 +27,7 @@ interface CommentProps {
     id?: any
     created_at?: any
     is_referenced_by?: any
+    quiet?: any
     result_indices?: any
     user_mentions?: any
 }

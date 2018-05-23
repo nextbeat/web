@@ -8,7 +8,7 @@ import ObjectComment from '@models/objects/comment'
 import Emoji from '@models/objects/emoji'
 import { hashCode } from '@utils'
 
-type AnnotationType = 'link' | 'hashtag' | 'mention' | 'highlight' | 'emoji'
+type AnnotationType = 'link' | 'hashtag' | 'mention' | 'highlight' | 'emoji' | 'emphasis' | 'subscribe'
 
 interface GenericAnnotation {
     type: AnnotationType
@@ -41,12 +41,23 @@ interface HighlightAnnotation extends GenericAnnotation {
     type: 'highlight'
 }
 
+interface EmphasisAnnotation extends GenericAnnotation {
+    type: 'emphasis'
+    text: string
+}
+
+interface SubscribeAnnotation extends GenericAnnotation {
+    type: 'subscribe'
+}
+
 type Annotation = 
     LinkAnnotation | 
     MentionAnnotation | 
     HashtagAnnotation | 
-    HighlightAnnotation | 
-    EmojiAnnotation
+    HighlightAnnotation |
+    EmojiAnnotation |
+    EmphasisAnnotation |
+    SubscribeAnnotation
 
 function getLinkData(comment: Comment | ObjectComment): List<LinkAnnotation> {
     var re = /\[(.+)\]\((.+)\)/g 
@@ -61,10 +72,23 @@ function getLinkData(comment: Comment | ObjectComment): List<LinkAnnotation> {
     return links
 }
 
-function getHashtagData(comment: Comment | ObjectComment): List<Annotation> {
+function getEmphasisData(comment: Comment | ObjectComment): List<EmphasisAnnotation> {
+    var re = /\*(\w+)\*/g
+
+    let emphases = List<EmphasisAnnotation>()
+    let result
+
+    while (result = re.exec(comment.get('message'))) {
+        emphases = emphases.push({ type: 'emphasis', start: result.index, end: result.index+result[0].length, text: result[1] })
+    }
+
+    return emphases
+}
+
+function getHashtagData(comment: Comment | ObjectComment): List<HashtagAnnotation> {
     var re = /(^|\s)#(\w+)/g
 
-    let hashtags = List<Annotation>()
+    let hashtags = List<HashtagAnnotation>()
     let result
 
     while (result = re.exec(comment.get('message'))) {
@@ -75,11 +99,27 @@ function getHashtagData(comment: Comment | ObjectComment): List<Annotation> {
     return hashtags
 }
 
+function getSubscribeData(comment: Comment | ObjectComment): List<SubscribeAnnotation> {
+    var re = /subscribed?/gi
+
+    let data = List<SubscribeAnnotation>()
+    let result
+
+    while (result = re.exec(comment.get('message'))) {
+        let start = result.index
+        data = data.push({ type: 'subscribe', start: start, end: start+result[0].length })
+    }
+
+    return data
+}
+
 function preprocessAnnotations(comment: Comment | ObjectComment, options: RenderMessageOptions): List<Annotation> {
     let mentions = comment.get('user_mentions') || List();
     let emojis = comment.get('emojis') || List();
     let highlights = comment.get('result_indices') || List();
-    let links = options.includeLinks ? getLinkData(comment) : List<LinkAnnotation>();
+    let links = options.includeMarkdown ? getLinkData(comment) : List<LinkAnnotation>();
+    let emphases = options.includeMarkdown ? getEmphasisData(comment): List<EmphasisAnnotation>();
+    let subscribes = options.includeSubscribeHighlight ? getSubscribeData(comment) : List<SubscribeAnnotation>();
     let hashtags = getHashtagData(comment);
 
     let annotations = List<Annotation>();
@@ -94,6 +134,12 @@ function preprocessAnnotations(comment: Comment | ObjectComment, options: Render
     })
     links.forEach((l: any) => {
         annotations = annotations.push(l)
+    })
+    emphases.forEach((e: any) => {
+        annotations = annotations.push(e)
+    })
+    subscribes.forEach((s: any) => {
+        annotations = annotations.push(s)
     })
     hashtags.forEach((h: any) => {
         annotations = annotations.push(h)
@@ -111,8 +157,10 @@ function elementForAnnotation(annotation: Annotation, annotations: List<Annotati
     let textStart = annotation.start;
     let textEnd = annotation.end;
 
-    let onMentionClick = options.onMentionClick || (() => {})
-    let onHashtagClick = options.onHashtagClick || (() => {})
+    const noop = () => {}
+    let onMentionClick = options.onMentionClick || noop
+    let onHashtagClick = options.onHashtagClick || noop
+    let onSubscribeClick = options.onSubscribeClick || noop
 
     if (annotation.type === 'mention') {
         type = 'a';
@@ -137,6 +185,13 @@ function elementForAnnotation(annotation: Annotation, annotations: List<Annotati
         })
         textStart = textStart+1
         textEnd = textStart+annotation.displayText.length
+    } else if (annotation.type === 'emphasis') {
+        type = 'strong';
+        textStart = textStart+1
+        textEnd = textEnd-1
+    } else if (annotation.type === 'subscribe') {
+        type = 'a'
+        assign(props, { onClick: onSubscribeClick });
     }
     
     if (type === 'img') {
@@ -190,7 +245,10 @@ function memoizedRenderMessageText(comment: Comment | ObjectComment, options: Re
 interface RenderMessageOptions {
     onMentionClick?: (username: string) => void
     onHashtagClick?: (text: string) => void
-    includeLinks?: boolean
+    includeMarkdown?: boolean
+
+    includeSubscribeHighlight?: boolean
+    onSubscribeClick?: () => void
 }
 
 export default function renderMessageText(comment: Comment | ObjectComment, options?: RenderMessageOptions) {

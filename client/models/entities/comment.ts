@@ -16,6 +16,7 @@ interface CommentProps {
     mediaitem_id: number
     mediaitem_url: string
     message: string
+    quiet: boolean
     result_indices: List<List<number>>
     stack: number
     stack_id: number
