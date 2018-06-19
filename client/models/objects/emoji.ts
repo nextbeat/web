@@ -1,4 +1,3 @@
-import { Map } from 'immutable'
 import ObjectModel from './base'
 
 import { cloudfrontUrl } from '@upload'
