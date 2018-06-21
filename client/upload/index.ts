@@ -4,7 +4,8 @@ export enum UploadType {
     MediaItem = 'MEDIA_ITEM',
     Thumbnail = 'THUMBNAIL',
     ProfilePicture = 'PROFILE_PICTURE',
-    CoverImage = 'COVER_IMAGE'
+    CoverImage = 'COVER_IMAGE',
+    ShopProduct = 'SHOP_PRODUCT'
 }
 
 export type UploadFileType = 'image' | 'video' 

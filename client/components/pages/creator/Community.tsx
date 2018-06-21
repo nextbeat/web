@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
-import { List } from 'immutable'
 
 import Moderators from '@components/pages/creator/community/Moderators'
 import Emojis from '@components/pages/creator/community/Emojis'
+import Shop from '@components/pages/creator/community/Shop'
 import Icon from '@components/shared/Icon'
 
 import { clearCommunity } from '@actions/pages/creator/community'
@@ -49,6 +49,15 @@ class CommunityComponent extends React.Component<Props> {
                                 </div>
                             </div>
                             <Moderators />
+                        </div>
+                        <div className="creator_section">
+                            <div className="creator_section_title">
+                                Shop
+                                <div className="creator_section_description">
+                                    <p>Feature merchandise or other products that you love in your shop! The shop tab is featured under all of your rooms. Product images must be square, saved in a .jpg format, and under 200 KB.</p>
+                                </div>
+                            </div>
+                            <Shop />
                         </div>
                         <div className="creator_section">
                             <div className="creator_section_title">

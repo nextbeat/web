@@ -66,6 +66,14 @@ export function uploadCoverImage(file: File): UploadFileAction {
     }
 }
 
+export function uploadShopProduct(file: File): UploadFileAction {
+    return {
+        type: ActionType.UPLOAD_FILE,
+        uploadType: UploadType.ShopProduct,
+        file
+    }
+}
+ 
 export interface InitiateProcessingStageAction extends GenericAction {
     type: ActionType.INITIATE_PROCESSING_STAGE
     uploadType: UploadType

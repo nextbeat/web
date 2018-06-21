@@ -2,6 +2,7 @@ import { List, Map } from 'immutable'
 
 import { StateModelFactory } from '@models/state/base'
 import User from '@models/entities/user'
+import ShopProduct from '@models/entities/shopProduct'
 import Emoji from '@models/objects/emoji'
 import { createEntityListSelector, createSelector } from '@models/utils'
 import { State } from '@types'
@@ -28,6 +29,16 @@ interface CommunityProps {
     addEmojiError: string
     isRemovingEmoji: boolean
     removeEmojiError: string
+
+    isFetchingShopProducts: boolean
+    hasFetchedShopProducts: boolean
+    shopProductsError: string
+    shopProductIds: List<number>
+
+    isAddingShopProduct: boolean
+    addShopProductError: string
+    isRemovingShopProduct: boolean
+    removeShopProductError: string
 }
 
 const keyMap = {
@@ -51,7 +62,17 @@ const keyMap = {
     'isAddingEmoji': ['emojis', 'isAdding'],
     'addEmojiError': ['emojis', 'addError'],
     'isRemovingEmoji': ['emojis', 'isRemoving'],
-    'removeEmojiError': ['emojis', 'removeError']
+    'removeEmojiError': ['emojis', 'removeError'],
+
+    'isFetchingShopProducts': ['shop', 'isFetching'],
+    'hasFetchedShopProducts': ['shop', 'hasFetched'],
+    'shopProductsError': ['shop', 'error'],
+    'shopProductIds': ['shop', 'ids'],
+
+    'isAddingShopProduct': ['shop', 'isAdding'],
+    'addShopProductError': ['shop', 'addError'],
+    'isRemovingShopProduct': ['shop', 'isRemoving'],
+    'removeShopProductError': ['shop', 'removeError']
 }
 
 const keyMapPrefix = ['pages', 'creator', 'community']
@@ -65,4 +86,6 @@ export default class Community extends StateModelFactory<CommunityProps>(keyMap,
     )(
         (state: State) => Community.get(state, 'emojis')
     )
+
+    static shopProducts = createEntityListSelector(Community, 'shopProductIds', ShopProduct)
 }

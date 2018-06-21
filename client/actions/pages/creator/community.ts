@@ -13,7 +13,8 @@ import { triggerAuthError } from '@actions/app'
 
 import CurrentUser from '@models/state/currentUser'
 import * as Schemas from '@schemas'
-import Emoji from '@client/models/objects/emoji';
+import Emoji from '@models/objects/emoji'
+import ShopProduct from '@models/entities/shopProduct'
 
 export type CommunityActionAll = 
     ModeratorsAction |
@@ -22,6 +23,9 @@ export type CommunityActionAll =
     SetEmojiFileErrorAction |
     AddEmojiAction |
     RemoveEmojiAction |
+    ShopProductsAction |
+    AddShopProductAction |
+    RemoveShopProductAction |
     ClearCommunityAction
 
 /************
@@ -168,6 +172,101 @@ export function removeEmoji(emoji: Emoji): ThunkAction {
     }
 }
 
+/******
+ * SHOP
+ ******/
+
+export interface ShopProductsAction extends ApiCallAction {
+    type: ActionType.SHOP_PRODUCTS
+}
+function fetchShopProducts(userId: number): ShopProductsAction {
+    return {
+        type: ActionType.SHOP_PRODUCTS,
+        API_CALL: {
+            endpoint: `users/${userId}/shop/products`,
+            method: 'GET',
+            schema: Schemas.ShopProducts
+        }
+    }
+}
+export function loadShopProducts(): ThunkAction {
+    return (dispatch, getState) => {
+        const state = getState()
+
+        if (!CurrentUser.isLoggedIn(state)) {
+            return null;
+        }
+
+        dispatch(fetchShopProducts(CurrentUser.get(state, 'id')))
+    }
+}
+
+export interface AddShopProductAction extends ApiCallAction {
+    type: ActionType.ADD_SHOP_PRODUCT
+}
+function performAddShopProduct(userId: number, shopProduct: ShopProductObject): AddShopProductAction {
+    return {
+        type: ActionType.ADD_SHOP_PRODUCT,
+        API_CALL: {
+            endpoint: `users/${userId}/shop/products`,
+            method: 'POST',
+            authenticated: true,
+            body: assign({}, shopProduct)
+        }
+    }
+}
+
+interface ShopProductObject {
+    title: string
+    url: string
+    images: {
+        url: string
+        width: number
+        height: number
+    }[]
+    price?: string
+    description?: string
+}
+export function addShopProduct(shopProduct: ShopProductObject): ThunkAction {
+    return (dispatch, getState) => {
+        const state = getState()
+
+        if (!CurrentUser.isLoggedIn(state)) {
+            return null;
+        }
+
+        dispatch(performAddShopProduct(CurrentUser.get(state, 'id'), shopProduct))
+    }
+}
+
+export interface RemoveShopProductAction extends ApiCallAction {
+    type: ActionType.REMOVE_SHOP_PRODUCT,
+    id: number
+}
+function performRemoveShopProduct(creatorId: number, shopProductId: number): RemoveShopProductAction {
+    return {
+        type: ActionType.REMOVE_SHOP_PRODUCT,
+        id: shopProductId,
+        API_CALL: {
+            endpoint: `users/${creatorId}/shop/products/${shopProductId}`,
+            method: 'DELETE',
+            authenticated: true
+        }
+    }
+}
+
+export function removeShopProduct(shopProduct: ShopProduct): ThunkAction {
+    return (dispatch, getState) => {
+        const state = getState()
+
+        if (!CurrentUser.isLoggedIn(state)) {
+            return null;
+        }
+
+        dispatch(performRemoveShopProduct(CurrentUser.get(state, 'id'), shopProduct.get('id')))
+    }
+}
+
 /*******
  * CLEAR
  *******/
@@ -180,7 +279,7 @@ export function clearCommunity(): ApiCancelAction {
     return {
         type: ActionType.CLEAR_COMMUNITY,
         API_CANCEL: {
-            actionTypes: [ActionType.MODERATORS, ActionType.EMOJIS, ActionType.ADD_EMOJI, ActionType.REMOVE_EMOJI]
+            actionTypes: [ActionType.MODERATORS, ActionType.EMOJIS, ActionType.ADD_EMOJI, ActionType.REMOVE_EMOJI, ActionType.SHOP_PRODUCTS]
         }
     }
 }

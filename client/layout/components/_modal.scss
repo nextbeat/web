@@ -14,12 +14,10 @@
     margin-top: 80px;    
     background-color: white;
     padding: 15px;
-    // box-shadow: 0px 0px 10px 2px rgba(0,0,0,0.05);
     position: relative;
 
-    input {
+    input, textarea {
         font-size: 14px;
-        font-weight: 300;
         padding: 8px 10px;
     }
 }
@@ -53,10 +51,7 @@
     font-weight: 500;
     padding-bottom: 12px;
     border-bottom: 1px solid $border-color;
-}
-
-.modal_form {
-    // margin-top: 20px;
+    margin-bottom: 5px;
 }
 
 .modal_input-wrapper {
@@ -105,6 +100,26 @@
     a:hover {
         cursor: pointer;
     }
+}
+
+.modal_file-select {
+    display: flex;
+    font-size: 13px;
+    align-items: center;
+    margin-top: 15px;
+
+    .btn {
+        background: none;
+        color: $primary-color;
+        padding: 0;
+        margin: 0;
+        font-weight: bold;
+    }
+}
+
+.modal_file-select_name {
+    margin-left: 8px;
+    color: $detail-text-color;
 }
 
 // Specific styles
@@ -182,6 +197,22 @@
     @include center;
     width: 400px;
 
+    input {
+        width: 100%;
+        font-size: 13px;
+    }
+
+    .modal_input-wrapper {
+        padding-bottom: 12px;
+        position: relative;
+    }
+
+    textarea {
+        width: 100%;
+        resize: none;
+        font-size: 13px;
+    }
+
     @include media('<=450px') {
         width: 300px;
     }
@@ -194,8 +225,25 @@
     padding: 15px 0;
 }
 
+.modal-action_btn-small {
+    font-size: 12px;
+}
+
 .modal-action_extra {
     margin-top: 5px;
+    font-size: 12px;
+}
+
+.modal-action_submit-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-action_submit_error {
+    text-align: right;
+    margin-left: 10px;
+    color: $error-color;
     font-size: 12px;
 }
 
