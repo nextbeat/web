@@ -189,6 +189,9 @@ class App extends React.Component<Props> {
 
         return (
             <div className={`app-container app-${environment}`} id="app-container">
+                <div className="goodbye">
+                    Nextbeat is leaving forever. Thanks for playing!
+                </div>
                 { this.setTitle() }
                 <Login />
                 <Signup />

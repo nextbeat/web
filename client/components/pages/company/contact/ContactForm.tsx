@@ -46,7 +46,7 @@ class ContactForm extends React.Component<Props, ComponentState> {
     handleInputChange(e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>) {
         const input = e.currentTarget.name as any
         const value = e.currentTarget.value
-        this.setState({ [input]: value.length > 0 ? value : undefined })
+        this.setState({ [input]: value.length > 0 ? value : undefined } as any)
     }
 
     submit(e: React.MouseEvent<HTMLElement>) {

@@ -16,11 +16,11 @@ export class EntityModel<Props> {
         this.resourceCache = {}
     }
  
-    get<K extends keyof Props>(key: K, defaultValue?: Props[K]): Props[K] {
+    get<K extends Extract<keyof Props, string>>(key: K, defaultValue?: Props[K]): Props[K] {
         return this.entity().get(key, defaultValue)
     }
 
-    has<K extends keyof Props>(key: K) {
+    has<K extends Extract<keyof Props, string>>(key: K) {
         return this.entity().has(key)
     }
 
