@@ -1,5 +1,5 @@
-var Passport        = require('passport').Passport as any,
-    LocalStrategy   = require('passport-local').Strategy as any,
+var Passport        = (require('passport') as any).Passport as any,
+    LocalStrategy   = (require('passport-local') as any).Strategy as any,
     _               = require('lodash') as any,
     api             = require('./api') as any;
 
