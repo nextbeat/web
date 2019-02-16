@@ -1,7 +1,7 @@
-var Passport        = require('passport').Passport,
-    LocalStrategy   = require('passport-local').Strategy,
-    _               = require('lodash'),
-    api             = require('./api');
+var Passport        = require('passport').Passport as any,
+    LocalStrategy   = require('passport-local').Strategy as any,
+    _               = require('lodash') as any,
+    api             = require('./api') as any;
 
 export function init(app) {
 

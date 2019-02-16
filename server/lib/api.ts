@@ -1,4 +1,4 @@
-var request = require('request-promise')
+var request = require('request-promise') as any
 import * as Promise from 'bluebird'
 
 import assign from 'lodash-es/assign'

@@ -1,17 +1,17 @@
-var express         = require('express'),
-    web             = express(),
-    api             = require('./lib/api'),
-    redis           = require('./lib/redis'),
-    session         = require('express-session'),
-    serveStatic     = require('serve-static'),
-    RedisStore      = require('connect-redis')(session),
-    bodyParser      = require('body-parser'),
-    cookieParser    = require('cookie-parser'),
-    routes          = require('./routes'),
-    path            = require('path');
+var express         = require('express') as any,
+    web             = express() as any,
+    api             = require('./lib/api') as any,
+    redis           = require('./lib/redis') as any,
+    session         = require('express-session') as any,
+    serveStatic     = require('serve-static') as any,
+    RedisStore      = require('connect-redis')(session) as any,
+    bodyParser      = require('body-parser') as any,
+    cookieParser    = require('cookie-parser') as any,
+    routes          = require('./routes') as any,
+    path            = require('path') as any;
 
-var exphbs          = require('express-handlebars'),
-    favicon         = require('serve-favicon');
+var exphbs          = require('express-handlebars') as any,
+    favicon         = require('serve-favicon') as any;
 
 function setCustomHeaders(res, path) {
     if (serveStatic.mime.lookup(path) === 'text/html') {

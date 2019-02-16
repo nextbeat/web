@@ -1,5 +1,5 @@
-var uuid    = require('node-uuid'),
-    redis   = require('redis');
+var uuid    = require('node-uuid') as any,
+    redis   = require('redis') as any;
 
 /**
  * Simple module which returns a client for use as a session store.
