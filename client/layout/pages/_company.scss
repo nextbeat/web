@@ -70,6 +70,8 @@ $company-drop-shadow: rgba(#204fb8, 0.11);
 /* Company-wide styles */
 
 .company {
+    position: relative;
+    flex: 1;
     p, h1, h2 {
         margin: 0;
     }
