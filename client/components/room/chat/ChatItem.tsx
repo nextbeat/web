@@ -8,23 +8,25 @@ import ChatItemHeader from './ChatItemHeader'
 import Icon from '@components/shared/Icon'
 import Dropdown from '@components/shared/Dropdown'
 import Comment from '@models/entities/comment'
-import TemporaryComment from '@models/entities/temporary/comment'
+import ObjectComment from '@models/objects/comment'
 
 interface Props {
     id?: string
-    comment: Comment | TemporaryComment
+    comment: Comment | ObjectComment
 
     isCollapsed?: boolean
     isSelected?: boolean
     isSearchResult?: boolean
     isDropdownActive?: boolean
+    showSubscribeHighlight?: boolean
     showHeader?: boolean
     showOptions?: boolean
 
     handleSelectUsername?: (username: string) => void
     handleSelectHashtag?: (hashtag: string) => void
-    handleResend?: (comment: TemporaryComment) => void
     handleSelectMediaItem?: (id: number) => void
+    handleSelectSubscribe?: () => void
+    handleResend?: (comment: ObjectComment) => void
     handleRespond?: (comment: Comment) => void
     handleSelectOptions?: (componentId: string) => void
     handleJump?: (comment: Comment) => void
@@ -38,7 +40,8 @@ class ChatItem extends React.PureComponent<Props> {
         isSearchResult: false,
         isDropdownActive: false,
         showHeader: true,
-        showOptions: false
+        showOptions: false,
+        showSubscribeHighlight: false
     }
 
     constructor(props: Props) {
@@ -76,10 +79,16 @@ class ChatItem extends React.PureComponent<Props> {
 
     // Render
 
-    renderMessage(includeLinks=false) {
-        const { comment, handleSelectUsername, handleSelectHashtag } = this.props 
+    renderMessage(isBot=false) {
+        const { comment, handleSelectUsername, handleSelectHashtag, handleSelectSubscribe, showSubscribeHighlight } = this.props 
 
-        return renderMessageText(comment, { onMentionClick: handleSelectUsername, onHashtagClick: handleSelectHashtag, includeLinks })
+        return renderMessageText(comment, { 
+            onMentionClick: handleSelectUsername, 
+            onHashtagClick: handleSelectHashtag, 
+            onSubscribeClick: handleSelectSubscribe,
+            includeMarkdown: isBot, 
+            includeSubscribeHighlight: isBot && showSubscribeHighlight
+        })
     }
 
     renderHeader() {
@@ -125,16 +134,18 @@ class ChatItem extends React.PureComponent<Props> {
         
         const isPrivate         = comment.get('subtype') === 'private'
         const isBot             = comment.author().isBot()
+        const isQuiet           = !!comment.get('quiet')
         const headerClass       = showHeader ? "" : "chat_item-no-header"
         const privateClass      = isPrivate ? 'chat_item_body-private' : ''
         const badgeClass        = `chat_item-${comment.author().get('badge') || 'user'}`
+        const quietClass        = isQuiet ? 'chat_item-quiet' : ''
 
-        const submitStatus      = comment instanceof TemporaryComment ? comment.get('submit_status') : ""
+        const submitStatus      = comment instanceof ObjectComment ? comment.get('submit_status') : ""
         const submitClass       = submitStatus ? `chat_item-${submitStatus}` : ''
 
         const showOptionsClass  = showOptions && !isBot && !isReferenced ? "show-options" : ""
 
-        const chatItemClasses = `${highlightedClass} ${referencedClass} ${headerClass} ${submitClass} ${badgeClass} ${showOptionsClass} ${searchResultClass}`
+        const chatItemClasses = `${highlightedClass} ${referencedClass} ${headerClass} ${submitClass} ${badgeClass} ${showOptionsClass} ${searchResultClass} ${quietClass}`
         
         return (
             <li className={`chat_item ${chatItemClasses}`} ref="chat" id={id}>
@@ -142,7 +153,7 @@ class ChatItem extends React.PureComponent<Props> {
                     { showHeader && this.renderHeader() }
                     <div className={`chat_item_body ${privateClass}`}>
                         {this.renderMessage(isBot)}
-                        { submitStatus === "failed" && comment instanceof TemporaryComment && 
+                        { submitStatus === "failed" && comment instanceof ObjectComment && 
                             <a className="btn chat_item-failed_retry" onClick={ () => { handleResend && handleResend(comment) } }>Retry</a>
                         }
                         { comment instanceof Comment && handleRespond && 

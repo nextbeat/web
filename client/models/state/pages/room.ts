@@ -19,6 +19,7 @@ interface RoomPageProps extends EntityProps {
 
     selectedChatUsername: string
     mentions: List<string>
+    emojis: List<string>
     showSearchResults: boolean
     searchQuery: string
     searchResultIds: List<number>
@@ -63,6 +64,7 @@ const keyMap = withEntityMap({
     // chat
     'selectedChatUsername': ['chat', 'selectedUsername'],
     'mentions': ['chat', 'mentions'],
+    'emojis': ['chat', 'emojis'],
     'showSearchResults': ['chat', 'showSearchResults'],
     'searchQuery': ['chat', 'searchQuery'],
     'searchResultIds': ['chat', 'search', 'ids'],
@@ -158,6 +160,10 @@ export default class RoomPage extends StateModelFactory<RoomPageProps>(keyMap, k
 
     static thumbnail(state: State, preferredType: string) {
         return Room.thumbnail(state, this.get(state, 'id'), preferredType)
+    }
+
+    static authorEmojis(state: State) {
+        return Room.authorEmojis(state, this.get(state, 'id'))
     }
 
     static ad(state: State, type: AdType) {

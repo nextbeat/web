@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux' 
 
-import FileComponent, { FileComponentProps } from './utils/FileComponent'
+import FileComponent, { FileComponentProps } from '@components/utils/FileComponent'
 import Icon from '@components/shared/Icon'
 import Spinner from '@components/shared/Spinner'
 import { uploadMediaItemFile, updateNewMediaItem } from '@actions/upload'
@@ -173,12 +173,9 @@ class FileSelect extends React.Component<Props, FileSelectState> {
         const { resourceType, resourceWidth, resourceHeight, mediaItem,
                 isInSubmitProcess, isDoneProcessing } = this.props 
 
-        const fileIsCompatible = resourceType !== 'incompatible'
-        const shouldDisplayPrompt = !isInSubmitProcess && (fileIsCompatible || isDoneProcessing)
-
         return (
             <div className="upload_file-select" id="upload_file-select">
-                { fileIsCompatible ? this.renderCompatibleFile() : this.renderIncompatibleFile() }
+                { this.renderIncompatibleFile() }
             </div>
         );
     }

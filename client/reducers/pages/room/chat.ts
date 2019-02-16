@@ -7,7 +7,8 @@ import {
     SearchChatAction,
     HideSearchChatResultsAction,
     SearchSuggestionsAction,
-    ClearSearchChatAction
+    ClearSearchChatAction,
+    InsertEmojiAction
 } from '@actions/pages/room'
 import { paginate } from '@reducers/utils'
 import { State } from '@types'
@@ -22,9 +23,14 @@ function mentionUser(state: State, action: MentionUserAction) {
     return state.update('mentions', List(), m => m.push(action.username))
 }
 
+function insertEmoji(state: State, action: InsertEmojiAction) {
+    return state.update('emojis', List(), e => e.push(action.name))
+}
+
 function clearChatMessage(state: State, action: ClearChatMessageAction) {
     return state.merge({
-        mentions: List()
+        mentions: List(),
+        emojis: List()
     })
 }
 
@@ -78,6 +84,8 @@ export default function chat(state=Map<string, any>(), action: Action) {
         return promptChatActions(state, action)
     } else if (action.type === ActionType.MENTION_USER) {
         return mentionUser(state, action)
+    } else if (action.type === ActionType.INSERT_EMOJI) {
+        return insertEmoji(state, action)
     } else if (action.type === ActionType.CLEAR_CHAT_MESSAGE) {
         return clearChatMessage(state, action)
     } else if (action.type === ActionType.SEARCH_CHAT || action.type === ActionType.CLEAR_SEARCH_CHAT) {

@@ -1,13 +1,14 @@
 import * as React from 'react'
 import inRange from 'lodash-es/inRange'
 import assign from 'lodash-es/assign'
-import { List } from 'immutable'
+import { List, Map } from 'immutable'
 
 import Comment from '@models/entities/comment'
-import TemporaryComment from '@models/entities/temporary/comment'
+import ObjectComment from '@models/objects/comment'
+import Emoji from '@models/objects/emoji'
 import { hashCode } from '@utils'
 
-type AnnotationType = 'link' | 'hashtag' | 'mention' | 'highlight'
+type AnnotationType = 'link' | 'hashtag' | 'mention' | 'highlight' | 'emoji' | 'emphasis' | 'subscribe'
 
 interface GenericAnnotation {
     type: AnnotationType
@@ -26,6 +27,11 @@ interface MentionAnnotation extends GenericAnnotation {
     username: string
 }
 
+interface EmojiAnnotation extends GenericAnnotation {
+    type: 'emoji'
+    emoji: Emoji
+}
+
 interface HashtagAnnotation extends GenericAnnotation {
     type: 'hashtag'
     text: string
@@ -35,9 +41,25 @@ interface HighlightAnnotation extends GenericAnnotation {
     type: 'highlight'
 }
 
-type Annotation = LinkAnnotation | MentionAnnotation | HashtagAnnotation | HighlightAnnotation
+interface EmphasisAnnotation extends GenericAnnotation {
+    type: 'emphasis'
+    text: string
+}
 
-function getLinkData(comment: Comment | TemporaryComment): List<LinkAnnotation> {
+interface SubscribeAnnotation extends GenericAnnotation {
+    type: 'subscribe'
+}
+
+type Annotation = 
+    LinkAnnotation | 
+    MentionAnnotation | 
+    HashtagAnnotation | 
+    HighlightAnnotation |
+    EmojiAnnotation |
+    EmphasisAnnotation |
+    SubscribeAnnotation
+
+function getLinkData(comment: Comment | ObjectComment): List<LinkAnnotation> {
     var re = /\[(.+)\]\((.+)\)/g 
 
     let links = List<LinkAnnotation>()
@@ -50,10 +72,23 @@ function getLinkData(comment: Comment | TemporaryComment): List<LinkAnnotation> 
     return links
 }
 
-function getHashtagData(comment: Comment | TemporaryComment): List<Annotation> {
+function getEmphasisData(comment: Comment | ObjectComment): List<EmphasisAnnotation> {
+    var re = /\*(\w+)\*/g
+
+    let emphases = List<EmphasisAnnotation>()
+    let result
+
+    while (result = re.exec(comment.get('message'))) {
+        emphases = emphases.push({ type: 'emphasis', start: result.index, end: result.index+result[0].length, text: result[1] })
+    }
+
+    return emphases
+}
+
+function getHashtagData(comment: Comment | ObjectComment): List<HashtagAnnotation> {
     var re = /(^|\s)#(\w+)/g
 
-    let hashtags = List<Annotation>()
+    let hashtags = List<HashtagAnnotation>()
     let result
 
     while (result = re.exec(comment.get('message'))) {
@@ -64,21 +99,47 @@ function getHashtagData(comment: Comment | TemporaryComment): List<Annotation> {
     return hashtags
 }
 
-function preprocessAnnotations(comment: Comment | TemporaryComment, options: RenderMessageOptions): List<Annotation> {
+function getSubscribeData(comment: Comment | ObjectComment): List<SubscribeAnnotation> {
+    var re = /subscribed?/gi
+
+    let data = List<SubscribeAnnotation>()
+    let result
+
+    while (result = re.exec(comment.get('message'))) {
+        let start = result.index
+        data = data.push({ type: 'subscribe', start: start, end: start+result[0].length })
+    }
+
+    return data
+}
+
+function preprocessAnnotations(comment: Comment | ObjectComment, options: RenderMessageOptions): List<Annotation> {
     let mentions = comment.get('user_mentions') || List();
+    let emojis = comment.get('emojis') || List();
     let highlights = comment.get('result_indices') || List();
-    let links = options.includeLinks ? getLinkData(comment) : List<LinkAnnotation>();
+    let links = options.includeMarkdown ? getLinkData(comment) : List<LinkAnnotation>();
+    let emphases = options.includeMarkdown ? getEmphasisData(comment): List<EmphasisAnnotation>();
+    let subscribes = options.includeSubscribeHighlight ? getSubscribeData(comment) : List<SubscribeAnnotation>();
     let hashtags = getHashtagData(comment);
 
     let annotations = List<Annotation>();
     mentions.forEach((m: any) => {
         annotations = annotations.push({ type: 'mention', start: m.get('indices').get(0), end: m.get('indices').get(1), username: m.get('username') })
     })
+    emojis.forEach((e: any) => {
+        annotations = annotations.push({ type: 'emoji', start: e.get('indices').get(0), end: e.get('indices').get(1), emoji: new Emoji(e)})
+    })
     highlights.forEach((h: any) => {
         annotations = annotations.push({ type: 'highlight', start: h.get(0) as number, end: h.get(1) as number })
     })
     links.forEach((l: any) => {
         annotations = annotations.push(l)
+    })
+    emphases.forEach((e: any) => {
+        annotations = annotations.push(e)
+    })
+    subscribes.forEach((s: any) => {
+        annotations = annotations.push(s)
     })
     hashtags.forEach((h: any) => {
         annotations = annotations.push(h)
@@ -96,12 +157,20 @@ function elementForAnnotation(annotation: Annotation, annotations: List<Annotati
     let textStart = annotation.start;
     let textEnd = annotation.end;
 
-    let onMentionClick = options.onMentionClick || (() => {})
-    let onHashtagClick = options.onHashtagClick || (() => {})
+    const noop = () => {}
+    let onMentionClick = options.onMentionClick || noop
+    let onHashtagClick = options.onHashtagClick || noop
+    let onSubscribeClick = options.onSubscribeClick || noop
 
     if (annotation.type === 'mention') {
         type = 'a';
         assign(props, { onClick: onMentionClick.bind(this, annotation.username) });
+    } else if (annotation.type === 'emoji') {
+        type = 'img';
+        assign(props, {
+            src: annotation.emoji.url(),
+            alt: annotation.emoji.get('name')
+        })
     } else if (annotation.type === 'hashtag') {
         type = 'a';
         assign(props, { onClick: onHashtagClick.bind(this, annotation.text) })
@@ -116,6 +185,19 @@ function elementForAnnotation(annotation: Annotation, annotations: List<Annotati
         })
         textStart = textStart+1
         textEnd = textStart+annotation.displayText.length
+    } else if (annotation.type === 'emphasis') {
+        type = 'strong';
+        textStart = textStart+1
+        textEnd = textEnd-1
+    } else if (annotation.type === 'subscribe') {
+        type = 'a'
+        assign(props, { onClick: onSubscribeClick });
+    }
+    
+    if (type === 'img') {
+        // img is a void element, so React throws an error
+        // if it is assigned any children
+        return React.createElement(type, props)
     }
 
     return React.createElement(
@@ -129,7 +211,6 @@ interface RecursiveElementArray {
     [index: number]: string | React.ReactElement<any> | RecursiveElementArray
 }
 function recursiveCreateElement(start: number, end: number, annotations: List<Annotation>, message: string, options: RenderMessageOptions): RecursiveElementArray | string {
-
     if (annotations.size === 0) {
         return message.substring(start, end);
     }
@@ -144,16 +225,17 @@ function recursiveCreateElement(start: number, end: number, annotations: List<An
     ]
 }  
 
-function doRenderMessageText(comment: Comment | TemporaryComment, options: RenderMessageOptions): JSX.Element {
+function doRenderMessageText(comment: Comment | ObjectComment, options: RenderMessageOptions): JSX.Element {
     let annotations = preprocessAnnotations(comment, options)
     let message     = comment.get('message')
+
     return <span>{recursiveCreateElement(0, message.length, annotations, message, options)}</span>
 }
 
 let cache: {[key: number]: JSX.Element} = {}
 
-function memoizedRenderMessageText(comment: Comment | TemporaryComment, options: RenderMessageOptions) {
-    let key = hashCode(comment.get('message') + JSON.stringify(comment.get('user_mentions')) + JSON.stringify(comment.get('result_indices')) + JSON.stringify(options))
+function memoizedRenderMessageText(comment: Comment | ObjectComment, options: RenderMessageOptions) {
+    let key = hashCode(comment.get('message') + JSON.stringify(comment.get('user_mentions')) + JSON.stringify(comment.get('emojis')) + JSON.stringify(comment.get('result_indices')) + JSON.stringify(options))
     if (!cache[key]) {
         cache[key] = doRenderMessageText(comment, options);
     }
@@ -163,10 +245,13 @@ function memoizedRenderMessageText(comment: Comment | TemporaryComment, options:
 interface RenderMessageOptions {
     onMentionClick?: (username: string) => void
     onHashtagClick?: (text: string) => void
-    includeLinks?: boolean
+    includeMarkdown?: boolean
+
+    includeSubscribeHighlight?: boolean
+    onSubscribeClick?: () => void
 }
 
-export default function renderMessageText(comment: Comment | TemporaryComment, options?: RenderMessageOptions) {
+export default function renderMessageText(comment: Comment | ObjectComment, options?: RenderMessageOptions) {
     if (!comment.get('message')) {
         return null;
     }

@@ -186,9 +186,9 @@ function mapStateToProps(state: State, ownProps: RouteProps<Params>): ConnectPro
 
 const scrollOptions = {
 
-     onScrollToBottom: function() {
-        const { profile, dispatch } = this.props 
-        if (!profile.get('stacksFetching') && profile.stacks().size > 0) {
+     onScrollToBottom: function(this: ProfileComponent) {
+        const { stacksFetching, stacks, dispatch } = this.props 
+        if (!stacksFetching && stacks.size > 0) {
             dispatch(loadStacksForUser())
         }
      }  

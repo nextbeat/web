@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as Promise from 'bluebird'
 import hoistStatics from 'hoist-non-react-statics'
 import assign from 'lodash-es/assign'
 
@@ -23,6 +24,8 @@ export interface FileComponentProps {
     height: number
     offsetX: number
     offsetY: number
+
+    getBase64String: () => Promise<string>
 }
 
 export default function FileComponent(parentId: string, options: Partial<FileComponentOptions> = {}) {
@@ -75,6 +78,8 @@ export default function FileComponent(parentId: string, options: Partial<FileCom
                 this.loadImage = this.loadImage.bind(this)
                 this.loadVideo = this.loadVideo.bind(this)
 
+                this.getBase64String = this.getBase64String.bind(this)
+
                 this.state = {
                     resourceLoaded: false,
                     resourceType: null,
@@ -84,7 +89,9 @@ export default function FileComponent(parentId: string, options: Partial<FileCom
                     width: 0,
                     height: 0,
                     offsetX: 0,
-                    offsetY: 0
+                    offsetY: 0,
+
+                    getBase64String: this.getBase64String
                 }
             }
 
@@ -182,6 +189,25 @@ export default function FileComponent(parentId: string, options: Partial<FileCom
                 })
 
                 video.src = URL.createObjectURL(file)
+            }
+
+            getBase64String() {
+                const { file } = this.props
+                if (!file) {
+                    return Promise.reject(new Error('No file defined.'))
+                }
+
+                return new Promise((resolve, reject) => {
+                    let reader = new FileReader()
+
+                    reader.onloadend = () => {
+                        let buffer = reader.result
+                        let base64Data = btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)));
+                        resolve(base64Data)
+                    }
+
+                    reader.readAsArrayBuffer(file!)
+                })
             }
 
 

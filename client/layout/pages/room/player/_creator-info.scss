@@ -1,5 +1,5 @@
 .creator-info {
-    margin: 0 20px 40px 20px;
+    margin: 0 15px 40px 15px;
     display: flex;
 
     @include media('<=medium') {
@@ -9,13 +9,13 @@
 
 .creator-info_left {
     flex: 0 0 auto;
-    width: 70px;
-    margin-right: 15px;
+    width: 60px;
+    margin-right: 12px;
 }
 
 .creator-info_profpic {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
 
     background-color: #ddd;
     position: relative;
@@ -40,7 +40,7 @@
 }
 
 a.creator-info_username {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 400;
     margin-bottom: 6px;
     color: $text-color;

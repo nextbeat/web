@@ -1,7 +1,7 @@
 import { List, Map } from 'immutable'
 
 import { EntityModel } from './base'
-import TemporaryEntityModel from './temporary/base'
+import ObjectModel from '../objects/base'
 import { State } from '@types'
 
 interface StatsMediaItemProps {
@@ -16,7 +16,7 @@ interface StatsMediaItemProps {
     video_duration: number
 }
 
-export class StatsMediaItem extends TemporaryEntityModel<StatsMediaItemProps> {}
+export class StatsMediaItem extends ObjectModel<StatsMediaItemProps> {}
 
 interface StatsStackProps {
     id: number

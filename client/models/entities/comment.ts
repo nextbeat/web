@@ -3,37 +3,20 @@ import { List, Map } from 'immutable'
 import { EntityModel } from './base'
 import User from './user'
 import Stack from './stack'
+import { CommentAuthor } from '@models/objects/comment'
 
 import { State } from '@types'
-
-interface CommentAuthorProps {
-    badge: string
-    id: number
-    username: string
-}
-
-export class CommentAuthor extends EntityModel<CommentAuthorProps> {
-    constructor(public _entity: State) {
-        super(0, Map())
-    }
-
-    entity(): State {
-        return this._entity;
-    }
-
-    isBot(): boolean {
-        return this.get('badge') === 'bot'
-    }
-}
 
 interface CommentProps {
     author: State
     created_at: string
+    emojis: List<State>
     is_referenced_by: number
     id: number
     mediaitem_id: number
     mediaitem_url: string
     message: string
+    quiet: boolean
     result_indices: List<List<number>>
     stack: number
     stack_id: number

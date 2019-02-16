@@ -38,7 +38,7 @@ class CreatorInfo extends React.Component<Props> {
                         <div className="creator-info_profpic" style={profpicStyle}>{ !profpicUrl && <Icon type="person" /> }</div>
                     </Link>
                 </div>
-                <div className="creator-info_main">
+                <div className="creator-info_main" id="creator-info_main">
                     <Link to={`/u/${author.get('username')}`} className="creator-info_username">{author.get('username')}</Link>
                     <Subscribe user={author} />
                     <CreatorSocial />

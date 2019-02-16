@@ -22,7 +22,6 @@ interface ConnectProps {
     expires: string
     description?: string
     privacyStatus: string
-    tags: List<string>
     views: number
 }
 
@@ -32,7 +31,10 @@ class RoomInfo extends React.Component<Props> {
 
     render() {
         const { id, closed, description, privacyStatus, 
-                createdAt, expires, tags, views } = this.props 
+                createdAt, expires, views } = this.props 
+
+        const timeString = closed ? format(createdAt, 'MMMM D, YYYY') : timeLeftString(expires)
+        const viewsString = `${views} visit${views !== 1 ? 's' : ''}`
 
         return (
             <section className="room-info">
@@ -46,20 +48,12 @@ class RoomInfo extends React.Component<Props> {
                             </div>
                         </div>
                         <div className="room-info_views">
-                            { `${views} visit${views !== 1 ? 's' : ''}` }
-                        </div>
-                    </div>
-                    <div className="room-info_right">
-                        <div className="room-info_time">
-                            { closed && format(createdAt, 'MMMM D, YYYY') }
-                            { !closed && timeLeftString(expires) }
+                            {timeString} {'\u00b7'} {viewsString}
                         </div>
                     </div>
                 </div>
                 <div className="room-info_bottom">
-                    <div className="room-info_tags">
-                        {tags.map(tag => <Link to={`/t/${tag}`} key={`t-${tag}`} className="room-info_tag">{tag}</Link>)}
-                    </div>
+                    <div />
                     <div className="room-info_buttons">
                         <div className="room-info_button"><Bookmark /></div>
                         <div className="room-info_button"><Share /></div>
@@ -79,7 +73,6 @@ function mapStateToProps(state: State): ConnectProps {
         expires: Room.entity(state, id).get('expires'),
         description: Room.entity(state, id).get('description'),
         privacyStatus: Room.entity(state, id).get('privacy_status'),
-        tags: Room.entity(state, id).get('tags', List()),
         views: Room.entity(state, id).get('views')
     }
 }

@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import assign from 'lodash-es/assign'
 
 import App from '@models/state/app'
 import { closeDropdown } from '@actions/app'
@@ -14,10 +15,11 @@ interface ConnectProps {
 interface OwnProps {
     type: string
     shouldForceClose?: boolean
+    shouldCloseOnClick?: boolean
     triangleOnBottom?: boolean
     handleClose?: () => void
     style?: string
-    triangleMargin?: number
+    triangleMargin?: number | object
 }
 
 type AllProps = OwnProps & ConnectProps & DispatchProps
@@ -26,6 +28,7 @@ class Dropdown extends React.Component<AllProps> {
 
     static defaultProps = {
         shouldForceClose: false,
+        shouldCloseOnClick: true,
         triangleOnBottom: false
     }
 
@@ -63,17 +66,11 @@ class Dropdown extends React.Component<AllProps> {
     }
 
     hideDropdown(e: JQueryEventObject) {
-        const { type, dispatch } = this.props
+        const { type, dispatch, shouldCloseOnClick } = this.props
         let $dropdown = $(`#dropdown-${type}`)
-        let $toggle = $(`.dropdown-${type}_toggle`)
 
-        // check that target isn't dropdown. note that we DO want to hide 
-        // if the target is one of the dropdown's descendants, since all of those 
-        // should be links which should, on click, collapse the dropdown
-        if (!($dropdown.is(e.target as Element)
-            || $toggle.is(e.target as Element) 
-            || $toggle.has(e.target as Element).length > 0)) 
-        {   
+        // check that target isn't dropdown
+        if (shouldCloseOnClick || !($dropdown.is(e.target as Element) || $dropdown.has(e.target as Element).length > 0)) {   
             process.nextTick(() => {
                 $(document).off(`mouseup.dropdown-${type}`);
                 this.handleClose()
@@ -96,11 +93,13 @@ class Dropdown extends React.Component<AllProps> {
         const { type, style, children, isActive, triangleMargin, triangleOnBottom, shouldForceClose } = this.props
 
         let triangleStyle: any = {}
-        if (typeof triangleMargin !== 'undefined') {
+        if (typeof triangleMargin === 'number') {
             triangleStyle.right = `${triangleMargin}px`
             if (triangleMargin < 0) {
                 triangleStyle.display = 'none'
             }
+        } else if (typeof triangleMargin === 'object') {
+            assign(triangleStyle, triangleMargin)
         }
 
         return (

@@ -80,7 +80,7 @@
 }
 
 .chat_item_timestamp {
-    color: #b3b3b3;
+    color: rgba(#000, 0.2);
     font-size: 11px;
     padding-left: 6px;
 }
@@ -293,9 +293,20 @@ a.chat_item_hashtag {
     }
 }
 
+a.chat_item_subscribe {
+    font-weight: normal;
+}
+
 .chat_item_highlight {
     background: rgba(#000, 0.12);
     padding: 1px 3px;
+}
+
+.chat_item_emoji {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+    margin: -2px 0;
 }
 
 
@@ -365,7 +376,25 @@ a.chat_item_hashtag {
     }
 }
 
-// Other styles
+// Quiet styles
+
+.chat_history-expanded .chat_item-quiet {
+    background: #f6f6f6;
+    border-left: 3px solid $secondary-color;
+    padding: 8px 9px 8px 8px;
+    color: #727272;
+    font-size: 12px;
+}
+
+.chat_history-small .chat_item-quiet {
+    color: #999;
+}
+
+.chat_history-compact .chat_item-quiet {
+    color: #999;
+}
+
+// Other history styles
 
 .chat_history-compact {
 

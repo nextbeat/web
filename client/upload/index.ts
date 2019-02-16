@@ -4,7 +4,8 @@ export enum UploadType {
     MediaItem = 'MEDIA_ITEM',
     Thumbnail = 'THUMBNAIL',
     ProfilePicture = 'PROFILE_PICTURE',
-    CoverImage = 'COVER_IMAGE'
+    CoverImage = 'COVER_IMAGE',
+    ShopProduct = 'SHOP_PRODUCT'
 }
 
 export type UploadFileType = 'image' | 'video' 
@@ -88,10 +89,7 @@ export function cloudfrontUrl() {
 }
 
 export function isBrowserCompatible(file: File) {
-    // for now, we are turning off all browser compatibility
-    // checks, treating all files as though they were
-    // incompatible (to ensure a more consistent user experience)
-    return false;
+    return BROWSER_COMPATIBLE_FORMATS.indexOf(fileExtension(file.name)) > -1
 }
 
 export function checkFileCompatibility(type: UploadType, file: File) {

@@ -39,7 +39,6 @@ class PinnedChatItem extends React.Component<Props & DispatchProps> {
 
     render() {
         const { pinnedComment, isCreator, isCurrentUserAuthor } = this.props 
-        const creatorClass = isCreator ? 'creator' : ''
 
         if (!pinnedComment) {
             return null;

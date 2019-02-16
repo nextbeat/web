@@ -16,16 +16,27 @@
     }
 }
 
-.chat_compose-inner {
-    // margin-bottom: 5px;
-}
-
 .chat_compose_controls {
     display: flex;
-    flex-direction: row-reverse;
     justify-content: space-between;
     align-items: center;
     margin-top: 5px;
+}
+
+.chat_compose_controls_left {
+    display: flex;
+    align-items: center;
+}
+
+.chat_compose_insert-emoji {
+    height: 20px;
+    margin: 0 9px 0 7px;
+    cursor: pointer;
+
+    .svg-icon {
+        height: 20px;
+        width: 20px;
+    }
 }
 
 .chat_compose_submit {
@@ -108,12 +119,130 @@
     }
 }
 
+// Chat emoji dropdwon
+
+.dropdown-chat-emoji {
+    position: absolute;
+    bottom: 46px;
+    left: 12px;
+    width: auto;
+
+    .dropdown_main {
+        min-height: 70px;
+    }
+
+    .btn-subscribe .btn {
+        font-size: 12px;
+    }
+
+    .btn-subscribe_count {
+        display: none;
+    }
+}
+
+.chat_compose_emoji_list {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 30px);
+    grid-gap: 8px;
+    margin-bottom: 10px;
+}
+
+.chat_compose_emoji_element {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    position: relative;
+
+    img {
+        width: 100%;
+        height: 100%;
+
+        .chat_compose_emoji_list-disabled & {
+            filter: grayscale(100%);
+            opacity: 0.4;
+        }
+    }
+
+    &[data-name]::before {
+        content: "";
+        position: absolute;
+        top: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 4px 4px 0 4px;
+        border-style: solid;
+        border-color: transparent;
+        border-top-color: rgba(#000, 0.8);
+        z-index: 100;
+        opacity: 0;
+        transition: opacity 0.15s;
+        pointer-events: none;
+    }
+
+    &[data-name]::after {
+        content: attr(data-name);
+        position: absolute;
+        left: 50%;
+        top: -6px;
+        transform: translateX(-50%) translateY(-100%);
+        background: rgba(#000, 0.8);
+        padding: 4px 6px;
+        border-radius: 2px;
+        font-size: 11px;
+        font-weight: 400;
+        color: #fff;
+        position: absolute;
+        opacity: 0;
+        transition: opacity 0.15s;
+        pointer-events: none;
+    }
+
+    &[data-name]:hover::after, &[data-name]:hover::before {
+        opacity: 1;
+        @media (-moz-touch-enabled: 1), (hover: none), (hover: on-demand) {
+            opacity: 0;
+        }
+        &:hover {
+            opacity: 0;
+        }
+    }
+}
+
+.chat_compose_emoji_subscribe {
+    margin: 0 auto;
+    width: 140px;
+    text-align: center;
+}
+
+.chat_compose_emoji_subscribe-enter {
+    opacity: 0;
+    &.chat_compose_emoji_subscribe-enter-active {
+        opacity: 1;
+        transition: opacity 150ms;
+    }
+}
+
+.chat_compose_emoji_subscribe-exit {
+    opacity: 1;
+    &.chat_compose_emoji_subscribe-exit-active {
+        opacity: 0;
+        transition: opacity 150ms;
+    }
+}
+
+.chat_compose_emoji_subscribe_text {
+    margin-bottom: 6px;
+}
+
+// Other dropdowns
 
 .dropdown-chat-info {
     position: absolute;
     bottom: 100%;
     right: 0;
     margin-right: 15px;
+    margin-bottom: 5px;
     width: 270px;
 } 
 

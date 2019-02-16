@@ -1,52 +1,81 @@
-.community_moderators {
+.community_box {
     display: flex;
     flex-direction: column;
     margin-top: 15px;
 
     padding: 12px;
     max-width: 470px;
-    height: 280px;
+    height: 240px;
     background: #fff;
     box-shadow: $creator-box-shadow;
+
+    .spinner {
+        margin: 0;
+    }
 }
 
-.community_moderators_list {
+.community_box_list {
     height: 100%;
     margin-bottom: 6px;
     overflow: auto;
 }
 
-.community_moderators_user {
+.community_box_element {
     display: flex;
     align-items: center;
     margin-bottom: 8px;
 }
 
-.community_moderators_user_thumbnail {
-    width: 30px;
-    height: 30px;
-    border-radius: 5px;
+.community_box_element_thumbnail {
+    width: 32px;
+    height: 32px;
     margin-right: 10px;
-
+    flex: 0 0 auto;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+}
+
+.community_box_element_thumbnail-user {
+    border-radius: 5px;
     background-color: #ccc;
 }
 
-.community_moderators_user_username {
+.community_box_element_thumbnail-shop {
+    width: 50px;
+    height: 50px;
+}
+
+.community_box_element_text {
     min-width: 55px;
     font-size: 14px;
     margin-right: 5px;
 }
 
-.community_moderators_user_remove {
+.community_box_element_text_title {
+    font-weight: 600;
+}
+
+.community_box_element_text_detail {
+    margin-top: 3px;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.community_box_element_text_detail-description {
+    color: $detail-text-color;
+}
+
+.community_box_element_remove {
     display: none;
     color: $primary-color;
     font-size: 14px;
     cursor: pointer;
+    margin-left: 10px;
 
-    .community_moderators_user:hover & {
+    .community_box_element:hover & {
         display: block;
     }
 
@@ -55,18 +84,20 @@
     }
 }
 
-.community_moderators_submit_fields {
+.community_box_submit_fields {
     display: flex;
+    height: 38px;
+    justify-content: space-between;
 }
 
-input.community_moderators_input {
+input.community_box_input {
     font-size: 13px;
     padding: 10px;
     width: 100%;
     margin-right: 10px;
 }
 
-input.community_moderators_submit {
+input.community_box_submit {
     color: #fff;
     background: $primary-color;
     padding: 0 20px;
@@ -77,4 +108,47 @@ input.community_moderators_submit {
     &:hover {
         background: $light-primary-color
     }
+
+    &:disabled {
+        background: #999;
+    }
+}
+
+.community_box_cancel {
+    cursor: pointer;
+    font-size: 13px;
+    color: $primary-color;
+
+    &:hover {
+        color: $light-primary-color;
+    }
+}
+
+.community_box_submit_error {
+    color: $error-color;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+/* Emojis */
+
+.community_emojis_file_container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.community_emojis_submit_image_container {
+    width: 32px;
+    height: 32px;
+    position: relative;
+    margin-right: 10px;
+    flex: 0 0 auto;
+}
+
+/* Shop */ 
+
+.community_box-shop .community_box_submit_fields {
+    flex-direction: row-reverse;
 }

@@ -1,11 +1,11 @@
 import * as React from 'react'
 
 import Comment from '@models/entities/comment'
-import TemporaryComment from '@models/entities/temporary/comment'
+import ObjectComment from '@models/objects/comment'
 import { timeOfDayString } from '@utils'
 
 interface Props {
-    comment: Comment | TemporaryComment
+    comment: Comment | ObjectComment
     handleSelectUsername?: (username: string) => void
 }
 

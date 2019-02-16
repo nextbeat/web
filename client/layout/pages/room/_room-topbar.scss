@@ -53,7 +53,10 @@ a.room_topbar_username {
     }
 
     .btn-subscribe_count {
-        display: none;
+        line-height: inherit;
+        color: #777;
+        font-size: 13px;
+        font-weight: 400;
     }
 }
 

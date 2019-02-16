@@ -7,6 +7,7 @@ export default function commentReducer(res: List<Comment>, comment: Comment): Li
     let isCollapsibleComment = (comment: Comment) => comment.get('type') === 'notification' && comment.get('subtype') === 'mediaitem';
     let isPublicMessage = (comment: Comment) => comment.get('type') === 'message' && comment.get('subtype') === 'public';
     let hasReference = (comment: Comment) => !!comment.get('is_referenced_by');
+    let isQuiet = (comment: Comment) => !!comment.get('quiet')
     
     let lastComment = res.last()
     if (lastComment && isCollapsibleComment(lastComment) && isCollapsibleComment(comment)) {
@@ -19,7 +20,7 @@ export default function commentReducer(res: List<Comment>, comment: Comment): Li
     if (lastComment && isPublicMessage(lastComment) && isPublicMessage(comment) && !hasReference(comment)) {
         const sameAuthor = lastComment.author().get('username') === comment.author().get('username');
         const diff = differenceInMinutes(comment.get('created_at'), lastComment.get('created_at'));
-        if (sameAuthor && diff < 10) {
+        if (isQuiet(comment) || (sameAuthor && diff < 10 && !isQuiet(lastComment))) {
             comment.__no_header__ = true;
         }
     }

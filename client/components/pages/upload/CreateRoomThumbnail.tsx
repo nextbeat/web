@@ -2,7 +2,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 
 import Spinner from '@components/shared/Spinner'
-import FileComponent, { FileComponentProps } from './utils/FileComponent'
+import FileComponent, { FileComponentProps } from '@components/utils/FileComponent'
 import Upload, { UploadType } from '@models/state/upload'
 import { State, DispatchProps } from '@types'
 

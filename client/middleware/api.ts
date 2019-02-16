@@ -155,7 +155,6 @@ export default (store: Store) => (next: Dispatch) => (action: ApiCallAction) => 
 
         })
         .catch(error => {
-            console.log(error);
             return next(actionWith({
                 status: Status.FAILURE,
                 error: error
