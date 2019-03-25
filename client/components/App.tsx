@@ -190,7 +190,7 @@ class App extends React.Component<Props> {
         return (
             <div className={`app-container app-${environment}`} id="app-container">
                 <div className="goodbye">
-                We regret to announce that Nexbeat will be turning off its servers at the end of the month. Our final day will be February 28, 2019. If you have anything you have posted to a room that you would like to keep, we recommend you download it directly from the site before then. We hope you enjoyed Nextbeat and have a nice day!
+                We regret to announce that Nexbeat will be turning off its servers at the end of the month. Our final day will be March 31, 2019. If you have anything you have posted to a room that you would like to keep, we recommend you download it directly from the site before then. We hope you enjoyed Nextbeat and have a nice day!
                 </div>
                 { this.setTitle() }
                 <Login />
